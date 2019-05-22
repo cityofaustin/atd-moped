@@ -1,2 +1,3 @@
-# atd-mobility-project-database
-The City of Austin's comprehensive mobility project tracking platform
+## City of Austin Transportation
+# Mobility Project Database
+A project tracking platform for mobility projects in the City of Austin. 
