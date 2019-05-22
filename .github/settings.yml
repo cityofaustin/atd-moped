@@ -131,3 +131,6 @@ labels:
   - name: "Workgroup: TE"
     color: 00BFA5
     description: Transportation Engineering
+  - name: "Workgroup: CPO"
+    color: 00BFA5
+    description: Corridor Program Office
