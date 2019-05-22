@@ -1,3 +1,4 @@
-## City of Austin Transportation
+### Austin Transportation
 # Mobility Project Database
-A project tracking platform for mobility projects in the City of Austin. 
+
+A comprehensive mobility project tracking platform for Austin, Texas. 
