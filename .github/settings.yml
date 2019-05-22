@@ -1,5 +1,5 @@
-teams:
-  - username: transportation
+collaborators:
+  - username: amenity
     permission: admin
 labels:
   - name: Duplicate
