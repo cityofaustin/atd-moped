@@ -133,7 +133,7 @@ labels:
     description: Right of Way Management
   - name: "Workgroup: SDD"
     color: 00BFA5
-    description: Systems Development
+    description: Systems Development Division
   - name: "Workgroup: SMB"
     color: 00BFA5
     description: Signs and Markings (and Banners)
