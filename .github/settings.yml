@@ -8,15 +8,19 @@ labels:
   - name: "Impact: 1-Severe"
     color: FF7261
     description: Severely impacts ATD service delivery
+    oldname: "Impact: Severe"
   - name: "Impact: 2-Major"
     color: FF9A8E
     description: Causes a major interruption of ATD service delivery
+    oldname: "Impact: Major"
   - name: "Impact: 3-Minor"
     color: FFCDCA
     description: Deteriorates ATD service delivery
+    oldname: "Impact: Minor"
   - name: "Impact: 4-None"
     color: FFEEED
     description: Does not affect ATD service delivery
+    oldname: "Impact: None"
   - name: "Need: 1-Must Have"
     color: FF7261
     description: No point in delivering a solution without this
@@ -54,6 +58,7 @@ labels:
   - name: "Type: Data"
     color: 0B3E79
     description: Generating and delivering datasets and reports
+    oldname: "Type: Data & Reports"
   - name: "Type: Documentation"
     color: 0B3E79
     description: User guides, developer documentation, planning documents, etc.
@@ -95,7 +100,7 @@ labels:
     description: Active Transportation and Street Design
   - name: "Workgroup: CTM"
     color: 00BFA5
-    description: Communications and Technology Management
+    description: Communications & Technology Management
   - name: "Workgroup: DTS"
     color: 00BFA5
     description: Data and Technology Services
@@ -131,7 +136,7 @@ labels:
     description: Systems Development Division
   - name: "Workgroup: SMB"
     color: 00BFA5
-    description: Signs, Markings, and Banners
+    description: Signs and Markings (and Banners)
   - name: "Workgroup: TE"
     color: 00BFA5
     description: Transportation Engineering
