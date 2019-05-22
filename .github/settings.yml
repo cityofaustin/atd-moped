@@ -12,7 +12,6 @@ labels:
   - name: "Impact: 2-Major"
     color: FF9A8E
     description: Causes a major interruption of ATD service delivery
-    oldname: "Impact: Major"
   - name: "Impact: 3-Minor"
     color: FFCDCA
     description: Deteriorates ATD service delivery
