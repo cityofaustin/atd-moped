@@ -33,9 +33,6 @@ labels:
   - name: "Need: 4-Won't Have"
     color: FFE9E9
     description: Will not be delivered at this time
-  - name: Project: Warehouse Inventory
-    color: 86B1C6
-    description: Identifying an inventory management solution
   - name: "Team: Apps"
     color: F2FC6D
     description: Application support
