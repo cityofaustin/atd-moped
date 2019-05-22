@@ -1,3 +1,6 @@
+collaborators:
+  - username: transportation
+    permission: admin
 labels:
   - name: Duplicate
     color: 5F7D8C
@@ -131,6 +134,3 @@ labels:
   - name: "Workgroup: TE"
     color: 00BFA5
     description: Transportation Engineering
-  - name: "Test label again"
-    color: 00BFA5
-    description: Plz work
