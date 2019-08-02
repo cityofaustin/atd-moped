@@ -1,7 +1,8 @@
 ### Austin Transportation
 # Mobility Project Database
 
-#### How might we support comprehensive analysis and reporting on Austin’s mobility-related infrastructure projects? 
+#### How might we support comprehensive tracking of Austin’s mobility activities? 
+ 
 The City of Austin Transportation Department has a diverse portfolio of mobility-related infrastructure projects. These are currently managed in various platforms — from simple spreadsheets administered by a single workgroup to bespoke enterprise software that tracks all capitally-funded projects. As a result, there is no centralized system of record, analysis and reporting capabilities are limited, and resources are not used efficiently. 
 
 Using a single platform to manage all of ATD’s mobility-related infrastructure projects would increase organizational alignment, enable holistic analysis and reporting, and lay the groundwork for robust business intelligence and data integrations. 
