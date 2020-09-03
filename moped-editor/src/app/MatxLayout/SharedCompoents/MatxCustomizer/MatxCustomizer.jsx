@@ -38,7 +38,7 @@ const MatxCustomizer = props => {
   const demoLayouts = [
     {
       name: "Light Sidebar",
-      thumbnail: "/assets/images/screenshots/layout1-customizer.png",
+      thumbnail: "./assets/images/screenshots/layout1-customizer.png",
       isPro: false,
       options: {
         activeLayout: "layout1",
@@ -60,7 +60,7 @@ const MatxCustomizer = props => {
     },
     {
       name: "Dark Sidebar",
-      thumbnail: "/assets/images/screenshots/layout2-customizer.png",
+      thumbnail: "./assets/images/screenshots/layout2-customizer.png",
       isPro: false,
       options: {
         activeLayout: "layout1",
@@ -79,7 +79,7 @@ const MatxCustomizer = props => {
     },
     {
       name: "Dark Theme",
-      thumbnail: "/assets/images/screenshots/layout3-customizer.png",
+      thumbnail: "./assets/images/screenshots/layout3-customizer.png",
       isPro: false,
       options: {
         activeLayout: "layout1",
@@ -101,7 +101,7 @@ const MatxCustomizer = props => {
     },
     {
       name: "Horizontal Navigation",
-      thumbnail: "/assets/images/screenshots/layout4-customizer.png",
+      thumbnail: "./assets/images/screenshots/layout4-customizer.png",
       isPro: true,
       options: {
         activeLayout: "layout2",

@@ -17,7 +17,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Beautiful DnD",
-              coverImage: "/assets/images/sq-9.jpg",
+              coverImage: "./assets/images/sq-9.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -31,7 +31,7 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -46,7 +46,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Nested DnD",
-              coverImage: "/assets/images/sq-11.jpg",
+              coverImage: "./assets/images/sq-11.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -60,7 +60,7 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -81,7 +81,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Beautiful DnD",
-              coverImage: "/assets/images/sq-11.jpg",
+              coverImage: "./assets/images/sq-11.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -95,7 +95,7 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -110,7 +110,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Nested DnD",
-              coverImage: "/assets/images/sq-13.jpg",
+              coverImage: "./assets/images/sq-13.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -124,7 +124,7 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -159,7 +159,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Beautiful DnD",
-              coverImage: "/assets/images/sq-9.jpg",
+              coverImage: "./assets/images/sq-9.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -174,7 +174,7 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -189,7 +189,7 @@ const ScrumBoardDB = {
             {
               id: shortId.generate(),
               title: "Nested DnD",
-              coverImage: "/assets/images/sq-11.jpg",
+              coverImage: "./assets/images/sq-11.jpg",
               members: [
                 "323sa680b3249760ea21rt47",
                 "7863a6802ez0e277a0f98534",
@@ -204,12 +204,12 @@ const ScrumBoardDB = {
                 {
                   name: "sky-life.jpg",
                   size: "1.2 MB",
-                  url: "/assets/images/sq-9.jpg"
+                  url: "./assets/images/sq-9.jpg"
                 },
                 {
                   name: "stair.jpg",
                   size: "2.8 MB",
-                  url: "/assets/images/sq-11.jpg"
+                  url: "./assets/images/sq-11.jpg"
                 }
               ],
               comments: [
@@ -263,67 +263,67 @@ const ScrumBoardDB = {
     {
       id: "1",
       name: "John Doe",
-      avatar: "/assets/images/face-7.jpg"
+      avatar: "./assets/images/face-7.jpg"
     },
     {
       id: "323sa680b3249760ea21rt47",
       name: "Frank Powell",
-      avatar: "/assets/images/faces/13.jpg"
+      avatar: "./assets/images/faces/13.jpg"
     },
     {
       id: "7863a6802ez0e277a0f98534",
       name: "John Doe",
-      avatar: "/assets/images/face-1.jpg"
+      avatar: "./assets/images/face-1.jpg"
     },
     {
       id: "14663a3406eb47ffa63d4fec9429cb71",
       name: "Betty Diaz",
-      avatar: "/assets/images/faces/12.jpg"
+      avatar: "./assets/images/faces/12.jpg"
     },
     {
       id: "43bd9bc59d164b5aea498e3ae1c24c3c",
       name: "Brian Stephens",
-      avatar: "/assets/images/faces/3.jpg"
+      avatar: "./assets/images/faces/3.jpg"
     },
     {
       id: "3fc8e01f3ce649d1caf884fbf4f698e4",
       name: "Jacqueline Day",
-      avatar: "/assets/images/faces/16.jpg"
+      avatar: "./assets/images/faces/16.jpg"
     },
     {
       id: "e929b1d790ab49968ed8e34648553df4",
       name: "Arthur Mendoza",
-      avatar: "/assets/images/faces/10.jpg"
+      avatar: "./assets/images/faces/10.jpg"
     },
     {
       id: "d6caf04bba614632b5fecf91aebf4564",
       name: "Jeremy Lee",
-      avatar: "/assets/images/faces/9.jpg"
+      avatar: "./assets/images/faces/9.jpg"
     },
     {
       id: "be0fb188c8e242f097fafa24632107e4",
       name: "Johnny Newman",
-      avatar: "/assets/images/faces/5.jpg"
+      avatar: "./assets/images/faces/5.jpg"
     },
     {
       id: "dea902191b964a68ba5f2d93cff37e13",
       name: "Jeffrey Little",
-      avatar: "/assets/images/faces/15.jpg"
+      avatar: "./assets/images/faces/15.jpg"
     },
     {
       id: "0bf58f5ccc4543a9f8747350b7bda3c7",
       name: "Barbara Romero",
-      avatar: "/assets/images/faces/4.jpg"
+      avatar: "./assets/images/faces/4.jpg"
     },
     {
       id: "c5d7498bbcb84d81fc72168871ac6a6e",
       name: "Daniel James",
-      avatar: "/assets/images/faces/2.jpg"
+      avatar: "./assets/images/faces/2.jpg"
     },
     {
       id: "97bfbdd9413e46efdaca2010400fe18c",
       name: "Alice Sanders",
-      avatar: "/assets/images/faces/17.jpg"
+      avatar: "./assets/images/faces/17.jpg"
     }
   ]
 };
