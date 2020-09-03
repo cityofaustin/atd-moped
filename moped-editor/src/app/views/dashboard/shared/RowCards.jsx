@@ -48,9 +48,9 @@ const RowCards = () => {
           <Hidden smDown>
             <Grid item xs={3}>
               <div className="flex position-relative face-group">
-                <Avatar className="avatar" src="/assets/images/face-4.jpg" />
-                <Avatar className="avatar" src="/assets/images/face-4.jpg" />
-                <Avatar className="avatar" src="/assets/images/face-4.jpg" />
+                <Avatar className="avatar" src="./assets/images/face-4.jpg" />
+                <Avatar className="avatar" src="./assets/images/face-4.jpg" />
+                <Avatar className="avatar" src="./assets/images/face-4.jpg" />
                 <Avatar className="number-avatar avatar">+3</Avatar>
               </div>
             </Grid>

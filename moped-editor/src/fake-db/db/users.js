@@ -16,7 +16,7 @@ const userDB = {
           'phone': '+1 (857) 535-2066',
           'address': '163 Poplar Avenue, Cliffside, Virginia, 4592',
           'bd': '2015-02-08T04:28:44 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7f79f4250b96a355a',
@@ -32,7 +32,7 @@ const userDB = {
           'phone': '+1 (994) 570-2070',
           'address': '526 Grace Court, Cherokee, Oregon, 7017',
           'bd': '2017-11-15T09:04:57 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78b64a02a67204d6e',
@@ -48,7 +48,7 @@ const userDB = {
           'phone': '+1 (848) 410-2368',
           'address': '554 Barlow Drive, Alamo, Michigan, 3686',
           'bd': '2017-10-15T12:55:51 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7572e59b231149b94',
@@ -64,7 +64,7 @@ const userDB = {
           'phone': '+1 (896) 422-3786',
           'address': '111 Argyle Road, Graball, Idaho, 7272',
           'bd': '2017-11-19T03:38:30 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f70f9d074552e13090',
@@ -80,7 +80,7 @@ const userDB = {
           'phone': '+1 (867) 542-2772',
           'address': '707 Malta Street, Yukon, Wyoming, 6861',
           'bd': '2014-05-28T01:33:58 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78988bd6e92650473',
@@ -96,7 +96,7 @@ const userDB = {
           'phone': '+1 (997) 413-2418',
           'address': '543 Roosevelt Place, Tibbie, Minnesota, 6944',
           'bd': '2015-01-05T09:55:23 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f72488770f90649570',
@@ -112,7 +112,7 @@ const userDB = {
           'phone': '+1 (869) 521-2533',
           'address': '663 Minna Street, Omar, Alabama, 5265',
           'bd': '2017-03-09T05:48:57 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7c576e368b321a705',
@@ -128,7 +128,7 @@ const userDB = {
           'phone': '+1 (820) 404-2967',
           'address': '752 Woodhull Street, Utting, Oklahoma, 2739',
           'bd': '2014-10-21T03:09:34 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f705f8a9c6e35c8ca2',
@@ -144,7 +144,7 @@ const userDB = {
           'phone': '+1 (845) 463-3986',
           'address': '561 Boulevard Court, Rote, Louisiana, 8458',
           'bd': '2017-03-30T02:06:23 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7a3e2be2dbb7b093e',
@@ -160,7 +160,7 @@ const userDB = {
           'phone': '+1 (919) 541-3528',
           'address': '167 Lester Court, Glasgow, Arkansas, 6311',
           'bd': '2017-04-01T01:41:12 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f716de69a9217c1273',
@@ -176,7 +176,7 @@ const userDB = {
           'phone': '+1 (879) 401-2304',
           'address': '761 Polhemus Place, Kidder, Puerto Rico, 5901',
           'bd': '2014-08-29T08:42:59 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7ed19007bed2d29fb',
@@ -192,7 +192,7 @@ const userDB = {
           'phone': '+1 (972) 549-2681',
           'address': '653 Billings Place, Gardners, Connecticut, 7805',
           'bd': '2015-02-21T03:06:14 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78d0dc0858a70c44a',
@@ -208,7 +208,7 @@ const userDB = {
           'phone': '+1 (824) 494-3395',
           'address': '571 Turner Place, Norris, Mississippi, 3829',
           'bd': '2014-01-30T02:05:53 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7e929494a8568a885',
@@ -224,7 +224,7 @@ const userDB = {
           'phone': '+1 (930) 476-3634',
           'address': '563 Victor Road, Richmond, Kansas, 7742',
           'bd': '2014-05-04T10:16:32 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f767e97ce3136444fd',
@@ -240,7 +240,7 @@ const userDB = {
           'phone': '+1 (920) 556-2885',
           'address': '378 Grimes Road, Websterville, Marshall Islands, 3506',
           'bd': '2015-12-19T08:17:58 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7fba076653cc18925',
@@ -256,7 +256,7 @@ const userDB = {
           'phone': '+1 (963) 458-2788',
           'address': '991 Ashland Place, Richville, New York, 3529',
           'bd': '2016-11-29T07:58:24 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7c6d408bc853be87c',
@@ -272,7 +272,7 @@ const userDB = {
           'phone': '+1 (886) 539-3156',
           'address': '870 Vanderveer Place, Bridgetown, California, 7593',
           'bd': '2014-11-10T04:47:00 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7abe6c78719d2f494',
@@ -288,7 +288,7 @@ const userDB = {
           'phone': '+1 (866) 413-2199',
           'address': '811 Dunne Place, Vowinckel, Rhode Island, 8646',
           'bd': '2014-03-16T04:30:06 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f72d64af126b8080be',
@@ -304,7 +304,7 @@ const userDB = {
           'phone': '+1 (982) 519-2486',
           'address': '917 Turnbull Avenue, Shasta, Virgin Islands, 7016',
           'bd': '2015-11-09T10:11:15 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f789b4e9086d34b255',
@@ -320,7 +320,7 @@ const userDB = {
           'phone': '+1 (858) 511-2546',
           'address': '580 Hampton Avenue, Ilchester, New Hampshire, 2191',
           'bd': '2016-02-11T01:34:23 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f737eea8e94089b7b4',
@@ -336,7 +336,7 @@ const userDB = {
           'phone': '+1 (806) 496-2473',
           'address': '238 Oxford Walk, Monument, New Mexico, 1345',
           'bd': '2016-10-07T01:07:21 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f76bc821dc6ee56ee2',
@@ -352,7 +352,7 @@ const userDB = {
           'phone': '+1 (933) 429-3129',
           'address': '954 Lawton Street, Terlingua, New Jersey, 6723',
           'bd': '2017-12-01T04:36:13 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f794c27c4048290cbf',
@@ -368,7 +368,7 @@ const userDB = {
           'phone': '+1 (860) 458-3988',
           'address': '287 Auburn Place, Gardiner, Northern Mariana Islands, 7131',
           'bd': '2018-02-04T11:06:51 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f720a5781f7d19597a',
@@ -384,7 +384,7 @@ const userDB = {
           'phone': '+1 (854) 428-2270',
           'address': '648 Melba Court, Dodge, Pennsylvania, 7596',
           'bd': '2016-12-29T07:28:10 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7f0a4c5e6c9807fb2',
@@ -400,7 +400,7 @@ const userDB = {
           'phone': '+1 (986) 415-3294',
           'address': '382 Dewitt Avenue, Goodville, Palau, 711',
           'bd': '2014-10-31T12:32:59 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7e6c45298c709371c',
@@ -416,7 +416,7 @@ const userDB = {
           'phone': '+1 (964) 594-2363',
           'address': '527 Seton Place, Wedgewood, Wisconsin, 8306',
           'bd': '2016-05-27T10:46:17 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f79468759d25ecdcf4',
@@ -432,7 +432,7 @@ const userDB = {
           'phone': '+1 (866) 510-2479',
           'address': '540 Moffat Street, Emison, South Carolina, 7329',
           'bd': '2014-09-02T04:57:23 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7346b1bbab11524fa',
@@ -448,7 +448,7 @@ const userDB = {
           'phone': '+1 (838) 579-3709',
           'address': '669 Hausman Street, Gerber, Kentucky, 7779',
           'bd': '2017-11-29T12:22:59 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f75116874002de08de',
@@ -464,7 +464,7 @@ const userDB = {
           'phone': '+1 (846) 551-2291',
           'address': '152 Garnet Street, Boling, Nevada, 4867',
           'bd': '2014-01-06T10:18:37 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f739be4dc1f743993c',
@@ -480,7 +480,7 @@ const userDB = {
           'phone': '+1 (841) 425-2442',
           'address': '695 Nassau Avenue, Nutrioso, Maryland, 2026',
           'bd': '2016-01-03T02:15:56 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f70b86f2969d762be2',
@@ -496,7 +496,7 @@ const userDB = {
           'phone': '+1 (876) 562-2932',
           'address': '616 Tapscott Avenue, Crucible, Nebraska, 4900',
           'bd': '2018-01-31T05:15:13 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7394648a68c2a6ae3',
@@ -512,7 +512,7 @@ const userDB = {
           'phone': '+1 (924) 517-3289',
           'address': '687 Navy Walk, Edmund, Delaware, 1419',
           'bd': '2018-01-23T11:32:25 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f77ad97f4e1c2fa65a',
@@ -528,7 +528,7 @@ const userDB = {
           'phone': '+1 (857) 495-3565',
           'address': '279 Bridgewater Street, Edneyville, Utah, 9246',
           'bd': '2015-10-03T12:24:56 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f72598106a97fbf7d5',
@@ -544,7 +544,7 @@ const userDB = {
           'phone': '+1 (980) 530-3588',
           'address': '434 Elm Place, Coloma, West Virginia, 1990',
           'bd': '2016-03-22T10:13:26 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7b88290b05f53faa1',
@@ -560,7 +560,7 @@ const userDB = {
           'phone': '+1 (904) 544-2796',
           'address': '380 Rockaway Avenue, Faxon, American Samoa, 5776',
           'bd': '2016-03-27T09:30:36 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7d2f7429d0caec5fe',
@@ -576,7 +576,7 @@ const userDB = {
           'phone': '+1 (838) 549-3147',
           'address': '999 Coleridge Street, Golconda, Vermont, 9575',
           'bd': '2016-10-01T06:50:42 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78a4c54ff8334e053',
@@ -592,7 +592,7 @@ const userDB = {
           'phone': '+1 (947) 460-2254',
           'address': '114 Landis Court, Genoa, Indiana, 5198',
           'bd': '2017-07-28T12:45:44 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7c87f7e86fcb00055',
@@ -608,7 +608,7 @@ const userDB = {
           'phone': '+1 (849) 430-3377',
           'address': '832 Kermit Place, Lutsen, Georgia, 9145',
           'bd': '2015-04-26T06:40:08 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f712f9208f145fa6ea',
@@ -624,7 +624,7 @@ const userDB = {
           'phone': '+1 (888) 573-3730',
           'address': '408 Roosevelt Court, Hiwasse, North Dakota, 281',
           'bd': '2014-03-25T12:24:34 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7aa1f371de59df90b',
@@ -640,7 +640,7 @@ const userDB = {
           'phone': '+1 (821) 600-3174',
           'address': '391 Conover Street, Cassel, Tennessee, 6566',
           'bd': '2016-01-27T09:40:41 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7c45c697931199945',
@@ -656,7 +656,7 @@ const userDB = {
           'phone': '+1 (918) 539-2612',
           'address': '401 Moore Place, Groton, Arizona, 3415',
           'bd': '2017-09-14T09:46:55 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7ef55416e92ebc818',
@@ -672,7 +672,7 @@ const userDB = {
           'phone': '+1 (847) 521-3952',
           'address': '576 Bayard Street, Chloride, Federated States Of Micronesia, 8070',
           'bd': '2016-11-01T12:47:26 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7cbeecfe6febd672d',
@@ -688,7 +688,7 @@ const userDB = {
           'phone': '+1 (956) 534-3050',
           'address': '581 Maple Street, Needmore, Colorado, 2062',
           'bd': '2014-07-21T08:22:01 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f71803de25c5f754ad',
@@ -704,7 +704,7 @@ const userDB = {
           'phone': '+1 (973) 451-2222',
           'address': '349 Bryant Street, Tioga, South Dakota, 6493',
           'bd': '2016-04-27T02:46:46 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f77f2a05eacb331c74',
@@ -720,7 +720,7 @@ const userDB = {
           'phone': '+1 (814) 528-2701',
           'address': '719 Kathleen Court, Morriston, Guam, 4011',
           'bd': '2015-07-02T08:22:18 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7727afbb0fc15653b',
@@ -736,7 +736,7 @@ const userDB = {
           'phone': '+1 (847) 469-3741',
           'address': '918 Oceanic Avenue, Cochranville, Missouri, 1018',
           'bd': '2016-06-11T11:31:54 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f71dd7612e967e01ae',
@@ -752,7 +752,7 @@ const userDB = {
           'phone': '+1 (964) 527-3791',
           'address': '947 Judge Street, Nescatunga, Maine, 4928',
           'bd': '2014-06-23T12:46:21 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7b33c73c425db7ee0',
@@ -768,7 +768,7 @@ const userDB = {
           'phone': '+1 (827) 503-2742',
           'address': '470 Fenimore Street, Hatteras, Texas, 1582',
           'bd': '2015-01-15T12:22:00 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7c30aa4064670cf21',
@@ -784,7 +784,7 @@ const userDB = {
           'phone': '+1 (941) 478-3536',
           'address': '958 Flatbush Avenue, Clara, North Carolina, 970',
           'bd': '2018-01-09T11:09:34 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7ecd5a4859f2d94dc',
@@ -800,7 +800,7 @@ const userDB = {
           'phone': '+1 (929) 528-3805',
           'address': '901 Stratford Road, Derwood, Iowa, 1402',
           'bd': '2015-01-08T04:28:57 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7216c8cabc849eea7',
@@ -816,7 +816,7 @@ const userDB = {
           'phone': '+1 (951) 572-3027',
           'address': '267 Rockaway Parkway, Chapin, Montana, 7813',
           'bd': '2014-02-10T05:08:13 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78841719bf955b2d9',
@@ -832,7 +832,7 @@ const userDB = {
           'phone': '+1 (871) 403-3377',
           'address': '704 Lamont Court, Saranap, Massachusetts, 3171',
           'bd': '2014-09-17T05:13:13 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7b7b8e578dff0f85c',
@@ -848,7 +848,7 @@ const userDB = {
           'phone': '+1 (995) 406-2592',
           'address': '803 Ellery Street, Boykin, Alaska, 8624',
           'bd': '2016-08-28T01:22:51 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f737459ec79c91ca75',
@@ -864,7 +864,7 @@ const userDB = {
           'phone': '+1 (860) 428-3250',
           'address': '833 Revere Place, Rockbridge, Illinois, 4628',
           'bd': '2017-01-19T12:36:59 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f70ddc6fc11ebf043a',
@@ -880,7 +880,7 @@ const userDB = {
           'phone': '+1 (879) 541-3490',
           'address': '442 Emerald Street, Graniteville, Hawaii, 1302',
           'bd': '2017-07-07T10:34:33 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f78b816185ccd2b4b3',
@@ -896,7 +896,7 @@ const userDB = {
           'phone': '+1 (861) 528-3215',
           'address': '261 Aitken Place, Cecilia, Ohio, 1381',
           'bd': '2016-03-20T08:31:34 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f780f8bf8fbe24d75c',
@@ -912,7 +912,7 @@ const userDB = {
           'phone': '+1 (828) 524-3011',
           'address': '350 Plymouth Street, Waterford, Washington, 6715',
           'bd': '2017-07-09T05:51:11 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f741e22fc19ffa6952',
@@ -928,7 +928,7 @@ const userDB = {
           'phone': '+1 (809) 562-3786',
           'address': '633 Monitor Street, Chicopee, District Of Columbia, 550',
           'bd': '2016-02-05T12:36:05 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7de56ead40c26e69a',
@@ -944,7 +944,7 @@ const userDB = {
           'phone': '+1 (868) 502-2553',
           'address': '550 Kensington Walk, Wyano, Virginia, 7703',
           'bd': '2017-08-18T12:39:37 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f70a04fe142269ea8d',
@@ -960,7 +960,7 @@ const userDB = {
           'phone': '+1 (892) 533-2739',
           'address': '367 Harwood Place, Twilight, Oregon, 9799',
           'bd': '2016-11-26T11:57:18 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7339943d94af3b39d',
@@ -976,7 +976,7 @@ const userDB = {
           'phone': '+1 (954) 582-2660',
           'address': '717 Sutter Avenue, Bartley, Michigan, 1142',
           'bd': '2017-08-21T08:25:00 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7d8e266ad1bc5daa8',
@@ -992,7 +992,7 @@ const userDB = {
           'phone': '+1 (965) 490-3768',
           'address': '896 Clinton Avenue, Canoochee, Idaho, 1154',
           'bd': '2016-04-11T06:08:29 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7e74a5af674e4cbdd',
@@ -1008,7 +1008,7 @@ const userDB = {
           'phone': '+1 (939) 455-2610',
           'address': '325 Crystal Street, Harleigh, Wyoming, 5658',
           'bd': '2014-11-20T07:30:04 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7efb231e53a0c94cd',
@@ -1024,7 +1024,7 @@ const userDB = {
           'phone': '+1 (890) 500-3729',
           'address': '771 Beard Street, Rivera, Minnesota, 4726',
           'bd': '2017-07-13T02:47:50 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7e345c5dfc5d636e4',
@@ -1040,7 +1040,7 @@ const userDB = {
           'phone': '+1 (806) 595-2477',
           'address': '349 Dunham Place, Sardis, Alabama, 3320',
           'bd': '2017-11-08T02:26:23 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f77f5f9d730fab11e0',
@@ -1056,7 +1056,7 @@ const userDB = {
           'phone': '+1 (849) 521-2335',
           'address': '851 Noble Street, Holcombe, Oklahoma, 311',
           'bd': '2016-07-10T10:08:35 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7cab10f461153989c',
@@ -1072,7 +1072,7 @@ const userDB = {
           'phone': '+1 (868) 492-2270',
           'address': '627 Wilson Street, Loveland, Louisiana, 765',
           'bd': '2017-05-20T12:39:31 -06:00',
-          'imgUrl': "/assets/images/face-1.png"
+          'imgUrl': "./assets/images/face-1.png"
         },
         {
           'id': '5a7b73f7ecccc997e4160a59',

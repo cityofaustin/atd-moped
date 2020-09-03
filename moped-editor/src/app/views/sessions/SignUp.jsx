@@ -35,7 +35,7 @@ class SignUp extends Component {
               <Grid item lg={5} md={5} sm={5} xs={12}>
                 <div className="p-8 flex justify-center bg-light-gray items-center h-full">
                   <img
-                    src="/assets/images/illustrations/posting_photo.svg"
+                    src="./assets/images/illustrations/posting_photo.svg"
                     alt=""
                   />
                 </div>

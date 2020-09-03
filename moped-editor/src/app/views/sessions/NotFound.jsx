@@ -28,7 +28,7 @@ class NotFound extends Component {
         <div className={`${classes.flexCenter} ${classes.inner}`}>
           <img
             className="mb-8"
-            src="/assets/images/illustrations/404.svg"
+            src="./assets/images/illustrations/404.svg"
             alt=""
           />
           <Button
