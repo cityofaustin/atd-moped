@@ -61,7 +61,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && cp -r build moped && mv moped build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "ghp": "react-scripts build && gh-pages -d build"
