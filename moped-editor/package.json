@@ -1,7 +1,12 @@
 {
-  "name": "matx-react",
+  "name": "atd-moped",
   "version": "1.0.0",
+  "homepage": "/moped",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cityofaustin/atd-moped.git"
+  },
   "dependencies": {
     "@date-io/core": "^1.3.13",
     "@date-io/date-fns": "^1.3.6",
@@ -56,7 +61,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts build && cp _redirects build && cp -r build moped && mv moped build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "ghp": "react-scripts build && gh-pages -d build"

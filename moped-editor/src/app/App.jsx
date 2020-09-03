@@ -20,7 +20,7 @@ const App = () => {
       <Provider store={Store}>
         <MatxTheme>
           <Auth>
-            <Router history={history}>
+            <Router history={history} path={`${process.env.PUBLIC_URL}/`}>
               <AuthGuard>
                 <MatxLayout />
               </AuthGuard>

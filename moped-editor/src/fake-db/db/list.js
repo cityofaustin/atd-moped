@@ -8,8 +8,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Matx development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-2.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-2.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -19,8 +19,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Matx development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-2.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-2.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -30,8 +30,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Matx development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-3.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-3.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -41,8 +41,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Gull development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-2.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-2.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -52,8 +52,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Evalynn development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/iphone-1.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/iphone-1.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -63,8 +63,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Dexum development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-2.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-2.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -74,8 +74,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Matx development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-3.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-3.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     },
@@ -85,8 +85,8 @@ const ListDB = {
       userName: "ui lib",
       projectName: "Matx development",
       date: new Date().toLocaleString(),
-      projectImage: "/assets/images/products/headphone-3.jpg",
-      userImage: "/assets/images/face-1.jpg",
+      projectImage: "./assets/images/products/headphone-3.jpg",
+      userImage: "./assets/images/face-1.jpg",
       comment: 0,
       revision: 5
     }

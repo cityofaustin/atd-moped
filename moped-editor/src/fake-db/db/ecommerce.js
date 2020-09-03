@@ -5,7 +5,7 @@ const EcommerceDB = {
   productList: [
     {
       id: "323sa680b32497dsfdsgga21rt47",
-      imgUrl: "/assets/images/products/speaker-1.jpg",
+      imgUrl: "./assets/images/products/speaker-1.jpg",
       price: 324.0,
       title: "Bass Speaker Venue 8 - 8 - Intel Atom - 16GB - Black",
       category: "audio",
@@ -16,7 +16,7 @@ const EcommerceDB = {
     },
     {
       id: "323sa680b324976dfgga21rt47",
-      imgUrl: "/assets/images/products/speaker-2.jpg",
+      imgUrl: "./assets/images/products/speaker-2.jpg",
       price: 454.0,
       title: "Bass Speaker",
       category: "audio",
@@ -27,7 +27,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/headphone-1.jpg",
+      imgUrl: "./assets/images/products/headphone-1.jpg",
       price: 134.0,
       title: "Bass Speaker",
       category: "audio",
@@ -38,7 +38,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/headphone-2.jpg",
+      imgUrl: "./assets/images/products/headphone-2.jpg",
       price: 987.0,
       title: "Bit Bass Headphone",
       category: "audio",
@@ -49,7 +49,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/headphone-3.jpg",
+      imgUrl: "./assets/images/products/headphone-3.jpg",
       price: 870.0,
       title: "Sony Headphone",
       category: "audio",
@@ -60,7 +60,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/watch-1.jpg",
+      imgUrl: "./assets/images/products/watch-1.jpg",
       price: 23.0,
       title: "Comlion Watch",
       category: "fashion",
@@ -71,7 +71,7 @@ const EcommerceDB = {
     },
     {
       id: "323sa680b32497dfdfgga21rt47",
-      imgUrl: "/assets/images/products/speaker-2.jpg",
+      imgUrl: "./assets/images/products/speaker-2.jpg",
       price: 454.0,
       title: "Bass Speaker",
       category: "audio",
@@ -82,7 +82,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/headphone-4.jpg",
+      imgUrl: "./assets/images/products/headphone-4.jpg",
       price: 299.0,
       title: "Beats Headphone",
       category: "audio",
@@ -93,7 +93,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/iphone-1.jpg",
+      imgUrl: "./assets/images/products/iphone-1.jpg",
       price: 978.0,
       title: "Iphone 11 Max Pro",
       category: "cellphone",
@@ -104,7 +104,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/iphone-2.jpg",
+      imgUrl: "./assets/images/products/iphone-2.jpg",
       price: 12.0,
       title: "IPhone 11 Max Pro Case",
       category: "accessories",
@@ -115,7 +115,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/watch-1.jpg",
+      imgUrl: "./assets/images/products/watch-1.jpg",
       price: 23.0,
       title: "Comlion Watch",
       category: "fashion",
@@ -126,7 +126,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/watch-2.jpg",
+      imgUrl: "./assets/images/products/watch-2.jpg",
       price: 75.0,
       title: "Kurren Watch",
       category: "fashion",
@@ -137,7 +137,7 @@ const EcommerceDB = {
     },
     {
       id: shortId.generate(),
-      imgUrl: "/assets/images/products/iphone-1.jpg",
+      imgUrl: "./assets/images/products/iphone-1.jpg",
       price: 978.0,
       title: "Iphone 11 Max Pro",
       category: "cellphone",
@@ -229,17 +229,17 @@ const EcommerceDB = {
     {
       id: "1",
       name: "John Doe",
-      avatar: "/assets/images/face-7.jpg"
+      avatar: "./assets/images/face-7.jpg"
     },
     {
       id: "323sa680b3249760ea21rt47",
       name: "Frank Powell",
-      avatar: "/assets/images/faces/13.jpg"
+      avatar: "./assets/images/faces/13.jpg"
     },
     {
       id: "7863a6802ez0e277a0f98534",
       name: "John Doe",
-      avatar: "/assets/images/face-1.jpg"
+      avatar: "./assets/images/face-1.jpg"
     }
   ]
 };

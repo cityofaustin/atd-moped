@@ -54,7 +54,7 @@ class SignIn extends Component {
             <Grid container>
               <Grid item lg={5} md={5} sm={5} xs={12}>
                 <div className="p-8 flex justify-center items-center h-full">
-                  <img src="/assets/images/illustrations/dreamer.svg" alt="" />
+                  <img src="./assets/images/illustrations/dreamer.svg" alt="" />
                 </div>
               </Grid>
               <Grid item lg={7} md={7} sm={7} xs={12}>
