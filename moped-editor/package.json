@@ -1,7 +1,7 @@
 {
   "name": "atd-moped",
   "version": "1.0.0",
-  "homepage": "./",
+  "homepage": "/moped",
   "private": true,
   "repository": {
     "type": "git",
