@@ -162,15 +162,15 @@ def handler(event: dict, context: object) -> dict:
     :param object context: The aws context object
     :return dict:
     """
-    print("Function: ", context.function_name)
-    print("Request ID:", context.aws_request_id)
-    print("Event: ", json.dumps(event))
+    # print("Function: ", context.function_name)
+    # print("Request ID:", context.aws_request_id)
+    # print("Event: ", json.dumps(event))
 
     hasura_cognito_user_id = event["userName"]
     claims = load_claims(hasura_cognito_user_id)
 
-    print("User ID: ", hasura_cognito_user_id)
-    print("Claims: ", claims)
+    # print("User ID: ", hasura_cognito_user_id)
+    # print("Claims: ", claims)
 
     event["response"] = {
         "claimsOverrideDetails": {
