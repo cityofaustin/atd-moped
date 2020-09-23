@@ -138,10 +138,12 @@ def load_claims(user_id: str) -> dict:
     claims = retrieve_claims(user_id=user_id)
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     logger.info(f"load_claims: {claims}, fernet_key: {fernet_key[:8]}")
-    claims = json.loads(decrypt(
+    decrypted_claims = decrypt(
         fernet_key=fernet_key,
         content=claims
-    ))
+    )
+    logger.info(f"decrypted_claims: {decrypted_claims[:16]}")
+    claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = user_id
 
     return claims
