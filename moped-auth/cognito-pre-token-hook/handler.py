@@ -137,15 +137,12 @@ def load_claims(user_id: str) -> dict:
     """
     claims = retrieve_claims(user_id=user_id)
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
-    logger.info(f"load_claims: {claims}, fernet_key: {fernet_key[:8]}")
     decrypted_claims = decrypt(
         fernet_key=fernet_key,
         content=claims
     )
-    logger.info(f"decrypted_claims: {decrypted_claims[:16]}")
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = user_id
-
     return claims
 
 
@@ -166,6 +163,12 @@ def handler(event: dict, context: object) -> dict:
         hasura_cognito_user_id = event["userName"]
         claims = load_claims(hasura_cognito_user_id)
     except Exception:
+        """
+            After retrieving the exception name, value, and stacktrace,
+            we format it into a json-dumped string so all three appear
+            in one log message, with the keys automatically parsed
+            into fields.
+        """
         exception_type, exception_value, exception_traceback = sys.exc_info()
         traceback_string = traceback.format_exception(exception_type, exception_value, exception_traceback)
         err_msg = json.dumps({
@@ -176,7 +179,8 @@ def handler(event: dict, context: object) -> dict:
         logger.error(err_msg)
 
     logger.info(f"User ID: {hasura_cognito_user_id}")
-    logger.info(f"Claims: {json.dumps(claims)}")
+    # Let's not show the whole thing, we don't need to.
+    logger.info(f"Claims: {json.dumps(claims)[:16]}")
 
     event["response"] = {
         "claimsOverrideDetails": {
