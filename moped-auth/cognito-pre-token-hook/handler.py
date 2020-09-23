@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
-import os
+import os, sys
 import json
 import boto3
+import logging
+import traceback
 
 from cryptography.fernet import Fernet
 from botocore.exceptions import ClientError
@@ -10,6 +12,10 @@ from typing import Optional
 
 AWS_COGNITO_DYNAMO_TABLE_NAME = os.getenv("AWS_COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_NAME = os.getenv("AWS_COGNITO_DYNAMO_SECRET_NAME", None)
+
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def parse_key(aws_key_name: str, aws_key_json: str) -> Optional[str]:
@@ -144,15 +150,13 @@ def load_claims(user_id: str) -> dict:
     claims = retrieve_claims(user_id=user_id)
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
 
-    try:
-        claims = json.loads(decrypt(
-            fernet_key=fernet_key,
-            content=claims
-        ))
-        claims["x-hasura-user-id"] = user_id
-        return claims
-    except:
-        return {}
+    claims = json.loads(decrypt(
+        fernet_key=fernet_key,
+        content=claims
+    ))
+    claims["x-hasura-user-id"] = user_id
+
+    return claims
 
 
 def handler(event: dict, context: object) -> dict:
@@ -162,15 +166,25 @@ def handler(event: dict, context: object) -> dict:
     :param object context: The aws context object
     :return dict:
     """
-    print("Function: ", context.function_name)
-    print("Request ID:", context.aws_request_id)
-    print("Event: ", json.dumps(event))
+    logger.info(f"Function: {context.function_name}")
+    logger.info(f"Request ID: {context.aws_request_id}")
+    logger.info(f"Event: {json.dumps(event)}")
 
-    hasura_cognito_user_id = event["userName"]
-    claims = load_claims(hasura_cognito_user_id)
+    try:
+        hasura_cognito_user_id = event["userName"]
+        claims = load_claims(hasura_cognito_user_id)
+    except Exception:
+        exception_type, exception_value, exception_traceback = sys.exc_info()
+        traceback_string = traceback.format_exception(exception_type, exception_value, exception_traceback)
+        err_msg = json.dumps({
+            "errorType": exception_type.__name__,
+            "errorMessage": str(exception_value),
+            "stackTrace": traceback_string
+        })
+        logger.error(err_msg)
 
-    print("User ID: ", hasura_cognito_user_id)
-    print("Claims: ", claims)
+    logger.info(f"User ID: {hasura_cognito_user_id}")
+    logger.info(f"Claims: {json.dumps(claims)}")
 
     event["response"] = {
         "claimsOverrideDetails": {
