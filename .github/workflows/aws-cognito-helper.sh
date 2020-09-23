@@ -34,24 +34,12 @@ function bundle_function() {
 }
 
 #
-#
+# Retrieves the environment variables JSON stored in AWS
 #
 function generate_environment() {
-  FUNCTION_NAME=$1
-  AWS_COGNITO_HOOK_DESCRIPTION="AWS Cognito Hook Lambda: ${FUNCTION_NAME}";
-  AWS_COGNITO_HOOK_ENV="${WORKING_STAGE^^}";
-  jq -rc > handler_config.json <<CONFIG_TEMPLATE
-{
-  "Description": "$AWS_COGNITO_HOOK_DESCRIPTION",
-  "Environment": {
-    "Variables": {
-      "AWS_COGNITO_DYNAMO_TABLE_NAME": "$AWS_COGNITO_DYNAMO_TABLE_NAME",
-      "AWS_COGNITO_DYNAMO_SECRET_NAME": "$AWS_COGNITO_DYNAMO_SECRET_NAME",
-      "API_ENVIRONMENT": "$AWS_COGNITO_HOOK_ENV"
-      }
-  }
-}
-CONFIG_TEMPLATE
+  aws secretsmanager get-secret-value \
+  --secret-id "ATD_MOPED_COGNITO_HOOK_ENV_${WORKING_STAGE^^}" | \
+  jq -rc ".SecretString" > handler_config.json
 }
 
 #
