@@ -5,8 +5,7 @@ case "${BRANCH_NAME}" in
   export WORKING_STAGE="production"
   ;;
 *)
-  echo "PR Detected, resetting working stage"
-  export WORKING_STAGE="production"
+  export WORKING_STAGE="staging"
   ;;
 esac
 
