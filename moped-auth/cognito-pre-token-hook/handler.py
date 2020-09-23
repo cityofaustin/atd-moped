@@ -166,7 +166,7 @@ def handler(event: dict, context: object) -> dict:
     print("Request ID:", context.aws_request_id)
     print("Event: ", json.dumps(event))
 
-    hasura_cognito_user_id = event.request.userAttributes.sub
+    hasura_cognito_user_id = event.userName
     claims = load_claims(hasura_cognito_user_id)
 
     print("User ID: ", hasura_cognito_user_id)
