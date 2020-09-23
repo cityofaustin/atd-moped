@@ -6,7 +6,7 @@ name: "Build & Publish Cognito Hooks"
 on:
   push:
     branches:
-      - master
+      - main
       - production
     paths:
       - "moped-auth/**"
