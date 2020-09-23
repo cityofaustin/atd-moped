@@ -155,7 +155,7 @@ def load_claims(user_id: str) -> dict:
         content=claims
     ))
     claims["x-hasura-user-id"] = user_id
-
+    logger.info(f"load_claims: {json.dumps(claims)}, fernet_key: {fernet_key[:8]}")
     return claims
 
 
