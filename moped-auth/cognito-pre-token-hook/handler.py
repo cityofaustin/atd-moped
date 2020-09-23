@@ -25,10 +25,7 @@ def parse_key(aws_key_name: str, aws_key_json: str) -> Optional[str]:
     :param str aws_key_json: A json string to be parsed
     :return str:
     """
-    try:
-        return json.loads(aws_key_json)[aws_key_name]
-    except KeyError:
-        return None
+    return json.loads(aws_key_json)[aws_key_name]
 
 
 def get_secret(secret_name: str) -> Optional[str]:
@@ -101,10 +98,7 @@ def encrypt(fernet_key: str, content: str) -> Optional[str]:
     :return str: The encrypted string
     """
     cipher_suite = Fernet(fernet_key)
-    try:
-        return cipher_suite.encrypt(content.encode()).decode()
-    except:
-        return None
+    return cipher_suite.encrypt(content.encode()).decode()
 
 
 def decrypt(fernet_key: str, content: str) -> str:
@@ -115,10 +109,7 @@ def decrypt(fernet_key: str, content: str) -> str:
     :return str: The decrypted string
     """
     cipher_suite = Fernet(fernet_key)
-    try:
-        return cipher_suite.decrypt(content.encode()).decode()
-    except:
-        return None
+    return cipher_suite.decrypt(content.encode()).decode()
 
 
 def retrieve_claims(user_id: str) -> Optional[str]:
@@ -128,17 +119,14 @@ def retrieve_claims(user_id: str) -> Optional[str]:
     :return Optional[str]: The claims string (encrypted)
     """
     dynamodb = boto3.client('dynamodb', region_name="us-east-1")
-    try:
-        return dynamodb.get_item(
-            TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
-            Key={
-                "user_id": {
-                    "S": user_id
-                },
-            }
-        )["Item"]["claims"]["S"]
-    except KeyError:
-        return None
+    return dynamodb.get_item(
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Key={
+            "user_id": {
+                "S": user_id
+            },
+        }
+    )["Item"]["claims"]["S"]
 
 
 def load_claims(user_id: str) -> dict:
@@ -149,13 +137,13 @@ def load_claims(user_id: str) -> dict:
     """
     claims = retrieve_claims(user_id=user_id)
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
-
+    logger.info(f"load_claims: {claims}, fernet_key: {fernet_key[:8]}")
     claims = json.loads(decrypt(
         fernet_key=fernet_key,
         content=claims
     ))
     claims["x-hasura-user-id"] = user_id
-    logger.info(f"load_claims: {json.dumps(claims)}, fernet_key: {fernet_key[:8]}")
+
     return claims
 
 
@@ -170,6 +158,8 @@ def handler(event: dict, context: object) -> dict:
     logger.info(f"Request ID: {context.aws_request_id}")
     logger.info(f"Event: {json.dumps(event)}")
 
+    # Initialize the claims object
+    claims = {}
     try:
         hasura_cognito_user_id = event["userName"]
         claims = load_claims(hasura_cognito_user_id)
