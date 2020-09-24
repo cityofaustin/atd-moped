@@ -245,7 +245,7 @@ const EcommerceDB = {
 };
 
 const getDetailedCartList = uid => {
-  let cartList = EcommerceDB.cart.find(userCart => userCart.uid == uid).list;
+  let cartList = EcommerceDB.cart.find(userCart => userCart.uid).list;
   return cartList.map(product => ({
     amount: product.amount,
     ...EcommerceDB.productList.find(item => item.id === product.productId)
