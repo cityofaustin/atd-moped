@@ -13,11 +13,18 @@ echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
 #
+# Creates a virtual environment instance and activates it
+#
+function initialize_virtualenv() {
+  echo "Initializing Virtual Env for MOPED API: ${WORKING_STAGE^^} @ ${PWD})";
+  virtualenv venv;
+  source venv/bin/activate;
+}
+
+#
 # First, we need to create the python package by installing requirements
 #
 function install_requirements() {
-  echo "Installing AWS's CLI"
-  pip install awscli
   echo "Installing requirements..."
   pip install -r "./requirements/${WORKING_STAGE}.txt" --target ./package
 }
@@ -48,6 +55,7 @@ function deploy_moped_api() {
   echo "Updating MOPED API: ${WORKING_STAGE^^} @ ${PWD})";
   cd ./moped-api;
   echo "New current working directory: ${PWD}";
+  initialize_virtualenv;
   install_requirements;
   download_zappa_settings;
   update_lambda_api;
