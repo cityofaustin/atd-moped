@@ -8,8 +8,8 @@ on:
     branches:
       - main
       - production
-#    paths:
-#      - "moped-api/**"
+    paths:
+      - "moped-api/**"
 
 jobs:
   build:
