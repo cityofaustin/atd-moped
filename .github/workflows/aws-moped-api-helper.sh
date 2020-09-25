@@ -45,8 +45,9 @@ function update_lambda_api() {
 # Deploys all functions in the events directory
 #
 function deploy_moped_api() {
-  echo "Updating MOPED API: ${WORKING_STAGE^^}";
-
+  echo "Updating MOPED API: ${WORKING_STAGE^^} @ ${PWD})";
+  cd ./moped-api;
+  echo "New current working directory: ${PWD}";
   install_requirements;
   download_zappa_settings;
   update_lambda_api;
