@@ -2,24 +2,12 @@ import React from 'react';
 import { useForm, Controller } from "react-hook-form";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { Breadcrumb } from "matx";
-
 import { gql, useQuery } from "@apollo/client";
-
 import Select from 'react-select';
 
 
 const GetData = () => {
   const { handleSubmit, control } = useForm();
-
-//   const MY_QUERY_QUERY = gql`
-//   query MyQuery {($project_id: Int!)
-//     moped_project( where: { project_id: { _eq: $project_id } }) {
-//       current_phase
-//       current_status
-//       fiscal_year
-//     }
-//   }
-// `; 
 
 const MY_QUERY_QUERY = gql`
   query MyQuery {
@@ -58,7 +46,11 @@ return (
 <pre>{JSON.stringify(data, null, 2)}</pre>
                 
      <form onSubmit={handleSubmit(onSubmit)}
-        style={{padding: 40}}>
+        style={{
+          padding: 40,
+          margin: 80,
+          backgroundColor:"grey"
+          }}>
       <h4>Select Project by Project Id</h4>
       <Grid container spacing={2}>
       <Grid item xs={6}>
