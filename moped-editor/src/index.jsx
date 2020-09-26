@@ -4,13 +4,18 @@ import "babel-polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 import "./_index.scss";
-
 import * as serviceWorker from "./serviceWorker";
 import App from "./app/App";
 
 // cssVars();
 
-ReactDOM.render(<App />, document.getElementById("root"));
+
+
+ReactDOM.render(<App />,document.getElementById("root"));
+
+
+
+
 
 // for IE-11 support un-comment cssVars() and it's import in this file
 // and in MatxTheme file

@@ -22,6 +22,11 @@ export const navigations = [
         name: "New Project",
         path: "/forms/new-project",
         iconText: "B"
+      },
+      {
+        name: "Get Data",
+        path: "/forms/getData",
+        iconText: "B"
       }
     ]
   },
