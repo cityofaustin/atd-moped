@@ -1,6 +1,7 @@
 import "babel-polyfill";
 // import cssVars from "css-vars-ponyfill";
 
+import Amplify from "aws-amplify";
 import React from "react";
 import ReactDOM from "react-dom";
 import "./_index.scss";

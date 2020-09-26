@@ -31,8 +31,8 @@ const styles = theme => ({
 
 class SignIn extends Component {
   state = {
-    email: "watson@example.com",
-    password: "testpass",
+    email: "",
+    password: "",
     agreement: ""
   };
   handleChange = event => {
@@ -85,16 +85,10 @@ class SignIn extends Component {
                       validators={["required"]}
                       errorMessages={["this field is required"]}
                     />
-                    <FormControlLabel
-                      className="mb-3"
-                      name="agreement"
-                      onChange={this.handleChange}
-                      control={<Checkbox checked />}
-                      label="I have read and agree to the terms of service."
-                    />
                     <div className="flex flex-wrap items-center mb-4">
-                      <div className={classes.wrapper}>
+                      <div className={`${classes.wrapper} w-full`}>
                         <Button
+                          className={"w-full"}
                           variant="contained"
                           color="primary"
                           disabled={this.props.login.loading}
@@ -109,15 +103,6 @@ class SignIn extends Component {
                           />
                         )}
                       </div>
-                      <span className="mr-2 ml-5">or</span>
-                      <Button
-                        className="capitalize"
-                        onClick={() =>
-                          this.props.history.push("/session/signup")
-                        }
-                      >
-                        Sign up
-                      </Button>
                     </div>
                     <Button
                       className="text-primary"
