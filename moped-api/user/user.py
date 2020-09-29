@@ -16,6 +16,7 @@ def user_index() -> str:
     return jsonify({"message": "Hello from User! :)"})
 
 @user_blueprint.route("/list_users")
+@cognito_auth_required
 def user_list_users():
     # Check if requester is admin and is a valid user
     # Fetch list of users from AWS
@@ -24,6 +25,7 @@ def user_list_users():
         abort(403)
 
 @user_blueprint.route("/user/get_user/<id>")
+@cognito_auth_required
 def user_get_user(id):
     # Check if requester is admin and is a valid user
     # Fetch user from AWS
@@ -32,6 +34,7 @@ def user_get_user(id):
         abort(403)
 
 @user_blueprint.route("/user/create_user", methods=["POST"])
+@cognito_auth_required
 def user_create_user():
     # Check if requester is admin and is a valid user
     # Create user in AWS
@@ -40,6 +43,7 @@ def user_create_user():
         abort(403)
 
 @user_blueprint.route("/user/update_user/<id>", methods=["PUT"])
+@cognito_auth_required
 def user_update_user(id):
     # Check if requester is admin and is a valid user
     # Update user in AWS
@@ -48,6 +52,7 @@ def user_update_user(id):
         abort(403)
 
 @user_blueprint.route("/user/delete_user/<id>", methods=["DELETE"])
+@cognito_auth_required
 def user_delete_user(id):
     # Check if requester is admin and is a valid user
     # Delete user in AWS
