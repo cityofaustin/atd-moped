@@ -10,13 +10,15 @@ MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAG
 # Import Blueprints
 #
 from auth.auth import auth_blueprint
+from admin.admin import admin_blueprint
 
 app = Flask(__name__)
 
 #
 # Register Blueprints
 #
-app.register_blueprint(auth_blueprint, url_prefix='/auth')
+app.register_blueprint(auth_blueprint, url_prefix="/auth")
+app.register_blueprint(admin_blueprint, url_prefix="/admin")
 
 #
 # Cognito
@@ -36,16 +38,17 @@ cors = CORS(app)
 #
 # This should be just a health-check
 #
-@app.route('/')
+@app.route("/")
 def app_index() -> str:
     """
     Generates a simple health-check message.
     :return str:
     """
     now = datetime.datetime.now()
-    return jsonify({
-        "message": "MOPED API Available - Health Check - Available @ %s"
-        % now.strftime("%Y-%m-%d %H:%M:%S")
-    })
-
+    return jsonify(
+        {
+            "message": "MOPED API Available - Health Check - Available @ %s"
+            % now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
 
