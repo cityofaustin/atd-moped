@@ -2,6 +2,7 @@ import os, boto3
 from flask import Blueprint, jsonify
 from flask_cognito import cognito_auth_required, current_cognito_jwt
 from config import api_config
+from user.helpers import load_claims
 
 # Import our custom code
 from claims import normalize_claims, get_claims
@@ -46,13 +47,12 @@ def user_get_user(id):
     if is_valid_user:
         user_dict = {}
 
-        user_info_response = cognito_client.admin_get_user(
-            UserPoolId=USER_POOL, Username=id
-        )
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
 
-        user_roles_response = user_table.get_item(Key={"user_id": id}).get("Item", None)
-        user_dict.update(user_info_response)
-        user_dict.update(user_roles_response)
+        user_roles = load_claims(id)
+        user_dict.update(user_info)
+        user_dict.update(user_roles)
+
         return user_dict
     else:
         abort(403)
