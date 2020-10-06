@@ -18,6 +18,35 @@ AWS_COGNITO_DYNAMO_SECRET_NAME = api_config[MOPED_API_CURRENT_ENVIRONMENT][
 ]
 
 
+def is_valid_user(current_cognito_jwt):
+    user_dict = current_cognito_jwt._get_current_object()
+
+    valid_fields = [
+        "email",
+        "cognito:username",
+        "https://hasura.io/jwt/claims",
+        "email_verified",
+        "aud",
+    ]
+
+    user_email = user_dict.get("email", None)
+
+    # Check for valid fields
+    for field in valid_fields:
+        if user_dict.get(field, False) == False:
+            return False
+
+    # Check for verified email
+    if user_dict["email_verified"] != True:
+        return False
+
+    # Check email for austintexas.gov
+    if str(user_email).endswith("@austintexas.gov") is False:
+        return False
+
+    return True
+
+
 def parse_key(aws_key_name: str, aws_key_json: str) -> Optional[str]:
     """
     Parses a json string containing a key and returns the key
@@ -132,53 +161,3 @@ def load_claims(user_id: str) -> dict:
     claims["x-hasura-user-id"] = user_id
     return claims
 
-
-def handler(event: dict, context: object) -> dict:
-    """
-    Entrypoint for AWS Lambda
-    :param dict event: The aws event dictionary
-    :param object context: The aws context object
-    :return dict:
-    """
-    logger.info(f"Function: {context.function_name}")
-    logger.info(f"Request ID: {context.aws_request_id}")
-    logger.info(f"Event: {json.dumps(event)}")
-
-    # Initialize the claims object
-    claims = {}
-    try:
-        hasura_cognito_user_id = event["userName"]
-        claims = load_claims(hasura_cognito_user_id)
-    except Exception:
-        """
-            After retrieving the exception name, value, and stacktrace,
-            we format it into a json-dumped string so all three appear
-            in one log message, with the keys automatically parsed
-            into fields.
-        """
-        exception_type, exception_value, exception_traceback = sys.exc_info()
-        traceback_string = traceback.format_exception(
-            exception_type, exception_value, exception_traceback
-        )
-        err_msg = json.dumps(
-            {
-                "errorType": exception_type.__name__,
-                "errorMessage": str(exception_value),
-                "stackTrace": traceback_string,
-            }
-        )
-        logger.error(err_msg)
-
-    logger.info(f"User ID: {hasura_cognito_user_id}")
-    # Let's not show the whole thing, we don't need to.
-    logger.info(f"Claims: {json.dumps(claims)[:16]}")
-
-    event["response"] = {
-        "claimsOverrideDetails": {
-            "claimsToAddOrOverride": {
-                "https://hasura.io/jwt/claims": json.dumps(claims)
-            }
-        }
-    }
-
-    return event
