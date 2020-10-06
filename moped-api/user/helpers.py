@@ -47,6 +47,16 @@ def is_valid_user(current_cognito_jwt):
     return True
 
 
+def has_user_role(role, claims):
+    user_claims = claims.get("https://hasura.io/jwt/claims", {})
+    allowed_roles = user_claims.get("x-hasura-allowed-roles", False)
+
+    if allowed_roles != False:
+        if role in allowed_roles:
+            return True
+    return False
+
+
 def parse_key(aws_key_name: str, aws_key_json: str) -> Optional[str]:
     """
     Parses a json string containing a key and returns the key
