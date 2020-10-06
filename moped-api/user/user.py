@@ -10,10 +10,13 @@ user_blueprint = Blueprint("user_blueprint", __name__)
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
+TABLE_NAME = api_config[MOPED_API_CURRENT_ENVIRONMENT]["DYNAMO_DB_TABLE_NAME"]
 
 is_valid_user = True
 
 cognito_client = boto3.client("cognito-idp")
+dynamo_db = boto3.resource("dynamodb")
+user_table = dynamo_db.Table(TABLE_NAME)
 
 
 @user_blueprint.route("/")
@@ -41,8 +44,16 @@ def user_list_users():
 def user_get_user(id):
     # Check if requester is admin and is a valid user
     if is_valid_user:
-        response = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
-        return jsonify(response)
+        user_dict = {}
+
+        user_info_response = cognito_client.admin_get_user(
+            UserPoolId=USER_POOL, Username=id
+        )
+
+        user_roles_response = user_table.get_item(Key={"user_id": id}).get("Item", None)
+        user_dict.update(user_info_response)
+        user_dict.update(user_roles_response)
+        return user_dict
     else:
         abort(403)
 
