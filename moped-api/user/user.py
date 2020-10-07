@@ -1,6 +1,6 @@
 import os, boto3
 from flask import Blueprint, jsonify, abort
-from flask_cognito import cognito_auth_required, current_cognito_jwt
+from flask_cognito import cognito_auth_required, current_cognito_jwt, request
 from config import api_config
 from user.helpers import load_claims, is_valid_user, has_user_role
 
@@ -57,9 +57,28 @@ def user_get_user(id):
 @normalize_claims
 def user_create_user(claims):
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
-        return jsonify({"message": "Hello from create users! :)"})
-    # Create user in AWS
-    # return response
+        # TODO: Set how the user attributes will be formatted from the frontend
+        # - provide email as username and Cognito sets as email and generates UUID for username
+        #     [{
+        #   "Name": "email",
+        #   "Value": "<user email address>"
+        # }]
+        #         {
+        #     "email": "<user email address>"
+        # }
+        json_data = request.json
+        response = cognito_client.admin_create_user(
+            UserPoolId=USER_POOL, Username=json_data["email"],
+        )
+        # TODO: Set temp password as permanent pass
+        # TODO: Create user in Cognito
+        # Encrypt and add Hasura metadata to DynamoDB
+        # {
+        # "x-hasura-default-role": "user",
+        # "x-hasura-allowed-roles": ["user"],
+        # }
+        # return response
+        return jsonify(response)
     else:
         abort(403)
 
