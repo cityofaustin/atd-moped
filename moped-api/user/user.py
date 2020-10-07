@@ -85,6 +85,7 @@ def user_create_user(claims):
 
 # @user_blueprint.route("/update_user/<id>", methods=["PUT"])
 # @cognito_auth_required
+# @normalize_claims
 # def user_update_user(id):
 #     if is_valid_user(current_cognito_jwt) and has_user_role("admin", claims):
 #         return jsonify({"message": "Hello from update user! :)"})
@@ -94,12 +95,15 @@ def user_create_user(claims):
 #         abort(403)
 
 
-# @user_blueprint.route("/delete_user/<id>", methods=["DELETE"])
-# @cognito_auth_required
-# def user_delete_user(id):
-#     if is_valid_user(current_cognito_jwt) and has_user_role("admin", claims):
-#         return jsonify({"message": "Hello from delete user! :)"})
-#     # Delete user in AWS
-#     # return response
-#     else:
-#         abort(403)
+@user_blueprint.route("/delete_user/<id>", methods=["DELETE"])
+@cognito_auth_required
+@normalize_claims
+def user_delete_user(id, claims):
+    if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+        response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+
+        return response
+    # Delete user in AWS
+    # return response
+    else:
+        abort(403)
