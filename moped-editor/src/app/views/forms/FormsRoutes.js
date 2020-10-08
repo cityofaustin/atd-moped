@@ -14,8 +14,12 @@ const formsRoutes = [
     component: React.lazy(() => import("./NewProject"))
   },
   {
-    path: "/forms/getData",
-    component: React.lazy(() => import("./getData"))
+    path: "/forms/addStaff",
+    component: React.lazy(() => import("./addStaff"))
+  },
+  {
+    path: "/forms/DefineProject",
+    component: React.lazy(() => import("./DefineProject"))
   }
 ];
 

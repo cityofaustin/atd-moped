@@ -24,8 +24,8 @@ export const navigations = [
         iconText: "B"
       },
       {
-        name: "Get Data",
-        path: "/forms/getData",
+        name: "Add Staff",
+        path: "/forms/addStaff",
         iconText: "B"
       }
     ]

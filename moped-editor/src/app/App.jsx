@@ -12,7 +12,7 @@ import { Store } from "./redux/Store";
 import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 import AuthGuard from "./auth/AuthGuard";
- import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
  
 
 
