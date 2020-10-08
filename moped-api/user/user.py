@@ -6,7 +6,7 @@ from config import api_config
 
 # Import our custom code
 from claims import normalize_claims, get_claims
-from user.helpers import load_claims, is_valid_user, has_user_role
+from user.helpers import load_claims, set_claims, is_valid_user, has_user_role
 
 user_blueprint = Blueprint("user_blueprint", __name__)
 
@@ -58,10 +58,11 @@ def user_get_user(id):
 @normalize_claims
 def user_create_user(claims):
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+
         try:
             json_data = request.json
             password = json_data["password"]
-            # Provide email as username, if valid email Cognito sets as email and generates UUID for username
+            # Provide email as username, if valid email, Cognito sets as email and generates UUID for username
             response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
                 Username=json_data["email"],
@@ -81,11 +82,14 @@ def user_create_user(claims):
             Permanent=True,
         )
 
-        # Encrypt and add Hasura metadata to DynamoDB
-        # {
-        # "x-hasura-default-role": "user",
-        # "x-hasura-allowed-roles": ["user"],
-        # }
+        # Encrypt and set encrypted Hasura metadata in DynamoDB
+        user_claims = {
+            "x-hasura-user-id": cognito_username,
+            "x-hasura-default-role": "user",
+            "x-hasura-allowed-roles": json_data["roles"],
+        }
+        set_claims(cognito_username, user_claims)
+
         return jsonify(response)
     else:
         abort(403)
