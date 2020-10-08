@@ -171,3 +171,19 @@ def load_claims(user_id: str) -> dict:
     claims["x-hasura-user-id"] = user_id
     return claims
 
+
+def set_claims(user_id: str, claims: dict):
+    """
+    Sets claims in DynamoDB
+    :param str user_id: The user id to set the claims for
+    :return [str]: The claims string (encrypted)
+    """
+    fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
+    claims_str = json.dumps(claims)
+    encrypted_claims = encrypt(fernet_key=fernet_key, content=claims_str)
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    dynamodb.put_item(
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Item={"user_id": {"S": user_id}, "claims": {"S": encrypted_claims}},
+    )
+
