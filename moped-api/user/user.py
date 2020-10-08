@@ -43,8 +43,8 @@ def user_get_user(id):
         user_dict = {}
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
-
         user_roles = load_claims(id)
+
         user_dict.update(user_info)
         user_dict.update(user_roles)
 
@@ -58,37 +58,34 @@ def user_get_user(id):
 @normalize_claims
 def user_create_user(claims):
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
-        # TODO: Set how the user attributes will be formatted from the frontend
-        # - provide email as username and Cognito sets as email and generates UUID for username
-        #     [{
-        #   "Name": "email",
-        #   "Value": "<user email address>"
-        # }]
-        #         {
-        #     "email": "<user email address>"
-        # }
         try:
             json_data = request.json
+            password = json_data["password"]
+            # Provide email as username, if valid email Cognito sets as email and generates UUID for username
             response = cognito_client.admin_create_user(
-                UserPoolId=USER_POOL, Username=json_data["email"],
+                UserPoolId=USER_POOL,
+                Username=json_data["email"],
+                TemporaryPassword=password,
             )
         except cognito_client.exceptions.UsernameExistsException as e:
             return jsonify(e.response)
         except cognito_client.exceptions.InvalidPasswordException as e:
             return jsonify(e.response)
-            # if e.exceptions["Error"]["Code"] == "UsernameExistsException":
-            #     print("User already exists")
-            #     return jsonify({"error": f"{e}"})
-            # else:
-            #     return jsonify(e.response)
-        # TODO: Set temp password as permanent pass
-        # TODO: Create user in Cognito
+
+        # Temporary password is valid, now make it permanent
+        cognito_username = response["User"]["Username"]
+        cognito_client.admin_set_user_password(
+            UserPoolId=USER_POOL,
+            Username=cognito_username,
+            Password=password,
+            Permanent=True,
+        )
+
         # Encrypt and add Hasura metadata to DynamoDB
         # {
         # "x-hasura-default-role": "user",
         # "x-hasura-allowed-roles": ["user"],
         # }
-        # return response
         return jsonify(response)
     else:
         abort(403)
@@ -114,7 +111,5 @@ def user_delete_user(id, claims):
         response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
 
         return response
-    # Delete user in AWS
-    # return response
     else:
         abort(403)
