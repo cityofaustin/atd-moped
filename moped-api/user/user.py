@@ -1,11 +1,12 @@
 import os, boto3
+import botocore.exceptions
 from flask import Blueprint, jsonify, abort
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
 from config import api_config
-from user.helpers import load_claims, is_valid_user, has_user_role
 
 # Import our custom code
 from claims import normalize_claims, get_claims
+from user.helpers import load_claims, is_valid_user, has_user_role
 
 user_blueprint = Blueprint("user_blueprint", __name__)
 
@@ -69,10 +70,20 @@ def user_create_user(claims):
         #         {
         #     "email": "<user email address>"
         # }
-        json_data = request.json
-        response = cognito_client.admin_create_user(
-            UserPoolId=USER_POOL, Username=json_data["email"],
-        )
+        try:
+            json_data = request.json
+            response = cognito_client.admin_create_user(
+                UserPoolId=USER_POOL, Username=json_data["email"],
+            )
+        except cognito_client.exceptions.UsernameExistsException as e:
+            return jsonify(e.response)
+        except cognito_client.exceptions.InvalidPasswordException as e:
+            return jsonify(e.response)
+            # if e.exceptions["Error"]["Code"] == "UsernameExistsException":
+            #     print("User already exists")
+            #     return jsonify({"error": f"{e}"})
+            # else:
+            #     return jsonify(e.response)
         # TODO: Set temp password as permanent pass
         # TODO: Create user in Cognito
         # Encrypt and add Hasura metadata to DynamoDB
@@ -86,16 +97,16 @@ def user_create_user(claims):
         abort(403)
 
 
-# @user_blueprint.route("/update_user/<id>", methods=["PUT"])
-# @cognito_auth_required
-# @normalize_claims
-# def user_update_user(id):
-#     if is_valid_user(current_cognito_jwt) and has_user_role("admin", claims):
-#         return jsonify({"message": "Hello from update user! :)"})
-#     # Update user in AWS
-#     # return response
-#     else:
-#         abort(403)
+@user_blueprint.route("/update_user/<id>", methods=["PUT"])
+@cognito_auth_required
+@normalize_claims
+def user_update_user(id):
+    if is_valid_user(current_cognito_jwt) and has_user_role("admin", claims):
+        return jsonify({"message": "Hello from update user! :)"})
+    # Update user in AWS
+    # return response
+    else:
+        abort(403)
 
 
 @user_blueprint.route("/delete_user/<id>", methods=["DELETE"])
