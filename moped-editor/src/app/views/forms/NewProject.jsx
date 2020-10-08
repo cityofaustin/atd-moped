@@ -1,16 +1,47 @@
 import React from 'react';
 import { useForm, Controller } from "react-hook-form";
-import { TextField, Button, Grid, Icon } from "@material-ui/core";
+import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Breadcrumb } from "matx";
-import Select from "react-select";
-import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 
 const NewProject = () => {
 
   const { register, handleSubmit, setValue, control } = useForm();
 
+  const PHASES_QUERY = gql`
+  query Phases {
+    moped_phases(order_by: {phase_name: asc}) {
+      phase_name
+    }
+  }
+`;
+
+const STATUS_QUERY = gql`
+  query Status {
+    moped_status(order_by: {status_name: asc}) {
+      status_name
+    }
+  }
+`;
+
+const FISCAL_QUERY = gql`
+  query Fiscal {
+    moped_city_fiscal_years(order_by: {fiscal_year_value: asc}) {
+      fiscal_year_value
+    }
+  }
+`;
+
+const PRIORITY_QUERY = gql`
+  query Priority {
+    moped_proj_phases(order_by: {phase_priority: asc}) {
+      phase_priority
+    }
+  }
+`;
+
   const addNewProject = gql `
-  mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $project_priority: String!="", $current_status: String!="", $eCapris_id: bpchar!="", $fiscal_year: String!="", $capitally_funded: Boolean!="", $start_date: date="") {
+  mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $project_priority: Int!="", $current_status: String!="", $eCapris_id: bpchar!="", $fiscal_year: String!="", $capitally_funded: Boolean!="", $start_date: date="") {
     insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, project_priority: $project_priority, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year, capitally_funded: $capitally_funded, start_date: $start_date }) {
       affected_rows
       returning {
@@ -37,10 +68,10 @@ const NewProject = () => {
     let eCapris_id=data.eCaprisId;
     let capitally_funded=data.capitalFunded;
     let start_date=data.date;
-    let current_phase=JSON.stringify(data.Phase.value);
-    let project_priority=JSON.stringify(data.Priority.value);
-    let current_status=JSON.stringify(data.Status.value);
-    let fiscal_year=JSON.stringify(data.FiscalYear.value);
+    let current_phase=data.Phase;
+    let project_priority=data.Priority;
+    let current_status=data.Status;
+    let fiscal_year=data.FiscalYear;
     addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, project_priority, fiscal_year, capitally_funded, start_date}});    
   };
 
@@ -51,6 +82,26 @@ const NewProject = () => {
   React.useEffect(() => {
     register("date"); // custom register date input
   }, [register])
+
+  const { loading: phaseLoading, error: phaseError, data: phases, onPhaseSelected} = useQuery(PHASES_QUERY);
+
+  const { loading: statusLoading, error: statusError, data: statuses, onStatusSelected} = useQuery(STATUS_QUERY);
+
+  const { loading: fiscalLoading, error: fiscalError, data: fiscal, onFiscalSelected} = useQuery(FISCAL_QUERY);
+
+  const { loading: priorityLoading, error: priorityError, data: priorities, onPrioritySelected} = useQuery(PRIORITY_QUERY);
+
+  if (phaseLoading) return 'Loading...';
+  if (phaseError) return `Error! ${phaseError.message}`;
+
+  if (statusLoading) return 'Loading...';
+  if (statusError) return `Error! ${statusError.message}`;
+
+  if (fiscalLoading) return 'Loading...';
+  if (fiscalError) return `Error! ${fiscalError.message}`;
+
+  if (priorityLoading) return 'Loading...';
+  if (priorityError) return `Error! ${priorityError.message}`;
 
   return (
    
@@ -65,38 +116,38 @@ const NewProject = () => {
         style={{padding: 10}}>
       <h4>Add A Project</h4>
       <Grid container spacing={2}>
+
       <Grid item xs={6}> 
         <TextField 
-        inputRef={register} 
-        label="Project Name" 
-        name="newProject"
-        required="true"
-        variant="standard"
-        setValue={setValue}
+          inputRef={register} 
+          label="Project Name" 
+          name="newProject"
+          required="true"
+          variant="standard"
         />
       </Grid>
        
       <Grid item xs={6}>
         <TextField 
-        inputRef={register} 
-        label="Project Description" 
-        name="ProjDesc"
-        required="true"
-        multiline="true"
-        variant="standard"
+          inputRef={register} 
+          label="Project Description" 
+          name="ProjDesc"
+          required="true"
+          multiline="true"
+          variant="standard"
         />
       </Grid>
             
       <Grid item xs={6}>
         <TextField
-        inputRef={register} 
-        name="date"
-        label="Start Date"
-        type="date"
-        variant="standard"
-        defaultValue="2020-01-01"
-        onChange={handleChange}
-        InputLabelProps={{
+          inputRef={register} 
+          name="date"
+          label="Start Date"
+          type="date"
+          variant="standard"
+          defaultValue="2020-01-01"
+          onChange={handleChange}
+          InputLabelProps={{
         shrink: true,
         }}
         />
@@ -105,92 +156,98 @@ const NewProject = () => {
 
       <Grid container spacing={2}>
       <Grid item  xs={6}>
+        <InputLabel>Fiscal Year
         <Controller
-        label="Fiscal Year"
-        placeholder="Fiscal Year"
-        defaultValue="2020-21"
-        className="selects"
-        name="FiscalYear"
-        required
-        as={Select}
-        options={[
-          { value: "2020-21", label: "2020-21" },
-          { value: "2021-22", label: "2021-22" },
-          { value: "2022-23", label: "2022-23" }
-        ]}
-        control={control}
-        isClearable
-        rules={{ required: true }} 
-        />
+          as={<Select 
+            ref={register}
+            name="FiscalYear"  
+            onChange= {onFiscalSelected}>
+            {fiscal.moped_city_fiscal_years.map(fiscal => (
+              <MenuItem 
+                key={fiscal.fiscal_year_value} 
+                value={fiscal.fiscal_year_value}>
+                {fiscal.fiscal_year_value}
+              </MenuItem>
+            ))}
+          </Select>}
+            name="FiscalYear"
+            control={control}
+          />
+        </InputLabel>
       </Grid>
 
       <Grid item xs={6}>
-        <Controller
-        label="Status"
-        placeholder="Current Status"
-        defaultValue="Active"
-        className="selects"
-        name="Status"
-        required
-        as={Select}
-        options={[
-          { value: "Active", label: "Active" },
-          { value: "InProgress", label: "In Progress" },
-          { value: "Complete", label: "Complete" }
-        ]}
-        control={control}
-        isClearable
-        rules={{ required: true }}
-        />
+        <InputLabel>Current Status
+        <Controller 
+          as={<Select 
+            name="Status"  
+            ref={register} 
+            onChange= {onStatusSelected}>
+            {statuses.moped_status.map(status => (
+              <MenuItem key={status.status_name} value={status.status_name}>
+              {status.status_name}
+              </MenuItem>
+            ))}
+          </Select>}
+          name="Status"
+          control={control}
+          />
+        </InputLabel> 
       </Grid>
        
       <Grid item xs={6}>
-         <Controller
-        label="Phase"
-        placeholder=" Current Phase"
-        defaultValue="Design"
-        className="selects"
-        name="Phase"
-        required
-        as={Select}
-        options={[
-          { value: "Design", label: "Design" },
-          { value: "Construction", label: "Construction" },
-          { value: "Complete", label: "Complete" }
-        ]}
-        control={control}
-        isClearable
-        rules={{ required: true }}
-        />
+        <InputLabel>Current Phase 
+        <Controller
+          as={<Select 
+            name="Phase"  
+            ref={register} 
+            onChange= {onPhaseSelected}>
+            {phases.moped_phases.map(phase => (
+              <MenuItem 
+                key={phase.phase_name} 
+                value={phase.phase_name}>
+                {phase.phase_name}
+              </MenuItem>
+            ))}
+          </Select>}
+          name="Phase"
+          control={control}
+          />
+        </InputLabel>   
       </Grid>
       
-      <Grid item xs={6}>
-      <Controller
-        label="Priority"
-        className="selects"
-        placeholder="Priority"
-        defaultValue="Medium"
-        name="Priority"
-        required
-        as={Select}
-        options={[
-          { value: "Low", label: "Low" },
-          { value: "Medium", label: "Medium" },
-          { value: "High", label: "High" }
-        ]}
-        control={control}
-        isClearable
-        rules={{ required: true }}
-        />
-       </Grid>
-       </Grid>
+     <Grid item xs={6}>
+        <InputLabel>Priority 
+        <Controller
+         as={<Select 
+            name="Priority" 
+            ref={register} 
+            onChange= {onPrioritySelected}>
+            {priorities.moped_proj_phases.map(priority => (
+              <MenuItem 
+                key={priority.phase_priority} 
+                value={priority.phase_priority}>
+                {priority.phase_priority}
+              </MenuItem>
+            ))}
+          </Select>}
+          name="Priority"
+          control={control}
+          /> 
+        </InputLabel> 
+      </Grid>
+      </Grid> 
 
-       <Grid container spacing={2}>
-       <Grid item xs={6}>
-        <label className="checkLabel">
-        <input type="checkbox" name="capitalFunded" ref={register} className="check" />
-        Capitally Funded
-        </label>
+      <Grid container spacing={2}>
+      <Grid item xs={6}>
+        <InputLabel>
+          <input 
+            type="checkbox" 
+            name="capitalFunded" 
+            ref={register} 
+            />
+            Capitally Funded
+        </InputLabel>
       </Grid>
 
       <Grid item xs={6}>
@@ -204,7 +261,10 @@ const NewProject = () => {
       </Grid>
        
       <Grid item xs={6}>
-        <Button color="primary" variant="contained" type="submit">
+        <Button 
+          color="primary" 
+          variant="contained" 
+          type="submit">
         <Icon>send</Icon>
         <span className="pl-2 capitalize">Submit</span>
         </Button>
@@ -216,6 +276,5 @@ const NewProject = () => {
 }
 
 
-
-
 export default NewProject;
+
