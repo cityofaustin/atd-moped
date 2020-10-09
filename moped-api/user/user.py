@@ -6,7 +6,13 @@ from config import api_config
 
 # Import our custom code
 from claims import normalize_claims, get_claims
-from user.helpers import load_claims, put_claims, is_valid_user, has_user_role
+from user.helpers import (
+    load_claims,
+    put_claims,
+    format_claims,
+    is_valid_user,
+    has_user_role,
+)
 
 user_blueprint = Blueprint("user_blueprint", __name__)
 
@@ -88,12 +94,9 @@ def user_create_user(claims):
             Permanent=True,
         )
 
-        # Encrypt and set encrypted Hasura metadata in DynamoDB
-        user_claims = {
-            "x-hasura-user-id": cognito_username,
-            "x-hasura-default-role": "user",
-            "x-hasura-allowed-roles": json_data["roles"],
-        }
+        # Encrypt and set Hasura metadata in DynamoDB
+        roles = json_data["roles"]
+        user_claims = format_claims(cognito_username, roles)
         put_claims(cognito_username, user_claims)
 
         return jsonify(response)
@@ -107,19 +110,23 @@ def user_create_user(claims):
 def user_update_user(id, claims):
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
         json_data = request.json
+        roles = json_data.get("roles", None)
 
         updated_attributes = []
-        for name, value in json_data.items() if name != "roles":
-            updated_attribute = {"Name": name, "Value": value}
-            updated_attributes.append(updated_attribute)
+        for name, value in json_data.items():
+            if name != "roles":
+                updated_attribute = {"Name": name, "Value": value}
+                updated_attributes.append(updated_attribute)
 
         response = cognito_client.admin_update_user_attributes(
             UserPoolId=USER_POOL, Username=id, UserAttributes=updated_attributes,
         )
 
+        if roles:
+            user_claims = format_claims(id, roles)
+            put_claims(id, user_claims)
+
         return jsonify(response)
-    # Update user in AWS
-    # return response
     else:
         abort(403)
 

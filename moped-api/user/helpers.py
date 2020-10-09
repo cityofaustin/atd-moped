@@ -172,6 +172,20 @@ def load_claims(user_id: str) -> dict:
     return claims
 
 
+def format_claims(user_id: str, roles: list) -> dict:
+    """
+    Formats claims to prepare for encrypting and putting in DynamoDB
+    :param str user_id: The user id to retrieve the claims for
+    :param list roles: The roles to set as Hasura allowed roles
+    :return dict: The claims
+    """
+    return {
+        "x-hasura-user-id": user_id,
+        "x-hasura-default-role": "user",
+        "x-hasura-allowed-roles": roles,
+    }
+
+
 def put_claims(user_id: str, claims: dict):
     """
     Sets claims in DynamoDB
