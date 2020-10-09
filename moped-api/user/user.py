@@ -1,5 +1,6 @@
 import os, boto3
 import botocore.exceptions
+from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
 from config import api_config
@@ -65,16 +66,24 @@ def user_create_user(claims):
         try:
             json_data = request.json
             password = json_data["password"]
+            email = json_data["email"]
             # Provide email as username, if valid email, Cognito sets as email and generates UUID for username
             response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
-                Username=json_data["email"],
+                Username=email,
                 TemporaryPassword=password,
+                UserAttributes=[
+                    {"Name": "email", "Value": email},
+                    {"Name": "email_verified", "Value": "true"},
+                ],
             )
-        except cognito_client.exceptions.UsernameExistsException as e:
-            return jsonify(e.response)
-        except cognito_client.exceptions.InvalidPasswordException as e:
-            return jsonify(e.response)
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "UsernameExistsException":
+                return jsonify(e.response)
+            elif e.response["Error"]["Code"] == "InvalidPasswordException":
+                return jsonify(e.response)
+            else:
+                return jsonify(e.response)
 
         # Temporary password is valid, now make it permanent
         cognito_username = response["User"]["Username"]
@@ -85,7 +94,7 @@ def user_create_user(claims):
             Permanent=True,
         )
 
-        # Encrypt and set encrypted Hasura metadata in DynamoDB
+        # Encrypt and set Hasura metadata in DynamoDB
         user_claims = {
             "x-hasura-user-id": cognito_username,
             "x-hasura-default-role": "user",
