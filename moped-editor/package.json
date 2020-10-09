@@ -35,7 +35,6 @@
     "graphql": "^15.3.0",
     "history": "^4.10.0",
     "lodash": "^4.17.15",
-    "material-table": "^1.69.1",
     "node-sass": "^4.13.1",
     "notistack": "^0.8.8",
     "prop-types": "^15.7.2",
