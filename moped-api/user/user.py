@@ -36,18 +36,26 @@ def user_index() -> str:
 
 @user_blueprint.route("/list_users")
 @cognito_auth_required
-def user_list_users():
+def user_list_users() -> str:
+    """
+    Returns users in user pool
+    :return str:
+    """
     if is_valid_user(current_cognito_jwt):
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
         user_list = jsonify(user_response["Users"])
-        return user_list
+        return jsonify(user_list)
     else:
         abort(403)
 
 
 @user_blueprint.route("/get_user/<id>")
 @cognito_auth_required
-def user_get_user(id):
+def user_get_user(id: str) -> str:
+    """
+    Returns user details
+    :return str:
+    """
     if is_valid_user(current_cognito_jwt):
         user_dict = {}
 
@@ -57,7 +65,7 @@ def user_get_user(id):
         user_dict.update(user_info)
         user_dict.update(user_roles)
 
-        return user_dict
+        return jsonify(user_dict)
     else:
         abort(403)
 
@@ -65,7 +73,11 @@ def user_get_user(id):
 @user_blueprint.route("/create_user", methods=["POST"])
 @cognito_auth_required
 @normalize_claims
-def user_create_user(claims):
+def user_create_user(claims: list) -> str:
+    """
+    Returns created user details
+    :return str:
+    """
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
 
         try:
@@ -114,7 +126,11 @@ def user_create_user(claims):
 @user_blueprint.route("/update_user/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_update_user(id, claims):
+def user_update_user(id: str, claims: list) -> str:
+    """
+    Returns updated user details
+    :return str:
+    """
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
         json_data = request.json
         roles = json_data.get("roles", None)
@@ -141,10 +157,14 @@ def user_update_user(id, claims):
 @user_blueprint.route("/delete_user/<id>", methods=["DELETE"])
 @cognito_auth_required
 @normalize_claims
-def user_delete_user(id, claims):
+def user_delete_user(id: str, claims: list) -> str:
+    """
+    Returns created user details
+    :return str:
+    """
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
         response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
 
-        return response
+        return jsonify(response)
     else:
         abort(403)
