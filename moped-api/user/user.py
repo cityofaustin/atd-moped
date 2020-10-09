@@ -1,5 +1,4 @@
 import os, boto3
-import botocore.exceptions
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
@@ -7,7 +6,7 @@ from config import api_config
 
 # Import our custom code
 from claims import normalize_claims, get_claims
-from user.helpers import load_claims, set_claims, is_valid_user, has_user_role
+from user.helpers import load_claims, put_claims, is_valid_user, has_user_role
 
 user_blueprint = Blueprint("user_blueprint", __name__)
 
@@ -67,7 +66,8 @@ def user_create_user(claims):
             json_data = request.json
             password = json_data["password"]
             email = json_data["email"]
-            # Provide email as username, if valid email, Cognito sets as email and generates UUID for username
+
+            # Provide email as username, if valid email, Cognito generates UUID for username
             response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
                 Username=email,
@@ -77,6 +77,7 @@ def user_create_user(claims):
                     {"Name": "email_verified", "Value": "true"},
                 ],
             )
+
         except ClientError as e:
             if e.response["Error"]["Code"] == "UsernameExistsException":
                 return jsonify(e.response)
@@ -100,7 +101,7 @@ def user_create_user(claims):
             "x-hasura-default-role": "user",
             "x-hasura-allowed-roles": json_data["roles"],
         }
-        set_claims(cognito_username, user_claims)
+        put_claims(cognito_username, user_claims)
 
         return jsonify(response)
     else:
@@ -110,9 +111,20 @@ def user_create_user(claims):
 @user_blueprint.route("/update_user/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_update_user(id):
-    if is_valid_user(current_cognito_jwt) and has_user_role("admin", claims):
-        return jsonify({"message": "Hello from update user! :)"})
+def user_update_user(id, claims):
+    if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+        json_data = request.json
+
+        updated_attributes = []
+        for name, value in json_data.items() if name != "roles":
+            updated_attribute = {"Name": name, "Value": value}
+            updated_attributes.append(updated_attribute)
+
+        response = cognito_client.admin_update_user_attributes(
+            UserPoolId=USER_POOL, Username=id, UserAttributes=updated_attributes,
+        )
+
+        return jsonify(response)
     # Update user in AWS
     # return response
     else:

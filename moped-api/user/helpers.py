@@ -172,7 +172,7 @@ def load_claims(user_id: str) -> dict:
     return claims
 
 
-def set_claims(user_id: str, claims: dict):
+def put_claims(user_id: str, claims: dict):
     """
     Sets claims in DynamoDB
     :param str user_id: The user id to set the claims for
