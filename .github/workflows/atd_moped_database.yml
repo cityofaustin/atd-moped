@@ -8,10 +8,8 @@ on:
     branches:
       - main
       - production
-      - 4106-sg-hasuradb
     paths:
       - "moped-database/**"
-      - ".github/workflows/**"
 
 jobs:
   apply:
