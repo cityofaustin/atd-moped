@@ -1,0 +1,105 @@
+- table:
+    schema: public
+    name: moped_categories
+- table:
+    schema: public
+    name: moped_city_fiscal_years
+- table:
+    schema: public
+    name: moped_coa_staff
+- table:
+    schema: public
+    name: moped_components
+- table:
+    schema: public
+    name: moped_entity
+- table:
+    schema: public
+    name: moped_fund_opp
+- table:
+    schema: public
+    name: moped_fund_source_cat
+- table:
+    schema: public
+    name: moped_fund_sources
+- table:
+    schema: public
+    name: moped_group
+- table:
+    schema: public
+    name: moped_milestones
+- table:
+    schema: public
+    name: moped_phases
+- table:
+    schema: public
+    name: moped_proj_categories
+- table:
+    schema: public
+    name: moped_proj_communication
+- table:
+    schema: public
+    name: moped_proj_components
+- table:
+    schema: public
+    name: moped_proj_dates
+- table:
+    schema: public
+    name: moped_proj_entities
+- table:
+    schema: public
+    name: moped_proj_financials
+- table:
+    schema: public
+    name: moped_proj_fiscal_years
+- table:
+    schema: public
+    name: moped_proj_fund_opp
+- table:
+    schema: public
+    name: moped_proj_fund_source
+- table:
+    schema: public
+    name: moped_proj_groups
+- table:
+    schema: public
+    name: moped_proj_location
+- table:
+    schema: public
+    name: moped_proj_milestones
+- table:
+    schema: public
+    name: moped_proj_notes
+- table:
+    schema: public
+    name: moped_proj_partners
+- table:
+    schema: public
+    name: moped_proj_personnel
+- table:
+    schema: public
+    name: moped_proj_phases
+- table:
+    schema: public
+    name: moped_proj_sponsors
+- table:
+    schema: public
+    name: moped_proj_status_history
+- table:
+    schema: public
+    name: moped_proj_status_notes
+- table:
+    schema: public
+    name: moped_proj_timeline
+- table:
+    schema: public
+    name: moped_project
+- table:
+    schema: public
+    name: moped_project_roles
+- table:
+    schema: public
+    name: moped_status
+- table:
+    schema: public
+    name: moped_workgroup
