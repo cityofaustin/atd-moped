@@ -36,8 +36,6 @@ function download_hasura_settings() {
 function run_migration() {
   echo "----- MIGRATIONS STARTED -----";
   hasura version;
-  echo "Migration Endpoint";
-  head -n 2 ./config.yaml;
   echo "Applying migration";
 #  hasura migrate apply;
   echo "Applying metadata";
