@@ -47,6 +47,8 @@ function run_migration() {
 # Controls the migration process
 #
 function run_migration_process() {
+  cd ./moped-database;
+  echo "Running migration process @ ${PWD}"
   download_hasura_settings;
   run_migration;
 }
