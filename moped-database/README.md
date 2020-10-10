@@ -328,3 +328,7 @@ of your Hasura project at the /hasura-metadata path of this Docker
 container the container’s entry point script will apply the metadata
 before starting the server.
 
+## Under Construction
+
+This is a living document, it is being updated frequently. Come
+back soon for more updates.
