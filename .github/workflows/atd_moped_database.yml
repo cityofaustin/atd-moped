@@ -26,14 +26,14 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
       # Then install the AWC CLI tools & boto3
-      - name: "Install AWS Cli"
+      - name: "Install AWS Cli & Hasura CLI"
         run: |
           sudo apt-get install python3-setuptools
-          pip3 install awscli boto3 zappa virtualenv
+          pip3 install awscli virtualenv
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
       # Run the shell commands using the AWS environment variables
-      - name: "Build"
+      - name: "Apply"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
