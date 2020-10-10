@@ -37,9 +37,9 @@ function run_migration() {
   echo "----- MIGRATIONS STARTED -----";
   hasura version;
   echo "Applying migration";
-#  hasura migrate apply;
+  hasura migrate apply;
   echo "Applying metadata";
-#  hasura metadata apply;
+  hasura metadata apply;
   echo "----- MIGRATIONS FINISHED -----";
 }
 
