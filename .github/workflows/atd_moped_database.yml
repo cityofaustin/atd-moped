@@ -14,8 +14,8 @@ on:
       - ".github/workflows/**"
 
 jobs:
-  build:
-    name: Build
+  apply:
+    name: Apply Migrations
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/setup-python@v2
