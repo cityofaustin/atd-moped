@@ -157,6 +157,16 @@ def handler(event: dict, context: object) -> dict:
     logger.info(f"Request ID: {context.aws_request_id}")
     logger.info(f"Event: {json.dumps(event)}")
 
+    #
+    # Check if the event is a cloudwatch event
+    #
+    event_source = event.get("source", "none")
+    event_type = event.get("detail-type", "none")
+    if event_source == "aws.events" \
+            and event_type == "Scheduled Event":
+        # Return the event so it shows as a successful transaction
+        return event
+
     # Initialize the claims object
     claims = {}
     try:
