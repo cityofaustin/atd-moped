@@ -8,10 +8,8 @@ on:
     branches:
       - main
       - production
-      - 4139-sg-cognitowarm
     paths:
       - "moped-auth/**"
-      - ".github/workflows/**"
 
 jobs:
   build:

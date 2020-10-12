@@ -167,7 +167,6 @@ def handler(event: dict, context: object) -> dict:
         # Return the event so it shows as a successful transaction
         return event
 
-
     # Initialize the claims object
     claims = {}
     try:
