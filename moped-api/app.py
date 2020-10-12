@@ -10,7 +10,7 @@ MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAG
 # Import Blueprints
 #
 from auth.auth import auth_blueprint
-from user.user import user_blueprint
+from users.users import users_blueprint
 
 app = Flask(__name__)
 
@@ -18,7 +18,7 @@ app = Flask(__name__)
 # Register Blueprints
 #
 app.register_blueprint(auth_blueprint, url_prefix="/auth")
-app.register_blueprint(user_blueprint, url_prefix="/user")
+app.register_blueprint(users_blueprint, url_prefix="/users")
 
 #
 # Cognito
