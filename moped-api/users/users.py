@@ -6,7 +6,7 @@ from config import api_config
 
 # Import our custom code
 from claims import normalize_claims, get_claims
-from user.helpers import (
+from users.helpers import (
     load_claims,
     put_claims,
     format_claims,
@@ -14,7 +14,7 @@ from user.helpers import (
     has_user_role,
 )
 
-user_blueprint = Blueprint("user_blueprint", __name__)
+users_blueprint = Blueprint("users_blueprint", __name__)
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
@@ -22,16 +22,7 @@ USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
 cognito_client = boto3.client("cognito-idp")
 
 
-@user_blueprint.route("/")
-def user_index() -> str:
-    """
-    Returns a simple message.
-    :return str:
-    """
-    return jsonify({"message": "Hello from User! :)"})
-
-
-@user_blueprint.route("/list_users")
+@users_blueprint.route("/", methods=["GET"])
 @cognito_auth_required
 def user_list_users() -> str:
     """
@@ -40,13 +31,13 @@ def user_list_users() -> str:
     """
     if is_valid_user(current_cognito_jwt):
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
-        user_list = jsonify(user_response["Users"])
+        user_list = user_response["Users"]
         return jsonify(user_list)
     else:
         abort(403)
 
 
-@user_blueprint.route("/get_user/<id>")
+@users_blueprint.route("/<id>", methods=["GET"])
 @cognito_auth_required
 def user_get_user(id: str) -> str:
     """
@@ -67,7 +58,7 @@ def user_get_user(id: str) -> str:
         abort(403)
 
 
-@user_blueprint.route("/create_user", methods=["POST"])
+@users_blueprint.route("/", methods=["POST"])
 @cognito_auth_required
 @normalize_claims
 def user_create_user(claims: list) -> str:
@@ -116,7 +107,7 @@ def user_create_user(claims: list) -> str:
         abort(403)
 
 
-@user_blueprint.route("/update_user/<id>", methods=["PUT"])
+@users_blueprint.route("/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
 def user_update_user(id: str, claims: list) -> str:
@@ -147,7 +138,7 @@ def user_update_user(id: str, claims: list) -> str:
         abort(403)
 
 
-@user_blueprint.route("/delete_user/<id>", methods=["DELETE"])
+@users_blueprint.route("/<id>", methods=["DELETE"])
 @cognito_auth_required
 @normalize_claims
 def user_delete_user(id: str, claims: list) -> str:
