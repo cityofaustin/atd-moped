@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-from moto import mock_cognitoidp
 from app import app
 import json, pdb
 from unittest.mock import patch
@@ -40,12 +39,3 @@ class TestApp:
         assert "message" in response_dict
         assert "MOPED API Available" in response_dict.get("message", "")
 
-    @mock_cognitoidp
-    def test_get_users(self):
-        """Start with a blank database."""
-        response = self.client.get("/users/")
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "message" in response_dict
-        assert "All good" in response_dict.get("message", "")
