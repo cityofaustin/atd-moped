@@ -15,13 +15,35 @@ test_user_identity = {
 
 class TestUsers(TestApp):
     def test_is_valid_user(self):
-        """Validate user attributes in JWT."""
+        """Test valid user attributes in JWT."""
         mock_jwt = Mock()
         mock_jwt._get_current_object = Mock(return_value=test_user_identity)
 
         result = is_valid_user(mock_jwt)
 
         assert result is True
+
+    def test_is_invalid_user_email(self):
+        """Test invalid user email in JWT."""
+        test_user_identity.email = "@gmail.com"
+
+        mock_jwt = Mock()
+        mock_jwt._get_current_object = Mock(return_value=test_user_identity)
+
+        result = is_valid_user(mock_jwt)
+
+        assert result is False
+
+    def test_is_invalid_user_email(self):
+        """Test invalid user (no roles) in JWT."""
+        test_user_identity.pop("https://hasura.io/jwt/claims", None)
+
+        mock_jwt = Mock()
+        mock_jwt._get_current_object = Mock(return_value=test_user_identity)
+
+        result = is_valid_user(mock_jwt)
+
+        assert result is False
 
     @mock_cognitoidp
     def test_gets_users_no_auth(self):
