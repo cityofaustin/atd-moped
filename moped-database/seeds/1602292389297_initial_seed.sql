@@ -13,9 +13,9 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start_date, fiscal_year_end_date, active_fy) VALUES ('2021', NULL, NULL, true);
 INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start_date, fiscal_year_end_date, active_fy) VALUES ('2020', NULL, NULL, false);
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('ATSD', 1, '2020-10-09 14:53:02.752811+00');
-INSERT INTO public.moped_coa_staff (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('9699d49f-c5ba-4dad-b286-510a5e178aa7', 'JD', 'Maccombs', 'Developer', 'DTS', 1, 1, NULL, '2020-10-09 13:44:02.159095+00');
-INSERT INTO public.moped_coa_staff (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('9972fa62-1bbd-4f58-9b7d-80b9bc73a537', 'Mike', 'Schofield', 'Engineer', 'ATSD', 3, 1, NULL, '2020-10-09 13:44:02.15918+00');
-INSERT INTO public.moped_coa_staff (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('e6bb053b-d6bf-4460-b9a5-c5cb7021958d', 'Nathan', 'Wilkes', 'Engineer', 'ATSD', 2, 1, NULL, '2020-10-09 13:44:02.159184+00');
+INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('9699d49f-c5ba-4dad-b286-510a5e178aa7', 'JD', 'Maccombs', 'Developer', 'DTS', 1, 1, NULL, '2020-10-09 13:44:02.159095+00');
+INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('9972fa62-1bbd-4f58-9b7d-80b9bc73a537', 'Mike', 'Schofield', 'Engineer', 'ATSD', 3, 1, NULL, '2020-10-09 13:44:02.15918+00');
+INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, staff_id, workgroup_id, cognito_user_id, date_added) VALUES ('e6bb053b-d6bf-4460-b9a5-c5cb7021958d', 'Nathan', 'Wilkes', 'Engineer', 'ATSD', 2, 1, NULL, '2020-10-09 13:44:02.159184+00');
 INSERT INTO public.moped_entity (entity_uuid, workgroup_name, abbreviated_name, entity_id, affiliated_workgroup, date_added) VALUES ('f30415c5-0b5d-4d92-bb04-7c4f0ea13288', 'Capital Metro', 'CapMetro', 1, NULL, '2020-10-09 13:44:36.783377+00');
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('actual construction start date', '', 7, true, 3);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('actual end date', '', 1, true, 4);
@@ -65,7 +65,7 @@ INSERT INTO public.moped_project_roles (project_role_id, project_role_name, acti
 INSERT INTO public.moped_project_roles (project_role_id, project_role_name, active_role, role_order, date_added) VALUES (12, 'Unknown Role', true, 100, '2020-10-09 14:43:03.859548+00');
 INSERT INTO public.moped_project_roles (project_role_id, project_role_name, active_role, role_order, date_added) VALUES (2, 'Street Designer', true, 2, '2020-10-09 14:44:51.2889+00');
 SELECT pg_catalog.setval('public.moped_categories_category_id_seq', 8, true);
-SELECT pg_catalog.setval('public.moped_coa_staff_staff_id_seq', 3, true);
+SELECT pg_catalog.setval('public.moped_users_staff_id_seq', 3, true);
 SELECT pg_catalog.setval('public.moped_components_component_id_seq', 1, false);
 SELECT pg_catalog.setval('public.moped_entities_entity_id_seq', 1, true);
 SELECT pg_catalog.setval('public.moped_financials_financials_id_seq', 1, false);
