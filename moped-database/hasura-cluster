@@ -109,6 +109,9 @@ function follow() {
   docker-compose logs --follow
 }
 
+#
+# Shows the status of the server (after being started)
+#
 function status() {
   VERSION=$(curl --silent http://localhost:8080/v1/version)
   STATUS=$(curl --silent http://localhost:8080/healthz)
@@ -121,6 +124,17 @@ function status() {
   echo -e "------------------------------------------\n"
 }
 
+#
+# Run the Hasura Console
+#
+function console() {
+  echo "Starting the Hasura Console... (press Ctrl+C to stop)";
+  hasura console;
+}
+
+#
+# Shows a fancy banner
+#
 function show_hasura_kit_banner() {
   cat <<HASURA_EOM
 ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
