@@ -11,6 +11,20 @@ set -o errexit
 HIDE_HASURA_KIT_BANNER="FALSE"
 
 #
+# Gets the current hasura cluster status
+#
+function __get_status() {
+  echo $(curl --silent "http://localhost:8080/healthz");
+}
+
+#
+# Gets the current hasura cluster version
+#
+function __get_version() {
+  echo $(curl --silent "http://localhost:8080/v1/version");
+}
+
+#
 # Pings the Hasura server, returns True if it is ready to accept connections.
 #
 function hasura_server_ready() {
@@ -30,7 +44,7 @@ function wait_server_ready() {
   INITIALIZATION_TIMEOUT_LIMIT=60
   INITIALIZATION_COUNT=1
   while [ "$(hasura_server_ready)" = "FALSE" ]; do
-    echo "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT}"
+    echo "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔"
     if [ $INITIALIZATION_COUNT -gt $INITIALIZATION_TIMEOUT_LIMIT ]; then
       echo "Hasura server unavailable"
       exit 1
@@ -45,15 +59,35 @@ function wait_server_ready() {
 #
 function run_migration() {
   echo "Checking the Hasura server is ready...";
+  CURRENT_STAGE_NAME="";
   wait_server_ready;
-  echo "----- MIGRATIONS STARTED -----";
-  echo "Applying migration";
-  hasura migrate apply;
-  echo "Applying metadata";
-  hasura metadata apply;
-  echo "Applying seeds";
-  hasura seeds apply;
-  echo "----- MIGRATIONS FINISHED -----";
+  echo "--------------------------------------------------------------------";
+  echo " ♻️  MIGRATIONS STARTED";
+  echo "--------------------------------------------------------------------";
+  {
+    {
+      CURRENT_STAGE_NAME="MIGRATE APPLY";
+      hasura migrate apply;
+    } && {
+      CURRENT_STAGE_NAME="METADATA APPLY";
+      hasura metadata apply;
+    } && {
+      CURRENT_STAGE_NAME="SEEDS APPLY";
+      hasura seeds apply;
+    }
+  } || {
+    echo "--------------------------------------------------------------------";
+    echo -e " 🛑️ Stopping hasura cluster. Error in stage: \e[31m ${CURRENT_STAGE_NAME}️ \e[0m";
+    echo "--------------------------------------------------------------------";
+    stop;
+    echo "--------------------------------------------------------------------";
+    echo -e " ⚠️  HASURA CLUSTER STOPPED! \n";
+    exit 1;
+  }
+  echo "--------------------------------------------------------------------";
+  echo -e " Migrations Finished! \n";
+#   echo "---------------------  ----------------------";
+#  echo "--------------------------------------------------------------------";
 }
 
 #
@@ -67,9 +101,17 @@ function start_only() {
 # Starts the cluster, runs the migrations automatically
 #
 function start() {
-  start_only;
-  run_migration;
-  status;
+  if [[ $(__get_status) == "OK" ]]; then
+    status;
+    echo "The Hasura Cluster is already running...";
+    echo " - To stop, try: './hasura-cluster stop'";
+    echo -e " - To open the hasura console, try: './hasura-cluster console' \n";
+    exit 0;
+  else
+    start_only;
+    run_migration;
+    status;
+  fi;
 }
 
 #
@@ -96,6 +138,17 @@ function stop() {
 }
 
 #
+# Restarts the cluster
+#
+function restart() {
+  echo "--------------------------------------------------------------------";
+  echo " ⭕ Restarting the Hasura Cluster...️";
+  echo "--------------------------------------------------------------------";
+  stop;
+  start;
+}
+
+#
 # Removes any volumes whose names start with the string "moped"
 #
 function prune() {
@@ -113,15 +166,25 @@ function follow() {
 # Shows the status of the server (after being started)
 #
 function status() {
-  VERSION=$(curl --silent http://localhost:8080/v1/version)
-  STATUS=$(curl --silent http://localhost:8080/healthz)
-  echo -e "\n------------------------------------------"
-  echo "Hasura Server Status":
-  echo "------------------------------------------"
-  echo "Status: ${STATUS}"
-  echo "Version: ${VERSION}"
-  echo "You may run 'hasura console' now!"
-  echo -e "------------------------------------------\n"
+  VERSION=$(__get_version);
+  STATUS=$(__get_status);
+  MESSAGE=""
+  if [[ "${STATUS}" == "OK" ]]; then
+    EMOJI="✅";
+    MESSAGE="You may run 'hasura console' now!"
+  else
+    STATUS=" Unreachable"
+    VERSION="?"
+    EMOJI="⚠️";
+    MESSAGE="Try './hasura-cluster start' or 'docker ps -a' to check..."
+  fi;
+  echo -e "\n--------------------------------------------------------------------";
+  echo " ⛅️  Hasura Server Status";
+  echo "--------------------------------------------------------------------";
+  echo " Status: ${EMOJI} ${STATUS}";
+  echo " Version: ${VERSION}";
+  echo " ${MESSAGE}";
+  echo -e "--------------------------------------------------------------------\n";
 }
 
 #
