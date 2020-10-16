@@ -462,20 +462,22 @@ export const FormTwo = ({ formContent }) => {
                control={control}
              />
          </TableCell>
-       </TableRow> 
-       ))}  
-        <Button 
-             color="secondary"
-             onClick={handleAddRow}>
-            +Add Row
-           </Button> 
+         <TableCell> 
            <Button 
              color="secondary"
              onClick={handleRemoveRow}>
-             -Delete Row
-           </Button>
-     </TableBody>
-   </Table> 
+             <Icon>delete</Icon>
+            </Button>
+        </TableCell>
+      </TableRow> 
+      ))}  
+        <Button 
+          color="secondary"
+          onClick={handleAddRow}>
+          <Icon>person_add</Icon>
+        </Button> 
+    </TableBody>
+  </Table> 
     <Button 
         color="primary" 
         variant="contained" 
