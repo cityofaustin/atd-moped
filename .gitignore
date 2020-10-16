@@ -10,13 +10,10 @@
 Thumbs.db
 .idea/
 .code/
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 
 # Common Environment Files
+*.env
 .env
 .env.local
 .env.development.local
@@ -27,6 +24,15 @@ env/
 venv/
 ENV/
 
+
+# Database Hasura YAML or ENV files
+moped-database/config.yaml
+moped-database/config.yml
+moped-database/config/*.yaml
+!moped-database/config/hasura.local.yaml
+!moped-database/config/hasura.cognito.staging.env
+moped-database/hasura.current_environment.yaml
+
 # Logs
 logs
 *.log
@@ -35,6 +41,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # Python (basic)
+.pytest_cache/
 __pycache__/
 *.py[cod]
 *$py.class
