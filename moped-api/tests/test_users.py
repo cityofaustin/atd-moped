@@ -4,45 +4,46 @@ from unittest.mock import patch, Mock
 from users.helpers import is_valid_user, has_user_role
 
 
-class TestUsers(TestApp):
-    def create_user_claims(self):
-        return {
-            "email": "@austintexas.gov",
-            "cognito:username": "test_user",
-            "https://hasura.io/jwt/claims": {
-                "x-hasura-user-id": "test",
-                "x-hasura-default-role": "user",
-                "x-hasura-allowed-roles": ["user", "admin"],
-            },
-            "email_verified": True,
-            "aud": "test_aud",
-        }
+def create_user_claims():
+    return {
+        "email": "@austintexas.gov",
+        "cognito:username": "test_user",
+        "https://hasura.io/jwt/claims": {
+            "x-hasura-user-id": "test",
+            "x-hasura-default-role": "user",
+            "x-hasura-allowed-roles": ["user", "admin"],
+        },
+        "email_verified": True,
+        "aud": "test_aud",
+    }
 
+
+class TestUsers(TestApp):
     def test_is_valid_user(self):
         """Test valid user attributes in JWT payload."""
-        mock_jwt = Mock()
-        mock_jwt._get_current_object = Mock(return_value=self.create_user_claims())
+        mock_jwt_payload = Mock()
+        mock_jwt_payload._get_current_object = Mock(return_value=create_user_claims())
 
-        result = is_valid_user(mock_jwt)
+        result = is_valid_user(mock_jwt_payload)
 
         assert result is True
 
     def test_is_invalid_user_email(self):
         """Test invalid user email in JWT payload."""
-        test_user_identity.email = "@gmail.com"
+        user_with_invalid_email = create_user_claims()
+        user_with_invalid_email["email"] = "@gmail.com"
 
         mock_jwt = Mock()
-        mock_jwt._get_current_object = Mock(return_value=self.create_user_claims())
+        mock_jwt._get_current_object = Mock(return_value=user_with_invalid_email)
 
         result = is_valid_user(mock_jwt)
 
         assert result is False
 
-    def test_is_invalid_user_email(self):
+    def test_is_invalid_user_roles(self):
         """Test invalid user (no roles) in JWT payload."""
-        user_with_no_roles = self.create_user_claims().pop(
-            "https://hasura.io/jwt/claims", None
-        )
+        user_with_no_roles = create_user_claims()
+        user_with_no_roles.pop("https://hasura.io/jwt/claims", None)
 
         mock_jwt = Mock()
         mock_jwt._get_current_object = Mock(return_value=user_with_no_roles)
@@ -53,13 +54,13 @@ class TestUsers(TestApp):
 
     def test_has_user_role_true(self):
         """Test user roles check in JWT claims (has role)."""
-        result = has_user_role("user", self.create_user_claims())
+        result = has_user_role("user", create_user_claims())
 
         assert result is True
 
     def test_has_user_role_false(self):
         """Test user roles check in JWT claims (does not have role)."""
-        result = has_user_role("hacker", self.create_user_claims())
+        result = has_user_role("hacker", create_user_claims())
 
         assert result is False
 
