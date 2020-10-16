@@ -58,7 +58,7 @@ class TestUsers(TestApp):
         assert result is True
 
     def test_has_user_role_false(self):
-        """Test user roles check in JWT claims (has role)."""
+        """Test user roles check in JWT claims (does not have role)."""
         result = has_user_role("hacker", self.create_user_claims())
 
         assert result is False
