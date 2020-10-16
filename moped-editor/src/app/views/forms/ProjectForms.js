@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useMutation, useQuery } from "@apollo/client";
-// import MaterialTable from 'material-table';
-// import { forwardRef } from 'react';
-// import {AddBox, ArrowDownward, Check, ChevronLeft, ChevronRight, DeleteOutline, Clear, Edit, FilterList, FirstPage, LastPage, Remove, SaveAlt, Search, ViewColumn }from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
@@ -12,7 +10,6 @@ export const FormOne = ({ formContent }) => {
   const methods = useFormContext();
   const { register, handleSubmit, setValue, reset, control } = methods;
  
-
   useEffect(() => {
     reset({ ...formContent.one }, { errors: true });
   }, []);
@@ -492,130 +489,41 @@ export const FormTwo = ({ formContent }) => {
 
 export const FormThree = ({ formContent }) => {
   const methods = useFormContext();
-  const { reset } = methods;
-  // const { useState } = React;
-
+  const { reset, register } = methods;
   useEffect(() => {
     reset({ ...formContent.three }, { errors: true });
   }, []);
 
+  const ROLES_QUERY = gql`
+  query Roles {
+    moped_project_roles(order_by: {project_role_name: asc}) {
+      project_role_name
+    }
+  }
+`;
 
-
-
-
-  // const tableIcons = {
-  //   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-  //   Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-  //   Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  //   Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-  //   DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  //   Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-  //   Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-  //   Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-  //   FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-  //   LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-  //   NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-  //   PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
-  //   ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-  //   Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-  //   SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-  //   ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-  //   ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-  // };
-
-  // const [columns, setColumns] = useState([
-  //   { 
-  //     title: 'Name', 
-  //     field: 'name', 
-  //     tableRef:{register},
-  //     ref: {register},
-  //     initialEditValue: '', 
-  //    },
-  //   { 
-  //     title: 'Role', 
-  //     field: 'Role', 
-  //     tableRef:{register},
-  //     ref: {register},
-  //     lookup: {
-  //     1: 'Owner', 
-  //     2: 'Team Member', 
-  //     3: 'Executive Sponsor'}    
-  //    },
-  //   { 
-  //     title: 'Work Group', 
-  //     field: 'WorkGroup', 
-  //     tableRef:{register},
-  //     ref: {register},
-  //     lookup: { 1: 'Signals', 2: 'Division', 3: 'Manager'}
-  //   },
-  //   {
-  //     title: 'Division',
-  //     field: 'Division',
-  //     tableRef: {register},
-  //     ref: {register},
-  //     lookup: { 1: 'Arterial Management', 2: 'Choice 2' }
-  //   },
-  // ]);
-
-  // const [data, setData] = useState([
-  //   { name: 'Renee Orr', role: 1, workgroup: 2, division: 1 },
-  //   { name: 'Judith Olvera', role: 2, workgroup: 3, division: 1 },
-  //   { name: 'Scott Feldman', role: 3, workgroup: 1, division: 1 },
-  //   { name: 'Jen Duthie', role: 2, workgroup: 1, division: 1 },
-  // ]);
-
-  // const onSubmit = (data, e) => {
-  //   console.log(data);
-  // }
+const { loading: roleLoading, error: roleError, data: roles } = useQuery(ROLES_QUERY);
  
-  // return (
-  //   <div>
-       
-    {/* <MaterialTable
-    title="Assign Team Members"
-    icons={tableIcons}
-    columns={columns}
-    data={data}
-    editable={{
-      onRowAdd: newData =>
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            setData([...data, newData]);
+if (roleLoading) return 'Loading...';
+if (roleError) return `Error! ${roleError.message}`;
+
+let options = [];
+roles.moped_project_roles.forEach((role) => options.push(role.project_role_name));
+ 
+
+// const options = ["option 1", "option 2"];
             
-            resolve();
-          }, 1000)
-        }),
-      onRowUpdate: (newData, oldData) =>
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            const dataUpdate = [...data];
-            const index = oldData.tableData.id;
-            dataUpdate[index] = newData;
-            setData([...dataUpdate]);
-            resolve();
-          }, 1000)
-        }),
-      onRowDelete: oldData =>
-        new Promise((resolve, reject) => {
-          setTimeout(() => {
-            const dataDelete = [...data];
-            const index = oldData.tableData.id;
-            dataDelete.splice(index, 1);
-            setData([...dataDelete]);
-            
-            resolve()
-          }, 1000)
-        }),
-    }}
-  />
-  <Button 
-          color="primary" 
-          variant="contained" 
-          type="submit">
-        <Icon>send</Icon>
-        <span className="pl-2 capitalize">Submit</span>
-        </Button> */}
-  //       </div>
-  // );
-};
+  return (
+    <div>
+    <Autocomplete
+      id="selectedRoles"
+      options={options}
+      style={{ width: 300 }}
+      renderInput={(params) => <TextField {...params} label="Select a Role" margin="normal" />} 
+    />
+    </div>
+  );
+}
+  
+
 
