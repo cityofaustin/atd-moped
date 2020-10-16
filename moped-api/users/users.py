@@ -27,9 +27,9 @@ def user_list_users() -> str:
     Returns users in user pool
     :return str:
     """
-    cognito_client = boto3.client("cognito-idp")
-
     if is_valid_user(current_cognito_jwt):
+        cognito_client = boto3.client("cognito-idp")
+
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
         user_list = user_response["Users"]
         return jsonify(user_list)
@@ -44,9 +44,9 @@ def user_get_user(id: str) -> str:
     Returns user details
     :return str:
     """
-    cognito_client = boto3.client("cognito-idp")
-
     if is_valid_user(current_cognito_jwt):
+        cognito_client = boto3.client("cognito-idp")
+
         user_dict = {}
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
@@ -68,9 +68,8 @@ def user_create_user(claims: list) -> str:
     Returns created user details
     :return str:
     """
-    cognito_client = boto3.client("cognito-idp")
-
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+        cognito_client = boto3.client("cognito-idp")
 
         try:
             json_data = request.json
@@ -123,9 +122,9 @@ def user_update_user(id: str, claims: list) -> str:
     Returns updated user details
     :return str:
     """
-    cognito_client = boto3.client("cognito-idp")
-
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+        cognito_client = boto3.client("cognito-idp")
+
         json_data = request.json
         roles = json_data.get("roles", None)
 
