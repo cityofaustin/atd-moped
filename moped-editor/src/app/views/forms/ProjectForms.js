@@ -295,24 +295,27 @@ export const FormTwo = ({ formContent }) => {
     });
     const classes = useStyles();
 
-    const [rows, setRows] = useState([
-      {
-        id: 1,
-        Name: '',
-        Group: '',
-        Role: ''
-      }
-    ]);
+    const defaultRow = [{
+      id: 1,
+      Name: '',
+      Group: '',
+      Role: ''
+    }];
+
+    const [rows, setRows] = useState(defaultRow);
+      
     const handleAddRow = () => {
       let item = {
-        id: rows[rows.length - 1].id + 1,
+        id: rows.length + 1,
         Name: '',
         Group: '',
         Role: ''
       };
       setRows([...rows, item]);
     };
+
     const handleRemoveRow = () => {
+      if(rows.length > 1)
       setRows(rows.slice(0, -1));
     };
  
@@ -370,9 +373,9 @@ export const FormTwo = ({ formContent }) => {
   // const { loading: groupLoading, error: groupError,
   //   data: group} = useQuery(GROUP_QUERY, {variables: { last_name },});
   
-  const { loading: roleLoading, error: roleError, data: roles, onRoleSelected} = useQuery(ROLES_QUERY);
+  const { loading: roleLoading, error: roleError, data: roles, onRoleSelected } = useQuery(ROLES_QUERY);
   
-  const { loading: membersLoading, error: membersError, data: members, onMemberSelected} = useQuery(MEMBERS_QUERY);
+  const { loading: membersLoading, error: membersError, data: members, onMemberSelected }  = useQuery(MEMBERS_QUERY);
   
   // const { loading: groupLoading, error: groupError,
   //   data: group} = useQuery(GROUP_QUERY);
@@ -400,7 +403,7 @@ export const FormTwo = ({ formContent }) => {
      </TableHead>
      <TableBody>
        {rows.map((item, index) => (
-         <TableRow id="addr" key={index}>
+        <TableRow id="addr" key={index}>
          <TableCell>{item.id}</TableCell>
        <TableCell> 
          <Controller 
