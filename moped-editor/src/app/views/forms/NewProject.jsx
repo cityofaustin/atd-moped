@@ -1,12 +1,16 @@
-import React from 'react';
-import { useForm, Controller } from "react-hook-form";
+import React from "react";
+import { Controller, useFormContext } from "react-hook-form";
 import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { Breadcrumb } from "matx";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
-const NewProject = () => {
+const NewProject = ({ formContent }) => {
+  const methods = useFormContext();
+  const { register, handleSubmit, setValue, control } = methods;
 
-  const { register, handleSubmit, setValue, control } = useForm();
+  // useEffect(() => {
+  //   reset({ ...formContent.one }, { errors: true });
+  // }, []);
 
   const PHASES_QUERY = gql`
   query Phases {
