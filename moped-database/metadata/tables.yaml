@@ -2011,6 +2011,16 @@
       - partner_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - partner_name
+      - entity_id
+      - proj_partner_id
+      - project_id
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
