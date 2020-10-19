@@ -512,6 +512,12 @@
       - group_id
       - group_name
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - group_id
+      - group_name
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
