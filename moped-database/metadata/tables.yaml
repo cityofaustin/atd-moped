@@ -1546,6 +1546,26 @@
       - milestone_owner_id
       - date_added
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - milestone_name
+      - milestone_description
+      - milestone_order
+      - milestone_start
+      - milestone_end
+      - milestone_length
+      - milestone_privacy
+      - days_left
+      - is_current_milestone
+      - completed
+      - project_milestone_id
+      - project_id
+      - project_timeline_id
+      - milestone_owner_id
+      - date_added
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1566,8 +1586,47 @@
       - milestone_name
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - completed
+      - is_current_milestone
+      - milestone_privacy
+      - milestone_end
+      - milestone_start
+      - days_left
+      - milestone_length
+      - milestone_order
+      - milestone_owner_id
+      - project_id
+      - project_milestone_id
+      - project_timeline_id
+      - milestone_description
+      - milestone_name
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - completed
+      - is_current_milestone
+      - milestone_privacy
+      - milestone_end
+      - milestone_start
+      - days_left
+      - milestone_length
+      - milestone_order
+      - milestone_owner_id
+      - project_id
+      - project_milestone_id
+      - project_timeline_id
+      - milestone_description
+      - milestone_name
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - completed
