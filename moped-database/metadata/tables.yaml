@@ -938,6 +938,62 @@
 - table:
     schema: public
     name: moped_proj_personnel
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - join_date
+      - allocation
+      - status
+      - project_id
+      - project_personnel_user_id
+      - project_personnel_id
+      - first_name
+      - last_name
+      - workgroup_id
+      - role_name
+      - role_order
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - join_date
+      - added_by
+      - allocation
+      - project_id
+      - project_personnel_id
+      - project_personnel_user_id
+      - role_order
+      - workgroup_id
+      - first_name
+      - last_name
+      - role_name
+      - status
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - join_date
+      - added_by
+      - allocation
+      - project_id
+      - project_personnel_id
+      - project_personnel_user_id
+      - role_order
+      - workgroup_id
+      - first_name
+      - last_name
+      - role_name
+      - status
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_phases
