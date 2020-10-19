@@ -1064,6 +1064,24 @@
       - project_id
       - last_updated
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - subproject_name
+      - eCapris_id
+      - subproject_status
+      - budget_total
+      - expenses_total
+      - expenses_ytd
+      - expenses_previous
+      - budget_previous
+      - budget_available
+      - primary_funding_source
+      - financials_id
+      - project_id
+      - last_updated
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1082,8 +1100,43 @@
       - subproject_status
       - last_updated
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - budget_available
+      - budget_previous
+      - budget_total
+      - expenses_previous
+      - expenses_total
+      - expenses_ytd
+      - financials_id
+      - project_id
+      - eCapris_id
+      - primary_funding_source
+      - subproject_name
+      - subproject_status
+      - last_updated
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - budget_available
+      - budget_previous
+      - budget_total
+      - expenses_previous
+      - expenses_total
+      - expenses_ytd
+      - financials_id
+      - project_id
+      - eCapris_id
+      - primary_funding_source
+      - subproject_name
+      - subproject_status
+      - last_updated
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - budget_available
