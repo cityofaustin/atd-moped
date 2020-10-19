@@ -238,3 +238,29 @@
 - table:
     schema: public
     name: moped_workgroup
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - workgroup_name
+      - workgroup_id
+      - date_added
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - workgroup_id
+      - workgroup_name
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - workgroup_id
+      - workgroup_name
+      - date_added
+      filter: {}
+      check: null
