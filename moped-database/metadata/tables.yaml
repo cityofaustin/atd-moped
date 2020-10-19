@@ -547,6 +547,17 @@
       - required_phase
       - phase_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - phase_name
+      - phase_description
+      - phase_rank
+      - phase_average_length
+      - required_phase
+      - phase_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -558,8 +569,29 @@
       - phase_description
       - phase_name
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - required_phase
+      - phase_average_length
+      - phase_id
+      - phase_rank
+      - phase_description
+      - phase_name
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - required_phase
+      - phase_average_length
+      - phase_id
+      - phase_rank
+      - phase_description
+      - phase_name
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - required_phase
