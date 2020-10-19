@@ -152,6 +152,8 @@ def user_delete_user(id: str, claims: list) -> str:
     :return str:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+        cognito_client = boto3.client("cognito-idp")
+
         response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
 
         return jsonify(response)
