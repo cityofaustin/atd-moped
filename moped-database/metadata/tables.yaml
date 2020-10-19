@@ -278,6 +278,16 @@
       - date_added
       - entity_uuid
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - entity_uuid
+      - workgroup_name
+      - abbreviated_name
+      - entity_id
+      - affiliated_workgroup
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
