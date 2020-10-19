@@ -1467,6 +1467,17 @@
       - project_id
       - feature_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - location_name
+      - shape
+      - location_notes
+      - location_id
+      - project_id
+      - feature_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1478,8 +1489,29 @@
       - location_notes
       - shape
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - location_id
+      - project_id
+      - feature_id
+      - location_name
+      - location_notes
+      - shape
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - location_id
+      - project_id
+      - feature_id
+      - location_name
+      - location_notes
+      - shape
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - location_id
