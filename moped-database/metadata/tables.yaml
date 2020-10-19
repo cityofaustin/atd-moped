@@ -284,6 +284,14 @@
       - funding_opportunity_name
       - funding_source_cat
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - funding_opportunity_id
+      - funding_opportunity_name
+      - funding_source_cat
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -292,8 +300,23 @@
       - funding_opportunity_name
       - funding_source_cat
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_opportunity_id
+      - funding_opportunity_name
+      - funding_source_cat
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - funding_opportunity_id
+      - funding_opportunity_name
+      - funding_source_cat
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - funding_opportunity_id
