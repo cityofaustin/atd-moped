@@ -1661,6 +1661,17 @@
       - comm_id
       - project_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1672,8 +1683,29 @@
       - project_note
       - date_created
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - added_by
