@@ -1186,6 +1186,47 @@
 - table:
     schema: public
     name: moped_proj_status_notes
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - status_note
+      - created_by_personnel
+      - date_written
+      - proj_status_id
+      - project_id
+      - status_name
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - date_written
+      - added_by
+      - proj_status_id
+      - project_id
+      - created_by_personnel
+      - status_name
+      - status_note
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - date_written
+      - added_by
+      - proj_status_id
+      - project_id
+      - created_by_personnel
+      - status_name
+      - status_note
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_timeline
