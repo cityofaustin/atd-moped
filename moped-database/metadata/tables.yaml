@@ -2903,6 +2903,29 @@
       - date_added
       - project_uuid
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_uuid
+      - project_name
+      - project_description
+      - project_description_public
+      - eCapris_id
+      - project_importance
+      - project_order
+      - current_status
+      - project_id
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
