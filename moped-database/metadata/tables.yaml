@@ -2394,6 +2394,22 @@
       - date_added
       - project_sponsor_id
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - sponsor_name
+      - sponsor_context
+      - sponsor_context_file
+      - date_added
+      - project_sponsor_id
+      - sponsor_description
+      - sponsor_website
+      - is_external_sponsor
+      - sponsor_allocation
+      - entity_id
+      - project_id
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
