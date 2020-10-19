@@ -346,6 +346,13 @@
       - funding_opportunity_name
       - funding_source_cat
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - funding_opportunity_id
+      - funding_opportunity_name
+      - funding_source_cat
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
