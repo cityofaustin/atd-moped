@@ -2736,6 +2736,22 @@
       - is_coa_staff
       - status_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - staff_uuid
+      - first_name
+      - last_name
+      - title
+      - workgroup
+      - user_id
+      - workgroup_id
+      - cognito_user_id
+      - date_added
+      - is_coa_staff
+      - status_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2752,8 +2768,39 @@
       - cognito_user_id
       - staff_uuid
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - is_coa_staff
+      - status_id
+      - user_id
+      - workgroup_id
+      - first_name
+      - last_name
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - is_coa_staff
+      - status_id
+      - user_id
+      - workgroup_id
+      - first_name
+      - last_name
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - is_coa_staff
