@@ -826,6 +826,21 @@
       - last_note
       - project_memo
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_memo
+      - pending_request
+      - pending_request_user
+      - pending_review_date
+      - pending_review_user
+      - last_note
+      - last_note_user
+      - last_note_date
+      - channel_id
+      - comm_id
+      - project_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
