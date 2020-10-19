@@ -45,6 +45,41 @@
 - table:
     schema: public
     name: moped_components
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - component_id
+      - component_name
+      - component_categories
+      - map_representation
+      - component_order
+      - date_added
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - component_order
+      - component_categories
+      - component_name
+      - map_representation
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - component_order
+      - component_categories
+      - component_name
+      - map_representation
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_entity
