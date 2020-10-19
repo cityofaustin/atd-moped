@@ -91,12 +91,147 @@
 - table:
     schema: public
     name: moped_project
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_uuid
+      - project_name
+      - project_description
+      - project_description_public
+      - eCapris_id
+      - project_importance
+      - project_order
+      - current_status
+      - project_id
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - capitally_funded
+      - end_date
+      - start_date
+      - added_by
+      - project_id
+      - project_importance
+      - project_length
+      - project_order
+      - project_priority
+      - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - capitally_funded
+      - end_date
+      - start_date
+      - added_by
+      - project_id
+      - project_importance
+      - project_length
+      - project_order
+      - project_priority
+      - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_project_roles
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_role_id
+      - project_role_name
+      - active_role
+      - role_order
+      - date_added
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_role
+      - project_role_id
+      - role_order
+      - project_role_name
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_role
+      - project_role_id
+      - role_order
+      - project_role_name
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_status
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - status_name
+      - status_flag
+      - status_priority
+      - status_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - status_flag
+      - status_id
+      - status_priority
+      - status_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - status_flag
+      - status_id
+      - status_priority
+      - status_name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_users
