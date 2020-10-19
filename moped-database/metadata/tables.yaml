@@ -1266,6 +1266,23 @@
       - subproject_status
       - last_updated
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - subproject_name
+      - eCapris_id
+      - subproject_status
+      - budget_total
+      - expenses_total
+      - expenses_ytd
+      - expenses_previous
+      - budget_previous
+      - budget_available
+      - primary_funding_source
+      - financials_id
+      - project_id
+      - last_updated
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
