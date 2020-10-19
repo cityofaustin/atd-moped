@@ -1731,8 +1731,29 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - partner_name
+      - entity_id
+      - proj_partner_id
+      - project_id
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - entity_id
+      - proj_partner_id
+      - project_id
+      - partner_name
+      - date_added
+      filter: {}
+  - role: moped-editor
     permission:
       columns:
       - added_by
@@ -1754,11 +1775,40 @@
       - date_added
       filter: {}
       check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - entity_id
+      - proj_partner_id
+      - project_id
+      - partner_name
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_personnel
   insert_permissions:
   - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - join_date
+      - allocation
+      - status
+      - project_id
+      - project_personnel_user_id
+      - project_personnel_id
+      - first_name
+      - last_name
+      - workgroup_id
+      - role_name
+      - role_order
+      - date_added
+      - added_by
+      backend_only: false
+  - role: moped-editor
     permission:
       check: {}
       columns:
@@ -1794,8 +1844,43 @@
       - status
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - join_date
+      - added_by
+      - allocation
+      - project_id
+      - project_personnel_id
+      - project_personnel_user_id
+      - role_order
+      - workgroup_id
+      - first_name
+      - last_name
+      - role_name
+      - status
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - join_date
+      - added_by
+      - allocation
+      - project_id
+      - project_personnel_id
+      - project_personnel_user_id
+      - role_order
+      - workgroup_id
+      - first_name
+      - last_name
+      - role_name
+      - status
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - join_date
