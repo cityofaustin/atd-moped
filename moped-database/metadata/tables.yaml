@@ -1251,6 +1251,17 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - fund_opp_id
+      - fund_opp_name
+      - project_id
+      - proj_fund_opp_id
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1262,8 +1273,29 @@
       - fund_opp_name
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - fund_opp_id
+      - proj_fund_opp_id
+      - project_id
+      - fund_opp_name
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - fund_opp_id
+      - proj_fund_opp_id
+      - project_id
+      - fund_opp_name
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - added_by
