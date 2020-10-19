@@ -1046,6 +1046,22 @@
       - date_type
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_date
+      - date_type
+      - date_year
+      - date_month
+      - date_day
+      - active_date
+      - date_id
+      - project_id
+      - date_added
+      - project_milestone_id
+      - project_phase_id
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
