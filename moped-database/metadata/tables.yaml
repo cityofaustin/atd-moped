@@ -2671,6 +2671,15 @@
       - status_priority
       - status_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - status_name
+      - status_flag
+      - status_priority
+      - status_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2680,8 +2689,25 @@
       - status_priority
       - status_name
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - status_flag
+      - status_id
+      - status_priority
+      - status_name
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - status_flag
+      - status_id
+      - status_priority
+      - status_name
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - status_flag
