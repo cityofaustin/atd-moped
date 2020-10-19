@@ -1931,6 +1931,16 @@
       - project_note
       - date_created
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
