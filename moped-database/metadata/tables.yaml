@@ -1065,6 +1065,59 @@
 - table:
     schema: public
     name: moped_proj_sponsors
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - sponsor_name
+      - sponsor_context
+      - sponsor_context_file
+      - date_added
+      - project_sponsor_id
+      - sponsor_description
+      - sponsor_website
+      - is_external_sponsor
+      - sponsor_allocation
+      - entity_id
+      - project_id
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - is_external_sponsor
+      - sponsor_allocation
+      - added_by
+      - entity_id
+      - project_id
+      - sponsor_context
+      - sponsor_context_file
+      - sponsor_description
+      - sponsor_name
+      - sponsor_website
+      - date_added
+      - project_sponsor_id
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - is_external_sponsor
+      - sponsor_allocation
+      - added_by
+      - entity_id
+      - project_id
+      - sponsor_context
+      - sponsor_context_file
+      - sponsor_description
+      - sponsor_name
+      - sponsor_website
+      - date_added
+      - project_sponsor_id
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_status_history
