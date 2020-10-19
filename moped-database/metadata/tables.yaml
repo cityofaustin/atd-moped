@@ -2158,6 +2158,26 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - milestone_name
+      - milestone_description
+      - milestone_order
+      - milestone_start
+      - milestone_end
+      - milestone_length
+      - milestone_privacy
+      - is_current_milestone
+      - is_milestone_completed
+      - status_name
+      - project_status_history_id
+      - date_status_changed
+      - project_id
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2178,8 +2198,47 @@
       - status_name
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - is_current_milestone
+      - is_milestone_completed
+      - milestone_privacy
+      - date_status_changed
+      - milestone_end
+      - milestone_start
+      - added_by
+      - milestone_length
+      - milestone_order
+      - project_id
+      - project_status_history_id
+      - milestone_description
+      - milestone_name
+      - status_name
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - is_current_milestone
+      - is_milestone_completed
+      - milestone_privacy
+      - date_status_changed
+      - milestone_end
+      - milestone_start
+      - added_by
+      - milestone_length
+      - milestone_order
+      - project_id
+      - project_status_history_id
+      - milestone_description
+      - milestone_name
+      - status_name
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - is_current_milestone
