@@ -3181,6 +3181,21 @@
       - cognito_user_id
       - staff_uuid
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - staff_uuid
+      - first_name
+      - last_name
+      - title
+      - workgroup
+      - user_id
+      - workgroup_id
+      - cognito_user_id
+      - date_added
+      - is_coa_staff
+      - status_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
