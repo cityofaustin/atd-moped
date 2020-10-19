@@ -433,6 +433,13 @@
       - group_id
       - group_name
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - group_id
+      - group_name
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -440,8 +447,21 @@
       - group_id
       - group_name
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - group_id
+      - group_name
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - group_id
+      - group_name
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - group_id
