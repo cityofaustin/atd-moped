@@ -217,6 +217,17 @@
       - affiliated_workgroup
       - date_added
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - entity_uuid
+      - workgroup_name
+      - abbreviated_name
+      - entity_id
+      - affiliated_workgroup
+      - date_added
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -228,8 +239,29 @@
       - date_added
       - entity_uuid
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - affiliated_workgroup
+      - entity_id
+      - abbreviated_name
+      - workgroup_name
+      - date_added
+      - entity_uuid
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - affiliated_workgroup
+      - entity_id
+      - abbreviated_name
+      - workgroup_name
+      - date_added
+      - entity_uuid
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - affiliated_workgroup
