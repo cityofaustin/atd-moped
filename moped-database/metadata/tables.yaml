@@ -66,6 +66,41 @@
 - table:
     schema: public
     name: moped_phases
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - phase_name
+      - phase_description
+      - phase_rank
+      - phase_average_length
+      - required_phase
+      - phase_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - required_phase
+      - phase_average_length
+      - phase_id
+      - phase_rank
+      - phase_description
+      - phase_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - required_phase
+      - phase_average_length
+      - phase_id
+      - phase_rank
+      - phase_description
+      - phase_name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_categories
