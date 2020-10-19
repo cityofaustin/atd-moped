@@ -14,8 +14,31 @@
       - category_order
       - date_added
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - category_name
+      - category_id
+      - active_category
+      - on_street
+      - sensitivity
+      - category_order
+      - date_added
+      backend_only: false
   select_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - active_category
+      - on_street
+      - sensitivity
+      - category_id
+      - category_order
+      - category_name
+      - date_added
+      filter: {}
+  - role: moped-editor
     permission:
       columns:
       - active_category
@@ -39,6 +62,18 @@
       - date_added
       filter: {}
       check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - active_category
+      - on_street
+      - sensitivity
+      - category_id
+      - category_order
+      - category_name
+      - date_added
+      filter: {}
+      check: {}
 - table:
     schema: public
     name: moped_city_fiscal_years
