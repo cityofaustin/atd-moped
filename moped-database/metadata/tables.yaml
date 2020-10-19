@@ -124,6 +124,14 @@
       - fiscal_year_start_date
       - fiscal_year_value
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - fiscal_year_value
+      - fiscal_year_start_date
+      - fiscal_year_end_date
+      - active_fy
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
