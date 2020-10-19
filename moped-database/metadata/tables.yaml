@@ -686,6 +686,22 @@
       - comm_id
       - project_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_memo
+      - pending_request
+      - pending_request_user
+      - pending_review_date
+      - pending_review_user
+      - last_note
+      - last_note_user
+      - last_note_date
+      - channel_id
+      - comm_id
+      - project_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -702,8 +718,39 @@
       - last_note
       - project_memo
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - channel_id
+      - last_note_user
+      - pending_request_user
+      - pending_review_user
+      - last_note_date
+      - pending_request
+      - pending_review_date
+      - comm_id
+      - project_id
+      - last_note
+      - project_memo
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - channel_id
+      - last_note_user
+      - pending_request_user
+      - pending_review_user
+      - last_note_date
+      - pending_request
+      - pending_review_date
+      - comm_id
+      - project_id
+      - last_note
+      - project_memo
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - channel_id
