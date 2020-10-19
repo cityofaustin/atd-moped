@@ -482,6 +482,16 @@
       - required_milestone
       - milestone_id
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - milestone_name
+      - milestone_description
+      - milestone_order
+      - required_milestone
+      - milestone_id
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -492,8 +502,27 @@
       - milestone_description
       - milestone_name
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - required_milestone
+      - milestone_id
+      - milestone_order
+      - milestone_description
+      - milestone_name
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - required_milestone
+      - milestone_id
+      - milestone_order
+      - milestone_description
+      - milestone_name
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - required_milestone
