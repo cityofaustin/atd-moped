@@ -335,6 +335,13 @@
       - funding_source_category_id
       - funding_source_category_name
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - funding_source_category_id
+      - funding_source_category_name
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -342,8 +349,21 @@
       - funding_source_category_id
       - funding_source_category_name
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_source_category_id
+      - funding_source_category_name
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - funding_source_category_id
+      - funding_source_category_name
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - funding_source_category_id
