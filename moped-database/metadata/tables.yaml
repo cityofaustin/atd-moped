@@ -49,6 +49,17 @@
       - category_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - category_name
+      - category_id
+      - active_category
+      - on_street
+      - sensitivity
+      - category_order
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
