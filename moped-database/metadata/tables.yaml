@@ -616,6 +616,16 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_id
+      - category_name
+      - proj_category_id
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -626,8 +636,27 @@
       - category_name
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - proj_category_id
+      - project_id
+      - category_name
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - proj_category_id
+      - project_id
+      - category_name
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - added_by
