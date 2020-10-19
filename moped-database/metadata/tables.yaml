@@ -2474,6 +2474,30 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_uuid
+      - project_name
+      - project_description
+      - project_description_public
+      - eCapris_id
+      - project_importance
+      - project_order
+      - current_status
+      - project_id
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2498,8 +2522,55 @@
       - date_added
       - project_uuid
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - capitally_funded
+      - end_date
+      - start_date
+      - added_by
+      - project_id
+      - project_importance
+      - project_length
+      - project_order
+      - project_priority
+      - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - capitally_funded
+      - end_date
+      - start_date
+      - added_by
+      - project_id
+      - project_importance
+      - project_length
+      - project_order
+      - project_priority
+      - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - capitally_funded
