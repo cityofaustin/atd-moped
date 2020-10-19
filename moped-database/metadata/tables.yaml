@@ -875,6 +875,23 @@
       - project_phase_id
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_date
+      - date_type
+      - date_year
+      - date_month
+      - date_day
+      - active_date
+      - date_id
+      - project_id
+      - date_added
+      - project_milestone_id
+      - project_phase_id
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -892,8 +909,41 @@
       - date_type
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - active_date
+      - project_date
+      - added_by
+      - date_day
+      - date_id
+      - date_month
+      - date_year
+      - project_id
+      - project_milestone_id
+      - project_phase_id
+      - date_type
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - active_date
+      - project_date
+      - added_by
+      - date_day
+      - date_id
+      - date_month
+      - date_year
+      - project_id
+      - project_milestone_id
+      - project_phase_id
+      - date_type
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - active_date
