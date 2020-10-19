@@ -1708,6 +1708,16 @@
       - location_notes
       - shape
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - location_name
+      - shape
+      - location_notes
+      - location_id
+      - project_id
+      - feature_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
