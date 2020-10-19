@@ -6,9 +6,6 @@
     name: moped_city_fiscal_years
 - table:
     schema: public
-    name: moped_coa_staff
-- table:
-    schema: public
     name: moped_components
 - table:
     schema: public
@@ -100,6 +97,9 @@
 - table:
     schema: public
     name: moped_status
+- table:
+    schema: public
+    name: moped_users
 - table:
     schema: public
     name: moped_workgroup
