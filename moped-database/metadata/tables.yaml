@@ -339,6 +339,56 @@
 - table:
     schema: public
     name: moped_proj_communication
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_memo
+      - pending_request
+      - pending_request_user
+      - pending_review_date
+      - pending_review_user
+      - last_note
+      - last_note_user
+      - last_note_date
+      - channel_id
+      - comm_id
+      - project_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - channel_id
+      - last_note_user
+      - pending_request_user
+      - pending_review_user
+      - last_note_date
+      - pending_request
+      - pending_review_date
+      - comm_id
+      - project_id
+      - last_note
+      - project_memo
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - channel_id
+      - last_note_user
+      - pending_request_user
+      - pending_review_user
+      - last_note_date
+      - pending_request
+      - pending_review_date
+      - comm_id
+      - project_id
+      - last_note
+      - project_memo
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_components
