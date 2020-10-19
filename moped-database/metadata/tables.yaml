@@ -1375,6 +1375,18 @@
       - fiscal_year_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - fiscal_year_name
+      - fiscal_year_start
+      - fiscal_year_end
+      - budget_total
+      - expenses_total
+      - budget_available_at_end
+      - project_id
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
