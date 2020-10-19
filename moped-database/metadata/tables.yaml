@@ -87,6 +87,15 @@
       - fiscal_year_end_date
       - active_fy
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - fiscal_year_value
+      - fiscal_year_start_date
+      - fiscal_year_end_date
+      - active_fy
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -96,8 +105,25 @@
       - fiscal_year_start_date
       - fiscal_year_value
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - active_fy
+      - fiscal_year_end_date
+      - fiscal_year_start_date
+      - fiscal_year_value
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - active_fy
+      - fiscal_year_end_date
+      - fiscal_year_start_date
+      - fiscal_year_value
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - active_fy
@@ -121,6 +147,17 @@
       - component_order
       - date_added
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - component_id
+      - component_name
+      - component_categories
+      - map_representation
+      - component_order
+      - date_added
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -132,8 +169,29 @@
       - map_representation
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - component_id
+      - component_order
+      - component_categories
+      - component_name
+      - map_representation
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - component_order
+      - component_categories
+      - component_name
+      - map_representation
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - component_id
