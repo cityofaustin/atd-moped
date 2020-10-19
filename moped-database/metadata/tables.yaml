@@ -2119,6 +2119,23 @@
       - status
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - join_date
+      - allocation
+      - status
+      - project_id
+      - project_personnel_user_id
+      - project_personnel_id
+      - first_name
+      - last_name
+      - workgroup_id
+      - role_name
+      - role_order
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
