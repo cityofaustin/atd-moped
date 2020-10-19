@@ -2528,6 +2528,25 @@
       - status_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - milestone_name
+      - milestone_description
+      - milestone_order
+      - milestone_start
+      - milestone_end
+      - milestone_length
+      - milestone_privacy
+      - is_current_milestone
+      - is_milestone_completed
+      - status_name
+      - project_status_history_id
+      - date_status_changed
+      - project_id
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
