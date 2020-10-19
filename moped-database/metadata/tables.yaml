@@ -2260,6 +2260,26 @@
       - phase_status
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - phase_name
+      - phase_description
+      - phase_rank
+      - completion_percentage
+      - phase_status
+      - phase_privacy
+      - phase_start
+      - phase_end
+      - phase_priority
+      - is_current_phase
+      - completed
+      - project_phase_id
+      - project_id
+      - started_by_user_id
+      - completed_by_user_id
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
