@@ -304,6 +304,38 @@
 - table:
     schema: public
     name: moped_proj_categories
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_id
+      - category_name
+      - proj_category_id
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - proj_category_id
+      - project_id
+      - category_name
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - proj_category_id
+      - project_id
+      - category_name
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_communication
