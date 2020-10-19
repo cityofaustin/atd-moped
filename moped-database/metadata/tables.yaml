@@ -2049,6 +2049,23 @@
       - project_id
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - sponsor_name
+      - sponsor_context
+      - sponsor_context_file
+      - date_added
+      - project_sponsor_id
+      - sponsor_description
+      - sponsor_website
+      - is_external_sponsor
+      - sponsor_allocation
+      - entity_id
+      - project_id
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2066,8 +2083,41 @@
       - date_added
       - project_sponsor_id
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - is_external_sponsor
+      - sponsor_allocation
+      - added_by
+      - entity_id
+      - project_id
+      - sponsor_context
+      - sponsor_context_file
+      - sponsor_description
+      - sponsor_name
+      - sponsor_website
+      - date_added
+      - project_sponsor_id
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - is_external_sponsor
+      - sponsor_allocation
+      - added_by
+      - entity_id
+      - project_id
+      - sponsor_context
+      - sponsor_context_file
+      - sponsor_description
+      - sponsor_name
+      - sponsor_website
+      - date_added
+      - project_sponsor_id
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - is_external_sponsor
