@@ -79,8 +79,12 @@ def user_create_user(claims: list) -> str:
             # Provide email as username, if valid email, Cognito generates UUID for username
             response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
-                Username=json_data["email"],
+                Username=email,
                 TemporaryPassword=password,
+                UserAttributes=[
+                    {"Name": "email", "Value": email},
+                    {"Name": "email_verified", "Value": "true"},
+                ],
             )
 
         except ClientError as e:
