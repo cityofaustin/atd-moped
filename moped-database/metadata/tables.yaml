@@ -1230,6 +1230,59 @@
 - table:
     schema: public
     name: moped_proj_timeline
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - active_phase
+      - active_phase_start
+      - active_phase_end
+      - active_phase_length
+      - active_milestone_start
+      - active_milestone_end
+      - active_milestone_length
+      - current_status
+      - capital_projects_explorer_id
+      - timeline_id
+      - project_id
+      - active_milestone
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_milestone_end
+      - active_milestone_start
+      - active_phase_end
+      - active_phase_start
+      - active_milestone_length
+      - active_phase_length
+      - project_id
+      - timeline_id
+      - active_milestone
+      - active_phase
+      - capital_projects_explorer_id
+      - current_status
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_milestone_end
+      - active_milestone_start
+      - active_phase_end
+      - active_phase_start
+      - active_milestone_length
+      - active_phase_length
+      - project_id
+      - timeline_id
+      - active_milestone
+      - active_phase
+      - capital_projects_explorer_id
+      - current_status
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_project
