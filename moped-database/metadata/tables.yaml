@@ -653,6 +653,16 @@
       - phase_description
       - phase_name
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - phase_name
+      - phase_description
+      - phase_rank
+      - phase_average_length
+      - required_phase
+      - phase_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
