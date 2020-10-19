@@ -1628,6 +1628,16 @@
       - group_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - group_name
+      - proj_group_id
+      - project_id
+      - group_id
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
