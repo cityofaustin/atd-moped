@@ -729,6 +729,15 @@
       - category_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_id
+      - category_name
+      - proj_category_id
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
