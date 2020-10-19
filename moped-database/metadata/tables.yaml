@@ -2643,6 +2643,18 @@
       - status_note
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - status_note
+      - created_by_personnel
+      - date_written
+      - proj_status_id
+      - project_id
+      - status_name
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
