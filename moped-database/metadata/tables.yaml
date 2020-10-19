@@ -1545,6 +1545,17 @@
       - funding_source_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - proj_fund_source_id
+      - funding_source_name
+      - funding_source_category
+      - project_id
+      - funding_source_other
+      - date_added
+      - added_by
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
