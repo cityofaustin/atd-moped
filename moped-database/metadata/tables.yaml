@@ -2753,6 +2753,22 @@
       - capital_projects_explorer_id
       - current_status
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - active_phase
+      - active_phase_start
+      - active_phase_end
+      - active_phase_length
+      - active_milestone_start
+      - active_milestone_end
+      - active_milestone_length
+      - current_status
+      - capital_projects_explorer_id
+      - timeline_id
+      - project_id
+      - active_milestone
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
