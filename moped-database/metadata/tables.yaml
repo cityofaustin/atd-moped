@@ -42,6 +42,35 @@
 - table:
     schema: public
     name: moped_city_fiscal_years
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - fiscal_year_value
+      - fiscal_year_start_date
+      - fiscal_year_end_date
+      - active_fy
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_fy
+      - fiscal_year_end_date
+      - fiscal_year_start_date
+      - fiscal_year_value
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - active_fy
+      - fiscal_year_end_date
+      - fiscal_year_start_date
+      - fiscal_year_value
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_components
