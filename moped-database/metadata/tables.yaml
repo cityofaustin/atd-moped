@@ -2361,6 +2361,23 @@
       - project_id
       - active_milestone
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - active_phase
+      - active_phase_start
+      - active_phase_end
+      - active_phase_length
+      - active_milestone_start
+      - active_milestone_end
+      - active_milestone_length
+      - current_status
+      - capital_projects_explorer_id
+      - timeline_id
+      - project_id
+      - active_milestone
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2378,8 +2395,41 @@
       - capital_projects_explorer_id
       - current_status
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - active_milestone_end
+      - active_milestone_start
+      - active_phase_end
+      - active_phase_start
+      - active_milestone_length
+      - active_phase_length
+      - project_id
+      - timeline_id
+      - active_milestone
+      - active_phase
+      - capital_projects_explorer_id
+      - current_status
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - active_milestone_end
+      - active_milestone_start
+      - active_phase_end
+      - active_phase_start
+      - active_milestone_length
+      - active_phase_length
+      - project_id
+      - timeline_id
+      - active_milestone
+      - active_phase
+      - capital_projects_explorer_id
+      - current_status
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - active_milestone_end
