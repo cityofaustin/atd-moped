@@ -862,6 +862,41 @@
 - table:
     schema: public
     name: moped_proj_notes
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_partners
