@@ -3087,6 +3087,14 @@
       - status_priority
       - status_name
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - status_name
+      - status_flag
+      - status_priority
+      - status_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
