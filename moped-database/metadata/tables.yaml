@@ -153,6 +153,32 @@
 - table:
     schema: public
     name: moped_fund_sources
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - funding_source_id
+      - funding_source_name
+      - funding_source_category
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_source_id
+      - funding_source_category
+      - funding_source_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_source_id
+      - funding_source_category
+      - funding_source_name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_group
