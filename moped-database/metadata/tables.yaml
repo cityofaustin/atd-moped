@@ -2275,6 +2275,19 @@
       - date_added
       - added_by
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - status_note
+      - created_by_personnel
+      - date_written
+      - proj_status_id
+      - project_id
+      - status_name
+      - date_added
+      - added_by
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -2288,8 +2301,33 @@
       - status_note
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - date_written
+      - added_by
+      - proj_status_id
+      - project_id
+      - created_by_personnel
+      - status_name
+      - status_note
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - date_written
+      - added_by
+      - proj_status_id
+      - project_id
+      - created_by_personnel
+      - status_name
+      - status_note
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - date_written
