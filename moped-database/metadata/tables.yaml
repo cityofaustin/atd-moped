@@ -1171,6 +1171,19 @@
       - project_id
       - date_added
       backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - fiscal_year_name
+      - fiscal_year_start
+      - fiscal_year_end
+      - budget_total
+      - expenses_total
+      - budget_available_at_end
+      - project_id
+      - date_added
+      backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
@@ -1184,8 +1197,33 @@
       - fiscal_year_name
       - date_added
       filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - fiscal_year_end
+      - fiscal_year_start
+      - budget_available_at_end
+      - budget_total
+      - expenses_total
+      - project_id
+      - fiscal_year_name
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
+    permission:
+      columns:
+      - fiscal_year_end
+      - fiscal_year_start
+      - budget_available_at_end
+      - budget_total
+      - expenses_total
+      - project_id
+      - fiscal_year_name
+      - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
     permission:
       columns:
       - fiscal_year_end
