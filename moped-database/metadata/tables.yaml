@@ -680,6 +680,44 @@
 - table:
     schema: public
     name: moped_proj_fund_source
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - proj_fund_source_id
+      - funding_source_name
+      - funding_source_category
+      - project_id
+      - funding_source_other
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_source_other
+      - added_by
+      - proj_fund_source_id
+      - project_id
+      - funding_source_category
+      - funding_source_name
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_source_other
+      - added_by
+      - proj_fund_source_id
+      - project_id
+      - funding_source_category
+      - funding_source_name
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_groups
