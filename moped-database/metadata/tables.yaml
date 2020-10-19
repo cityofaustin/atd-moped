@@ -366,6 +366,41 @@
 - table:
     schema: public
     name: moped_proj_fund_opp
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - fund_opp_id
+      - fund_opp_name
+      - project_id
+      - proj_fund_opp_id
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - fund_opp_id
+      - proj_fund_opp_id
+      - project_id
+      - fund_opp_name
+      - date_added
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - fund_opp_id
+      - proj_fund_opp_id
+      - project_id
+      - fund_opp_name
+      - date_added
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_fund_source
