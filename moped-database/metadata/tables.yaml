@@ -1152,6 +1152,18 @@
       - workgroups
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_sponsors
+      - project_groups
+      - partners
+      - workgroups
+      - project_personnel
+      - entity_list_id
+      - project_id
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
