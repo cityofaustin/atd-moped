@@ -3264,6 +3264,13 @@
       - workgroup_name
       - date_added
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - workgroup_name
+      - workgroup_id
+      - date_added
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
