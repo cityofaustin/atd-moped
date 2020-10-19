@@ -576,6 +576,15 @@
       - milestone_description
       - milestone_name
       filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - milestone_name
+      - milestone_description
+      - milestone_order
+      - required_milestone
+      - milestone_id
+      filter: {}
   update_permissions:
   - role: moped-admin
     permission:
