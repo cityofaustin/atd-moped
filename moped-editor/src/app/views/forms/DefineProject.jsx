@@ -6,7 +6,9 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { FormOne, FormTwo, FormThree } from "./ProjectForms";
+import DefineFormOne from './DefineFormOne';
+import DefineFormTwo from './DefineFormTwo';
+import DefineFormThree from './DefineFormThree';
 import { Breadcrumb } from "matx"; 
 
 function getSteps() {
@@ -16,11 +18,11 @@ function getSteps() {
 function getStepContent(step, formContent) {
   switch (step) {
     case 0:
-      return <FormOne {...{ formContent }} />;
+      return <DefineFormOne {...{ formContent }} />;
     case 1:
-      return <FormTwo {...{ formContent }} />;
+      return <DefineFormTwo {...{ formContent }} />;
     case 2:
-      return <FormThree {...{ formContent }} />;
+      return <DefineFormThree {...{ formContent }} />;
     default:
       return "Unknown step";
   }

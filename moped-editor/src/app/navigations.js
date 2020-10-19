@@ -19,15 +19,10 @@ export const navigations = [
         iconText: "E"
       },
       {
-        name: "New Project",
-        path: "/forms/new-project",
+        name: "Define Project",
+        path: "/forms/DefineProject",
         iconText: "B"
-      },
-      {
-        name: "Add Staff",
-        path: "/forms/addStaff",
-        iconText: "B"
-      }
+      } 
     ]
   },
   {

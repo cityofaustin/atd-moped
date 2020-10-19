@@ -1,16 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { Breadcrumb } from "matx";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { makeStyles } from '@material-ui/core/styles';
+import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
-const NewProject = ({ formContent }) => {
+  const DefineFormOne = ({ formContent }) => {
   const methods = useFormContext();
-  const { register, handleSubmit, setValue, control } = methods;
-
-  // useEffect(() => {
-  //   reset({ ...formContent.one }, { errors: true });
-  // }, []);
+  const { register, handleSubmit, setValue, reset, control } = methods;
+ 
+  useEffect(() => {
+    reset({ ...formContent.one }, { errors: true });
+  }, []);
 
   const PHASES_QUERY = gql`
   query Phases {
@@ -45,7 +47,7 @@ const PRIORITY_QUERY = gql`
 `;
 
   const addNewProject = gql `
-  mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $project_priority: Int!="", $current_status: String!="", $eCapris_id: bpchar!="", $fiscal_year: String!="", $capitally_funded: Boolean!="", $start_date: date="") {
+  mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $project_priority: Int!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $capitally_funded: Boolean!="", $start_date: date="") {
     insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, project_priority: $project_priority, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year, capitally_funded: $capitally_funded, start_date: $start_date }) {
       affected_rows
       returning {
@@ -108,14 +110,6 @@ const PRIORITY_QUERY = gql`
   if (priorityError) return `Error! ${priorityError.message}`;
 
   return (
-   
-    <div>
-          <Breadcrumb
-            routeSegments={[
-              { name: "Forms", path: "/new-project" },
-              { name: "New Project" }
-            ]}
-          />  
     <form onSubmit={handleSubmit(onSubmit)}
         style={{padding: 10}}>
       <h4>Add A Project</h4>
@@ -126,7 +120,6 @@ const PRIORITY_QUERY = gql`
           inputRef={register} 
           label="Project Name" 
           name="newProject"
-          required="true"
           variant="standard"
         />
       </Grid>
@@ -136,8 +129,7 @@ const PRIORITY_QUERY = gql`
           inputRef={register} 
           label="Project Description" 
           name="ProjDesc"
-          required="true"
-          multiline="true"
+          multiline={true}
           variant="standard"
         />
       </Grid>
@@ -164,7 +156,7 @@ const PRIORITY_QUERY = gql`
         <Controller
           as={<Select 
             ref={register}
-            name="FiscalYear"  
+            name="FiscalYear" 
             onChange= {onFiscalSelected}>
             {fiscal.moped_city_fiscal_years.map(fiscal => (
               <MenuItem 
@@ -175,6 +167,7 @@ const PRIORITY_QUERY = gql`
             ))}
           </Select>}
             name="FiscalYear"
+            defaultValue=""
             control={control}
           />
         </InputLabel>
@@ -194,6 +187,7 @@ const PRIORITY_QUERY = gql`
             ))}
           </Select>}
           name="Status"
+          defaultValue=""
           control={control}
           />
         </InputLabel> 
@@ -215,6 +209,7 @@ const PRIORITY_QUERY = gql`
             ))}
           </Select>}
           name="Phase"
+          defaultValue=""
           control={control}
           />
         </InputLabel>   
@@ -236,6 +231,7 @@ const PRIORITY_QUERY = gql`
             ))}
           </Select>}
           name="Priority"
+          defaultValue=""
           control={control}
           /> 
         </InputLabel> 
@@ -259,7 +255,6 @@ const PRIORITY_QUERY = gql`
           inputRef={register} 
           label="e Capris Id" 
           name="eCaprisId"
-          required="true"
           variant="standard"
           />
       </Grid>
@@ -275,10 +270,7 @@ const PRIORITY_QUERY = gql`
       </Grid>   
       </Grid> 
     </form>
-  </div>     
-  )
-}
+  );
+};
 
-
-export default NewProject;
-
+export default DefineFormOne;
