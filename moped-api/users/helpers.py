@@ -177,7 +177,7 @@ def format_claims(user_id: str, roles: list) -> dict:
     """
     return {
         "x-hasura-user-id": user_id,
-        "x-hasura-default-role": "user",
+        "x-hasura-default-role": "moped-viewer",
         "x-hasura-allowed-roles": roles,
     }
 

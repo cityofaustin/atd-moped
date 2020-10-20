@@ -68,7 +68,7 @@ def user_create_user(claims: list) -> str:
     Returns created user details
     :return str:
     """
-    if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
         try:
@@ -122,7 +122,7 @@ def user_update_user(id: str, claims: list) -> str:
     Returns updated user details
     :return str:
     """
-    if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
         json_data = request.json
@@ -155,7 +155,7 @@ def user_delete_user(id: str, claims: list) -> str:
     Returns created user details
     :return str:
     """
-    if is_valid_user(current_cognito_jwt) and has_user_role("user", claims):
+    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
         response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
