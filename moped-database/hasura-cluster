@@ -52,7 +52,7 @@ function wait_server_ready() {
     sleep 1
     INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
   done
-  echo "[λ] Hasura server ready!                  ✅";
+  echo "[λ] Hasura server ready!                    ✅";
 }
 
 #
