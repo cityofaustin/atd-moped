@@ -25,6 +25,12 @@ def create_user_claims():
     }
 
 
+mock_users = [
+    {"email": "neo@test.test", "temp_password": "test123"},
+    {"email": "morpheus@test.test", "temp_password": "test123"},
+]
+
+
 class TestUsers(TestApp):
     def test_is_valid_user(self):
         """Test valid user attributes in JWT payload."""
@@ -97,23 +103,24 @@ class TestUsers(TestApp):
         user_pool_id = cognito_response["UserPool"]["Id"]
 
         # Add some mock users
+        for user in mock_users:
+            cognito_client.admin_create_user(
+                UserPoolId=user_pool_id,
+                Username=user["email"],
+                TemporaryPassword=user["temp_password"],
+            )
 
         # Patch the user pool id in this route with the mock id
         patcher = patch("users.users.USER_POOL", new=user_pool_id)
         patcher.start()
 
         response = self.client.get("/users/")
-        response_dict = self.parse_response(response.data)
+        response_list = self.parse_response(response.data)
 
-        assert response_dict is False
-        # assert isinstance(response_dict, str)
-        # assert "description" in response_dict
-        # assert "error" in response_dict
-        # assert (
-        #     "Request does not contain a well-formed access token"
-        #     in response_dict.get("description", "")
-        # )
-        # assert "Authorization Required" in response_dict.get("error", "")
+        assert isinstance(response_list, list)
+        assert len(response_list) is 2
+        assert "Username" in response_list[0]
+        assert "UserCreateDate" in response_list[0]
 
     @mock_cognitoidp
     def test_gets_user_no_auth(self):
