@@ -5,7 +5,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 // import { gql, useMutation, useQuery } from "@apollo/client";
 
 
-const DefineFormThree= ({ formContent }) => {
+const MapProjectGeometry= ({ formContent }) => {
   const methods = useFormContext();
   const { reset } = methods;
   useEffect(() => {
@@ -16,15 +16,17 @@ const DefineFormThree= ({ formContent }) => {
 
   return (
     <div> 
-        <Autocomplete
+      <form>
+      <Autocomplete
           id="selectedOptions"
           options={options}
           style={{ width: 150 }}
           renderInput={(params) => <TextField {...params} label="Options" 
           margin="normal" />} 
         />
+      </form>
     </div>
   );
 }
   
-export default DefineFormThree;
+export default MapProjectGeometry;

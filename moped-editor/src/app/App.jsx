@@ -9,9 +9,9 @@ import AppContext from "./appContext";
 import history from "history.js";
 import routes from "./RootRoutes";
 import { Store } from "./redux/Store";
-import Auth from "./auth/Auth";
+// import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
-import AuthGuard from "./auth/AuthGuard";
+// import AuthGuard from "./auth/AuthGuard";
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -34,24 +34,24 @@ const App = () => {
     console.log("FORM CONTEXT", watch(), errors);
   }, [watch, errors]);
 
-  return (
+  return (          
     <ApolloProvider client={client}>
-      <FormProvider {...methods}>
-        <AppContext.Provider value={{ routes }}>
-          <Provider store={Store}>
-            <MatxTheme>
-              <Auth>
-                <Router history={history} path={`${process.env.PUBLIC_URL}/`}>
-                  <AuthGuard>
-                    <MatxLayout />
-                  </AuthGuard>
-                </Router> 
-              </Auth>
-            </MatxTheme>  
-          </Provider>
-        </AppContext.Provider>
-      </FormProvider>
-    </ApolloProvider>
+      <AppContext.Provider value={{ routes }}>
+        <Provider store={Store}>
+          <MatxTheme>
+            <FormProvider {...methods}>
+            {/* <Auth> */}
+              <Router history={history} path={`${process.env.PUBLIC_URL}/`}>
+                {/* <AuthGuard> */}
+                  <MatxLayout />
+                {/* </AuthGuard> */}
+              </Router> 
+            {/* </Auth> */}
+            </FormProvider>
+          </MatxTheme>  
+        </Provider>
+      </AppContext.Provider>
+  </ApolloProvider>
   );
 };
 

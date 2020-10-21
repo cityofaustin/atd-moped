@@ -6,7 +6,7 @@ import { gql, useMutation, useQuery } from "@apollo/client";
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
-const DefineFormTwo = ({ formContent }) => {
+const ProjectTeamTable = ({ formContent }) => {
   const methods = useFormContext();
   const { reset, register, handleSubmit } = methods;
   useEffect(() => {
@@ -62,16 +62,15 @@ const DefineFormTwo = ({ formContent }) => {
   const [addStaff] = useMutation(TEAMS_MUTATION);
    
   const onSubmit = (data) => {
-    let first_name=data.First;
     let last_name=data.Last;
     let workgroup=data.Group;
     let role_name=data.Role; 
-    addStaff({variables: {workgroup, role_name, first_name, last_name}});    
+    addStaff({variables: {workgroup, role_name, last_name}});    
   }; 
-
+  
   const MEMBERS_QUERY = gql`
     query Members {
-      moped_proj_personnel(order_by: {last_name: asc}) {
+      moped_coa_staff(order_by: {last_name: asc}) {
         full_name
         first_name
         last_name
@@ -99,18 +98,18 @@ if (roleLoading) return 'Loading...';
 if (roleError) return `Error! ${roleError.message}`;
 
 let nameOption = [];
-members.moped_proj_personnel.forEach((name) => nameOption.push(name.last_name));
+members.moped_coa_staff.forEach((name) => nameOption.push(name.last_name));
 
 let groupOption = [];
-members.moped_proj_personnel.forEach((group) => groupOption.push(group.workgroup));
+members.moped_coa_staff.forEach((group) => groupOption.push(group.workgroup));
 
 let roleOption = [];
 roles.moped_project_roles.forEach((role) => roleOption.push(role.project_role_name));
-           
+          
 return (
   <div>
-    <form onSubmit={handleSubmit(onSubmit)}style={{padding: 10}}>   
-     <Table className={classes.table}>
+    <form style={{padding: 10}}>   
+     <Table className="classes">
      <TableHead>
        <TableRow>
          <TableCell>Row</TableCell>
@@ -124,59 +123,49 @@ return (
         <TableRow id="add" key={index}>
          <TableCell>{item.id}</TableCell>
          <TableCell> 
-         <Autocomplete
-              ref={register}
+           <Autocomplete
               id="selectedName"
               options={nameOption}
               style={{ width: 150 }}
-              renderInput={(params) => <TextField {...params} label="Select Staff" 
-              margin="normal" />} 
+              renderInput={(params) => <TextField {...params} label="Select Staff" inputRef={register} name="Last" 
+              margin="normal" />}  
             />
          </TableCell>
+         <TableCell>
+            <Autocomplete
+              id="selectedRole"
+              options={roleOption}
+              style={{ width: 150 }}
+              renderInput={(params) => <TextField {...params} label="Select a Role"  inputRef={register} name="Role" margin="normal" />} 
+            />
+         </TableCell> 
          <TableCell> 
-         <Autocomplete
-              ref={register}
+            <Autocomplete
               id="selectedGroup"
               options={groupOption}
               style={{ width: 150 }}
-              renderInput={(params) => <TextField {...params} label="Select a WorkGroup" margin="normal" />} 
+              renderInput={(params) => <TextField {...params} label="Select a WorkGroup" inputRef={register} name="Group" margin="normal" />} 
             />
-         </TableCell>
-         <TableCell> 
-            <Autocomplete
-              ref={register}
-              id="selectedRoles"
-              options={roleOption}
-              style={{ width: 150 }}
-              renderInput={(params) => <TextField {...params} label="Select a Role" margin="normal" />} 
-            />
-         </TableCell>
-         <TableCell> 
-           <Button 
-             color="secondary"
-             onClick={handleRemoveRow}>
-             <Icon>delete</Icon>
-            </Button>
-        </TableCell>
+         </TableCell>  
+         <TableCell>
+            <Button
+              color="secondary"
+              onClick={handleRemoveRow}>
+              <Icon>delete</Icon>
+            </Button>  
+          </TableCell>
       </TableRow> 
-      ))}  
-        <Button 
-          color="secondary"
-          onClick={handleAddRow}>
-          <Icon>person_add</Icon>
-        </Button> 
-      </TableBody>
+      ))}   
+      </TableBody>   
     </Table> 
-    <Button 
-        color="primary" 
-        variant="contained" 
-        type="submit">
-        <Icon>send</Icon>
-        <span className="pl-2 capitalize">Submit</span>
-    </Button>
+    <Button
+      color="secondary"
+      onClick={handleAddRow}>
+    <Icon>person_add</Icon> 
+    </Button>  
   </form>
 </div>
 );
 }
   
-export default DefineFormTwo;
+export default ProjectTeamTable;

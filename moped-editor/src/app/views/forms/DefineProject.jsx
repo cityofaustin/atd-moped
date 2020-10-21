@@ -6,9 +6,10 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import DefineFormOne from './DefineFormOne';
-import DefineFormTwo from './DefineFormTwo';
-import DefineFormThree from './DefineFormThree';
+import NewProjectForm from './NewProjectForm';
+import ProjectTeamTable from './ProjectTeamTable';
+import MapProjectGeometry from './MapProjectGeometry';
+import { gql, useMutation } from "@apollo/client";
 import { Breadcrumb } from "matx"; 
 
 function getSteps() {
@@ -18,11 +19,11 @@ function getSteps() {
 function getStepContent(step, formContent) {
   switch (step) {
     case 0:
-      return <DefineFormOne {...{ formContent }} />;
+      return <NewProjectForm {...{ formContent }} />;
     case 1:
-      return <DefineFormTwo {...{ formContent }} />;
+      return <ProjectTeamTable {...{ formContent }} />;
     case 2:
-      return <DefineFormThree {...{ formContent }} />;
+      return <MapProjectGeometry {...{ formContent }} />;
     default:
       return "Unknown step";
   }
@@ -80,12 +81,41 @@ export const DefineProject = () => {
     setCompiledForm({});
   };
 
+  const addNewProject = gql `
+mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="") {
+  insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year  }) {
+    affected_rows
+    returning {
+      project_name
+      project_description
+   
+      current_phase
+      current_status
+      eCapris_id
+      fiscal_year
+     
+    }
+  }
+}    
+`;
+
+  const [addProject] = useMutation(addNewProject);   
   const handleSubmit = form => {
-    if (_.isEmpty(errors)) {
-      console.log("submit", form);
+  if (_.isEmpty(errors)) {
+  console.log("submit", form);
+  let project_name=form.one.newProject;
+  let project_description=form.one.ProjDesc;
+  let eCapris_id=form.one.eCaprisId;
+  // let capitally_funded=data.capitalFunded;
+  // let start_date=data.date;
+  let current_phase=form.one.Phase;
+  // let project_priority=data.Priority;
+  let current_status=form.one.Status;
+  let fiscal_year=form.one.FiscalYear;
+  addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, fiscal_year}});     
     }
   };
-
+  
   return (
     <div>
        <Breadcrumb
