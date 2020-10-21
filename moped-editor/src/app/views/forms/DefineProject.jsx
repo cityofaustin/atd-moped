@@ -97,9 +97,24 @@ mutation MyMutation($project_name: String!="", $project_description: String!="",
     }
   }
 }    
-`;
+`;  
+  const [addProject] = useMutation(addNewProject); 
 
-  const [addProject] = useMutation(addNewProject);   
+  const TEAMS_MUTATION = gql`
+  mutation Teams ($workgroup: String!="", $role_name: String!="", $first_name: String!="", $last_name: String!="") {
+    insert_moped_proj_personnel(objects: {workgroup: $workgroup, role_name: $role_name, first_name: $first_name, last_name: $last_name}) {
+      affected_rows
+      returning {
+        workgroup
+        role_name
+        first_name
+        last_name
+      }
+    }
+  }
+`; 
+  const [addStaff] = useMutation(TEAMS_MUTATION);
+   
   const handleSubmit = form => {
   if (_.isEmpty(errors)) {
   console.log("submit", form);
@@ -110,9 +125,13 @@ mutation MyMutation($project_name: String!="", $project_description: String!="",
   // let start_date=data.date;
   let current_phase=form.one.Phase;
   // let project_priority=data.Priority;
-  let current_status=form.one.Status;
+  let current_status=form.one.Status; 
   let fiscal_year=form.one.FiscalYear;
-  addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, fiscal_year}});     
+  addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, fiscal_year}}); 
+  let last_name=form.two.Last;
+  let workgroup=form.two.Group;
+  let role_name=form.two.Role; 
+  addStaff({variables: {workgroup, role_name, last_name}});     
     }
   };
   

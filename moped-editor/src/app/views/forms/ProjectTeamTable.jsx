@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { TextField, Button, Icon } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { gql, useMutation, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 
 const ProjectTeamTable = ({ formContent }) => {
   const methods = useFormContext();
-  const { reset, register, handleSubmit } = methods;
+  const { reset, register } = methods;
   useEffect(() => {
     reset({ ...formContent.two }, { errors: true });
   }, []);
@@ -44,30 +44,7 @@ const ProjectTeamTable = ({ formContent }) => {
     if(rows.length > 1)
     setRows(rows.slice(0, -1));
   };
-
-  const TEAMS_MUTATION = gql`
-    mutation Teams ($workgroup: String!="", $role_name: String!="", $first_name: String!="", $last_name: String!="") {
-      insert_moped_proj_personnel(objects: {workgroup: $workgroup, role_name: $role_name, first_name: $first_name, last_name: $last_name}) {
-        affected_rows
-        returning {
-          workgroup
-          role_name
-          first_name
-          last_name
-        }
-      }
-    }
-  `; 
-
-  const [addStaff] = useMutation(TEAMS_MUTATION);
-   
-  const onSubmit = (data) => {
-    let last_name=data.Last;
-    let workgroup=data.Group;
-    let role_name=data.Role; 
-    addStaff({variables: {workgroup, role_name, last_name}});    
-  }; 
-  
+ 
   const MEMBERS_QUERY = gql`
     query Members {
       moped_coa_staff(order_by: {last_name: asc}) {
@@ -108,14 +85,14 @@ roles.moped_project_roles.forEach((role) => roleOption.push(role.project_role_na
           
 return (
   <div>
-    <form style={{padding: 10}}>   
-     <Table className="classes">
+    <form style={{padding: 10}}>    
+     <Table className={classes.table}>
      <TableHead>
        <TableRow>
          <TableCell>Row</TableCell>
          <TableCell>Name</TableCell>
-         <TableCell>WorkGroup</TableCell>
          <TableCell>Role</TableCell>
+         <TableCell>WorkGroup</TableCell> 
        </TableRow>
      </TableHead>
      <TableBody>
@@ -125,6 +102,8 @@ return (
          <TableCell> 
            <Autocomplete
               id="selectedName"
+              name="Last"
+              ref={register}
               options={nameOption}
               style={{ width: 150 }}
               renderInput={(params) => <TextField {...params} label="Select Staff" inputRef={register} name="Last" 
@@ -134,6 +113,8 @@ return (
          <TableCell>
             <Autocomplete
               id="selectedRole"
+              name="Role"
+              ref={register}
               options={roleOption}
               style={{ width: 150 }}
               renderInput={(params) => <TextField {...params} label="Select a Role"  inputRef={register} name="Role" margin="normal" />} 
@@ -142,6 +123,8 @@ return (
          <TableCell> 
             <Autocomplete
               id="selectedGroup"
+              ref={register}
+              name="Group"
               options={groupOption}
               style={{ width: 150 }}
               renderInput={(params) => <TextField {...params} label="Select a WorkGroup" inputRef={register} name="Group" margin="normal" />} 
