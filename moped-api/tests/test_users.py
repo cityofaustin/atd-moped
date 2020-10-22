@@ -23,6 +23,7 @@ def create_user_claims():
 mock_users = [
     {"email": "neo@test.test", "temp_password": "test123"},
     {"email": "morpheus@test.test", "temp_password": "test123"},
+    {"email": "trinity@test.test", "temp_password": "test123"},
 ]
 
 
@@ -41,19 +42,28 @@ def cognito(aws_credentials):
         yield boto3.client("cognito-idp")
 
 
+@pytest.fixture(scope="function")
 def create_user_pool(cognito):
     cognito_response = cognito.create_user_pool(PoolName="test_pool")
     user_pool_id = cognito_response["UserPool"]["Id"]
 
+    user_ids = []
+
     # Add mock users to pool
     for user in mock_users:
-        cognito.admin_create_user(
+        response = cognito.admin_create_user(
             UserPoolId=user_pool_id,
             Username=user["email"],
             TemporaryPassword=user["temp_password"],
+            UserAttributes=[
+                {"Name": "email", "Value": user["email"]},
+                {"Name": "email_verified", "Value": "true"},
+            ],
         )
+        user_id = response["User"]["Username"]
+        user_ids.append(user_id)
 
-    return user_pool_id
+    return {"user_pool_id": user_pool_id, "user_ids": user_ids}
 
 
 class TestUsers(TestApp):
@@ -119,12 +129,15 @@ class TestUsers(TestApp):
 
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
-    def test_gets_users(self, mock_cognito_auth_required, mock_is_valid_user, cognito):
+    def test_gets_users(
+        self, mock_cognito_auth_required, mock_is_valid_user, create_user_pool
+    ):
         """Get users."""
         mock_is_valid_user.return_value = True
 
         # Mock user pool
-        user_pool_id = create_user_pool(cognito)
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
 
         # Patch the user pool id with the mock pool id
         patcher = patch("users.users.USER_POOL", new=user_pool_id)
@@ -133,10 +146,49 @@ class TestUsers(TestApp):
         response = self.client.get("/users/")
         response_list = self.parse_response(response.data)
 
+        # Collect mock user emails
+        mock_usernames = [obj["email"] for obj in mock_users]
+
         assert isinstance(response_list, list)
         assert len(response_list) is len(mock_users)
         assert "Username" in response_list[0]
         assert "UserCreateDate" in response_list[0]
+        assert response_list[0]["Username"] in mock_usernames
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.load_claims")
+    def test_get_user(
+        self,
+        mock_cognito_auth_required,
+        mock_is_valid_user,
+        mock_load_claims,
+        create_user_pool,
+    ):
+        """Get user."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_load_claims.return_value = create_user_claims()[
+            "https://hasura.io/jwt/claims"
+        ]
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+        user_ids = user_pool_dict["user_ids"]
+
+        # Patch the user pool id with the mock pool id
+        patcher = patch("users.users.USER_POOL", new=user_pool_id)
+        patcher.start()
+
+        user_id = user_ids[0]
+        response = self.client.get(f"/users/{user_id}")
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert "Username" in response_dict
+        assert "UserCreateDate" in response_dict
+        assert response_dict["Username"] == user_id
 
     @mock_cognitoidp
     def test_gets_user_no_auth(self):
