@@ -44,7 +44,7 @@ function wait_server_ready() {
   INITIALIZATION_TIMEOUT_LIMIT=60
   INITIALIZATION_COUNT=1
   while [ "$(hasura_server_ready)" = "FALSE" ]; do
-    echo "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔"
+    echo -ne "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔\r";
     if [ $INITIALIZATION_COUNT -gt $INITIALIZATION_TIMEOUT_LIMIT ]; then
       echo "Hasura server unavailable"
       exit 1
@@ -52,6 +52,7 @@ function wait_server_ready() {
     sleep 1
     INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
   done
+  echo "[λ] Hasura server ready!                    ✅";
 }
 
 #
