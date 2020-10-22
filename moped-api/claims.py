@@ -1,5 +1,6 @@
 import json
 from flask_cognito import _request_ctx_stack, current_cognito_jwt
+from functools import wraps
 from werkzeug.local import LocalProxy
 
 from typing import Callable
@@ -51,6 +52,7 @@ def normalize_claims(func: Callable) -> Callable:
     :return Callable: The wrapper function
     """
 
+    @wraps(func)
     def wrapper(*args, **kwargs):
         print("resolve_hasura_claims: start")
         claims = current_cognito_jwt._get_current_object()

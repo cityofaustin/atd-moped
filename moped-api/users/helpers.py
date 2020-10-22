@@ -1,21 +1,56 @@
-#!/usr/bin/env python3
-
 import os, sys
 import json
 import boto3
 import logging
 import traceback
 
+from config import api_config
 from cryptography.fernet import Fernet
 from botocore.exceptions import ClientError
 from typing import Optional
 
+MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 AWS_COGNITO_DYNAMO_TABLE_NAME = os.getenv("AWS_COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_NAME = os.getenv("AWS_COGNITO_DYNAMO_SECRET_NAME", None)
 
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+def is_valid_user(current_cognito_jwt):
+    user_dict = current_cognito_jwt._get_current_object()
+
+    valid_fields = [
+        "email",
+        "cognito:username",
+        "https://hasura.io/jwt/claims",
+        "email_verified",
+        "aud",
+    ]
+
+    user_email = user_dict.get("email", None)
+
+    # Check for valid fields
+    for field in valid_fields:
+        if user_dict.get(field, False) == False:
+            return False
+
+    # Check for verified email
+    if user_dict["email_verified"] != True:
+        return False
+
+    # Check email for austintexas.gov
+    if str(user_email).endswith("@austintexas.gov") is False:
+        return False
+
+    return True
+
+
+def has_user_role(role, claims):
+    user_claims = claims.get("https://hasura.io/jwt/claims", {})
+    allowed_roles = user_claims.get("x-hasura-allowed-roles", False)
+
+    if allowed_roles != False:
+        if role in allowed_roles:
+            return True
+    return False
 
 
 def parse_key(aws_key_name: str, aws_key_json: str) -> Optional[str]:
@@ -38,37 +73,32 @@ def get_secret(secret_name: str) -> Optional[str]:
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
-    client = session.client(
-        service_name='secretsmanager',
-        region_name=region_name
-    )
+    client = session.client(service_name="secretsmanager", region_name=region_name)
 
     # In this sample we only handle the specific exceptions for the 'GetSecretValue' API.
     # See https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
     # We rethrow the exception by default.
 
     try:
-        get_secret_value_response = client.get_secret_value(
-            SecretId=secret_name
-        )
+        get_secret_value_response = client.get_secret_value(SecretId=secret_name)
     except ClientError as e:
-        if e.response['Error']['Code'] == 'DecryptionFailureException':
+        if e.response["Error"]["Code"] == "DecryptionFailureException":
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
-        elif e.response['Error']['Code'] == 'InternalServiceErrorException':
+        elif e.response["Error"]["Code"] == "InternalServiceErrorException":
             # An error occurred on the server side.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
-        elif e.response['Error']['Code'] == 'InvalidParameterException':
+        elif e.response["Error"]["Code"] == "InvalidParameterException":
             # You provided an invalid value for a parameter.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
-        elif e.response['Error']['Code'] == 'InvalidRequestException':
+        elif e.response["Error"]["Code"] == "InvalidRequestException":
             # You provided a parameter value that is not valid for the current state of the resource.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
-        elif e.response['Error']['Code'] == 'ResourceNotFoundException':
+        elif e.response["Error"]["Code"] == "ResourceNotFoundException":
             # We can't find the resource that you asked for.
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
@@ -77,10 +107,10 @@ def get_secret(secret_name: str) -> Optional[str]:
     else:
         # Decrypts secret using the associated KMS CMK.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
-        if 'SecretString' in get_secret_value_response:
+        if "SecretString" in get_secret_value_response:
             return parse_key(
                 aws_key_name=secret_name,
-                aws_key_json=get_secret_value_response['SecretString'],
+                aws_key_json=get_secret_value_response["SecretString"],
             )
         else:
             # If the secret string is not read by now, then it is binary. Return None
@@ -118,14 +148,9 @@ def retrieve_claims(user_id: str) -> Optional[str]:
     :param str user_id: The user id (uuid)
     :return Optional[str]: The claims string (encrypted)
     """
-    dynamodb = boto3.client('dynamodb', region_name="us-east-1")
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     return dynamodb.get_item(
-        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
-        Key={
-            "user_id": {
-                "S": user_id
-            },
-        }
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME, Key={"user_id": {"S": user_id},}
     )["Item"]["claims"]["S"]
 
 
@@ -137,67 +162,38 @@ def load_claims(user_id: str) -> dict:
     """
     claims = retrieve_claims(user_id=user_id)
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
-    decrypted_claims = decrypt(
-        fernet_key=fernet_key,
-        content=claims
-    )
+    decrypted_claims = decrypt(fernet_key=fernet_key, content=claims)
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = user_id
     return claims
 
 
-def handler(event: dict, context: object) -> dict:
+def format_claims(user_id: str, roles: list) -> dict:
     """
-    Entrypoint for AWS Lambda
-    :param dict event: The aws event dictionary
-    :param object context: The aws context object
-    :return dict:
+    Formats claims to prepare for encrypting and putting in DynamoDB
+    :param str user_id: The user id to retrieve the claims for
+    :param list roles: The roles to set as Hasura allowed roles
+    :return dict: The claims
     """
-    logger.info(f"Function: {context.function_name}")
-    logger.info(f"Request ID: {context.aws_request_id}")
-    logger.info(f"Event: {json.dumps(event)}")
-
-    #
-    # Check if the event is a cloudwatch event
-    #
-    event_source = event.get("source", "none")
-    event_type = event.get("detail-type", "none")
-    if event_source == "aws.events" \
-            and event_type == "Scheduled Event":
-        # Return the event so it shows as a successful transaction
-        return event
-
-    # Initialize the claims object
-    claims = {}
-    try:
-        hasura_cognito_user_id = event["userName"]
-        claims = load_claims(hasura_cognito_user_id)
-    except Exception:
-        """
-            After retrieving the exception name, value, and stacktrace,
-            we format it into a json-dumped string so all three appear
-            in one log message, with the keys automatically parsed
-            into fields.
-        """
-        exception_type, exception_value, exception_traceback = sys.exc_info()
-        traceback_string = traceback.format_exception(exception_type, exception_value, exception_traceback)
-        err_msg = json.dumps({
-            "errorType": exception_type.__name__,
-            "errorMessage": str(exception_value),
-            "stackTrace": traceback_string
-        })
-        logger.error(err_msg)
-
-    logger.info(f"User ID: {hasura_cognito_user_id}")
-    # Let's not show the whole thing, we don't need to.
-    logger.info(f"Claims: {json.dumps(claims)[:16]}")
-
-    event["response"] = {
-        "claimsOverrideDetails": {
-            "claimsToAddOrOverride": {
-                "https://hasura.io/jwt/claims": json.dumps(claims)
-            }
-        }
+    return {
+        "x-hasura-user-id": user_id,
+        "x-hasura-default-role": "moped-viewer",
+        "x-hasura-allowed-roles": roles,
     }
 
-    return event
+
+def put_claims(user_id: str, claims: dict):
+    """
+    Sets claims in DynamoDB
+    :param str user_id: The user id to set the claims for
+    :return [str]: The claims string (encrypted)
+    """
+    fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
+    claims_str = json.dumps(claims)
+    encrypted_claims = encrypt(fernet_key=fernet_key, content=claims_str)
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    dynamodb.put_item(
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Item={"user_id": {"S": user_id}, "claims": {"S": encrypted_claims}},
+    )
+
