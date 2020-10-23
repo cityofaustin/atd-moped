@@ -21,9 +21,9 @@ def create_user_claims():
 
 
 mock_users = [
-    {"email": "neo@test.test", "temp_password": "test123"},
-    {"email": "morpheus@test.test", "temp_password": "test123"},
-    {"email": "trinity@test.test", "temp_password": "test123"},
+    {"email": "neo@test.test", "password": "test123", "roles": ["moped-viewer"]},
+    {"email": "morpheus@test.test", "password": "test123", "roles": ["moped-viewer"]},
+    {"email": "trinity@test.test", "password": "test123", "roles": ["moped-viewer"]},
 ]
 
 
@@ -54,7 +54,7 @@ def create_user_pool(cognito):
         response = cognito.admin_create_user(
             UserPoolId=user_pool_id,
             Username=user["email"],
-            TemporaryPassword=user["temp_password"],
+            TemporaryPassword=user["password"],
             UserAttributes=[
                 {"Name": "email", "Value": user["email"]},
                 {"Name": "email_verified", "Value": "true"},
@@ -132,7 +132,7 @@ class TestUsers(TestApp):
     def test_gets_users(
         self, mock_cognito_auth_required, mock_is_valid_user, create_user_pool
     ):
-        """Get users."""
+        """Test get users route."""
         mock_is_valid_user.return_value = True
 
         # Mock user pool
@@ -140,13 +140,12 @@ class TestUsers(TestApp):
         user_pool_id = user_pool_dict["user_pool_id"]
 
         # Patch the user pool id with the mock pool id
-        patcher = patch("users.users.USER_POOL", new=user_pool_id)
-        patcher.start()
+        patch("users.users.USER_POOL", new=user_pool_id).start()
 
         response = self.client.get("/users/")
         response_list = self.parse_response(response.data)
 
-        # Collect mock user emails
+        # Collect mock user emails to compare to response data
         mock_usernames = [obj["email"] for obj in mock_users]
 
         assert isinstance(response_list, list)
@@ -165,7 +164,7 @@ class TestUsers(TestApp):
         mock_load_claims,
         create_user_pool,
     ):
-        """Get user."""
+        """Test get user route."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_load_claims.return_value = create_user_claims()[
@@ -178,8 +177,7 @@ class TestUsers(TestApp):
         user_ids = user_pool_dict["user_ids"]
 
         # Patch the user pool id with the mock pool id
-        patcher = patch("users.users.USER_POOL", new=user_pool_id)
-        patcher.start()
+        patch("users.users.USER_POOL", new=user_pool_id).start()
 
         user_id = user_ids[0]
         response = self.client.get(f"/users/{user_id}")
@@ -189,6 +187,62 @@ class TestUsers(TestApp):
         assert "Username" in response_dict
         assert "UserCreateDate" in response_dict
         assert response_dict["Username"] == user_id
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.has_user_role")
+    @patch("users.users.put_claims")
+    def test_create_user(
+        self,
+        mock_cognito_auth_required,
+        mock_is_valid_user,
+        mock_has_user_role,
+        mock_put_claims,
+        create_user_pool,
+    ):
+        """Test get user route."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_has_user_role.return_value = True
+
+        # Patch normalize claims
+        claims = create_user_claims()
+        claims["https://hasura.io/jwt/claims"] = json.dumps(
+            claims["https://hasura.io/jwt/claims"]
+        )
+        _get_current_object = Mock(return_value=claims)
+        patch(
+            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+        ).start()
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+
+        # Patch the user pool id with the mock pool id
+        patch("users.users.USER_POOL", new=user_pool_id).start()
+
+        # Prepare the payload for the request
+        existing_user_json_payload = json.dumps(mock_users[0])
+        new_user_json_payload = json.dumps(
+            {"email": "new@test.test", "password": "test123", "roles": ["moped-viewer"]}
+        )
+
+        # New user request
+        success_response = self.client.post(
+            "/users/", data=new_user_json_payload, content_type="application/json"
+        )
+        success_response_dict = self.parse_response(success_response.data)
+
+        # Existing user request
+        # fail_response = self.client.post(
+        #     "/users/", data=existing_user_json_payload, content_type="application/json"
+        # )
+        # fail_response_dict = self.parse_response(already_exists_response.data)
+
+        assert isinstance(success_response_dict, dict)
+        assert success_response_dict is False
+        # assert isinstance(fail_response_dict, dict)
 
     @mock_cognitoidp
     def test_gets_user_no_auth(self):
