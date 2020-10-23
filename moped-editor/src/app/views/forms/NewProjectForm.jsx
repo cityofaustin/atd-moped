@@ -13,18 +13,19 @@ import { gql, useMutation, useQuery } from "@apollo/client";
   }, []);
 
   const addNewProject = gql `
-mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="") {
-  insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year  }) {
+mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $start_date: date!="", $capitally_funded: Boolean!="", $project_priority: Int!="") {
+  insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year, start_date: $start_date, capitally_funded: $capitally_funded, project_priority: $project_priority  }) {
     affected_rows
     returning {
       project_name
       project_description
-   
+      project_priority
       current_phase
       current_status
       eCapris_id
       fiscal_year
-     
+      capitally_funded
+      start_date
     }
   }
 }    
@@ -35,13 +36,13 @@ mutation MyMutation($project_name: String!="", $project_description: String!="",
     let project_name=data.newProject;
     let project_description=data.ProjDesc;
     let eCapris_id=data.eCaprisId;
-    // let capitally_funded=data.capitalFunded;
-    // let start_date=data.date;
+    let capitally_funded=data.capitalFunded;
+    let start_date=data.date;
     let current_phase=data.Phase;
-    // let project_priority=data.Priority;
+    let project_priority=data.Priority;
     let current_status=data.Status;
     let fiscal_year=data.FiscalYear;
-    addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, fiscal_year}});  
+    addProject({variables: {project_name, project_description, eCapris_id, current_phase, current_status, fiscal_year, start_date, capitally_funded, project_priority}});  
   }
  
   const PHASES_QUERY = gql`
