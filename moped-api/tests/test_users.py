@@ -297,7 +297,7 @@ class TestUsers(TestApp):
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
     @patch("users.users.put_claims")
-    def test_create_user_failure(
+    def test_edit_user(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -337,6 +337,50 @@ class TestUsers(TestApp):
             data=new_email_json_payload,
             content_type="application/json",
         )
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.has_user_role")
+    @patch("users.users.put_claims")
+    def test_delete_user(
+        self,
+        mock_cognito_auth_required,
+        mock_is_valid_user,
+        mock_has_user_role,
+        mock_put_claims,
+        create_user_pool,
+    ):
+        """Test get user route."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_has_user_role.return_value = True
+
+        # Patch normalize claims
+        claims = create_user_claims()
+        claims["https://hasura.io/jwt/claims"] = json.dumps(
+            claims["https://hasura.io/jwt/claims"]
+        )
+        _get_current_object = Mock(return_value=claims)
+        patch(
+            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+        ).start()
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+
+        # Patch the user pool id with the mock pool id
+        patch("users.users.USER_POOL", new=user_pool_id).start()
+
+        # Prepare the payload for the request
+        user_to_delete = mock_users[0]["email"]
+
+        # Existing user request
+        response = self.client.delete(f"/users/{user_to_delete}",)
         response_dict = self.parse_response(response.data)
 
         assert isinstance(response_dict, dict)
