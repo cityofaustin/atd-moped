@@ -188,11 +188,66 @@ class TestUsers(TestApp):
         assert "UserCreateDate" in response_dict
         assert response_dict["Username"] == user_id
 
+    # @patch("flask_cognito._cognito_auth_required")
+    # @patch("users.users.is_valid_user")
+    # @patch("users.users.has_user_role")
+    # @patch("users.users.put_claims")
+    # def test_create_user_success(
+    #     self,
+    #     mock_cognito_auth_required,
+    #     mock_is_valid_user,
+    #     mock_has_user_role,
+    #     mock_put_claims,
+    #     create_user_pool,
+    # ):
+    #     """Test get user route."""
+    #     # Mock valid user check and claims loaded from DynamoDB
+    #     mock_is_valid_user.return_value = True
+    #     mock_has_user_role.return_value = True
+
+    #     # Patch normalize claims
+    #     claims = create_user_claims()
+    #     claims["https://hasura.io/jwt/claims"] = json.dumps(
+    #         claims["https://hasura.io/jwt/claims"]
+    #     )
+    #     _get_current_object = Mock(return_value=claims)
+    #     patch(
+    #         "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+    #     ).start()
+
+    #     # Mock user pool
+    #     user_pool_dict = create_user_pool
+    #     user_pool_id = user_pool_dict["user_pool_id"]
+
+    #     # Patch the user pool id with the mock pool id
+    #     patch("users.users.USER_POOL", new=user_pool_id).start()
+
+    #     # Prepare the payload for the request
+    #     existing_user_json_payload = json.dumps(mock_users[0])
+    #     new_user_json_payload = json.dumps(
+    #         {"email": "new@test.test", "password": "test123", "roles": ["moped-viewer"]}
+    #     )
+
+    #     # New user request
+    #     success_response = self.client.post(
+    #         "/users/", data=new_user_json_payload, content_type="application/json"
+    #     )
+    #     success_response_dict = self.parse_response(success_response.data)
+
+    #     # Existing user request
+    #     # fail_response = self.client.post(
+    #     #     "/users/", data=existing_user_json_payload, content_type="application/json"
+    #     # )
+    #     # fail_response_dict = self.parse_response(already_exists_response.data)
+
+    #     assert isinstance(success_response_dict, dict)
+    #     # assert isinstance(fail_response_dict, dict)
+
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
     @patch("users.users.put_claims")
-    def test_create_user(
+    def test_create_user_failure(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -228,21 +283,64 @@ class TestUsers(TestApp):
             {"email": "new@test.test", "password": "test123", "roles": ["moped-viewer"]}
         )
 
-        # New user request
-        success_response = self.client.post(
-            "/users/", data=new_user_json_payload, content_type="application/json"
+        # Existing user request
+        fail_response = self.client.post(
+            "/users/", data=existing_user_json_payload, content_type="application/json"
         )
-        success_response_dict = self.parse_response(success_response.data)
+        fail_response_dict = self.parse_response(fail_response.data)
+
+        assert isinstance(fail_response_dict, dict)
+        assert fail_response_dict["ResponseMetadata"]["HTTPStatusCode"] == 400
+        assert fail_response_dict["Error"]["Code"] == "UsernameExistsException"
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.has_user_role")
+    @patch("users.users.put_claims")
+    def test_create_user_failure(
+        self,
+        mock_cognito_auth_required,
+        mock_is_valid_user,
+        mock_has_user_role,
+        mock_put_claims,
+        create_user_pool,
+    ):
+        """Test get user route."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_has_user_role.return_value = True
+
+        # Patch normalize claims
+        claims = create_user_claims()
+        claims["https://hasura.io/jwt/claims"] = json.dumps(
+            claims["https://hasura.io/jwt/claims"]
+        )
+        _get_current_object = Mock(return_value=claims)
+        patch(
+            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+        ).start()
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+
+        # Patch the user pool id with the mock pool id
+        patch("users.users.USER_POOL", new=user_pool_id).start()
+
+        # Prepare the payload for the request
+        user_to_edit = mock_users[0]["email"]
+        new_email_json_payload = json.dumps({"email": "edited@test.test"})
 
         # Existing user request
-        # fail_response = self.client.post(
-        #     "/users/", data=existing_user_json_payload, content_type="application/json"
-        # )
-        # fail_response_dict = self.parse_response(already_exists_response.data)
+        response = self.client.put(
+            f"/users/{user_to_edit}",
+            data=new_email_json_payload,
+            content_type="application/json",
+        )
+        response_dict = self.parse_response(response.data)
 
-        assert isinstance(success_response_dict, dict)
-        assert success_response_dict is False
-        # assert isinstance(fail_response_dict, dict)
+        assert isinstance(response_dict, dict)
+        assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
 
     @mock_cognitoidp
     def test_gets_user_no_auth(self):
