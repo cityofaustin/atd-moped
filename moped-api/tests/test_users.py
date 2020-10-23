@@ -154,10 +154,25 @@ class TestUsers(TestApp):
         assert "UserCreateDate" in response_list[0]
         assert response_list[0]["Username"] in mock_usernames
 
+    @mock_cognitoidp
+    def test_gets_user_no_auth(self):
+        """Get user with no auth."""
+        response = self.client.get("/users/test123")
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert "description" in response_dict
+        assert "error" in response_dict
+        assert (
+            "Request does not contain a well-formed access token"
+            in response_dict.get("description", "")
+        )
+        assert "Authorization Required" in response_dict.get("error", "")
+
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.load_claims")
-    def test_get_user(
+    def test_gets_user(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -188,66 +203,79 @@ class TestUsers(TestApp):
         assert "UserCreateDate" in response_dict
         assert response_dict["Username"] == user_id
 
-    # @patch("flask_cognito._cognito_auth_required")
-    # @patch("users.users.is_valid_user")
-    # @patch("users.users.has_user_role")
-    # @patch("users.users.put_claims")
-    # def test_create_user_success(
-    #     self,
-    #     mock_cognito_auth_required,
-    #     mock_is_valid_user,
-    #     mock_has_user_role,
-    #     mock_put_claims,
-    #     create_user_pool,
-    # ):
-    #     """Test get user route."""
-    #     # Mock valid user check and claims loaded from DynamoDB
-    #     mock_is_valid_user.return_value = True
-    #     mock_has_user_role.return_value = True
+    @mock_cognitoidp
+    def test_creates_user_no_auth(self):
+        """Create user with no auth."""
+        response = self.client.post("/users/")
+        response_dict = self.parse_response(response.data)
 
-    #     # Patch normalize claims
-    #     claims = create_user_claims()
-    #     claims["https://hasura.io/jwt/claims"] = json.dumps(
-    #         claims["https://hasura.io/jwt/claims"]
-    #     )
-    #     _get_current_object = Mock(return_value=claims)
-    #     patch(
-    #         "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
-    #     ).start()
-
-    #     # Mock user pool
-    #     user_pool_dict = create_user_pool
-    #     user_pool_id = user_pool_dict["user_pool_id"]
-
-    #     # Patch the user pool id with the mock pool id
-    #     patch("users.users.USER_POOL", new=user_pool_id).start()
-
-    #     # Prepare the payload for the request
-    #     existing_user_json_payload = json.dumps(mock_users[0])
-    #     new_user_json_payload = json.dumps(
-    #         {"email": "new@test.test", "password": "test123", "roles": ["moped-viewer"]}
-    #     )
-
-    #     # New user request
-    #     success_response = self.client.post(
-    #         "/users/", data=new_user_json_payload, content_type="application/json"
-    #     )
-    #     success_response_dict = self.parse_response(success_response.data)
-
-    #     # Existing user request
-    #     # fail_response = self.client.post(
-    #     #     "/users/", data=existing_user_json_payload, content_type="application/json"
-    #     # )
-    #     # fail_response_dict = self.parse_response(already_exists_response.data)
-
-    #     assert isinstance(success_response_dict, dict)
-    #     # assert isinstance(fail_response_dict, dict)
+        assert isinstance(response_dict, dict)
+        assert "description" in response_dict
+        assert "error" in response_dict
+        assert (
+            "Request does not contain a well-formed access token"
+            in response_dict.get("description", "")
+        )
+        assert "Authorization Required" in response_dict.get("error", "")
 
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
     @patch("users.users.put_claims")
-    def test_create_user_failure(
+    def test_creates_user_success(
+        self,
+        mock_cognito_auth_required,
+        mock_is_valid_user,
+        mock_has_user_role,
+        mock_put_claims,
+        create_user_pool,
+    ):
+        """Test create user route."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_has_user_role.return_value = True
+
+        # Patch normalize claims
+        claims = create_user_claims()
+        claims["https://hasura.io/jwt/claims"] = json.dumps(
+            claims["https://hasura.io/jwt/claims"]
+        )
+        _get_current_object = Mock(return_value=claims)
+        patch(
+            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+        ).start()
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+
+        # Patch the user pool id with the mock pool id
+        patch("users.users.USER_POOL", new=user_pool_id).start()
+
+        # Prepare the payload for the request
+        existing_user_json_payload = json.dumps(mock_users[0])
+        new_user_json_payload = json.dumps(
+            {"email": "new@test.test", "password": "test123", "roles": ["moped-viewer"]}
+        )
+
+        # New user request
+        success_response = self.client.post(
+            "/users/", data=new_user_json_payload, content_type="application/json"
+        )
+        success_response_dict = self.parse_response(success_response.data)
+
+        # Get user list to compare length
+        user_list_response = self.client.get("/users/")
+        user_list = self.parse_response(user_list_response.data)
+
+        assert isinstance(success_response_dict, dict)
+        # assert isinstance(fail_response_dict, dict)
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.has_user_role")
+    @patch("users.users.put_claims")
+    def test_creates_user_already_exists(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -293,11 +321,26 @@ class TestUsers(TestApp):
         assert fail_response_dict["ResponseMetadata"]["HTTPStatusCode"] == 400
         assert fail_response_dict["Error"]["Code"] == "UsernameExistsException"
 
+    @mock_cognitoidp
+    def test_edits_user_no_auth(self):
+        """Edit user with no auth."""
+        response = self.client.put("/users/test123")
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert "description" in response_dict
+        assert "error" in response_dict
+        assert (
+            "Request does not contain a well-formed access token"
+            in response_dict.get("description", "")
+        )
+        assert "Authorization Required" in response_dict.get("error", "")
+
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
     @patch("users.users.put_claims")
-    def test_edit_user(
+    def test_edits_user(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -331,7 +374,7 @@ class TestUsers(TestApp):
         user_to_edit = mock_users[0]["email"]
         new_email_json_payload = json.dumps({"email": "edited@test.test"})
 
-        # Existing user request
+        # Edit user request
         response = self.client.put(
             f"/users/{user_to_edit}",
             data=new_email_json_payload,
@@ -342,11 +385,26 @@ class TestUsers(TestApp):
         assert isinstance(response_dict, dict)
         assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
 
+    @mock_cognitoidp
+    def test_deletes_user_no_auth(self):
+        """Delete user with no auth."""
+        response = self.client.delete("/users/test123")
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert "description" in response_dict
+        assert "error" in response_dict
+        assert (
+            "Request does not contain a well-formed access token"
+            in response_dict.get("description", "")
+        )
+        assert "Authorization Required" in response_dict.get("error", "")
+
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
     @patch("users.users.put_claims")
-    def test_delete_user(
+    def test_deletes_user(
         self,
         mock_cognito_auth_required,
         mock_is_valid_user,
@@ -379,69 +437,15 @@ class TestUsers(TestApp):
         # Prepare the payload for the request
         user_to_delete = mock_users[0]["email"]
 
-        # Existing user request
+        # Delete user request
         response = self.client.delete(f"/users/{user_to_delete}",)
         response_dict = self.parse_response(response.data)
 
+        # Get user list to compare length
+        user_list_response = self.client.get("/users/")
+        user_list = self.parse_response(user_list_response.data)
+
         assert isinstance(response_dict, dict)
         assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert len(user_list) == len(mock_users) - 1
 
-    @mock_cognitoidp
-    def test_gets_user_no_auth(self):
-        """Get user with no auth."""
-        response = self.client.get("/users/test123")
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "description" in response_dict
-        assert "error" in response_dict
-        assert (
-            "Request does not contain a well-formed access token"
-            in response_dict.get("description", "")
-        )
-        assert "Authorization Required" in response_dict.get("error", "")
-
-    @mock_cognitoidp
-    def test_creates_user_no_auth(self):
-        """Create user with no auth."""
-        response = self.client.post("/users/")
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "description" in response_dict
-        assert "error" in response_dict
-        assert (
-            "Request does not contain a well-formed access token"
-            in response_dict.get("description", "")
-        )
-        assert "Authorization Required" in response_dict.get("error", "")
-
-    @mock_cognitoidp
-    def test_edits_user_no_auth(self):
-        """Edit user with no auth."""
-        response = self.client.put("/users/test123")
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "description" in response_dict
-        assert "error" in response_dict
-        assert (
-            "Request does not contain a well-formed access token"
-            in response_dict.get("description", "")
-        )
-        assert "Authorization Required" in response_dict.get("error", "")
-
-    @mock_cognitoidp
-    def test_deletes_user_no_auth(self):
-        """Delete user with no auth."""
-        response = self.client.delete("/users/test123")
-        response_dict = self.parse_response(response.data)
-
-        assert isinstance(response_dict, dict)
-        assert "description" in response_dict
-        assert "error" in response_dict
-        assert (
-            "Request does not contain a well-formed access token"
-            in response_dict.get("description", "")
-        )
-        assert "Authorization Required" in response_dict.get("error", "")
