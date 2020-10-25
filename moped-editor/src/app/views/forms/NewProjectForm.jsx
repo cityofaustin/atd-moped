@@ -105,8 +105,17 @@ const PRIORITY_QUERY = gql`
   if (priorityLoading) return 'Loading...';
   if (priorityError) return `Error! ${priorityError.message}`;
 
-  // let yearOption = [];
-  // fiscal.moped_city_fiscal_years.forEach((fiscal) => yearOption.push(fiscal.fiscal_year_value));
+  // let fiscalOption = [];
+  // {fiscal.moped_city_fiscal_years.map(fiscal => (
+  //   <MenuItem 
+  //     key={fiscal.fiscal_year_value} 
+  //     value={fiscal.fiscal_year_value}>
+  //     {fiscal.fiscal_year_value}
+  //   </MenuItem>
+  // ))}
+
+    // let fiscalOption = [];
+    // fiscal.moped_city_fiscal_years.forEach((fiscal) => fiscalOption.push(fiscal.fiscal_year_value));
 
   return (
     <form style={{padding: 10}}>
@@ -161,14 +170,15 @@ const PRIORITY_QUERY = gql`
           as={<Select 
             ref={register}
             name="FiscalYear" 
-            onChange= {onFiscalSelected}>
-            {fiscal.moped_city_fiscal_years.map(fiscal => (
+            style={{ width: 150, paddingLeft: 10 }}
+            onChange={onFiscalSelected}>
+               {fiscal.moped_city_fiscal_years.map(fiscal => (
               <MenuItem 
-                key={fiscal.fiscal_year_value} 
-                value={fiscal.fiscal_year_value}>
-                {fiscal.fiscal_year_value}
+              key={fiscal.fiscal_year_value} 
+              value={fiscal.fiscal_year_value}>
+              {fiscal.fiscal_year_value}
               </MenuItem>
-            ))}
+              ))}
           </Select>}
             name="FiscalYear"
             defaultValue=""
@@ -181,8 +191,9 @@ const PRIORITY_QUERY = gql`
         <InputLabel>Current Status
         <Controller 
           as={<Select 
-            name="Status"  
             ref={register} 
+            name="Status"
+            style={{ width: 150, paddingLeft: 10 }}  
             onChange= {onStatusSelected}>
             {statuses.moped_status.map(status => (
               <MenuItem key={status.status_name} value={status.status_name}>
@@ -201,8 +212,9 @@ const PRIORITY_QUERY = gql`
         <InputLabel>Current Phase 
         <Controller
           as={<Select 
-            name="Phase"  
             ref={register} 
+            name="Phase"  
+            style={{ width: 150, paddingLeft: 10 }} 
             onChange= {onPhaseSelected}>
             {phases.moped_phases.map(phase => (
               <MenuItem 
@@ -223,8 +235,9 @@ const PRIORITY_QUERY = gql`
         <InputLabel>Priority 
         <Controller
          as={<Select 
-            name="Priority" 
-            ref={register} 
+            ref={register}
+            name="Priority"
+            style={{ width: 150, paddingLeft: 10 }}   
             onChange= {onPrioritySelected}>
             {priorities.moped_proj_phases.map(priority => (
               <MenuItem 
