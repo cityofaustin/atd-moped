@@ -1,7 +1,14 @@
 from moto import mock_cognitoidp
+import boto3, os, json
 from tests.test_app import TestApp
 from unittest.mock import patch, Mock
 from users.helpers import is_valid_user, has_user_role
+from config import api_config
+
+os.environ["AWS_ACCESS_KEY_ID"] = "testing"
+os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
+os.environ["AWS_SECURITY_TOKEN"] = "testing"
+os.environ["AWS_SESSION_TOKEN"] = "testing"
 
 
 def create_user_claims():
@@ -84,17 +91,29 @@ class TestUsers(TestApp):
     # def test_gets_users(self, mock_cognito_auth_required):
     #     """Get users."""
 
-    #     response = self.client.get("/users/")
-    #     response_dict = self.parse_response(response.data)
+        # Mock user pool
+        cognito_client = boto3.client("cognito-idp")
+        cognito_response = cognito_client.create_user_pool(PoolName="test_pool")
+        user_pool_id = cognito_response["UserPool"]["Id"]
 
-    #     assert isinstance(response_dict, str)
-    #     assert "description" in response_dict
-    #     assert "error" in response_dict
-    #     assert (
-    #         "Request does not contain a well-formed access token"
-    #         in response_dict.get("description", "")
-    #     )
-    #     assert "Authorization Required" in response_dict.get("error", "")
+        # Add some mock users
+
+        # Patch the user pool id in this route with the mock id
+        patcher = patch("users.users.USER_POOL", new=user_pool_id)
+        patcher.start()
+
+        response = self.client.get("/users/")
+        response_dict = self.parse_response(response.data)
+
+        assert response_dict is False
+        # assert isinstance(response_dict, str)
+        # assert "description" in response_dict
+        # assert "error" in response_dict
+        # assert (
+        #     "Request does not contain a well-formed access token"
+        #     in response_dict.get("description", "")
+        # )
+        # assert "Authorization Required" in response_dict.get("error", "")
 
     @mock_cognitoidp
     def test_gets_user_no_auth(self):
