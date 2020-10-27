@@ -18,6 +18,7 @@ users_blueprint = Blueprint("users_blueprint", __name__)
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
+COGNITO_REGION = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_REGION"]
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -27,7 +28,7 @@ def user_list_users() -> str:
     Returns users in user pool
     :return str:
     """
-    cognito_client = boto3.client("cognito-idp")
+    cognito_client = boto3.client("cognito-idp", region_name=COGNITO_REGION)
 
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
         user_list = user_response["Users"]
@@ -43,6 +44,8 @@ def user_get_user(id: str) -> str:
     Returns user details
     :return str:
     """
+    cognito_client = boto3.client("cognito-idp", region_name=COGNITO_REGION)
+
     if is_valid_user(current_cognito_jwt):
         cognito_client = boto3.client("cognito-idp")
 
