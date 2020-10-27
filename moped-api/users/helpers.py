@@ -1,10 +1,7 @@
-import os, sys
+import os
 import json
 import boto3
-import logging
-import traceback
 
-from config import api_config
 from cryptography.fernet import Fernet
 from botocore.exceptions import ClientError
 from typing import Optional
