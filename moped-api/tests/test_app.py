@@ -1,7 +1,9 @@
 #!/usr/bin/env python
-from app import app
 import json, pdb
 from unittest.mock import patch
+
+# Imports the Flask application
+from app import app
 
 
 class TestApp:

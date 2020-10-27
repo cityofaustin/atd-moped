@@ -14,7 +14,6 @@ ecdsa==0.14.1
 Flask==1.1.2
 Flask-Cognito==1.16
 Flask-Cors==3.0.9
-flask-jwt-extended==3.24.1
 future==0.18.2
 hjson==3.0.2
 idna==2.10
