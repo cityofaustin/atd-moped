@@ -1,14 +1,9 @@
 from moto import mock_cognitoidp
-import boto3, os, json
+import boto3, os, json, pytest
 from tests.test_app import TestApp
 from unittest.mock import patch, Mock
 from users.helpers import is_valid_user, has_user_role
 from config import api_config
-
-os.environ["AWS_ACCESS_KEY_ID"] = "testing"
-os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
-os.environ["AWS_SECURITY_TOKEN"] = "testing"
-os.environ["AWS_SESSION_TOKEN"] = "testing"
 
 
 def create_user_claims():
@@ -29,6 +24,36 @@ mock_users = [
     {"email": "neo@test.test", "temp_password": "test123"},
     {"email": "morpheus@test.test", "temp_password": "test123"},
 ]
+
+
+@pytest.fixture(scope="function")
+def aws_credentials():
+    """Mock credentials for moto"""
+    os.environ["AWS_ACCESS_KEY_ID"] = "testing"
+    os.environ["AWS_SECRET_ACCESS_KEY"] = "testing"
+    os.environ["AWS_SECURITY_TOKEN"] = "testing"
+    os.environ["AWS_SESSION_TOKEN"] = "testing"
+
+
+@pytest.fixture(scope="function")
+def cognito(aws_credentials):
+    with mock_cognitoidp():
+        yield boto3.client("cognito-idp")
+
+
+def create_user_pool(cognito):
+    cognito_response = cognito.create_user_pool(PoolName="test_pool")
+    user_pool_id = cognito_response["UserPool"]["Id"]
+
+    # Add mock users to pool
+    for user in mock_users:
+        cognito.admin_create_user(
+            UserPoolId=user_pool_id,
+            Username=user["email"],
+            TemporaryPassword=user["temp_password"],
+        )
+
+    return user_pool_id
 
 
 class TestUsers(TestApp):
@@ -92,25 +117,16 @@ class TestUsers(TestApp):
         )
         assert "Authorization Required" in response_dict.get("error", "")
 
-    # @mock_cognitoidp
-    # @patch("flask_cognito._cognito_auth_required")
-    # def test_gets_users(self, mock_cognito_auth_required):
-    #     """Get users."""
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    def test_gets_users(self, mock_cognito_auth_required, mock_is_valid_user, cognito):
+        """Get users."""
+        mock_is_valid_user.return_value = True
 
         # Mock user pool
-        cognito_client = boto3.client("cognito-idp")
-        cognito_response = cognito_client.create_user_pool(PoolName="test_pool")
-        user_pool_id = cognito_response["UserPool"]["Id"]
+        user_pool_id = create_user_pool(cognito)
 
-        # Add some mock users
-        for user in mock_users:
-            cognito_client.admin_create_user(
-                UserPoolId=user_pool_id,
-                Username=user["email"],
-                TemporaryPassword=user["temp_password"],
-            )
-
-        # Patch the user pool id in this route with the mock id
+        # Patch the user pool id with the mock pool id
         patcher = patch("users.users.USER_POOL", new=user_pool_id)
         patcher.start()
 
@@ -118,7 +134,7 @@ class TestUsers(TestApp):
         response_list = self.parse_response(response.data)
 
         assert isinstance(response_list, list)
-        assert len(response_list) is 2
+        assert len(response_list) is len(mock_users)
         assert "Username" in response_list[0]
         assert "UserCreateDate" in response_list[0]
 
