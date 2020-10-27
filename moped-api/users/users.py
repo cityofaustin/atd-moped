@@ -1,6 +1,6 @@
 import os, boto3
 from botocore.exceptions import ClientError
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, jsonify, abort, Response
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
 from config import api_config
 
@@ -22,7 +22,7 @@ USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
 
 @users_blueprint.route("/", methods=["GET"])
 @cognito_auth_required
-def user_list_users() -> str:
+def user_list_users() -> Response:
     """
     Returns users in user pool
     :return str:
@@ -39,7 +39,7 @@ def user_list_users() -> str:
 
 @users_blueprint.route("/<id>", methods=["GET"])
 @cognito_auth_required
-def user_get_user(id: str) -> str:
+def user_get_user(id: str) -> Response:
     """
     Returns user details
     :return str:
@@ -63,7 +63,7 @@ def user_get_user(id: str) -> str:
 @users_blueprint.route("/", methods=["POST"])
 @cognito_auth_required
 @normalize_claims
-def user_create_user(claims: list) -> str:
+def user_create_user(claims: list) -> Response:
     """
     Returns created user details
     :return str:
@@ -117,7 +117,7 @@ def user_create_user(claims: list) -> str:
 @users_blueprint.route("/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_update_user(id: str, claims: list) -> str:
+def user_update_user(id: str, claims: list) -> Response:
     """
     Returns updated user details
     :return str:
@@ -150,7 +150,7 @@ def user_update_user(id: str, claims: list) -> str:
 @users_blueprint.route("/<id>", methods=["DELETE"])
 @cognito_auth_required
 @normalize_claims
-def user_delete_user(id: str, claims: list) -> str:
+def user_delete_user(id: str, claims: list) -> Response:
     """
     Returns created user details
     :return str:
