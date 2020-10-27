@@ -1,9 +1,8 @@
 #!/usr/bin/env python
+from moto import mock_cognitoidp
+from app import app
 import json, pdb
 from unittest.mock import patch
-
-# Imports the Flask application
-from app import app
 
 
 class TestApp:
@@ -30,13 +29,23 @@ class TestApp:
         :param bytes response: The response bytes string
         :return dict:
         """
-        return json.loads(response.decode('utf-8'))
+        return json.loads(response.decode("utf-8"))
 
     def test_app_initializes(self):
         """Start with a blank database."""
-        response = self.client.get('/')
+        response = self.client.get("/")
         response_dict = self.parse_response(response.data)
 
         assert isinstance(response_dict, dict)
         assert "message" in response_dict
         assert "MOPED API Available" in response_dict.get("message", "")
+
+    @mock_cognitoidp
+    def test_get_users(self):
+        """Start with a blank database."""
+        response = self.client.get("/users/")
+        response_dict = self.parse_response(response.data)
+
+        assert isinstance(response_dict, dict)
+        assert "message" in response_dict
+        assert "All good" in response_dict.get("message", "")

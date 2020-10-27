@@ -21,14 +21,14 @@ USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
 
 
 @users_blueprint.route("/", methods=["GET"])
-@cognito_auth_required
+# @cognito_auth_required
 def user_list_users() -> str:
     """
     Returns users in user pool
     :return str:
     """
-    if is_valid_user(current_cognito_jwt):
-        cognito_client = boto3.client("cognito-idp")
+    return jsonify({"message": "All good"})
+    cognito_client = boto3.client("cognito-idp")
 
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
         user_list = user_response["Users"]
