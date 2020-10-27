@@ -269,7 +269,8 @@ class TestUsers(TestApp):
         user_list = self.parse_response(user_list_response.data)
 
         assert isinstance(success_response_dict, dict)
-        # assert isinstance(fail_response_dict, dict)
+        assert success_response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert len(user_list) == len(mock_users) + 1
 
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
@@ -283,7 +284,7 @@ class TestUsers(TestApp):
         mock_put_claims,
         create_user_pool,
     ):
-        """Test get user route."""
+        """Test create user route when user already exists."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
@@ -348,7 +349,7 @@ class TestUsers(TestApp):
         mock_put_claims,
         create_user_pool,
     ):
-        """Test get user route."""
+        """Test edit user route."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
@@ -412,7 +413,7 @@ class TestUsers(TestApp):
         mock_put_claims,
         create_user_pool,
     ):
-        """Test get user route."""
+        """Test delete user route."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
