@@ -30,13 +30,14 @@ class TestApp:
         :param bytes response: The response bytes string
         :return dict:
         """
-        return json.loads(response.decode('utf-8'))
+        return json.loads(response.decode("utf-8"))
 
     def test_app_initializes(self):
         """Start with a blank database."""
-        response = self.client.get('/')
+        response = self.client.get("/")
         response_dict = self.parse_response(response.data)
 
         assert isinstance(response_dict, dict)
         assert "message" in response_dict
         assert "MOPED API Available" in response_dict.get("message", "")
+
