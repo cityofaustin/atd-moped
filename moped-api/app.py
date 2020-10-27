@@ -1,5 +1,5 @@
 import os, datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from flask_cognito import CognitoAuth
 from flask_cors import CORS
 from config import api_config
@@ -39,7 +39,7 @@ cors = CORS(app)
 # This should be just a health-check
 #
 @app.route("/")
-def app_index() -> str:
+def app_index() -> Response:
     """
     Generates a simple health-check message.
     :return str:
