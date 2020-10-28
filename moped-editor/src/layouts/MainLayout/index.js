@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import TopBar from './TopBar';
+import { useUser } from "../../auth/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +33,10 @@ const useStyles = makeStyles((theme) => ({
 const MainLayout = () => {
   const classes = useStyles();
 
-  return (
+  const { user } = useUser();
+  return user ? (
+    <Navigate to="/app" />
+  ) : (
     <div className={classes.root}>
       <TopBar />
       <div className={classes.wrapper}>

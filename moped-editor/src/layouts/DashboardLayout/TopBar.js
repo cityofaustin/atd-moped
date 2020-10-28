@@ -14,6 +14,7 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import InputIcon from '@material-ui/icons/Input';
 import Logo from 'src/components/Logo';
+import { useUser } from "../../auth/user";
 
 const user = {
   avatar: '/static/images/avatars/avatar_1.png',
@@ -36,6 +37,7 @@ const TopBar = ({
   ...rest
 }) => {
   const classes = useStyles();
+  const { logout } = useUser();
 
   return (
     <AppBar
@@ -58,6 +60,7 @@ const TopBar = ({
         </Box>
         <Hidden mdDown>
           <IconButton color="inherit">
+          <IconButton color="inherit" onClick={logout}>
             <InputIcon />
           </IconButton>
         </Hidden>

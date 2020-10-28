@@ -15,6 +15,7 @@ import {
 import FacebookIcon from 'src/icons/Facebook';
 import GoogleIcon from 'src/icons/Google';
 import Page from 'src/components/Page';
+import { useUser } from "../../auth/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,6 +29,25 @@ const useStyles = makeStyles((theme) => ({
 const LoginView = () => {
   const classes = useStyles();
   const navigate = useNavigate();
+
+  const { login } = useUser();
+
+  // a handler for when the user clicks the "login" button
+  const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    try {
+      // wait to see if login was successful (we don't care about the return
+      // value here)
+      await login(values.email, values.password);
+
+      // mark the form as non-subbmitting
+      setSubmitting(false);
+    } catch (err) {
+      // If an error occured, showcase the proper message (we customised the
+      // message ourselves in `UserProvider`'s code)
+      setErrors({ password: err.message });
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Page
@@ -50,9 +70,7 @@ const LoginView = () => {
               email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
               password: Yup.string().max(255).required('Password is required')
             })}
-            onSubmit={() => {
-              navigate('/app/dashboard', { replace: true });
-            }}
+            onSubmit={handleSubmit}
           >
             {({
               errors,

@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import NavBar from './NavBar';
 import TopBar from './TopBar';
+import { useUser } from "../../auth/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,8 +37,9 @@ const useStyles = makeStyles((theme) => ({
 const DashboardLayout = () => {
   const classes = useStyles();
   const [isMobileNavOpen, setMobileNavOpen] = useState(false);
+  const { user } = useUser();
 
-  return (
+  return user ? (
     <div className={classes.root}>
       <TopBar onMobileNavOpen={() => setMobileNavOpen(true)} />
       <NavBar
@@ -52,6 +54,8 @@ const DashboardLayout = () => {
         </div>
       </div>
     </div>
+  ) : (
+    <Navigate to="/login" />
   );
 };
 
