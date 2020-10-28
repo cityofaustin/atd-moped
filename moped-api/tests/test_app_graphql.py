@@ -1,13 +1,19 @@
 #!/usr/bin/env python
-import os
 import pytest
-import pdb
-
-os.environ["HASURA_HTTPS_ENDPOINT"] = "http://localhost:5000"
-os.environ["HASURA_ADMIN_SECRET"] = "SUPER_SECRET_HERE"
 
 
 class TestAppGraphQL:
+
+    @pytest.fixture(scope="class", autouse=True)
+    def api_config(self):
+        """
+        Mock the hasura https endpoint & admin secret
+        """
+        from config import api_config
+        api_config["HASURA_HTTPS_ENDPOINT"] = "http://localhost:5000"
+        api_config["HASURA_ADMIN_SECRET"] = "SUPER_SECRET_HERE"
+        yield api_config
+
     def mock_hasura(*args, **kwargs):
         (req, *_) = args  # Unpack request tuple
 
@@ -39,11 +45,17 @@ class TestAppGraphQL:
         callback=mock_hasura
     )
     def test_run_query(self):
-
         from graphql import run_query
 
         # Test for valid secret and endpoint
-        response = run_query("{}", {})
+        response = run_query(
+            query="{}",
+            variables={},
+            alternative_conf={
+                "HASURA_HTTPS_ENDPOINT": "http://localhost:5000",
+                "HASURA_ADMIN_SECRET": "SUPER_SECRET_HERE"
+            }
+        )
         assert response.status_code == 200
         assert response.json().get("query") == "ok"
 
@@ -70,6 +82,7 @@ class TestAppGraphQL:
         assert response_bad_url.status_code == 404
 
     def test_run_sql(self):
+
         from graphql import run_sql
 
         # Test for bad secret
