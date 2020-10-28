@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-import os
 import pytest
 
 
@@ -9,22 +8,10 @@ class TestAppConfig:
         """
         Mock the hasura https endpoint & admin secret
         """
-        os.environ["HASURA_HTTPS_ENDPOINT"] = "HASURA_TEST"
-        os.environ["HASURA_ADMIN_SECRET"] = "HASURA_TEST"
         from config import api_config
+        api_config["HASURA_HTTPS_ENDPOINT"] = "HASURA_TEST"
+        api_config["HASURA_ADMIN_SECRET"] = "HASURA_TEST"
         yield api_config
-
-    @pytest.fixture(scope="function")
-    def api_environment(self):
-        """
-        Mock the api_environment variable
-        """
-        from config import api_environment
-        yield api_environment
-
-    @pytest.fixture(scope="function")
-    def api_environments(self):
-        yield ["PRODUCTION", "STAGING"]
 
     def test_api_config_initializes(self, api_config):
         """
@@ -33,31 +20,23 @@ class TestAppConfig:
         assert "API_ENVIRONMENT" in api_config
         assert api_config.get("API_ENVIRONMENT", "") == "STAGING"
 
-    def test_api_environment_initializes(self, api_environment):
-        """
-        Makes sure the configuration initializes the environment variables
-        """
-        assert api_environment == "STAGING"
-
-    def test_api_config_hasura_settings(self, api_config, api_environments):
+    def test_api_config_hasura_settings(self, api_config):
         """
         Check the hasura endpoint
         """
-        for CURRENT_ENVIRONMENT in api_environments:
-            assert "HASURA_HTTPS_ENDPOINT" in api_config[CURRENT_ENVIRONMENT]
-            assert "HASURA_ADMIN_SECRET" in api_config[CURRENT_ENVIRONMENT]
-            assert api_config[CURRENT_ENVIRONMENT].get("HASURA_HTTPS_ENDPOINT", "") == "HASURA_TEST"
-            assert api_config[CURRENT_ENVIRONMENT].get("HASURA_ADMIN_SECRET", "") == "HASURA_TEST"
+        assert "HASURA_HTTPS_ENDPOINT" in api_config
+        assert "HASURA_ADMIN_SECRET" in api_config
+        assert api_config.get("HASURA_HTTPS_ENDPOINT", "") == "HASURA_TEST"
+        assert api_config.get("HASURA_ADMIN_SECRET", "") == "HASURA_TEST"
 
-    def test_api_config_cognito_settings(self, api_config, api_environments):
+    def test_api_config_cognito_settings(self, api_config):
         """
         Check for Cognito settings
         """
-        for CURRENT_ENVIRONMENT in api_environments:
-            assert "COGNITO_APP_CLIENT_ID" in api_config[CURRENT_ENVIRONMENT]
-            assert "COGNITO_USERPOOL_ID" in api_config[CURRENT_ENVIRONMENT]
-            assert "COGNITO_REGION" in api_config[CURRENT_ENVIRONMENT]
-            # We don't need to check for values
+        assert "COGNITO_APP_CLIENT_ID" in api_config
+        assert "COGNITO_USERPOOL_ID" in api_config
+        assert "COGNITO_REGION" in api_config
+        # We don't need to check for values
 
     def test_get_config(self):
         """
