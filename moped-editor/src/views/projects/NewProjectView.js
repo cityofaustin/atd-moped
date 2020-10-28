@@ -7,6 +7,7 @@ import {
   Card,
   Container,
   Grid,
+  Breadcrumbs,
   makeStyles,
   Link,
   Typography
@@ -23,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
 
 const NewProjectView = () => {
     const classes = useStyles();
+
+    const handleClick = () => {}
 
     return ( 
         <Page

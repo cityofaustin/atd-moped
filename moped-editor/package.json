@@ -9,11 +9,10 @@
     "start:local": "export HTTPS=true && react-scripts start",
     "start:staging": "env-cmd -e staging npm run start:local",
     "start:production": "env-cmd -e production npm run start:local",
-    "build": "env-cmd -e local npm run build:local",
+    "build": "react-scripts build",
     "build:local": "GENERATE_SOURCEMAP=false react-scripts build && cp _redirects build && cp -r build moped && mv moped build",
     "build:staging": "env-cmd -e staging npm run build:local",
     "build:production": "env-cmd -e production npm run build:local",
-    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
