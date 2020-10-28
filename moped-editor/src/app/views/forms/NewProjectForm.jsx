@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useMutation, useQuery } from "@apollo/client";
+import { DevTool } from "@hookform/devtools";
 
   const NewProjectForm = ({ formContent }) => {
   const methods = useFormContext();
@@ -85,6 +91,12 @@ const PRIORITY_QUERY = gql`
     register("date"); // custom register date input
   }, [register])
 
+  // const [selectedDate, setSelectedDate] = React.useState(new Date("01/01/2020"));
+
+  // const handleDateChange = (date) => {
+  //   setSelectedDate(date);
+  //  }
+
   const { loading: phaseLoading, error: phaseError, data: phases, onPhaseSelected} = useQuery(PHASES_QUERY);
 
   const { loading: statusLoading, error: statusError, data: statuses, onStatusSelected} = useQuery(STATUS_QUERY);
@@ -114,11 +126,12 @@ const PRIORITY_QUERY = gql`
   //   </MenuItem>
   // ))}
 
-    // let fiscalOption = [];
+    // let fiscalOption = [];  //for autocomplete option
     // fiscal.moped_city_fiscal_years.forEach((fiscal) => fiscalOption.push(fiscal.fiscal_year_value));
 
   return (
     <form style={{padding: 10}}>
+       <DevTool control={control} />
       <h4>Add A Project</h4>
       <Grid container spacing={2}>
 
@@ -140,8 +153,28 @@ const PRIORITY_QUERY = gql`
           variant="standard"
         />
       </Grid>
-            
-      <Grid item xs={6}>
+
+       <Grid item xs={6}>
+        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <Controller
+            as={<KeyboardDatePicker
+              margin="normal"
+              inputRef={register} 
+              name="date"
+              id="date-picker-dialog"
+              label="Start Date"
+              format="MM/dd/yyyy"
+              value={selectedDate}
+              onChange={handleDateChange}
+              KeyboardButtonProps={{
+              'aria-label': 'change date',
+              }}
+            />}
+            name="date"
+            defaultValue="01/01/2020"
+            control={control}
+            />        
+    </MuiPickersUtilsProvider> */}
         <TextField
           inputRef={register} 
           name="date"
@@ -150,17 +183,14 @@ const PRIORITY_QUERY = gql`
           variant="standard"
           defaultValue="2020-01-01"
           onChange={handleChange}
-          InputLabelProps={{
-        shrink: true,
-        }}
         />
-      </Grid>
+      </Grid> 
       </Grid>
 
       <Grid container spacing={2}>
       <Grid item  xs={6}>
       {/* <Autocomplete
-              options={yearOption}
+              options={fiscalOption}
               style={{ width: 150 }}
               renderInput={(params) => <TextField {...params} label="Select Fiscal Year" inputRef={register} name="FiscalYear" 
               margin="normal" />} 

@@ -85,7 +85,7 @@ const handleSetGroup = () => {
 
 let roleOption = [];
 roles.moped_project_roles.forEach((role) => roleOption.push(role.project_role_name));
-       
+        
 return (
   <div>
     <form style={{padding: 10}}>    
