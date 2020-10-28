@@ -11,6 +11,17 @@ set -o errexit
 HIDE_HASURA_KIT_BANNER="FALSE"
 
 #
+# Check if docker is running
+#
+function __get_docker_running() {
+  {
+    docker ps -q &> /dev/null && echo "TRUE";
+  } || {
+    echo "FALSE";
+  }
+}
+
+#
 # Gets the current hasura cluster status
 #
 function __get_status() {
@@ -209,11 +220,26 @@ function show_hasura_kit_banner() {
 HASURA_EOM
 }
 
-if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
+function show_banner() {
   show_hasura_kit_banner
   echo -e "Copyright © 1985 Data & Tech Services Corp. \t\t Hasura Cluster: \e[32m $1 \e[0m"
-  echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" && $1 $2 $3;
-else
+  echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+}
 
+#
+# Let's make sure docker is running...
+#
+if [[ "$(__get_docker_running)" != "TRUE" ]]; then
+  show_banner "$1" && echo "Docker is not running. Please start docker on your computer"
+  exit;
+fi;
+
+#
+# Start the hasura cluster...
+#
+if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
+   show_banner "$1" && $1 $2 $3;
+else
   echo "Hasura Cluster: $1" && $1 $2 $3;
-fi
+fi;
+
