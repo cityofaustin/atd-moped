@@ -16,8 +16,7 @@ from users.helpers import (
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
-MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
-USER_POOL = api_config[MOPED_API_CURRENT_ENVIRONMENT]["COGNITO_USERPOOL_ID"]
+USER_POOL = api_config["COGNITO_USERPOOL_ID"]
 
 
 @users_blueprint.route("/", methods=["GET"])
