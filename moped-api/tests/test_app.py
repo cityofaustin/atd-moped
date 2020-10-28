@@ -14,14 +14,12 @@ class TestApp:
         cls.app.config["TESTING"] = True
         # Allows us to have a client for every test we make via self
         cls.client = cls.app.test_client()
-        print("Beginning tests for: TestApp")
 
     @classmethod
     def teardown_class(cls):
         # Discards the app instance we have
         cls.app = None
         cls.client = None
-        print("\n\nAll tests finished for: TestApp")
 
     @staticmethod
     def parse_response(response: bytes) -> dict:
