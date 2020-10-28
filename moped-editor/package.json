@@ -37,6 +37,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
     "aws-amplify": "^3.3.4",
+    "axios": "^0.21.0",
     "chart.js": "^2.9.3",
     "clsx": "^1.1.1",
     "env-cmd": "^10.1.0",
