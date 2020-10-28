@@ -23,7 +23,7 @@ app.register_blueprint(users_blueprint, url_prefix="/users")
 #
 # Cognito
 #
-app.config.update(api_config[MOPED_API_CURRENT_ENVIRONMENT])
+app.config.update(api_config)
 cognito = CognitoAuth(app)
 
 #
@@ -51,4 +51,3 @@ def app_index() -> Response:
             % now.strftime("%Y-%m-%d %H:%M:%S")
         }
     )
-
