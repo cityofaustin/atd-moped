@@ -3,7 +3,6 @@ import boto3, os, json, pytest
 from tests.test_app import TestApp
 from unittest.mock import patch, Mock
 from users.helpers import is_valid_user, has_user_role
-from config import api_config
 
 
 def create_user_claims():
