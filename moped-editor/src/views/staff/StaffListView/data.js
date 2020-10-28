@@ -9,7 +9,6 @@ export default [
       city: 'Parkersburg',
       street: '2849 Fulton Street'
     },
-    avatarUrl: '/static/images/avatars/avatar_3.png',
     createdAt: 1555016400000,
     email: 'ekaterina.tankova@devias.io',
     name: 'Ekaterina Tankova',
