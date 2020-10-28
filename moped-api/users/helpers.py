@@ -2,13 +2,14 @@ import os
 import json
 import boto3
 
+from config import api_config
 from cryptography.fernet import Fernet
 from botocore.exceptions import ClientError
 from typing import Optional
 
-MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
-AWS_COGNITO_DYNAMO_TABLE_NAME = os.getenv("AWS_COGNITO_DYNAMO_TABLE_NAME", None)
-AWS_COGNITO_DYNAMO_SECRET_NAME = os.getenv("AWS_COGNITO_DYNAMO_SECRET_NAME", None)
+MOPED_API_CURRENT_ENVIRONMENT = api_config.get("API_ENVIRONMENT", "STAGING")
+AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
+AWS_COGNITO_DYNAMO_SECRET_NAME = api_config.get("COGNITO_DYNAMO_SECRET_NAME", None)
 
 
 def is_valid_user(current_cognito_jwt):
@@ -183,7 +184,7 @@ def put_claims(user_id: str, claims: dict):
     """
     Sets claims in DynamoDB
     :param str user_id: The user id to set the claims for
-    :return [str]: The claims string (encrypted)
+    :param dict claims: The claims object to be persisted in DynamoDB 
     """
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     claims_str = json.dumps(claims)
