@@ -29,17 +29,17 @@ export const UserProvider = ({ children }) => {
         region: config.cognito.REGION,
         userPoolId: config.cognito.USER_POOL_ID,
         identityPoolId: config.cognito.IDENTITY_POOL_ID,
-        userPoolWebClientId: config.cognito.APP_CLIENT_ID
+        userPoolWebClientId: config.cognito.APP_CLIENT_ID,
       },
       API: {
         endpoints: [
           {
             name: "testApi",
             endpoint: config.apiGateway.URL,
-            region: config.apiGateway.REGION
-          }
-        ]
-      }
+            region: config.apiGateway.REGION,
+          },
+        ],
+      },
     });
     // attempt to fetch the info of the user that was already logged in
     Auth.currentAuthenticatedUser()

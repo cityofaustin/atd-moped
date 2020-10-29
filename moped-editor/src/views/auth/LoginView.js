@@ -10,7 +10,7 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles
+  makeStyles,
 } from "@material-ui/core";
 import FacebookIcon from "src/icons/Facebook";
 import GoogleIcon from "src/icons/Google";
@@ -22,8 +22,8 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.dark,
     height: "100%",
     paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3)
-  }
+    paddingTop: theme.spacing(3),
+  },
 }));
 
 const LoginView = () => {
@@ -61,7 +61,7 @@ const LoginView = () => {
           <Formik
             initialValues={{
               email: "",
-              password: ""
+              password: "",
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string()
@@ -70,7 +70,7 @@ const LoginView = () => {
                 .required("Email is required"),
               password: Yup.string()
                 .max(255)
-                .required("Password is required")
+                .required("Password is required"),
             })}
             onSubmit={handleSubmit}
           >
@@ -81,7 +81,7 @@ const LoginView = () => {
               handleSubmit,
               isSubmitting,
               touched,
-              values
+              values,
             }) => (
               <form onSubmit={handleSubmit}>
                 <Box mb={3}>

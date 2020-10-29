@@ -10,24 +10,24 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     height: "100%",
     overflow: "hidden",
-    width: "100%"
+    width: "100%",
   },
   wrapper: {
     display: "flex",
     flex: "1 1 auto",
     overflow: "hidden",
-    paddingTop: 64
+    paddingTop: 64,
   },
   contentContainer: {
     display: "flex",
     flex: "1 1 auto",
-    overflow: "hidden"
+    overflow: "hidden",
   },
   content: {
     flex: "1 1 auto",
     height: "100%",
-    overflow: "auto"
-  }
+    overflow: "auto",
+  },
 }));
 
 const MainLayout = () => {
