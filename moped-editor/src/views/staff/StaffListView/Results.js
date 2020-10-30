@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import PropTypes from 'prop-types';
 import moment from 'moment';
@@ -7,7 +7,6 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox,
   Table,
   TableBody,
   TableCell,
@@ -18,26 +17,6 @@ import {
   makeStyles
 } from '@material-ui/core';
 import getInitials from 'src/utils/getInitials';
-import axios from axios
-
-// Use local API dev server for now
-const LOCAL_URI = `http://127.0.0.1:5000/` 
-
-// Custom Hook for API calls
-function useApi(url) {
-  const [result, setResult] = useState();
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    axios.get(url).then(res => {
-      setResult(res.data);
-      setLoading(false);
-    });
-  }, [url]);
-
-  return [result, loading];
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {},
