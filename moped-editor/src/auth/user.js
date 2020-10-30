@@ -29,17 +29,17 @@ export const UserProvider = ({ children }) => {
         region: config.cognito.REGION,
         userPoolId: config.cognito.USER_POOL_ID,
         identityPoolId: config.cognito.IDENTITY_POOL_ID,
-        userPoolWebClientId: config.cognito.APP_CLIENT_ID
+        userPoolWebClientId: config.cognito.APP_CLIENT_ID,
       },
       API: {
         endpoints: [
           {
             name: "testApi",
             endpoint: config.apiGateway.URL,
-            region: config.apiGateway.REGION
-          }
-        ]
-      }
+            region: config.apiGateway.REGION,
+          },
+        ],
+      },
     });
     // attempt to fetch the info of the user that was already logged in
     Auth.currentAuthenticatedUser()
@@ -73,13 +73,18 @@ export const UserProvider = ({ children }) => {
       return data;
     });
 
+  // Get JWT token with roles
+  const getToken = user => user && user.signInUserSession.idToken.jwtToken;
+
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimisation that is mostly needed in cases
   // where the parent of the current component re-renders and thus the current component is forced
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(() => ({ user, login, logout }), [user]);
+  const values = React.useMemo(() => ({ user, getToken, login, logout }), [
+    user,
+  ]);
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;

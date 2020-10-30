@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import clsx from 'clsx';
-import PropTypes from 'prop-types';
-import moment from 'moment';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import React, { useState } from "react";
+import clsx from "clsx";
+import PropTypes from "prop-types";
+import moment from "moment";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Avatar,
   Box,
@@ -14,15 +14,16 @@ import {
   TablePagination,
   TableRow,
   Typography,
-  makeStyles
-} from '@material-ui/core';
-import getInitials from 'src/utils/getInitials';
+  makeStyles,
+} from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import getInitials from "src/utils/getInitials";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
-    marginRight: theme.spacing(2)
-  }
+    marginRight: theme.spacing(2),
+  },
 }));
 
 const Results = ({ className, staff, ...rest }) => {
@@ -30,7 +31,7 @@ const Results = ({ className, staff, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
-  const handleLimitChange = (event) => {
+  const handleLimitChange = event => {
     setLimit(event.target.value);
   };
 
@@ -39,68 +40,47 @@ const Results = ({ className, staff, ...rest }) => {
   };
 
   return (
-    <Card
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <Card className={clsx(classes.root, className)} {...rest}>
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>
-                  Name
-                </TableCell>
-                <TableCell>
-                  Email
-                </TableCell>
-                <TableCell>
-                  Location
-                </TableCell>
-                <TableCell>
-                  Phone
-                </TableCell>
-                <TableCell>
-                  Registration date
-                </TableCell>
+                <TableCell> </TableCell>
+                <TableCell>First name</TableCell>
+                <TableCell>Last name</TableCell>
+                <TableCell>Department</TableCell>
+                <TableCell>Workgroup</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {staff.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                >
+              {staff.slice(0, limit).map(customer => (
+                <TableRow hover key={customer.id}>
                   <TableCell>
-                    <Box
-                      alignItems="center"
-                      display="flex"
-                    >
+                    <EditIcon />
+                  </TableCell>
+                  <TableCell>
+                    <Box alignItems="center" display="flex">
                       <Avatar
                         className={classes.avatar}
                         src={customer.avatarUrl}
                       >
                         {getInitials(customer.name)}
                       </Avatar>
-                      <Typography
-                        color="textPrimary"
-                        variant="body1"
-                      >
+                      <Typography color="textPrimary" variant="body1">
                         {customer.name}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>
-                    {customer.email}
-                  </TableCell>
+                  <TableCell>{customer.email}</TableCell>
                   <TableCell>
                     {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
                   </TableCell>
+                  <TableCell>{customer.phone}</TableCell>
                   <TableCell>
-                    {customer.phone}
-                  </TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format('DD/MM/YYYY')}
+                    {moment(customer.createdAt).format("DD/MM/YYYY")}
                   </TableCell>
                 </TableRow>
               ))}
@@ -123,7 +103,7 @@ const Results = ({ className, staff, ...rest }) => {
 
 Results.propTypes = {
   className: PropTypes.string,
-  staff: PropTypes.array.isRequired
+  staff: PropTypes.array.isRequired,
 };
 
 export default Results;
