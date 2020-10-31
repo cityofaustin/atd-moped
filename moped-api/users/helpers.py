@@ -195,3 +195,24 @@ def put_claims(user_id: str, claims: dict):
         Item={"user_id": {"S": user_id}, "claims": {"S": encrypted_claims}},
     )
 
+
+def generate_user_profile(cognito_id:str, json_data: dict) -> dict:
+    """
+    Generates a user from the request parameter values
+    :param str cognito_id: The cognito uuid (username) to generate
+    :param dict json_data: The request json data
+    :return dict: The user profile as a dictionary
+    """
+    return {
+        "cognito_user_id": cognito_id,
+        "date_added": json_data["date_added"],
+        "email": json_data["email"],
+        "first_name": json_data["first_name"],
+        "last_name": json_data["first_name"],
+        "is_coa_staff": json_data["is_coa_staff"],
+        "status_id": json_data["status_id"],
+        "title": json_data["title"],
+        "workgroup": json_data["workgroup"],
+        "workgroup_id": json_data["workgroup_id"],
+    }
+
