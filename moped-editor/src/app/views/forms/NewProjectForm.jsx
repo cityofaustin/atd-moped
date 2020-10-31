@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { TextField, Button, Grid, Icon, InputLabel, MenuItem, Select } from "@material-ui/core";
-import DateFnsUtils from '@date-io/date-fns';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { KeyboardDatePicker} from '@material-ui/pickers';
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import { DevTool } from "@hookform/devtools";
@@ -16,7 +12,7 @@ import { DevTool } from "@hookform/devtools";
  
   useEffect(() => {
     reset({ ...formContent.one }, { errors: true });
-  }, []);
+  }, [formContent]);
 
   const addNewProject = gql `
 mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $start_date: date!="", $capitally_funded: Boolean!="", $project_priority: Int!="") {
@@ -91,11 +87,11 @@ const PRIORITY_QUERY = gql`
     register("date"); // custom register date input
   }, [register])
 
-  // const [selectedDate, setSelectedDate] = React.useState(new Date("01/01/2020"));
+  const [selectedDate, setSelectedDate] = React.useState(new Date("01/01/2020"));
 
-  // const handleDateChange = (date) => {
-  //   setSelectedDate(date);
-  //  }
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+   }
 
   const { loading: phaseLoading, error: phaseError, data: phases, onPhaseSelected} = useQuery(PHASES_QUERY);
 
@@ -155,7 +151,6 @@ const PRIORITY_QUERY = gql`
       </Grid>
 
        <Grid item xs={6}>
-        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <Controller
             as={<KeyboardDatePicker
               margin="normal"
@@ -166,6 +161,7 @@ const PRIORITY_QUERY = gql`
               format="MM/dd/yyyy"
               value={selectedDate}
               onChange={handleDateChange}
+              renderInput={props => <TextField {...props} />}
               KeyboardButtonProps={{
               'aria-label': 'change date',
               }}
@@ -174,8 +170,7 @@ const PRIORITY_QUERY = gql`
             defaultValue="01/01/2020"
             control={control}
             />        
-    </MuiPickersUtilsProvider> */}
-        <TextField
+        {/* <TextField
           inputRef={register} 
           name="date"
           label="Start Date"
@@ -183,7 +178,7 @@ const PRIORITY_QUERY = gql`
           variant="standard"
           defaultValue="2020-01-01"
           onChange={handleChange}
-        />
+        /> */}
       </Grid> 
       </Grid>
 

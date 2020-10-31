@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { TextField, Button, Icon } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useQuery } from "@apollo/client";
 import { Table, TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { DevTool } from "@hookform/devtools";
 
 const ProjectTeamTable = ({ formContent }) => {
   const methods = useFormContext();
-  const { reset, register } = methods;
+  const { reset, register, control, getValues } = methods;
   useEffect(() => {
     reset({ ...formContent.two }, { errors: true });
   }, []);
@@ -20,14 +21,17 @@ const ProjectTeamTable = ({ formContent }) => {
   }];
 
   // easy way to get values of inputs if needed
-  // let nameValue = getValues("Last");
-  // let roleValue = getValues("Role");
-  // let groupValue = getValues("Group");
+  let nameValue = getValues("Last");
+  let roleValue = getValues("Role");
+  let groupValue = getValues("Group");
 
-  const saveRow = () => {
-  //need to connect this button to redux store
+  const [userInput, setUserInput] = useState(nameValue);
+
+  const saveRow = (input) => {
+  setUserInput(input);
   }
-  
+
+
   const [rows, setRows] = useState(defaultRow);
     
   const handleAddRow = () => {
@@ -88,7 +92,8 @@ roles.moped_project_roles.forEach((role) => roleOption.push(role.project_role_na
         
 return (
   <div>
-    <form style={{padding: 10}}>    
+    <form style={{padding: 10}}>   
+    <DevTool control={control} /> 
      <Table>
      <TableHead>
        <TableRow>
@@ -105,12 +110,13 @@ return (
          <TableCell> 
            <Autocomplete
               id="selectedName"
+              value={userInput}
               ref={register}
               name="Last"
               onChange={handleSetGroup}
               options={nameOption}
               style={{ width: 150 }}
-              renderInput={(params) => <TextField {...params} label="Select Staff" inputRef={register} name="Last" autoComplete={true}  
+              renderInput={(params) => <TextField {...params} label="Select Staff" inputRef={register} name="Last"  
               margin="normal" />}
              />      
          </TableCell>
@@ -118,6 +124,7 @@ return (
             <Autocomplete
               id="selectedRole"
               name="Role"
+              
               ref={register}
               options={roleOption}
               autoComplete="off"
@@ -128,6 +135,7 @@ return (
          <TableCell> 
                 <TextField
                 id="selectedGroup"
+                
                 inputRef={register}
                 name="Group"     
                 style={{ width: 150, paddingLeft: 10 }} 

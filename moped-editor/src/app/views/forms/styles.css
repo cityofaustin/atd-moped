@@ -1,0 +1,91 @@
+body {
+  background-color: rgb(198, 250, 198);
+  text-align: center;
+}
+
+.app {
+  text-align: center;
+  background-color: rgb(103, 230, 152);
+  margin: -15px;
+  padding: 40px;
+  border-radius: 5px;
+  font-family: sans-serif;
+}
+
+.wrapper {
+  background-color: rgb(198, 250, 198);
+  padding: 15px;
+  margin: 5px;
+  border-radius: 5px;
+  position: relative;
+}
+
+.form {
+  position: relative;
+  text-align: left;
+  width: 320px;
+  margin: 0 auto;
+}
+
+.form h2 {
+  font-size: 1.3em;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form h3 {
+  font-size: 1em;
+  text-align: left;
+  margin-top: 30px;
+}
+
+.form label {
+  display: inline-block;
+  width: 100px;
+  padding-right: 5px;
+  text-align: right;
+}
+
+.form input[type='text'],
+.form select {
+  border: solid 1px rgb(218, 218, 218);
+  border-radius: 5px;
+  height: 30px;
+  width: 190px;
+  font-size: 1em;
+  margin: 2px;
+  padding: 0 5px;
+}
+
+.form select {
+  width: 202px;
+}
+
+.form input[type='checkbox'],
+.form input[type='radio'] {
+  margin: 0 5px 10px 5px;
+  vertical-align: 2px;
+}
+
+.form .navigation {
+  margin-top: 25px;
+  text-align: right;
+}
+
+.form button {
+  border: none;
+  background-color: #fff;
+  color: #000;
+  padding: 5px 15px;
+  margin: 0 5px;
+  font-size: 1em;
+}
+
+.form button.small {
+  padding: 2px 5px;
+  font-size: 0.9em;
+}
+
+.form input:disabled {
+  background-color: #eee;
+}

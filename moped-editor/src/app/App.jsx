@@ -12,6 +12,10 @@ import { Store } from "./redux/Store";
 // import Auth from "./auth/Auth";
 import MatxLayout from "./MatxLayout/MatxLayoutSFC";
 // import AuthGuard from "./auth/AuthGuard";
+import DateFnsUtils from '@date-io/date-fns';
+import {
+  MuiPickersUtilsProvider 
+} from '@material-ui/pickers';
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
 import { useForm, FormProvider } from 'react-hook-form';
 
@@ -38,6 +42,7 @@ const App = () => {
     <ApolloProvider client={client}>
       <AppContext.Provider value={{ routes }}>
         <Provider store={Store}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <MatxTheme>
             <FormProvider {...methods}>
             {/* <Auth> */}
@@ -48,7 +53,8 @@ const App = () => {
               </Router> 
             {/* </Auth> */}
             </FormProvider>
-          </MatxTheme>  
+          </MatxTheme> 
+          </MuiPickersUtilsProvider> 
         </Provider>
       </AppContext.Provider>
   </ApolloProvider>
