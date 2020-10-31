@@ -1,12 +1,11 @@
 import React from 'react';
-
 import FormItem from './FormItem';
-import StatesDropdown from './StatesDropdown';
+import PhasesDropdown from './StatesDropdown';
 
 const BillingAddressForm = ({ setForm, formData, navigation }) => {
   const {
-    billingFirstName,
-    billingLastName,
+    project_name,
+    current_phase,
     billingAddress,
     billingCity,
     billingState,
@@ -16,18 +15,18 @@ const BillingAddressForm = ({ setForm, formData, navigation }) => {
 
   return (
     <div className="form">
-      <h2>Billing Address</h2>
+      <h2>Add New Project</h2>
 
       <FormItem
-        label="First Name"
-        name="billingFirstName"
-        value={billingFirstName}
+        label="Project Name"
+        name="project_name"
+        value={project_name}
         onChange={setForm}
       />
-      <FormItem
-        label="Last Name"
-        name="billingLastName"
-        value={billingLastName}
+      <PhasesDropdown
+        label="Select Phase"
+        name="current_phase"
+        value={current_phase}
         onChange={setForm}
       />
       <FormItem
@@ -42,12 +41,12 @@ const BillingAddressForm = ({ setForm, formData, navigation }) => {
         value={billingCity}
         onChange={setForm}
       />
-      <StatesDropdown
+      {/* <StatesDropdown
         label="State"
         name="billingState"
         value={billingState}
         onChange={setForm}
-      />
+      /> */}
       <FormItem
         label="Zip"
         name="billingZip"

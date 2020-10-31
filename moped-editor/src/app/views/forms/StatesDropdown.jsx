@@ -1,68 +1,33 @@
 import React from "react";
+import { gql, useQuery } from "@apollo/client"; 
 
-const states = [
-  ["AL", "Alabama"],
-  ["AK", "Alaska"],
-  ["AZ", "Arizona"],
-  ["AR", "Arkansas"],
-  ["CA", "California"],
-  ["CO", "Colorado"],
-  ["CT", "Connecticut"],
-  ["DE", "Delaware"],
-  ["DC", "District of Columbia"],
-  ["FL", "Florida"],
-  ["GA", "Georgia"],
-  ["HI", "Hawaii"],
-  ["ID", "Idaho"],
-  ["IL", "Illinois"],
-  ["IN", "Indiana"],
-  ["IA", "Iowa"],
-  ["KS", "Kansas"],
-  ["KY", "Kentucky"],
-  ["LA", "Louisiana"],
-  ["ME", "Maine"],
-  ["MD", "Maryland"],
-  ["MA", "Massachusetts"],
-  ["MI", "Michigan"],
-  ["MN", "Minnesota"],
-  ["MS", "Mississippi"],
-  ["MO", "Missouri"],
-  ["MT", "Montana"],
-  ["NE", "Nebraska"],
-  ["NV", "Nevada"],
-  ["NH", "New Hampshire"],
-  ["NJ", "New Jersey"],
-  ["NM", "New Mexico"],
-  ["NY", "New York"],
-  ["NC", "North Carolina"],
-  ["ND", "North Dakota"],
-  ["OH", "Ohio"],
-  ["OK", "Oklahoma"],
-  ["OR", "Oregon"],
-  ["PA", "Pennsylvania"],
-  ["RI", "Rhode Island"],
-  ["SC", "South Carolina"],
-  ["SD", "South Dakota"],
-  ["TN", "Tennessee"],
-  ["TX", "Texas"],
-  ["UT", "Utah"],
-  ["VT", "Vermont"],
-  ["VA", "Virginia"],
-  ["WA", "Washington"],
-  ["WV", "West Virginia"],
-  ["WI", "Wisconsin"],
-  ["WY", "Wyoming"]
-];
+const PhasesDropdown = ({ label }) => {
+  const PHASES_QUERY = gql`
+  query Phases {
+  moped_phases(order_by: {phase_name: asc}) {
+    phase_name
+  }
+}
+`;
+const { loading: phaseLoading, error: phaseError, data: phases} = useQuery(PHASES_QUERY);
 
-const StatesDropdown = ({ label, ...others }) => (
-  <>
+if (phaseLoading) return 'Loading...';
+if (phaseError) return `Error! ${phaseError.message}`;
+
+  return (
+  <div>
     <label>{label}</label>
-    <select {...others}>
-      {states.map(([value, name]) => (
-        <option value={value}>{name}</option>
-      ))}
+    <select>
+    {phases.moped_phases.map(phase => (
+              <option 
+                key={phase.phase_name} 
+                value={phase.phase_name}>
+                {phase.phase_name}
+              </option>
+            ))}
     </select>
-  </>
+  </div>
 );
+};
 
-export default StatesDropdown;
+export default PhasesDropdown;

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useForm, useStep } from 'react-hooks-helper';
-
 import BillingAddressForm from './BillingAddressForm';
 import ShippingAddressForm from './ShippingAddressForm';
 import ShippingMethodForm from './ShippingMethodForm';
@@ -16,8 +15,8 @@ const steps = [
 ];
 
 const defaultData = {
-  billingFirstName: 'Jane',
-  billingLastName: 'Doe',
+  project_name: '',
+  current_phase: '',
   billingAddress: '200 South Main St',
   billingCity: 'Anytown',
   billingState: 'CA',
