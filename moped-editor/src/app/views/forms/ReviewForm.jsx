@@ -1,5 +1,4 @@
 import React from 'react';
-
 import FormItem from './FormItem';
 import shippingMethods from './shippingMethods';
 

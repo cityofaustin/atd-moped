@@ -1,7 +1,6 @@
 import React from 'react';
-
 import FormItem from './FormItem';
-import StatesDropdown from './StatesDropdown';
+
 
 const ShippingAddressForm = ({ setForm, formData, navigation }) => {
   const {
@@ -57,13 +56,6 @@ const ShippingAddressForm = ({ setForm, formData, navigation }) => {
         label="City"
         name="shippingCity"
         value={shippingSameAsBilling ? billingCity : shippingCity}
-        onChange={setForm}
-        disabled={shippingSameAsBilling}
-      />
-      <StatesDropdown
-        label="State"
-        name="shippingState"
-        value={shippingSameAsBilling ? billingState : shippingState}
         onChange={setForm}
         disabled={shippingSameAsBilling}
       />

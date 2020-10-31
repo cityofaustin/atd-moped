@@ -1,10 +1,11 @@
 import React from 'react';
 import FormItem from './FormItem';
-import PhasesDropdown from './StatesDropdown';
+import { PhasesDropdown } from './AddProjectDropdown';
 
-const BillingAddressForm = ({ setForm, formData, navigation }) => {
+const AddProjectForm = ({ setForm, formData, navigation }) => {
   const {
     project_name,
+    project_description,
     current_phase,
     billingAddress,
     billingCity,
@@ -23,16 +24,16 @@ const BillingAddressForm = ({ setForm, formData, navigation }) => {
         value={project_name}
         onChange={setForm}
       />
+      <FormItem
+        label="Project Description"
+        name="project_description"
+        value={project_description}
+        onChange={setForm}
+      />
       <PhasesDropdown
         label="Select Phase"
         name="current_phase"
         value={current_phase}
-        onChange={setForm}
-      />
-      <FormItem
-        label="Address"
-        name="billingAddress"
-        value={billingAddress}
         onChange={setForm}
       />
       <FormItem
@@ -41,12 +42,6 @@ const BillingAddressForm = ({ setForm, formData, navigation }) => {
         value={billingCity}
         onChange={setForm}
       />
-      {/* <StatesDropdown
-        label="State"
-        name="billingState"
-        value={billingState}
-        onChange={setForm}
-      /> */}
       <FormItem
         label="Zip"
         name="billingZip"
@@ -61,4 +56,4 @@ const BillingAddressForm = ({ setForm, formData, navigation }) => {
   );
 };
 
-export default BillingAddressForm;
+export default AddProjectForm;

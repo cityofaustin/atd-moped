@@ -1,13 +1,13 @@
 import React from 'react';
 import { useForm, useStep } from 'react-hooks-helper';
-import BillingAddressForm from './BillingAddressForm';
+import AddProjectForm from './AddProjectForm';
 import ShippingAddressForm from './ShippingAddressForm';
 import ShippingMethodForm from './ShippingMethodForm';
 import ReviewForm from './ReviewForm';
 import ConfirmationForm from './ConfirmationForm';
 import "./styles.css";
 const steps = [
-  { id: 'billing-address' },
+  { id: 'new-project' },
   { id: 'shipping-address' },
   { id: 'shipping-method' },
   { id: 'review' },
@@ -39,8 +39,8 @@ const DefineProject = ({ images }) => {
   const props = { formData, setForm, navigation };
 
   switch (id) {
-    case 'billing-address':
-      return <BillingAddressForm {...props} />;
+    case 'new-project':
+      return <AddProjectForm {...props} />;
     case 'shipping-address':
       return <ShippingAddressForm {...props} />;
     case 'shipping-method':

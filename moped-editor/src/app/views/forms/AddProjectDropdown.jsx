@@ -1,7 +1,7 @@
 import React from "react";
 import { gql, useQuery } from "@apollo/client"; 
 
-const PhasesDropdown = ({ label }) => {
+export const PhasesDropdown = ({ label, ...others }) => {
   const PHASES_QUERY = gql`
   query Phases {
   moped_phases(order_by: {phase_name: asc}) {
@@ -17,7 +17,7 @@ if (phaseError) return `Error! ${phaseError.message}`;
   return (
   <div>
     <label>{label}</label>
-    <select>
+    <select {...others}>
     {phases.moped_phases.map(phase => (
               <option 
                 key={phase.phase_name} 
@@ -30,4 +30,4 @@ if (phaseError) return `Error! ${phaseError.message}`;
 );
 };
 
-export default PhasesDropdown;
+
