@@ -14,6 +14,12 @@ AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None
 AWS_COGNITO_DYNAMO_SECRET_NAME = api_config.get("COGNITO_DYNAMO_SECRET_NAME", None)
 
 USER_VALIDATION_SCHEMA = {
+        "cognito_user_id": {
+            "type": "string",
+            "nullable": True,
+            "required": False,
+            "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        },
         "date_added": {
             "type": "datetime",
             "nullable": True,
@@ -47,6 +53,8 @@ USER_VALIDATION_SCHEMA = {
             "type": "number",
             "nullable": True,
             "required": False,
+            "min": 1,
+            "max": 100,
         },
         "title": {
             "type": "string",
@@ -64,6 +72,8 @@ USER_VALIDATION_SCHEMA = {
             "nullable": False,
             "required": True,
             "empty": False,
+            "min": 1,
+            "max": 100,
         },
         "password": {
             "type": "string",
