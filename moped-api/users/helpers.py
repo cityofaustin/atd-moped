@@ -289,7 +289,4 @@ def is_valid_user_profile(json_data: dict) -> tuple:
 
 def is_valid_uuid(cognito_id: str) -> bool:
     pattern = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
-    if pattern.search(cognito_id):
-        return True
-    else:
-        return False
+    return True if pattern.search(cognito_id) else False
