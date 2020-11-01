@@ -7,9 +7,67 @@ from cryptography.fernet import Fernet
 from botocore.exceptions import ClientError
 from typing import Optional
 
+from cerberus import Validator
+
 MOPED_API_CURRENT_ENVIRONMENT = api_config.get("API_ENVIRONMENT", "STAGING")
 AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_NAME = api_config.get("COGNITO_DYNAMO_SECRET_NAME", None)
+
+USER_VALIDATION_SCHEMA = {
+        "date_added": {
+            "type": "datetime",
+            "nullable": True,
+            "required": False,
+        },
+        "email": {
+            "type": "string",
+            "nullable": False,
+            "required": True,
+            "regex": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+        },
+        "first_name": {
+            "type": "string",
+            "nullable": False,
+            "required": True,
+        },
+        "last_name": {
+            "type": "string",
+            "nullable": False,
+            "required": True,
+        },
+        "is_coa_staff": {
+            "type": "boolean",
+            "nullable": True,
+            "required": False,
+        },
+        "status_id": {
+            "type": "number",
+            "nullable": True,
+            "required": False,
+        },
+        "title": {
+            "type": "string",
+            "nullable": True,
+            "required": False,
+        },
+        "workgroup": {
+            "type": "string",
+            "nullable": False,
+            "required": True,
+        },
+        "workgroup_id": {
+            "type": "number",
+            "nullable": False,
+            "required": True,
+        },
+        "password": {
+            "type": "string",
+            "nullable": False,
+            "required": True,
+            "minlength": 8,
+            "maxlength": 32,
+        }
+    }
 
 
 def is_valid_user(current_cognito_jwt):
@@ -217,3 +275,9 @@ def generate_user_profile(cognito_id:str, json_data: dict) -> dict:
         "password": json_data.get("password", None)
     }
 
+
+def is_valid_user_profile(json_data: dict) -> tuple:
+    user_validator = Validator()
+    is_valid_profile = user_validator.validate(json_data, USER_VALIDATION_SCHEMA)
+    validation_errors = user_validator.errors
+    return is_valid_profile, validation_errors
