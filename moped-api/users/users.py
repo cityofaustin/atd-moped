@@ -12,6 +12,13 @@ from users.helpers import (
     format_claims,
     is_valid_user,
     has_user_role,
+    generate_user_profile,
+    is_valid_user_profile,
+    is_valid_uuid
+)
+
+from users.helpers_graphql import (
+    db_create_user
 )
 
 users_blueprint = Blueprint("users_blueprint", __name__)
@@ -70,6 +77,15 @@ def user_create_user(claims: list) -> Response:
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
+        profile_valid, profile_error_feedback = is_valid_user_profile(
+            json_data=request.json
+        )
+
+        if not profile_valid:
+            return jsonify({
+                "error": profile_error_feedback
+            }), 400
+
         try:
             json_data = request.json
             password = json_data["password"]
@@ -107,6 +123,17 @@ def user_create_user(claims: list) -> Response:
         roles = json_data["roles"]
         user_claims = format_claims(cognito_username, roles)
         put_claims(cognito_username, user_claims)
+
+        # # Generate the user profile for the database
+        # user_profile = generate_user_profile(
+        #     cognito_id=cognito_username, params=json_data
+        # )
+        # # Store the
+        # db_response = db_create_user(user_profile=user_profile)
+        #
+        # if "error" in db_response:
+        #     cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+
 
         return jsonify(response)
     else:
