@@ -1,4 +1,4 @@
-import os
+import re
 import json
 import boto3
 
@@ -24,16 +24,19 @@ USER_VALIDATION_SCHEMA = {
             "nullable": False,
             "required": True,
             "regex": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
+            "empty": False,
         },
         "first_name": {
             "type": "string",
             "nullable": False,
             "required": True,
+            "empty": False,
         },
         "last_name": {
             "type": "string",
             "nullable": False,
             "required": True,
+            "empty": False,
         },
         "is_coa_staff": {
             "type": "boolean",
@@ -54,11 +57,13 @@ USER_VALIDATION_SCHEMA = {
             "type": "string",
             "nullable": False,
             "required": True,
+            "empty": False,
         },
         "workgroup_id": {
             "type": "number",
             "nullable": False,
             "required": True,
+            "empty": False,
         },
         "password": {
             "type": "string",
@@ -279,5 +284,12 @@ def generate_user_profile(cognito_id:str, json_data: dict) -> dict:
 def is_valid_user_profile(json_data: dict) -> tuple:
     user_validator = Validator()
     is_valid_profile = user_validator.validate(json_data, USER_VALIDATION_SCHEMA)
-    validation_errors = user_validator.errors
-    return is_valid_profile, validation_errors
+    return is_valid_profile, user_validator.errors
+
+
+def is_valid_uuid(cognito_id: str) -> bool:
+    pattern = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+    if pattern.search(cognito_id):
+        return True
+    else:
+        return False
