@@ -205,14 +205,15 @@ def generate_user_profile(cognito_id:str, json_data: dict) -> dict:
     """
     return {
         "cognito_user_id": cognito_id,
-        "date_added": json_data["date_added"],
-        "email": json_data["email"],
-        "first_name": json_data["first_name"],
-        "last_name": json_data["first_name"],
-        "is_coa_staff": json_data["is_coa_staff"],
-        "status_id": json_data["status_id"],
-        "title": json_data["title"],
-        "workgroup": json_data["workgroup"],
-        "workgroup_id": json_data["workgroup_id"],
+        "date_added": json_data.get("date_added", None),
+        "email": json_data.get("email", None),
+        "first_name": json_data.get("first_name", None),
+        "last_name": json_data.get("first_name", None),
+        "is_coa_staff": json_data.get("is_coa_staff", None),
+        "status_id": json_data.get("status_id", None),
+        "title": json_data.get("title", None),
+        "workgroup": json_data.get("workgroup", None),
+        "workgroup_id": json_data.get("workgroup_id", None),
+        "password": json_data.get("password", None)
     }
 
