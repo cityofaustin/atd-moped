@@ -10,8 +10,8 @@ from users.helpers_graphql_queries import (
 )
 
 """
-User dictionary example:
-    user = {
+User profile dictionary example:
+    user_profile = {
         "cognito_user_id": "",
         "date_added": "",
         "email": "",
@@ -26,25 +26,26 @@ User dictionary example:
 """
 
 
-def create_user(user: dict) -> dict:
+def db_create_user(user_profile: dict) -> dict:
     """
     Creates a user in the database via GraphQL
-    :param dict user: The user details
+    :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
+
     response = run_query(
         query=GRAPHQL_CRATE_USER,
         variables={
-            "users": [user]
+            "users": [user_profile]
         }
     )
     return response.json()
 
 
-def update_user(user: dict) -> dict:
+def db_update_user(user_profile: dict) -> dict:
     """
     Updates a user in the database via GraphQL
-    :param dict user: The user details
+    :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
     response = run_query(
@@ -52,16 +53,16 @@ def update_user(user: dict) -> dict:
         variables={
           "userBoolExp": {
             "cognito_user_id": {
-              "_eq": user["cognito_user_id"]
+              "_eq": user_profile["cognito_user_id"]
             }
           },
-          "user": user
+          "user": user_profile
         }
     )
     return response.json()
 
 
-def deactivate_user(user_cognito_id: str) -> dict:
+def db_deactivate_user(user_cognito_id: str) -> dict:
     """
     Deactivates a user in the database via GraphQL
     :param str user_cognito_id: The cognito id of the user
