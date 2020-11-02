@@ -151,7 +151,10 @@ def retrieve_claims(user_id: str) -> Optional[str]:
     """
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     return dynamodb.get_item(
-        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME, Key={"user_id": {"S": user_id},}
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Key={
+            "user_id": {"S": user_id},
+        },
     )["Item"]["claims"]["S"]
 
 
@@ -187,7 +190,7 @@ def put_claims(user_id: str, claims: dict):
     """
     Sets claims in DynamoDB
     :param str user_id: The user id to set the claims for
-    :param dict claims: The claims object to be persisted in DynamoDB 
+    :param dict claims: The claims object to be persisted in DynamoDB
     """
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     claims_str = json.dumps(claims)
@@ -217,7 +220,7 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
         "title": json_data.get("title", None),
         "workgroup": json_data.get("workgroup", None),
         "workgroup_id": json_data.get("workgroup_id", None),
-        "password": json_data.get("password", None)
+        "password": json_data.get("password", None),
     }
 
 
@@ -228,5 +231,7 @@ def is_valid_user_profile(json_data: dict) -> tuple:
 
 
 def is_valid_uuid(cognito_id: str) -> bool:
-    pattern = re.compile(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")
+    pattern = re.compile(
+        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    )
     return True if pattern.search(cognito_id) else False
