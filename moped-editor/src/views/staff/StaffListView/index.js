@@ -19,7 +19,7 @@ const CustomerListView = () => {
   const classes = useStyles();
   const [staff] = useState(data);
 
-  const [result, loading] = useApi(`${LOCAL_URI}/users/`);
+  const [result, loading] = useApi(`${LOCAL_URI}/users/`, "get");
   console.log(result);
 
   return (

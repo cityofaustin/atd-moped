@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import clsx from 'clsx';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import clsx from "clsx";
 import {
   Box,
   Button,
@@ -9,37 +9,31 @@ import {
   CardHeader,
   Divider,
   TextField,
-  makeStyles
-} from '@material-ui/core';
+  makeStyles,
+} from "@material-ui/core";
 
-const useStyles = makeStyles(({
-  root: {}
-}));
+const useStyles = makeStyles({
+  root: {},
+});
 
 const Password = ({ className, ...rest }) => {
   const classes = useStyles();
   const [values, setValues] = useState({
-    password: '',
-    confirm: ''
+    password: "",
+    confirm: "",
   });
 
-  const handleChange = (event) => {
+  const handleChange = event => {
     setValues({
       ...values,
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
   };
 
   return (
-    <form
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
+    <form className={clsx(classes.root, className)} {...rest}>
       <Card>
-        <CardHeader
-          subheader="Update password"
-          title="Password"
-        />
+        <CardHeader subheader="Update password" title="Password" />
         <Divider />
         <CardContent>
           <TextField
@@ -64,15 +58,8 @@ const Password = ({ className, ...rest }) => {
           />
         </CardContent>
         <Divider />
-        <Box
-          display="flex"
-          justifyContent="flex-end"
-          p={2}
-        >
-          <Button
-            color="primary"
-            variant="contained"
-          >
+        <Box display="flex" justifyContent="flex-end" p={2}>
+          <Button color="primary" variant="contained">
             Update
           </Button>
         </Box>
@@ -82,7 +69,7 @@ const Password = ({ className, ...rest }) => {
 };
 
 Password.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
 };
 
 export default Password;
