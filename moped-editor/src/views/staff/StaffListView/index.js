@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { useApi, LOCAL_URI } from "./helpers";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useUserApi } from "./helpers";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import Page from "src/components/Page";
 import Results from "./Results";
@@ -15,12 +16,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const staffQuery = `
+  query GetStaff {
+    moped_coa_staff {
+      cognito_user_id
+      date_added
+      first_name
+      full_name
+      last_name
+      staff_id
+      staff_uuid
+      title
+      workgroup
+      workgroup_id
+    }
+  }
+`;
+
 const CustomerListView = () => {
   const classes = useStyles();
-  const [staff] = useState(data);
+  const [staff, setStaff] = useState(data);
 
-  const [result, loading] = useApi(`${LOCAL_URI}/users/`, "get");
-  console.log(result);
+  useEffect(() => {
+    axios({
+      url: "https://coa-moped.herokuapp.com/v1/graphql",
+      method: "post",
+      data: {
+        query: staffQuery,
+      },
+    }).then(result => {
+      const staffArray = result.data.data.moped_coa_staff;
+      setStaff(staffArray);
+    });
+  }, []);
+
+  // const [result, loading] = useUserApi("get", "/users/");
+  // console.log(result);
 
   return (
     <Page className={classes.root} title="Customers">

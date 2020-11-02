@@ -2,16 +2,16 @@ import { useState, useEffect } from "react";
 import { useUser } from "../../../auth/user";
 import axios from "axios";
 
-// Use local API dev server for now
-export const LOCAL_URI = `http://127.0.0.1:5000`;
-
 // Custom Hook for API calls
-export function useApi(url, method, payload = null) {
+export function useUserApi(method, path, payload = null) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, getToken } = useUser();
 
   useEffect(() => {
+    // Use local API dev server for now
+    const url = `http://127.0.0.1:5000` + path;
+
     const token = getToken(user);
 
     const config = {
@@ -32,7 +32,7 @@ export function useApi(url, method, payload = null) {
       setResult(res.data);
       setLoading(false);
     });
-  }, [url, getToken, user]);
+  }, [getToken, user]);
 
   return [result, loading];
 }

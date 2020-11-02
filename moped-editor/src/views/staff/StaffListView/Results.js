@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import moment from "moment";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
-  Avatar,
   Box,
   Card,
   Table,
@@ -13,7 +11,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
   makeStyles,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
@@ -49,39 +46,24 @@ const Results = ({ className, staff, ...rest }) => {
                 <TableCell> </TableCell>
                 <TableCell>First name</TableCell>
                 <TableCell>Last name</TableCell>
-                <TableCell>Department</TableCell>
                 <TableCell>Workgroup</TableCell>
+                <TableCell>Title</TableCell>
                 <TableCell>Role</TableCell>
                 <TableCell>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {staff.slice(0, limit).map(customer => (
-                <TableRow hover key={customer.id}>
+              {staff.slice(0, limit).map(person => (
+                <TableRow hover key={person.staff_id}>
                   <TableCell>
                     <EditIcon />
                   </TableCell>
-                  <TableCell>
-                    <Box alignItems="center" display="flex">
-                      <Avatar
-                        className={classes.avatar}
-                        src={customer.avatarUrl}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.name}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                  </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>
-                    {moment(customer.createdAt).format("DD/MM/YYYY")}
-                  </TableCell>
+                  <TableCell>{person.first_name}</TableCell>
+                  <TableCell>{person.last_name}</TableCell>
+                  <TableCell>{person.workgroup}</TableCell>
+                  <TableCell>{person.title}</TableCell>
+                  <TableCell>{person.role}</TableCell>
+                  <TableCell>{person.status}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
