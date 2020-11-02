@@ -8,81 +8,11 @@ from botocore.exceptions import ClientError
 from typing import Optional
 
 from cerberus import Validator
+from users.user_validation import USER_VALIDATION_SCHEMA
 
 MOPED_API_CURRENT_ENVIRONMENT = api_config.get("API_ENVIRONMENT", "STAGING")
 AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_NAME = api_config.get("COGNITO_DYNAMO_SECRET_NAME", None)
-
-USER_VALIDATION_SCHEMA = {
-        "cognito_user_id": {
-            "type": "string",
-            "nullable": True,
-            "required": False,
-            "regex": "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-        },
-        "date_added": {
-            "type": "datetime",
-            "nullable": True,
-            "required": False,
-        },
-        "email": {
-            "type": "string",
-            "nullable": False,
-            "required": True,
-            "regex": "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$",
-            "empty": False,
-        },
-        "first_name": {
-            "type": "string",
-            "nullable": False,
-            "required": True,
-            "empty": False,
-        },
-        "last_name": {
-            "type": "string",
-            "nullable": False,
-            "required": True,
-            "empty": False,
-        },
-        "is_coa_staff": {
-            "type": "boolean",
-            "nullable": True,
-            "required": False,
-        },
-        "status_id": {
-            "type": "number",
-            "nullable": True,
-            "required": False,
-            "min": 1,
-            "max": 100,
-        },
-        "title": {
-            "type": "string",
-            "nullable": True,
-            "required": False,
-        },
-        "workgroup": {
-            "type": "string",
-            "nullable": False,
-            "required": True,
-            "empty": False,
-        },
-        "workgroup_id": {
-            "type": "number",
-            "nullable": False,
-            "required": True,
-            "empty": False,
-            "min": 1,
-            "max": 100,
-        },
-        "password": {
-            "type": "string",
-            "nullable": False,
-            "required": True,
-            "minlength": 8,
-            "maxlength": 32,
-        }
-    }
 
 
 def is_valid_user(current_cognito_jwt):
@@ -269,7 +199,7 @@ def put_claims(user_id: str, claims: dict):
     )
 
 
-def generate_user_profile(cognito_id:str, json_data: dict) -> dict:
+def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
     """
     Generates a user from the request parameter values
     :param str cognito_id: The cognito uuid (username) to generate
