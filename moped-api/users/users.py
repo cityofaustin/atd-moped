@@ -28,7 +28,7 @@ USER_POOL = api_config["COGNITO_USERPOOL_ID"]
 
 @users_blueprint.route("/", methods=["GET"])
 @cognito_auth_required
-def user_list_users() -> Response:
+def user_list_users() -> (Response, int):
     """
     Returns users in user pool
     :return str:
@@ -45,7 +45,7 @@ def user_list_users() -> Response:
 
 @users_blueprint.route("/<id>", methods=["GET"])
 @cognito_auth_required
-def user_get_user(id: str) -> Response:
+def user_get_user(id: str) -> (Response, int):
     """
     Returns user details
     :return str:
@@ -69,7 +69,7 @@ def user_get_user(id: str) -> Response:
 @users_blueprint.route("/", methods=["POST"])
 @cognito_auth_required
 @normalize_claims
-def user_create_user(claims: list) -> Response:
+def user_create_user(claims: list) -> (Response, int):
     """
     Returns created user details
     :return str:
@@ -104,11 +104,11 @@ def user_create_user(claims: list) -> Response:
 
         except ClientError as e:
             if e.response["Error"]["Code"] == "UsernameExistsException":
-                return jsonify(e.response)
+                return jsonify(e.response), 400  # Bad request
             elif e.response["Error"]["Code"] == "InvalidPasswordException":
-                return jsonify(e.response)
+                return jsonify(e.response), 400  # Bad request
             else:
-                return jsonify(e.response)
+                return jsonify(e.response), 500  # Internal Server Error
 
         # Temporary password is valid, now make it permanent
         cognito_username = response["User"]["Username"]
@@ -134,7 +134,6 @@ def user_create_user(claims: list) -> Response:
         # if "error" in db_response:
         #     cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
 
-
         return jsonify(response)
     else:
         abort(403)
@@ -143,7 +142,7 @@ def user_create_user(claims: list) -> Response:
 @users_blueprint.route("/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_update_user(id: str, claims: list) -> Response:
+def user_update_user(id: str, claims: list) -> (Response, int):
     """
     Returns updated user details
     :return str:
@@ -176,7 +175,7 @@ def user_update_user(id: str, claims: list) -> Response:
 @users_blueprint.route("/<id>", methods=["DELETE"])
 @cognito_auth_required
 @normalize_claims
-def user_delete_user(id: str, claims: list) -> Response:
+def user_delete_user(id: str, claims: list) -> (Response, int):
     """
     Returns created user details
     :return str:
