@@ -14,12 +14,10 @@ from users.helpers import (
     has_user_role,
     generate_user_profile,
     is_valid_user_profile,
-    is_valid_uuid
+    is_valid_uuid,
 )
 
-from users.helpers_graphql import (
-    db_create_user
-)
+from users.helpers_graphql import db_create_user
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
@@ -82,9 +80,7 @@ def user_create_user(claims: list) -> (Response, int):
         )
 
         if not profile_valid:
-            return jsonify({
-                "error": profile_error_feedback
-            }), 400
+            return jsonify({"error": profile_error_feedback}), 400
 
         try:
             json_data = request.json
@@ -160,7 +156,9 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                 updated_attributes.append(updated_attribute)
 
         response = cognito_client.admin_update_user_attributes(
-            UserPoolId=USER_POOL, Username=id, UserAttributes=updated_attributes,
+            UserPoolId=USER_POOL,
+            Username=id,
+            UserAttributes=updated_attributes,
         )
 
         if roles:
