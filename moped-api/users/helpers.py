@@ -5,11 +5,14 @@ import re
 from cerberus import Validator
 from graphql import run_query
 
+# Types
+from typing import List
+
+# Helpers
 from claims import (
     is_coa_staff,
     generate_iso_timestamp
 )
-
 from users.queries import (
     GRAPHQL_CRATE_USER,
     GRAPHQL_UPDATE_USER,
@@ -38,6 +41,20 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
         "workgroup": json_data.get("workgroup", None),
         "workgroup_id": json_data.get("workgroup_id", None),
     }
+
+
+def generate_cognito_attributes(user_profile: dict) -> List[dict]:
+    """
+    Generates an array of of attributes that are to be used to
+    update a cognito user account via admin_update_user_attributes.
+    :param dict user_profile: The profile of the user (from Hasura)
+    :return List[dict]: A list of dictionaries with new Cognito user attributes
+    """
+    # For now, we only need the email from the user profile.
+    updated_attributes = []
+    attr_email = {"Name": "email", "Value": user_profile["email"]}
+    updated_attributes.append(attr_email)
+    return updated_attributes
 
 
 def is_valid_user_profile(json_data: dict) -> [bool, dict]:
