@@ -13,6 +13,7 @@ from users.helpers import (
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
+    db_update_user,
     db_deactivate_user,
 )
 
@@ -158,8 +159,30 @@ def user_update_user(id: str, claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
+        profile_valid, profile_error_feedback = is_valid_user_profile(
+            json_data=request.json
+        )
+
+        if not profile_valid:
+            return jsonify({"error": profile_error_feedback}), 400
+
         json_data = request.json
         roles = json_data.get("roles", None)
+
+        user_profile = generate_user_profile(
+            cognito_id=id, json_data=request.json
+        )
+
+        db_response = db_update_user(user_profile=user_profile)
+
+        if "errors" in db_response:
+            response = {
+                "error": {
+                    "message": f"Cannot update user {id}",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 500
 
         updated_attributes = []
         for name, value in json_data.items():
@@ -167,7 +190,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                 updated_attribute = {"Name": name, "Value": value}
                 updated_attributes.append(updated_attribute)
 
-        response = cognito_client.admin_update_user_attributes(
+        cognito_response = cognito_client.admin_update_user_attributes(
             UserPoolId=USER_POOL,
             Username=id,
             UserAttributes=updated_attributes,
@@ -176,6 +199,14 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         if roles:
             user_claims = format_claims(id, roles)
             put_claims(id, user_claims)
+
+        response = {
+            "success": {
+                "message": f"User updated: {id}",
+                "cognito": cognito_response,
+                "database": db_response,
+            }
+        }
 
         return jsonify(response)
     else:
