@@ -10,6 +10,7 @@ from claims import *
 
 from users.helpers import (
     generate_user_profile,
+    generate_cognito_attributes,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -184,11 +185,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 500
 
-        updated_attributes = []
-        for name, value in json_data.items():
-            if name != "roles":
-                updated_attribute = {"Name": name, "Value": value}
-                updated_attributes.append(updated_attribute)
+        updated_attributes = generate_cognito_attributes(user_profile=json_data)
 
         cognito_response = cognito_client.admin_update_user_attributes(
             UserPoolId=USER_POOL,
