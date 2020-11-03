@@ -104,6 +104,15 @@ def is_valid_user(current_cognito_jwt: str) -> bool:
     return True
 
 
+def is_coa_staff(email: str) -> bool:
+    """
+    Returns True if the email address ends with city postfix
+    :param str email: The email address to be evaluated
+    :return bool:
+    """
+    return email.endswith("@austintexas.gov")
+
+
 def has_user_role(role, claims) -> bool:
     """
     Checks if role exists in claims
