@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useUserApi } from "./helpers";
 import { Box, Container, makeStyles } from "@material-ui/core";
 import Page from "src/components/Page";
 import Results from "./Results";
@@ -39,7 +38,7 @@ const CustomerListView = () => {
 
   useEffect(() => {
     axios({
-      url: "https://coa-moped.herokuapp.com/v1/graphql",
+      url: "",
       method: "post",
       data: {
         query: staffQuery,
@@ -49,9 +48,6 @@ const CustomerListView = () => {
       setStaff(staffArray);
     });
   }, []);
-
-  // const [result, loading] = useUserApi("get", "/users/");
-  // console.log(result);
 
   return (
     <Page className={classes.root} title="Customers">

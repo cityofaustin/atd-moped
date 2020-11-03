@@ -14,7 +14,6 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
-import getInitials from "src/utils/getInitials";
 
 const useStyles = makeStyles(theme => ({
   root: {},
@@ -25,16 +24,6 @@ const useStyles = makeStyles(theme => ({
 
 const Results = ({ className, staff, ...rest }) => {
   const classes = useStyles();
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-
-  const handleLimitChange = event => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
@@ -53,7 +42,7 @@ const Results = ({ className, staff, ...rest }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {staff.slice(0, limit).map(person => (
+              {staff.map(person => (
                 <TableRow hover key={person.staff_id}>
                   <TableCell>
                     <EditIcon />
@@ -70,15 +59,6 @@ const Results = ({ className, staff, ...rest }) => {
           </Table>
         </Box>
       </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={staff.length}
-        onChangePage={handlePageChange}
-        onChangeRowsPerPage={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </Card>
   );
 };

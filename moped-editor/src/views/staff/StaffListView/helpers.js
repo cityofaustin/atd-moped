@@ -14,7 +14,7 @@ export function useUserApi(method, path, payload = null) {
 
     const token = getToken(user);
 
-    const config = {
+    let config = {
       url,
       method,
       headers: {
@@ -32,7 +32,7 @@ export function useUserApi(method, path, payload = null) {
       setResult(res.data);
       setLoading(false);
     });
-  }, [getToken, user]);
+  }, [getToken, user, method, path, payload]);
 
   return [result, loading];
 }
