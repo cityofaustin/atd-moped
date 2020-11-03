@@ -57,14 +57,14 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
     return updated_attributes
 
 
-def is_valid_user_profile(json_data: dict) -> [bool, dict]:
+def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
     """
     Returns a type if the user profile is valid and any errors if available
-    :param dict json_data: The json data from the request
+    :param dict user_profile: The json data from the request
     :return tuple:
     """
     user_validator = Validator()
-    is_valid_profile = user_validator.validate(json_data, USER_VALIDATION_SCHEMA)
+    is_valid_profile = user_validator.validate(user_profile, USER_VALIDATION_SCHEMA)
     return is_valid_profile, user_validator.errors
 
 
