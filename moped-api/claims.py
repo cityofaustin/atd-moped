@@ -11,7 +11,7 @@ from typing import Callable
 
 MOPED_API_CURRENT_ENVIRONMENT = api_config.get("API_ENVIRONMENT", "STAGING")
 AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
-AWS_COGNITO_DYNAMO_SECRET_NAME = api_config.get("COGNITO_DYNAMO_SECRET_NAME", None)
+AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None)
 
 #
 # LocalProxy is a funny class in werkzeug.local, it seems to be a way
@@ -142,8 +142,7 @@ def load_claims(user_id: str) -> dict:
     :return dict: The claims JSON
     """
     claims = retrieve_claims(user_id=user_id)
-    fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
-    decrypted_claims = decrypt(fernet_key=fernet_key, content=claims)
+    decrypted_claims = decrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims)
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = user_id
     return claims
@@ -169,9 +168,8 @@ def put_claims(user_id: str, claims: dict):
     :param str user_id: The user id to set the claims for
     :param dict claims: The claims object to be persisted in DynamoDB
     """
-    fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     claims_str = json.dumps(claims)
-    encrypted_claims = encrypt(fernet_key=fernet_key, content=claims_str)
+    encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     dynamodb.put_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
