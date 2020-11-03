@@ -4,7 +4,19 @@
 #
 GRAPHQL_CRATE_USER = """
     mutation insert_moped_user($users: [moped_users_insert_input!]!) {
-      insert_moped_users(objects: $users) {
+      insert_moped_users(
+        objects: $users,
+        on_conflict: {
+          constraint: moped_users_email_key,
+          update_columns:[
+            cognito_user_id,
+            date_added,
+            status_id,
+            workgroup,
+            workgroup_id
+          ]
+        }
+      ) {
         affected_rows
       }
     }
