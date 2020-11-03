@@ -1,4 +1,4 @@
-import json, boto3
+import json, boto3, datetime
 from functools import wraps
 from config import api_config
 
@@ -111,6 +111,14 @@ def is_coa_staff(email: str) -> bool:
     :return bool:
     """
     return email.endswith("@austintexas.gov")
+
+
+def generate_iso_timestamp() -> str:
+    """
+    Generates a timestamp for insertion to postgres
+    :return str:
+    """
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def has_user_role(role, claims) -> bool:
