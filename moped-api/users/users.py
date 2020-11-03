@@ -123,7 +123,7 @@ def user_create_user(claims: list) -> (Response, int):
         # Persist the profile in the database
         db_response = db_create_user(user_profile=user_profile)
 
-        if "error" in db_response:
+        if "errors" in db_response:
             cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=cognito_username)
             final_response = {
                 "error": {
