@@ -12,7 +12,8 @@ from users.helpers import (
     generate_user_profile,
     is_valid_user_profile,
     is_valid_uuid,
-    db_create_user
+    db_create_user,
+    db_deactivate_user,
 )
 
 users_blueprint = Blueprint("users_blueprint", __name__)
@@ -192,8 +193,25 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
-        response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+        db_response = db_deactivate_user(user_cognito_id=id)
+        if "errors" in db_response:
+            response = {
+                "error": {
+                    "message": f"Cannot deactivate user {id}",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 500
 
+        cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+
+        response = {
+            "success": {
+                "message": f"User deleted: {id}",
+                "cognito": cognito_response,
+                "database": db_response,
+            }
+        }
         return jsonify(response)
     else:
         abort(403)
