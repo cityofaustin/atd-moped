@@ -1,4 +1,4 @@
-import os, boto3
+import boto3
 
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
@@ -84,7 +84,7 @@ def user_create_user(claims: list) -> (Response, int):
             email = json_data["email"]
 
             # Provide email as username, if valid email, Cognito generates UUID for username
-            response = cognito_client.admin_create_user(
+            cognito_response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
                 Username=email,
                 TemporaryPassword=password,
@@ -103,7 +103,7 @@ def user_create_user(claims: list) -> (Response, int):
                 return jsonify(e.response), 500  # Internal Server Error
 
         # Temporary password is valid, now make it permanent
-        cognito_username = response["User"]["Username"]
+        cognito_username = cognito_response["User"]["Username"]
         cognito_client.admin_set_user_password(
             UserPoolId=USER_POOL,
             Username=cognito_username,
@@ -116,17 +116,32 @@ def user_create_user(claims: list) -> (Response, int):
         user_claims = format_claims(cognito_username, roles)
         put_claims(cognito_username, user_claims)
 
-        # # Generate the user profile for the database
-        # user_profile = generate_user_profile(
-        #     cognito_id=cognito_username, params=json_data
-        # )
-        # # Store the
-        # db_response = db_create_user(user_profile=user_profile)
-        #
-        # if "error" in db_response:
-        #     cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+        # Generate the user profile for the database
+        user_profile = generate_user_profile(
+            cognito_id=cognito_username, json_data=request.json
+        )
+        # Persist the profile in the database
+        db_response = db_create_user(user_profile=user_profile)
 
-        return jsonify(response)
+        if "error" in db_response:
+            cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=cognito_username)
+            final_response = {
+                "error": {
+                    "message": "Error in the database, user deleted from cognito",
+                    "cognito": cognito_response,
+                    "database": db_response,
+                }
+            }
+            return jsonify(final_response), 500
+
+        final_response = {
+            "success": {
+                "message": f"New user created: {cognito_username}",
+                "cognito": cognito_response,
+                "database": db_response,
+            }
+        }
+        return jsonify(final_response)
     else:
         abort(403)
 
