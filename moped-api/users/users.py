@@ -1,23 +1,19 @@
 import os, boto3
+
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
 from config import api_config
 
 # Import our custom code
-from claims import normalize_claims, get_claims
+from claims import *
+
 from users.helpers import (
-    load_claims,
-    put_claims,
-    format_claims,
-    is_valid_user,
-    has_user_role,
     generate_user_profile,
     is_valid_user_profile,
     is_valid_uuid,
+    db_create_user
 )
-
-from users.helpers_graphql import db_create_user
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
