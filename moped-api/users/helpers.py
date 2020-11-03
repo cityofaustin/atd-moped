@@ -5,6 +5,11 @@ import re
 from cerberus import Validator
 from graphql import run_query
 
+from claims import (
+    is_coa_staff,
+    generate_iso_timestamp
+)
+
 from users.queries import (
     GRAPHQL_CRATE_USER,
     GRAPHQL_UPDATE_USER,
@@ -23,16 +28,15 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
     """
     return {
         "cognito_user_id": cognito_id,
-        "date_added": json_data.get("date_added", None),
+        "date_added": generate_iso_timestamp(),
         "email": json_data.get("email", None),
         "first_name": json_data.get("first_name", None),
         "last_name": json_data.get("first_name", None),
-        "is_coa_staff": json_data.get("is_coa_staff", None),
-        "status_id": json_data.get("status_id", None),
+        "is_coa_staff": is_coa_staff(json_data["email"]),
+        "status_id": json_data.get("status_id", 1),
         "title": json_data.get("title", None),
         "workgroup": json_data.get("workgroup", None),
         "workgroup_id": json_data.get("workgroup_id", None),
-        "password": json_data.get("password", None),
     }
 
 
