@@ -36,7 +36,7 @@ GRAPHQL_UPDATE_USER = """
 
 GRAPHQL_DEACTIVATE_USER = """
     mutation update_moped_user($userBoolExp: moped_users_bool_exp!) {
-      update_moped_users(where: $userBoolExp, _set: { status_id: 0 }) {
+      update_moped_users(where: $userBoolExp, _set: { status_id: 0, cognito_user_id: null }) {
         affected_rows
       }
     }
