@@ -53,7 +53,9 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
     # For now, we only need the email from the user profile.
     updated_attributes = []
     attr_email = {"Name": "email", "Value": user_profile["email"]}
+    attr_email_verified = {"Name": "email_verified", "Value": "true"}
     updated_attributes.append(attr_email)
+    updated_attributes.append(attr_email_verified)
     return updated_attributes
 
 
