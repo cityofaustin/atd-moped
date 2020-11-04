@@ -28,7 +28,7 @@ USER_POOL = api_config["COGNITO_USERPOOL_ID"]
 def user_list_users() -> (Response, int):
     """
     Returns users in user pool
-    :return str:
+    :return Response, int:
     """
     if is_valid_user(current_cognito_jwt):
         cognito_client = boto3.client("cognito-idp")
@@ -45,7 +45,7 @@ def user_list_users() -> (Response, int):
 def user_get_user(id: str) -> (Response, int):
     """
     Returns user details
-    :return str:
+    :return Response, int:
     """
     if is_valid_user(current_cognito_jwt):
         cognito_client = boto3.client("cognito-idp")
@@ -69,7 +69,7 @@ def user_get_user(id: str) -> (Response, int):
 def user_create_user(claims: list) -> (Response, int):
     """
     Returns created user details
-    :return str:
+    :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
@@ -155,7 +155,7 @@ def user_create_user(claims: list) -> (Response, int):
 def user_update_user(id: str, claims: list) -> (Response, int):
     """
     Returns updated user details
-    :return str:
+    :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
@@ -216,7 +216,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 def user_delete_user(id: str, claims: list) -> (Response, int):
     """
     Returns created user details
-    :return str:
+    :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
