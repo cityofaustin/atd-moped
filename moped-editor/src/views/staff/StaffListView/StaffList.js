@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Container, makeStyles } from "@material-ui/core";
+import {
+  Box,
+  Container,
+  makeStyles,
+  CircularProgress,
+} from "@material-ui/core";
 import Page from "src/components/Page";
 import Results from "./Results";
 import Toolbar from "./Toolbar";
@@ -35,8 +40,10 @@ const staffQuery = `
 const CustomerListView = () => {
   const classes = useStyles();
   const [staff, setStaff] = useState(data);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     axios({
       url: "",
       method: "post",
@@ -46,6 +53,7 @@ const CustomerListView = () => {
     }).then(result => {
       const staffArray = result.data.data.moped_coa_staff;
       setStaff(staffArray);
+      setLoading(false);
     });
   }, []);
 
@@ -54,7 +62,7 @@ const CustomerListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          <Results staff={staff} />
+          {loading ? <CircularProgress /> : <Results staff={staff} />}
         </Box>
       </Container>
     </Page>

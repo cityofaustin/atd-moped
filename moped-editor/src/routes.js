@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "src/layouts/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout";
 import AccountView from "src/views/account/AccountView";
-import StaffListView from "src/views/staff/StaffListView";
+import StaffListView from "src/views/staff/StaffListView/StaffList";
 import DashboardView from "src/views/reports/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
