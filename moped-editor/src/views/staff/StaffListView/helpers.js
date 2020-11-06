@@ -25,7 +25,6 @@ export function useUserApi(method, path, payload = null) {
     if (payload) {
       config = { ...config, data: payload };
     }
-    console.log(url, method, config);
 
     setLoading(true);
     axios(config).then(res => {
