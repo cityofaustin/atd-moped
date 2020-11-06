@@ -17,7 +17,7 @@ import {
   MuiPickersUtilsProvider 
 } from '@material-ui/pickers';
 import { ApolloClient, ApolloProvider, InMemoryCache, HttpLink } from '@apollo/client';
-import { useForm, FormProvider } from 'react-hook-form';
+// import { useForm, FormProvider } from 'react-hook-form';
 
 const createApolloClient = () => {
   return new ApolloClient({
@@ -31,12 +31,12 @@ const createApolloClient = () => {
 const client = createApolloClient();
 
 const App = () => {
-  const methods = useForm({ mode: "onBlur" });
-  const { watch, errors } = methods;
+  // const methods = useForm({ mode: "onBlur" });
+  // const { watch, errors } = methods;
 
-  useEffect(() => {
-    console.log("FORM CONTEXT", watch(), errors);
-  }, [watch, errors]);
+  // useEffect(() => {
+  //   console.log("FORM CONTEXT", watch(), errors);
+  // }, [watch, errors]);
 
   return (          
     <ApolloProvider client={client}>
@@ -44,7 +44,7 @@ const App = () => {
         <Provider store={Store}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
           <MatxTheme>
-            <FormProvider {...methods}>
+            {/* <FormProvider {...methods}> */}
             {/* <Auth> */}
               <Router history={history} path={`${process.env.PUBLIC_URL}/`}>
                 {/* <AuthGuard> */}
@@ -52,7 +52,7 @@ const App = () => {
                 {/* </AuthGuard> */}
               </Router> 
             {/* </Auth> */}
-            </FormProvider>
+            {/* </FormProvider> */}
           </MatxTheme> 
           </MuiPickersUtilsProvider> 
         </Provider>
