@@ -7,9 +7,8 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-import Results from "./Results";
+import Results from "./StaffTable";
 import Toolbar from "./Toolbar";
-import data from "./data";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,9 +36,9 @@ const staffQuery = `
   }
 `;
 
-const CustomerListView = () => {
+const StaffListView = () => {
   const classes = useStyles();
-  const [staff, setStaff] = useState(data);
+  const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -58,15 +57,19 @@ const CustomerListView = () => {
   }, []);
 
   return (
-    <Page className={classes.root} title="Customers">
+    <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          {loading ? <CircularProgress /> : <Results staff={staff} />}
+          {loading || staff === null ? (
+            <CircularProgress />
+          ) : (
+            <Results staff={staff} />
+          )}
         </Box>
       </Container>
     </Page>
   );
 };
 
-export default CustomerListView;
+export default StaffListView;

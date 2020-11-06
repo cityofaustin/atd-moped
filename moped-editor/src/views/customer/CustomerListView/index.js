@@ -19,7 +19,7 @@ const CustomerListView = () => {
   const [customers] = useState(data);
 
   return (
-    <Page className={classes.root} title="Customers">
+    <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
