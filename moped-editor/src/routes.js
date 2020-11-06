@@ -1,16 +1,16 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import DashboardLayout from "src/layouts/DashboardLayout";
-import MainLayout from "src/layouts/MainLayout";
-import AccountView from "src/views/account/AccountView";
+import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
+import MainLayout from "src/layouts/MainLayout/MainLayout";
+import AccountView from "src/views/account/AccountView/AccountView";
 import StaffListView from "src/views/staff/StaffListView/StaffList";
-import DashboardView from "src/views/reports/DashboardView";
+import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
-import ProductListView from "src/views/product/ProductListView";
+import ProductListView from "src/views/product/ProductListView/ProductListView";
 import NewProjectView from "src/views/projects/NewProjectView";
 import RegisterView from "src/views/auth/RegisterView";
-import SettingsView from "src/views/settings/SettingsView";
+import SettingsView from "src/views/settings/SettingsView/SettingsView";
 
 const routes = [
   {
