@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import DefineProjectForm from './DefineProjectForm';
 import ProjectTeamTable from './ProjectTeamTable';
 import MapProjectGeometry from './MapProjectGeometry';
-// import { gql, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 // import { useForm } from "react-hook-form";
 
 export const NewProject = () => {
@@ -58,7 +58,6 @@ export const NewProject = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    console.log(activeStep);
     let canContinue = true;
     switch (activeStep) {
       case 0:
@@ -95,26 +94,29 @@ export const NewProject = () => {
   const handleReset = () => {
     setActiveStep(0);
   };
-/* // Mutation for New Project
+
   const addNewProject = gql `
-    mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="") {
-      insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year  }) {
-        affected_rows
-        returning {
-          project_name
-          project_description
-
-          current_phase
-          current_status
-          eCapris_id
-          fiscal_year
-
-        }
-      }
+mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $start_date: date!="", $capitally_funded: Boolean!="", $project_priority: Int!="") {
+  insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year, start_date: $start_date, capitally_funded: $capitally_funded, project_priority: $project_priority  }) {
+    affected_rows
+    returning {
+      project_name
+      project_description
+      project_priority
+      current_phase
+      current_status
+      eCapris_id
+      fiscal_year
+      capitally_funded
+      start_date
     }
-  `;
+  }
+}    
+`;
 
-  const TEAMS_MUTATION = gql`
+const [addProject] = useMutation(addNewProject); 
+
+const TEAMS_MUTATION = gql`
     mutation Teams ($workgroup: String!="", $role_name: String!="", $first_name: String!="", $last_name: String!="") {
       insert_moped_proj_personnel(objects: {workgroup: $workgroup, role_name: $role_name, first_name: $first_name, last_name: $last_name}) {
         affected_rows
@@ -127,11 +129,29 @@ export const NewProject = () => {
       }
     }
   `;
-*/
-  const handleSubmit = () => {
-    console.log("submit was pressed!");
 
-  };
+const [addStaff] = useMutation(TEAMS_MUTATION);
+
+const handleSubmit = () => {
+  console.log({...StaffRows},{...defineProjectState});
+  
+// let project_name=data.newProject;
+// let project_description=data.ProjDesc;
+// let eCapris_id=data.eCaprisId;
+// let capitally_funded=data.capitalFunded;
+// let start_date=data.date;
+// let current_phase=data.Phase;
+// let project_priority=data.Priority;
+// let current_status=data.Status; 
+// let fiscal_year=data.FiscalYear;
+// addProject({variables: {project_name, project_description, eCapris_id, project_priority,current_phase, current_status, fiscal_year, capitally_funded, start_date}}); 
+// let first_name=data.First;
+// let last_name=data.Last;
+// let workgroup=data.Group;
+// let role_name=data.Role; 
+// addStaff({variables: {workgroup, role_name, last_name}});     
+  
+};
 
   return (
     <div>

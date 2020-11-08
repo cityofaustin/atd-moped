@@ -7,7 +7,10 @@ import { DevTool } from '@hookform/devtools';
 
 const DefineProjectForm = ( props ) => {
   // these are the functions we need from RHF
-  const { register, getValues, control } = useForm();
+  const { register, getValues, control, handleSubmit } = useForm();
+
+  const onSubmit = data => console.log(data);
+  
   // for any text input, we want to get all values to update the form's state with the stepper component's props
   const handleFormChange = () => {
     props.updateProjectState(getValues());
@@ -78,7 +81,7 @@ const DefineProjectForm = ( props ) => {
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
   return (
-    <form style={{padding: 25}}>
+    <form onSubmit={handleSubmit(onSubmit)} style={{padding: 25}}>
     <DevTool control={control} />
       <Grid container spacing={2}>
 
