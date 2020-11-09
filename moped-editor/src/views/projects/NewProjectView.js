@@ -1,16 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { Link as RouterLink } from "react-router-dom";
 import Page from "src/components/Page";
-import {
-  Box,
-  Card,
-  Container,
-  Grid,
-  makeStyles,
-  Link,
-  Typography,
-} from "@material-ui/core";
+import { Card, Container, makeStyles, Typography } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {

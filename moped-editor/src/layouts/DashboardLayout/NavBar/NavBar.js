@@ -1,23 +1,12 @@
 import React, { useEffect } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-  Box,
-  Button,
-  Divider,
-  Drawer,
-  Hidden,
-  List,
-  Typography,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
 import {
-  AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
   Lock as LockIcon,
   Settings as SettingsIcon,
-  ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
@@ -87,15 +76,12 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   const classes = useStyles();
   const location = useLocation();
 
-  useEffect(
-    () => {
-      if (openMobile && onMobileClose) {
-        onMobileClose();
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    },
-    [location.pathname]
-  );
+  useEffect(() => {
+    if (openMobile && onMobileClose) {
+      onMobileClose();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const content = (
     <Box height="100%" display="flex" flexDirection="column">
