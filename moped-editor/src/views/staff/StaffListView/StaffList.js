@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
+
 import {
   Box,
   Container,
@@ -19,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const staffQuery = `
+const staffQuery = gql`
   query GetStaff {
     moped_coa_staff {
       cognito_user_id
@@ -38,33 +40,21 @@ const staffQuery = `
 
 const StaffListView = () => {
   const classes = useStyles();
-  const [staff, setStaff] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setLoading(true);
-    axios({
-      url: "",
-      method: "post",
-      data: {
-        query: staffQuery,
-      },
-    }).then(result => {
-      const staffArray = result.data.data.moped_coa_staff;
-      setStaff(staffArray);
-      setLoading(false);
-    });
-  }, []);
+  const { data, loading, error } = useQuery(staffQuery);
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          {loading || staff === null ? (
+          {loading || data.moped_coa_staff === null ? (
             <CircularProgress />
           ) : (
-            <Results staff={staff} />
+            <Results staff={data.moped_coa_staff} />
           )}
         </Box>
       </Container>
