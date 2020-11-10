@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Grid, InputLabel, MenuItem, Select, Switch } from "@material-ui/core";
 import { KeyboardDatePicker} from '@material-ui/pickers';
@@ -8,19 +8,11 @@ import { DevTool } from '@hookform/devtools';
 const DefineProjectForm = ( props ) => {
   // these are the functions we need from RHF
   const { register, getValues, control, handleSubmit } = useForm();
-
-  const onSubmit = data => console.log(data);
-  
+ 
   // for any text input, we want to get all values to update the form's state with the stepper component's props
   const handleFormChange = () => {
     props.updateProjectState(getValues());
   };
-  // const handleSwitch = (switchValue) => {
-  //   let projectData = getValues();
-  //   console.log(projectData);
-  //   projectData.capitallyFunded = switchValue;
-  //   props.updateProjectState(projectData);
-  // };
  
     React.useEffect(() => {
     register("capitallyFunded"); // custom register checkbox input
@@ -81,7 +73,7 @@ const DefineProjectForm = ( props ) => {
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} style={{padding: 25}}>
+    <form style={{padding: 25}}>
     <DevTool control={control} />
       <Grid container spacing={2}>
 
@@ -125,7 +117,8 @@ const DefineProjectForm = ( props ) => {
             />}
             name="date"
             control={control}
-            />        
+            /> 
+    {/* in case we want to go back to inline datepicker        */}
          {/* <TextField
            inputRef={register}
            name="startDate"

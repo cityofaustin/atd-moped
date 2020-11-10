@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TextField, Button, Icon } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { gql, useQuery } from "@apollo/client";
@@ -123,9 +123,9 @@ const ProjectTeamTable = ( props ) => {
                 renderInput={(params) => <TextField {...params} label="Select a Role" margin="normal" />}
               />
            </TableCell>
-           {/* <TableCell>{item.workgroup}</TableCell> */}
            <TableCell>    
              <TextField
+                name="Group"
                 value={item.workgroup}    
                 style={{ width: 150, paddingLeft: 10 }} 
               />

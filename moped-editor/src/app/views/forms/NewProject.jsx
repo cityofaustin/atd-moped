@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-// import _ from "lodash";
+import _ from "lodash";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
@@ -9,7 +9,6 @@ import DefineProjectForm from './DefineProjectForm';
 import ProjectTeamTable from './ProjectTeamTable';
 import MapProjectGeometry from './MapProjectGeometry';
 import { gql, useMutation } from "@apollo/client";
-// import { useForm } from "react-hook-form";
 
 export const NewProject = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -96,7 +95,7 @@ export const NewProject = () => {
   };
 
   const addNewProject = gql `
-mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $start_date: date!="", $capitally_funded: Boolean!="", $project_priority: Int!="") {
+mutation MyMutation($project_name: String!="", $project_description: String!="", $current_phase: String!="", $current_status: String!="", $eCapris_id: String!="", $fiscal_year: String!="", $start_date: date="2020-01-01", $capitally_funded: Boolean!=false, $project_priority: String!="") {
   insert_moped_project(objects: {project_name: $project_name, project_description: $project_description, current_phase: $current_phase, current_status: $current_status, eCapris_id: $eCapris_id, fiscal_year: $fiscal_year, start_date: $start_date, capitally_funded: $capitally_funded, project_priority: $project_priority  }) {
     affected_rows
     returning {
@@ -133,24 +132,31 @@ const TEAMS_MUTATION = gql`
 const [addStaff] = useMutation(TEAMS_MUTATION);
 
 const handleSubmit = () => {
-  console.log({...StaffRows},{...defineProjectState});
-  
-// let project_name=data.newProject;
-// let project_description=data.ProjDesc;
-// let eCapris_id=data.eCaprisId;
-// let capitally_funded=data.capitalFunded;
-// let start_date=data.date;
-// let current_phase=data.Phase;
-// let project_priority=data.Priority;
-// let current_status=data.Status; 
-// let fiscal_year=data.FiscalYear;
-// addProject({variables: {project_name, project_description, eCapris_id, project_priority,current_phase, current_status, fiscal_year, capitally_funded, start_date}}); 
-// let first_name=data.First;
-// let last_name=data.Last;
-// let workgroup=data.Group;
-// let role_name=data.Role; 
-// addStaff({variables: {workgroup, role_name, last_name}});     
-  
+    //data from Define Project going to database
+    let projData =  _.toArray({...defineProjectState}); 
+    let project_name= projData[1];
+    let project_description=projData[2];
+    let eCapris_id=projData[8];
+    let capitally_funded=projData[0];
+    let start_date=projData[3];
+    let current_phase=projData[5];
+    let project_priority=projData[7];
+    let current_status=projData[6]; 
+    let fiscal_year=projData[4];
+    addProject({variables: {project_name, project_description, eCapris_id, project_priority,current_phase, current_status, fiscal_year, capitally_funded, start_date}}); 
+
+    //data from ProjectTeamTable going to database
+    let teamData =  _.toArray({...StaffRows});
+    _.forEach(teamData, function(value) {
+        let name_array = value.name.name;
+        let name_split = name_array.split(' ');
+        let first_name=name_split[0];
+        let last_name=name_split[1];
+        let workgroup=value.workgroup;
+        let role_name=value.role; 
+    addStaff({variables: {workgroup, role_name, first_name, last_name}});   
+    });
+   
 };
 
   return (
