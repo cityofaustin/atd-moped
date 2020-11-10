@@ -28,9 +28,11 @@ const App = () => {
   useEffect(() => {
     const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
+    // TODO: make sure user is authenticated and has valid user claims
     // if (isAuthenticated && !!userClaims) {
     const clientData = {
       uri: HASURA_ENDPOINT,
+      // TODO: implement proper headers
       // headers: {
       //   Authorization: `Bearer ${userClaims.__raw}`,
       //   "x-hasura-role": getHasuraRole(),
@@ -39,8 +41,6 @@ const App = () => {
 
     client.current = new ApolloClient(clientData);
     setIsApolloLoaded(true);
-    // }
-    // }, [isAuthenticated, client, userClaims, setIsApolloLoaded, getHasuraRole]);
   }, [client, setIsApolloLoaded]);
 
   return (
