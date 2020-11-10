@@ -137,19 +137,24 @@ def has_user_role(role, claims) -> bool:
     return False
 
 
-def retrieve_claims(user_id: str) -> Optional[str]:
+def retrieve_claims(user_email: str) -> Optional[str]:
     """
     Retrieves the encrypted claims from DynamoDB
-    :param str user_id: The user id (uuid)
+    :param str user_email: The user email
     :return Optional[str]: The claims string (encrypted)
     """
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
-    return dynamodb.get_item(
+    user_claims = dynamodb.get_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
         Key={
-            "user_id": {"S": user_id},
+            "user_id": {"S": user_email},
         },
-    )["Item"]["claims"]["S"]
+    )
+
+    if "Item" not in user_claims:
+        raise RuntimeError(f"Unable to find claims with given user_id.")
+
+    return user_claims["Item"]["claims"]["S"]
 
 
 def load_claims(user_email: str, user_id: str = None) -> dict:
@@ -159,7 +164,7 @@ def load_claims(user_email: str, user_id: str = None) -> dict:
     :param str user_id: The user id (uuid, if missing it wont render x-hasura-user-id)
     :return dict: The claims JSON
     """
-    claims = retrieve_claims(user_id=user_email)
+    claims = retrieve_claims(user_email=user_email)
     decrypted_claims = decrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims)
     claims = json.loads(decrypted_claims)
     if user_id is not None:
