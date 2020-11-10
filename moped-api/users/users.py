@@ -35,7 +35,7 @@ def user_list_users() -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
-        user_list = user_response["Users"]
+        user_list = list(filter(lambda user: "azuread_" not in user["Username"], user_response["Users"]))
         return jsonify(user_list)
     else:
         abort(403)
