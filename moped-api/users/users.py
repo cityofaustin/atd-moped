@@ -11,6 +11,7 @@ from claims import *
 from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
+    get_user_email_from_attr,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -53,8 +54,8 @@ def user_get_user(id: str) -> (Response, int):
         user_dict = {}
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
-        user_roles = load_claims(id)
-
+        user_email = get_user_email_from_attr(user_attr=user_info)
+        user_roles = load_claims(user_email=user_email, user_id=id)
         user_dict.update(user_info)
         user_dict.update(user_roles)
 
