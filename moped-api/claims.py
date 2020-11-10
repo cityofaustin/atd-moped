@@ -152,16 +152,15 @@ def retrieve_claims(user_id: str) -> Optional[str]:
     )["Item"]["claims"]["S"]
 
 
-def load_claims(user_id: str) -> dict:
+def load_claims(user_email: str) -> dict:
     """
     Loads claims from DynamoDB
-    :param str user_id: The user id to retrieve the claims for
+    :param str user_email: The user email to retrieve the claims for
     :return dict: The claims JSON
     """
-    claims = retrieve_claims(user_id=user_id)
+    claims = retrieve_claims(user_id=user_email)
     decrypted_claims = decrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims)
     claims = json.loads(decrypted_claims)
-    claims["x-hasura-user-id"] = user_id
     return claims
 
 
