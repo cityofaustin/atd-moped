@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
-import NavBar from "./NavBar";
+import NavBar from "./NavBar/NavBar";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 

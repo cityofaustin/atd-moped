@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 import AccountView from "src/views/account/AccountView/AccountView";
-import CustomerListView from "src/views/customer/CustomerListView/CustomerListView";
+import StaffListView from "src/views/staff/StaffListView/StaffList";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
@@ -18,7 +18,7 @@ const routes = [
     element: <DashboardLayout />,
     children: [
       { path: "account", element: <AccountView /> },
-      { path: "staff", element: <CustomerListView /> },
+      { path: "staff", element: <StaffListView /> },
       { path: "dashboard", element: <DashboardView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
