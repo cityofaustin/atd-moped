@@ -196,7 +196,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         if roles:
             user_claims = format_claims(id, roles)
-            put_claims(id, user_claims)
+            put_claims(user_email=user_profile["email"], user_claims=user_claims)
 
         response = {
             "success": {
