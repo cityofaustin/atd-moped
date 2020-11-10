@@ -24,10 +24,9 @@ const App = () => {
   const [isApolloLoaded, setIsApolloLoaded] = useState(false);
   console.log("isApolloLoaded", isApolloLoaded);
 
-  // Setup Apollo connection to Hasura with Auth0 token and roles
+  // Setup Apollo connection to Hasura with Cognito token and roles
   useEffect(() => {
-    // const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
-    const HASURA_ENDPOINT = `https://coa-moped.herokuapp.com/v1/graphql`;
+    const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
     // if (isAuthenticated && !!userClaims) {
     const clientData = {
