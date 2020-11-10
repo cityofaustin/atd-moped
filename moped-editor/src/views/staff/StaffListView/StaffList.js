@@ -23,13 +23,11 @@ const useStyles = makeStyles(theme => ({
 
 const staffQuery = gql`
   query GetStaff {
-    moped_coa_staff {
+    moped_users {
       cognito_user_id
       date_added
       first_name
-      full_name
       last_name
-      staff_id
       staff_uuid
       title
       workgroup
@@ -51,10 +49,10 @@ const StaffListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          {loading || data.moped_coa_staff === null ? (
+          {loading || data.moped_users === null ? (
             <CircularProgress />
           ) : (
-            <Results staff={data.moped_coa_staff} />
+            <Results staff={data.moped_users} />
           )}
         </Box>
       </Container>
