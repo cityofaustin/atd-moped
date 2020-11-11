@@ -5,9 +5,11 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import {
   Button,
   CircularProgress,
+  FormControl,
   Grid,
   InputLabel,
   TextField,
+  makeStyles,
   MenuItem,
   Select,
 } from "@material-ui/core";
@@ -21,7 +23,15 @@ const WORKGROUPS_QUERY = gql`
   }
 `;
 
+const useStyles = makeStyles(theme => ({
+  formSelect: {
+    minWidth: 195,
+  },
+}));
+
 const StaffForm = ({ editFormData = null }) => {
+  const classes = useStyles();
+
   const { register, handleSubmit, watch, errors, control } = useForm({
     defaultValues: editFormData || {},
   });
@@ -32,7 +42,7 @@ const StaffForm = ({ editFormData = null }) => {
     error: workgroupError,
     data: workgroups,
   } = useQuery(WORKGROUPS_QUERY);
-  console.log(workgroups);
+
   // Fields needed
   // email
   // first name
@@ -84,34 +94,32 @@ const StaffForm = ({ editFormData = null }) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <InputLabel id="workgroup-label">Workgroup</InputLabel>
-          <Controller
-            as={
-              <Select
-                id="workgroup"
-                labelId="workgroup-label"
-                label="Workgroup"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                defaultValue={"Choose Workgroup"}
-              >
-                {workgroupLoading ? (
-                  <MenuItem value={""}>
-                    <CircularProgress />
-                  </MenuItem>
-                ) : (
-                  workgroups.moped_workgroup.map(workgroup => (
-                    <MenuItem value={workgroup.workgroup_id}>
-                      {workgroup.workgroup_name}
+          <FormControl variant="outlined" className={classes.formSelect}>
+            <InputLabel id="workgroup-label">Workgroup</InputLabel>
+            <Controller
+              as={
+                <Select
+                  id="workgroup"
+                  labelId="workgroup-label"
+                  label="Workgroup"
+                >
+                  {workgroupLoading ? (
+                    <MenuItem value={""}>
+                      <CircularProgress />
                     </MenuItem>
-                  ))
-                )}
-              </Select>
-            }
-            name={"workgroup"}
-            control={control}
-          />
+                  ) : (
+                    workgroups.moped_workgroup.map(workgroup => (
+                      <MenuItem value={workgroup.workgroup_id}>
+                        {workgroup.workgroup_name}
+                      </MenuItem>
+                    ))
+                  )}
+                </Select>
+              }
+              name={"workgroup"}
+              control={control}
+            />
+          </FormControl>
         </Grid>
         <Grid item xs={12}>
           <Button type="submit" color="primary" variant="contained">
