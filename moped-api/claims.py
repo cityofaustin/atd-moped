@@ -201,6 +201,18 @@ def put_claims(user_email: str, user_claims: dict):
     )
 
 
+def delete_claims(user_email: str):
+    """
+    Deletes claims in DynamoDB
+    :param str user_email: The user email to set the claims for
+    """
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    dynamodb.delete_item(
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Key={"user_id": {"S": user_email}},
+    )
+
+
 def encrypt(fernet_key: str, content: str) -> Optional[str]:
     """
     Converts a dictionary into an encrypted string.
