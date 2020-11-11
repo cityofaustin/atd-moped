@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  FormControl,
+  Grid,
   TextField,
   makeStyles,
 } from "@material-ui/core";
@@ -17,10 +17,6 @@ import Page from "src/components/Page";
 
 const useStyles = makeStyles(theme => ({
   root: {},
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
 }));
 
 const NewStaffView = () => {
@@ -48,25 +44,39 @@ const NewStaffView = () => {
             <CardHeader title="Add User" />
             <Divider />
             <CardContent>
-              <FormControl
-                className={classes.formControl}
-                onSubmit={handleSubmit}
-              >
-                <TextField
-                  name="first_name"
-                  id="first-name"
-                  label="First Name"
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  variant="outlined"
-                  inputRef={register}
-                />
-
-                <Button type="submit" color="primary" variant="contained">
-                  Submit
-                </Button>
-              </FormControl>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <TextField
+                      name="first_name"
+                      id="first-name"
+                      label="First Name"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                      inputRef={register}
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      name="last_name"
+                      id="last-name"
+                      label="Last Name"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      variant="outlined"
+                      inputRef={register}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Button type="submit" color="primary" variant="contained">
+                      Save
+                    </Button>
+                  </Grid>
+                </Grid>
+              </form>
             </CardContent>
           </Card>
         </Box>

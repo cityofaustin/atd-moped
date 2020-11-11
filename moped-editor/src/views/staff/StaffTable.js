@@ -42,7 +42,7 @@ const Results = ({ className, staff, ...rest }) => {
             </TableHead>
             <TableBody>
               {staff.map(person => (
-                <TableRow hover key={person.staff_id}>
+                <TableRow hover key={person.staff_uuid}>
                   <TableCell>
                     <EditIcon />
                   </TableCell>
