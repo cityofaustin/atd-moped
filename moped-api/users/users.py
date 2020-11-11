@@ -11,6 +11,7 @@ from claims import *
 from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
+    get_user_email_from_attr,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -34,7 +35,7 @@ def user_list_users() -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
-        user_list = user_response["Users"]
+        user_list = list(filter(lambda user: "azuread_" not in user["Username"], user_response["Users"]))
         return jsonify(user_list)
     else:
         abort(403)
@@ -53,8 +54,8 @@ def user_get_user(id: str) -> (Response, int):
         user_dict = {}
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
-        user_roles = load_claims(id)
-
+        user_email = get_user_email_from_attr(user_attr=user_info)
+        user_roles = load_claims(user_email=user_email, user_id=id)
         user_dict.update(user_info)
         user_dict.update(user_roles)
 
@@ -117,7 +118,7 @@ def user_create_user(claims: list) -> (Response, int):
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
         user_claims = format_claims(cognito_username, roles)
-        put_claims(cognito_username, user_claims)
+        put_claims(user_email=email, user_claims=user_claims)
 
         # Generate the user profile for the database
         user_profile = generate_user_profile(
@@ -167,6 +168,10 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
+        # Retrieve current profile (to fetch old email)
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        user_email_before_update = get_user_email_from_attr(user_attr=user_info)
+
         json_data = request.json
         roles = json_data.get("roles", None)
 
@@ -193,9 +198,13 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             UserAttributes=updated_attributes,
         )
 
+        # Delete the email if it is different
+        if user_email_before_update != json_data["email"]:
+            delete_claims(user_email=user_email_before_update)
+
         if roles:
             user_claims = format_claims(id, roles)
-            put_claims(id, user_claims)
+            put_claims(user_email=user_profile["email"], user_claims=user_claims)
 
         response = {
             "success": {
@@ -231,7 +240,11 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 500
 
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        user_email = get_user_email_from_attr(user_attr=user_info)
+
         cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+        delete_claims(user_email=user_email)
 
         response = {
             "success": {
