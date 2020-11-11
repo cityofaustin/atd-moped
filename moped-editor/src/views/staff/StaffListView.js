@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
@@ -49,7 +49,7 @@ const StaffListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          {loading || data.moped_users === null ? (
+          {loading ? (
             <CircularProgress />
           ) : (
             <Results staff={data.moped_users} />
