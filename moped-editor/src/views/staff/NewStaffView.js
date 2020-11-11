@@ -1,6 +1,5 @@
 import React from "react";
 import StaffForm from "./StaffForm";
-import { useForm } from "react-hook-form";
 
 import {
   Box,
@@ -13,26 +12,12 @@ import {
 } from "@material-ui/core";
 import Page from "src/components/Page";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {},
 }));
 
 const NewStaffView = () => {
   const classes = useStyles();
-
-  const { register, handleSubmit, watch, errors } = useForm();
-  const onSubmit = data => console.log(data);
-
-  // Fields needed
-  // email
-  // first name
-  // last name
-  // status - 1 for active
-  // title
-  // workgroup
-  // workgroup_id
-  // password
-  // roles
 
   return (
     <Page className={classes.root} title="Staff">

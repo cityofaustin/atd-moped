@@ -1,19 +1,38 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 
-import { Button, Grid, TextField, makeStyles } from "@material-ui/core";
-import Page from "src/components/Page";
+import { gql, useQuery } from "@apollo/react-hooks";
+import {
+  Button,
+  CircularProgress,
+  Grid,
+  InputLabel,
+  TextField,
+  MenuItem,
+  Select,
+} from "@material-ui/core";
 
-const useStyles = makeStyles(theme => ({
-  root: {},
-}));
+const WORKGROUPS_QUERY = gql`
+  query GetWorkgroups {
+    moped_workgroup {
+      workgroup_id
+      workgroup_name
+    }
+  }
+`;
 
 const StaffForm = ({ editFormData = null }) => {
-  const { register, handleSubmit, watch, errors } = useForm({
+  const { register, handleSubmit, watch, errors, control } = useForm({
     defaultValues: editFormData || {},
   });
   const onSubmit = data => console.log(data);
 
+  const {
+    loading: workgroupLoading,
+    error: workgroupError,
+    data: workgroups,
+  } = useQuery(WORKGROUPS_QUERY);
+  console.log(workgroups);
   // Fields needed
   // email
   // first name
@@ -50,6 +69,48 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            name="email"
+            id="email"
+            label="Email"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            inputRef={register}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <InputLabel id="workgroup-label">Workgroup</InputLabel>
+          <Controller
+            as={
+              <Select
+                id="workgroup"
+                labelId="workgroup-label"
+                label="Workgroup"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                defaultValue={"Choose Workgroup"}
+              >
+                {workgroupLoading ? (
+                  <MenuItem value={""}>
+                    <CircularProgress />
+                  </MenuItem>
+                ) : (
+                  workgroups.moped_workgroup.map(workgroup => (
+                    <MenuItem value={workgroup.workgroup_id}>
+                      {workgroup.workgroup_name}
+                    </MenuItem>
+                  ))
+                )}
+              </Select>
+            }
+            name={"workgroup"}
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
