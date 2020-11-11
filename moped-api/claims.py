@@ -19,9 +19,9 @@ AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None
 # safety. A LocalProxy seems to behave as a pointer to global variable.
 #
 current_hasura_claims = LocalProxy(
-    lambda:
-    {} if hasattr(_request_ctx_stack.top, 'hasura_claims') is False
-    else getattr(_request_ctx_stack.top, 'hasura_claims', None)
+    lambda: {}
+    if hasattr(_request_ctx_stack.top, "hasura_claims") is False
+    else getattr(_request_ctx_stack.top, "hasura_claims", None)
 )
 
 
@@ -46,7 +46,9 @@ def resolve_hasura_claims(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         print("resolve_hasura_claims: start")
         cognito_jwt_dict = current_cognito_jwt._get_current_object()
-        _request_ctx_stack.top.hasura_claims = json.loads(cognito_jwt_dict["https://hasura.io/jwt/claims"])
+        _request_ctx_stack.top.hasura_claims = json.loads(
+            cognito_jwt_dict["https://hasura.io/jwt/claims"]
+        )
         return func(*args, **kwargs)
 
     return wrapper
@@ -64,7 +66,9 @@ def normalize_claims(func: Callable) -> Callable:
     def wrapper(*args, **kwargs):
         print("resolve_hasura_claims: start")
         claims = current_cognito_jwt._get_current_object()
-        claims["https://hasura.io/jwt/claims"] = json.loads(claims["https://hasura.io/jwt/claims"])
+        claims["https://hasura.io/jwt/claims"] = json.loads(
+            claims["https://hasura.io/jwt/claims"]
+        )
         return func(claims=claims, *args, **kwargs)
 
     return wrapper
@@ -193,7 +197,9 @@ def put_claims(user_email: str, user_claims: dict):
     :param dict user_claims: The claims object to be persisted in DynamoDB
     """
     claims_str = json.dumps(user_claims)
-    encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
+    encrypted_claims = encrypt(
+        fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str
+    )
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     dynamodb.put_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,

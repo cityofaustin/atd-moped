@@ -35,7 +35,11 @@ def user_list_users() -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         user_response = cognito_client.list_users(UserPoolId=USER_POOL)
-        user_list = list(filter(lambda user: "azuread_" not in user["Username"], user_response["Users"]))
+        user_list = list(
+            filter(
+                lambda user: "azuread_" not in user["Username"], user_response["Users"]
+            )
+        )
         return jsonify(user_list)
     else:
         abort(403)
@@ -128,7 +132,9 @@ def user_create_user(claims: list) -> (Response, int):
         db_response = db_create_user(user_profile=user_profile)
 
         if "errors" in db_response:
-            cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=cognito_username)
+            cognito_response = cognito_client.admin_delete_user(
+                UserPoolId=USER_POOL, Username=cognito_username
+            )
             final_response = {
                 "error": {
                     "message": "Error in the database, user deleted from cognito",
@@ -175,9 +181,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         json_data = request.json
         roles = json_data.get("roles", None)
 
-        user_profile = generate_user_profile(
-            cognito_id=id, json_data=request.json
-        )
+        user_profile = generate_user_profile(cognito_id=id, json_data=request.json)
 
         db_response = db_update_user(user_profile=user_profile)
 
@@ -243,7 +247,9 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
         user_email = get_user_email_from_attr(user_attr=user_info)
 
-        cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+        cognito_response = cognito_client.admin_delete_user(
+            UserPoolId=USER_POOL, Username=id
+        )
         delete_claims(user_email=user_email)
 
         response = {

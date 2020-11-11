@@ -9,14 +9,11 @@ from graphql import run_query
 from typing import List
 
 # Helpers
-from claims import (
-    is_coa_staff,
-    generate_iso_timestamp
-)
+from claims import is_coa_staff, generate_iso_timestamp
 from users.queries import (
     GRAPHQL_CRATE_USER,
     GRAPHQL_UPDATE_USER,
-    GRAPHQL_DEACTIVATE_USER
+    GRAPHQL_DEACTIVATE_USER,
 )
 from users.validation import USER_VALIDATION_SCHEMA
 
@@ -105,12 +102,7 @@ def db_create_user(user_profile: dict) -> dict:
     :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
-    response = run_query(
-        query=GRAPHQL_CRATE_USER,
-        variables={
-            "users": [user_profile]
-        }
-    )
+    response = run_query(query=GRAPHQL_CRATE_USER, variables={"users": [user_profile]})
     return response.json()
 
 
@@ -123,13 +115,11 @@ def db_update_user(user_profile: dict) -> dict:
     response = run_query(
         query=GRAPHQL_UPDATE_USER,
         variables={
-          "userBoolExp": {
-            "cognito_user_id": {
-              "_eq": user_profile["cognito_user_id"]
-            }
-          },
-          "user": user_profile
-        }
+            "userBoolExp": {
+                "cognito_user_id": {"_eq": user_profile["cognito_user_id"]}
+            },
+            "user": user_profile,
+        },
     )
     return response.json()
 
@@ -142,13 +132,7 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     """
     response = run_query(
         query=GRAPHQL_DEACTIVATE_USER,
-        variables={
-            "userBoolExp": {
-                "cognito_user_id": {
-                    "_eq": user_cognito_id
-                }
-            }
-        }
+        variables={"userBoolExp": {"cognito_user_id": {"_eq": user_cognito_id}}},
     )
     return response.json()
 
