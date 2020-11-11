@@ -151,3 +151,16 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
         }
     )
     return response.json()
+
+
+def get_user_email_from_attr(user_attr: object) -> str:
+    """
+    Returns the user email from a user attributes object as provided by the admin_get_user method
+    :param object user_attr: The user attributes object
+    :return str:
+    """
+    email = list(
+        filter(lambda attr: attr["Name"] == "email", user_attr["UserAttributes"])
+    )[0]["Value"]
+
+    return email.replace("azuread_", "")

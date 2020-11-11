@@ -137,31 +137,38 @@ def has_user_role(role, claims) -> bool:
     return False
 
 
-def retrieve_claims(user_id: str) -> Optional[str]:
+def retrieve_claims(user_email: str) -> Optional[str]:
     """
     Retrieves the encrypted claims from DynamoDB
-    :param str user_id: The user id (uuid)
+    :param str user_email: The user email
     :return Optional[str]: The claims string (encrypted)
     """
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
-    return dynamodb.get_item(
+    user_claims = dynamodb.get_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
         Key={
-            "user_id": {"S": user_id},
+            "user_id": {"S": user_email},
         },
-    )["Item"]["claims"]["S"]
+    )
+
+    if "Item" not in user_claims:
+        raise RuntimeError(f"Unable to find claims with given user_id.")
+
+    return user_claims["Item"]["claims"]["S"]
 
 
-def load_claims(user_id: str) -> dict:
+def load_claims(user_email: str, user_id: str = None) -> dict:
     """
     Loads claims from DynamoDB
-    :param str user_id: The user id to retrieve the claims for
+    :param str user_email: The user email to retrieve the claims for
+    :param str user_id: The user id (uuid, if missing it wont render x-hasura-user-id)
     :return dict: The claims JSON
     """
-    claims = retrieve_claims(user_id=user_id)
+    claims = retrieve_claims(user_email=user_email)
     decrypted_claims = decrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims)
     claims = json.loads(decrypted_claims)
-    claims["x-hasura-user-id"] = user_id
+    if user_id is not None:
+        claims["x-hasura-user-id"] = user_id
     return claims
 
 
@@ -179,18 +186,30 @@ def format_claims(user_id: str, roles: list) -> dict:
     }
 
 
-def put_claims(user_id: str, claims: dict):
+def put_claims(user_email: str, user_claims: dict):
     """
     Sets claims in DynamoDB
-    :param str user_id: The user id to set the claims for
-    :param dict claims: The claims object to be persisted in DynamoDB
+    :param str user_email: The user email to set the claims for
+    :param dict user_claims: The claims object to be persisted in DynamoDB
     """
-    claims_str = json.dumps(claims)
+    claims_str = json.dumps(user_claims)
     encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     dynamodb.put_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
-        Item={"user_id": {"S": user_id}, "claims": {"S": encrypted_claims}},
+        Item={"user_id": {"S": user_email}, "claims": {"S": encrypted_claims}},
+    )
+
+
+def delete_claims(user_email: str):
+    """
+    Deletes claims in DynamoDB
+    :param str user_email: The user email to set the claims for
+    """
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    dynamodb.delete_item(
+        TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
+        Key={"user_id": {"S": user_email}},
     )
 
 
