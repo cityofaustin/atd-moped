@@ -168,6 +168,10 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
+        # Retrieve current profile (to fetch old email)
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        user_email_before_update = get_user_email_from_attr(user_attr=user_info)
+
         json_data = request.json
         roles = json_data.get("roles", None)
 
@@ -193,6 +197,10 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             Username=id,
             UserAttributes=updated_attributes,
         )
+
+        # Delete the email if it is different
+        if user_email_before_update != json_data["email"]:
+            delete_claims(user_email=user_email_before_update)
 
         if roles:
             user_claims = format_claims(id, roles)
@@ -232,7 +240,11 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 500
 
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        user_email = get_user_email_from_attr(user_attr=user_info)
+
         cognito_response = cognito_client.admin_delete_user(UserPoolId=USER_POOL, Username=id)
+        delete_claims(user_email=user_email)
 
         response = {
             "success": {
