@@ -6,11 +6,15 @@ import {
   Button,
   CircularProgress,
   FormControl,
+  FormControlLabel,
+  FormLabel,
   Grid,
   InputLabel,
   TextField,
   makeStyles,
   MenuItem,
+  Radio,
+  RadioGroup,
   Select,
 } from "@material-ui/core";
 
@@ -22,6 +26,12 @@ const WORKGROUPS_QUERY = gql`
     }
   }
 `;
+
+const roles = [
+  { value: "moped-viewer", name: "Viewer" },
+  { value: "moped-editor", name: "Editor" },
+  { value: "moped-admin", name: "Admin" },
+];
 
 const useStyles = makeStyles(theme => ({
   formSelect: {
@@ -117,6 +127,26 @@ const StaffForm = ({ editFormData = null }) => {
                 </Select>
               }
               name={"workgroup"}
+              control={control}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl component="fieldset">
+            <FormLabel id="roles-label">Role</FormLabel>
+            <Controller
+              as={
+                <RadioGroup aria-label="roles" name="roles">
+                  {roles.map(role => (
+                    <FormControlLabel
+                      value={role.value}
+                      control={<Radio />}
+                      label={role.name}
+                    />
+                  ))}
+                </RadioGroup>
+              }
+              name={"roles"}
               control={control}
             />
           </FormControl>
