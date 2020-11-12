@@ -118,7 +118,7 @@ def user_create_user(claims: list) -> (Response, int):
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
         user_claims = format_claims(cognito_username, roles)
-        put_claims(user_email=email, user_claims=user_claims)
+        put_claims(user_email=email, user_claims=user_claims, cognito_uuid=cognito_username)
 
         # Generate the user profile for the database
         user_profile = generate_user_profile(
