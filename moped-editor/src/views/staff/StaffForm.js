@@ -33,17 +33,31 @@ const roles = [
   { value: "moped-admin", name: "Admin" },
 ];
 
-const useStyles = makeStyles(theme => ({
+const statuses = [
+  { value: "1", name: "Active" },
+  { value: "0", name: "Inactive" },
+];
+
+const useStyles = makeStyles(() => ({
   formSelect: {
     minWidth: 195,
   },
 }));
 
+const initialFormValues = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  workgroup: "",
+  roles: "moped-viewer",
+  status_id: 1,
+};
+
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
 
   const { register, handleSubmit, watch, errors, control } = useForm({
-    defaultValues: editFormData || {},
+    defaultValues: editFormData || initialFormValues,
   });
   const onSubmit = data => console.log(data);
 
@@ -54,15 +68,9 @@ const StaffForm = ({ editFormData = null }) => {
   } = useQuery(WORKGROUPS_QUERY);
 
   // Fields needed
-  // email
-  // first name
-  // last name
-  // status - 1 for active
   // title
-  // workgroup
   // workgroup_id
   // password
-  // roles
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -113,17 +121,15 @@ const StaffForm = ({ editFormData = null }) => {
                   labelId="workgroup-label"
                   label="Workgroup"
                 >
-                  {workgroupLoading ? (
-                    <MenuItem value={""}>
-                      <CircularProgress />
-                    </MenuItem>
-                  ) : (
+                  {!workgroupLoading &&
                     workgroups.moped_workgroup.map(workgroup => (
-                      <MenuItem value={workgroup.workgroup_id}>
+                      <MenuItem
+                        key={workgroup.workgroup_id}
+                        value={workgroup.workgroup_id}
+                      >
                         {workgroup.workgroup_name}
                       </MenuItem>
-                    ))
-                  )}
+                    ))}
                 </Select>
               }
               name={"workgroup"}
@@ -139,6 +145,7 @@ const StaffForm = ({ editFormData = null }) => {
                 <RadioGroup aria-label="roles" name="roles">
                   {roles.map(role => (
                     <FormControlLabel
+                      key={role.value}
                       value={role.value}
                       control={<Radio />}
                       label={role.name}
@@ -147,6 +154,27 @@ const StaffForm = ({ editFormData = null }) => {
                 </RadioGroup>
               }
               name={"roles"}
+              control={control}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={6}>
+          <FormControl component="fieldset">
+            <FormLabel id="statuses-label">Status</FormLabel>
+            <Controller
+              as={
+                <RadioGroup aria-label="statuses" name="status_id">
+                  {statuses.map(status => (
+                    <FormControlLabel
+                      key={status.value}
+                      value={status.value}
+                      control={<Radio />}
+                      label={status.name}
+                    />
+                  ))}
+                </RadioGroup>
+              }
+              name={"status_id"}
               control={control}
             />
           </FormControl>
