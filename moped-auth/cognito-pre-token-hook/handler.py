@@ -112,37 +112,43 @@ def decrypt(fernet_key: str, content: str) -> str:
     return cipher_suite.decrypt(content.encode()).decode()
 
 
-def retrieve_claims(user_id: str) -> Optional[str]:
+def retrieve_user_profile(user_email: str) -> dict:
     """
-    Retrieves the encrypted claims from DynamoDB
-    :param str user_id: The user id (uuid)
-    :return Optional[str]: The claims string (encrypted)
+    Retrieves the user profile from the claims table(including encrypted claims and the cognito uuid)
+    :param str user_email: The user email
+    :return dict: The user profile as a dictionary
     """
-    dynamodb = boto3.client('dynamodb', region_name="us-east-1")
-    return dynamodb.get_item(
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    user_profile = dynamodb.get_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
         Key={
-            "user_id": {
-                "S": user_id
-            },
-        }
-    )["Item"]["claims"]["S"]
+            "user_id": {"S": user_email},
+        },
+    )
+
+    if "Item" not in user_profile:
+        raise RuntimeError(f"Unable to find user_profile with given user_id.")
+
+    return user_profile["Item"]
 
 
-def load_claims(user_id: str) -> dict:
+def load_claims(user_email: str) -> dict:
     """
     Loads claims from DynamoDB
-    :param str user_id: The user id to retrieve the claims for
+    :param str user_email: The user email to retrieve the claims for
     :return dict: The claims JSON
     """
-    claims = retrieve_claims(user_id=user_id)
+    profile = retrieve_user_profile(user_email=user_email)
+    claims_encrypted = profile["claims"]["S"]
+    cognito_uuid = profile["cognito_uuid"]["S"]
+    
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     decrypted_claims = decrypt(
         fernet_key=fernet_key,
-        content=claims
+        content=claims_encrypted
     )
     claims = json.loads(decrypted_claims)
-    claims["x-hasura-user-id"] = user_id
+    claims["x-hasura-user-id"] = cognito_uuid
     return claims
 
 
