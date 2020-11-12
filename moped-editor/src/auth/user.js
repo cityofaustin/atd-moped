@@ -108,6 +108,8 @@ export const getJwt = user => {
   return user.signInUserSession.idToken.jwtToken;
 };
 
+// This function takes a CognitoUser Object and returns the role with the
+// highest permissions level within their allowed roles.
 export const getHighestRole = user => {
   const claims =
     user.signInUserSession.idToken.payload["https://hasura.io/jwt/claims"];
@@ -127,5 +129,6 @@ export const getHighestRole = user => {
       return "moped-editor";
     case findRole("moped-viewer"):
       return "moped-viewer";
+    default:
   }
 };
