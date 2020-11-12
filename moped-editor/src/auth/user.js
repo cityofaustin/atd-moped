@@ -103,3 +103,29 @@ export const useUser = () => {
   }
   return context;
 };
+
+export const getJwt = user => {
+  return user.signInUserSession.idToken.jwtToken;
+};
+
+export const getHighestRole = user => {
+  const claims =
+    user.signInUserSession.idToken.payload["https://hasura.io/jwt/claims"];
+
+  const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];
+
+  const findRole = role => {
+    if (allowedRoles.includes(role)) {
+      return allowedRoles;
+    }
+  };
+
+  switch (allowedRoles) {
+    case findRole("moped-admin"):
+      return "moped-admin";
+    case findRole("moped-editor"):
+      return "moped-editor";
+    case findRole("moped-viewer"):
+      return "moped-viewer";
+  }
+};
