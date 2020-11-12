@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os, sys, re
 import json
 import boto3
 import logging
@@ -141,7 +141,7 @@ def load_claims(user_email: str) -> dict:
     profile = retrieve_user_profile(user_email=user_email)
     claims_encrypted = profile["claims"]["S"]
     cognito_uuid = profile["cognito_uuid"]["S"]
-    
+
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     decrypted_claims = decrypt(
         fernet_key=fernet_key,
@@ -150,6 +150,18 @@ def load_claims(user_email: str) -> dict:
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = cognito_uuid
     return claims
+
+
+def is_valid_uuid(cognito_id: str) -> bool:
+    """
+    Returns true if the cognito_id string is a valid UUID format.
+    :param str cognito_id: The string to be evaluated
+    :return bool:
+    """
+    pattern = re.compile(
+        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    )
+    return True if pattern.search(cognito_id) else False
 
 
 def handler(event: dict, context: object) -> dict:
@@ -176,8 +188,16 @@ def handler(event: dict, context: object) -> dict:
     # Initialize the claims object
     claims = {}
     try:
-        hasura_cognito_user_id = event["userName"]
-        claims = load_claims(hasura_cognito_user_id)
+        user_email = None
+        event_username = event["userName"]
+
+        # Check if it is an AzureAD account or a normal Cognito account
+        if is_valid_uuid(event_username):  # It's Cognito
+            user_email = event["request"]["userAttributes"]["email"]
+        else:  # It's AzureAD
+            user_email = event_username.replace("azuread_", "")
+
+        claims = load_claims(user_email=user_email)
     except Exception:
         """
             After retrieving the exception name, value, and stacktrace,
@@ -194,7 +214,8 @@ def handler(event: dict, context: object) -> dict:
         })
         logger.error(err_msg)
 
-    logger.info(f"User ID: {hasura_cognito_user_id}")
+    cognito_uuid = claims["x-hasura-user-id"]
+    logger.info(f"User ID: {cognito_uuid}")
     # Let's not show the whole thing, we don't need to.
     logger.info(f"Claims: {json.dumps(claims)[:16]}")
 
