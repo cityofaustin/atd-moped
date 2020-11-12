@@ -186,18 +186,23 @@ def format_claims(user_id: str, roles: list) -> dict:
     }
 
 
-def put_claims(user_email: str, user_claims: dict):
+def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None):
     """
     Sets claims in DynamoDB
     :param str user_email: The user email to set the claims for
     :param dict user_claims: The claims object to be persisted in DynamoDB
+    :param str cognito_uuid: The Cognito UUID
     """
     claims_str = json.dumps(user_claims)
     encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
     dynamodb = boto3.client("dynamodb", region_name="us-east-1")
     dynamodb.put_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
-        Item={"user_id": {"S": user_email}, "claims": {"S": encrypted_claims}},
+        Item={
+            "user_id": {"S": user_email},
+            "claims": {"S": encrypted_claims},
+            "cognito_uuid": {"S": cognito_uuid},
+        },
     )
 
 
