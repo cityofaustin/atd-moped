@@ -4,7 +4,6 @@ import { useForm, Controller } from "react-hook-form";
 import { gql, useQuery } from "@apollo/react-hooks";
 import {
   Button,
-  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -49,14 +48,15 @@ const initialFormValues = {
   last_name: "",
   email: "",
   workgroup: "",
+  workgroup_id: "",
   roles: "moped-viewer",
-  status_id: 1,
+  status_id: "1",
 };
 
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
 
-  const { register, handleSubmit, watch, errors, control } = useForm({
+  const { register, handleSubmit, watch, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
   });
   const onSubmit = data => console.log(data);
@@ -67,10 +67,21 @@ const StaffForm = ({ editFormData = null }) => {
     data: workgroups,
   } = useQuery(WORKGROUPS_QUERY);
 
+  const updateWorkgroupFields = e => {
+    const workgroupId = e.nativeEvent.target.dataset.id;
+    // const workgroupName = e.target.value;
+    console.log(e);
+    setValue("workgroup_id", workgroupId);
+    // setValue("workgroup", workgroupName);
+  };
+
   // Fields needed
   // title
   // workgroup_id
   // password
+  // TODO: Update status_id to int before request
+  // TODO: Update add workgroup_id to payload before request
+  // TODO: Validate password with same regex as API
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -115,28 +126,41 @@ const StaffForm = ({ editFormData = null }) => {
           <FormControl variant="outlined" className={classes.formSelect}>
             <InputLabel id="workgroup-label">Workgroup</InputLabel>
             <Controller
-              as={
+              as={({ onChange, value }) => (
                 <Select
                   id="workgroup"
                   labelId="workgroup-label"
                   label="Workgroup"
+                  onChange={e => {
+                    onChange(() => {
+                      updateWorkgroupFields(e);
+                      return value;
+                    });
+                  }}
                 >
                   {!workgroupLoading &&
                     workgroups.moped_workgroup.map(workgroup => (
                       <MenuItem
                         key={workgroup.workgroup_id}
-                        value={workgroup.workgroup_id}
+                        value={workgroup.workgroup_name}
+                        data-id={workgroup.workgroup_id}
                       >
                         {workgroup.workgroup_name}
                       </MenuItem>
                     ))}
                 </Select>
-              }
+              )}
               name={"workgroup"}
               control={control}
             />
           </FormControl>
         </Grid>
+        <TextField
+          id="workgroup-id"
+          name="workgroup_id"
+          inputRef={register}
+          type="hidden"
+        />
         <Grid item xs={6}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
