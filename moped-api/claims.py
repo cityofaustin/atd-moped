@@ -9,7 +9,7 @@ from cryptography.fernet import Fernet
 from typing import Optional
 from typing import Callable
 
-MOPED_API_CURRENT_ENVIRONMENT = api_config.get("API_ENVIRONMENT", "STAGING")
+MOPED_API_CURRENT_ENVIRONMENT = api_config.get("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
 AWS_COGNITO_DYNAMO_TABLE_NAME = api_config.get("COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_KEY = api_config.get("COGNITO_DYNAMO_SECRET_KEY", None)
 
