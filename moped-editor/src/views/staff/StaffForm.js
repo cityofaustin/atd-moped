@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import { gql, useQuery } from "@apollo/react-hooks";
 import {
@@ -60,11 +62,23 @@ const fieldParsers = {
   roles: role => [role],
 };
 
+const staffValidationSchema = yup.object().shape({
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  email: yup.string().required(),
+  password: yup
+    .string()
+    // .matches(/^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$/)
+    .required(),
+  roles: yup.string().required(),
+});
+
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
 
   const { register, handleSubmit, watch, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
+    resolver: yupResolver(staffValidationSchema),
   });
 
   const onSubmit = data => {
@@ -95,7 +109,6 @@ const StaffForm = ({ editFormData = null }) => {
   };
 
   // Fields needed
-  // TODO: Update status_id to int before request
   // TODO: Validate password with same regex as API
 
   return (
@@ -111,6 +124,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            helperText={errors.first_name?.message}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
@@ -123,6 +137,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            helperText={errors.last_name?.message}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
@@ -135,6 +150,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            helperText={errors.email?.message}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
@@ -148,6 +164,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            helperText={errors.password?.message}
           />
         </Grid>
         <Grid item xs={12} sm={6} lg={3}>
