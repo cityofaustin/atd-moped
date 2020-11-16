@@ -54,8 +54,10 @@ const initialFormValues = {
   status_id: "1",
 };
 
-const parsers = {
+const fieldParsers = {
   status_id: id => parseInt(id),
+  workgroup_id: id => parseInt(id),
+  roles: role => [role],
 };
 
 const StaffForm = ({ editFormData = null }) => {
@@ -66,6 +68,14 @@ const StaffForm = ({ editFormData = null }) => {
   });
 
   const onSubmit = data => {
+    // Parse values with parser fns from config
+    Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
+      const originalValue = data[fieldName];
+      const parsedValue = parser(originalValue);
+
+      data[fieldName] = parsedValue;
+    });
+
     console.log(data);
   };
 
@@ -202,12 +212,7 @@ const StaffForm = ({ editFormData = null }) => {
             <FormLabel id="statuses-label">Status</FormLabel>
             <Controller
               as={
-                <RadioGroup
-                  aria-label="statuses"
-                  name="status_id"
-                  // Parse value as int type as expected by the User Management API
-                  // onChange={e => onChange(parseInt(e.target.value))}
-                >
+                <RadioGroup aria-label="statuses" name="status_id">
                   {statuses.map(status => (
                     <FormControlLabel
                       key={status.value}
