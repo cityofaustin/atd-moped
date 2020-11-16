@@ -68,15 +68,13 @@ const StaffForm = ({ editFormData = null }) => {
   });
 
   const onSubmit = data => {
-    // Parse values with parser fns from config
+    // Parse values with fns from config
     Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
       const originalValue = data[fieldName];
       const parsedValue = parser(originalValue);
 
       data[fieldName] = parsedValue;
     });
-
-    console.log(data);
   };
 
   const {
@@ -156,12 +154,14 @@ const StaffForm = ({ editFormData = null }) => {
           <FormControl variant="outlined" className={classes.formSelect}>
             <InputLabel id="workgroup-label">Workgroup</InputLabel>
             <Controller
-              as={({ onChange }) => (
+              render={({ onChange, ref, value }) => (
                 <Select
                   id="workgroup"
                   labelId="workgroup-label"
                   label="Workgroup"
                   onChange={e => onChange(updateWorkgroupFields(e))}
+                  inputRef={ref}
+                  value={value}
                 >
                   {!workgroupLoading &&
                     workgroups.moped_workgroup.map(workgroup => (
