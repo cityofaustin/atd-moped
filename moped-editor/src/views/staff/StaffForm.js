@@ -46,11 +46,16 @@ const useStyles = makeStyles(() => ({
 const initialFormValues = {
   first_name: "",
   last_name: "",
+  password: "",
   email: "",
   workgroup: "",
   workgroup_id: "",
   roles: "moped-viewer",
   status_id: "1",
+};
+
+const parsers = {
+  status_id: id => parseInt(id),
 };
 
 const StaffForm = ({ editFormData = null }) => {
@@ -59,7 +64,10 @@ const StaffForm = ({ editFormData = null }) => {
   const { register, handleSubmit, watch, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
   });
-  const onSubmit = data => console.log(data);
+
+  const onSubmit = data => {
+    console.log(data);
+  };
 
   const {
     loading: workgroupLoading,
@@ -69,24 +77,23 @@ const StaffForm = ({ editFormData = null }) => {
 
   const updateWorkgroupFields = e => {
     const workgroupId = e.nativeEvent.target.dataset.id;
-    // const workgroupName = e.target.value;
-    console.log(e);
+    const workgroupName = e.target.value;
+
+    // When workgroup field updates, set corresponding workgroup_id value
     setValue("workgroup_id", workgroupId);
-    // setValue("workgroup", workgroupName);
+
+    // React Hook Form expects the custom onChange action to return workgroup field value
+    return workgroupName;
   };
 
   // Fields needed
-  // title
-  // workgroup_id
-  // password
   // TODO: Update status_id to int before request
-  // TODO: Update add workgroup_id to payload before request
   // TODO: Validate password with same regex as API
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
           <TextField
             name="first_name"
             id="first-name"
@@ -98,7 +105,7 @@ const StaffForm = ({ editFormData = null }) => {
             inputRef={register}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
           <TextField
             name="last_name"
             id="last-name"
@@ -110,7 +117,7 @@ const StaffForm = ({ editFormData = null }) => {
             inputRef={register}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
           <TextField
             name="email"
             id="email"
@@ -122,21 +129,29 @@ const StaffForm = ({ editFormData = null }) => {
             inputRef={register}
           />
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
+          <TextField
+            name="password"
+            id="password"
+            label="Password"
+            type="password"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            inputRef={register}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} lg={3}>
           <FormControl variant="outlined" className={classes.formSelect}>
             <InputLabel id="workgroup-label">Workgroup</InputLabel>
             <Controller
-              as={({ onChange, value }) => (
+              as={({ onChange }) => (
                 <Select
                   id="workgroup"
                   labelId="workgroup-label"
                   label="Workgroup"
-                  onChange={e => {
-                    onChange(() => {
-                      updateWorkgroupFields(e);
-                      return value;
-                    });
-                  }}
+                  onChange={e => onChange(updateWorkgroupFields(e))}
                 >
                   {!workgroupLoading &&
                     workgroups.moped_workgroup.map(workgroup => (
@@ -161,7 +176,7 @@ const StaffForm = ({ editFormData = null }) => {
           inputRef={register}
           type="hidden"
         />
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -182,12 +197,17 @@ const StaffForm = ({ editFormData = null }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={12} sm={6} lg={3}>
           <FormControl component="fieldset">
             <FormLabel id="statuses-label">Status</FormLabel>
             <Controller
               as={
-                <RadioGroup aria-label="statuses" name="status_id">
+                <RadioGroup
+                  aria-label="statuses"
+                  name="status_id"
+                  // Parse value as int type as expected by the User Management API
+                  // onChange={e => onChange(parseInt(e.target.value))}
+                >
                   {statuses.map(status => (
                     <FormControlLabel
                       key={status.value}
