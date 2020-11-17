@@ -49,6 +49,7 @@ const useStyles = makeStyles(() => ({
 const initialFormValues = {
   first_name: "",
   last_name: "",
+  title: "",
   password: "",
   email: "",
   workgroup: "",
@@ -73,7 +74,7 @@ const staffValidationSchema = yup.object().shape({
 
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
-  const [result, loading, requestApi] = useUserApi();
+  const [userApiResult, userApiLoading, requestApi] = useUserApi();
 
   const { register, handleSubmit, watch, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
@@ -113,9 +114,6 @@ const StaffForm = ({ editFormData = null }) => {
     return workgroupName;
   };
 
-  // Fields needed
-  // TODO: Validate password with same regex as API
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -143,6 +141,19 @@ const StaffForm = ({ editFormData = null }) => {
             variant="outlined"
             inputRef={register}
             helperText={errors.last_name?.message}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            name="title"
+            id="title"
+            label="Title"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            inputRef={register}
+            helperText={errors.title?.message}
           />
         </Grid>
         <Grid item xs={12}>
