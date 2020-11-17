@@ -50,27 +50,31 @@ const initialFormValues = {
   first_name: "",
   last_name: "",
   title: "",
-  password: "",
   email: "",
+  password: "",
   workgroup: "",
   workgroup_id: "",
   roles: "moped-viewer",
   status_id: "1",
 };
 
+const staffValidationSchema = yup.object().shape({
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  title: yup.string().required(),
+  workgroup: yup.string().required(),
+  workgroup_id: yup.string().required(),
+  email: yup.string().required(),
+  password: yup.string().required(),
+  roles: yup.string().required(),
+  status_id: yup.string().required(),
+});
+
 const fieldParsers = {
   status_id: id => parseInt(id),
   workgroup_id: id => parseInt(id),
   roles: role => [role],
 };
-
-const staffValidationSchema = yup.object().shape({
-  first_name: yup.string().required(),
-  last_name: yup.string().required(),
-  email: yup.string().required(),
-  password: yup.string().required(),
-  roles: yup.string().required(),
-});
 
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
@@ -262,7 +266,12 @@ const StaffForm = ({ editFormData = null }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <Button type="submit" color="primary" variant="contained">
+          <Button
+            disabled={userApiLoading}
+            type="submit"
+            color="primary"
+            variant="contained"
+          >
             Save
           </Button>
         </Grid>
