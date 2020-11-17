@@ -12,7 +12,8 @@ import {
 import DefineProjectForm from './DefineProjectForm';
 import ProjectTeamTable from './ProjectTeamTable';
 import MapProjectGeometry from './MapProjectGeometry';
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
   const NewProjectView = () => {  
 

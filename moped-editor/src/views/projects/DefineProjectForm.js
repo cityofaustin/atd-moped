@@ -1,7 +1,8 @@
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { TextField, Grid, InputLabel, MenuItem, Select, Switch, Card, Container, makeStyles } from "@material-ui/core";
-import { gql, useQuery } from "@apollo/client"; 
+import { useQuery } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 import { DevTool } from '@hookform/devtools';
 import Page from "src/components/Page";
 
