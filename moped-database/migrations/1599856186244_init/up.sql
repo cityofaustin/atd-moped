@@ -2,6 +2,16 @@
 -- PostgreSQL database dump
 --
 
+--
+-- Enable Required Extensions
+--
+create extension if not exists citext;
+create extension if not exists "uuid-ossp";
+create extension if not exists btree_gin;
+create extension if not exists btree_gist;
+create extension if not exists pgcrypto;
+create extension if not exists postgis;
+
 -- Dumped from database version 12.4 (Ubuntu 12.4-1.pgdg16.04+1)
 -- Dumped by pg_dump version 12.3
 
@@ -10,7 +20,7 @@ SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
+SELECT pg_catalog.set_config('search_path', 'public', false);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
@@ -19,6 +29,8 @@ SET row_security = off;
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
+
+
 
 --
 -- Name: moped_coa_staff; Type: TABLE; Schema: public; Owner: -

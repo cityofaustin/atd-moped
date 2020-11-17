@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os, sys
+import os, sys, re
 import json
 import boto3
 import logging
@@ -112,38 +112,56 @@ def decrypt(fernet_key: str, content: str) -> str:
     return cipher_suite.decrypt(content.encode()).decode()
 
 
-def retrieve_claims(user_id: str) -> Optional[str]:
+def retrieve_user_profile(user_email: str) -> dict:
     """
-    Retrieves the encrypted claims from DynamoDB
-    :param str user_id: The user id (uuid)
-    :return Optional[str]: The claims string (encrypted)
+    Retrieves the user profile from the claims table(including encrypted claims and the cognito uuid)
+    :param str user_email: The user email
+    :return dict: The user profile as a dictionary
     """
-    dynamodb = boto3.client('dynamodb', region_name="us-east-1")
-    return dynamodb.get_item(
+    dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+    user_profile = dynamodb.get_item(
         TableName=AWS_COGNITO_DYNAMO_TABLE_NAME,
         Key={
-            "user_id": {
-                "S": user_id
-            },
-        }
-    )["Item"]["claims"]["S"]
+            "user_id": {"S": user_email},
+        },
+    )
+
+    if "Item" not in user_profile:
+        raise RuntimeError(f"Unable to find user_profile with given user_id.")
+
+    return user_profile["Item"]
 
 
-def load_claims(user_id: str) -> dict:
+def load_claims(user_email: str) -> dict:
     """
     Loads claims from DynamoDB
-    :param str user_id: The user id to retrieve the claims for
+    :param str user_email: The user email to retrieve the claims for
     :return dict: The claims JSON
     """
-    claims = retrieve_claims(user_id=user_id)
+    profile = retrieve_user_profile(user_email=user_email)
+    claims_encrypted = profile["claims"]["S"]
+    cognito_uuid = profile["cognito_uuid"]["S"]
+
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     decrypted_claims = decrypt(
         fernet_key=fernet_key,
-        content=claims
+        content=claims_encrypted
     )
     claims = json.loads(decrypted_claims)
-    claims["x-hasura-user-id"] = user_id
+    claims["x-hasura-user-id"] = cognito_uuid
     return claims
+
+
+def is_valid_uuid(cognito_id: str) -> bool:
+    """
+    Returns true if the cognito_id string is a valid UUID format.
+    :param str cognito_id: The string to be evaluated
+    :return bool:
+    """
+    pattern = re.compile(
+        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    )
+    return True if pattern.search(cognito_id) else False
 
 
 def handler(event: dict, context: object) -> dict:
@@ -170,8 +188,16 @@ def handler(event: dict, context: object) -> dict:
     # Initialize the claims object
     claims = {}
     try:
-        hasura_cognito_user_id = event["userName"]
-        claims = load_claims(hasura_cognito_user_id)
+        user_email = None
+        event_username = event["userName"]
+
+        # Check if it is an AzureAD account or a normal Cognito account
+        if is_valid_uuid(event_username):  # It's Cognito
+            user_email = event["request"]["userAttributes"]["email"]
+        else:  # It's AzureAD
+            user_email = event_username.replace("azuread_", "")
+
+        claims = load_claims(user_email=user_email)
     except Exception:
         """
             After retrieving the exception name, value, and stacktrace,
@@ -188,7 +214,8 @@ def handler(event: dict, context: object) -> dict:
         })
         logger.error(err_msg)
 
-    logger.info(f"User ID: {hasura_cognito_user_id}")
+    cognito_uuid = claims["x-hasura-user-id"]
+    logger.info(f"User ID: {cognito_uuid}")
     # Let's not show the whole thing, we don't need to.
     logger.info(f"Claims: {json.dumps(claims)[:16]}")
 

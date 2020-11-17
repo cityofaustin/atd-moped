@@ -1,5 +1,5 @@
 import os, datetime
-from flask import Flask, jsonify
+from flask import Flask, jsonify, Response
 from flask_cognito import CognitoAuth
 from flask_cors import CORS
 from config import api_config
@@ -23,7 +23,7 @@ app.register_blueprint(users_blueprint, url_prefix="/users")
 #
 # Cognito
 #
-app.config.update(api_config[MOPED_API_CURRENT_ENVIRONMENT])
+app.config.update(api_config)
 cognito = CognitoAuth(app)
 
 #
@@ -39,7 +39,7 @@ cors = CORS(app)
 # This should be just a health-check
 #
 @app.route("/")
-def app_index() -> str:
+def app_index() -> Response:
     """
     Generates a simple health-check message.
     :return str:
@@ -51,4 +51,3 @@ def app_index() -> str:
             % now.strftime("%Y-%m-%d %H:%M:%S")
         }
     )
-
