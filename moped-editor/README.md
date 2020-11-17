@@ -1,120 +1,112 @@
-<h1><a href="https://ui-lib.com/downloads/matx-react-dashboard/">Matx React Material Design Admin Dashboard Template</a></h1>
+## [Devias Kit - Admin Dashboard](https://react-material-dashboard.devias.io/) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?text=%F0%9F%9A%A8Devias%20Freebie%20Alert%20-%20An%20awesome%20ready-to-use%20register%20page%20made%20with%20%23material%20%23react%0D%0Ahttps%3A%2F%2Fdevias.io%20%23createreactapp%20%23devias%20%23material%20%23freebie%20%40devias-io)
 
-<img alt="Matx React Admin" src="https://ui-lib.com/wp-content/uploads/edd/2020/01/marx-react.png" />
+![license](https://img.shields.io/badge/license-MIT-blue.svg)
 
-<p>MatX is a full-featured React Material Design Admin Dashboard template. MatX is built with React, Redux & Material UIWe implemented all the features you might need to start a new Web application. The free version includes all Material UI components, Form elements, and validation, JWT authentication, Sign in, sign up pages,  Vertical navigation, Lazy loading, Code splitting, and SASS integration.</p>
+[![React Material Dashboard](https://s3.eu-west-2.amazonaws.com/devias/products/react-material-dashboard/react-material-free-xl.jpg)](https://react-material-dashboard.devias.io/)
 
-<h2>Features</h2>
-<ul>
-  <li>JWT authentication</li>
-  <li>Role based authentication</li>
-  <li>Lazy loading components</li>
-  <li>Code splitting</li>
-  <li>Dashboard Analytics</li>
-  <li>UI kits
-    <ul>
-      <li>Autocomplete</li>
-      <li>Buttons</li>
-      <li>Checkbox</li>
-      <li>Dialog</li>
-      <li>Expansion panel</li>
-      <li>Menu</li>
-      <li>Progress</li>
-      <li>Datetime picker</li>
-      <li>Radio</li>
-      <li>Switch</li>
-      <li>Slider</li>
-      <li>Snackbar</li>
-      <li>Data table</li>
-    </ul>
-  </li>
-  <li>Forms
-    <ul>
-      <li>Basic</li>
-      <li>Rich text editor</li>
-    </ul>
-  </li>
-  <li>eChart</li>
-  <li>Session pages
-    <ul>
-      <li>Sign in</li>
-      <li>Sign up</li>
-      <li>Forgot password</li>
-      <li>Error page</li>
-    </ul>
-  </li>
-  <li>Drag and drop</li>
-  <li>Google map</li>
-  <li>Utilities
-    <ul>
-      <li>Color</li>
-      <li>Spacing</li>
-      <li>Typography</li>
-      <li>Display</li>
-    </ul>
-  </li>
-  <li>Multi level menu</li>
-</ul>
+> Free React Dashboard made with [Material UI's](https://material-ui.com/?ref=devias-io) components, [React](https://reactjs.org/?ref=devias-io) and of course [create-react-app](https://facebook.github.io/create-react-app/?ref=devias-io) to boost your app development process! We'll launch a pro version soon, so if you are interested subscribe to our personal emailing list on [https://devias.io/](https://devias.io/)
 
-<h2>Pro features</h2>
-<ul>
-  <li>Horizontal navigation</li>
-  <li>Forms
-    <ul>
-      <li>Single upload</li>
-      <li>Multiple upload</li>
-      <li>Wizard</li>
-    </ul>
-  </li>
-  <li>Working Apps
-    <ul>
-      <li>CRUD table</li>
-      <li>Shop/eCommerce</li>
-      <li>Scrum board</li>
-      <li>Infinite list</li>
-      <li>Invoice builder</li>
-      <li>Event calendar</li>
-      <li>Chat</li>
-      <li>Inbox</li>
-      <li>Todo</li>
-    </ul>
-  </li>
-  <li>Charts
-    <ul>
-      <li>eChart</li>
-      <li>Rechart</li>
-      <li>Victory chart</li>
-      <li>React vis</li>
-    </ul>
-  </li>
+## Upgrade to PRO Version
+
+We also have a pro version of this product which bundles even more pages and components if you want to save more time and design efforts :)
 
 
-  <li>User profile</li>
-  <li>Plans & pricing</li>
-  <li>Support</li>
-</ul>
+| Free Version (this one)              | [Devias Kit PRO](https://material-ui.com/store/items/devias-kit-pro/) |
+| ------------------------ | :----------------------------------------------------------- |
+| **7** Demo Pages         | **32** demo pages
+| -                        | ✔ Dark & light mode
+| -                        | ✔ Authtentication with **Auth0** & **Firebase**  
+| -                        | ✔ TypeScript version                                                                                   
+| -                        | ✔ Design files (sketch & figma) - for extended license       
+| -                        | ✔ Complete users flows                                       
 
-<h2 id="availablescripts">Getting started</h2>
+## Demo
 
-<p>In the project directory, you can run:</p>
+- [Dashboard Page](https://react-material-dashboard.devias.io/app/dashboard)
+- [Users Page](https://react-material-dashboard.devias.io/app/customers)
+- [Products Page](https://react-material-dashboard.devias.io/app/products)
+- [Register Page](https://react-material-dashboard.devias.io/register)
+- [Login Page](https://react-material-dashboard.devias.io/login)
+- [Account Page](https://react-material-dashboard.devias.io/app/account)
+- [Settings Page](https://react-material-dashboard.devias.io/app/settings)
 
-<h3 id="npmstart"><code>npm start</code></h3>
 
-<p>Runs the app in the development mode.<br>
-Open <a href="http://localhost:3000">http://localhost:3000</a> to view it in the browser.</p>
+## Quick start
 
-<p>The page will reload if you make edits.<br>
-You will also see any lint errors in the console.</p>
+- [Download from Github](https://github.com/devias-io/react-material-dashboard/archive/master.zip) or [Download from Devias](https://devias.io/products/material-react-dashboard) or clone the repo: `git clone https://github.com/devias-io/react-material-dashboard.git`
 
-<h3 id="npmrunbuild"><code>npm run build</code></h3>
+- Make sure your NodeJS and npm versions are up to date for `React 16.8.6`
 
-<p>Builds the app for production to the <code>build</code> folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.</p>
+- Install dependencies: `npm install` or `yarn`
 
-<p>The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!</p>
+- Start the server: `npm run start` or `yarn start`
 
-<h3>Download</h3>
-Download From <a href="https://ui-lib.com/downloads/matx-react-dashboard/">official website</a>
+- Views are on: `localhost:3000`
 
-<h3>For questions and support mail us at <a href="mailto:support@ui-lib.com">support@ui-lib.com</a></h3>
+## Documentation
+
+The documentation for the React Material Kit is can be found [here](https://material-ui.com?ref=devias-io).
+
+## 🖌 Design Files
+
+👉[Download Sketch file](https://s3.eu-west-2.amazonaws.com/devias/products/react-material-dashboard/react-material-dashboard-free.sketch)
+
+👉[Download Figma file](https://devias.s3.eu-west-2.amazonaws.com/products/react-material-dashboard/react-material-dashboard-free.fig)
+
+## File Structure
+
+Within the download you'll find the following directories and files:
+
+```
+material-react-dashboard
+
+├── .eslintrc
+├── .gitignore
+├── .prettierrc
+├── CHANGELOG.md
+├── jsconfig.json
+├── LICENSE.md
+├── package.json
+├── README.md
+├── public
+├── docs
+└── src
+	├── assets
+	├── common
+	├── components
+	├── helpers
+	├── icons
+	├── layouts
+	├── theme
+	├── views
+	│	├── Account
+	│	├── Dashboard
+	│	├── Icons
+	│	├── NotFound
+	│	├── ProductList
+	│	├── Settings
+	│	├── SignIn
+	│	├── SignUp
+	│	├── Typography
+	│	└── UserList
+	├── App.jsx
+	├── index.jsx
+	└── Routes.jsx
+```
+
+## Resources
+
+- More freebies like this one: <https://devias.io>
+
+## Reporting Issues:
+
+- [Github Issues Page](https://github.com/devias-io/react-material-dashboard/issues?ref=devias-io)
+
+## License
+
+- Licensed under MIT (https://github.com/devias-io/react-material-dashboard/blob/master/LICENSE.md)
+
+## Contact Us
+
+- Email Us: contact@devias.io
+- [Follow us on Instagram](https://www.instagram.com/deviasio/)
