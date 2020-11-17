@@ -1,16 +1,16 @@
-import { useState, useEffect } from "react";
-import { useUser } from "../../../auth/user";
+import { useState } from "react";
+import { useUser } from "../../auth/user";
 import axios from "axios";
 
 // Custom Hook for API calls
-export function useUserApi(method, path, payload = null) {
+export function useUserApi() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, getToken } = useUser();
 
-  useEffect(() => {
+  const requestApi = (method, path, payload = null) => {
     // Use local API dev server for now
-    const url = `http://127.0.0.1:5000` + path;
+    const url = process.env.REACT_APP_API_ENDPOINT + path;
 
     const token = getToken(user);
 
@@ -29,9 +29,10 @@ export function useUserApi(method, path, payload = null) {
     setLoading(true);
     axios(config).then(res => {
       setResult(res.data);
+      console.log(res);
       setLoading(false);
     });
-  }, [getToken, user, method, path, payload]);
+  };
 
-  return [result, loading];
+  return [result, loading, requestApi];
 }

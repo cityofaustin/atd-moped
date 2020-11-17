@@ -1,4 +1,5 @@
 import React from "react";
+import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -66,15 +67,13 @@ const staffValidationSchema = yup.object().shape({
   first_name: yup.string().required(),
   last_name: yup.string().required(),
   email: yup.string().required(),
-  password: yup
-    .string()
-    // .matches(/^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$/)
-    .required(),
+  password: yup.string().required(),
   roles: yup.string().required(),
 });
 
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
+  const [result, loading, requestApi] = useUserApi();
 
   const { register, handleSubmit, watch, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
@@ -89,6 +88,12 @@ const StaffForm = ({ editFormData = null }) => {
 
       data[fieldName] = parsedValue;
     });
+
+    // POST or PUT request to User Management API
+    const requestString = editFormData === null ? "post" : "put";
+    const requestPath = "/users/";
+
+    requestApi(requestString, requestPath, data);
   };
 
   const {
@@ -114,7 +119,7 @@ const StaffForm = ({ editFormData = null }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <TextField
             name="first_name"
             id="first-name"
@@ -127,7 +132,7 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.first_name?.message}
           />
         </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <TextField
             name="last_name"
             id="last-name"
@@ -140,7 +145,7 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.last_name?.message}
           />
         </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <TextField
             name="email"
             id="email"
@@ -153,7 +158,7 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.email?.message}
           />
         </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <TextField
             name="password"
             id="password"
@@ -167,7 +172,7 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.password?.message}
           />
         </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <FormControl variant="outlined" className={classes.formSelect}>
             <InputLabel id="workgroup-label">Workgroup</InputLabel>
             <Controller
@@ -203,7 +208,7 @@ const StaffForm = ({ editFormData = null }) => {
           inputRef={register}
           type="hidden"
         />
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -224,7 +229,7 @@ const StaffForm = ({ editFormData = null }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6} lg={3}>
+        <Grid item xs={12}>
           <FormControl component="fieldset">
             <FormLabel id="statuses-label">Status</FormLabel>
             <Controller
