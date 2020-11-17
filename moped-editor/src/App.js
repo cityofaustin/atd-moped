@@ -1,5 +1,5 @@
 import "react-perfect-scrollbar/dist/css/styles.css";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/core";
 import GlobalStyles from "src/components/GlobalStyles";
@@ -18,9 +18,6 @@ const App = () => {
 
   // Setup initial Apollo instance
   let client = useRef(new ApolloClient());
-
-  // Keep track of if Apollo is connected to Hasura
-  const [isApolloLoaded, setIsApolloLoaded] = useState(false);
 
   // Setup Apollo connection to Hasura with Cognito token and roles
   useEffect(() => {
@@ -46,9 +43,8 @@ const App = () => {
       }
 
       client.current = new ApolloClient(clientData);
-      setIsApolloLoaded(true);
     }
-  }, [user, client, setIsApolloLoaded]);
+  }, [user, client]);
 
   return (
     <ApolloProvider client={client.current}>
