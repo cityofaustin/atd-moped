@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { gql, useQuery } from "@apollo/react-hooks";
 import {
   Button,
+  CircularProgress,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -195,20 +196,22 @@ const StaffForm = ({ editFormData = null }) => {
           />
         </Grid>
         <Grid item xs={12} md={6}>
-          <FormControl variant="outlined" className={classes.formSelect}>
-            <InputLabel id="workgroup-label">Workgroup</InputLabel>
-            <Controller
-              render={({ onChange, ref, value }) => (
-                <Select
-                  id="workgroup"
-                  labelId="workgroup-label"
-                  label="Workgroup"
-                  onChange={e => onChange(updateWorkgroupFields(e))}
-                  inputRef={ref}
-                  value={value}
-                >
-                  {!workgroupLoading &&
-                    workgroups.moped_workgroup.map(workgroup => (
+          {workgroupLoading ? (
+            <CircularProgress />
+          ) : (
+            <FormControl variant="outlined" className={classes.formSelect}>
+              <InputLabel id="workgroup-label">Workgroup</InputLabel>
+              <Controller
+                render={({ onChange, ref, value }) => (
+                  <Select
+                    id="workgroup"
+                    labelId="workgroup-label"
+                    label="Workgroup"
+                    onChange={e => onChange(updateWorkgroupFields(e))}
+                    inputRef={ref}
+                    value={value}
+                  >
+                    {workgroups.moped_workgroup.map(workgroup => (
                       <MenuItem
                         key={workgroup.workgroup_id}
                         value={workgroup.workgroup_name}
@@ -217,17 +220,18 @@ const StaffForm = ({ editFormData = null }) => {
                         {workgroup.workgroup_name}
                       </MenuItem>
                     ))}
-                </Select>
+                  </Select>
+                )}
+                name={"workgroup"}
+                control={control}
+              />
+              {workgroupError && (
+                <FormHelperText>
+                  Workgroups failed to load. Please refresh.
+                </FormHelperText>
               )}
-              name={"workgroup"}
-              control={control}
-            />
-            {workgroupError && (
-              <FormHelperText>
-                Workgroups failed to load. Please refresh.
-              </FormHelperText>
-            )}
-          </FormControl>
+            </FormControl>
+          )}
         </Grid>
         {/* This hidden field is populated with required workgroup_id field by updateWorkgroupFields() */}
         <TextField
