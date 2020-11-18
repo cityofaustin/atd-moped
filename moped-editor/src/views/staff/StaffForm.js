@@ -123,8 +123,9 @@ const StaffForm = ({ editFormData = null }) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
+            fullWidth
             name="first_name"
             id="first-name"
             label="First Name"
@@ -136,8 +137,9 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.first_name?.message}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
+            fullWidth
             name="last_name"
             id="last-name"
             label="Last Name"
@@ -149,8 +151,9 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.last_name?.message}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
+            fullWidth
             name="title"
             id="title"
             label="Title"
@@ -162,8 +165,9 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.title?.message}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
+            fullWidth
             name="email"
             id="email"
             label="Email"
@@ -175,8 +179,9 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.email?.message}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <TextField
+            fullWidth
             name="password"
             id="password"
             label="Password"
@@ -189,7 +194,7 @@ const StaffForm = ({ editFormData = null }) => {
             helperText={errors.password?.message}
           />
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <FormControl variant="outlined" className={classes.formSelect}>
             <InputLabel id="workgroup-label">Workgroup</InputLabel>
             <Controller
@@ -224,13 +229,14 @@ const StaffForm = ({ editFormData = null }) => {
             )}
           </FormControl>
         </Grid>
+        {/* This hidden field is populated with required workgroup_id field by updateWorkgroupFields() */}
         <TextField
           id="workgroup-id"
           name="workgroup_id"
           inputRef={register}
           type="hidden"
         />
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -251,7 +257,7 @@ const StaffForm = ({ editFormData = null }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
             <FormLabel id="statuses-label">Status</FormLabel>
             <Controller
@@ -272,7 +278,7 @@ const StaffForm = ({ editFormData = null }) => {
             />
           </FormControl>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <Button
             disabled={userApiLoading}
             type="submit"
