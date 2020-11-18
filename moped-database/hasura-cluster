@@ -11,6 +11,17 @@ set -o errexit
 HIDE_HASURA_KIT_BANNER="FALSE"
 
 #
+# Check if docker is running
+#
+function __get_docker_running() {
+  {
+    docker ps -q &> /dev/null && echo "TRUE";
+  } || {
+    echo "FALSE";
+  }
+}
+
+#
 # Gets the current hasura cluster status
 #
 function __get_status() {
@@ -44,7 +55,7 @@ function wait_server_ready() {
   INITIALIZATION_TIMEOUT_LIMIT=60
   INITIALIZATION_COUNT=1
   while [ "$(hasura_server_ready)" = "FALSE" ]; do
-    echo "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔"
+    echo -ne "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔\r";
     if [ $INITIALIZATION_COUNT -gt $INITIALIZATION_TIMEOUT_LIMIT ]; then
       echo "Hasura server unavailable"
       exit 1
@@ -52,6 +63,7 @@ function wait_server_ready() {
     sleep 1
     INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
   done
+  echo "[λ] Hasura server ready!                    ✅";
 }
 
 #
@@ -208,11 +220,26 @@ function show_hasura_kit_banner() {
 HASURA_EOM
 }
 
-if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
+function show_banner() {
   show_hasura_kit_banner
   echo -e "Copyright © 1985 Data & Tech Services Corp. \t\t Hasura Cluster: \e[32m $1 \e[0m"
-  echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -" && $1 $2 $3;
-else
+  echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
+}
 
+#
+# Let's make sure docker is running...
+#
+if [[ "$(__get_docker_running)" != "TRUE" ]]; then
+  show_banner "$1" && echo "Docker is not running. Please start docker on your computer"
+  exit;
+fi;
+
+#
+# Start the hasura cluster...
+#
+if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
+   show_banner "$1" && $1 $2 $3;
+else
   echo "Hasura Cluster: $1" && $1 $2 $3;
-fi
+fi;
+
