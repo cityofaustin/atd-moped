@@ -40,6 +40,11 @@ const EditStaffView = () => {
   const classes = useStyles();
   const { id } = useParams();
 
+  const { userData, userLoading, useError } = useQuery(USER_QUERY);
+  if (userError) {
+    console.log(userError);
+  }
+
   return (
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
@@ -48,7 +53,7 @@ const EditStaffView = () => {
             <CardHeader title="Edit User" />
             <Divider />
             <CardContent>
-              <StaffForm />
+              {userLoading ? <CircularProgress /> : <StaffForm data={} />}
             </CardContent>
           </Card>
         </Box>
