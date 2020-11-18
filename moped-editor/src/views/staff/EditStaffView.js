@@ -2,7 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { useParams } from "react-router-dom";
 import { gql } from "apollo-boost";
-import StaffForm from "./StaffForm";
+import StaffForm, { initialFormValues } from "./StaffForm";
 
 import {
   Box,
@@ -55,6 +55,7 @@ const EditStaffView = () => {
   }
 
   const formatUserFormData = data => {
+    // Format to types required by MUI form components
     Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
       const originalValue = data[fieldName];
 
@@ -62,6 +63,13 @@ const EditStaffView = () => {
         const formattedValue = formatter(originalValue);
 
         data[fieldName] = formattedValue;
+      }
+    });
+
+    // If Hasura doesn't return a field, set to default
+    Object.entries(initialFormValues).forEach(([field, value]) => {
+      if (data[field] === undefined) {
+        data = { ...data, [field]: value };
       }
     });
 

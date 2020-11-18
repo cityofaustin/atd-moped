@@ -37,7 +37,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const initialFormValues = {
+export const initialFormValues = {
   first_name: "",
   last_name: "",
   title: "",
