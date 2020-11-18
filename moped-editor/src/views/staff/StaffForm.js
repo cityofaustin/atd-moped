@@ -10,6 +10,7 @@ import {
   FormControl,
   FormControlLabel,
   FormLabel,
+  FormHelperText,
   Grid,
   InputLabel,
   TextField,
@@ -29,17 +30,6 @@ const WORKGROUPS_QUERY = gql`
   }
 `;
 
-const roles = [
-  { value: "moped-viewer", name: "Viewer" },
-  { value: "moped-editor", name: "Editor" },
-  { value: "moped-admin", name: "Admin" },
-];
-
-const statuses = [
-  { value: "1", name: "Active" },
-  { value: "0", name: "Inactive" },
-];
-
 const useStyles = makeStyles(() => ({
   formSelect: {
     minWidth: 195,
@@ -57,6 +47,17 @@ const initialFormValues = {
   roles: "moped-viewer",
   status_id: "1",
 };
+
+const roles = [
+  { value: "moped-viewer", name: "Viewer" },
+  { value: "moped-editor", name: "Editor" },
+  { value: "moped-admin", name: "Admin" },
+];
+
+const statuses = [
+  { value: "1", name: "Active" },
+  { value: "0", name: "Inactive" },
+];
 
 const staffValidationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -80,7 +81,7 @@ const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
 
-  const { register, handleSubmit, watch, errors, control, setValue } = useForm({
+  const { register, handleSubmit, errors, control, setValue } = useForm({
     defaultValues: editFormData || initialFormValues,
     resolver: yupResolver(staffValidationSchema),
   });
@@ -99,6 +100,7 @@ const StaffForm = ({ editFormData = null }) => {
     const requestPath = "/users/";
 
     requestApi(requestString, requestPath, data);
+    console.log(userApiResult);
   };
 
   const {
@@ -215,6 +217,11 @@ const StaffForm = ({ editFormData = null }) => {
               name={"workgroup"}
               control={control}
             />
+            {workgroupError && (
+              <FormHelperText>
+                Workgroups failed to load. Please refresh.
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <TextField
