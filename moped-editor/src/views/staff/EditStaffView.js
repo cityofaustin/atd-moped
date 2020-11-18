@@ -39,15 +39,34 @@ const USER_QUERY = gql`
   }
 `;
 
+const fieldFormatters = {
+  status_id: id => id.toString(),
+  workgroup_id: id => id.toString(),
+  roles: role => role[0],
+};
+
 const EditStaffView = () => {
   const classes = useStyles();
   const { id } = useParams();
 
-  const { userData, userLoading, userError } = useQuery(USER_QUERY);
-  if (userError) {
-    console.log(userError);
+  const { data, loading, error } = useQuery(USER_QUERY);
+  if (error) {
+    console.log(error);
   }
-  console.log(userData);
+
+  const formatUserFormData = data => {
+    Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
+      const originalValue = data[fieldName];
+
+      if (originalValue !== undefined) {
+        const formattedValue = formatter(originalValue);
+
+        data[fieldName] = formattedValue;
+      }
+    });
+
+    return data;
+  };
 
   return (
     <Page className={classes.root} title="Staff">
@@ -57,11 +76,13 @@ const EditStaffView = () => {
             <CardHeader title="Edit User" />
             <Divider />
             <CardContent>
-              {/* {userLoading ? (
+              {loading ? (
                 <CircularProgress />
               ) : (
-                <StaffForm editFormData={userData.moped_users[0]} />
-              )} */}
+                <StaffForm
+                  editFormData={formatUserFormData(data.moped_users[0])}
+                />
+              )}
             </CardContent>
           </Card>
         </Box>
