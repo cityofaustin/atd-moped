@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -31,9 +31,17 @@ const WORKGROUPS_QUERY = gql`
   }
 `;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   formSelect: {
     minWidth: 195,
+  },
+  formButton: {
+    margin: theme.spacing(1),
+  },
+  formDeleteButton: {
+    margin: theme.spacing(1),
+    backgroundColor: "red",
+    color: "white",
   },
 }));
 
@@ -81,11 +89,22 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null }) => {
   const classes = useStyles();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  const { register, handleSubmit, errors, control, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+    formState,
+    reset,
+  } = useForm({
     defaultValues: editFormData || initialFormValues,
     resolver: yupResolver(staffValidationSchema),
   });
+
+  const { isSubmitted, isSubmitting } = formState;
 
   const onSubmit = data => {
     // Parse values with fns from config
@@ -100,7 +119,7 @@ const StaffForm = ({ editFormData = null }) => {
     const requestString = editFormData === null ? "post" : "put";
     const requestPath = "/users/";
 
-    requestApi(requestString, requestPath, data);
+    // requestApi(requestString, requestPath, data);
     console.log(userApiResult);
   };
 
@@ -230,6 +249,9 @@ const StaffForm = ({ editFormData = null }) => {
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
+              {errors.workgroup && (
+                <FormHelperText>{errors.workgroup?.message}</FormHelperText>
+              )}
             </FormControl>
           )}
         </Grid>
@@ -283,14 +305,40 @@ const StaffForm = ({ editFormData = null }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
-          <Button
-            disabled={userApiLoading}
-            type="submit"
-            color="primary"
-            variant="contained"
-          >
-            Save
-          </Button>
+          {userApiLoading || isSubmitting ? (
+            <CircularProgress />
+          ) : (
+            <Button
+              className={classes.formButton}
+              disabled={isSubmitted}
+              type="submit"
+              color="primary"
+              variant="contained"
+            >
+              Save
+            </Button>
+          )}
+          {!!editFormData && (
+            <Button
+              className={classes.formButton}
+              color="secondary"
+              variant="contained"
+              onClick={() => reset(initialFormValues)}
+            >
+              Reset
+            </Button>
+          )}
+          {/* Add delete button */}
+          {editFormData && (
+            <Button
+              className={classes.formDeleteButton}
+              color="secondary"
+              variant="contained"
+              onClick={() => setIsDeleteModalOpen(true)}
+            >
+              Delete User
+            </Button>
+          )}
         </Grid>
       </Grid>
     </form>
