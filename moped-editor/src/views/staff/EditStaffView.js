@@ -1,5 +1,7 @@
 import React from "react";
+import { useQuery } from "@apollo/react-hooks";
 import { useParams } from "react-router-dom";
+import { gql } from "apollo-boost";
 import StaffForm from "./StaffForm";
 
 import {
@@ -8,6 +10,7 @@ import {
   Card,
   CardHeader,
   CardContent,
+  CircularProgress,
   Divider,
   makeStyles,
 } from "@material-ui/core";
@@ -17,10 +20,10 @@ const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const USER_QUERY = id => gql`
+const USER_QUERY = gql`
   query GetUser {
     moped_users(
-      where: { staff_uuid: { _eq: ${id} } }
+      where: { staff_uuid: { _eq: "9699d49f-c5ba-4dad-b286-510a5e178aa7" } }
     ) {
       date_added
       first_name
@@ -40,10 +43,11 @@ const EditStaffView = () => {
   const classes = useStyles();
   const { id } = useParams();
 
-  const { userData, userLoading, useError } = useQuery(USER_QUERY);
+  const { userData, userLoading, userError } = useQuery(USER_QUERY);
   if (userError) {
     console.log(userError);
   }
+  console.log(userData);
 
   return (
     <Page className={classes.root} title="Staff">
@@ -53,7 +57,11 @@ const EditStaffView = () => {
             <CardHeader title="Edit User" />
             <Divider />
             <CardContent>
-              {userLoading ? <CircularProgress /> : <StaffForm data={} />}
+              {/* {userLoading ? (
+                <CircularProgress />
+              ) : (
+                <StaffForm editFormData={userData.moped_users[0]} />
+              )} */}
             </CardContent>
           </Card>
         </Box>
