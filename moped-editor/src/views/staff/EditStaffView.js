@@ -20,11 +20,9 @@ const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const USER_QUERY = gql`
-  query GetUser {
-    moped_users(
-      where: { staff_uuid: { _eq: "9699d49f-c5ba-4dad-b286-510a5e178aa7" } }
-    ) {
+const GET_USER = gql`
+  query GetUser($userId: Int) {
+    moped_users(where: { user_id: { _eq: $userId } }) {
       date_added
       first_name
       is_coa_staff
@@ -47,9 +45,11 @@ const fieldFormatters = {
 
 const EditStaffView = () => {
   const classes = useStyles();
-  const { id } = useParams();
+  const { userId } = useParams();
 
-  const { data, loading, error } = useQuery(USER_QUERY);
+  const { data, loading, error } = useQuery(GET_USER, {
+    variables: { userId },
+  });
   if (error) {
     console.log(error);
   }

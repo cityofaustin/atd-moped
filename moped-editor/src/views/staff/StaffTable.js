@@ -45,7 +45,7 @@ const Results = ({ className, staff, ...rest }) => {
               {staff.map(person => (
                 <TableRow hover key={person.staff_uuid}>
                   <TableCell align="center">
-                    <RouterLink to={`/app/staff/edit/${person.staff_uuid}`}>
+                    <RouterLink to={`/app/staff/edit/${person.user_id}`}>
                       <EditIcon color="primary" />
                     </RouterLink>
                   </TableCell>

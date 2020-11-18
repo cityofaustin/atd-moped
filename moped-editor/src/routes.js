@@ -22,7 +22,7 @@ const routes = [
       { path: "account", element: <AccountView /> },
       { path: "staff", element: <StaffListView /> },
       { path: "staff/new", element: <NewStaffView /> },
-      { path: "staff/edit/:id", element: <EditStaffView /> },
+      { path: "staff/edit/:userId", element: <EditStaffView /> },
       { path: "dashboard", element: <DashboardView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
