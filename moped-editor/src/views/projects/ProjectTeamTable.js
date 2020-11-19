@@ -1,5 +1,4 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -12,10 +11,10 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
+  CircularProgress,
   Card,
-  Container,
 } from "@material-ui/core";
-import Page from "src/components/Page";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -91,10 +90,10 @@ const ProjectTeamTable = props => {
     ROLES_QUERY
   );
 
-  if (membersLoading) return "Loading...";
+  if (membersLoading) return <CircularProgress />;
   if (membersError) return `Error! ${membersError.message}`;
 
-  if (roleLoading) return "Loading...";
+  if (roleLoading) return <CircularProgress />;
   if (roleError) return `Error! ${roleError.message}`;
 
   let nameOption = [];
@@ -111,91 +110,81 @@ const ProjectTeamTable = props => {
   );
 
   return (
-    <Page className={classes.root} title="Map Project">
-      <Container maxWidth={false}>
-        <Card>
-          <div>
-            <form style={{ padding: 10 }}>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Row</TableCell>
-                    <TableCell>Name</TableCell>
-                    <TableCell>Role</TableCell>
-                    <TableCell>Workgroup</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {props.StaffRows.map((item, index) => (
-                    <TableRow key={index}>
-                      <TableCell>{item.id}</TableCell>
-                      <TableCell>
-                        <Autocomplete
-                          id="selectedName"
-                          name="Name"
-                          options={nameOption}
-                          getOptionLabel={option =>
-                            option.name ? option.name : ""
-                          }
-                          onChange={(event, value) => {
-                            handleNameChange(value, item, index);
-                            handleGroupChange(value, item, index);
-                          }}
-                          defaultValue={item.name}
-                          style={{ width: 200 }}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="Select Staff"
-                              margin="normal"
-                            />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Autocomplete
-                          id="selectedRole"
-                          name="Role"
-                          options={roleOption}
-                          defaultValue={item.role}
-                          onChange={(event, value) => {
-                            handleRoleChange(value, item, index);
-                          }}
-                          style={{ width: 200 }}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="Select a Role"
-                              margin="normal"
-                            />
-                          )}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <TextField
-                          name="Group"
-                          value={item.workgroup}
-                          style={{ width: 200, paddingLeft: 10 }}
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <DeleteIcon
-                          color="secondary"
-                          onClick={event => {
-                            handleRemoveRow(index);
-                          }}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <PersonAddIcon color="secondary" onClick={handleAddRow} />
-            </form>
-          </div>
-        </Card>
-      </Container>
-    </Page>
+    <form style={{ padding: 10 }}>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Row</TableCell>
+            <TableCell>Name</TableCell>
+            <TableCell>Role</TableCell>
+            <TableCell>Workgroup</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {props.StaffRows.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{item.id}</TableCell>
+              <TableCell>
+                <Autocomplete
+                  id="selectedName"
+                  name="Name"
+                  options={nameOption}
+                  getOptionLabel={option => (option.name ? option.name : "")}
+                  onChange={(event, value) => {
+                    handleNameChange(value, item, index);
+                    handleGroupChange(value, item, index);
+                  }}
+                  defaultValue={item.name}
+                  style={{ width: 200 }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Select Staff"
+                      margin="normal"
+                    />
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <Autocomplete
+                  id="selectedRole"
+                  name="Role"
+                  options={roleOption}
+                  defaultValue={item.role}
+                  onChange={(event, value) => {
+                    handleRoleChange(value, item, index);
+                  }}
+                  style={{ width: 200 }}
+                  renderInput={params => (
+                    <TextField
+                      {...params}
+                      label="Select a Role"
+                      margin="normal"
+                    />
+                  )}
+                />
+              </TableCell>
+              <TableCell>
+                <TextField
+                  name="Group"
+                  value={item.workgroup}
+                  style={{ width: 200, paddingLeft: 10 }}
+                />
+              </TableCell>
+              <TableCell>
+                <DeleteIcon
+                  color="secondary"
+                  onClick={event => {
+                    handleRemoveRow(index);
+                  }}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <PersonAddIcon color="secondary" onClick={handleAddRow} />
+    </form>
   );
 };
 export default ProjectTeamTable;

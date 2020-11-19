@@ -7,8 +7,7 @@ import {
   MenuItem,
   Select,
   Switch,
-  Card,
-  Container,
+  CircularProgress,
   makeStyles,
 } from "@material-ui/core";
 import { useQuery } from "@apollo/react-hooks";
@@ -91,196 +90,189 @@ const DefineProjectForm = props => {
     },
   ];
 
-  if (phaseLoading) return "Loading...";
+  if (phaseLoading) return <CircularProgress />;
   if (phaseError) return `Error! ${phaseError.message}`;
 
-  if (statusLoading) return "Loading...";
+  if (statusLoading) return <CircularProgress />;
   if (statusError) return `Error! ${statusError.message}`;
 
-  if (fiscalLoading) return "Loading...";
+  if (fiscalLoading) return <CircularProgress />;
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
   console.log(phases);
 
   return (
-    <Container maxWidth={false}>
-      <Card>
-        <form style={{ padding: 25 }}>
-          <DevTool control={control} />
-          <Grid container spacing={3} style={{ margin: 20 }}>
-            <Grid item xs={4}>
-              <TextField
-                inputRef={register}
-                label="Project Name"
-                name="projName"
-                variant="standard"
-                type="text"
-                defaultValue={props.defineProjectState.projName}
-                onChange={handleFormChange}
-              />
-            </Grid>
+    <form style={{ padding: 25 }}>
+      <DevTool control={control} />
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={4}>
+          <TextField
+            inputRef={register}
+            label="Project Name"
+            name="projName"
+            variant="standard"
+            type="text"
+            defaultValue={props.defineProjectState.projName}
+            onChange={handleFormChange}
+          />
+        </Grid>
 
-            <Grid item xs={4}>
-              <TextField
-                inputRef={register}
-                label="Project Description"
-                name="projDesc"
-                multiline={true}
-                variant="standard"
-                type="text"
-                defaultValue={props.defineProjectState.projDesc}
-                onChange={handleFormChange}
-              />
-            </Grid>
+        <Grid item xs={4}>
+          <TextField
+            inputRef={register}
+            label="Project Description"
+            name="projDesc"
+            multiline={true}
+            variant="standard"
+            type="text"
+            defaultValue={props.defineProjectState.projDesc}
+            onChange={handleFormChange}
+          />
+        </Grid>
 
-            <Grid item xs={4}>
-              <TextField
-                inputRef={register}
-                name="startDate"
-                label="Start Date"
-                type="date"
-                variant="standard"
-                defaultValue={props.defineProjectState.startDate}
-                onChange={handleFormChange}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-              />
-            </Grid>
-          </Grid>
+        <Grid item xs={4}>
+          <TextField
+            inputRef={register}
+            name="startDate"
+            label="Start Date"
+            type="date"
+            variant="standard"
+            defaultValue={props.defineProjectState.startDate}
+            onChange={handleFormChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+        </Grid>
+      </Grid>
 
-          <Grid container spacing={3} style={{ margin: 20 }}>
-            <Grid item xs={4}>
-              <InputLabel>Fiscal Year</InputLabel>
-              <Controller
-                as={
-                  <Select
-                    name="fiscalYear"
-                    ref={register}
-                    style={{ width: 150, paddingLeft: 10 }}
-                  >
-                    {fiscal.moped_city_fiscal_years.map(fiscal => (
-                      <MenuItem
-                        key={fiscal.fiscal_year_value}
-                        value={fiscal.fiscal_year_value}
-                      >
-                        {fiscal.fiscal_year_value}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                }
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={4}>
+          <InputLabel>Fiscal Year</InputLabel>
+          <Controller
+            as={
+              <Select
                 name="fiscalYear"
-                defaultValue={props.defineProjectState.fiscalYear}
-                control={control}
-                onChange={handleFormChange}
-              />
-            </Grid>
-
-            <Grid item xs={4}>
-              <InputLabel>Current Status</InputLabel>
-              <Controller
-                as={
-                  <Select
-                    name="status"
-                    ref={register}
-                    style={{ width: 150, paddingLeft: 10 }}
+                ref={register}
+                style={{ width: 150, paddingLeft: 10 }}
+              >
+                {fiscal.moped_city_fiscal_years.map(fiscal => (
+                  <MenuItem
+                    key={fiscal.fiscal_year_value}
+                    value={fiscal.fiscal_year_value}
                   >
-                    {statuses.moped_status.map(status => (
-                      <MenuItem
-                        key={status.status_name}
-                        value={status.status_name}
-                      >
-                        {status.status_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                }
+                    {fiscal.fiscal_year_value}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="fiscalYear"
+            defaultValue={props.defineProjectState.fiscalYear}
+            control={control}
+            onChange={handleFormChange}
+          />
+        </Grid>
+
+        <Grid item xs={4}>
+          <InputLabel>Current Status</InputLabel>
+          <Controller
+            as={
+              <Select
                 name="status"
-                defaultValue={props.defineProjectState.status}
-                control={control}
-                onChange={handleFormChange}
-              />
-            </Grid>
+                ref={register}
+                style={{ width: 150, paddingLeft: 10 }}
+              >
+                {statuses.moped_status.map(status => (
+                  <MenuItem key={status.status_name} value={status.status_name}>
+                    {status.status_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="status"
+            defaultValue={props.defineProjectState.status}
+            control={control}
+            onChange={handleFormChange}
+          />
+        </Grid>
 
-            <Grid item xs={4}>
-              <InputLabel>Current Phase</InputLabel>
-              <Controller
-                as={
-                  <Select
-                    name="phase"
-                    ref={register}
-                    style={{ width: 150, paddingLeft: 10 }}
-                  >
-                    {phases.moped_phases.map(phase => (
-                      <MenuItem key={phase.phase_name} value={phase.phase_name}>
-                        {phase.phase_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                }
+        <Grid item xs={4}>
+          <InputLabel>Current Phase</InputLabel>
+          <Controller
+            as={
+              <Select
                 name="phase"
-                defaultValue={props.defineProjectState.phase}
-                control={control}
-                onChange={handleFormChange}
-              />
-            </Grid>
-          </Grid>
+                ref={register}
+                style={{ width: 150, paddingLeft: 10 }}
+              >
+                {phases.moped_phases.map(phase => (
+                  <MenuItem key={phase.phase_name} value={phase.phase_name}>
+                    {phase.phase_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="phase"
+            defaultValue={props.defineProjectState.phase}
+            control={control}
+            onChange={handleFormChange}
+          />
+        </Grid>
+      </Grid>
 
-          <Grid container spacing={3} style={{ margin: 20 }}>
-            <Grid item xs={4}>
-              <InputLabel>Priority</InputLabel>
-              <Controller
-                as={
-                  <Select
-                    name="priority"
-                    ref={register}
-                    style={{ width: 150, paddingLeft: 10 }}
-                  >
-                    {priorities.map(priority => (
-                      <MenuItem
-                        key={priority.priority_order}
-                        value={priority.priority_name}
-                      >
-                        {priority.priority_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                }
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={4}>
+          <InputLabel>Priority</InputLabel>
+          <Controller
+            as={
+              <Select
                 name="priority"
-                defaultValue={props.defineProjectState.priority}
-                control={control}
-                onChange={handleFormChange}
-              />
-            </Grid>
+                ref={register}
+                style={{ width: 150, paddingLeft: 10 }}
+              >
+                {priorities.map(priority => (
+                  <MenuItem
+                    key={priority.priority_order}
+                    value={priority.priority_name}
+                  >
+                    {priority.priority_name}
+                  </MenuItem>
+                ))}
+              </Select>
+            }
+            name="priority"
+            defaultValue={props.defineProjectState.priority}
+            control={control}
+            onChange={handleFormChange}
+          />
+        </Grid>
 
-            <Grid item xs={4}>
-              <InputLabel>Capitally Funded?</InputLabel>
-              <Switch
-                inputRef={register}
-                type="checkbox"
-                defaultValue={props.defineProjectState.capitallyFunded}
-                name="capitallyFunded"
-                inputProps={{ "aria-label": "secondary checkbox" }}
-                onChange={handleFormChange}
-              />
-            </Grid>
-            {props.defineProjectState.capitallyFunded && (
-              <Grid item xs={4}>
-                <TextField
-                  inputRef={register}
-                  label="eCapris Id"
-                  name="eCaprisId"
-                  variant="standard"
-                  type="text"
-                  defaultValue={props.defineProjectState.eCaprisId}
-                  onChange={handleFormChange}
-                />
-              </Grid>
-            )}
+        <Grid item xs={4}>
+          <InputLabel>Capitally Funded?</InputLabel>
+          <Switch
+            inputRef={register}
+            type="checkbox"
+            defaultValue={props.defineProjectState.capitallyFunded}
+            name="capitallyFunded"
+            inputProps={{ "aria-label": "secondary checkbox" }}
+            onChange={handleFormChange}
+          />
+        </Grid>
+        {props.defineProjectState.capitallyFunded && (
+          <Grid item xs={4}>
+            <TextField
+              inputRef={register}
+              label="eCapris Id"
+              name="eCaprisId"
+              variant="standard"
+              type="text"
+              defaultValue={props.defineProjectState.eCaprisId}
+              onChange={handleFormChange}
+            />
           </Grid>
-        </form>
-      </Card>
-    </Container>
+        )}
+      </Grid>
+    </form>
   );
 };
 

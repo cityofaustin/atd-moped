@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import _ from "lodash";
 import {
-  Typography,
   Button,
+  Box,
+  Container,
+  Card,
+  CardHeader,
+  CardContent,
+  Divider,
   Stepper,
   Step,
   StepLabel,
-  Container,
+  Typography,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
 import MapProjectGeometry from "./MapProjectGeometry";
@@ -15,7 +21,22 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
+const useStyles = makeStyles(theme => ({
+  cardWrapper: {
+    marginTop: theme.spacing(3),
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(1),
+  },
+}));
+
 const NewProjectView = () => {
+  const classes = useStyles();
   const [activeStep, setActiveStep] = useState(0);
   const [defineProjectState, updateProjectState] = useState({
     fiscalYear: "",
@@ -215,43 +236,53 @@ const NewProjectView = () => {
   return (
     <Page title="New Project">
       <Container>
-        <div>
-          <Stepper activeStep={activeStep}>
-            {steps.map((label, index) => {
-              const stepProps = {};
-              const labelProps = {};
-              return (
-                <Step key={label} {...stepProps}>
-                  <StepLabel {...labelProps}>{label}</StepLabel>
-                </Step>
-              );
-            })}
-          </Stepper>
-          <div>
-            {activeStep === steps.length ? (
-              <div>
-                <>
-                  <Typography>Completed</Typography>
-                  <Button onClick={handleReset}>Close</Button>
-                </>
-              </div>
-            ) : (
-              <div>
-                {getStepContent(activeStep)}
+        <Card className={classes.cardWrapper}>
+          <Box pt={2} pl={2}>
+            <CardHeader title="New Project" />
+          </Box>
+          <Divider />
+          <CardContent>
+            <Stepper activeStep={activeStep}>
+              {steps.map((label, index) => {
+                const stepProps = {};
+                const labelProps = {};
+                return (
+                  <Step key={label} {...stepProps}>
+                    <StepLabel {...labelProps}>{label}</StepLabel>
+                  </Step>
+                );
+              })}
+            </Stepper>
+            <div>
+              {activeStep === steps.length ? (
                 <div>
-                  <Button onClick={handleBack}>Back</Button>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                  >
-                    {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                  </Button>
+                  <>
+                    <Typography>Completed</Typography>
+                    <Button onClick={handleReset}>Close</Button>
+                  </>
                 </div>
-              </div>
-            )}
-          </div>
-        </div>
+              ) : (
+                <div>
+                  {getStepContent(activeStep)}
+                  <Divider />
+                  <Box pt={2} pl={2} className={classes.buttons}>
+                    <Button onClick={handleBack} className={classes.button}>
+                      Back
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    </Button>
+                  </Box>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
       </Container>
     </Page>
   );
