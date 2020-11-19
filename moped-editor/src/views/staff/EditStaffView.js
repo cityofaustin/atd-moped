@@ -33,6 +33,7 @@ const GET_USER = gql`
       user_id
       workgroup
       workgroup_id
+      cognito_user_id
     }
   }
 `;

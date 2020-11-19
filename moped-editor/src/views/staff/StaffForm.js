@@ -84,7 +84,7 @@ const staffValidationSchema = editFormData =>
     workgroup_id: yup.string().required(),
     email: yup.string().required(),
     password: yup.mixed().when({
-      // If we are editing a user, we
+      // If we are editing a user, password is optional
       is: () => editFormData === null,
       then: yup.string().required(),
       otherwise: yup.string(),
@@ -130,14 +130,15 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
 
     // POST or PUT request to User Management API
     const requestString = editFormData === null ? "post" : "put";
-    const requestPath = "/users/";
+    const requestPath =
+      editFormData === null ? "/users/" : "/users/" + userCognitoId;
 
-    // If editing and password not updated, remove it
+    // If editing and password is not updated, remove it
     if (editFormData) {
       delete data.password;
     }
-    console.log(data);
-    // requestApi(requestString, requestPath, data);
+
+    requestApi({ method: requestString, path: requestPath, payload: data });
     console.log(userApiResult);
   };
 
@@ -162,7 +163,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     const requestPath = "/users/delete/" + userCognitoId;
     const deleteCallback = () => setIsDeleteModalOpen(false);
 
-    requestApi("delete", requestPath, null, deleteCallback);
+    requestApi({
+      method: "delete",
+      path: requestPath,
+      callback: deleteCallback,
+    });
   };
 
   return (
@@ -395,9 +400,13 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
               >
                 No
               </Button>
-              <Button onClick={handleDeleteConfirm} color="primary">
-                Yes
-              </Button>
+              {userApiLoading ? (
+                <CircularProgress />
+              ) : (
+                <Button onClick={handleDeleteConfirm} color="primary">
+                  Yes
+                </Button>
+              )}
             </DialogActions>
           </Dialog>
         </Grid>

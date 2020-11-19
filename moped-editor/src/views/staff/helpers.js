@@ -8,7 +8,7 @@ export function useUserApi() {
   const [loading, setLoading] = useState(false);
   const { user, getToken } = useUser();
 
-  const requestApi = (method, path, payload = null, callback = null) => {
+  const requestApi = ({ method, path, payload, callback }) => {
     // Use local API dev server for now
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
@@ -27,11 +27,12 @@ export function useUserApi() {
     }
 
     setLoading(true);
+
     axios(config).then(res => {
       setResult(res.data);
       console.log(res);
       setLoading(false);
-      callback && callback();
+      !!callback && callback();
     });
   };
 
