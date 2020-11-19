@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -8,6 +9,11 @@ import { gql, useQuery } from "@apollo/react-hooks";
 import {
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -68,17 +74,24 @@ const statuses = [
   { value: "0", name: "Inactive" },
 ];
 
-const staffValidationSchema = yup.object().shape({
-  first_name: yup.string().required(),
-  last_name: yup.string().required(),
-  title: yup.string().required(),
-  workgroup: yup.string().required(),
-  workgroup_id: yup.string().required(),
-  email: yup.string().required(),
-  password: yup.string().required(),
-  roles: yup.string().required(),
-  status_id: yup.string().required(),
-});
+// Pass editFormData to conditionally validate if adding or editing
+const staffValidationSchema = editFormData =>
+  yup.object().shape({
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
+    title: yup.string().required(),
+    workgroup: yup.string().required(),
+    workgroup_id: yup.string().required(),
+    email: yup.string().required(),
+    password: yup.mixed().when({
+      // If we are editing a user, we
+      is: () => editFormData === null,
+      then: yup.string().required(),
+      otherwise: yup.string(),
+    }),
+    roles: yup.string().required(),
+    status_id: yup.string().required(),
+  });
 
 const fieldParsers = {
   status_id: id => parseInt(id),
@@ -86,7 +99,7 @@ const fieldParsers = {
   roles: role => [role],
 };
 
-const StaffForm = ({ editFormData = null }) => {
+const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -101,10 +114,10 @@ const StaffForm = ({ editFormData = null }) => {
     reset,
   } = useForm({
     defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema),
+    resolver: yupResolver(staffValidationSchema(editFormData)),
   });
 
-  const { isSubmitted, isSubmitting } = formState;
+  const { isSubmitting } = formState;
 
   const onSubmit = data => {
     // Parse values with fns from config
@@ -119,6 +132,11 @@ const StaffForm = ({ editFormData = null }) => {
     const requestString = editFormData === null ? "post" : "put";
     const requestPath = "/users/";
 
+    // If editing and password not updated, remove it
+    if (editFormData) {
+      delete data.password;
+    }
+    console.log(data);
     // requestApi(requestString, requestPath, data);
     console.log(userApiResult);
   };
@@ -140,6 +158,13 @@ const StaffForm = ({ editFormData = null }) => {
     return workgroupName;
   };
 
+  const handleDeleteConfirm = () => {
+    const requestPath = "/users/delete/" + userCognitoId;
+    const deleteCallback = () => setIsDeleteModalOpen(false);
+
+    requestApi("delete", requestPath, null, deleteCallback);
+  };
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -154,6 +179,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            error={!!errors.first_name}
             helperText={errors.first_name?.message}
           />
         </Grid>
@@ -168,6 +194,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            error={!!errors.last_name}
             helperText={errors.last_name?.message}
           />
         </Grid>
@@ -182,6 +209,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            error={!!errors.title}
             helperText={errors.title?.message}
           />
         </Grid>
@@ -196,6 +224,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            error={!!errors.email}
             helperText={errors.email?.message}
           />
         </Grid>
@@ -211,6 +240,7 @@ const StaffForm = ({ editFormData = null }) => {
             }}
             variant="outlined"
             inputRef={register}
+            error={!!errors.password}
             helperText={errors.password?.message}
           />
         </Grid>
@@ -261,6 +291,9 @@ const StaffForm = ({ editFormData = null }) => {
           name="workgroup_id"
           inputRef={register}
           type="hidden"
+          defaultValue={
+            editFormData?.workgroup_id || initialFormValues.workgroup_id
+          }
         />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
@@ -308,39 +341,68 @@ const StaffForm = ({ editFormData = null }) => {
           {userApiLoading || isSubmitting ? (
             <CircularProgress />
           ) : (
-            <Button
-              className={classes.formButton}
-              disabled={isSubmitted}
-              type="submit"
-              color="primary"
-              variant="contained"
-            >
-              Save
-            </Button>
+            <>
+              <Button
+                className={classes.formButton}
+                disabled={isSubmitting}
+                type="submit"
+                color="primary"
+                variant="contained"
+              >
+                Save
+              </Button>
+              {!!editFormData && (
+                <Button
+                  className={classes.formButton}
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => reset(initialFormValues)}
+                >
+                  Reset
+                </Button>
+              )}
+              {editFormData && (
+                <Button
+                  className={classes.formDeleteButton}
+                  color="secondary"
+                  variant="contained"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  Delete User
+                </Button>
+              )}
+            </>
           )}
-          {!!editFormData && (
-            <Button
-              className={classes.formButton}
-              color="secondary"
-              variant="contained"
-              onClick={() => reset(initialFormValues)}
-            >
-              Reset
-            </Button>
-          )}
-          {/* Add delete button */}
-          {editFormData && (
-            <Button
-              className={classes.formDeleteButton}
-              color="secondary"
-              variant="contained"
-              onClick={() => setIsDeleteModalOpen(true)}
-            >
-              Delete User
-            </Button>
-          )}
+          <Dialog
+            open={isDeleteModalOpen}
+            onClose={() => setIsDeleteModalOpen(false)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">
+              {"Delete this user?"}
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are you sure that you want to delete this user?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => setIsDeleteModalOpen(false)}
+                color="primary"
+                autoFocus
+              >
+                No
+              </Button>
+              <Button onClick={handleDeleteConfirm} color="primary">
+                Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
+      <DevTool control={control} />
     </form>
   );
 };

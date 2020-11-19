@@ -65,6 +65,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
+    "@hookform/devtools": "^2.2.1",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
