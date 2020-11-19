@@ -12,31 +12,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MapProjectGeometry= () => {
-
+const MapProjectGeometry = () => {
   const classes = useStyles();
 
   let options = ["option 1", "option 2", "option 3"];
 
   return (
-    <Page className={classes.root} title="Map Project">
-       <Container maxWidth={false}>
-         <Card>
-          <div>
-            <form>
+    <Container maxWidth={false}>
+      <Card>
+        <div>
+          <form>
             <Autocomplete
-                id="selectedOptions"
-                options={options}
-                style={{ width: 150 }}
-                renderInput={(params) => <TextField {...params} label="Options"
-                margin="normal" />}
-              />
-            </form>
-          </div>
-        </Card>
-      </Container>
-    </Page>
+              id="selectedOptions"
+              options={options}
+              style={{ width: 150 }}
+              renderInput={params => (
+                <TextField {...params} label="Options" margin="normal" />
+              )}
+            />
+          </form>
+        </div>
+      </Card>
+    </Container>
   );
-}
+};
 
 export default MapProjectGeometry;
