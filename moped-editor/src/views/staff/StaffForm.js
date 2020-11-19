@@ -356,7 +356,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
               >
                 Save
               </Button>
-              {!!editFormData && (
+              {!editFormData && (
                 <Button
                   className={classes.formButton}
                   color="secondary"
