@@ -268,3 +268,45 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
         return jsonify(response)
     else:
         abort(403)
+
+@users_blueprint.route("/<id>/update_password", methods=["DELETE"])
+@cognito_auth_required
+@normalize_claims
+def user_delete_user(id: str, claims: list) -> (Response, int):
+    """
+    Returns created user details
+    :return Response, int:
+    """
+    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
+        cognito_client = boto3.client("cognito-idp")
+
+        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.change_password
+        
+        # db_response = db_deactivate_user(user_cognito_id=id)
+        # if "errors" in db_response:
+        #     response = {
+        #         "error": {
+        #             "message": f"Cannot deactivate user {id}",
+        #             "database": db_response,
+        #         }
+        #     }
+        #     return jsonify(response), 500
+
+        # user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        # user_email = get_user_email_from_attr(user_attr=user_info)
+
+        # cognito_response = cognito_client.admin_delete_user(
+        #     UserPoolId=USER_POOL, Username=id
+        # )
+        # delete_claims(user_email=user_email)
+
+        response = {
+            "success": {
+                "message": f"User password updated: {id}",
+                "cognito": cognito_response,
+                "database": db_response,
+            }
+        }
+        return jsonify(response)
+    else:
+        abort(403)
