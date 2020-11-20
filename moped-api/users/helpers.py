@@ -18,7 +18,7 @@ from users.queries import (
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER
 )
-from users.validation import USER_VALIDATION_SCHEMA
+from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
 
 def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
@@ -68,6 +68,16 @@ def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, USER_VALIDATION_SCHEMA)
     return is_valid_profile, user_validator.errors
+
+def is_valid_user_password(password: dict) -> [bool, dict]:
+    """
+    Returns a type if the user profile is valid and any errors if available
+    :param dict user_profile: The json data from the request
+    :return tuple:
+    """
+    password_validator = Validator()
+    is_valid_password = password_validator.validate(password, PASSWORD_VALIDATION_SCHEMA)
+    return is_valid_password, password_validator.errors
 
 
 def is_valid_uuid(cognito_id: str) -> bool:

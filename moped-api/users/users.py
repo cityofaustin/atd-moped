@@ -12,6 +12,7 @@ from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
     get_user_email_from_attr,
+    is_valid_user_password,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -269,16 +270,23 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
     else:
         abort(403)
 
-@users_blueprint.route("/<id>/update_password", methods=["DELETE"])
+@users_blueprint.route("/<id>/password", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_delete_user(id: str, claims: list) -> (Response, int):
+def user_update_password(id: str, claims: list) -> (Response, int):
     """
     Returns created user details
     :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
+
+        password_valid, password_error_feedback = is_valid_user_password(
+            password=request.json
+        )
+
+        if not password_valid:
+            return jsonify({"error": password_error_feedback}), 400
 
         # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.change_password
         

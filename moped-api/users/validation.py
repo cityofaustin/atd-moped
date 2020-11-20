@@ -91,3 +91,14 @@ USER_VALIDATION_SCHEMA = {
         "maxlength": 3,
     },
 }
+
+PASSWORD_VALIDATION_SCHEMA = {
+    "password": {
+        "type": "string",
+        "nullable": False,
+        "required": True,
+        "minlength": 8,
+        "maxlength": 32,
+        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$",
+    },
+}
