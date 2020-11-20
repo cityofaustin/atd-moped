@@ -288,33 +288,30 @@ def user_update_password(id: str, claims: list) -> (Response, int):
         if not password_valid:
             return jsonify({"error": password_error_feedback}), 400
 
-        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/cognito-idp.html#CognitoIdentityProvider.Client.change_password
+        try:
+            json_data = request.json
+            password = json_data["password"]
+
+            cognito_response = cognito_client.admin_set_user_password(
+                UserPoolId=USER_POOL,
+                Username=id,
+                Password=password,
+                Permanent=True
+            )
         
-        # db_response = db_deactivate_user(user_cognito_id=id)
-        # if "errors" in db_response:
-        #     response = {
-        #         "error": {
-        #             "message": f"Cannot deactivate user {id}",
-        #             "database": db_response,
-        #         }
-        #     }
-        #     return jsonify(response), 500
-
-        # user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
-        # user_email = get_user_email_from_attr(user_attr=user_info)
-
-        # cognito_response = cognito_client.admin_delete_user(
-        #     UserPoolId=USER_POOL, Username=id
-        # )
-        # delete_claims(user_email=user_email)
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "InvalidPasswordException":
+                return jsonify(e.response), 400  # Bad request
+            else:
+                return jsonify(e.response), 500  # Internal Server Error
 
         response = {
             "success": {
                 "message": f"User password updated: {id}",
                 "cognito": cognito_response,
-                "database": db_response,
             }
         }
+        
         return jsonify(response)
     else:
         abort(403)
