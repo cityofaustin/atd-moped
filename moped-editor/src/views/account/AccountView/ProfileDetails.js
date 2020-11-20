@@ -13,35 +13,12 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-const states = [
-  {
-    value: "alabama",
-    label: "Alabama",
-  },
-  {
-    value: "new-york",
-    label: "New York",
-  },
-  {
-    value: "san-francisco",
-    label: "San Francisco",
-  },
-];
-
 const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const ProfileDetails = ({ className, ...rest }) => {
+const ProfileDetails = ({ className }) => {
   const classes = useStyles();
-  const [values, setValues] = useState({
-    firstName: "Katarina",
-    lastName: "Smith",
-    email: "demo@devias.io",
-    phone: "",
-    state: "Alabama",
-    country: "USA",
-  });
 
   const handleChange = event => {
     setValues({
@@ -51,102 +28,130 @@ const ProfileDetails = ({ className, ...rest }) => {
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+    <Card>
+      <CardHeader title="Update Your Password" />
+      <Divider />
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
+                name="first_name"
+                id="first-name"
+                label="First Name"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
+                inputRef={register}
+                error={!!errors.first_name}
+                helperText={errors.first_name?.message}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
+                name="last_name"
+                id="last-name"
+                label="Last Name"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
+                inputRef={register}
+                error={!!errors.last_name}
+                helperText={errors.last_name?.message}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
+                name="title"
+                id="title"
+                label="Title"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
+                inputRef={register}
+                error={!!errors.title}
+                helperText={errors.title?.message}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
+            <Grid item xs={12} md={6}>
+              {userApiLoading || isSubmitting ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <Button
+                    className={classes.formButton}
+                    disabled={isSubmitting}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                  >
+                    Save
+                  </Button>
+                  {!editFormData && (
+                    <Button
+                      className={classes.formButton}
+                      color="secondary"
+                      variant="contained"
+                      onClick={() => reset(initialFormValues)}
+                    >
+                      Reset
+                    </Button>
+                  )}
+                  {editFormData && (
+                    <Button
+                      className={classes.formDeleteButton}
+                      color="secondary"
+                      variant="contained"
+                      onClick={() => setIsDeleteModalOpen(true)}
+                    >
+                      Delete User
+                    </Button>
+                  )}
+                </>
+              )}
+              <Dialog
+                open={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
               >
-                {states.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+                <DialogTitle id="alert-dialog-title">
+                  {"Delete this user?"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    Are you sure that you want to delete this user?
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={() => setIsDeleteModalOpen(false)}
+                    color="primary"
+                    autoFocus
+                  >
+                    No
+                  </Button>
+                  {userApiLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <Button onClick={handleDeleteConfirm} color="primary">
+                      Yes
+                    </Button>
+                  )}
+                </DialogActions>
+              </Dialog>
             </Grid>
           </Grid>
-        </CardContent>
-        <Divider />
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button color="primary" variant="contained">
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+          <DevTool control={control} />
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 
