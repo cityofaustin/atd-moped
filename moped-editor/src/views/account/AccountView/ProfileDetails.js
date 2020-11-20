@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useUserApi } from "../../staff/helpers";
 import {
-  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Divider,
   Grid,
   TextField,
@@ -17,14 +17,29 @@ const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const ProfileDetails = ({ className }) => {
+const ProfileDetails = () => {
   const classes = useStyles();
+  const [userApiResult, userApiLoading, requestApi] = useUserApi();
 
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+    formState,
+    reset,
+  } = useForm({});
+
+  const { isSubmitting } = formState;
+
+  const onSubmit = data => {
+    // POST or PUT request to User Management API
+    const requestString = "put";
+    // const requestPath = "/users/" + userCognitoId + "/password";
+
+    // requestApi({ method: requestString, path: requestPath, payload: data });
+    console.log(userApiResult);
   };
 
   return (
@@ -93,70 +108,22 @@ const ProfileDetails = ({ className }) => {
                   >
                     Save
                   </Button>
-                  {!editFormData && (
-                    <Button
-                      className={classes.formButton}
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => reset(initialFormValues)}
-                    >
-                      Reset
-                    </Button>
-                  )}
-                  {editFormData && (
-                    <Button
-                      className={classes.formDeleteButton}
-                      color="secondary"
-                      variant="contained"
-                      onClick={() => setIsDeleteModalOpen(true)}
-                    >
-                      Delete User
-                    </Button>
-                  )}
+                  <Button
+                    className={classes.formButton}
+                    color="secondary"
+                    variant="contained"
+                    onClick={reset}
+                  >
+                    Reset
+                  </Button>
                 </>
               )}
-              <Dialog
-                open={isDeleteModalOpen}
-                onClose={() => setIsDeleteModalOpen(false)}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">
-                  {"Delete this user?"}
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    Are you sure that you want to delete this user?
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={() => setIsDeleteModalOpen(false)}
-                    color="primary"
-                    autoFocus
-                  >
-                    No
-                  </Button>
-                  {userApiLoading ? (
-                    <CircularProgress />
-                  ) : (
-                    <Button onClick={handleDeleteConfirm} color="primary">
-                      Yes
-                    </Button>
-                  )}
-                </DialogActions>
-              </Dialog>
             </Grid>
           </Grid>
-          <DevTool control={control} />
         </form>
       </CardContent>
     </Card>
   );
-};
-
-ProfileDetails.propTypes = {
-  className: PropTypes.string,
 };
 
 export default ProfileDetails;
