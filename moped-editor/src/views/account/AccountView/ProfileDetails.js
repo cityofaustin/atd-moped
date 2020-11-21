@@ -1,5 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useUser } from "../../../auth/user";
 import { useUserApi } from "../../staff/helpers";
 import {
   Button,
@@ -19,32 +20,28 @@ const useStyles = makeStyles(() => ({
 
 const ProfileDetails = () => {
   const classes = useStyles();
+  const { user } = useUser();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    control,
-    setValue,
-    formState,
-    reset,
-  } = useForm({});
+  const { register, handleSubmit, errors, formState } = useForm({});
 
   const { isSubmitting } = formState;
 
   const onSubmit = data => {
     // POST or PUT request to User Management API
     const requestString = "put";
-    // const requestPath = "/users/" + userCognitoId + "/password";
 
-    // requestApi({ method: requestString, path: requestPath, payload: data });
-    console.log(userApiResult);
+    const userCognitoId = user.username;
+    const requestPath = "/users/" + userCognitoId + "/password";
+
+    requestApi({ method: requestString, path: requestPath, payload: data });
   };
+
+  console.log(userApiResult);
 
   return (
     <Card>
-      <CardHeader title="Update Your Password" />
+      <CardHeader title="Change Your Password" />
       <Divider />
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)}>
@@ -52,24 +49,24 @@ const ProfileDetails = () => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                name="first_name"
-                id="first-name"
-                label="First Name"
+                name="password"
+                id="password"
+                label="New Password"
                 InputLabelProps={{
                   shrink: true,
                 }}
                 variant="outlined"
                 inputRef={register}
-                error={!!errors.first_name}
-                helperText={errors.first_name?.message}
+                error={!!errors.password}
+                helperText={errors.password?.message}
               />
             </Grid>
-            <Grid item xs={12} md={6}>
+            {/* <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                name="last_name"
-                id="last-name"
-                label="Last Name"
+                name="passwordReenter"
+                id="password-reenter"
+                label="Re-enter new password"
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -78,22 +75,7 @@ const ProfileDetails = () => {
                 error={!!errors.last_name}
                 helperText={errors.last_name?.message}
               />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                name="title"
-                id="title"
-                label="Title"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-                inputRef={register}
-                error={!!errors.title}
-                helperText={errors.title?.message}
-              />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12} md={6}>
               {userApiLoading || isSubmitting ? (
                 <CircularProgress />
@@ -106,15 +88,7 @@ const ProfileDetails = () => {
                     color="primary"
                     variant="contained"
                   >
-                    Save
-                  </Button>
-                  <Button
-                    className={classes.formButton}
-                    color="secondary"
-                    variant="contained"
-                    onClick={reset}
-                  >
-                    Reset
+                    Change Password
                   </Button>
                 </>
               )}
