@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const staffQuery = gql`
+const GET_STAFF = gql`
   query GetStaff {
     moped_users {
       cognito_user_id
@@ -32,6 +32,9 @@ const staffQuery = gql`
       title
       workgroup
       workgroup_id
+      user_id
+      is_coa_staff
+      status_id
     }
   }
 `;
@@ -39,7 +42,7 @@ const staffQuery = gql`
 const StaffListView = () => {
   const classes = useStyles();
 
-  const { data, loading, error } = useQuery(staffQuery);
+  const { data, loading, error } = useQuery(GET_STAFF);
   if (error) {
     console.log(error);
   }

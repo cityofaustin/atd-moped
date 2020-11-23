@@ -2,6 +2,7 @@ import React from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { NavLink as RouterLink } from "react-router-dom";
 import {
   Box,
   Card,
@@ -43,8 +44,10 @@ const Results = ({ className, staff, ...rest }) => {
             <TableBody>
               {staff.map(person => (
                 <TableRow hover key={person.staff_uuid}>
-                  <TableCell>
-                    <EditIcon />
+                  <TableCell align="center">
+                    <RouterLink to={`/app/staff/edit/${person.user_id}`}>
+                      <EditIcon color="primary" />
+                    </RouterLink>
                   </TableCell>
                   <TableCell>{person.first_name}</TableCell>
                   <TableCell>{person.last_name}</TableCell>
