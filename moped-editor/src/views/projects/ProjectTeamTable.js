@@ -38,6 +38,7 @@ const ProjectTeamTable = props => {
       name: "",
       workgroup: "",
       role: "",
+      notes: ""
     };
     props.setStaffRows(StaffRows => [...StaffRows, item]);
   };
@@ -59,6 +60,11 @@ const ProjectTeamTable = props => {
 
   const handleGroupChange = (value, item, index) => {
     item.workgroup = value.workgroup;
+    props.setStaffRows(props.StaffRows);
+  };
+
+  const handleNotesChange = (value, item, index) => {
+    item.notes = value;
     props.setStaffRows(props.StaffRows);
   };
 
@@ -118,6 +124,7 @@ const ProjectTeamTable = props => {
             <TableCell>Name</TableCell>
             <TableCell>Role</TableCell>
             <TableCell>Workgroup</TableCell>
+            <TableCell>Notes</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -168,7 +175,19 @@ const ProjectTeamTable = props => {
                 <TextField
                   name="Group"
                   value={item.workgroup}
+                  style={{ width: 200, paddingLeft: 10, marginBottom: -13 }}
+                />
+              </TableCell>
+              {/* still need to send the notes data to database after creating the table name in moped_proj_personnel */}
+               <TableCell>
+                <TextField
+                  name="Notes"
                   style={{ width: 200, paddingLeft: 10 }}
+                  multiline
+                  inputProps={{ maxLength: 75 }}
+                  variant="outlined"
+                  helperText="75 character max"
+                  onChange={handleNotesChange}
                 />
               </TableCell>
               <TableCell>
@@ -183,7 +202,7 @@ const ProjectTeamTable = props => {
           ))}
         </TableBody>
       </Table>
-      <PersonAddIcon color="secondary" onClick={handleAddRow} />
+      <PersonAddIcon color="secondary" onClick={handleAddRow} style={{ paddingLeft: 10, fontSize: 35 }} />
     </form>
   );
 };
