@@ -134,7 +134,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       editFormData === null ? "/users/" : "/users/" + userCognitoId;
 
     // If editing and password is not updated, remove it
-    if (editFormData) {
+    if (editFormData && data.password === "") {
       delete data.password;
     }
 
