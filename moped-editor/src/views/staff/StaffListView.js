@@ -49,7 +49,7 @@ const StaffListView = () => {
       <Container maxWidth={false}>
         <Toolbar />
         <Box mt={3}>
-          {loading || data.moped_users === null ? (
+          {loading ? (
             <CircularProgress />
           ) : (
             <Results staff={data.moped_users} />
