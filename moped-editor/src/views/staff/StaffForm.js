@@ -81,7 +81,6 @@ const staffValidationSchema = editFormData =>
     last_name: yup.string().required(),
     title: yup.string().required(),
     workgroup: yup.string().required(),
-    workgroup_id: yup.string().required(),
     email: yup.string().required(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
@@ -117,7 +116,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     resolver: yupResolver(staffValidationSchema(editFormData)),
   });
 
-  const { isSubmitting } = formState;
+  const { isSubmitting, dirtyFields } = formState;
 
   const onSubmit = data => {
     // Parse values with fns from config
@@ -134,7 +133,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       editFormData === null ? "/users/" : "/users/" + userCognitoId;
 
     // If editing and password is not updated, remove it
-    if (editFormData) {
+    if (!dirtyFields?.password) {
       delete data.password;
     }
 
@@ -290,7 +289,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             </FormControl>
           )}
         </Grid>
-        {/* This hidden field is populated with required workgroup_id field by updateWorkgroupFields() */}
+        {/* This hidden field is populated with workgroup_id field by updateWorkgroupFields() */}
         <TextField
           id="workgroup-id"
           name="workgroup_id"
