@@ -46,7 +46,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             className={classes.small}
             component={RouterLink}
             src={user.avatar}
-            to="/app/account"
+            to="/moped/account"
           />
         </Box>
         <Hidden mdDown>

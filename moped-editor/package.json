@@ -1,8 +1,9 @@
 {
-  "name": "react-material-dashboard",
-  "author": "DeviasIO",
+  "name": "atd-moped-editor",
+  "author": "ATD Data & Technology Services",
   "licence": "MIT",
   "version": "1.0.0",
+  "homepage": "/moped",
   "private": false,
   "scripts": {
     "start": "env-cmd -e local react-scripts start",

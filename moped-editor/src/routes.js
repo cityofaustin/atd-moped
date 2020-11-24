@@ -15,13 +15,13 @@ import SettingsView from "src/views/settings/SettingsView/SettingsView";
 
 const routes = [
   {
-    path: "app",
+    path: "moped",
     element: <DashboardLayout />,
     children: [
+      { path: "/", element: <DashboardView /> },
       { path: "account", element: <AccountView /> },
       { path: "staff", element: <StaffListView /> },
       { path: "staff/new", element: <NewStaffView /> },
-      { path: "dashboard", element: <DashboardView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
       { path: "settings", element: <SettingsView /> },

@@ -38,7 +38,7 @@ const MainLayout = () => {
   console.log("user", user);
 
   return user ? (
-    <Navigate to="/app" />
+    <Navigate to="/moped" />
   ) : (
     <div className={classes.root}>
       <TopBar />
