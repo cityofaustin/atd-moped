@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -410,7 +409,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           </Dialog>
         </Grid>
       </Grid>
-      <DevTool control={control} />
     </form>
   );
 };
