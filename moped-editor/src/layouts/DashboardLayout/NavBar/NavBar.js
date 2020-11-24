@@ -15,27 +15,27 @@ import NavItem from "./NavItem";
 
 const items = [
   {
-    href: "/app/dashboard",
+    href: "/moped/dashboard",
     icon: BarChartIcon,
     title: "Dashboard",
   },
   {
-    href: "/app/staff",
+    href: "/moped/staff",
     icon: UsersIcon,
     title: "Staff",
   },
   {
-    href: "/app/projects",
+    href: "/moped/projects",
     icon: EmojiTransportation,
     title: "Projects",
   },
   {
-    href: "/app/account",
+    href: "/moped/account",
     icon: UserIcon,
     title: "Account",
   },
   {
-    href: "/app/settings",
+    href: "/moped/settings",
     icon: SettingsIcon,
     title: "Settings",
   },
