@@ -24,7 +24,7 @@ const Toolbar = ({ className, ...rest }) => {
           color="primary"
           variant="contained"
           component={RouterLink}
-          to={"/app/staff/new"}
+          to={"/moped/staff/new"}
         >
           Add User
         </Button>
