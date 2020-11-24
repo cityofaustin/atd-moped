@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Results = ({ className, staff, ...rest }) => {
+const StaffTable = ({ className, staff, ...rest }) => {
   const classes = useStyles();
 
   return (
@@ -45,7 +45,7 @@ const Results = ({ className, staff, ...rest }) => {
               {staff.map(person => (
                 <TableRow hover key={person.staff_uuid}>
                   <TableCell align="center">
-                    <RouterLink to={`/app/staff/edit/${person.user_id}`}>
+                    <RouterLink to={`/moped/staff/edit/${person.user_id}`}>
                       <EditIcon color="primary" />
                     </RouterLink>
                   </TableCell>
@@ -65,9 +65,9 @@ const Results = ({ className, staff, ...rest }) => {
   );
 };
 
-Results.propTypes = {
+StaffTable.propTypes = {
   className: PropTypes.string,
   staff: PropTypes.array.isRequired,
 };
 
-export default Results;
+export default StaffTable;

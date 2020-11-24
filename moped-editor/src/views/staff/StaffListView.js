@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-import Results from "./StaffTable";
+import StaffTable from "./StaffTable";
 import Toolbar from "./Toolbar";
 
 const useStyles = makeStyles(theme => ({
@@ -55,7 +55,7 @@ const StaffListView = () => {
           {loading ? (
             <CircularProgress />
           ) : (
-            <Results staff={data.moped_users} />
+            <StaffTable staff={data.moped_users} />
           )}
         </Box>
       </Container>
