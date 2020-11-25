@@ -4,7 +4,6 @@ import { useUser } from "../../../auth/user";
 import { useUserApi } from "../../staff/helpers";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { DevTool } from "@hookform/devtools";
 import {
   Button,
   Card,
@@ -125,7 +124,6 @@ const ProfileDetails = () => {
               )}
             </Grid>
           </Grid>
-          <DevTool control={control} />
         </form>
       </CardContent>
     </Card>

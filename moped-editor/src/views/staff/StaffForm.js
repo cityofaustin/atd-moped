@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
-import { DevTool } from "@hookform/devtools";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -106,7 +105,7 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
-  const [userApiResult, userApiLoading, requestApi] = useUserApi();
+  const [userApiLoading, requestApi] = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const {
@@ -307,7 +306,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           name="workgroup_id"
           inputRef={register}
           className={classes.hiddenTextField}
-          // type="hidden"
         />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
@@ -420,7 +418,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           </Dialog>
         </Grid>
       </Grid>
-      <DevTool control={control} />
     </form>
   );
 };
