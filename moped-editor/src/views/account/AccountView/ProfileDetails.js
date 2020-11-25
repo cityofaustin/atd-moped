@@ -16,6 +16,7 @@ import {
   TextField,
   makeStyles,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles(theme => ({
   formButton: {
@@ -32,7 +33,7 @@ const passwordValidationSchema = yup.object().shape({
   password: yup.string().required(),
   passwordConfirm: yup
     .string()
-    .oneOf([yup.ref("password"), null], "passwords must match"),
+    .oneOf([yup.ref("password")], "passwords must match"),
 });
 
 const ProfileDetails = () => {
@@ -54,9 +55,13 @@ const ProfileDetails = () => {
     const userCognitoId = user.username;
     const requestPath = "/users/" + userCognitoId + "/password";
 
-    // requestApi({ method: requestString, path: requestPath, payload: data });
-    console.log(data);
+    // API doesn't need passwordConfirm in payload
+    const payload = { password: data.password };
+
+    requestApi({ method: requestString, path: requestPath, payload });
   };
+
+  console.log(userApiResult);
 
   return (
     <Card>
@@ -69,6 +74,7 @@ const ProfileDetails = () => {
               <TextField
                 fullWidth
                 name="password"
+                type="password"
                 id="password"
                 label="New password"
                 InputLabelProps={{
@@ -84,6 +90,7 @@ const ProfileDetails = () => {
               <TextField
                 fullWidth
                 name="passwordConfirm"
+                type="password"
                 id="password-confirm"
                 label="Confirm new password"
                 InputLabelProps={{
@@ -110,6 +117,11 @@ const ProfileDetails = () => {
                     Change Password
                   </Button>
                 </>
+              )}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              {userApiResult?.success && (
+                <Alert severity="success">Password updated</Alert>
               )}
             </Grid>
           </Grid>

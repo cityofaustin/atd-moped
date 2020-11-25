@@ -270,6 +270,7 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
     else:
         abort(403)
 
+
 @users_blueprint.route("/<id>/password", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
@@ -293,12 +294,9 @@ def user_update_password(id: str, claims: list) -> (Response, int):
             password = json_data["password"]
 
             cognito_response = cognito_client.admin_set_user_password(
-                UserPoolId=USER_POOL,
-                Username=id,
-                Password=password,
-                Permanent=True
+                UserPoolId=USER_POOL, Username=id, Password=password, Permanent=True
             )
-        
+
         except ClientError as e:
             if e.response["Error"]["Code"] == "InvalidPasswordException":
                 return jsonify(e.response), 400  # Bad request
@@ -311,7 +309,7 @@ def user_update_password(id: str, claims: list) -> (Response, int):
                 "cognito": cognito_response,
             }
         }
-        
+
         return jsonify(response)
     else:
         abort(403)
