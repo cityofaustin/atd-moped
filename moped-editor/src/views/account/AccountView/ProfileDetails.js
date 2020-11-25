@@ -40,7 +40,7 @@ const ProfileDetails = () => {
   const { user } = useUser();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
 
-  const { register, handleSubmit, errors, formState, control } = useForm({
+  const { register, handleSubmit, errors, formState } = useForm({
     defaultValues: initialValues,
     resolver: yupResolver(passwordValidationSchema),
   });

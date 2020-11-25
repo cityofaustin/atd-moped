@@ -235,7 +235,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 @normalize_claims
 def user_delete_user(id: str, claims: list) -> (Response, int):
     """
-    Returns created user details
+    Returns deleted user details
     :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
@@ -276,7 +276,7 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
 @normalize_claims
 def user_update_password(id: str, claims: list) -> (Response, int):
     """
-    Returns created user details
+    Returns updated password details
     :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
