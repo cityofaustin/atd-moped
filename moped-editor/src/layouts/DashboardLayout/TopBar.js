@@ -17,7 +17,7 @@ import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
 
 const user = {
-  avatar: "/static/images/avatars/avatar_1.png",
+  avatar: `${process.env.PUBLIC_URL}/static/images/avatars/avatar_1.png`,
   jobTitle: "Senior Developer",
   name: "DTS Dev",
 };
