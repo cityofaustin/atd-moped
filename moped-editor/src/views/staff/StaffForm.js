@@ -1,6 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
@@ -48,6 +50,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: "red",
     color: "white",
   },
+  hiddenTextField: {
+    display: "none",
+  },
 }));
 
 export const initialFormValues = {
@@ -80,6 +85,7 @@ const staffValidationSchema = editFormData =>
     last_name: yup.string().required(),
     title: yup.string().required(),
     workgroup: yup.string().required(),
+    workgroup_id: yup.string().required(),
     email: yup.string().required(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
@@ -99,6 +105,7 @@ const fieldParsers = {
 
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
+  let navigate = useNavigate();
   const [userApiResult, userApiLoading, requestApi] = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -127,17 +134,23 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     });
 
     // POST or PUT request to User Management API
-    const requestString = editFormData === null ? "post" : "put";
-    const requestPath =
-      editFormData === null ? "/users/" : "/users/" + userCognitoId;
+    const method = editFormData === null ? "post" : "put";
+    const path = editFormData === null ? "/users/" : "/users/" + userCognitoId;
 
     // If editing and password is not updated, remove it
     if (!dirtyFields?.password) {
       delete data.password;
     }
 
-    requestApi({ method: requestString, path: requestPath, payload: data });
-    console.log(userApiResult);
+    // Navigate to user table on successful add/edit
+    const callback = () => navigate("/moped/staff");
+
+    requestApi({
+      method,
+      path,
+      payload: data,
+      callback,
+    });
   };
 
   const {
@@ -293,10 +306,8 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           id="workgroup-id"
           name="workgroup_id"
           inputRef={register}
-          type="hidden"
-          defaultValue={
-            editFormData?.workgroup_id || initialFormValues.workgroup_id
-          }
+          className={classes.hiddenTextField}
+          // type="hidden"
         />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
@@ -409,6 +420,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           </Dialog>
         </Grid>
       </Grid>
+      <DevTool control={control} />
     </form>
   );
 };
