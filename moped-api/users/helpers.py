@@ -58,7 +58,7 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
 
 def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
     """
-    Returns a type if the user profile is valid and any errors if available
+    Returns a tuple if the user profile is valid and any errors if available
     :param dict user_profile: The json data from the request
     :return tuple:
     """
@@ -69,7 +69,7 @@ def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
 
 def is_valid_user_password(password: dict) -> [bool, dict]:
     """
-    Returns a type if the user password is valid and any errors if available
+    Returns a tuple if the user password is valid and any errors if available
     :param dict password: The json data from the request
     :return tuple:
     """
@@ -78,6 +78,17 @@ def is_valid_user_password(password: dict) -> [bool, dict]:
         password, PASSWORD_VALIDATION_SCHEMA
     )
     return is_valid_password, password_validator.errors
+
+
+def is_users_password(user_profile: dict, request_cognito_id: str) -> bool:
+    """
+    Returns bool if user is updating their own password
+    :param dict password: The json data from the request
+    :return bool:
+    """
+    user_cognito_id = user_profile.get("cognito_user_id", None)
+    is_valid_password = user_cognito_id == request_cognito_id
+    return is_users_password
 
 
 def is_valid_uuid(cognito_id: str) -> bool:

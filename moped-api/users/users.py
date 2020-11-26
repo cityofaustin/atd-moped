@@ -13,6 +13,7 @@ from users.helpers import (
     generate_cognito_attributes,
     get_user_email_from_attr,
     is_valid_user_password,
+    is_users_password,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -279,7 +280,9 @@ def user_update_password(id: str, claims: list) -> (Response, int):
     Returns updated password details
     :return Response, int:
     """
-    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
+    if is_valid_user(current_cognito_jwt) and is_users_password(
+        current_cognito_jwt, id
+    ):
         cognito_client = boto3.client("cognito-idp")
 
         password_valid, password_error_feedback = is_valid_user_password(

@@ -60,8 +60,6 @@ const ProfileDetails = () => {
     requestApi({ method: requestString, path: requestPath, payload });
   };
 
-  console.log(userApiResult);
-
   return (
     <Card>
       <CardHeader title="Change Your Password" />
