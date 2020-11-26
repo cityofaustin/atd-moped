@@ -11,7 +11,7 @@ from typing import List
 # Helpers
 from claims import is_coa_staff, generate_iso_timestamp
 from users.queries import (
-    GRAPHQL_CRATE_USER,
+    GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER,
 )
@@ -115,7 +115,7 @@ def db_create_user(user_profile: dict) -> dict:
     :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
-    response = run_query(query=GRAPHQL_CRATE_USER, variables={"users": [user_profile]})
+    response = run_query(query=GRAPHQL_CREATE_USER, variables={"users": [user_profile]})
     return response.json()
 
 

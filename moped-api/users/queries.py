@@ -2,7 +2,7 @@
 # GraphQL to manage the creation of users.
 # It does not upsert, if there is an error it should stop.
 #
-GRAPHQL_CRATE_USER = """
+GRAPHQL_CREATE_USER = """
     mutation insert_moped_user($users: [moped_users_insert_input!]!) {
       insert_moped_users(
         objects: $users,
