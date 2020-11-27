@@ -286,19 +286,22 @@ class TestUsers(TestApp):
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
+    @patch("users.users.is_valid_user_profile")
     @patch("users.users.put_claims")
     def test_creates_user_already_exists(
         self,
-        mock_cognito_auth_required,
-        mock_is_valid_user,
-        mock_has_user_role,
         mock_put_claims,
+        mock_is_valid_user_profile,
+        mock_has_user_role,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
         create_user_pool,
     ):
         """Test create user route when user already exists."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
+        mock_is_valid_user_profile.return_value = True, None
 
         # Patch normalize claims
         claims = create_user_claims()
@@ -331,7 +334,7 @@ class TestUsers(TestApp):
         fail_response_dict = self.parse_response(fail_response.data)
 
         assert isinstance(fail_response_dict, dict)
-        assert fail_response_dict["ResponseMetadata"]["HTTPStatusCode"] == 400
+        assert isinstance(fail_response_dict.get("Error", None), dict)
         assert fail_response_dict["Error"]["Code"] == "UsernameExistsException"
 
     @mock_cognitoidp
