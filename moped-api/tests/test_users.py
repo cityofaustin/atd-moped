@@ -2,7 +2,7 @@ from moto import mock_cognitoidp
 import boto3, os, json, pytest
 from tests.test_app import TestApp
 from unittest.mock import patch, Mock
-from users.helpers import is_valid_user, has_user_role
+from claims import is_valid_user, has_user_role
 
 
 def create_user_claims():
@@ -18,6 +18,17 @@ def create_user_claims():
         "aud": "test_aud",
     }
 
+
+# "cognito_user_id": cognito_id,
+#         "date_added": generate_iso_timestamp(),
+#         "email": json_data.get("email", None),
+#         "first_name": json_data.get("first_name", None),
+#         "last_name": json_data.get("last_name", None),
+#         "is_coa_staff": is_coa_staff(json_data["email"]),
+#         "status_id": json_data.get("status_id", 1),
+#         "title": json_data.get("title", None),
+#         "workgroup": json_data.get("workgroup", None),
+#         "workgroup_id": json_data.get("workgroup_id", None),
 
 mock_users = [
     {"email": "neo@test.test", "password": "test123", "roles": ["moped-viewer"]},
@@ -241,7 +252,8 @@ class TestUsers(TestApp):
         )
         _get_current_object = Mock(return_value=claims)
         patch(
-            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+            "claims.current_cognito_jwt",
+            Mock(_get_current_object=_get_current_object),
         ).start()
 
         # Mock user pool
@@ -268,7 +280,7 @@ class TestUsers(TestApp):
         user_list = self.parse_response(user_list_response.data)
 
         assert isinstance(success_response_dict, dict)
-        assert success_response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert isinstance(success_response_dict.get("success", False), dict)
         assert len(user_list) == len(mock_users) + 1
 
     @patch("flask_cognito._cognito_auth_required")
@@ -295,7 +307,8 @@ class TestUsers(TestApp):
         )
         _get_current_object = Mock(return_value=claims)
         patch(
-            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+            "claims.current_cognito_jwt",
+            Mock(_get_current_object=_get_current_object),
         ).start()
 
         # Mock user pool
@@ -342,10 +355,10 @@ class TestUsers(TestApp):
     @patch("users.users.put_claims")
     def test_edits_user(
         self,
-        mock_cognito_auth_required,
-        mock_is_valid_user,
-        mock_has_user_role,
         mock_put_claims,
+        mock_has_user_role,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
         create_user_pool,
     ):
         """Test edit user route."""
@@ -360,7 +373,8 @@ class TestUsers(TestApp):
         )
         _get_current_object = Mock(return_value=claims)
         patch(
-            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+            "claims.current_cognito_jwt",
+            Mock(_get_current_object=_get_current_object),
         ).start()
 
         # Mock user pool
@@ -403,19 +417,24 @@ class TestUsers(TestApp):
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
-    @patch("users.users.put_claims")
+    @patch("users.users.db_deactivate_user")
+    @patch("users.users.get_user_email_from_attr")
+    @patch("users.users.delete_claims")
     def test_deletes_user(
         self,
-        mock_cognito_auth_required,
-        mock_is_valid_user,
+        mock_delete_claims,
+        mock_get_user_email_from_attr,
+        mock_db_deactivate_user,
         mock_has_user_role,
-        mock_put_claims,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
         create_user_pool,
     ):
         """Test delete user route."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
+        mock_db_deactivate_user.return_value = json.dumps({})
 
         # Patch normalize claims
         claims = create_user_claims()
@@ -424,7 +443,8 @@ class TestUsers(TestApp):
         )
         _get_current_object = Mock(return_value=claims)
         patch(
-            "claims.current_cognito_jwt", Mock(_get_current_object=_get_current_object),
+            "claims.current_cognito_jwt",
+            Mock(_get_current_object=_get_current_object),
         ).start()
 
         # Mock user pool
@@ -438,7 +458,9 @@ class TestUsers(TestApp):
         user_to_delete = mock_users[0]["email"]
 
         # Delete user request
-        response = self.client.delete(f"/users/{user_to_delete}",)
+        response = self.client.delete(
+            f"/users/{user_to_delete}",
+        )
         response_dict = self.parse_response(response.data)
 
         # Get user list to compare length
@@ -446,6 +468,5 @@ class TestUsers(TestApp):
         user_list = self.parse_response(user_list_response.data)
 
         assert isinstance(response_dict, dict)
-        assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert isinstance(response_dict.get("success", None), dict)
         assert len(user_list) == len(mock_users) - 1
-
