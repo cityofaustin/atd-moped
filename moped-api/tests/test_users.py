@@ -352,10 +352,22 @@ class TestUsers(TestApp):
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
+    @patch("users.users.is_valid_user_profile")
+    @patch("users.users.get_user_email_from_attr")
+    @patch("users.users.generate_user_profile")
+    @patch("users.users.db_update_user")
+    @patch("users.users.delete_claims")
+    @patch("users.users.format_claims")
     @patch("users.users.put_claims")
     def test_edits_user(
         self,
         mock_put_claims,
+        mock_format_claims,
+        mock_delete_claims,
+        mock_db_update_user,
+        mock_generate_user_profile,
+        mock_get_user_email_from_attr,
+        mock_is_valid_user_profile,
         mock_has_user_role,
         mock_is_valid_user,
         mock_cognito_auth_required,
@@ -365,6 +377,8 @@ class TestUsers(TestApp):
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
+        mock_is_valid_user_profile.return_value = True, None
+        mock_db_update_user.return_value = json.dumps({})
 
         # Patch normalize claims
         claims = create_user_claims()
@@ -387,6 +401,7 @@ class TestUsers(TestApp):
         # Prepare the payload for the request
         user_to_edit = mock_users[0]["email"]
         new_email_json_payload = json.dumps({"email": "edited@test.test"})
+        mock_get_user_email_from_attr.return_value = user_to_edit
 
         # Edit user request
         response = self.client.put(
@@ -397,7 +412,7 @@ class TestUsers(TestApp):
         response_dict = self.parse_response(response.data)
 
         assert isinstance(response_dict, dict)
-        assert response_dict["ResponseMetadata"]["HTTPStatusCode"] == 200
+        assert isinstance(response_dict.get("success", None), dict)
 
     @mock_cognitoidp
     def test_deletes_user_no_auth(self):
