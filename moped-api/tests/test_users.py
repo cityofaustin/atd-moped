@@ -231,19 +231,29 @@ class TestUsers(TestApp):
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     @patch("users.users.has_user_role")
+    @patch("users.users.is_valid_user_profile")
+    @patch("users.users.format_claims")
     @patch("users.users.put_claims")
+    @patch("users.users.generate_user_profile")
+    @patch("users.users.db_create_user")
     def test_creates_user_success(
         self,
-        mock_cognito_auth_required,
-        mock_is_valid_user,
-        mock_has_user_role,
+        mock_db_create_user,
+        mock_generate_user_profile,
         mock_put_claims,
+        mock_format_claims,
+        mock_is_valid_user_profile,
+        mock_has_user_role,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
         create_user_pool,
     ):
         """Test create user route."""
         # Mock valid user check and claims loaded from DynamoDB
         mock_is_valid_user.return_value = True
         mock_has_user_role.return_value = True
+        mock_is_valid_user_profile.return_value = True, None
+        mock_db_create_user.return_value = {}
 
         # Patch normalize claims
         claims = create_user_claims()
