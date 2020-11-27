@@ -19,17 +19,6 @@ def create_user_claims():
     }
 
 
-# "cognito_user_id": cognito_id,
-#         "date_added": generate_iso_timestamp(),
-#         "email": json_data.get("email", None),
-#         "first_name": json_data.get("first_name", None),
-#         "last_name": json_data.get("last_name", None),
-#         "is_coa_staff": is_coa_staff(json_data["email"]),
-#         "status_id": json_data.get("status_id", 1),
-#         "title": json_data.get("title", None),
-#         "workgroup": json_data.get("workgroup", None),
-#         "workgroup_id": json_data.get("workgroup_id", None),
-
 mock_users = [
     {"email": "neo@test.test", "password": "test123", "roles": ["moped-viewer"]},
     {"email": "morpheus@test.test", "password": "test123", "roles": ["moped-viewer"]},
@@ -498,3 +487,58 @@ class TestUsers(TestApp):
         assert isinstance(response_dict, dict)
         assert isinstance(response_dict.get("success", None), dict)
         assert len(user_list) == len(mock_users) - 1
+
+    @patch("flask_cognito._cognito_auth_required")
+    @patch("users.users.is_valid_user")
+    @patch("users.users.is_users_password")
+    @patch("users.users.is_valid_user_password")
+    def test_update_user_password(
+        self,
+        mock_is_valid_user_password,
+        mock_is_users_password,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
+        create_user_pool,
+    ):
+        """Test update password route."""
+        # Mock valid user check and claims loaded from DynamoDB
+        mock_is_valid_user.return_value = True
+        mock_is_users_password.return_value = True
+        mock_is_valid_user_password.return_value = True, None
+
+        # Patch normalize claims
+        claims = create_user_claims()
+        claims["https://hasura.io/jwt/claims"] = json.dumps(
+            claims["https://hasura.io/jwt/claims"]
+        )
+        _get_current_object = Mock(return_value=claims)
+        patch(
+            "claims.current_cognito_jwt",
+            Mock(_get_current_object=_get_current_object),
+        ).start()
+
+        # Mock user pool
+        user_pool_dict = create_user_pool
+        user_pool_id = user_pool_dict["user_pool_id"]
+
+        # Patch the user pool id with the mock pool id
+        patch("users.users.USER_POOL", new=user_pool_id).start()
+
+        # Prepare the payload for the request
+        user_to_update_password = mock_users[0]["email"]
+        new_password_json_payload = json.dumps({"password": "nUPaSSword"})
+
+        # Delete user request
+        response = self.client.put(
+            f"/users/{user_to_update_password}/password",
+            data=new_password_json_payload,
+            content_type="application/json",
+        )
+        response_dict = self.parse_response(response.data)
+
+        # Get user list to compare length
+        user_list_response = self.client.get("/users/")
+        user_list = self.parse_response(user_list_response.data)
+
+        assert isinstance(response_dict, dict)
+        assert isinstance(response_dict.get("success", None), dict)
