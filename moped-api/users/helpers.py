@@ -82,7 +82,7 @@ def is_valid_user_password(password: dict) -> [bool, dict]:
 
 def is_users_password(user_profile: dict, request_cognito_id: str) -> bool:
     """
-    Returns bool if user to update is user's own password
+    Returns bool if password to update is user's own password
     :param dict user_profile: The json data from the request
     :param str request_cognito_id: The id tied to the password to update
     :return bool:
