@@ -129,7 +129,7 @@ class TestUsers(TestApp):
     @patch("flask_cognito._cognito_auth_required")
     @patch("users.users.is_valid_user")
     def test_gets_users(
-        self, mock_cognito_auth_required, mock_is_valid_user, create_user_pool
+        self, mock_is_valid_user, mock_cognito_auth_required, create_user_pool
     ):
         """Test get users route."""
         mock_is_valid_user.return_value = True
@@ -173,9 +173,9 @@ class TestUsers(TestApp):
     @patch("users.users.load_claims")
     def test_gets_user(
         self,
-        mock_cognito_auth_required,
-        mock_is_valid_user,
         mock_load_claims,
+        mock_is_valid_user,
+        mock_cognito_auth_required,
         create_user_pool,
     ):
         """Test get user route."""
