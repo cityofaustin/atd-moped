@@ -1,6 +1,4 @@
 import React from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { NavLink as RouterLink } from "react-router-dom";
 import {
@@ -15,18 +13,15 @@ import {
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   root: {},
-  avatar: {
-    marginRight: theme.spacing(2),
-  },
 }));
 
-const Results = ({ className, staff, ...rest }) => {
+const StaffTable = ({ staff }) => {
   const classes = useStyles();
 
   return (
-    <Card className={clsx(classes.root, className)} {...rest}>
+    <Card className={classes.root}>
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
@@ -45,7 +40,7 @@ const Results = ({ className, staff, ...rest }) => {
               {staff.map(person => (
                 <TableRow hover key={person.staff_uuid}>
                   <TableCell align="center">
-                    <RouterLink to={`/app/staff/edit/${person.user_id}`}>
+                    <RouterLink to={`/moped/staff/edit/${person.user_id}`}>
                       <EditIcon color="primary" />
                     </RouterLink>
                   </TableCell>
@@ -65,9 +60,4 @@ const Results = ({ className, staff, ...rest }) => {
   );
 };
 
-Results.propTypes = {
-  className: PropTypes.string,
-  staff: PropTypes.array.isRequired,
-};
-
-export default Results;
+export default StaffTable;
