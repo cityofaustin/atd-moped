@@ -37,8 +37,15 @@ function bundle_function() {
 # Retrieves the environment variables JSON stored in AWS
 #
 function generate_environment() {
+  # If the config settings is not provided, then assume cognito pattern...
+  if [[ "${1}" = "" ]]; then
+    CONFIGURATION_NAME="ATD_MOPED_COGNITO_HOOK_ENV";
+  else
+    CONFIGURATION_NAME=$1
+  fi;
+
   aws secretsmanager get-secret-value \
-  --secret-id "ATD_MOPED_COGNITO_HOOK_ENV_${WORKING_STAGE^^}" | \
+  --secret-id "${CONFIGURATION_NAME}_${WORKING_STAGE^^}" | \
   jq -rc ".SecretString" > handler_config.json
 }
 
@@ -85,7 +92,7 @@ function deploy_cognito_functions() {
     echo "Entered directory: ${PWD}"
     install_requirements
     bundle_function
-    generate_environment "$FUNCTION_NAME"
+    generate_environment "$CONFIGURATION_SETTINGS"
     deploy_cognito_function "$FUNCTION_NAME"
     cd $MAIN_DIR
     echo "Exit, current path: ${PWD}"
