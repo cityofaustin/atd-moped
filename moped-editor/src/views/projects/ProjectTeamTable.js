@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -63,9 +63,11 @@ const ProjectTeamTable = props => {
     props.setStaffRows(props.StaffRows);
   };
 
-  const handleNotesChange = (value, item, index) => {
-    item.notes = value;
-    props.setStaffRows(props.StaffRows);
+  const [userInput, setuserInput] = useState('');
+
+  const handleNoteChange = (value, item, index) => {
+     item.notes = {userInput}
+     props.setStaffRows(props.StaffRows);
   };
 
   const MEMBERS_QUERY = gql`
@@ -114,7 +116,7 @@ const ProjectTeamTable = props => {
   roles.moped_project_roles.forEach(role =>
     roleOption.push(role.project_role_name)
   );
-
+ 
   return (
     <form style={{ padding: 10 }}>
       <Table className={classes.table}>
@@ -178,7 +180,6 @@ const ProjectTeamTable = props => {
                   style={{ width: 200, paddingLeft: 10, marginBottom: -13 }}
                 />
               </TableCell>
-              {/* still need to send the notes data to database after creating the table name in moped_proj_personnel */}
                <TableCell>
                 <TextField
                   name="Notes"
@@ -187,7 +188,11 @@ const ProjectTeamTable = props => {
                   inputProps={{ maxLength: 75 }}
                   variant="outlined"
                   helperText="75 character max"
-                  onChange={handleNotesChange}
+                  value={userInput}
+                  onChange={event => setuserInput(event.target.value)}
+                  onBlur={(event, value) => {
+                    handleNoteChange(value, item, index);
+                  }}
                 />
               </TableCell>
               <TableCell>
