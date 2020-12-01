@@ -3,6 +3,7 @@ import boto3
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
+from flask_cors import CORS
 from config import api_config
 
 # Import our custom code
@@ -22,6 +23,7 @@ from users.helpers import (
 )
 
 users_blueprint = Blueprint("users_blueprint", __name__)
+CORS(users_blueprint)
 
 USER_POOL = api_config["COGNITO_USERPOOL_ID"]
 
