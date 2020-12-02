@@ -16,6 +16,8 @@ const App = () => {
   const routing = useRoutes(routes);
   const { user } = useUser();
 
+  console.log('hello')
+
   // Setup initial Apollo instance
   let client = useRef(new ApolloClient());
 
