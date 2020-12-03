@@ -121,6 +121,10 @@ const StaffListView = () => {
     console.log(error);
   }
 
+  if(data) {
+    console.log(staffQuery.query);
+  }
+
   return (
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
