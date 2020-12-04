@@ -1,6 +1,18 @@
-import json, urllib.request
+import json
+import time
+import logging
+import urllib.request
+
 from jose import jwk, jwt
 from jose.utils import base64url_decode
+
+from config import (
+    ATD_JWK_KEYS,
+    AWS_ATD_APP_CLIENT_ID
+)
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def verify_jwt_token(token: str) -> (bool, dict):
@@ -14,8 +26,8 @@ def verify_jwt_token(token: str) -> (bool, dict):
     kid = headers["kid"]
     # search for the kid in the downloaded public keys
     key_index = -1
-    for i in range(len(keys)):
-        if kid == keys[i]["kid"]:
+    for i in range(len(ATD_JWK_KEYS)):
+        if kid == ATD_JWK_KEYS[i]["kid"]:
             key_index = i
             break
     if key_index == -1:
@@ -23,7 +35,7 @@ def verify_jwt_token(token: str) -> (bool, dict):
         return False
 
     # construct the public key
-    public_key = jwk.construct(keys[key_index])
+    public_key = jwk.construct(ATD_JWK_KEYS[key_index])
     # get the last two sections of the token,
     # message and signature (encoded in base64)
     message, encoded_signature = str(token).rsplit(".", 1)
@@ -43,7 +55,7 @@ def verify_jwt_token(token: str) -> (bool, dict):
         logger.error("Token is expired")
         return False
     # and the Audience  (use claims['client_id'] if verifying an access token)
-    if claims["aud"] != app_client_id:
+    if claims["aud"] != AWS_ATD_APP_CLIENT_ID:
         logger.error("Token was not issued for this audience")
         return False
 
