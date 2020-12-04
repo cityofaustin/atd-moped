@@ -12,7 +12,7 @@ class TestConfig:
         assert AWS_ATD_MOPED_REGION == "us-east-1"
         assert AWS_ATD_MOPED_USER_POOL == "us-east-1_Ub8l42e3z"
         assert AWS_ATD_MOPED_APP_CLIENT_ID == "J7CqHVrjtt537n49WRW43oB8ph"
-        assert AWS_ATD_MOPED_API_GATEWAY_ARN == "arn:aws:execute-api:us-east-1:*:og37y2s8aA/*/*/*"
+        assert AWS_ATD_MOPED_API_GATEWAY_ARN == "arn:aws:execute-api:us-east-1:*:og37y2s8aA"
         assert AWS_ATD_MOPED_JWK_KEYS == None
 
     def test_config_jwks_endpoint(self):
