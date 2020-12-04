@@ -51,41 +51,34 @@ def generate_policy(principal_id: str, policy_statements: List[dict]) -> dict:
     """
     return {
         "principalId": principal_id,
-        "policyDocument": {"Version": "2012-10-17", "Statement": policy_statements},
+        "policyDocument": {
+            "Version": "2012-10-17",
+            "Statement": policy_statements
+        },
     }
 
 
-def generate_iam_policy(scope_claims: str) -> dict:
+def generate_iam_policy(valid: bool, claims: dict) -> dict:
     """
     Generates an IAM policy for the request
-    :param str scope_claims: The name of the scope to verify in permissions
-    :return dict:
+    :param bool valid: Whether the token is valid or not
+    :param dict claims: Any claims to be analyzed
+    :return dict: The IAM policy
     """
     # Declare empty policy statements array
     policy_statements = []
-    # Iterate over API Permissions
 
     # For each API permission type
     for api_permission in AWS_ATD_MOPED_IAM_API_PERMISSIONS:
-        # If it is in the scope claims
-        if scope_claims in api_permission.scope:
-            # Append the permission to the statement
-            policy_statements.append(
-                generate_policy_statement(
-                    api_name=api_permission["arn"],
-                    api_stage=api_permission["stage"],
-                    api_verb=api_permission["httpVerb"],
-                    api_resource=api_permission["resource"],
-                    action="Allow",
-                )
+        policy_statements.append(
+            generate_policy_statement(
+                api_name=api_permission["arn"],
+                api_stage=api_permission["stage"],
+                api_verb=api_permission["httpVerb"],
+                api_resource=api_permission["resource"],
+                action="Allow" if valid else "Deny",
             )
-
-    # If no policy statements generated, deny all access
-    if len(policy_statements) == 0:
-        policy_statement = generate_policy_statement(
-            api_name="*", api_stage="*", api_verb="*", api_resource="*", action="Deny"
         )
-        policy_statements.append(policy_statement)
 
     # Return final IAM policy
     return generate_policy("user", policy_statements)
