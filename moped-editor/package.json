@@ -6,7 +6,7 @@
   "homepage": "/moped",
   "private": false,
   "scripts": {
-    "start": "env-cmd -e local react-scripts start",
+    "start": "env-cmd -e local npm run start:local",
     "start:local": "export HTTPS=true && react-scripts start",
     "start:staging": "env-cmd -e staging npm run start:local",
     "start:production": "env-cmd -e production npm run start:local",
