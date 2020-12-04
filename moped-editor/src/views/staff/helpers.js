@@ -36,5 +36,5 @@ export function useUserApi() {
     });
   };
 
-  return [result, loading, requestApi];
+  return { result, loading, requestApi };
 }

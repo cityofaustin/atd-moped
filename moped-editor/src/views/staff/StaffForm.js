@@ -77,6 +77,12 @@ const statuses = [
   { value: "0", name: "Inactive" },
 ];
 
+// TODO: Display errors from the API
+// 1. Add catch to axios chain in useUserAPI hook
+// 2. export any errors as userErrors
+// 3. If userErrors, show in UI
+// 4. Nested as res.errors.email[0]
+
 // Pass editFormData to conditionally validate if adding or editing
 const staffValidationSchema = editFormData =>
   yup.object().shape({
@@ -105,7 +111,7 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
-  const [userApiLoading, requestApi] = useUserApi();
+  const { userApiLoading, requestApi } = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const {
