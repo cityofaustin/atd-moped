@@ -1,23 +1,13 @@
 #!/usr/bin/env python3
 
-import os, sys
-import json
-from typing import List
-
-import boto3
 import logging
-import traceback
-
-
 import json
 
-
+from jwt import verify_jwt_token
+from aws import generate_iam_policy
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
-
-
-
 
 
 def handler(event: dict, context: object) -> dict:
