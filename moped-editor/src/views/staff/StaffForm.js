@@ -105,7 +105,11 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
-  const { userApiLoading, requestApi, error: apiErrors } = useUserApi();
+  const {
+    loading: userApiLoading,
+    requestApi,
+    error: apiErrors,
+  } = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const {

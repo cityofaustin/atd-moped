@@ -42,7 +42,9 @@ const GET_STAFF = gql`
 const StaffListView = () => {
   const classes = useStyles();
 
-  const { data, loading, error } = useQuery(GET_STAFF);
+  const { data, loading, error } = useQuery(GET_STAFF, {
+    fetchPolicy: "no-cache",
+  });
   if (error) {
     console.log(error);
   }

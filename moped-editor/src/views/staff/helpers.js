@@ -32,6 +32,7 @@ export function useUserApi() {
     axios(config)
       .then(res => {
         setResult(res.data);
+        setError(null); // Clear errors from previous attempts
         setLoading(false);
         !!callback && callback();
       })
@@ -53,4 +54,4 @@ const errorsToTranslate = {
 export const formatApiErrors = errorsArray =>
   errorsArray
     ? errorsArray.map(error => errorsToTranslate[error] || error).join(", ")
-    : false;
+    : null;
