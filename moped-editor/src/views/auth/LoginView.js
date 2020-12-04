@@ -12,8 +12,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import FacebookIcon from "src/icons/Facebook";
-import GoogleIcon from "src/icons/Google";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "../../auth/user";
 
@@ -92,31 +91,20 @@ const LoginView = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on the internal platform
+                    Sign in on with Microsoft Office 365
                   </Typography>
                 </Box>
                 <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12}>
                     <Button
                       color="primary"
                       fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
+                      startIcon={<AccountCircleIcon />}
+                      href="http://google.com"
                       size="large"
                       variant="contained"
                     >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
+                      Login with COA account
                     </Button>
                   </Grid>
                 </Grid>
