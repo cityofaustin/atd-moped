@@ -1,14 +1,15 @@
 import json
 import urllib.request
+from typing import List
 
-from config import AWS_ATD_API_GATEWAY_ARN
+from config import AWS_ATD_MOPED_API_GATEWAY_ARN
 
 #
 # These are API permissions to be generated for the
 #
-AWS_IAM_API_PERMISSIONS = [
+AWS_ATD_MOPED_IAM_API_PERMISSIONS = [
     {
-        "arn": AWS_ATD_API_GATEWAY_ARN,
+        "arn": AWS_ATD_MOPED_API_GATEWAY_ARN,
         "resource": "*",
         "stage": "*",
         "httpVerb": "*",
@@ -65,7 +66,7 @@ def generate_iam_policy(scope_claims: str) -> dict:
     # Iterate over API Permissions
 
     # For each API permission type
-    for api_permission in AWS_IAM_API_PERMISSIONS:
+    for api_permission in AWS_ATD_MOPED_IAM_API_PERMISSIONS:
         # If it is in the scope claims
         if scope_claims in api_permission.scope:
             # Append the permission to the statement
