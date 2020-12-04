@@ -49,7 +49,9 @@ const StaffTable = ({ staff }) => {
                   <TableCell>{person.workgroup}</TableCell>
                   <TableCell>{person.title}</TableCell>
                   <TableCell>{person.role}</TableCell>
-                  <TableCell>{person.status}</TableCell>
+                  <TableCell>
+                    {person.status_id === 1 ? "Active" : "Inactive"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
