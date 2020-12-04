@@ -32,12 +32,37 @@ export function useUserApi() {
     axios(config)
       .then(res => {
         setResult(res.data);
-        console.log(res);
         setLoading(false);
         !!callback && callback();
       })
-      .catch(err => setError(err));
+      .catch(err => {
+        setError(err.response.data.error);
+      });
   };
 
   return { result, error, loading, requestApi };
 }
+
+const errorsToTranslate = {
+  "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'":
+    "not a valid email format",
+  "value does not match regex '^[a-zA-Z0-9_-!@%^*~?.:&*()[]$]*$'":
+    "password must only contain: a-z, A-Z, 0-9, and any of these special characters: _-!@%^~?.:&()[]$",
+};
+
+export const formatApiErrors = errorsArray =>
+  errorsArray
+    ? errorsArray.map(error => errorsToTranslate[error] || error).join(", ")
+    : false;
+// TODO: Handle email error ("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
+// TODO: Handle password error ("^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$")
+// {
+//   "error": {
+//     "email": [
+//       "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'"
+//     ],
+//     "first_name": [
+//       "max length is 128"
+//     ]
+//   }
+// }

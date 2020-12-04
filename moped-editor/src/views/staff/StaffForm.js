@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserApi } from "./helpers";
+import { formatApiErrors, useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -111,7 +111,7 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
-  const { userApiLoading, requestApi } = useUserApi();
+  const { userApiLoading, requestApi, error: apiErrors } = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const {
@@ -200,8 +200,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.first_name}
-            helperText={errors.first_name?.message}
+            error={!!errors.first_name || !!apiErrors?.first_name}
+            helperText={
+              errors.first_name?.message ||
+              formatApiErrors(apiErrors?.first_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
