@@ -5,6 +5,7 @@ import axios from "axios";
 // Custom Hook for API calls
 export function useUserApi() {
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, getToken } = useUser();
 
@@ -28,13 +29,15 @@ export function useUserApi() {
 
     setLoading(true);
 
-    axios(config).then(res => {
-      setResult(res.data);
-      console.log(res);
-      setLoading(false);
-      !!callback && callback();
-    });
+    axios(config)
+      .then(res => {
+        setResult(res.data);
+        console.log(res);
+        setLoading(false);
+        !!callback && callback();
+      })
+      .catch(err => setError(err));
   };
 
-  return { result, loading, requestApi };
+  return { result, error, loading, requestApi };
 }
