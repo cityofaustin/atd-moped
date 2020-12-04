@@ -40,12 +40,12 @@ const items = [
     title: "Settings",
   },
   {
-    href: "/login",
+    href: "/moped/login",
     icon: LockIcon,
     title: "Login",
   },
   {
-    href: "/register",
+    href: "/moped/register",
     icon: UserPlusIcon,
     title: "Register",
   },
