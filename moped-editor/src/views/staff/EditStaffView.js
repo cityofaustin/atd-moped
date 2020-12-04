@@ -34,6 +34,7 @@ const GET_USER = gql`
       workgroup
       workgroup_id
       cognito_user_id
+      email
     }
   }
 `;

@@ -115,8 +115,8 @@ let staffQuery = new GQLAbstract(staffQueryConf);
 
 const StaffListView = () => {
   const classes = useStyles();
-
   const { data, loading, error } = useQuery(staffQuery.gql);
+  
   if (error) {
     console.log(error);
   }

@@ -5,6 +5,7 @@ import axios from "axios";
 // Custom Hook for API calls
 export function useUserApi() {
   const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user, getToken } = useUser();
 
@@ -28,13 +29,29 @@ export function useUserApi() {
 
     setLoading(true);
 
-    axios(config).then(res => {
-      setResult(res.data);
-      console.log(res);
-      setLoading(false);
-      !!callback && callback();
-    });
+    axios(config)
+      .then(res => {
+        setResult(res.data);
+        setError(null); // Clear errors from previous attempts
+        setLoading(false);
+        !!callback && callback();
+      })
+      .catch(err => {
+        setError(err.response.data.error);
+      });
   };
 
-  return [result, loading, requestApi];
+  return { result, error, loading, requestApi };
 }
+
+const errorsToTranslate = {
+  "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'":
+    "not a valid email format",
+  "value does not match regex '^[a-zA-Z0-9_-!@%^*~?.:&*()[]$]*$'":
+    "password must only contain: a-z, A-Z, 0-9, and any of these special characters: _-!@%^~?.:&()[]$",
+};
+
+export const formatApiErrors = errorsArray =>
+  errorsArray
+    ? errorsArray.map(error => errorsToTranslate[error] || error).join(", ")
+    : null;
