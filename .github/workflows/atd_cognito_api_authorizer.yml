@@ -1,0 +1,45 @@
+#
+# Builds & deploys the API Gateway's custom token validator
+#
+name: "Build & Deploy Cognito API Authorizer"
+
+on:
+  push:
+    branches:
+      - main
+      - production
+    paths:
+      - "moped-auth/cognito-api-gateway-authorizer/**"
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+          architecture: "x64"
+      # Get the code first
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      # Then install the AWC CLI tools & boto3
+      - name: "Install AWS Cli"
+        run: |
+          sudo apt-get install python3-setuptools
+          pip3 install awscli boto3
+      - name: "Build & Deploy API Authorizer"
+        env:
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          ATD_MOPED_COGNITO_ROLE: ${{ secrets.ATD_MOPED_COGNITO_ROLE }}
+          ATD_CONFIGURATION_SETTINGS: "ATD_MOPED_API_AUTHORIZER_CONFIG"
+        run: |
+          export BRANCH_NAME=${GITHUB_REF##*/}
+          echo "SHA: ${GITHUB_SHA}"
+          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
+          echo "GR: ${GITHUB_REF}"
+          echo "PWD: $(pwd)"
+          source $(pwd)/.github/workflows/aws-cognito-helper.sh
+          deploy_cognito_function "cognito-api-gateway-authorizer"
