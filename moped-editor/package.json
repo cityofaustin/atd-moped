@@ -6,7 +6,7 @@
   "homepage": "/moped",
   "private": false,
   "scripts": {
-    "start": "env-cmd -e local react-scripts start",
+    "start": "env-cmd -e local npm run start:local",
     "start:local": "export HTTPS=true && react-scripts start",
     "start:staging": "env-cmd -e staging npm run start:local",
     "start:production": "env-cmd -e production npm run start:local",
@@ -41,6 +41,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
     "apollo-boost": "^0.4.9",
+    "atd-kickstand": "github:cityofaustin/atd-kickstand#main",
     "aws-amplify": "^3.3.4",
     "axios": "^0.21.0",
     "chart.js": "^2.9.3",
