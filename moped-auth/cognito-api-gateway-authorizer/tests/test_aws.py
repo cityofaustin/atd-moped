@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import json
 from aws import *
-import pdb
 
 
 class TestAWS:
