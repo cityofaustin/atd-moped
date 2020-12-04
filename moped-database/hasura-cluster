@@ -36,6 +36,17 @@ function __get_version() {
 }
 
 #
+# Prints TRUE if the current configuration is local
+#
+function __is_local() {
+  if grep -q "endpoint: http://localhost:8080" config.yaml; then
+    echo "TRUE";
+  else
+    echo "FALSE";
+  fi;
+}
+
+#
 # Pings the Hasura server, returns True if it is ready to accept connections.
 #
 function hasura_server_ready() {
@@ -70,6 +81,15 @@ function wait_server_ready() {
 # Waits until the local hasura server is ready
 #
 function run_migration() {
+  if [[ "$(__is_local)" != "TRUE" ]]; then
+    echo "--------------------------------------------------------------------";
+    echo " 🛑️ Non-Local environment detected. Aborting.";
+    echo " Switch back to your local environment: './hasura-console setenv local'";
+    echo "--------------------------------------------------------------------";
+    stop;
+    exit 1;
+  fi;
+
   echo "Checking the Hasura server is ready...";
   CURRENT_STAGE_NAME="";
   wait_server_ready;
@@ -98,8 +118,6 @@ function run_migration() {
   }
   echo "--------------------------------------------------------------------";
   echo -e " Migrations Finished! \n";
-#   echo "---------------------  ----------------------";
-#  echo "--------------------------------------------------------------------";
 }
 
 #
