@@ -170,7 +170,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   };
 
   const handleDeleteConfirm = () => {
-    const requestPath = "/users/delete/" + userCognitoId;
+    const requestPath = "/users/" + userCognitoId;
     const deleteCallback = () => setIsDeleteModalOpen(false);
 
     requestApi({
