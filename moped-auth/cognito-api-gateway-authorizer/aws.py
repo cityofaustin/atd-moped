@@ -1,6 +1,7 @@
 import json
 import urllib.request
 
+from config import AWS_ATD_API_GATEWAY_ARN
 
 #
 # These are API permissions to be generated for the
