@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserApi } from "./helpers";
+import { formatApiErrors, useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -105,7 +105,11 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
-  const [userApiLoading, requestApi] = useUserApi();
+  const {
+    loading: userApiLoading,
+    requestApi,
+    error: apiErrors,
+  } = useUserApi();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const {
@@ -170,7 +174,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   };
 
   const handleDeleteConfirm = () => {
-    const requestPath = "/users/delete/" + userCognitoId;
+    const requestPath = "/users/" + userCognitoId;
     const deleteCallback = () => setIsDeleteModalOpen(false);
 
     requestApi({
@@ -194,8 +198,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.first_name}
-            helperText={errors.first_name?.message}
+            error={!!errors.first_name || !!apiErrors?.first_name}
+            helperText={
+              errors.first_name?.message ||
+              formatApiErrors(apiErrors?.first_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -209,8 +216,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.last_name}
-            helperText={errors.last_name?.message}
+            error={!!errors.last_name || !!apiErrors?.last_name}
+            helperText={
+              errors.last_name?.message || formatApiErrors(apiErrors?.last_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -224,8 +233,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.title}
-            helperText={errors.title?.message}
+            error={!!errors.title || !!apiErrors?.title}
+            helperText={
+              errors.title?.message || formatApiErrors(apiErrors?.title)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -239,8 +250,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+            error={!!errors.email || !!apiErrors?.email}
+            helperText={
+              errors.email?.message || formatApiErrors(apiErrors?.email)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -255,8 +268,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.password}
-            helperText={errors.password?.message}
+            error={!!errors.password || !!apiErrors?.password}
+            helperText={
+              errors.password?.message || formatApiErrors(apiErrors?.password)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
