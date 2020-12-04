@@ -57,7 +57,7 @@ const DashboardLayout = () => {
       </div>
     </div>
   ) : (
-    <Navigate to="/login" />
+    <Navigate to="/moped/login" />
   );
 };
 
