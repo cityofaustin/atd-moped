@@ -54,15 +54,3 @@ export const formatApiErrors = errorsArray =>
   errorsArray
     ? errorsArray.map(error => errorsToTranslate[error] || error).join(", ")
     : false;
-// TODO: Handle email error ("^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$")
-// TODO: Handle password error ("^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$")
-// {
-//   "error": {
-//     "email": [
-//       "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'"
-//     ],
-//     "first_name": [
-//       "max length is 128"
-//     ]
-//   }
-// }

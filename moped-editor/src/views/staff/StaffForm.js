@@ -77,12 +77,6 @@ const statuses = [
   { value: "0", name: "Inactive" },
 ];
 
-// TODO: Display errors from the API
-// 1. Add catch to axios chain in useUserAPI hook
-// 2. export any errors as userErrors
-// 3. If userErrors, show in UI
-// 4. Nested as res.errors.email[0]
-
 // Pass editFormData to conditionally validate if adding or editing
 const staffValidationSchema = editFormData =>
   yup.object().shape({
@@ -218,8 +212,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.last_name}
-            helperText={errors.last_name?.message}
+            error={!!errors.last_name || !!apiErrors?.last_name}
+            helperText={
+              errors.last_name?.message || formatApiErrors(apiErrors?.last_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -233,8 +229,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.title}
-            helperText={errors.title?.message}
+            error={!!errors.title || !!apiErrors?.title}
+            helperText={
+              errors.title?.message || formatApiErrors(apiErrors?.title)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -248,8 +246,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+            error={!!errors.email || !!apiErrors?.email}
+            helperText={
+              errors.email?.message || formatApiErrors(apiErrors?.email)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -264,8 +264,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.password}
-            helperText={errors.password?.message}
+            error={!!errors.password || !!apiErrors?.password}
+            helperText={
+              errors.password?.message || formatApiErrors(apiErrors?.password)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
