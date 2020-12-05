@@ -126,7 +126,7 @@ const NewProjectView = () => {
   };
 
   const addNewProject = gql`
-    mutation MyMutation(
+    mutation NewProject(
       $project_name: String! = ""
       $project_description: String! = ""
       $current_phase: String! = ""
@@ -138,17 +138,28 @@ const NewProjectView = () => {
       $project_priority: String! = ""
     ) {
       insert_moped_project(
-        objects: {
-          project_name: $project_name
-          project_description: $project_description
-          current_phase: $current_phase
-          current_status: $current_status
-          eCapris_id: $eCapris_id
-          fiscal_year: $fiscal_year
-          start_date: $start_date
-          capitally_funded: $capitally_funded
-          project_priority: $project_priority
-        }
+        objects: [{
+          project_name: $project_name,
+          project_description: $project_description,
+          current_phase: $current_phase,
+          current_status: $current_status,
+          eCapris_id: $eCapris_id,
+          fiscal_year: $fiscal_year,
+          start_date: $start_date,
+          capitally_funded: $capitally_funded,
+          project_priority: $project_priority,
+          moped_proj_entities: {
+            data:{
+              date_added: "01-21-2021",
+              project_sponsors: "{Sponsor A, Sponsor B}",
+              project_groups: "A",
+              partners: "{A, B}",
+              workgroups: 1,
+              project_personnel: "{Employee A, Employee B}"
+            }
+          }
+        }  
+      ]    
       ) {
         affected_rows
         returning {
@@ -161,6 +172,11 @@ const NewProjectView = () => {
           fiscal_year
           capitally_funded
           start_date
+          moped_proj_entities {
+            project_id
+            date_added
+            project_sponsors
+          }
         }
       }
     }
