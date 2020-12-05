@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import _ from "lodash";
+import toArray from "lodash.toarray";
+import forEach from "lodash.foreach";
 import {
   Button,
   Box,
@@ -200,7 +201,7 @@ const NewProjectView = () => {
 
   const handleSubmit = () => {
     //data from Define Project going to database
-    let projData = _.toArray({ ...defineProjectState });
+    let projData = toArray({ ...defineProjectState });
     let capitally_funded = projData[0];
     let project_name = projData[1];
     let project_description = projData[2];
@@ -225,8 +226,8 @@ const NewProjectView = () => {
     });
 
     //data from ProjectTeamTable going to database
-    let teamData = _.toArray({ ...StaffRows });
-     _.forEach(teamData, function(value) {
+    let teamData = toArray({ ...StaffRows });
+     forEach(teamData, function(value) {
       let name_array = value.name.name;
       let name_split = name_array.split(" ");
       let first_name = name_split[0];
