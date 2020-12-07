@@ -61,6 +61,7 @@
     "react-feather": "^2.0.8",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^6.11.1",
+    "react-map-gl": "^5.2.10",
     "react-perfect-scrollbar": "^1.5.8",
     "react-router": "^6.0.0-beta.0",
     "react-router-dom": "^6.0.0-beta.0",
