@@ -3,7 +3,7 @@ import ReactMapGL, { Layer } from "react-map-gl";
 
 const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
 
-const projectLayerConfig = polygonId => {
+const projectLayerConfig = (polygonId, selectedIds) => {
   const hoverId = polygonId;
 
   return {
@@ -20,10 +20,11 @@ const projectLayerConfig = polygonId => {
     paint: {
       "fill-outline-color": "#000000",
       "fill-color": [
-        "match",
-        ["get", "polygon_id"],
-        hoverId,
+        "case",
+        ["==", ["get", "polygon_id"], hoverId],
         "#00AAB1",
+        ["in", ["get", "polygon_id"], ["literal", selectedIds]],
+        "#1e88e5",
         "#000",
       ],
       "fill-opacity": 0.5,
@@ -52,6 +53,7 @@ const ProjectMap = () => {
     zoom: 14,
   });
   const [polygonId, setPolygonId] = useState("");
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const handleHover = e => {
     const polygonId =
@@ -62,6 +64,19 @@ const ProjectMap = () => {
     !!polygonId && setPolygonId(polygonId);
   };
 
+  const handleClick = e => {
+    const polygonId =
+      e.features &&
+      e.features.length > 0 &&
+      e.features[0].properties.polygon_id;
+
+    if (!!polygonId) {
+      const updatedSelectedIds = [...selectedIds, polygonId];
+
+      setSelectedIds(updatedSelectedIds);
+    }
+  };
+
   return (
     <ReactMapGL
       {...viewport}
@@ -69,10 +84,14 @@ const ProjectMap = () => {
       height={1000}
       interactiveLayerIds={["location-polygons"]}
       onHover={handleHover}
+      onClick={handleClick}
       mapboxApiAccessToken={MAPBOX_TOKEN}
       onViewportChange={viewport => setViewport(viewport)}
     >
-      <Layer key={"location-polygon"} {...projectLayerConfig(polygonId)} />
+      <Layer
+        key={"location-polygon"}
+        {...projectLayerConfig(polygonId, selectedIds)}
+      />
     </ReactMapGL>
   );
 };
