@@ -88,8 +88,6 @@ const DefineProjectForm = props => {
   if (fiscalLoading) return <CircularProgress />;
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
-  console.log(phases);
-
   return (
     <form style={{ padding: 25 }}>
       <DevTool control={control} />
