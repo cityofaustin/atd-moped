@@ -39,7 +39,7 @@ const routes = [
       { path: "projects/new", element: <NewProjectView /> },
       { path: "settings", element: <SettingsView /> },
       { path: "404", element: <NotFoundView /> },
-      { path: "*", element: <Navigate to="/404" /> },
+      { path: "*", element: <Navigate to="/moped/404" /> },
     ],
   },
 ];
