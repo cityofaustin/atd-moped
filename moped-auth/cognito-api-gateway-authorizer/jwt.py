@@ -18,9 +18,13 @@ logger.setLevel(logging.INFO)
 def verify_jwt_token(token: str) -> (bool, dict):
     """
     Verifies the JWT signature against the JWK
-    :param token:
+    :param str token: The token being evaluated
     :return tuple:
     """
+    # Straight away, if the token is not a string return false.
+    if not isinstance(token, str):
+        return False, {}
+    
     # get the kid from the headers prior to verification
     headers = jwt.get_unverified_headers(token)
     kid = headers["kid"]
