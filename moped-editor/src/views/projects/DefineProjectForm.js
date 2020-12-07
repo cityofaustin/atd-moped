@@ -89,7 +89,7 @@ const DefineProjectForm = props => {
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
   return (
-    <form style={{ padding: 25 }} className={classes}>
+    <form style={{ padding: 25 }}>
       <DevTool control={control} />
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={4}>
