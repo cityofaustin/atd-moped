@@ -47,6 +47,60 @@ export const UserProvider = ({ children }) => {
       .catch(() => setUser(null));
   }, []);
 
+  // TK: Federated login
+  const federatedLogin = code => {
+    Auth.federatedSignIn(code)
+      .then(cognitoUser => {
+        setUser(cognitoUser);
+        return cognitoUser;
+      })
+      .catch(err => {
+        if (err.code === "UserNotFoundException") {
+          err.message = "Invalid username or password";
+        }
+
+        // ... (other checks)
+
+        throw err;
+      });
+  };
+
+  const getTokenbyCode = code => {
+    const details = {
+      grant_type: "authorization_code",
+      code: code,
+      client_id: "3u9n9373e37v603tbp25gs5fdc",
+      redirect_uri: "https://localhost:3000/moped/session/signin",
+      scope: "aws.cognito.signin.user.admin email openid phone profile",
+    };
+    const formBody = Object.keys(details)
+      .map(
+        key => `${encodeURIComponent(key)}=${encodeURIComponent(details[key])}`
+      )
+      .join("&");
+
+    console.log(formBody);
+
+    fetch(
+      "https:///atd-moped-staging.auth.us-east-1.amazoncognito.com/oauth2/token",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formBody,
+      }
+    )
+      .then(res => {
+        console.log(res);
+        debugger;
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
+
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
@@ -82,9 +136,10 @@ export const UserProvider = ({ children }) => {
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(() => ({ user, getToken, login, logout }), [
-    user,
-  ]);
+  const values = React.useMemo(
+    () => ({ user, getToken, login, logout, getTokenbyCode }),
+    [user]
+  );
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
