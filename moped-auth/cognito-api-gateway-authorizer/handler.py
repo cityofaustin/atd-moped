@@ -40,15 +40,6 @@ def handler(event: dict, context: object) -> dict:
 
     # Validate token
     valid, claims = verify_jwt_token(token)
-    if valid:
-        scope_claims = claims["scp"]
-        # Generate IAM Policy
-        iam_policy = generate_iam_policy(scope_claims)
-    else:
-        # Generate default deny all policy statement if there is an error
-        policy_statements = []
-        policy_statement = generate_policy_statement("*", "*", "*", "*", "Deny")
-        policy_statements.append(policy_statement)
-        iam_policy = generate_policy("user", policy_statements)
-
+    iam_policy = generate_iam_policy(valid=valid, claims=claims)
+    pdb.set_trace()
     return iam_policy
