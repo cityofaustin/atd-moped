@@ -3,8 +3,8 @@ import ReactMapGL, { Layer } from "react-map-gl";
 
 const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
 
-const projectLayerConfig = () => {
-  const hoverId = "636894224092";
+const projectLayerConfig = polygonId => {
+  const hoverId = polygonId;
 
   return {
     id: "location-polygons",
@@ -51,9 +51,15 @@ const ProjectMap = () => {
     longitude: -97.742828,
     zoom: 14,
   });
+  const [polygonId, setPolygonId] = useState("");
 
-  const handleClick = e => {
-    debugger;
+  const handleHover = e => {
+    const polygonId =
+      e.features &&
+      e.features.length > 0 &&
+      e.features[0].properties.polygon_id;
+
+    !!polygonId && setPolygonId(polygonId);
   };
 
   return (
@@ -62,11 +68,11 @@ const ProjectMap = () => {
       width="100%"
       height={1000}
       interactiveLayerIds={["location-polygons"]}
-      onClick={handleClick}
+      onHover={handleHover}
       mapboxApiAccessToken={MAPBOX_TOKEN}
       onViewportChange={viewport => setViewport(viewport)}
     >
-      <Layer key={"location-polygon"} {...projectLayerConfig()} />
+      <Layer key={"location-polygon"} {...projectLayerConfig(polygonId)} />
     </ReactMapGL>
   );
 };
