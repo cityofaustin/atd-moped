@@ -46,6 +46,7 @@ yarn-error.log*
 __pycache__/
 *.py[cod]
 *$py.class
+package/
 
 # JavaScript (basic)
 node_modules/
