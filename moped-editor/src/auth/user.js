@@ -24,18 +24,8 @@ export const UserProvider = ({ children }) => {
 
     // attempt to fetch the info of the user that was already logged in
     Auth.currentAuthenticatedUser()
-      .then(user => {
-        console.log(user);
-        return setUser(user);
-      })
+      .then(user => setUser(user))
       .catch(() => setUser(null));
-
-    Hub.listen("auth", ({ payload: { event, data } }) => {
-      // getUser().then(userData => console.log(userData));
-
-      console.log(event);
-      console.log(data);
-    });
   }, []);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
