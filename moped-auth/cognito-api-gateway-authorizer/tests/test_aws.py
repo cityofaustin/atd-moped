@@ -42,7 +42,7 @@ class TestAWS:
         assert "Resource" in self.policy_statement
         assert self.policy_statement["Effect"] == "*"
         assert self.policy_statement["Action"] == "execute-api:Invoke"
-        assert self.policy_statement["Resource"] == "hello_world/staging/OPTIONS/*/"
+        assert self.policy_statement["Resource"] == "hello_world/staging/OPTIONS/*"
 
     def test_aws_generate_policy(self):
         """
@@ -55,7 +55,7 @@ class TestAWS:
         assert isinstance(policy, dict)
         assert "principalId" in policy
         assert "policyDocument" in policy
-        assert json.dumps(policy) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "*", "Action": "execute-api:Invoke", "Resource": "hello_world/staging/OPTIONS/*/"}]}}'
+        assert json.dumps(policy) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "*", "Action": "execute-api:Invoke", "Resource": "hello_world/staging/OPTIONS/*"}]}}'
 
     def test_generate_iam_policy(self):
         """
@@ -65,5 +65,5 @@ class TestAWS:
         iam_policy_invalid = generate_iam_policy(valid=False, claims={})
         assert isinstance(iam_policy_valid, dict)
         assert isinstance(iam_policy_invalid, dict)
-        assert json.dumps(iam_policy_valid) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": "execute-api:Invoke", "Resource": "arn:aws:execute-api:us-east-1:*:og37y2s8aA/*/*/*/"}]}}'
-        assert json.dumps(iam_policy_invalid) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "Deny", "Action": "execute-api:Invoke", "Resource": "arn:aws:execute-api:us-east-1:*:og37y2s8aA/*/*/*/"}]}}'
+        assert json.dumps(iam_policy_valid) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "Allow", "Action": "execute-api:Invoke", "Resource": "arn:aws:execute-api:us-east-1:*:og37y2s8aA/*/*/*"}]}}'
+        assert json.dumps(iam_policy_invalid) == '{"principalId": "user", "policyDocument": {"Version": "2012-10-17", "Statement": [{"Effect": "Deny", "Action": "execute-api:Invoke", "Resource": "arn:aws:execute-api:us-east-1:*:og37y2s8aA/*/*/*"}]}}'
