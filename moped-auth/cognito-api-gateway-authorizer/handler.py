@@ -20,7 +20,6 @@ def handler(event: dict, context: object) -> dict:
     logger.info(f"Function: {context.function_name}")
     logger.info(f"Request ID: {context.aws_request_id}")
     logger.info(f"Event: {json.dumps(event)}")
-    logger.info(f"Context: {json.dumps(context)}")
 
     #
     # Check if the event is a cloudwatch event
@@ -41,4 +40,5 @@ def handler(event: dict, context: object) -> dict:
     # Validate token
     valid, claims = verify_jwt_token(token)
     iam_policy = generate_iam_policy(valid=valid, claims=claims)
+    iam_policy["policyDocument"]["Statement"][0]["Resource"] = event["methodArn"] # temporarily
     return iam_policy
