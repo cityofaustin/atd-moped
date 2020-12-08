@@ -1,5 +1,5 @@
 import React from "react";
-import ProjectMap from "./ProjectMap";
+import ProjectMap from "../projects/ProjectMap";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Box, Card, Container, makeStyles } from "@material-ui/core";
 import Page from "src/components/Page";

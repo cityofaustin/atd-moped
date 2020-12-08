@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactMapGL, { Layer } from "react-map-gl";
 
 const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
@@ -67,8 +67,13 @@ const ProjectMap = () => {
         ? [...selectedIds, polygonId]
         : selectedIds.filter(id => id !== polygonId);
 
-    setSelectedIds(updatedSelectedIds);
+    !!polygonId && setSelectedIds(updatedSelectedIds);
+    console.log(e);
   };
+
+  useEffect(() => {
+    console.log(selectedIds);
+  }, [selectedIds]);
 
   const renderTooltip = () => {
     return (
