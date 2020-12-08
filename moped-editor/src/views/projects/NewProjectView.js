@@ -158,8 +158,60 @@ const NewProjectView = () => {
               project_personnel: "{Employee A, Employee B}"
             }
           }
+          moped_proj_timeline: {
+            data:{
+              active_phase: "bidding",
+              active_phase_start: "2020-06-10",
+              active_phase_end: "2020-08-10",
+              active_phase_length: 2,
+              active_milestone_start: "2020-05-10",
+              active_milestone_end: "2020-09-10",
+              active_milestone_length: 10,
+              current_status: $current_status,
+              capital_projects_explorer_id: "f", 
+            }
+          }
+          moped_proj_financials: {
+            data:{
+              subproject_name: "Project A",
+              subproject_status: "active",
+              budget_total: 3000.00,
+              expenses_total: 10000.00,
+              expenses_ytd: 40000.00,
+              expenses_previous: 40000.00,
+              budget_previous: 3000.00,
+              budget_available: 50000.00,
+              last_updated: "2020-09-10",
+              primary_funding_source: "capital funds",
+              eCapris_id: $eCapris_id
+            }
+          }
+          moped_proj_phases: {
+            data:{
+              completion_percentage: 10,
+              completed: false,   
+              phase_name: $current_phase   
+            }
+          }
+          moped_proj_status_history: {
+            data:{
+              date_added: "2020-01-01",
+              milestone_privacy: false,   
+              status_name: $current_status   
+            }
+          }
+          moped_proj_dates: {
+            data:{
+              active_date: false,
+              date_day: 10,
+              date_month: 6,
+              date_year: 2020,
+              date_type: "2020-06-10",
+              project_date: $start_date
+            }
+          }
         }  
-      ]    
+      ]     
       ) {
         affected_rows
         returning {
@@ -176,6 +228,32 @@ const NewProjectView = () => {
             project_id
             date_added
             project_sponsors
+          }
+          moped_proj_timeline {
+            project_id
+            active_phase
+            current_status
+          }
+          moped_proj_financials {
+            project_id
+            eCapris_id
+            last_updated
+            primary_funding_source        
+          }
+          moped_proj_phases {
+            project_id
+            phase_name
+            completed
+          }
+          moped_proj_status_history {
+            project_id
+            date_added
+            status_name
+          }
+          moped_proj_dates {
+            project_id
+            project_date
+            active_date
           }
         }
       }

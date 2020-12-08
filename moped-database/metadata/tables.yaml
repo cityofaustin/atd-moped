@@ -2807,6 +2807,51 @@
 - table:
     schema: public
     name: moped_project
+  array_relationships:
+  - name: moped_proj_dates
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_dates
+  - name: moped_proj_entities
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_entities
+  - name: moped_proj_financials
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_proj_financials
+        column_mapping:
+          project_id: project_id
+  - name: moped_proj_phases
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_phases
+  - name: moped_proj_status_history
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_status_history
+  - name: moped_proj_timeline
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_proj_timeline
+        column_mapping:
+          project_id: project_id
   insert_permissions:
   - role: moped-admin
     permission:
