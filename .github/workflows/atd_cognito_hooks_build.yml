@@ -37,6 +37,7 @@ jobs:
           ATD_MOPED_COGNITO_ROLE: ${{ secrets.ATD_MOPED_COGNITO_ROLE }}
           AWS_COGNITO_DYNAMO_TABLE_NAME: ${{ secrets.AWS_COGNITO_DYNAMO_TABLE_NAME }}
           AWS_COGNITO_DYNAMO_SECRET_NAME: ${{ secrets.AWS_COGNITO_DYNAMO_SECRET_NAME }}
+          ATD_CONFIGURATION_SETTINGS: "ATD_MOPED_COGNITO_HOOK_ENV"
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
           echo "SHA: ${GITHUB_SHA}"
@@ -44,4 +45,4 @@ jobs:
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/aws-cognito-helper.sh
-          deploy_cognito_functions
+          deploy_cognito_function "cognito-pre-token-hook"

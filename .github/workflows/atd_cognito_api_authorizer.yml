@@ -33,7 +33,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ATD_MOPED_COGNITO_ROLE: ${{ secrets.ATD_MOPED_COGNITO_ROLE }}
+          ATD_MOPED_COGNITO_ROLE: ${{ secrets.ATD_MOPED_COGNITO_ROLE_AUTHORIZER }}
           ATD_CONFIGURATION_SETTINGS: "ATD_MOPED_API_AUTHORIZER_CONFIG"
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
