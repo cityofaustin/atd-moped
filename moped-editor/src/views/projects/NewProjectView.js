@@ -225,20 +225,18 @@ const NewProjectView = () => {
           capitally_funded
           start_date
           moped_proj_entities {
-            project_id
-            date_added
+            project_id  
             project_sponsors
+            date_added       
           }
           moped_proj_timeline {
             project_id
-            active_phase
             current_status
+            active_phase
           }
           moped_proj_financials {
             project_id
-            eCapris_id
-            last_updated
-            primary_funding_source        
+            eCapris_id          
           }
           moped_proj_phases {
             project_id
@@ -247,8 +245,8 @@ const NewProjectView = () => {
           }
           moped_proj_status_history {
             project_id
-            date_added
             status_name
+            date_added
           }
           moped_proj_dates {
             project_id
