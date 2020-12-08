@@ -41,5 +41,4 @@ def handler(event: dict, context: object) -> dict:
     # Validate token
     valid, claims = verify_jwt_token(token)
     iam_policy = generate_iam_policy(valid=valid, claims=claims)
-    pdb.set_trace()
     return iam_policy
