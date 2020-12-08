@@ -15,31 +15,31 @@ import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 
 const routes = [
+  { path: "/", element: <Navigate to="/moped" /> },
+  {
+    path: "moped/session",
+    element: <MainLayout />,
+    children: [
+      { path: "signin", element: <LoginView /> },
+      { path: "register", element: <RegisterView /> },
+      { path: "*", element: <Navigate to="/signin" /> },
+    ],
+  },
   {
     path: "moped",
     element: <DashboardLayout />,
     children: [
       { path: "/", element: <DashboardView /> },
+      { path: "dashboard", element: <DashboardView /> },
       { path: "account", element: <AccountView /> },
       { path: "staff", element: <StaffListView /> },
       { path: "staff/new", element: <NewStaffView /> },
       { path: "staff/edit/:userId", element: <EditStaffView /> },
-      { path: "dashboard", element: <DashboardView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
       { path: "settings", element: <SettingsView /> },
-      { path: "*", element: <Navigate to="/404" /> },
-    ],
-  },
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { path: "login", element: <LoginView /> },
-      { path: "register", element: <RegisterView /> },
       { path: "404", element: <NotFoundView /> },
-      { path: "/", element: <Navigate to="/dashboard" /> },
-      { path: "*", element: <Navigate to="/404" /> },
+      { path: "*", element: <Navigate to="/moped/404" /> },
     ],
   },
 ];

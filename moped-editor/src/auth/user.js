@@ -1,7 +1,5 @@
 import React from "react";
-import { Auth } from "aws-amplify";
-import Amplify from "aws-amplify";
-import config from "../config";
+import Amplify, { Auth } from "aws-amplify";
 
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
@@ -23,24 +21,6 @@ export const UserProvider = ({ children }) => {
 
     Amplify.Logger.LOG_LEVEL = "DEBUG";
 
-    Amplify.configure({
-      Auth: {
-        mandatorySignIn: true,
-        region: config.cognito.REGION,
-        userPoolId: config.cognito.USER_POOL_ID,
-        identityPoolId: config.cognito.IDENTITY_POOL_ID,
-        userPoolWebClientId: config.cognito.APP_CLIENT_ID,
-      },
-      API: {
-        endpoints: [
-          {
-            name: "testApi",
-            endpoint: config.apiGateway.URL,
-            region: config.apiGateway.REGION,
-          },
-        ],
-      },
-    });
     // attempt to fetch the info of the user that was already logged in
     Auth.currentAuthenticatedUser()
       .then(user => setUser(user))
