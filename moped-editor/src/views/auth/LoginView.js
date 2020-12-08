@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import React from "react";
+import { Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
@@ -15,7 +15,7 @@ import {
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "../../auth/user";
-import { Auth, Hub } from "aws-amplify";
+import useAuthentication from "../../auth/useAuthentication";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,31 +26,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function useQuery() {
-  return new URLSearchParams(useLocation().search);
-}
-
 const LoginView = () => {
   const classes = useStyles();
 
-  const { login, getTokenbyCode, user } = useUser();
-
-  let query = useQuery();
-  useEffect(() => {
-    let cognitoCallbackCode = query.get("code");
-
-    Hub.listen("auth", ({ payload: { event, data } }) => {
-      console.log(event);
-      console.log(data);
-    });
-
-    console.log(cognitoCallbackCode);
-    getTokenbyCode(cognitoCallbackCode);
-  }, []);
-
-  // Auth.federatedSignIn(cognitoCallbackCode).then(cognitoUser => {
-  //   return cognitoUser;
-  // });
+  const { login } = useUser();
+  const { signIn } = useAuthentication();
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -122,22 +102,7 @@ const LoginView = () => {
                       color="primary"
                       fullWidth
                       startIcon={<AccountCircleIcon />}
-                      // PRODUCTION
-                      // domain: atd-moped-production
-                      // redirect_uri: TK
-                      // client_id= ins01e2a8d3vd8apvnd0jv10c
-
-                      // STAGING
-                      // domain: atd-moped-staging
-                      // redirect_uri: TK
-                      // client_id= 3u9n9373e37v603tbp25gs5fdc
-
-                      // LOCAL
-                      // domain: atd-moped-staging
-                      // redirect_uri: http://localhost:3000/moped/session/signin
-                      // client_id= 3u9n9373e37v603tbp25gs5fdc
-
-                      href="https://atd-moped-staging.auth.us-east-1.amazoncognito.com/oauth2/authorize?identity_provider=AzureAD&redirect_uri=https://localhost:3000/moped/session/signin&response_type=code&client_id=3u9n9373e37v603tbp25gs5fdc&scope=aws.cognito.signin.user.admin email openid phone profile"
+                      onClick={() => signIn()}
                       size="large"
                       variant="contained"
                     >
