@@ -81,4 +81,4 @@ def generate_iam_policy(valid: bool, claims: dict) -> dict:
         )
 
     # Return final IAM policy
-    return generate_policy("user", policy_statements)
+    return generate_policy("user|" + claims["sub"], policy_statements)
