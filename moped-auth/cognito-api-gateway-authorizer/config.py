@@ -15,7 +15,7 @@ AWS_ATD_MOPED_APP_CLIENT_ID = os.getenv("AWS_ATD_MOPED_APP_CLIENT_ID")
 AWS_ATD_MOPED_API_GATEWAY_ARN = os.getenv("AWS_ATD_MOPED_API_GATEWAY_ARN")  #i.e., arn:aws:execute-api:us-east-1:123456789123:abc321def654
 
 # JWK Keys Management
-AWS_ATD_MOPED_JWK_KEYS_LOAD = os.getenv("AWS_ATD_MOPED_JWK_KEYS_LOAD", "FALSE")
+AWS_ATD_MOPED_JWK_KEYS_LOAD = os.getenv("AWS_ATD_MOPED_JWK_KEYS_LOAD", "TRUE")
 AWS_ATD_MOPED_JWK_KEYS = None
 #
 # Generates a JWKs endpoint
@@ -24,6 +24,11 @@ AWS_ATD_MOPED_JWKS_ENDPOINT = "https://cognito-idp.{}.amazonaws.com/{}/.well-kno
     AWS_ATD_MOPED_REGION, AWS_ATD_MOPED_USER_POOL
 )
 
+logger.info(f"AWS_ATD_MOPED_REGION: {AWS_ATD_MOPED_REGION}")
+logger.info(f"AWS_ATD_MOPED_USER_POOL: {AWS_ATD_MOPED_USER_POOL}")
+logger.info(f"AWS_ATD_MOPED_APP_CLIENT_ID: {AWS_ATD_MOPED_APP_CLIENT_ID}")
+logger.info(f"AWS_ATD_MOPED_API_GATEWAY_ARN: {AWS_ATD_MOPED_API_GATEWAY_ARN}")
+logger.info(f"AWS_ATD_MOPED_JWKS_ENDPOINT: {AWS_ATD_MOPED_JWKS_ENDPOINT}")
 #
 # Keys, download JWK on cold start
 # https://aws.amazon.com/blogs/compute/container-reuse-in-lambda/
@@ -34,3 +39,5 @@ if AWS_ATD_MOPED_JWK_KEYS_LOAD == "TRUE":
 else:
     AWS_ATD_MOPED_JWK_KEYS = None
     logger.info(f"Skipping loading JWK keys.")
+
+logger.info(f"AWS_ATD_MOPED_JWK_KEYS: {json.dumps(AWS_ATD_MOPED_JWK_KEYS)}")
