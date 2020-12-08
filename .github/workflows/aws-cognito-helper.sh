@@ -53,7 +53,7 @@ function generate_environment() {
 #
 # Deploys a single function
 #
-function deploy_cognito_function() {
+function deploy_lambda_function() {
   FUNCTION_NAME=$1
   echo "Deploying function: ${FUNCTION_NAME} @ ${PWD}"
   # Create or update function
@@ -83,7 +83,7 @@ function deploy_cognito_function() {
 #
 # Deploys all functions in the events directory
 #
-function deploy_cognito_functions() {
+function deploy_cognito_function() {
   FUNCTION=$1;
 
   if [[ "${FUNCTION}" == "" ]]; then
@@ -99,5 +99,5 @@ function deploy_cognito_functions() {
   install_requirements;
   bundle_function;
   generate_environment "$ATD_CONFIGURATION_SETTINGS";
-  deploy_cognito_function "$FUNCTION_NAME";
+  deploy_lambda_function "$FUNCTION_NAME";
 }
