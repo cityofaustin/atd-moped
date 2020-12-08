@@ -8,7 +8,6 @@ const projectLayerConfig = (polygonId, selectedIds) => {
 
   return {
     id: "location-polygons",
-    // beforeId: "base-layer",
     type: "fill",
     source: {
       type: "vector",
@@ -29,22 +28,11 @@ const projectLayerConfig = (polygonId, selectedIds) => {
       ],
       "fill-opacity": 0.5,
     },
-    // filter: ["==", "_symbol", parameters.filter],
-    // layout: {
-    //   "line-cap": "round",
-    //   "line-join": "round",
-    //   visibility: `${
-    //     overlay.options && overlay.options.includes(asmpLevel)
-    //       ? "visible"
-    //       : "none"
-    //   }`,
-    // },
-    // paint: {
-    //   "line-color": parameters.color,
-    //   "line-width": 2,
-    // },
   };
 };
+
+const getPolygonId = e =>
+  e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
 const ProjectMap = () => {
   const [viewport, setViewport] = useState({
@@ -54,27 +42,49 @@ const ProjectMap = () => {
   });
   const [polygonId, setPolygonId] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
+  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [hoveredCoords, setHoveredCoords] = useState(null);
 
   const handleHover = e => {
-    const polygonId =
-      e.features &&
-      e.features.length > 0 &&
-      e.features[0].properties.polygon_id;
+    const {
+      srcEvent: { offsetX, offsetY },
+    } = e;
 
-    !!polygonId && setPolygonId(polygonId);
+    const polygonId = getPolygonId(e);
+
+    if (!!polygonId) {
+      setPolygonId(polygonId);
+      setHoveredFeature(polygonId);
+      setHoveredCoords({ x: offsetX, y: offsetY });
+    }
   };
 
   const handleClick = e => {
-    const polygonId =
-      e.features &&
-      e.features.length > 0 &&
-      e.features[0].properties.polygon_id;
+    const polygonId = getPolygonId(e);
 
-    if (!!polygonId) {
-      const updatedSelectedIds = [...selectedIds, polygonId];
+    const updatedSelectedIds =
+      !!polygonId && !selectedIds.includes(polygonId)
+        ? [...selectedIds, polygonId]
+        : selectedIds.filter(id => id !== polygonId);
 
-      setSelectedIds(updatedSelectedIds);
-    }
+    setSelectedIds(updatedSelectedIds);
+  };
+
+  const renderTooltip = () => {
+    return (
+      hoveredFeature && (
+        <div
+          className="tooltip"
+          style={{
+            background: "white",
+            left: hoveredCoords?.x,
+            top: hoveredCoords?.y,
+          }}
+        >
+          <div>Polygon ID: {hoveredFeature}</div>
+        </div>
+      )
+    );
   };
 
   return (
@@ -92,6 +102,7 @@ const ProjectMap = () => {
         key={"location-polygon"}
         {...projectLayerConfig(polygonId, selectedIds)}
       />
+      {renderTooltip()}
     </ReactMapGL>
   );
 };
