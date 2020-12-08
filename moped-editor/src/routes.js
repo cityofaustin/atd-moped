@@ -13,7 +13,6 @@ import ProductListView from "src/views/product/ProductListView/ProductListView";
 import NewProjectView from "src/views/projects/NewProjectView";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
-import ProjectExtent from "./views/projectExtent/ProjectExtent";
 
 const routes = [
   {
@@ -28,7 +27,6 @@ const routes = [
       { path: "dashboard", element: <DashboardView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
-      { path: "project-extent", element: <ProjectExtent /> },
       { path: "settings", element: <SettingsView /> },
       { path: "*", element: <Navigate to="/404" /> },
     ],

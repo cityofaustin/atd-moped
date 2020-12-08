@@ -10,7 +10,6 @@ import {
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
-  Map as MapIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
 
@@ -29,11 +28,6 @@ const items = [
     href: "/moped/projects",
     icon: EmojiTransportation,
     title: "Projects",
-  },
-  {
-    href: "/moped/project-extent",
-    icon: MapIcon,
-    title: "Project Extent",
   },
   {
     href: "/moped/account",
