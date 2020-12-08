@@ -1,6 +1,5 @@
 import React from "react";
-import { Auth, Hub } from "aws-amplify";
-import Amplify from "aws-amplify";
+import Amplify, { Auth } from "aws-amplify";
 
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
