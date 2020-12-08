@@ -86,16 +86,24 @@ def is_valid_user(current_cognito_jwt: str) -> bool:
         "aud",
     ]
 
+    # Gather variables for email validation
     user_email = user_dict.get("email", None)
+    cognito_username = user_dict.get("cognito:username", "")
+    is_email_verified = user_dict.get("email_verified", False)
+
+    # If not verified, then check it is an azure coa account
+    if not is_email_verified:
+        if str(cognito_username).startswith("azuread_") and str(
+                cognito_username
+        ).endswith("@austintexas.gov"):
+            user_dict["email_verified"] = True
+        else:
+            return False
 
     # Check for valid fields
     for field in valid_fields:
         if user_dict.get(field, False) == False:
             return False
-
-    # Check for verified email
-    if user_dict["email_verified"] != True:
-        return False
 
     # Check email for austintexas.gov
     if str(user_email).endswith("@austintexas.gov") is False:
