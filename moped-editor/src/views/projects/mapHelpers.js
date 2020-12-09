@@ -44,10 +44,10 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
     hoveredFeature && (
       <div
         className={className}
-        // style={{
-        //   left: hoveredCoords?.x,
-        //   top: hoveredCoords?.y,
-        // }}
+        style={{
+          left: hoveredCoords?.x,
+          top: hoveredCoords?.y,
+        }}
       >
         <div>Polygon ID: {hoveredFeature}</div>
       </div>
