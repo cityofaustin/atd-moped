@@ -85,7 +85,7 @@ const useAuthentication = () => {
   }, [refreshState]);
 
   const signIn = useCallback(() => {
-    Auth.federatedSignIn({ provider: "COGNITO" }).catch(err => {
+    Auth.federatedSignIn({ provider: "AzureAD" }).catch(err => {
       setError(err);
     });
   }, []);
