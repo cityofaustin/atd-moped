@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactMapGL, { Layer } from "react-map-gl";
+import { Typography } from "@material-ui/core";
+
 import {
   createProjectLayerConfig,
   getPolygonId,
@@ -42,22 +44,25 @@ const ProjectMap = () => {
   };
 
   return (
-    <ReactMapGL
-      {...viewport}
-      width="100%"
-      height={1000}
-      interactiveLayerIds={["location-polygons"]}
-      onHover={handleHover}
-      onClick={handleClick}
-      mapboxApiAccessToken={MAPBOX_TOKEN}
-      onViewportChange={viewport => setViewport(viewport)}
-    >
-      <Layer
-        key={"location-polygon"}
-        {...createProjectLayerConfig(polygonId, selectedIds)}
-      />
-      {renderTooltip(hoveredFeature, hoveredCoords)}
-    </ReactMapGL>
+    <>
+      <ReactMapGL
+        {...viewport}
+        width="100%"
+        height={500}
+        interactiveLayerIds={["location-polygons"]}
+        onHover={handleHover}
+        onClick={handleClick}
+        mapboxApiAccessToken={MAPBOX_TOKEN}
+        onViewportChange={viewport => setViewport(viewport)}
+      >
+        <Layer
+          key={"location-polygon"}
+          {...createProjectLayerConfig(polygonId, selectedIds)}
+        />
+        {renderTooltip(hoveredFeature, hoveredCoords)}
+      </ReactMapGL>
+      <Typography>{selectedIds.length} locations selected</Typography>
+    </>
   );
 };
 

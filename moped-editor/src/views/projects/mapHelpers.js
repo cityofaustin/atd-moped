@@ -34,7 +34,7 @@ export const createProjectLayerConfig = (polygonId, selectedIds) => {
         "#1e88e5",
         "#000",
       ],
-      "fill-opacity": 0.5,
+      "fill-opacity": 0.4,
     },
   };
 };
