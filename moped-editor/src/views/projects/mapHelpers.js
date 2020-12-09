@@ -39,16 +39,15 @@ export const createProjectLayerConfig = (polygonId, selectedIds) => {
   };
 };
 
-export const renderTooltip = (hoveredFeature, hoveredCoords) => {
+export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
   return (
     hoveredFeature && (
       <div
-        className="tooltip"
-        style={{
-          background: "white",
-          left: hoveredCoords?.x,
-          top: hoveredCoords?.y,
-        }}
+        className={className}
+        // style={{
+        //   left: hoveredCoords?.x,
+        //   top: hoveredCoords?.y,
+        // }}
       >
         <div>Polygon ID: {hoveredFeature}</div>
       </div>

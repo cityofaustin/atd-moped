@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactMapGL, { Layer } from "react-map-gl";
-import { Typography } from "@material-ui/core";
+import { Typography, makeStyles } from "@material-ui/core";
 
 import {
   createProjectLayerConfig,
@@ -10,7 +10,28 @@ import {
   renderTooltip,
 } from "./mapHelpers";
 
+const useStyles = makeStyles(() => ({
+  locationCountText: {
+    fontSize: "0.875rem",
+    fontWeight: 500,
+  },
+  toolTip: {
+    position: "absolute",
+    margin: 8,
+    padding: 4,
+    background: "rgba(0, 0, 0, 0.8)",
+    color: "#fff",
+    maxWidth: 300,
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    zIndex: 9,
+    pointerEvents: "none",
+  },
+}));
+
 const ProjectMap = () => {
+  const classes = useStyles();
+
   const [viewport, setViewport] = useState(mapInit);
   const [polygonId, setPolygonId] = useState("");
   const [selectedIds, setSelectedIds] = useState([]);
@@ -28,6 +49,10 @@ const ProjectMap = () => {
       setPolygonId(polygonId);
       setHoveredFeature(polygonId);
       setHoveredCoords({ x: offsetX, y: offsetY });
+    } else {
+      setHoveredFeature(null);
+      setHoveredCoords(null);
+      setPolygonId(null);
     }
   };
 
@@ -59,9 +84,11 @@ const ProjectMap = () => {
           key={"location-polygon"}
           {...createProjectLayerConfig(polygonId, selectedIds)}
         />
-        {renderTooltip(hoveredFeature, hoveredCoords)}
+        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
-      <Typography>{selectedIds.length} locations selected</Typography>
+      <Typography className={classes.locationCountText}>
+        {selectedIds.length} locations selected
+      </Typography>
     </>
   );
 };
