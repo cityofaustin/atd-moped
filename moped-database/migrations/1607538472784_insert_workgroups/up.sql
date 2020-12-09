@@ -1,0 +1,18 @@
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Active Transportation & Street Design', 1, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Arterial Management', 2, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Data & Technology Services', 3, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Finance', 4, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Human Resources', 5, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Office of Special Events', 6, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Office of the Director', 7, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Parking Enterprise', 8, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Parking Meters', 9, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Public Information Office', 10, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Right-of-Way', 11, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Signs & Markings', 12, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Smart Mobility', 13, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Systems Development', 14, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Transportation Engineering', 15, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Transportation Development Services', 16, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Vision Zero', 17, '2020-12-04 16:53:02.752811+00');
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Other', 18, '2020-12-04 16:53:02.752811+00');
