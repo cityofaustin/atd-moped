@@ -23,7 +23,7 @@ Amplify.configure({
     identityPoolId: config.cognito.IDENTITY_POOL_ID,
     userPoolWebClientId: config.cognito.APP_CLIENT_ID,
     oauth: {
-      domain: "atd-moped-staging.auth.us-east-1.amazoncognito.com",
+      domain: config.cognito.DOMAIN,
       scope: [
         "aws.cognito.signin.user.admin",
         "email",
@@ -31,8 +31,8 @@ Amplify.configure({
         "phone",
         "profile",
       ],
-      redirectSignIn: "https://localhost:3000/moped/session/signin",
-      redirectSignOut: "https://localhost:3000/moped/session/signin",
+      redirectSignIn: config.cognito.REDIRECT_SIGN_OUT,
+      redirectSignOut: config.cognito.REDIRECT_SIGN_OUT,
       responseType: "code",
     },
   },
