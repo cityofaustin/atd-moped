@@ -38,6 +38,7 @@
       - category_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -49,6 +50,7 @@
       - category_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -60,6 +62,7 @@
       - category_order
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -116,6 +119,7 @@
       - fiscal_year_start_date
       - fiscal_year_value
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -124,6 +128,7 @@
       - fiscal_year_start_date
       - fiscal_year_value
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -132,6 +137,7 @@
       - fiscal_year_end_date
       - active_fy
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -188,6 +194,7 @@
       - map_representation
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -198,6 +205,7 @@
       - map_representation
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -208,6 +216,7 @@
       - component_order
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -268,6 +277,7 @@
       - date_added
       - entity_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -278,6 +288,7 @@
       - date_added
       - entity_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -288,6 +299,7 @@
       - affiliated_workgroup
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -339,6 +351,7 @@
       - funding_opportunity_name
       - funding_source_cat
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -346,6 +359,7 @@
       - funding_opportunity_name
       - funding_source_cat
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -353,6 +367,7 @@
       - funding_opportunity_name
       - funding_source_cat
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -395,18 +410,21 @@
       - funding_source_category_id
       - funding_source_category_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - funding_source_category_id
       - funding_source_category_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
       - funding_source_category_id
       - funding_source_category_name
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -450,6 +468,7 @@
       - funding_source_category
       - funding_source_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -457,6 +476,7 @@
       - funding_source_category
       - funding_source_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -464,6 +484,7 @@
       - funding_source_name
       - funding_source_category
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -506,18 +527,21 @@
       - group_id
       - group_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - group_id
       - group_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
       - group_id
       - group_name
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -567,6 +591,7 @@
       - milestone_description
       - milestone_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -576,6 +601,7 @@
       - milestone_description
       - milestone_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -585,6 +611,7 @@
       - required_milestone
       - milestone_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -643,6 +670,7 @@
       - phase_description
       - phase_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -653,6 +681,7 @@
       - phase_description
       - phase_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -663,6 +692,7 @@
       - required_phase
       - phase_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -720,6 +750,7 @@
       - category_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -729,6 +760,7 @@
       - category_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -738,6 +770,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -811,6 +844,7 @@
       - last_note
       - project_memo
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -826,6 +860,7 @@
       - last_note
       - project_memo
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -841,6 +876,7 @@
       - comm_id
       - project_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -920,6 +956,7 @@
       - component_unique_id_code
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -933,6 +970,7 @@
       - component_unique_id_code
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -946,6 +984,7 @@
       - moped_proj_component_id
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1030,6 +1069,7 @@
       - date_type
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1046,6 +1086,7 @@
       - date_type
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1062,6 +1103,7 @@
       - project_phase_id
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1140,6 +1182,7 @@
       - workgroups
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1152,6 +1195,7 @@
       - workgroups
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1164,6 +1208,7 @@
       - project_id
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1249,6 +1294,7 @@
       - subproject_status
       - last_updated
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1266,6 +1312,7 @@
       - subproject_status
       - last_updated
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1283,6 +1330,7 @@
       - project_id
       - last_updated
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1363,6 +1411,7 @@
       - fiscal_year_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1375,6 +1424,7 @@
       - fiscal_year_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1387,6 +1437,7 @@
       - project_id
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1451,6 +1502,7 @@
       - fund_opp_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1461,6 +1513,7 @@
       - fund_opp_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1471,6 +1524,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1534,6 +1588,7 @@
       - funding_source_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1545,6 +1600,7 @@
       - funding_source_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1556,6 +1612,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1618,6 +1675,7 @@
       - group_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1628,6 +1686,7 @@
       - group_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1638,6 +1697,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1698,6 +1758,7 @@
       - location_notes
       - shape
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1708,6 +1769,7 @@
       - location_notes
       - shape
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1718,6 +1780,7 @@
       - project_id
       - feature_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1805,6 +1868,7 @@
       - milestone_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1824,6 +1888,7 @@
       - milestone_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1843,6 +1908,7 @@
       - milestone_owner_id
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -1921,6 +1987,7 @@
       - project_note
       - date_created
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -1931,6 +1998,7 @@
       - project_note
       - date_created
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -1941,6 +2009,7 @@
       - comm_id
       - project_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2001,6 +2070,7 @@
       - partner_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2011,6 +2081,7 @@
       - partner_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2021,6 +2092,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2102,6 +2174,7 @@
       - status
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2119,6 +2192,7 @@
       - status
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2136,6 +2210,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2240,6 +2315,7 @@
       - phase_status
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2260,6 +2336,7 @@
       - phase_status
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2280,6 +2357,7 @@
       - completed_by_user_id
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2378,6 +2456,7 @@
       - date_added
       - project_sponsor_id
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2394,6 +2473,7 @@
       - date_added
       - project_sponsor_id
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2410,6 +2490,7 @@
       - project_id
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2509,6 +2590,7 @@
       - status_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2528,6 +2610,7 @@
       - status_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2547,6 +2630,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2631,6 +2715,7 @@
       - status_note
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2643,6 +2728,7 @@
       - status_note
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2655,6 +2741,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2737,6 +2824,7 @@
       - capital_projects_explorer_id
       - current_status
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2753,6 +2841,7 @@
       - capital_projects_explorer_id
       - current_status
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2769,6 +2858,7 @@
       - project_id
       - active_milestone
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2880,6 +2970,7 @@
       - date_added
       - project_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2903,6 +2994,7 @@
       - date_added
       - project_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2926,6 +3018,7 @@
       - date_added
       - added_by
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3009,6 +3102,7 @@
       - project_role_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3018,6 +3112,7 @@
       - project_role_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3027,6 +3122,7 @@
       - role_order
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3079,6 +3175,7 @@
       - status_priority
       - status_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3087,6 +3184,7 @@
       - status_priority
       - status_name
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3095,6 +3193,7 @@
       - status_priority
       - status_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3152,6 +3251,7 @@
       - cognito_user_id
       - staff_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3168,6 +3268,7 @@
       - cognito_user_id
       - staff_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3184,6 +3285,7 @@
       - cognito_user_id
       - staff_uuid
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3230,6 +3332,7 @@
       - workgroup_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3237,6 +3340,7 @@
       - workgroup_name
       - date_added
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3244,6 +3348,7 @@
       - workgroup_id
       - date_added
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
