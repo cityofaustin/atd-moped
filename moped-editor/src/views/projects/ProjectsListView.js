@@ -5,13 +5,12 @@ import {
     Box,
     Container,
     makeStyles,
-    CircularProgress, Card, CardContent, TextField, InputAdornment, SvgIcon,
+    CircularProgress
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import ProjectsTable from "./ProjectsTable";
 import Toolbar from "./Toolbar";
 import {GQLAbstract} from "atd-kickstand";
-import {Search as SearchIcon} from "react-feather";
 
 const useStyles = makeStyles(theme => ({
     root: {
