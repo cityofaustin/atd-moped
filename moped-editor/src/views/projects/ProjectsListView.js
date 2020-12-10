@@ -1,16 +1,17 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { useQuery } from "@apollo/react-hooks";
 
 import {
     Box,
     Container,
     makeStyles,
-    CircularProgress,
+    CircularProgress, Card, CardContent, TextField, InputAdornment, SvgIcon,
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import ProjectsTable from "./ProjectsTable";
 import Toolbar from "./Toolbar";
 import {GQLAbstract} from "atd-kickstand";
+import {Search as SearchIcon} from "react-feather";
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -88,24 +89,35 @@ let projectsQuery = new GQLAbstract(projectsQueryConf);
 const StaffListView = () => {
     const classes = useStyles();
     const { data, loading, error } = useQuery(projectsQuery.gql);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [projectList, setProjectList] = useState([]);
 
     if (error) {
         console.log(error);
     }
 
-    if(data) {
-        console.log(projectsQuery.query);
+    const filterSearch = (event) => {
+        setSearchKeyword(event.target.value);
     }
+
+    useEffect(() => {
+        if (data) {
+            const currentProjectList = data.moped_project.filter((item) => {
+                return item.project_name.toString().toLowerCase().includes(searchKeyword.toLowerCase());
+            });
+            setProjectList(currentProjectList);
+        }
+    }, [data, searchKeyword]);
 
     return (
         <Page className={classes.root} title="Staff">
             <Container maxWidth={false}>
-                <Toolbar />
+                <Toolbar change={filterSearch} />
                 <Box mt={3}>
                     {loading ? (
                         <CircularProgress />
                     ) : (
-                        <ProjectsTable projects={data.moped_project} />
+                        <ProjectsTable projects={projectList} />
                     )}
                 </Box>
             </Container>

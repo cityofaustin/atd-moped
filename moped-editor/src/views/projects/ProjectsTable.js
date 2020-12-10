@@ -15,7 +15,11 @@ import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles(() => ({
     root: {},
+    tableCell: {
+        "text-transform": "capitalize"
+    }
 }));
+
 
 const ProjectsTable = ({ projects }) => {
     const classes = useStyles();
@@ -44,9 +48,9 @@ const ProjectsTable = ({ projects }) => {
                                             <EditIcon color="primary" />
                                         </RouterLink>
                                     </TableCell>
-                                    <TableCell style={{"text-transform": "capitalize"}}><Link href={"/moped/project/"+project.project_id}>{project.project_name}</Link></TableCell>
-                                    <TableCell style={{"text-transform": "capitalize"}}>{project.project_description}</TableCell>
-                                    <TableCell style={{"text-transform": "capitalize"}}>{project.current_status}</TableCell>
+                                    <TableCell className={classes.tableCell}><Link href={"/moped/project/"+project.project_id}>{project.project_name}</Link></TableCell>
+                                    <TableCell className={classes.tableCell}>{project.project_description}</TableCell>
+                                    <TableCell className={classes.tableCell}>{project.current_status.replace('"', "")}</TableCell>
                                     <TableCell>{project.date_added}</TableCell>
                                     <TableCell>{project.start_date}</TableCell>
                                     <TableCell>{project.capitally_funded ? "Yes" : "No"}</TableCell>

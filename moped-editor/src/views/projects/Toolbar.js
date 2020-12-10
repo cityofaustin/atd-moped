@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-const Toolbar = ({ className, ...rest }) => {
+const Toolbar = ({ change, className, ...rest }) => {
     const classes = useStyles();
 
     return (
@@ -46,6 +46,7 @@ const Toolbar = ({ className, ...rest }) => {
                     <CardContent>
                         <Box maxWidth={500}>
                             <TextField
+                                onChange={change}
                                 fullWidth
                                 InputProps={{
                                     startAdornment: (
