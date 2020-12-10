@@ -1,4 +1,5 @@
 import React from "react";
+import theme from "../../theme/index";
 
 export const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
 
@@ -25,14 +26,14 @@ export const createProjectLayerConfig = (polygonId, selectedIds) => {
     },
     "source-layer": "asmp_polygons",
     paint: {
-      "fill-outline-color": "#000000",
+      "fill-outline-color": theme.palette.text.primary,
       "fill-color": [
         "case",
         ["==", ["get", "polygon_id"], hoverId],
-        "#00AAB1",
+        theme.palette.map.selected,
         ["in", ["get", "polygon_id"], ["literal", selectedIds]],
-        "#1e88e5",
-        "#000",
+        theme.palette.primary.main,
+        theme.palette.text.primary,
       ],
       "fill-opacity": 0.4,
     },

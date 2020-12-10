@@ -10,7 +10,7 @@ import {
   renderTooltip,
 } from "./mapHelpers";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -19,8 +19,8 @@ const useStyles = makeStyles(() => ({
     position: "absolute",
     margin: 8,
     padding: 4,
-    background: "rgba(0, 0, 0, 0.8)",
-    color: "#fff",
+    background: theme.palette.text.primary,
+    color: theme.palette.background.default,
     maxWidth: 300,
     fontSize: "0.875rem",
     fontWeight: 500,

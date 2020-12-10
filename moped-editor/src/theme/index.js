@@ -19,6 +19,9 @@ const theme = createMuiTheme({
       primary: "#000000",
       secondary: "#000000",
     },
+    map: {
+      selected: "#00AAB1",
+    },
   },
   shadows,
   typography,
