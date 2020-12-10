@@ -26,14 +26,13 @@ export const createProjectLayerConfig = (polygonId, selectedIds) => {
     },
     "source-layer": "asmp_polygons",
     paint: {
-      "fill-outline-color": theme.palette.text.primary,
       "fill-color": [
         "case",
         ["==", ["get", "polygon_id"], hoverId],
         theme.palette.map.selected,
         ["in", ["get", "polygon_id"], ["literal", selectedIds]],
         theme.palette.primary.main,
-        theme.palette.text.primary,
+        theme.palette.map.transparent,
       ],
       "fill-opacity": 0.4,
     },
