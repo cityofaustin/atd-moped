@@ -42,10 +42,10 @@ const Profile = ({ className, ...rest }) => {
             {defaultUser.name}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {defaultUser.city}
+            {defaultUser.jobTitle}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {defaultUser.jobTitle}
+            {defaultUser.city}
           </Typography>
         </Box>
       </CardContent>
