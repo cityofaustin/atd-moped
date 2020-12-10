@@ -1,3 +1,4 @@
+DELETE FROM public.moped_workgroup WHERE workgroup_id = 1;
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Active Transportation & Street Design', 1, '2020-12-04 16:53:02.752811+00');
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Arterial Management', 2, '2020-12-04 16:53:02.752811+00');
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added) VALUES ('Data & Technology Services', 3, '2020-12-04 16:53:02.752811+00');
