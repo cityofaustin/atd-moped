@@ -9,10 +9,10 @@ import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
-import ProductListView from "src/views/product/ProductListView/ProductListView";
 import NewProjectView from "src/views/projects/NewProjectView";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
+import ProjectsListView from "./views/projects/ProjectsListView";
 
 const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
@@ -35,7 +35,7 @@ const routes = [
       { path: "staff", element: <StaffListView /> },
       { path: "staff/new", element: <NewStaffView /> },
       { path: "staff/edit/:userId", element: <EditStaffView /> },
-      { path: "projects", element: <ProductListView /> },
+      { path: "projects", element: <ProjectsListView /> },
       { path: "projects/new", element: <NewProjectView /> },
       { path: "settings", element: <SettingsView /> },
       { path: "404", element: <NotFoundView /> },
