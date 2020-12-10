@@ -11,6 +11,7 @@ import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
 import ProductListView from "src/views/product/ProductListView/ProductListView";
 import NewProjectView from "src/views/projects/NewProjectView";
+import ProjectSummary from "src/views/projects/ProjectSummary";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 
@@ -37,6 +38,7 @@ const routes = [
       { path: "staff/edit/:userId", element: <EditStaffView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
+      { path: "projects/success", element: <ProjectSummary /> },
       { path: "settings", element: <SettingsView /> },
       { path: "404", element: <NotFoundView /> },
       { path: "*", element: <Navigate to="/moped/404" /> },
