@@ -38,7 +38,7 @@ const routes = [
       { path: "staff/edit/:userId", element: <EditStaffView /> },
       { path: "projects", element: <ProductListView /> },
       { path: "projects/new", element: <NewProjectView /> },
-      { path: "projects/success", element: <ProjectSummary /> },
+      { path: "projects/new/success", element: <ProjectSummary /> },
       { path: "settings", element: <SettingsView /> },
       { path: "404", element: <NotFoundView /> },
       { path: "*", element: <Navigate to="/moped/404" /> },
