@@ -16,7 +16,7 @@ import {
 export const defaultUser = {
   avatar: `${process.env.PUBLIC_URL}/static/images/avatars/robSpillar.jpeg`,
   name: "Rob Spillar",
-  jobTitle: "Director of Transporation",
+  jobTitle: "Director of Transportation",
   city: "Austin, TX",
 };
 
