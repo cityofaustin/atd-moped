@@ -9,7 +9,24 @@ export const UserContext = React.createContext(null);
 // components bellow via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = React.useState(null);
+
+  /**
+   * Retrieves persisted user context object
+   * @return {object}
+   */
+  const getPersistedContext = () => {
+    return JSON.parse(localStorage.getItem("atd_moped_user_context")) || null;
+  }
+
+  /**
+   * Persists user context object into localstorage
+   * @param {str} context - The user context object
+   */
+  const setPersistedContext = (context) => {
+    localStorage.setItem("atd_moped_user_context", JSON.stringify(context));
+  }
+
+  const [user, setUser] = React.useState(getPersistedContext());
 
   React.useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
@@ -23,8 +40,14 @@ export const UserProvider = ({ children }) => {
 
     // attempt to fetch the info of the user that was already logged in
     Auth.currentAuthenticatedUser()
-      .then(user => setUser(user))
-      .catch(() => setUser(null));
+      .then(user => {
+        setPersistedContext(user);
+        setUser(getPersistedContext());
+      })
+      .catch(() => {
+        setPersistedContext(null);
+        setUser(null);
+      });
   }, []);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
