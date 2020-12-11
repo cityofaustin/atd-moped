@@ -312,7 +312,7 @@ const NewProjectView = () => {
                         </Button>
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
-                            label={"Save"}
+                            label={"Finish"}
                             loading={loading}
                             success={success}
                             handleButtonClick={handleSubmit}
