@@ -20,8 +20,7 @@ import { defaultUser } from "../../views/account/AccountView/Profile";
 const useStyles = makeStyles(() => ({
   root: {},
   avatar: {
-    width: 60,
-    height: 60,
+    marginRight: 8,
   },
 }));
 
@@ -38,7 +37,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         <Box flexGrow={1} />
         <Box>
           <Avatar
-            className={classes.small}
+            className={classes.avatar}
             component={RouterLink}
             src={defaultUser.avatar}
             to="/moped/account"
