@@ -60,14 +60,7 @@ const ProjectTeamTable = props => {
     props.setStaffRows(updatedStaffRows);
   };
 
-  const handleRoleChange = (value, item, index) => {
-    // item.role = value;
-    // // // props.setStaffRows(props.StaffRows);
-    // // const updatedStaffRows = props.StaffRows;
-    // // updatedStaffRows[index].role = value;
-
-    // props.setStaffRows(staffRows => (staffRows[index] = item));
-
+  const handleRoleChange = (value, index) => {
     const updatedStaffRows = props.StaffRows.map((row, i) =>
       i === index ? { ...row, role: value } : row
     );
@@ -75,23 +68,16 @@ const ProjectTeamTable = props => {
     props.setStaffRows(updatedStaffRows);
   };
 
-  // const handleGroupChange = (value, index) => {
-  //   // item.workgroup = value?.workgroup;
-  //   // props.setStaffRows(props.StaffRows);
-  //   const updatedWorkgroup = value?.workgroup || "";
+  const [userInput, setUserInput] = useState("");
 
-  //   const updatedStaffRows = props.StaffRows.map((row, i) =>
-  //     i === index ? { ...row, workgroup: updatedWorkgroup } : row
-  //   );
+  const handleNoteChange = index => {
+    const updatedNoteText = { userInput };
 
-  //   props.setStaffRows(updatedStaffRows);
-  // };
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index ? { ...row, notes: updatedNoteText } : row
+    );
 
-  const [userInput, setuserInput] = useState("");
-
-  const handleNoteChange = (value, item, index) => {
-    item.notes = { userInput };
-    props.setStaffRows(props.StaffRows);
+    props.setStaffRows(updatedStaffRows);
   };
 
   const MEMBERS_QUERY = gql`
@@ -184,7 +170,7 @@ const ProjectTeamTable = props => {
                   options={roleOption}
                   defaultValue={item.role}
                   onChange={(event, value) => {
-                    handleRoleChange(value, item, index);
+                    handleRoleChange(value, index);
                   }}
                   style={{ width: 200 }}
                   renderInput={params => (
@@ -212,9 +198,9 @@ const ProjectTeamTable = props => {
                   variant="outlined"
                   helperText="75 character max"
                   value={userInput}
-                  onChange={event => setuserInput(event.target.value)}
+                  onChange={event => setUserInput(event.target.value)}
                   onBlur={(event, value) => {
-                    handleNoteChange(value, item, index);
+                    handleNoteChange(index);
                   }}
                 />
               </TableCell>
