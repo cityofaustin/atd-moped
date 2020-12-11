@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -37,36 +37,61 @@ const ProjectTeamTable = props => {
       name: "",
       workgroup: "",
       role: "",
-      notes: ""
+      notes: "",
     };
     props.setStaffRows(StaffRows => [...StaffRows, item]);
   };
 
   const handleRemoveRow = index => {
     if (props.StaffRows.length > 1)
-      props.setStaffRows(props.StaffRows.slice(0, index));
+      props.setStaffRows(StaffRows => StaffRows.slice(0, index));
   };
 
-  const handleNameChange = (value, item, index) => {
-    item.name = value;
-    props.setStaffRows(props.StaffRows);
+  const handleNameAndWorkgroupChange = (value, index) => {
+    const updatedName = value?.name || "";
+    const updatedWorkgroup = value?.workgroup || "";
+
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index
+        ? { ...row, name: updatedName, workgroup: updatedWorkgroup }
+        : row
+    );
+
+    props.setStaffRows(updatedStaffRows);
   };
 
   const handleRoleChange = (value, item, index) => {
-    item.role = value;
-    props.setStaffRows(props.StaffRows);
+    // item.role = value;
+    // // // props.setStaffRows(props.StaffRows);
+    // // const updatedStaffRows = props.StaffRows;
+    // // updatedStaffRows[index].role = value;
+
+    // props.setStaffRows(staffRows => (staffRows[index] = item));
+
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index ? { ...row, role: value } : row
+    );
+
+    props.setStaffRows(updatedStaffRows);
   };
 
-  const handleGroupChange = (value, item, index) => {
-    item.workgroup = value.workgroup;
-    props.setStaffRows(props.StaffRows);
-  };
+  // const handleGroupChange = (value, index) => {
+  //   // item.workgroup = value?.workgroup;
+  //   // props.setStaffRows(props.StaffRows);
+  //   const updatedWorkgroup = value?.workgroup || "";
 
-  const [userInput, setuserInput] = useState('');
+  //   const updatedStaffRows = props.StaffRows.map((row, i) =>
+  //     i === index ? { ...row, workgroup: updatedWorkgroup } : row
+  //   );
+
+  //   props.setStaffRows(updatedStaffRows);
+  // };
+
+  const [userInput, setuserInput] = useState("");
 
   const handleNoteChange = (value, item, index) => {
-     item.notes = {userInput}
-     props.setStaffRows(props.StaffRows);
+    item.notes = { userInput };
+    props.setStaffRows(props.StaffRows);
   };
 
   const MEMBERS_QUERY = gql`
@@ -115,7 +140,7 @@ const ProjectTeamTable = props => {
   roles.moped_project_roles.forEach(role =>
     roleOption.push(role.project_role_name)
   );
- 
+
   return (
     <form style={{ padding: 10 }}>
       <Table className={classes.table}>
@@ -139,8 +164,7 @@ const ProjectTeamTable = props => {
                   options={nameOption}
                   getOptionLabel={option => (option.name ? option.name : "")}
                   onChange={(event, value) => {
-                    handleNameChange(value, item, index);
-                    handleGroupChange(value, item, index);
+                    handleNameAndWorkgroupChange(value, index);
                   }}
                   defaultValue={item.name}
                   style={{ width: 200 }}
@@ -179,7 +203,7 @@ const ProjectTeamTable = props => {
                   style={{ width: 200, paddingLeft: 10, marginBottom: -13 }}
                 />
               </TableCell>
-               <TableCell>
+              <TableCell>
                 <TextField
                   name="Notes"
                   style={{ width: 200, paddingLeft: 10 }}
@@ -206,7 +230,11 @@ const ProjectTeamTable = props => {
           ))}
         </TableBody>
       </Table>
-      <PersonAddIcon color="secondary" onClick={handleAddRow} style={{ paddingLeft: 10, fontSize: 35 }} />
+      <PersonAddIcon
+        color="secondary"
+        onClick={handleAddRow}
+        style={{ paddingLeft: 10, fontSize: 35 }}
+      />
     </form>
   );
 };
