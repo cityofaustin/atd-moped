@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toArray from "lodash.toarray";
 import forEach from "lodash.foreach";
 import {
@@ -13,6 +14,7 @@ import {
   Step,
   StepLabel,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -212,6 +214,18 @@ const NewProjectView = () => {
   `;
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
+
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = React.useState(false);
+  const [success, setSuccess] = React.useState(false);
+  const timer = React.useRef();
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
 
   const handleSubmit = () => {
     // Change the initial state...

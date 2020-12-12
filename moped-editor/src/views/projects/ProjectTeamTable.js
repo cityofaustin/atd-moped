@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -37,7 +37,7 @@ const ProjectTeamTable = props => {
       name: "",
       workgroup: "",
       role: "",
-      notes: ""
+      notes: "",
     };
     props.setStaffRows(StaffRows => [...StaffRows, item]);
   };
@@ -62,11 +62,11 @@ const ProjectTeamTable = props => {
     props.setStaffRows(props.StaffRows);
   };
 
-  const [userInput, setuserInput] = useState('');
+  const [userInput, setuserInput] = useState("");
 
   const handleNoteChange = (value, item, index) => {
-     item.notes = {userInput}
-     props.setStaffRows(props.StaffRows);
+    item.notes = { userInput };
+    props.setStaffRows(props.StaffRows);
   };
 
   const MEMBERS_QUERY = gql`
@@ -115,7 +115,7 @@ const ProjectTeamTable = props => {
   roles.moped_project_roles.forEach(role =>
     roleOption.push(role.project_role_name)
   );
- 
+
   return (
     <form style={{ padding: 10 }}>
       <Table className={classes.table}>
@@ -176,10 +176,14 @@ const ProjectTeamTable = props => {
                 <TextField
                   name="Group"
                   value={item.workgroup}
-                  style={{ width: 200, paddingLeft: 10, marginBottom: -13 }}
+                  style={{
+                    width: 200,
+                    paddingLeft: 10,
+                    marginBottom: -13,
+                  }}
                 />
               </TableCell>
-               <TableCell>
+              <TableCell>
                 <TextField
                   name="Notes"
                   style={{ width: 200, paddingLeft: 10 }}
@@ -206,7 +210,11 @@ const ProjectTeamTable = props => {
           ))}
         </TableBody>
       </Table>
-      <PersonAddIcon color="secondary" onClick={handleAddRow} style={{ paddingLeft: 10, fontSize: 35 }} />
+      <PersonAddIcon
+        color="secondary"
+        onClick={handleAddRow}
+        style={{ paddingLeft: 10, fontSize: 35 }}
+      />
     </form>
   );
 };
