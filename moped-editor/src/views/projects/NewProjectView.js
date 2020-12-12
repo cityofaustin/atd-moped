@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import toArray from "lodash.toarray";
 import forEach from "lodash.foreach";
 import {
@@ -14,7 +13,6 @@ import {
   Step,
   StepLabel,
   Typography,
-  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -23,9 +21,8 @@ import MapProjectGeometry from "./MapProjectGeometry";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-
 import ProjectSaveButton from "./ProjectSaveButton";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Styles
@@ -51,8 +48,6 @@ const useStyles = makeStyles(theme => ({
  */
 const NewProjectView = () => {
   const classes = useStyles();
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const [activeStep, setActiveStep] = useState(0);
   const [defineProjectState, updateProjectState] = useState({
@@ -215,8 +210,6 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
-  const navigate = useNavigate();
-
   const [loading, setLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef();
@@ -226,6 +219,8 @@ const NewProjectView = () => {
       clearTimeout(timer.current);
     };
   }, []);
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     // Change the initial state...
@@ -287,7 +282,7 @@ const NewProjectView = () => {
 
   return (
     <>
-      {success && <Navigate to="/moped/projects" />} ||
+      {success && navigate("/moped/projects/new/success")} ||
       {
         <Page title="New Project">
           <Container>

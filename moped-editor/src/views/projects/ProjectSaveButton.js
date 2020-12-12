@@ -45,7 +45,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 /**
  * ProjectSaveButton - A button that shows an animated status when saving.
  * https://material-ui.com/components/progress/#interactive-integration
