@@ -1,157 +1,131 @@
-import React, { useState } from "react";
-import clsx from "clsx";
-import PropTypes from "prop-types";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useUser } from "../../../auth/user";
+import { useUserApi } from "../../staff/helpers";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  Box,
   Button,
   Card,
   CardContent,
   CardHeader,
+  CircularProgress,
   Divider,
   Grid,
   TextField,
   makeStyles,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 
-const states = [
-  {
-    value: "alabama",
-    label: "Alabama",
+const useStyles = makeStyles(theme => ({
+  formButton: {
+    margin: theme.spacing(1),
   },
-  {
-    value: "new-york",
-    label: "New York",
-  },
-  {
-    value: "san-francisco",
-    label: "San Francisco",
-  },
-];
-
-const useStyles = makeStyles(() => ({
-  root: {},
 }));
 
-const ProfileDetails = ({ className, ...rest }) => {
+const initialValues = {
+  password: "",
+  passwordConfirm: "",
+};
+
+const passwordValidationSchema = yup.object().shape({
+  password: yup.string().required(),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref("password")], "passwords must match"),
+});
+
+const ProfileDetails = () => {
   const classes = useStyles();
-  const [values, setValues] = useState({
-    firstName: "Katarina",
-    lastName: "Smith",
-    email: "demo@devias.io",
-    phone: "",
-    state: "Alabama",
-    country: "USA",
+  const { user } = useUser();
+  const { result, loading, requestApi } = useUserApi();
+
+  const { register, handleSubmit, errors, formState } = useForm({
+    defaultValues: initialValues,
+    resolver: yupResolver(passwordValidationSchema),
   });
 
-  const handleChange = event => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
+  const { isSubmitting } = formState;
+
+  const onSubmit = data => {
+    // POST or PUT request to User Management API
+    const requestString = "put";
+
+    const userCognitoId = user.username;
+    const requestPath = "/users/" + userCognitoId + "/password";
+
+    // API doesn't need passwordConfirm in payload
+    const payload = { password: data.password };
+
+    requestApi({ method: requestString, path: requestPath, payload });
   };
 
   return (
-    <form
-      autoComplete="off"
-      noValidate
-      className={clsx(classes.root, className)}
-      {...rest}
-    >
-      <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
-        <Divider />
-        <CardContent>
-          <Grid container spacing={3}>
-            <Grid item md={6} xs={12}>
+    <Card>
+      <CardHeader title="Change Your Password" />
+      <Divider />
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                helperText="Please specify the first name"
-                label="First name"
-                name="firstName"
-                onChange={handleChange}
-                required
-                value={values.firstName}
+                name="password"
+                type="password"
+                id="password"
+                label="New password"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
+                inputRef={register}
+                error={!!errors.password}
+                helperText={errors.password?.message}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Last name"
-                name="lastName"
-                onChange={handleChange}
-                required
-                value={values.lastName}
+                name="passwordConfirm"
+                type="password"
+                id="password-confirm"
+                label="Confirm new password"
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 variant="outlined"
+                inputRef={register}
+                error={!!errors.passwordConfirm}
+                helperText={errors.passwordConfirm?.message}
               />
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Email Address"
-                name="email"
-                onChange={handleChange}
-                required
-                value={values.email}
-                variant="outlined"
-              />
+            <Grid item xs={12} md={6}>
+              {loading || isSubmitting ? (
+                <CircularProgress />
+              ) : (
+                <>
+                  <Button
+                    className={classes.formButton}
+                    disabled={isSubmitting}
+                    type="submit"
+                    color="primary"
+                    variant="contained"
+                  >
+                    Change Password
+                  </Button>
+                </>
+              )}
             </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Phone Number"
-                name="phone"
-                onChange={handleChange}
-                type="number"
-                value={values.phone}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Country"
-                name="country"
-                onChange={handleChange}
-                required
-                value={values.country}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item md={6} xs={12}>
-              <TextField
-                fullWidth
-                label="Select State"
-                name="state"
-                onChange={handleChange}
-                required
-                select
-                SelectProps={{ native: true }}
-                value={values.state}
-                variant="outlined"
-              >
-                {states.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </TextField>
+            <Grid item xs={12} md={6}>
+              {result?.success && (
+                <Alert severity="success">Password updated</Alert>
+              )}
             </Grid>
           </Grid>
-        </CardContent>
-        <Divider />
-        <Box display="flex" justifyContent="flex-end" p={2}>
-          <Button color="primary" variant="contained">
-            Save details
-          </Button>
-        </Box>
-      </Card>
-    </form>
+        </form>
+      </CardContent>
+    </Card>
   );
-};
-
-ProfileDetails.propTypes = {
-  className: PropTypes.string,
 };
 
 export default ProfileDetails;

@@ -12,6 +12,8 @@ from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
     get_user_email_from_attr,
+    is_valid_user_password,
+    is_users_password,
     is_valid_user_profile,
     is_valid_uuid,
     db_create_user,
@@ -234,7 +236,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 @normalize_claims
 def user_delete_user(id: str, claims: list) -> (Response, int):
     """
-    Returns created user details
+    Returns deleted user details
     :return Response, int:
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
@@ -265,6 +267,52 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                 "database": db_response,
             }
         }
+        return jsonify(response)
+    else:
+        abort(403)
+
+
+@users_blueprint.route("/<id>/password", methods=["PUT"])
+@cognito_auth_required
+@normalize_claims
+def user_update_password(id: str, claims: list) -> (Response, int):
+    """
+    Returns updated password details
+    :return Response, int:
+    """
+    if is_valid_user(current_cognito_jwt) and is_users_password(
+        current_cognito_jwt, id
+    ):
+        cognito_client = boto3.client("cognito-idp")
+
+        password_valid, password_error_feedback = is_valid_user_password(
+            password=request.json
+        )
+
+        if not password_valid:
+            return jsonify({"error": password_error_feedback}), 400
+
+        try:
+            json_data = request.json
+            password = json_data["password"]
+
+            cognito_response = cognito_client.admin_set_user_password(
+                UserPoolId=USER_POOL, Username=id, Password=password, Permanent=True
+            )
+
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "InvalidPasswordException":
+                return jsonify(e.response), 400  # Bad request
+            else:
+                return jsonify(e.response), 500  # Internal Server Error
+
+        response = {
+            "success": {
+                "message": f"User password updated: {id}",
+                "cognito": cognito_response,
+            }
+        }
+
         return jsonify(response)
     else:
         abort(403)

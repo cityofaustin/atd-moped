@@ -8,23 +8,12 @@ import {
   Select,
   Switch,
   CircularProgress,
-  makeStyles,
 } from "@material-ui/core";
 import { useQuery } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 import { DevTool } from "@hookform/devtools";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    backgroundColor: theme.palette.background.dark,
-    minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
-}));
-
 const DefineProjectForm = props => {
-  const classes = useStyles();
   // these are the functions we need from RHF
   const { register, getValues, control } = useForm();
 
@@ -100,7 +89,7 @@ const DefineProjectForm = props => {
   if (fiscalError) return `Error! ${fiscalError.message}`;
 
   return (
-    <form style={{ padding: 25 }} className={classes}>
+    <form style={{ padding: 25 }}>
       <DevTool control={control} />
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={4}>

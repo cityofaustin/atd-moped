@@ -9,16 +9,13 @@ from graphql import run_query
 from typing import List
 
 # Helpers
-from claims import (
-    is_coa_staff,
-    generate_iso_timestamp
-)
+from claims import is_coa_staff, generate_iso_timestamp
 from users.queries import (
-    GRAPHQL_CRATE_USER,
+    GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
-    GRAPHQL_DEACTIVATE_USER
+    GRAPHQL_DEACTIVATE_USER,
 )
-from users.validation import USER_VALIDATION_SCHEMA
+from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
 
 def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
@@ -61,13 +58,38 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
 
 def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
     """
-    Returns a type if the user profile is valid and any errors if available
+    Returns a tuple if the user profile is valid and any errors if available
     :param dict user_profile: The json data from the request
     :return tuple:
     """
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, USER_VALIDATION_SCHEMA)
     return is_valid_profile, user_validator.errors
+
+
+def is_valid_user_password(password: dict) -> [bool, dict]:
+    """
+    Returns a tuple if the user password is valid and any errors if available
+    :param dict password: The json data from the request
+    :return tuple:
+    """
+    password_validator = Validator()
+    is_valid_password = password_validator.validate(
+        password, PASSWORD_VALIDATION_SCHEMA
+    )
+    return is_valid_password, password_validator.errors
+
+
+def is_users_password(user_profile: dict, request_cognito_id: str) -> bool:
+    """
+    Returns bool if password to update is user's own password
+    :param dict user_profile: The json data from the request
+    :param str request_cognito_id: The id tied to the password to update
+    :return bool:
+    """
+    user_cognito_id = user_profile.get("cognito:username", None)
+    is_users_password = user_cognito_id == request_cognito_id
+    return is_users_password
 
 
 def is_valid_uuid(cognito_id: str) -> bool:
@@ -105,12 +127,7 @@ def db_create_user(user_profile: dict) -> dict:
     :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
-    response = run_query(
-        query=GRAPHQL_CRATE_USER,
-        variables={
-            "users": [user_profile]
-        }
-    )
+    response = run_query(query=GRAPHQL_CREATE_USER, variables={"users": [user_profile]})
     return response.json()
 
 
@@ -123,13 +140,11 @@ def db_update_user(user_profile: dict) -> dict:
     response = run_query(
         query=GRAPHQL_UPDATE_USER,
         variables={
-          "userBoolExp": {
-            "cognito_user_id": {
-              "_eq": user_profile["cognito_user_id"]
-            }
-          },
-          "user": user_profile
-        }
+            "userBoolExp": {
+                "cognito_user_id": {"_eq": user_profile["cognito_user_id"]}
+            },
+            "user": user_profile,
+        },
     )
     return response.json()
 
@@ -142,13 +157,7 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     """
     response = run_query(
         query=GRAPHQL_DEACTIVATE_USER,
-        variables={
-            "userBoolExp": {
-                "cognito_user_id": {
-                    "_eq": user_cognito_id
-                }
-            }
-        }
+        variables={"userBoolExp": {"cognito_user_id": {"_eq": user_cognito_id}}},
     )
     return response.json()
 

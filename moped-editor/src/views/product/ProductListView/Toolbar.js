@@ -36,7 +36,7 @@ const Toolbar = ({ className, ...rest }) => {
           color="primary"
           variant="contained"
           component={RouterLink}
-          to={"/app/projects/new"}
+          to={"/moped/projects/new"}
         >
           New Project
         </Button>
