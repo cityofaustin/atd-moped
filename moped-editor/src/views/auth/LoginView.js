@@ -93,7 +93,7 @@ const LoginView = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on with Microsoft Office 365
+                    Sign in with Microsoft Office 365
                   </Typography>
                 </Box>
                 <Grid container spacing={3}>
