@@ -103,13 +103,15 @@ const ProjectSummary = () => {
 
   const TEAM_QUERY = gql`
     query TeamSummary {
-      moped_proj_personnel(order_by: { project_id: desc }) {
+      moped_proj_personnel(limit: 2, order_by: { project_personnel_id: desc }) {
         first_name
         last_name
+        role_name
         notes
       }
     }
   `;
+
   const {
     loading: projectLoading,
     error: projectError,
@@ -151,7 +153,8 @@ const ProjectSummary = () => {
               >
                 <Tab label="Summary" disabled {...a11yProps(0)} />
                 <Tab label="Team" {...a11yProps(1)} />
-                <Tab label="Notes" {...a11yProps(2)} />
+                <Tab label="Role" {...a11yProps(2)} />
+                <Tab label="Notes" {...a11yProps(3)} />
               </Tabs>
             </AppBar>
             <TabPanel value={value} index={1}>
@@ -163,6 +166,13 @@ const ProjectSummary = () => {
             </TabPanel>
             <TabPanel value={value} index={2}>
               {teamData.moped_proj_personnel.map(info => (
+                <h6 key={info.role_name} value={info.role_name}>
+                  {info.role_name}
+                </h6>
+              ))}
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+              {teamData.moped_proj_personnel.map(info => (
                 <h6 key={info.notes} value={info.notes}>
                   {info.notes}
                 </h6>
@@ -172,7 +182,7 @@ const ProjectSummary = () => {
           <Divider />
           <CardContent>
             <Grid container spacing={3} style={{ margin: 20 }}>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <h4>Current Status</h4>
                 {projectData.moped_project.map(details => (
                   <p
@@ -183,7 +193,7 @@ const ProjectSummary = () => {
                   </p>
                 ))}
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={4}>
                 <h4>Current Phase</h4>
                 {projectData.moped_project.map(details => (
                   <p key={details.current_phase} value={details.current_phase}>
