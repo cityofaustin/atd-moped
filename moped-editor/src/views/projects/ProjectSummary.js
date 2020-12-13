@@ -153,8 +153,9 @@ const ProjectSummary = () => {
               >
                 <Tab label="Summary" disabled {...a11yProps(0)} />
                 <Tab label="Team" {...a11yProps(1)} />
-                <Tab label="Role" {...a11yProps(2)} />
+                <Tab label="Timeline" {...a11yProps(2)} />
                 <Tab label="Notes" {...a11yProps(3)} />
+                <Tab label="Activity Log" {...a11yProps(4)} />
               </Tabs>
             </AppBar>
             <TabPanel value={value} index={1}>
@@ -165,18 +166,13 @@ const ProjectSummary = () => {
               ))}
             </TabPanel>
             <TabPanel value={value} index={2}>
-              {teamData.moped_proj_personnel.map(info => (
-                <h6 key={info.role_name} value={info.role_name}>
-                  {info.role_name}
-                </h6>
-              ))}
+              TBD
             </TabPanel>
             <TabPanel value={value} index={3}>
-              {teamData.moped_proj_personnel.map(info => (
-                <h6 key={info.notes} value={info.notes}>
-                  {info.notes}
-                </h6>
-              ))}
+              TBD
+            </TabPanel>
+            <TabPanel value={value} index={4}>
+              TBD
             </TabPanel>
           </div>
           <Divider />
