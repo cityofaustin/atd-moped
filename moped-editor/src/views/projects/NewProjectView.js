@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import toArray from "lodash.toarray";
 import forEach from "lodash.foreach";
 import {
@@ -23,7 +23,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
 import ProjectSaveButton from "./ProjectSaveButton";
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Styles
@@ -51,6 +51,30 @@ const NewProjectView = () => {
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [newProjectId, setNewProjectId] = useState(null);
+
+  // Redirect handlers
+  const navigate = useNavigate();
+
+  /**
+   * Whenever we have a new project id, we can then set success
+   * and trigger the redirect.
+   */
+  useEffect(() => {
+    if (!!newProjectId){
+      window.setTimeout(() => {
+        setSuccess(true);
+      }, 1500);
+    }
+  }, [newProjectId]);
+
+  useEffect(() => {
+    if(!!newProjectId && success) {
+      window.setTimeout(() => {
+        navigate("/moped/projects/" + newProjectId);
+      }, 800);
+    }
+  }, [success, newProjectId, navigate])
 
   const [activeStep, setActiveStep] = useState(0);
   const [defineProjectState, updateProjectState] = useState({
@@ -166,6 +190,7 @@ const NewProjectView = () => {
       ) {
         affected_rows
         returning {
+          project_id
           project_name
           project_description
           project_priority
@@ -242,7 +267,8 @@ const NewProjectView = () => {
         start_date,
       },
     })
-      .then(msg => {
+      .then(response => {
+        const project = response.data.insert_moped_project.returning[0];
         //data from ProjectTeamTable going to database
         let teamData = toArray({ ...StaffRows });
         forEach(teamData, function(value) {
@@ -256,24 +282,17 @@ const NewProjectView = () => {
           addStaff({
             variables: { workgroup, role_name, first_name, last_name, notes },
           }).then(() => {
-            setSuccess(true);
-            // Initialize Redirect
-            window.location = "/moped/projects";
+            setNewProjectId(project.project_id);
           });
         });
       })
       .catch(err => {
-        console.log(err);
-      })
-      .finally(() => {
-        // Regardless, we need to hide spinner
-        setLoading(false);
+        alert(err);
       });
   };
 
   return (
     <>
-      {success && <Navigate to="/moped/projects" />} ||
       {
         <Page title="New Project">
           <Container>
