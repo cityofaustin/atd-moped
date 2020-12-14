@@ -283,11 +283,17 @@ const NewProjectView = () => {
             variables: { workgroup, role_name, first_name, last_name, notes },
           }).then(() => {
             setNewProjectId(project.project_id);
+          }).catch(err => {
+            alert(err);
+            setLoading(false);
+            setSuccess(false);
           });
         });
       })
       .catch(err => {
         alert(err);
+        setLoading(false);
+        setSuccess(false);
       });
   };
 
