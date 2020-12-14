@@ -93,9 +93,6 @@ export default function ProjectSaveButton({
         >
           {label}
         </Button>
-        {loading && (
-          <CircularProgress size={24} className={classes.buttonProgress} />
-        )}
       </div>
     </div>
   );
