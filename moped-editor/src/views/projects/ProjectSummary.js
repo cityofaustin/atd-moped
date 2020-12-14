@@ -44,7 +44,7 @@ const ProjectSummary = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate("/moped/dashboard");
+    navigate("/moped/projects");
   };
 
   function TabPanel(props) {
