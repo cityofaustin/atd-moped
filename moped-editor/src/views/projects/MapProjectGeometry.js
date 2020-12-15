@@ -1,15 +1,9 @@
 import React from "react";
-import ProjectMap from "./ProjectMap";
-import { Box, makeStyles } from "@material-ui/core";
-
-const useStyles = makeStyles(() => ({
-  mapBox: {
-    padding: 25,
-  },
-}));
+import { TextField } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 const MapProjectGeometry = () => {
-  const classes = useStyles();
+  let options = ["option 1", "option 2", "option 3"];
 
   return (
     <Box className={classes.mapBox}>
