@@ -87,12 +87,12 @@ const ProjectsTable = ({ projects }) => {
               {projects.map(project => (
                 <TableRow hover key={project.project_id}>
                   <TableCell align="center">
-                    <RouterLink to={`/moped/project/${project.project_id}`}>
+                    <RouterLink to={`/moped/projects/${project.project_id}`}>
                       <Icon color={"primary"}>edit_road</Icon>
                     </RouterLink>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Link href={"/moped/project/" + project.project_id}>
+                    <Link href={"/moped/projects/" + project.project_id}>
                       {project.project_name}
                     </Link>
                   </TableCell>
