@@ -18,36 +18,40 @@ import {
 } from "@material-ui/core";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
+import StorageIcon from "@material-ui/icons/Storage";
+import BuildIcon from "@material-ui/icons/Build";
+import BusinessIcon from "@material-ui/icons/Business";
 
 const data = [
   {
     id: uuid(),
-    name: "Dropbox",
-    imageUrl: `${process.env.PUBLIC_URL}/static/images/products/product_1.png`,
+    name: "Finance Data",
+    updatedAt: moment().subtract(2, "hours"),
+    imageUrl: <MonetizationOnIcon />,
+  },
+  {
+    id: uuid(),
+    name: "ATD Data Tracker",
+    imageUrl: <StorageIcon />,
     updatedAt: moment().subtract(2, "hours"),
   },
   {
     id: uuid(),
-    name: "Medium Corporation",
-    imageUrl: `${process.env.PUBLIC_URL}/static/images/products/product_2.png`,
-    updatedAt: moment().subtract(2, "hours"),
-  },
-  {
-    id: uuid(),
-    name: "Slack",
-    imageUrl: `${process.env.PUBLIC_URL}/static/images/products/product_3.png`,
+    name: "TXDOT Systems",
+    imageUrl: <BusinessIcon />,
     updatedAt: moment().subtract(3, "hours"),
   },
   {
     id: uuid(),
-    name: "Lyft",
-    imageUrl: `${process.env.PUBLIC_URL}/static/images/products/product_4.png`,
+    name: "Finance Data",
+    imageUrl: <MonetizationOnIcon />,
     updatedAt: moment().subtract(5, "hours"),
   },
   {
     id: uuid(),
-    name: "GitHub",
-    imageUrl: `${process.env.PUBLIC_URL}/static/images/products/product_5.png`,
+    name: "eCapris Project Reporting",
+    imageUrl: <BuildIcon />,
     updatedAt: moment().subtract(9, "hours"),
   },
 ];
@@ -70,19 +74,13 @@ const LatestProducts = ({ className, ...rest }) => {
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardHeader
         subtitle={`${products.length} in total`}
-        title="Latest Products"
+        title="Latest Data Syncs"
       />
       <Divider />
       <List>
         {products.map((product, i) => (
           <ListItem divider={i < products.length - 1} key={product.id}>
-            <ListItemAvatar>
-              <img
-                alt="Product"
-                className={classes.image}
-                src={product.imageUrl}
-              />
-            </ListItemAvatar>
+            <ListItemAvatar>{product.imageUrl}</ListItemAvatar>
             <ListItemText
               primary={product.name}
               secondary={`Updated ${product.updatedAt.fromNow()}`}

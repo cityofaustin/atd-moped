@@ -13,9 +13,9 @@ import {
   makeStyles,
   useTheme,
 } from "@material-ui/core";
-import LaptopMacIcon from "@material-ui/icons/LaptopMac";
-import PhoneIcon from "@material-ui/icons/Phone";
-import TabletIcon from "@material-ui/icons/Tablet";
+import DirectionsBikeIcon from "@material-ui/icons/DirectionsBike";
+import DirectionsCarIcon from "@material-ui/icons/DirectionsCar";
+import DirectionsWalkIcon from "@material-ui/icons/DirectionsWalk";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -41,7 +41,7 @@ const TrafficByDevice = ({ className, ...rest }) => {
         hoverBorderColor: colors.common.white,
       },
     ],
-    labels: ["Desktop", "Tablet", "Mobile"],
+    labels: ["Pedestrian", "Bicycle", "Motor Vehicle"],
   };
 
   const options = {
@@ -68,28 +68,28 @@ const TrafficByDevice = ({ className, ...rest }) => {
 
   const devices = [
     {
-      title: "Desktop",
+      title: "Motor Vehicle",
       value: 63,
-      icon: LaptopMacIcon,
+      icon: DirectionsCarIcon,
       color: colors.indigo[500],
     },
     {
-      title: "Tablet",
+      title: "Bicycle",
       value: 15,
-      icon: TabletIcon,
+      icon: DirectionsBikeIcon,
       color: colors.red[600],
     },
     {
-      title: "Mobile",
+      title: "Pedestrian",
       value: 23,
-      icon: PhoneIcon,
+      icon: DirectionsWalkIcon,
       color: colors.orange[600],
     },
   ];
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
-      <CardHeader title="Traffic by Device" />
+      <CardHeader title="Projects by Mode" />
       <Divider />
       <CardContent>
         <Box height={300} position="relative">
