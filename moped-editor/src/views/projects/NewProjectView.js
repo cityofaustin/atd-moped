@@ -207,6 +207,8 @@ const NewProjectView = () => {
   const [success, setSuccess] = React.useState(false);
   const timer = React.useRef();
 
+  console.log(success);
+
   React.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
