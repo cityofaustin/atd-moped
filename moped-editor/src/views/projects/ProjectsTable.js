@@ -31,7 +31,7 @@ const ProjectsTable = ({ projects }) => {
    * @return {string}
    */
   const parseDateReadable = date => {
-    return new Date(date).toLocaleString();
+    return new Date(date).toLocaleDateString();
   };
 
   /**
