@@ -1,6 +1,9 @@
-import React, { useState } from "react";
-import ReactMapGL, { Layer } from "react-map-gl";
-import { Typography, makeStyles } from "@material-ui/core";
+import React, { useState, useRef, useCallback } from "react";
+import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
+import Geocoder from "react-map-gl-geocoder";
+import { Box, Typography, makeStyles } from "@material-ui/core";
+import "mapbox-gl/dist/mapbox-gl.css";
+import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
@@ -27,14 +30,23 @@ const useStyles = makeStyles(theme => ({
     zIndex: 9,
     pointerEvents: "none",
   },
+  navStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    padding: "10px",
+  },
+  mapBox: {
+    padding: 25,
+  },
 }));
 
-const ProjectMap = () => {
+const ProjectMap = ({ selectedIds, setSelectedIds }) => {
   const classes = useStyles();
+  const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
   const [polygonId, setPolygonId] = useState("");
-  const [selectedIds, setSelectedIds] = useState([]);
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
@@ -68,18 +80,39 @@ const ProjectMap = () => {
     console.log(e);
   };
 
+  const handleViewportChange = viewport => setViewport(viewport);
+
+  const handleGeocoderViewportChange = useCallback(newViewport => {
+    const geocoderDefaultOverrides = { transitionDuration: 1000 };
+
+    return handleViewportChange({
+      ...newViewport,
+      ...geocoderDefaultOverrides,
+    });
+  }, []);
+
   return (
-    <>
+    <Box className={classes.mapBox}>
       <ReactMapGL
         {...viewport}
+        ref={mapRef}
         width="100%"
         height={500}
         interactiveLayerIds={["location-polygons"]}
         onHover={handleHover}
         onClick={handleClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
-        onViewportChange={viewport => setViewport(viewport)}
+        onViewportChange={handleViewportChange}
       >
+        <div className={classes.navStyle}>
+          <NavigationControl showCompass={false} />
+        </div>
+        <Geocoder
+          mapRef={mapRef}
+          onViewportChange={handleGeocoderViewportChange}
+          mapboxApiAccessToken={MAPBOX_TOKEN}
+          position="top-right"
+        />
         <Layer
           key={"location-polygon"}
           {...createProjectLayerConfig(polygonId, selectedIds)}
@@ -89,7 +122,7 @@ const ProjectMap = () => {
       <Typography className={classes.locationCountText}>
         {selectedIds.length} locations selected
       </Typography>
-    </>
+    </Box>
   );
 };
 

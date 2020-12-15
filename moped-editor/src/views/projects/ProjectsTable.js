@@ -66,13 +66,13 @@ const ProjectsTable = ({ projects }) => {
       <span>No Status</span>
     );
   };
-
+  
   return (
     <Card className={classes.root}>
       <PerfectScrollbar>
         <Box minWidth={1050}>
           <Table>
-            <TableHead className={classes.tableHead}>
+            <TableHead>
               <TableRow>
                 <TableCell> </TableCell>
                 <TableCell>Project Name</TableCell>
