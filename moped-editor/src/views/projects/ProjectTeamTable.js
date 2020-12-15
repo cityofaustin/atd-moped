@@ -10,8 +10,10 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableFooter,
   TableRow,
   TextField,
+  IconButton,
   CircularProgress,
 } from "@material-ui/core";
 
@@ -125,7 +127,7 @@ const ProjectTeamTable = props => {
   );
 
   return (
-    <form style={{ padding: 10 }}>
+    <form style={{ padding: 25 }}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -152,7 +154,7 @@ const ProjectTeamTable = props => {
                     onChange={(event, value) => {
                       handleNameAndWorkgroupChange(value, index);
                     }}
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -172,7 +174,7 @@ const ProjectTeamTable = props => {
                     onChange={(event, value) => {
                       handleRoleChange(value, index);
                     }}
-                    style={{ width: 200 }}
+                    style={{ width: 250 }}
                     renderInput={params => (
                       <TextField
                         {...params}
@@ -186,7 +188,7 @@ const ProjectTeamTable = props => {
                 <TableCell>
                   <TextField
                     name="Notes"
-                    style={{ width: 200, paddingLeft: 10 }}
+                    style={{ width: 250, paddingLeft: 10 }}
                     multiline
                     inputProps={{ maxLength: 75 }}
                     variant="outlined"
@@ -196,22 +198,34 @@ const ProjectTeamTable = props => {
                   />
                 </TableCell>
                 <TableCell>
-                  <DeleteIcon
+                  <IconButton
                     color="secondary"
+                    aria-label="remove staff"
+                    component="span"
                     onClick={() => {
                       handleRemoveRow(index);
                     }}
-                  />
+                  >
+                    <DeleteIcon color="secondary" />{" "}
+                  </IconButton>
                 </TableCell>
               </TableRow>
             );
           })}
         </TableBody>
-        <PersonAddIcon
-          color="secondary"
-          onClick={handleAddRow}
-          style={{ marginLeft: 20, fontSize: 35, marginTop: 20 }}
-        />
+        <TableFooter>
+          <TableRow>
+            <IconButton
+              style={{ marginLeft: 25, marginTop: 25 }}
+              color="primary"
+              aria-label="add staff"
+              component="span"
+              onClick={handleAddRow}
+            >
+              <PersonAddIcon color="primary" />
+            </IconButton>
+          </TableRow>
+        </TableFooter>
       </Table>
     </form>
   );
