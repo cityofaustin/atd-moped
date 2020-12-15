@@ -17,7 +17,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import MapProjectGeometry from "./MapProjectGeometry";
+import ProjectMap from "./ProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -61,6 +61,7 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -80,7 +81,12 @@ const NewProjectView = () => {
           <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
         );
       case 2:
-        return <MapProjectGeometry />;
+        return (
+          <ProjectMap
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+        );
       default:
         return "Unknown step";
     }
@@ -227,7 +233,7 @@ const NewProjectView = () => {
 
     //data from ProjectTeamTable going to database
     let teamData = toArray({ ...StaffRows });
-     forEach(teamData, function(value) {
+    forEach(teamData, function(value) {
       let name_array = value.name.name;
       let name_split = name_array.split(" ");
       let first_name = name_split[0];
@@ -235,8 +241,10 @@ const NewProjectView = () => {
       let workgroup = value.workgroup;
       let role_name = value.role;
       let notes = value.notes.userInput;
-      addStaff({ variables: { workgroup, role_name, first_name, last_name, notes } });
-     });
+      addStaff({
+        variables: { workgroup, role_name, first_name, last_name, notes },
+      });
+    });
   };
 
   return (

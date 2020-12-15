@@ -1,7 +1,8 @@
 import React, { useState, useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Typography, makeStyles } from "@material-ui/core";
+import { Box, Typography, makeStyles } from "@material-ui/core";
+import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
@@ -35,15 +36,17 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     padding: "10px",
   },
+  mapBox: {
+    padding: 25,
+  },
 }));
 
-const ProjectMap = () => {
+const ProjectMap = ({ selectedIds, setSelectedIds }) => {
   const classes = useStyles();
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
   const [polygonId, setPolygonId] = useState("");
-  const [selectedIds, setSelectedIds] = useState([]);
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
@@ -89,9 +92,10 @@ const ProjectMap = () => {
   }, []);
 
   return (
-    <>
+    <Box className={classes.mapBox}>
       <ReactMapGL
         {...viewport}
+        ref={mapRef}
         width="100%"
         height={500}
         interactiveLayerIds={["location-polygons"]}
@@ -118,7 +122,7 @@ const ProjectMap = () => {
       <Typography className={classes.locationCountText}>
         {selectedIds.length} locations selected
       </Typography>
-    </>
+    </Box>
   );
 };
 
