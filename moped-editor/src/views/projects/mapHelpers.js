@@ -6,7 +6,7 @@ export const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYy
 export const mapInit = {
   latitude: 30.268039,
   longitude: -97.742828,
-  zoom: 14,
+  zoom: 12,
 };
 
 export const getPolygonId = e =>

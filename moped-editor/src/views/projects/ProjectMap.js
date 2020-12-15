@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ReactMapGL, { Layer } from "react-map-gl";
+import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
 import { Typography, makeStyles } from "@material-ui/core";
 
 import {
@@ -26,6 +26,12 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
     zIndex: 9,
     pointerEvents: "none",
+  },
+  navStyle: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    padding: "10px",
   },
 }));
 
@@ -80,6 +86,9 @@ const ProjectMap = () => {
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={viewport => setViewport(viewport)}
       >
+        <div className={classes.navStyle}>
+          <NavigationControl showCompass={false} />
+        </div>
         <Layer
           key={"location-polygon"}
           {...createProjectLayerConfig(polygonId, selectedIds)}
