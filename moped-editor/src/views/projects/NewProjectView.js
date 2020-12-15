@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toArray from "lodash.toarray";
 import forEach from "lodash.foreach";
 import {
@@ -13,6 +14,7 @@ import {
   Step,
   StepLabel,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -22,6 +24,11 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
+import ProjectSaveButton from "./ProjectSaveButton";
+
+/**
+ * Styles
+ */
 const useStyles = makeStyles(theme => ({
   cardWrapper: {
     marginTop: theme.spacing(3),
@@ -36,8 +43,40 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * New Project View
+ * @return {JSX.Element}
+ * @constructor
+ */
 const NewProjectView = () => {
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [newProjectId, setNewProjectId] = useState(null);
+
+  // Redirect handlers
+  const navigate = useNavigate();
+
+  /**
+   * Whenever we have a new project id, we can then set success
+   * and trigger the redirect.
+   */
+  useEffect(() => {
+    if (!!newProjectId) {
+      window.setTimeout(() => {
+        setSuccess(true);
+      }, 1500);
+    }
+  }, [newProjectId]);
+
+  useEffect(() => {
+    if (!!newProjectId && success) {
+      window.setTimeout(() => {
+        navigate("/moped/projects/" + newProjectId);
+      }, 800);
+    }
+  }, [success, newProjectId, navigate]);
+
   const [activeStep, setActiveStep] = useState(0);
   const [defineProjectState, updateProjectState] = useState({
     fiscalYear: "",
@@ -150,6 +189,7 @@ const NewProjectView = () => {
       ) {
         affected_rows
         returning {
+          project_id
           project_name
           project_description
           project_priority
@@ -197,8 +237,21 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = React.useState(false);
+  const timer = React.useRef();
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
+
   const handleSubmit = () => {
-    //data from Define Project going to database
+    // Change the initial state...
+    setLoading(true);
+    // data from Define Project going to database
     let projData = toArray({ ...defineProjectState });
     let capitally_funded = projData[0];
     let project_name = projData[1];
@@ -209,6 +262,7 @@ const NewProjectView = () => {
     let current_status = projData[6];
     let project_priority = projData[7];
     let eCapris_id = projData[8];
+
     addProject({
       variables: {
         project_name,
@@ -221,76 +275,104 @@ const NewProjectView = () => {
         capitally_funded,
         start_date,
       },
-    });
-
-    //data from ProjectTeamTable going to database
-    let teamData = toArray({ ...StaffRows });
-    forEach(teamData, function(value) {
-      let name_array = value.name.name;
-      let name_split = name_array.split(" ");
-      let first_name = name_split[0];
-      let last_name = name_split[1];
-      let workgroup = value.workgroup;
-      let role_name = value.role;
-      let notes = value.notes.userInput;
-      addStaff({
-        variables: { workgroup, role_name, first_name, last_name, notes },
+    })
+      .then(response => {
+        const project = response.data.insert_moped_project.returning[0];
+        //data from ProjectTeamTable going to database
+        let teamData = toArray({ ...StaffRows });
+        forEach(teamData, function(value) {
+          let name_array = value.name.name;
+          let name_split = name_array.split(" ");
+          let first_name = name_split[0];
+          let last_name = name_split[1];
+          let workgroup = value.workgroup;
+          let role_name = value.role;
+          let notes = value.notes.userInput;
+          addStaff({
+            variables: { workgroup, role_name, first_name, last_name, notes },
+          })
+            .then(() => {
+              setNewProjectId(project.project_id);
+            })
+            .catch(err => {
+              alert(err);
+              setLoading(false);
+              setSuccess(false);
+            });
+        });
+      })
+      .catch(err => {
+        alert(err);
+        setLoading(false);
+        setSuccess(false);
       });
-    });
   };
 
   return (
-    <Page title="New Project">
-      <Container>
-        <Card className={classes.cardWrapper}>
-          <Box pt={2} pl={2}>
-            <CardHeader title="New Project" />
-          </Box>
-          <Divider />
-          <CardContent>
-            <Stepper activeStep={activeStep}>
-              {steps.map((label, index) => {
-                const stepProps = {};
-                const labelProps = {};
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                );
-              })}
-            </Stepper>
-            <div>
-              {activeStep === steps.length ? (
+    <>
+      {
+        <Page title="New Project">
+          <Container>
+            <Card className={classes.cardWrapper}>
+              <Box pt={2} pl={2}>
+                <CardHeader title="New Project" />
+              </Box>
+              <Divider />
+              <CardContent>
+                <Stepper activeStep={activeStep}>
+                  {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    return (
+                      <Step key={label} {...stepProps}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
                 <div>
-                  <>
-                    <Typography>Completed</Typography>
-                    <Button onClick={handleReset}>Close</Button>
-                  </>
+                  {activeStep === steps.length ? (
+                    <div>
+                      <>
+                        <Typography>Completed</Typography>
+                        <Button onClick={handleReset}>Close</Button>
+                      </>
+                    </div>
+                  ) : (
+                    <div>
+                      {getStepContent(activeStep)}
+                      <Divider />
+                      <Box pt={2} pl={2} className={classes.buttons}>
+                        <Button onClick={handleBack} className={classes.button}>
+                          Back
+                        </Button>
+                        {activeStep === steps.length - 1 ? (
+                          <ProjectSaveButton
+                            label={"Finish"}
+                            loading={loading}
+                            success={success}
+                            handleButtonClick={handleSubmit}
+                          />
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleNext}
+                            className={classes.button}
+                          >
+                            Next
+                          </Button>
+                        )}
+                      </Box>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div>
-                  {getStepContent(activeStep)}
-                  <Divider />
-                  <Box pt={2} pl={2} className={classes.buttons}>
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                    </Button>
-                  </Box>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </Container>
-    </Page>
+              </CardContent>
+            </Card>
+          </Container>
+        </Page>
+      }
+    </>
   );
 };
 
