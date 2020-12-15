@@ -9,7 +9,7 @@ import {
     TextField,
     InputAdornment,
     SvgIcon,
-    makeStyles,
+    makeStyles, Icon,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 import { Link as RouterLink } from "react-router-dom";
@@ -37,6 +37,7 @@ const Toolbar = ({ change, className, ...rest }) => {
                     variant="contained"
                     component={RouterLink}
                     to={"/moped/projects/new"}
+                    startIcon={<Icon>add_circle</Icon>}
                 >
                     New Project
                 </Button>

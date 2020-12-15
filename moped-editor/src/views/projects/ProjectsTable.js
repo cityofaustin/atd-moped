@@ -9,27 +9,57 @@ import {
     TableCell,
     TableHead,
     TableRow,
-    makeStyles, Link,
+    makeStyles, Link, Chip, Icon,
 } from "@material-ui/core";
 import EditIcon from "@material-ui/icons/Edit";
+
 
 const useStyles = makeStyles(() => ({
     root: {},
     tableCell: {
         "text-transform": "capitalize"
-    }
+    },
 }));
 
 
 const ProjectsTable = ({ projects }) => {
     const classes = useStyles();
 
+    /**
+     * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
+     * @param {string} date - The date as provided by the database
+     * @return {string}
+     */
+    const parseDateReadable = date => {
+        return new Date(date).toLocaleString();
+    }
+
+    /**
+     * Removes any non-alphanumeric characters from a string
+     * @param {str} input - The text to be cleaned
+     */
+    const cleanUpText = input => {
+        return String(input).replace(/[^0-9a-z]/gi, '')
+    }
+
+    const getProjectStatus = status => {
+        const statusColorMap = {
+            "active": "primary",
+            "inprogress": "secondary",
+            "canceled": "disabled",
+        }
+
+        const statusLabel = cleanUpText(status);
+        return <Chip color={statusColorMap[statusLabel.toLowerCase()]} size={"small"} label={statusLabel}/>;
+    }
+
     return (
         <Card className={classes.root}>
             <PerfectScrollbar>
                 <Box minWidth={1050}>
                     <Table>
-                        <TableHead>
+                        <TableHead className={classes.tableHead}>
+
                             <TableRow>
                                 <TableCell> </TableCell>
                                 <TableCell>Project Name</TableCell>
@@ -45,14 +75,14 @@ const ProjectsTable = ({ projects }) => {
                                 <TableRow hover key={project.project_id}>
                                     <TableCell align="center">
                                         <RouterLink to={`/moped/project/${project.project_id}`}>
-                                            <EditIcon color="primary" />
+                                            <Icon color={"primary"}>source</Icon>
                                         </RouterLink>
                                     </TableCell>
                                     <TableCell className={classes.tableCell}><Link href={"/moped/project/"+project.project_id}>{project.project_name}</Link></TableCell>
                                     <TableCell className={classes.tableCell}>{project.project_description}</TableCell>
-                                    <TableCell className={classes.tableCell}>{project.current_status.replace('"', "")}</TableCell>
-                                    <TableCell>{project.date_added}</TableCell>
-                                    <TableCell>{project.start_date}</TableCell>
+                                    <TableCell className={classes.tableCell}>{getProjectStatus(project.current_status)}</TableCell>
+                                    <TableCell>{parseDateReadable(project.date_added)}</TableCell>
+                                    <TableCell>{parseDateReadable(project.start_date)}</TableCell>
                                     <TableCell>{project.capitally_funded ? "Yes" : "No"}</TableCell>
                                 </TableRow>
                             ))}
