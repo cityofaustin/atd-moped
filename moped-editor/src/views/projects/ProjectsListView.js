@@ -109,7 +109,7 @@ const StaffListView = () => {
     }, [data, searchKeyword]);
 
     return (
-        <Page className={classes.root} title="Staff">
+        <Page className={classes.root} title="Projects">
             <Container maxWidth={false}>
                 <Toolbar change={filterSearch} />
                 <Box mt={3}>
