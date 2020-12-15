@@ -11,7 +11,6 @@ import {
     TableRow,
     makeStyles, Link, Chip, Icon,
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 
 
 const useStyles = makeStyles(() => ({
@@ -75,7 +74,7 @@ const ProjectsTable = ({ projects }) => {
                                 <TableRow hover key={project.project_id}>
                                     <TableCell align="center">
                                         <RouterLink to={`/moped/project/${project.project_id}`}>
-                                            <Icon color={"primary"}>source</Icon>
+                                            <Icon color={"primary"}>edit_road</Icon>
                                         </RouterLink>
                                     </TableCell>
                                     <TableCell className={classes.tableCell}><Link href={"/moped/project/"+project.project_id}>{project.project_name}</Link></TableCell>
