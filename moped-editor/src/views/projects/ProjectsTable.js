@@ -37,25 +37,33 @@ const ProjectsTable = ({ projects }) => {
   /**
    * Removes any non-alphanumeric characters from a string
    * @param {str} input - The text to be cleaned
+   * @returns {str}
    */
   const cleanUpText = input => {
     return String(input).replace(/[^0-9a-z]/gi, "");
   };
 
+  /**
+   * Returns a Chip object containing the status of the project.
+   * @param {str} status - The status of the project as string
+   * @return {JSX.Element}
+   */
   const getProjectStatus = status => {
     const statusColorMap = {
       active: "primary",
-      inprogress: "secondary",
+      hold: "secondary",
       canceled: "disabled",
     };
 
     const statusLabel = cleanUpText(status);
-    return (
+    return String(status) !== "" ? (
       <Chip
-        color={statusColorMap[statusLabel.toLowerCase()]}
+        color={statusColorMap[statusLabel.toLowerCase()] || "disabled"}
         size={"small"}
         label={statusLabel}
       />
+    ) : (
+      <span>No Status</span>
     );
   };
 
