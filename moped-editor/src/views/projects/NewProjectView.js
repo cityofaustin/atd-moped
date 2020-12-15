@@ -14,7 +14,6 @@ import {
   Step,
   StepLabel,
   Typography,
-  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -25,7 +24,6 @@ import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
 import ProjectSaveButton from "./ProjectSaveButton";
-import { useNavigate } from "react-router-dom";
 
 /**
  * Styles
@@ -63,7 +61,7 @@ const NewProjectView = () => {
    * and trigger the redirect.
    */
   useEffect(() => {
-    if (!!newProjectId){
+    if (!!newProjectId) {
       window.setTimeout(() => {
         setSuccess(true);
       }, 1500);
@@ -71,12 +69,12 @@ const NewProjectView = () => {
   }, [newProjectId]);
 
   useEffect(() => {
-    if(!!newProjectId && success) {
+    if (!!newProjectId && success) {
       window.setTimeout(() => {
         navigate("/moped/projects/" + newProjectId);
       }, 800);
     }
-  }, [success, newProjectId, navigate])
+  }, [success, newProjectId, navigate]);
 
   const [activeStep, setActiveStep] = useState(0);
   const [defineProjectState, updateProjectState] = useState({
@@ -246,14 +244,13 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
-  const navigate = useNavigate();
-
-  const [loading, setLoading] = React.useState(false);
   const timer = React.useRef();
 
   React.useEffect(() => {
+    const currentTimer = timer.current;
+
     return () => {
-      clearTimeout(timer.current);
+      clearTimeout(currentTimer);
     };
   }, []);
 
@@ -299,13 +296,15 @@ const NewProjectView = () => {
           let notes = value.notes.userInput;
           addStaff({
             variables: { workgroup, role_name, first_name, last_name, notes },
-          }).then(() => {
-            setNewProjectId(project.project_id);
-          }).catch(err => {
-            alert(err);
-            setLoading(false);
-            setSuccess(false);
-          });
+          })
+            .then(() => {
+              setNewProjectId(project.project_id);
+            })
+            .catch(err => {
+              alert(err);
+              setLoading(false);
+              setSuccess(false);
+            });
         });
       })
       .catch(err => {
