@@ -53,10 +53,8 @@ const NewProjectView = () => {
   const [StaffRows, setStaffRows] = useState([
     {
       id: 1,
-      name: {
-        name: "",
-        workgroup: "",
-      },
+      name: "",
+      workgroup: "",
       role: "",
       notes: "",
     },
@@ -227,7 +225,7 @@ const NewProjectView = () => {
 
     //data from ProjectTeamTable going to database
     let teamData = toArray({ ...StaffRows });
-     forEach(teamData, function(value) {
+    forEach(teamData, function(value) {
       let name_array = value.name.name;
       let name_split = name_array.split(" ");
       let first_name = name_split[0];
@@ -235,8 +233,10 @@ const NewProjectView = () => {
       let workgroup = value.workgroup;
       let role_name = value.role;
       let notes = value.notes.userInput;
-      addStaff({ variables: { workgroup, role_name, first_name, last_name, notes } });
-     });
+      addStaff({
+        variables: { workgroup, role_name, first_name, last_name, notes },
+      });
+    });
   };
 
   return (
