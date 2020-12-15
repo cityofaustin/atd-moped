@@ -19,7 +19,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import MapProjectGeometry from "./MapProjectGeometry";
+import ProjectMap from "./ProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -101,6 +101,7 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -120,7 +121,12 @@ const NewProjectView = () => {
           <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
         );
       case 2:
-        return <MapProjectGeometry />;
+        return (
+          <ProjectMap
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+        );
       default:
         return "Unknown step";
     }
