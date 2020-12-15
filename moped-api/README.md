@@ -198,8 +198,3 @@ def auth_example(claims) -> str:
 
 You will notice there will not be any nested JSON strings.
 Feel free to implement your own decorators or helper methods.
-
-## Notes
-
-This is a living document. We are currently in the early stages of development,
-you will see more documentation as the platform matures and gains new features.
