@@ -151,14 +151,14 @@ const NewProjectView = () => {
               data: {
                 completion_percentage: 10
                 completed: false
-                phase_name: $current_phase
+                phase_name: "active"
               }
             }
             moped_proj_status_history: {
               data: {
                 date_added: "2020-01-01"
                 milestone_privacy: false
-                status_name: $current_status
+                status_name: "active"
               }
             }
           }
@@ -252,15 +252,16 @@ const NewProjectView = () => {
     //data from ProjectTeamTable going to database
     let teamData = toArray({ ...StaffRows });
     forEach(teamData, function(value) {
-      let name_array = value.name.name;
-      let name_split = name_array.split(" ");
-      let first_name = name_split[0];
-      let last_name = name_split[1];
+      // let name_array = value.name.name;
+      // let name_split = name_array.split(" ");
+      // let first_name = name_split[0];
+      // let last_name = name_split[1];
       let workgroup = value.workgroup;
       let role_name = value.role;
       let notes = value.notes.userInput;
       addStaff({
-        variables: { workgroup, role_name, first_name, last_name, notes },
+        // variables: { workgroup, role_name, first_name, last_name, notes }, //waiting on TODO from ProjectTeam
+        variables: { workgroup, role_name, notes },
       });
     });
   };
