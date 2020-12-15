@@ -39,7 +39,7 @@ const ProjectSummaryDetails = details => {
     },
     {
       field: eCapris_id,
-      label: "eCaprisId",
+      label: "eCapris ID",
     },
   ];
 
