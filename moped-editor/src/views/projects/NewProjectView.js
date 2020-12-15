@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import toArray from "lodash.toarray";
 import forEach from "lodash.foreach";
 import {
@@ -13,6 +14,7 @@ import {
   Step,
   StepLabel,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -199,8 +201,19 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = React.useState(false);
+  const timer = React.useRef();
+
+  React.useEffect(() => {
+    return () => {
+      clearTimeout(timer.current);
+    };
+  }, []);
+
   const handleSubmit = () => {
-    //data from Define Project going to database
+    // data from Define Project going to database
     let projData = toArray({ ...defineProjectState });
     let capitally_funded = projData[0];
     let project_name = projData[1];
@@ -227,7 +240,7 @@ const NewProjectView = () => {
 
     //data from ProjectTeamTable going to database
     let teamData = toArray({ ...StaffRows });
-     forEach(teamData, function(value) {
+    forEach(teamData, function(value) {
       let name_array = value.name.name;
       let name_split = name_array.split(" ");
       let first_name = name_split[0];
@@ -235,8 +248,17 @@ const NewProjectView = () => {
       let workgroup = value.workgroup;
       let role_name = value.role;
       let notes = value.notes.userInput;
-      addStaff({ variables: { workgroup, role_name, first_name, last_name, notes } });
-     });
+      addStaff({
+        variables: { workgroup, role_name, first_name, last_name, notes },
+      });
+    });
+    if (!loading) {
+      setLoading(true);
+      timer.current = window.setTimeout(() => {
+        setLoading(false);
+        navigate("/moped/projects/new/success");
+      }, 2000);
+    }
   };
 
   return (
@@ -283,6 +305,12 @@ const NewProjectView = () => {
                     >
                       {activeStep === steps.length - 1 ? "Finish" : "Next"}
                     </Button>
+                    {loading && (
+                      <CircularProgress
+                        size={24}
+                        className={classes.buttonProgress}
+                      />
+                    )}
                   </Box>
                 </div>
               )}
