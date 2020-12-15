@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
@@ -10,7 +10,6 @@ import {
   Box,
   Container,
   Card,
-  CardHeader,
   CardContent,
   Divider,
   CircularProgress,
@@ -20,65 +19,91 @@ import {
   Typography,
   Grid,
 } from "@material-ui/core";
+import {
+  // rest of the elements/components imported remain same
+  useParams,
+} from "react-router-dom";
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+  cardWrapper: {
+    marginTop: theme.spacing(3),
+  },
+  buttons: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  button: {
+    marginTop: theme.spacing(3),
+    marginLeft: theme.spacing(1),
+  },
+}));
+
+const SUMMARY_QUERY = gql`
+  query ProjectSummary($projectId: Int) {
+    moped_project(where: { project_id: { _eq: $projectId } }) {
+      project_name
+      project_description
+      start_date
+      current_phase
+      current_status
+      eCapris_id
+      fiscal_year
+      project_priority
+    }
+  }
+`;
+
+const TEAM_QUERY = gql`
+  query TeamSummary {
+    moped_proj_personnel(limit: 2, order_by: { project_personnel_id: desc }) {
+      first_name
+      last_name
+      role_name
+      notes
+    }
+  }
+`;
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={3}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const ProjectSummary = () => {
-  const useStyles = makeStyles(theme => ({
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.paper,
-    },
-    cardWrapper: {
-      marginTop: theme.spacing(3),
-    },
-    buttons: {
-      display: "flex",
-      justifyContent: "flex-end",
-    },
-    button: {
-      marginTop: theme.spacing(3),
-      marginLeft: theme.spacing(1),
-    },
-  }));
+  const { projectId } = useParams();
   const classes = useStyles();
-
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate("/moped/projects");
-  };
-
-  function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box p={3}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
-
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.any.isRequired,
-    value: PropTypes.any.isRequired,
-  };
-
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
 
   const [value, setValue] = React.useState(0);
 
@@ -86,37 +111,17 @@ const ProjectSummary = () => {
     setValue(newValue);
   };
 
-  const SUMMARY_QUERY = gql`
-    query MySummary {
-      moped_project(limit: 1, order_by: { project_id: desc }) {
-        project_name
-        project_description
-        start_date
-        current_phase
-        current_status
-        eCapris_id
-        fiscal_year
-        project_priority
-      }
-    }
-  `;
-
-  const TEAM_QUERY = gql`
-    query TeamSummary {
-      moped_proj_personnel(limit: 2, order_by: { project_personnel_id: desc }) {
-        first_name
-        last_name
-        role_name
-        notes
-      }
-    }
-  `;
-
   const {
     loading: projectLoading,
     error: projectError,
     data: projectData,
-  } = useQuery(SUMMARY_QUERY);
+  } = useQuery(SUMMARY_QUERY, {
+    variables: { projectId },
+  });
+
+  if (projectError) {
+    console.log(projectError);
+  }
 
   const { loading: teamLoading, error: teamError, data: teamData } = useQuery(
     TEAM_QUERY
@@ -133,10 +138,6 @@ const ProjectSummary = () => {
       <Container>
         <Card className={classes.cardWrapper}>
           <div className={classes.root}>
-            <Box pt={2} pl={2}>
-              <CardHeader title="Your Project Was Created Successfully!" />
-            </Box>
-            <Divider />
             <Box pt={2} pl={2}>
               {projectData.moped_project.map(details => (
                 <h2 key={details.project_name} value={details.project_name}>
@@ -242,8 +243,12 @@ const ProjectSummary = () => {
           <div>
             <Divider />
             <Box pt={2} pl={2} className={classes.buttons}>
-              <Button className={classes.button} onClick={handleClick}>
-                Back
+              <Button
+                className={classes.button}
+                component={RouterLink}
+                to="/moped/projects"
+              >
+                All Projects
               </Button>
             </Box>
           </div>
