@@ -28,8 +28,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const MEMBERS_QUERY = gql`
+  query Members {
+    moped_users(order_by: { last_name: asc }) {
+      first_name
+      last_name
+      workgroup
+      user_id
+    }
+  }
+`;
+
+const ROLES_QUERY = gql`
+  query Roles {
+    moped_project_roles(order_by: { project_role_name: asc }) {
+      project_role_name
+    }
+  }
+`;
+
 const ProjectTeamTable = props => {
   const classes = useStyles();
+
+  const {
+    loading: membersLoading,
+    error: membersError,
+    data: members,
+  } = useQuery(MEMBERS_QUERY);
+
+  const { loading: roleLoading, error: roleError, data: roles } = useQuery(
+    ROLES_QUERY
+  );
 
   const handleAddRow = () => {
     let item = {
@@ -47,9 +76,14 @@ const ProjectTeamTable = props => {
       props.setStaffRows(StaffRows => StaffRows.slice(0, index));
   };
 
-  const handleNameChange = (value, index) => {
+  const handleNameAndWorkgroupChange = (value, index) => {
+    const updatedName = value?.name || null;
+    const updatedWorkgroup = value?.workgroup || null;
+
     const updatedStaffRows = props.StaffRows.map((row, i) =>
-      i === index ? { ...row, name: value } : row
+      i === index
+        ? { ...row, name: updatedName, workgroup: updatedWorkgroup }
+        : row
     );
 
     props.setStaffRows(updatedStaffRows);
@@ -71,48 +105,23 @@ const ProjectTeamTable = props => {
     props.setStaffRows(updatedStaffRows);
   };
 
-  const MEMBERS_QUERY = gql`
-    query Members {
-      moped_users(order_by: { last_name: asc }) {
-        first_name
-        last_name
-        workgroup
-      }
-    }
-  `;
-
-  const ROLES_QUERY = gql`
-    query Roles {
-      moped_project_roles(order_by: { project_role_name: asc }) {
-        project_role_name
-      }
-    }
-  `;
-
-  const {
-    loading: membersLoading,
-    error: membersError,
-    data: members,
-  } = useQuery(MEMBERS_QUERY);
-
-  const { loading: roleLoading, error: roleError, data: roles } = useQuery(
-    ROLES_QUERY
-  );
-
   if (membersLoading) return <CircularProgress />;
   if (membersError) return `Error! ${membersError.message}`;
 
   if (roleLoading) return <CircularProgress />;
   if (roleError) return `Error! ${roleError.message}`;
 
-  let nameOption = [];
-  members.moped_users.forEach(name =>
-    nameOption.push(name.first_name + " " + name.last_name)
+  let userOptions = [];
+  members.moped_users.forEach(user =>
+    userOptions.push({
+      name: user.first_name + " " + user.last_name,
+      workgroup: user.workgroup,
+    })
   );
 
-  let roleOption = [];
+  let roleOptions = [];
   roles.moped_project_roles.forEach(role =>
-    roleOption.push(role.project_role_name)
+    roleOptions.push(role.project_role_name)
   );
 
   return (
@@ -120,52 +129,46 @@ const ProjectTeamTable = props => {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Row</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Role</TableCell>
-            <TableCell>Workgroup</TableCell>
             <TableCell>Notes</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {props.StaffRows.map((item, index) => {
             return (
               <TableRow key={index}>
-                <TableCell>{item.id}</TableCell>
-                <TableCell>
+                <TableCell className={classes.cell}>
                   <Autocomplete
                     id="selectedName"
                     name="Name"
-                    options={nameOption}
-                    getOptionLabel={option => option || ""}
-                    onChange={(event, value) => {
-                      handleNameChange(value, index);
-                      // TODO: Handle workgroup update
+                    options={userOptions}
+                    getOptionLabel={option => option.name || option}
+                    getOptionSelected={(option, value) => {
+                      return option.name === value;
                     }}
-                    defaultValue={item.name}
+                    value={item.name || null}
+                    onChange={(event, value) => {
+                      handleNameAndWorkgroupChange(value, index);
+                    }}
                     style={{ width: 200 }}
                     renderInput={params => (
                       <TextField
                         {...params}
                         label="Select Staff"
                         margin="normal"
+                        helperText={item.workgroup || " "}
                       />
                     )}
-                  />
-                </TableCell>
-                <TableCell>
-                  <TextField
-                    name="Group"
-                    value={item.workgroup}
-                    style={{ width: 200, paddingLeft: 10, marginBottom: -13 }}
                   />
                 </TableCell>
                 <TableCell>
                   <Autocomplete
                     id="selectedRole"
                     name="Role"
-                    options={roleOption}
-                    defaultValue={item.role}
+                    options={roleOptions}
+                    value={item.role || null}
                     onChange={(event, value) => {
                       handleRoleChange(value, index);
                     }}
@@ -175,6 +178,7 @@ const ProjectTeamTable = props => {
                         {...params}
                         label="Select a Role"
                         margin="normal"
+                        helperText=" "
                       />
                     )}
                   />
@@ -203,12 +207,12 @@ const ProjectTeamTable = props => {
             );
           })}
         </TableBody>
+        <PersonAddIcon
+          color="secondary"
+          onClick={handleAddRow}
+          style={{ marginLeft: 20, fontSize: 35, marginTop: 20 }}
+        />
       </Table>
-      <PersonAddIcon
-        color="secondary"
-        onClick={handleAddRow}
-        style={{ paddingLeft: 10, fontSize: 35 }}
-      />
     </form>
   );
 };

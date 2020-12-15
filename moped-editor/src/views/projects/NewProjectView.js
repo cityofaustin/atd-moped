@@ -53,9 +53,9 @@ const NewProjectView = () => {
   const [StaffRows, setStaffRows] = useState([
     {
       id: 1,
-      name: "",
+      name: null,
       workgroup: "",
-      role: "",
+      role: null,
       notes: "",
     },
   ]);
