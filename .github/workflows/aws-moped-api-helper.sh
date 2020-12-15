@@ -26,7 +26,7 @@ function initialize_virtualenv() {
 #
 function install_requirements() {
   echo "Installing requirements..."
-  pip install -r "./requirements/${WORKING_STAGE}.txt" --target ./package
+  pip install -r "./requirements/${WORKING_STAGE}.txt"
 }
 
 
