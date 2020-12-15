@@ -204,7 +204,6 @@ const NewProjectView = () => {
   const navigate = useNavigate();
 
   const [loading, setLoading] = React.useState(false);
-  const [success, setSuccess] = React.useState(false);
   const timer = React.useRef();
 
   React.useEffect(() => {
@@ -254,10 +253,8 @@ const NewProjectView = () => {
       });
     });
     if (!loading) {
-      setSuccess(false);
       setLoading(true);
       timer.current = window.setTimeout(() => {
-        setSuccess(true);
         setLoading(false);
         navigate("/moped/projects/new/success");
       }, 2000);
