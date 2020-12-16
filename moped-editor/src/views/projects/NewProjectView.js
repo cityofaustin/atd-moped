@@ -12,6 +12,7 @@ import {
   Step,
   StepLabel,
   Typography,
+  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
@@ -20,8 +21,7 @@ import ProjectMap from "./ProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
-
-import ProjectSaveButton from "./ProjectSaveButton";
+import { green } from "@material-ui/core/colors";
 
 /**
  * Styles
@@ -37,6 +37,14 @@ const useStyles = makeStyles(theme => ({
   button: {
     marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
+  },
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12,
   },
 }));
 
@@ -331,12 +339,22 @@ const NewProjectView = () => {
                           Back
                         </Button>
                         {activeStep === steps.length - 1 ? (
-                          <ProjectSaveButton
-                            label={"Finish"}
-                            loading={loading}
-                            success={success}
-                            handleButtonClick={handleSubmit}
-                          />
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            className={classes.button}
+                            disabled={loading}
+                            onClick={success ? null : handleSubmit}
+                          >
+                            {loading ? (
+                              <CircularProgress
+                                size={24}
+                                className={classes.buttonProgress}
+                              />
+                            ) : (
+                              "Finish"
+                            )}
+                          </Button>
                         ) : (
                           <Button
                             variant="contained"
