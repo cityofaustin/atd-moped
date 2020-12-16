@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import toArray from "lodash.toarray";
-import forEach from "lodash.foreach";
 import {
   Button,
   Box,
@@ -82,12 +79,12 @@ const NewProjectView = () => {
     fiscal_year: "",
     current_phase: "",
     project_priority: "",
-    project_description: null,
-    project_name: null,
+    project_description: "",
+    project_name: "",
     start_date: "2021-01-01",
     current_status: "",
     capitally_funded: false,
-    eCapris_id: null,
+    eCapris_id: "",
   });
 
   const [StaffRows, setStaffRows] = useState([
@@ -95,7 +92,7 @@ const NewProjectView = () => {
       id: 1,
       name: null,
       workgroup: "",
-      role: null,
+      role_name: null,
       notes: "",
     },
   ]);
@@ -263,18 +260,20 @@ const NewProjectView = () => {
     })
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
-        //data from ProjectTeamTable going to database
-        let teamData = toArray({ ...StaffRows });
-        forEach(teamData, function(value) {
-          let name_array = value.name.name;
-          let name_split = name_array.split(" ");
-          let first_name = name_split[0];
-          let last_name = name_split[1];
-          let workgroup = value.workgroup;
-          let role_name = value.role;
-          let notes = value.notes.userInput;
+
+        StaffRows.forEach(row => {
+          const [first_name, last_name] = row.name.split(" ");
+          const { workgroup, notes, role_name } = row;
+          const variables = {
+            workgroup,
+            notes,
+            role_name,
+            first_name,
+            last_name,
+          };
+
           addStaff({
-            variables: { workgroup, role_name, first_name, last_name, notes },
+            variables,
           })
             .then(() => {
               setNewProjectId(project.project_id);

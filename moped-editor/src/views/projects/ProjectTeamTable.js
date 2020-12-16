@@ -69,7 +69,7 @@ const ProjectTeamTable = props => {
       id: props.StaffRows.length + 1,
       name: "",
       workgroup: "",
-      role: "",
+      role_name: "",
       notes: "",
     };
     props.setStaffRows(StaffRows => [...StaffRows, item]);
@@ -95,7 +95,7 @@ const ProjectTeamTable = props => {
 
   const handleRoleChange = (value, index) => {
     const updatedStaffRows = props.StaffRows.map((row, i) =>
-      i === index ? { ...row, role: value } : row
+      i === index ? { ...row, role_name: value } : row
     );
 
     props.setStaffRows(updatedStaffRows);
@@ -172,7 +172,7 @@ const ProjectTeamTable = props => {
                     id="selectedRole"
                     name="Role"
                     options={roleOptions}
-                    value={item.role || null}
+                    value={item.role_name || null}
                     onChange={(event, value) => {
                       handleRoleChange(value, index);
                     }}

@@ -13,6 +13,7 @@ import { gql } from "apollo-boost";
 
 const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
   const handleFieldChange = (value, name) => {
+    console.log(value);
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
     setProjectDetails(updatedProjectDetails);
@@ -70,6 +71,8 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
       priority_name: "High",
     },
   ];
+
+  const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 
   if (phaseLoading) return <CircularProgress />;
   if (phaseError) return `Error! ${phaseError.message}`;
@@ -152,7 +155,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
           >
             {statuses.moped_status.map(status => (
               <MenuItem key={status.status_name} value={status.status_name}>
-                {status.status_name}
+                {capitalize(status.status_name)}
               </MenuItem>
             ))}
           </Select>
@@ -169,7 +172,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
           >
             {phases.moped_phases.map(phase => (
               <MenuItem key={phase.phase_name} value={phase.phase_name}>
-                {phase.phase_name}
+                {capitalize(phase.phase_name)}
               </MenuItem>
             ))}
           </Select>
@@ -199,10 +202,10 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
           <InputLabel>Capitally Funded?</InputLabel>
           <Switch
             type="checkbox"
-            value={projectDetails.capitally_funded}
+            checked={projectDetails.capitally_funded}
             name="capitally_funded"
             inputProps={{ "aria-label": "secondary checkbox" }}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
+            onChange={e => handleFieldChange(e.target.checked, e.target.name)}
           />
         </Grid>
         {projectDetails.capitally_funded && (
