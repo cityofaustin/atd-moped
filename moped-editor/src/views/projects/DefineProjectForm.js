@@ -13,7 +13,6 @@ import { gql } from "apollo-boost";
 
 const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
   const handleFieldChange = (value, name) => {
-    console.log(value);
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
     setProjectDetails(updatedProjectDetails);

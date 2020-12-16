@@ -76,8 +76,9 @@ const ProjectTeamTable = props => {
   };
 
   const handleRemoveRow = index => {
-    if (props.StaffRows.length > 1)
-      props.setStaffRows(StaffRows => StaffRows.slice(0, index));
+    const updatedStaffRows = props.StaffRows.filter((row, i) => i !== index);
+
+    props.setStaffRows(updatedStaffRows);
   };
 
   const handleNameAndWorkgroupChange = (value, index) => {
@@ -221,7 +222,7 @@ const ProjectTeamTable = props => {
               style={{ marginLeft: 25, marginTop: 25 }}
               color="primary"
               aria-label="add staff"
-              component="span"
+              component="td"
               onClick={handleAddRow}
             >
               <PersonAddIcon color="primary" />
