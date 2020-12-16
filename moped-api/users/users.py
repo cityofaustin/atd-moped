@@ -172,7 +172,8 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json
+            user_profile=request.json,
+            ignore_fields=["password"]
         )
 
         if not profile_valid:
