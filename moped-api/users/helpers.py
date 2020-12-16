@@ -56,12 +56,17 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
     return updated_attributes
 
 
-def is_valid_user_profile(user_profile: dict) -> [bool, dict]:
+def is_valid_user_profile(user_profile: dict, ignore_fields: List[str] = []) -> [bool, dict]:
     """
     Returns a tuple if the user profile is valid and any errors if available
+    :param List[str] ignore_fields: A list of strings of fields to ignore, default empty.
     :param dict user_profile: The json data from the request
     :return tuple:
     """
+    # We will first scan
+    for field_ignored in ignore_fields:
+        USER_VALIDATION_SCHEMA[field_ignored]["required"] = False
+    # Continue validation
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, USER_VALIDATION_SCHEMA)
     return is_valid_profile, user_validator.errors
