@@ -32,11 +32,13 @@ const useStyles = makeStyles(theme => ({
 
 const MEMBERS_QUERY = gql`
   query Members {
-    moped_users(order_by: { last_name: asc }) {
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
       first_name
       last_name
       workgroup
-      user_id
     }
   }
 `;
