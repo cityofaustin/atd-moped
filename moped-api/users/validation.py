@@ -49,7 +49,7 @@ USER_VALIDATION_SCHEMA = {
         "type": "number",
         "nullable": True,
         "required": False,
-        "min": 1,
+        "min": 0,
         "max": 100,
     },
     "title": {
