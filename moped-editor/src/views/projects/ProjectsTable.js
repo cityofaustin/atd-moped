@@ -10,8 +10,10 @@ import {
   TableHead,
   TableRow,
   makeStyles,
+  Link,
+  Chip,
+  Icon,
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -23,6 +25,48 @@ const useStyles = makeStyles(() => ({
 const ProjectsTable = ({ projects }) => {
   const classes = useStyles();
 
+  /**
+   * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
+   * @param {string} date - The date as provided by the database
+   * @return {string}
+   */
+  const parseDateReadable = date => {
+    return new Date(date).toLocaleDateString();
+  };
+
+  /**
+   * Removes any non-alphanumeric characters from a string
+   * @param {str} input - The text to be cleaned
+   * @returns {str}
+   */
+  const cleanUpText = input => {
+    return String(input).replace(/[^0-9a-z]/gi, "");
+  };
+
+  /**
+   * Returns a Chip object containing the status of the project.
+   * @param {str} status - The status of the project as string
+   * @return {JSX.Element}
+   */
+  const getProjectStatus = status => {
+    const statusColorMap = {
+      active: "primary",
+      hold: "secondary",
+      canceled: "disabled",
+    };
+
+    const statusLabel = cleanUpText(status);
+    return String(status) !== "" ? (
+      <Chip
+        color={statusColorMap[statusLabel.toLowerCase()] || "disabled"}
+        size={"small"}
+        label={statusLabel}
+      />
+    ) : (
+      <span>No Status</span>
+    );
+  };
+  
   return (
     <Card className={classes.root}>
       <PerfectScrollbar>
@@ -40,39 +84,31 @@ const ProjectsTable = ({ projects }) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {projects.map(
-                ({
-                  project_id,
-                  project_name,
-                  project_description,
-                  current_status,
-                  date_added,
-                  start_date,
-                  capitally_funded,
-                }) => (
-                  <TableRow hover key={project_id}>
-                    <TableCell align="center">
-                      <RouterLink to={`/moped/projects/${project_id}`}>
-                        <EditIcon color="primary" />
-                      </RouterLink>
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      <RouterLink to={`/moped/projects/${project_id}`}>
-                        {project_name}
-                      </RouterLink>
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {project_description}
-                    </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {current_status.replace('"', "")}
-                    </TableCell>
-                    <TableCell>{date_added}</TableCell>
-                    <TableCell>{start_date}</TableCell>
-                    <TableCell>{capitally_funded ? "Yes" : "No"}</TableCell>
-                  </TableRow>
-                )
-              )}
+              {projects.map(project => (
+                <TableRow hover key={project.project_id}>
+                  <TableCell align="center">
+                    <RouterLink to={`/moped/projects/${project.project_id}`}>
+                      <Icon color={"primary"}>edit_road</Icon>
+                    </RouterLink>
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    <Link href={"/moped/projects/" + project.project_id}>
+                      {project.project_name}
+                    </Link>
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {project.project_description}
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>
+                    {getProjectStatus(project.current_status)}
+                  </TableCell>
+                  <TableCell>{parseDateReadable(project.date_added)}</TableCell>
+                  <TableCell>{parseDateReadable(project.start_date)}</TableCell>
+                  <TableCell>
+                    {project.capitally_funded ? "Yes" : "No"}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </Box>

@@ -14,12 +14,11 @@ import {
   Step,
   StepLabel,
   Typography,
-  CircularProgress,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import MapProjectGeometry from "./MapProjectGeometry";
+import ProjectMap from "./ProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -98,6 +97,7 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -117,7 +117,12 @@ const NewProjectView = () => {
           <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
         );
       case 2:
-        return <MapProjectGeometry />;
+        return (
+          <ProjectMap
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+        );
       default:
         return "Unknown step";
     }
@@ -237,14 +242,13 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
-  const navigate = useNavigate();
-
-  const [loading, setLoading] = React.useState(false);
   const timer = React.useRef();
 
   React.useEffect(() => {
+    const currentTimer = timer.current;
+
     return () => {
-      clearTimeout(timer.current);
+      clearTimeout(currentTimer);
     };
   }, []);
 
