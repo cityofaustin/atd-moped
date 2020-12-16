@@ -1,7 +1,7 @@
 """
 Helper methods to update the database via GraphQL
 """
-import re
+import re, copy
 from cerberus import Validator
 from graphql import run_query
 
@@ -63,12 +63,14 @@ def is_valid_user_profile(user_profile: dict, ignore_fields: List[str] = []) -> 
     :param dict user_profile: The json data from the request
     :return tuple:
     """
-    # We will first scan
+    # First copy the validation schema
+    validation_schema_copy = copy.deepcopy(USER_VALIDATION_SCHEMA)
+    # Then scan for fields that need to be ignored, then patch.
     for field_ignored in ignore_fields:
-        USER_VALIDATION_SCHEMA[field_ignored]["required"] = False
+        validation_schema_copy[field_ignored]["required"] = False
     # Continue validation
     user_validator = Validator()
-    is_valid_profile = user_validator.validate(user_profile, USER_VALIDATION_SCHEMA)
+    is_valid_profile = user_validator.validate(user_profile, validation_schema_copy)
     return is_valid_profile, user_validator.errors
 
 
