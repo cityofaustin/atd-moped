@@ -1,10 +1,8 @@
 import React from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { green } from "@material-ui/core/colors";
-import Button from "@material-ui/core/Button";
-import {Icon} from "@material-ui/core";
+import { Icon, Button, CircularProgress } from "@material-ui/core";
 
 /**
  * Styles
@@ -43,7 +41,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 /**
  * ProjectSaveButton - A button that shows an animated status when saving.
  * https://material-ui.com/components/progress/#interactive-integration
@@ -67,17 +64,19 @@ export default function ProjectSaveButton({
   });
 
   return (
-      <div className={classes.wrapper}>
-        <Button
-          variant="contained"
-          color="primary"
-          className={buttonClassname}
-          disabled={loading && !success}
-          onClick={success ? null : handleButtonClick}
-        >
-          {success ? <Icon>check</Icon> : label}
-        </Button>
-        {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
-      </div>
+    <div className={classes.wrapper}>
+      <Button
+        variant="contained"
+        color="primary"
+        className={buttonClassname}
+        disabled={loading && !success}
+        onClick={success ? null : handleButtonClick}
+      >
+        {success ? <Icon>check</Icon> : label}
+      </Button>
+      {loading && (
+        <CircularProgress size={24} className={classes.buttonProgress} />
+      )}
+    </div>
   );
 }
