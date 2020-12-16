@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -10,8 +10,10 @@ import {
   TableBody,
   TableCell,
   TableHead,
+  TableFooter,
   TableRow,
   TextField,
+  IconButton,
   CircularProgress,
 } from "@material-ui/core";
 
@@ -28,64 +30,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const MEMBERS_QUERY = gql`
+  query Members {
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
+      first_name
+      last_name
+      workgroup
+    }
+  }
+`;
+
+const ROLES_QUERY = gql`
+  query Roles {
+    moped_project_roles(order_by: { project_role_name: asc }) {
+      project_role_name
+    }
+  }
+`;
+
 const ProjectTeamTable = props => {
   const classes = useStyles();
-
-  const handleAddRow = () => {
-    let item = {
-      id: props.StaffRows.length + 1,
-      name: "",
-      workgroup: "",
-      role: "",
-      notes: "",
-    };
-    props.setStaffRows(StaffRows => [...StaffRows, item]);
-  };
-
-  const handleRemoveRow = index => {
-    if (props.StaffRows.length > 1)
-      props.setStaffRows(props.StaffRows.slice(0, index));
-  };
-
-  const handleNameChange = (value, item, index) => {
-    item.name = value;
-    props.setStaffRows(props.StaffRows);
-  };
-
-  const handleRoleChange = (value, item, index) => {
-    item.role = value;
-    props.setStaffRows(props.StaffRows);
-  };
-
-  const handleGroupChange = (value, item, index) => {
-    item.workgroup = value.workgroup;
-    props.setStaffRows(props.StaffRows);
-  };
-
-  const [userInput, setuserInput] = useState("");
-
-  const handleNoteChange = (value, item, index) => {
-    item.notes = { userInput };
-    props.setStaffRows(props.StaffRows);
-  };
-
-  const MEMBERS_QUERY = gql`
-    query Members {
-      moped_users(order_by: { last_name: asc }) {
-        first_name
-        last_name
-        workgroup
-      }
-    }
-  `;
-
-  const ROLES_QUERY = gql`
-    query Roles {
-      moped_project_roles(order_by: { project_role_name: asc }) {
-        project_role_name
-      }
-    }
-  `;
 
   const {
     loading: membersLoading,
@@ -97,124 +64,172 @@ const ProjectTeamTable = props => {
     ROLES_QUERY
   );
 
+  const handleAddRow = () => {
+    let item = {
+      id: props.StaffRows.length + 1,
+      name: "",
+      workgroup: "",
+      role_name: "",
+      notes: "",
+    };
+    props.setStaffRows(StaffRows => [...StaffRows, item]);
+  };
+
+  const handleRemoveRow = index => {
+    const updatedStaffRows = props.StaffRows.filter((row, i) => i !== index);
+
+    props.setStaffRows(updatedStaffRows);
+  };
+
+  const handleNameAndWorkgroupChange = (value, index) => {
+    const updatedName = value?.name || null;
+    const updatedWorkgroup = value?.workgroup || null;
+
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index
+        ? { ...row, name: updatedName, workgroup: updatedWorkgroup }
+        : row
+    );
+
+    props.setStaffRows(updatedStaffRows);
+  };
+
+  const handleRoleChange = (value, index) => {
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index ? { ...row, role_name: value } : row
+    );
+
+    props.setStaffRows(updatedStaffRows);
+  };
+
+  const handleNoteChange = (value, index) => {
+    const updatedStaffRows = props.StaffRows.map((row, i) =>
+      i === index ? { ...row, notes: value } : row
+    );
+
+    props.setStaffRows(updatedStaffRows);
+  };
+
   if (membersLoading) return <CircularProgress />;
   if (membersError) return `Error! ${membersError.message}`;
 
   if (roleLoading) return <CircularProgress />;
   if (roleError) return `Error! ${roleError.message}`;
 
-  let nameOption = [];
-  members.moped_users.forEach(name =>
-    nameOption.push({
-      name: name.first_name + " " + name.last_name,
-      workgroup: name.workgroup,
+  let userOptions = [];
+  members.moped_users.forEach(user =>
+    userOptions.push({
+      name: user.first_name + " " + user.last_name,
+      workgroup: user.workgroup,
     })
   );
 
-  let roleOption = [];
+  let roleOptions = [];
   roles.moped_project_roles.forEach(role =>
-    roleOption.push(role.project_role_name)
+    roleOptions.push(role.project_role_name)
   );
 
   return (
-    <form style={{ padding: 10 }}>
+    <form style={{ padding: 25 }}>
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <TableCell>Row</TableCell>
             <TableCell>Name</TableCell>
             <TableCell>Role</TableCell>
-            <TableCell>Workgroup</TableCell>
             <TableCell>Notes</TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {props.StaffRows.map((item, index) => (
-            <TableRow key={index}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>
-                <Autocomplete
-                  id="selectedName"
-                  name="Name"
-                  options={nameOption}
-                  getOptionLabel={option => (option.name ? option.name : "")}
-                  onChange={(event, value) => {
-                    handleNameChange(value, item, index);
-                    handleGroupChange(value, item, index);
-                  }}
-                  defaultValue={item.name}
-                  style={{ width: 200 }}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="Select Staff"
-                      margin="normal"
-                    />
-                  )}
-                />
-              </TableCell>
-              <TableCell>
-                <Autocomplete
-                  id="selectedRole"
-                  name="Role"
-                  options={roleOption}
-                  defaultValue={item.role}
-                  onChange={(event, value) => {
-                    handleRoleChange(value, item, index);
-                  }}
-                  style={{ width: 200 }}
-                  renderInput={params => (
-                    <TextField
-                      {...params}
-                      label="Select a Role"
-                      margin="normal"
-                    />
-                  )}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  name="Group"
-                  value={item.workgroup}
-                  style={{
-                    width: 200,
-                    paddingLeft: 10,
-                    marginBottom: -13,
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <TextField
-                  name="Notes"
-                  style={{ width: 200, paddingLeft: 10 }}
-                  multiline
-                  inputProps={{ maxLength: 75 }}
-                  variant="outlined"
-                  helperText="75 character max"
-                  value={userInput}
-                  onChange={event => setuserInput(event.target.value)}
-                  onBlur={(event, value) => {
-                    handleNoteChange(value, item, index);
-                  }}
-                />
-              </TableCell>
-              <TableCell>
-                <DeleteIcon
-                  color="secondary"
-                  onClick={event => {
-                    handleRemoveRow(index);
-                  }}
-                />
-              </TableCell>
-            </TableRow>
-          ))}
+          {props.StaffRows.map((item, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell className={classes.cell}>
+                  <Autocomplete
+                    id="selectedName"
+                    name="Name"
+                    options={userOptions}
+                    getOptionLabel={option => option.name || option}
+                    getOptionSelected={(option, value) => {
+                      return option.name === value;
+                    }}
+                    value={item.name || null}
+                    onChange={(event, value) => {
+                      handleNameAndWorkgroupChange(value, index);
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="Select Staff"
+                        margin="normal"
+                        helperText={item.workgroup || " "}
+                      />
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <Autocomplete
+                    id="selectedRole"
+                    name="Role"
+                    options={roleOptions}
+                    value={item.role_name || null}
+                    onChange={(event, value) => {
+                      handleRoleChange(value, index);
+                    }}
+                    style={{ width: 250 }}
+                    renderInput={params => (
+                      <TextField
+                        {...params}
+                        label="Select a Role"
+                        margin="normal"
+                        helperText=" "
+                      />
+                    )}
+                  />
+                </TableCell>
+                <TableCell>
+                  <TextField
+                    name="Notes"
+                    style={{ width: 250, paddingLeft: 10 }}
+                    multiline
+                    inputProps={{ maxLength: 75 }}
+                    variant="outlined"
+                    helperText="75 character max"
+                    value={props.StaffRows[index].notes}
+                    onChange={e => handleNoteChange(e.target.value, index)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    aria-label="remove staff"
+                    component="span"
+                    onClick={() => {
+                      handleRemoveRow(index);
+                    }}
+                  >
+                    <DeleteIcon color="secondary" />{" "}
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
+        <TableFooter>
+          <TableRow>
+            <IconButton
+              style={{ marginLeft: 25, marginTop: 25 }}
+              color="primary"
+              aria-label="add staff"
+              component="td"
+              onClick={handleAddRow}
+            >
+              <PersonAddIcon color="primary" />
+            </IconButton>
+          </TableRow>
+        </TableFooter>
       </Table>
-      <PersonAddIcon
-        color="secondary"
-        onClick={handleAddRow}
-        style={{ paddingLeft: 10, fontSize: 35 }}
-      />
     </form>
   );
 };

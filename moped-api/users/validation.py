@@ -49,7 +49,7 @@ USER_VALIDATION_SCHEMA = {
         "type": "number",
         "nullable": True,
         "required": False,
-        "min": 1,
+        "min": 0,
         "max": 100,
     },
     "title": {
@@ -64,7 +64,7 @@ USER_VALIDATION_SCHEMA = {
         "empty": False,
         "minlength": 3,
         "maxlength": 128,
-        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$",
+        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$\ ]*$",
     },
     "workgroup_id": {
         "type": "number",

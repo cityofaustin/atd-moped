@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import toArray from "lodash.toarray";
-import forEach from "lodash.foreach";
 import {
   Button,
   Box,
@@ -77,25 +75,24 @@ const NewProjectView = () => {
   }, [success, newProjectId, navigate]);
 
   const [activeStep, setActiveStep] = useState(0);
-  const [defineProjectState, updateProjectState] = useState({
-    fiscalYear: "",
-    phase: "",
-    priority: "",
-    projDesc: null,
-    projName: null,
-    startDate: "2021-01-01",
-    status: "",
-    capitallyFunded: false,
-    eCaprisId: null,
+  const [projectDetails, setProjectDetails] = useState({
+    fiscal_year: "",
+    current_phase: "",
+    project_priority: "",
+    project_description: "",
+    project_name: "",
+    start_date: "2021-01-01",
+    current_status: "",
+    capitally_funded: false,
+    eCapris_id: "",
   });
+
   const [StaffRows, setStaffRows] = useState([
     {
       id: 1,
-      name: {
-        name: "",
-        workgroup: "",
-      },
-      role: "",
+      name: null,
+      workgroup: "",
+      role_name: null,
       notes: "",
     },
   ]);
@@ -110,8 +107,8 @@ const NewProjectView = () => {
       case 0:
         return (
           <DefineProjectForm
-            defineProjectState={defineProjectState}
-            updateProjectState={updateProjectState}
+            projectDetails={projectDetails}
+            setProjectDetails={setProjectDetails}
           />
         );
       case 1:
@@ -257,45 +254,26 @@ const NewProjectView = () => {
   const handleSubmit = () => {
     // Change the initial state...
     setLoading(true);
-    // data from Define Project going to database
-    let projData = toArray({ ...defineProjectState });
-    let capitally_funded = projData[0];
-    let project_name = projData[1];
-    let project_description = projData[2];
-    let start_date = projData[3];
-    let fiscal_year = projData[4];
-    let current_phase = projData[5];
-    let current_status = projData[6];
-    let project_priority = projData[7];
-    let eCapris_id = projData[8];
 
     addProject({
-      variables: {
-        project_name,
-        project_description,
-        eCapris_id,
-        project_priority,
-        current_phase,
-        current_status,
-        fiscal_year,
-        capitally_funded,
-        start_date,
-      },
+      variables: projectDetails,
     })
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
-        //data from ProjectTeamTable going to database
-        let teamData = toArray({ ...StaffRows });
-        forEach(teamData, function(value) {
-          let name_array = value.name.name;
-          let name_split = name_array.split(" ");
-          let first_name = name_split[0];
-          let last_name = name_split[1];
-          let workgroup = value.workgroup;
-          let role_name = value.role;
-          let notes = value.notes.userInput;
+
+        StaffRows.forEach(row => {
+          const [first_name, last_name] = row.name.split(" ");
+          const { workgroup, notes, role_name } = row;
+          const variables = {
+            workgroup,
+            notes,
+            role_name,
+            first_name,
+            last_name,
+          };
+
           addStaff({
-            variables: { workgroup, role_name, first_name, last_name, notes },
+            variables,
           })
             .then(() => {
               setNewProjectId(project.project_id);
