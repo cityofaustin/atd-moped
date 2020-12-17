@@ -9,22 +9,21 @@ export const UserContext = React.createContext(null);
 // components bellow via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-
   /**
    * Retrieves persisted user context object
    * @return {object}
    */
   const getPersistedContext = () => {
     return JSON.parse(localStorage.getItem("atd_moped_user_context")) || null;
-  }
+  };
 
   /**
    * Persists user context object into localstorage
    * @param {str} context - The user context object
    */
-  const setPersistedContext = (context) => {
+  const setPersistedContext = context => {
     localStorage.setItem("atd_moped_user_context", JSON.stringify(context));
-  }
+  };
 
   const [user, setUser] = React.useState(getPersistedContext());
 
