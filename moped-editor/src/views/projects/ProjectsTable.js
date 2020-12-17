@@ -11,8 +11,9 @@ import {
   TableRow,
   makeStyles,
   Link,
+  Chip,
+  Icon,
 } from "@material-ui/core";
-import EditIcon from "@material-ui/icons/Edit";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -23,6 +24,48 @@ const useStyles = makeStyles(() => ({
 
 const ProjectsTable = ({ projects }) => {
   const classes = useStyles();
+
+  /**
+   * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
+   * @param {string} date - The date as provided by the database
+   * @return {string}
+   */
+  const parseDateReadable = date => {
+    return new Date(date).toLocaleDateString();
+  };
+
+  /**
+   * Removes any non-alphanumeric characters from a string
+   * @param {str} input - The text to be cleaned
+   * @returns {str}
+   */
+  const cleanUpText = input => {
+    return String(input).replace(/[^0-9a-z]/gi, "");
+  };
+
+  /**
+   * Returns a Chip object containing the status of the project.
+   * @param {str} status - The status of the project as string
+   * @return {JSX.Element}
+   */
+  const getProjectStatus = status => {
+    const statusColorMap = {
+      active: "primary",
+      hold: "secondary",
+      canceled: "disabled",
+    };
+
+    const statusLabel = cleanUpText(status);
+    return String(status) !== "" ? (
+      <Chip
+        color={statusColorMap[statusLabel.toLowerCase()] || "disabled"}
+        size={"small"}
+        label={statusLabel}
+      />
+    ) : (
+      <span>No Status</span>
+    );
+  };
 
   return (
     <Card className={classes.root}>
@@ -44,12 +87,12 @@ const ProjectsTable = ({ projects }) => {
               {projects.map(project => (
                 <TableRow hover key={project.project_id}>
                   <TableCell align="center">
-                    <RouterLink to={`/moped/project/${project.project_id}`}>
-                      <EditIcon color="primary" />
+                    <RouterLink to={`/moped/projects/${project.project_id}`}>
+                      <Icon color={"primary"}>edit_road</Icon>
                     </RouterLink>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Link href={"/moped/project/" + project.project_id}>
+                    <Link href={"/moped/projects/" + project.project_id}>
                       {project.project_name}
                     </Link>
                   </TableCell>
@@ -57,10 +100,10 @@ const ProjectsTable = ({ projects }) => {
                     {project.project_description}
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    {project.current_status.replace('"', "")}
+                    {getProjectStatus(project.current_status)}
                   </TableCell>
-                  <TableCell>{project.date_added}</TableCell>
-                  <TableCell>{project.start_date}</TableCell>
+                  <TableCell>{parseDateReadable(project.date_added)}</TableCell>
+                  <TableCell>{parseDateReadable(project.start_date)}</TableCell>
                   <TableCell>
                     {project.capitally_funded ? "Yes" : "No"}
                   </TableCell>

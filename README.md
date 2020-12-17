@@ -7,7 +7,7 @@
 
 Furthermore, Austin Transportation frequently executes our mobility projects alongside other City of Austin departments, particularly [Public Works](http://www.austintexas.gov/department/public-works), and regional partners including [CapMetro](https://capmetro.org) and [TXDOT](https://www.txdot.gov/). Using a single platform to track all of these projects would increase organizational alignment, enable holistic analysis and reporting, and lay the groundwork for robust business intelligence and data integrations. 
 
-Note: We have retired this Github repo and are now performing project tracking in [`atd-data-tech`](https://github.com/cityofaustin/atd-data-tech/) along with [ATD Data & Technology Services'](https://data.mobility.austin.gov/about/) other work. For resources and updates, see the [Mobility Project Database project index](https://github.com/cityofaustin/atd-data-tech/issues/307). 
+For resources and updates, see the [Mobility Project Database project index](https://github.com/cityofaustin/atd-data-tech/issues/307). 
 
 ![Planning-and-analysis](https://user-images.githubusercontent.com/1463708/62583080-58614e80-b874-11e9-850d-2a8bda07c0fc.jpeg)
 
