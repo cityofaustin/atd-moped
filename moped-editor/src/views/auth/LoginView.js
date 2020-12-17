@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => ({
 const LoginView = () => {
   const classes = useStyles();
 
-  const { login } = useUser();
+  const { login, loginLoading } = useUser();
   const { signIn, isLoading } = useAuthentication();
 
   // a handler for when the user clicks the "login" button
@@ -63,7 +63,7 @@ const LoginView = () => {
         height="100%"
         justifyContent="center"
       >
-        <Backdrop className={classes.backdrop} open={isLoading}>
+        <Backdrop className={classes.backdrop} open={isLoading || loginLoading}>
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container maxWidth="sm">

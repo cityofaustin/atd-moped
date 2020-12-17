@@ -26,6 +26,7 @@ export const UserProvider = ({ children }) => {
   };
 
   const [user, setUser] = React.useState(getPersistedContext());
+  const [loginLoading, setLoginLoading] = React.useState(false);
 
   React.useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
@@ -52,10 +53,14 @@ export const UserProvider = ({ children }) => {
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
-  const login = (usernameOrEmail, password) =>
+  const login = (usernameOrEmail, password) => {
+    console.log("loggin in!");
+    setLoginLoading(true);
+
     Auth.signIn(usernameOrEmail, password)
       .then(cognitoUser => {
         setUser(cognitoUser);
+        setLoginLoading(false);
         return cognitoUser;
       })
       .catch(err => {
@@ -64,9 +69,10 @@ export const UserProvider = ({ children }) => {
         }
 
         // ... (other checks)
-
+        setLoginLoading(false);
         throw err;
       });
+  };
 
   // same thing here
   const logout = () =>
@@ -84,9 +90,10 @@ export const UserProvider = ({ children }) => {
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(() => ({ user, getToken, login, logout }), [
-    user,
-  ]);
+  const values = React.useMemo(
+    () => ({ user, getToken, login, logout, loginLoading }),
+    [user, loginLoading]
+  );
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
