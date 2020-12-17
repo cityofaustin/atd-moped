@@ -38,7 +38,7 @@ const passwordValidationSchema = yup.object().shape({
 const ProfileDetails = () => {
   const classes = useStyles();
   const { user } = useUser();
-  const [userApiResult, userApiLoading, requestApi] = useUserApi();
+  const { result, loading, requestApi } = useUserApi();
 
   const { register, handleSubmit, errors, formState } = useForm({
     defaultValues: initialValues,
@@ -100,7 +100,7 @@ const ProfileDetails = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              {userApiLoading || isSubmitting ? (
+              {loading || isSubmitting ? (
                 <CircularProgress />
               ) : (
                 <>
@@ -117,7 +117,7 @@ const ProfileDetails = () => {
               )}
             </Grid>
             <Grid item xs={12} md={6}>
-              {userApiResult?.success && (
+              {result?.success && (
                 <Alert severity="success">Password updated</Alert>
               )}
             </Grid>

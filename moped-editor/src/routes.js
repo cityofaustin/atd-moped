@@ -9,37 +9,42 @@ import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
-import ProductListView from "src/views/product/ProductListView/ProductListView";
 import NewProjectView from "src/views/projects/NewProjectView";
+import ProjectSummary from "src/views/projects/ProjectSummary";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
+import ProjectsListView from "./views/projects/ProjectsListView";
 
 const routes = [
+  { path: "/", element: <Navigate to="/moped" /> },
+  {
+    path: "moped/session",
+    element: <MainLayout />,
+    children: [
+      { path: "signin", element: <LoginView /> },
+      { path: "register", element: <RegisterView /> },
+      { path: "*", element: <Navigate to="/signin" /> },
+    ],
+  },
   {
     path: "moped",
     element: <DashboardLayout />,
     children: [
       { path: "/", element: <DashboardView /> },
+      { path: "dashboard", element: <DashboardView /> },
       { path: "account", element: <AccountView /> },
       { path: "staff", element: <StaffListView /> },
       { path: "staff/new", element: <NewStaffView /> },
       { path: "staff/edit/:userId", element: <EditStaffView /> },
-      { path: "dashboard", element: <DashboardView /> },
-      { path: "projects", element: <ProductListView /> },
+      { path: "projects", element: <ProjectsListView /> },
       { path: "projects/new", element: <NewProjectView /> },
+      {
+        path: "projects/:projectId",
+        element: <ProjectSummary />,
+      },
       { path: "settings", element: <SettingsView /> },
-      { path: "*", element: <Navigate to="/404" /> },
-    ],
-  },
-  {
-    path: "/",
-    element: <MainLayout />,
-    children: [
-      { path: "login", element: <LoginView /> },
-      { path: "register", element: <RegisterView /> },
       { path: "404", element: <NotFoundView /> },
-      { path: "/", element: <Navigate to="/dashboard" /> },
-      { path: "*", element: <Navigate to="/404" /> },
+      { path: "*", element: <Navigate to="/moped/404" /> },
     ],
   },
 ];

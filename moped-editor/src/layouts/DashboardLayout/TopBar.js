@@ -15,18 +15,12 @@ import MenuIcon from "@material-ui/icons/Menu";
 import InputIcon from "@material-ui/icons/Input";
 import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
-
-const user = {
-  avatar: `${process.env.PUBLIC_URL}/static/images/avatars/avatar_1.png`,
-  jobTitle: "Senior Developer",
-  name: "DTS Dev",
-};
+import { defaultUser } from "../../views/account/AccountView/Profile";
 
 const useStyles = makeStyles(() => ({
   root: {},
   avatar: {
-    width: 60,
-    height: 60,
+    marginRight: 8,
   },
 }));
 
@@ -37,15 +31,15 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
       <Toolbar>
-        <RouterLink to="/">
+        <RouterLink to="/moped">
           <Logo />
         </RouterLink>
         <Box flexGrow={1} />
         <Box>
           <Avatar
-            className={classes.small}
+            className={classes.avatar}
             component={RouterLink}
-            src={user.avatar}
+            src={defaultUser.avatar}
             to="/moped/account"
           />
         </Box>

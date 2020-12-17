@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import _ from "lodash";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Box,
@@ -16,11 +16,16 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import MapProjectGeometry from "./MapProjectGeometry";
+import ProjectMap from "./ProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
 
+import ProjectSaveButton from "./ProjectSaveButton";
+
+/**
+ * Styles
+ */
 const useStyles = makeStyles(theme => ({
   cardWrapper: {
     marginTop: theme.spacing(3),
@@ -30,35 +35,67 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "flex-end",
   },
   button: {
-    marginTop: theme.spacing(3),
     marginLeft: theme.spacing(1),
   },
 }));
 
+/**
+ * New Project View
+ * @return {JSX.Element}
+ * @constructor
+ */
 const NewProjectView = () => {
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [newProjectId, setNewProjectId] = useState(null);
+
+  // Redirect handlers
+  const navigate = useNavigate();
+
+  /**
+   * Whenever we have a new project id, we can then set success
+   * and trigger the redirect.
+   */
+  useEffect(() => {
+    if (!!newProjectId) {
+      window.setTimeout(() => {
+        setSuccess(true);
+      }, 1500);
+    }
+  }, [newProjectId]);
+
+  useEffect(() => {
+    if (!!newProjectId && success) {
+      window.setTimeout(() => {
+        navigate("/moped/projects/" + newProjectId);
+      }, 800);
+    }
+  }, [success, newProjectId, navigate]);
+
   const [activeStep, setActiveStep] = useState(0);
-  const [defineProjectState, updateProjectState] = useState({
-    fiscalYear: "",
-    phase: "",
-    priority: "",
-    projDesc: null,
-    projName: null,
-    startDate: "2021-01-01",
-    status: "",
-    capitallyFunded: false,
-    eCaprisId: null,
+  const [projectDetails, setProjectDetails] = useState({
+    fiscal_year: "",
+    current_phase: "",
+    project_priority: "",
+    project_description: "",
+    project_name: "",
+    start_date: "2021-01-01",
+    current_status: "",
+    capitally_funded: false,
+    eCapris_id: "",
   });
+
   const [StaffRows, setStaffRows] = useState([
     {
       id: 1,
-      name: {
-        name: "",
-        workgroup: "",
-      },
-      role: "",
+      name: null,
+      workgroup: "",
+      role_name: null,
+      notes: "",
     },
   ]);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -69,8 +106,8 @@ const NewProjectView = () => {
       case 0:
         return (
           <DefineProjectForm
-            defineProjectState={defineProjectState}
-            updateProjectState={updateProjectState}
+            projectDetails={projectDetails}
+            setProjectDetails={setProjectDetails}
           />
         );
       case 1:
@@ -78,7 +115,12 @@ const NewProjectView = () => {
           <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
         );
       case 2:
-        return <MapProjectGeometry />;
+        return (
+          <ProjectMap
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+          />
+        );
       default:
         return "Unknown step";
     }
@@ -150,6 +192,7 @@ const NewProjectView = () => {
       ) {
         affected_rows
         returning {
+          project_id
           project_name
           project_description
           project_priority
@@ -172,6 +215,7 @@ const NewProjectView = () => {
       $role_name: String! = ""
       $first_name: String! = ""
       $last_name: String! = ""
+      $notes: String! = ""
     ) {
       insert_moped_proj_personnel(
         objects: {
@@ -179,6 +223,7 @@ const NewProjectView = () => {
           role_name: $role_name
           first_name: $first_name
           last_name: $last_name
+          notes: $notes
         }
       ) {
         affected_rows
@@ -187,6 +232,7 @@ const NewProjectView = () => {
           role_name
           first_name
           last_name
+          notes
         }
       }
     }
@@ -194,97 +240,122 @@ const NewProjectView = () => {
 
   const [addStaff] = useMutation(TEAMS_MUTATION);
 
-  const handleSubmit = () => {
-    //data from Define Project going to database
-    let projData = _.toArray({ ...defineProjectState });
-    let capitally_funded = projData[0];
-    let project_name = projData[1];
-    let project_description = projData[2];
-    let start_date = projData[3];
-    let fiscal_year = projData[4];
-    let current_phase = projData[5];
-    let current_status = projData[6];
-    let project_priority = projData[7];
-    let eCapris_id = projData[8];
-    addProject({
-      variables: {
-        project_name,
-        project_description,
-        eCapris_id,
-        project_priority,
-        current_phase,
-        current_status,
-        fiscal_year,
-        capitally_funded,
-        start_date,
-      },
-    });
+  const timer = React.useRef();
 
-    //data from ProjectTeamTable going to database
-    let teamData = _.toArray({ ...StaffRows });
-    _.forEach(teamData, function(value) {
-      let name_array = value.name.name;
-      let name_split = name_array.split(" ");
-      let first_name = name_split[0];
-      let last_name = name_split[1];
-      let workgroup = value.workgroup;
-      let role_name = value.role;
-      addStaff({ variables: { workgroup, role_name, first_name, last_name } });
-    });
+  React.useEffect(() => {
+    const currentTimer = timer.current;
+
+    return () => {
+      clearTimeout(currentTimer);
+    };
+  }, []);
+
+  const handleSubmit = () => {
+    // Change the initial state...
+    setLoading(true);
+
+    addProject({
+      variables: projectDetails,
+    })
+      .then(response => {
+        const project = response.data.insert_moped_project.returning[0];
+
+        StaffRows.forEach(row => {
+          const [first_name, last_name] = row.name.split(" ");
+          const { workgroup, notes, role_name } = row;
+          const variables = {
+            workgroup,
+            notes,
+            role_name,
+            first_name,
+            last_name,
+          };
+
+          addStaff({
+            variables,
+          })
+            .then(() => {
+              setNewProjectId(project.project_id);
+            })
+            .catch(err => {
+              alert(err);
+              setLoading(false);
+              setSuccess(false);
+            });
+        });
+      })
+      .catch(err => {
+        alert(err);
+        setLoading(false);
+        setSuccess(false);
+      });
   };
 
   return (
-    <Page title="New Project">
-      <Container>
-        <Card className={classes.cardWrapper}>
-          <Box pt={2} pl={2}>
-            <CardHeader title="New Project" />
-          </Box>
-          <Divider />
-          <CardContent>
-            <Stepper activeStep={activeStep}>
-              {steps.map((label, index) => {
-                const stepProps = {};
-                const labelProps = {};
-                return (
-                  <Step key={label} {...stepProps}>
-                    <StepLabel {...labelProps}>{label}</StepLabel>
-                  </Step>
-                );
-              })}
-            </Stepper>
-            <div>
-              {activeStep === steps.length ? (
+    <>
+      {
+        <Page title="New Project">
+          <Container>
+            <Card className={classes.cardWrapper}>
+              <Box pt={2} pl={2}>
+                <CardHeader title="New Project" />
+              </Box>
+              <Divider />
+              <CardContent>
+                <Stepper activeStep={activeStep}>
+                  {steps.map((label, index) => {
+                    const stepProps = {};
+                    const labelProps = {};
+                    return (
+                      <Step key={label} {...stepProps}>
+                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      </Step>
+                    );
+                  })}
+                </Stepper>
                 <div>
-                  <>
-                    <Typography>Completed</Typography>
-                    <Button onClick={handleReset}>Close</Button>
-                  </>
+                  {activeStep === steps.length ? (
+                    <div>
+                      <>
+                        <Typography>Completed</Typography>
+                        <Button onClick={handleReset}>Close</Button>
+                      </>
+                    </div>
+                  ) : (
+                    <div>
+                      {getStepContent(activeStep)}
+                      <Divider />
+                      <Box pt={2} pl={2} className={classes.buttons}>
+                        <Button onClick={handleBack} className={classes.button}>
+                          Back
+                        </Button>
+                        {activeStep === steps.length - 1 ? (
+                          <ProjectSaveButton
+                            label={"Finish"}
+                            loading={loading}
+                            success={success}
+                            handleButtonClick={handleSubmit}
+                          />
+                        ) : (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleNext}
+                            className={classes.button}
+                          >
+                            Next
+                          </Button>
+                        )}
+                      </Box>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <div>
-                  {getStepContent(activeStep)}
-                  <Divider />
-                  <Box pt={2} pl={2} className={classes.buttons}>
-                    <Button onClick={handleBack} className={classes.button}>
-                      Back
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleNext}
-                      className={classes.button}
-                    >
-                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
-                    </Button>
-                  </Box>
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </Container>
-    </Page>
+              </CardContent>
+            </Card>
+          </Container>
+        </Page>
+      }
+    </>
   );
 };
 

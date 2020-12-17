@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
-import moment from "moment";
 import {
   Avatar,
   Box,
@@ -14,13 +13,11 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-const user = {
-  avatar: `${process.env.PUBLIC_URL}/static/images/avatars/avatar_6.png`,
-  city: "Los Angeles",
-  country: "USA",
-  jobTitle: "Senior Developer",
-  name: "Katarina Smith",
-  timezone: "GTM-7",
+export const defaultUser = {
+  avatar: `${process.env.PUBLIC_URL}/static/images/avatars/robSpillar.jpeg`,
+  name: "Rob Spillar",
+  jobTitle: "Director of Transportation",
+  city: "Austin, TX",
 };
 
 const useStyles = makeStyles(() => ({
@@ -28,6 +25,7 @@ const useStyles = makeStyles(() => ({
   avatar: {
     height: 100,
     width: 100,
+    marginBottom: 8,
   },
 }));
 
@@ -39,20 +37,16 @@ const Profile = ({ className, ...rest }) => {
       <CardContent>
         <Box alignItems="center" display="flex" flexDirection="column">
           <Box>
-            <Avatar className={classes.avatar} src={user.avatar} />
+            <Avatar className={classes.avatar} src={defaultUser.avatar} />
           </Box>
           <Typography color="textPrimary" gutterBottom variant="h3">
-            {user.name}
+            {defaultUser.name}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {`${user.city} ${user.country}`}
+            {defaultUser.jobTitle}
           </Typography>
-          <Typography
-            className={classes.dateText}
-            color="textSecondary"
-            variant="body1"
-          >
-            {`${moment().format("hh:mm A")} ${user.timezone}`}
+          <Typography color="textSecondary" variant="body1">
+            {defaultUser.city}
           </Typography>
         </Box>
       </CardContent>

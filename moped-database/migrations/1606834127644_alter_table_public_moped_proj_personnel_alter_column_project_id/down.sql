@@ -1,0 +1,1 @@
+ALTER TABLE "public"."moped_proj_personnel" ALTER COLUMN "project_id" SET NOT NULL;
