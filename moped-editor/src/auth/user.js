@@ -54,7 +54,6 @@ export const UserProvider = ({ children }) => {
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
   const login = (usernameOrEmail, password) => {
-    console.log("loggin in!");
     setLoginLoading(true);
 
     Auth.signIn(usernameOrEmail, password)
