@@ -5,6 +5,7 @@ import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
+import ProjectNotes from "./ProjectNotes";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -184,7 +185,7 @@ const ProjectSummary = () => {
               TBD
             </TabPanel>
             <TabPanel value={activeTab} index={3}>
-              TBD
+              <ProjectNotes />
             </TabPanel>
             <TabPanel value={activeTab} index={4}>
               TBD

@@ -249,8 +249,6 @@ const NewProjectView = () => {
     };
   }, []);
 
-  const navigate = useNavigate();
-
   const handleSubmit = () => {
     // Change the initial state...
     setLoading(true);
