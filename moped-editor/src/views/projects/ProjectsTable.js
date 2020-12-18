@@ -80,7 +80,7 @@ const ProjectsTable = ({ projects }) => {
                 <TableCell>Status</TableCell>
                 <TableCell>Date Added</TableCell>
                 <TableCell>Start Date</TableCell>
-                <TableCell>Capitally Funded</TableCell>
+                <TableCell>Capital Funding</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

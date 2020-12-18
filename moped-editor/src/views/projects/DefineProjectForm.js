@@ -198,7 +198,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
           </Select>
         </Grid>
         <Grid item xs={4}>
-          <InputLabel>Capitally Funded?</InputLabel>
+          <InputLabel>Capital Funding?</InputLabel>
           <Switch
             type="checkbox"
             checked={projectDetails.capitally_funded}
