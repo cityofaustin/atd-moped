@@ -56,7 +56,7 @@ export const UserProvider = ({ children }) => {
   const login = (usernameOrEmail, password) => {
     setLoginLoading(true);
 
-    Auth.signIn(usernameOrEmail, password)
+    return Auth.signIn(usernameOrEmail, password)
       .then(cognitoUser => {
         setUser(cognitoUser);
         setLoginLoading(false);
