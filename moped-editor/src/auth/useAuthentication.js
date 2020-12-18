@@ -85,6 +85,7 @@ const useAuthentication = () => {
   }, [refreshState]);
 
   const signIn = useCallback(() => {
+    setIsLoading(true);
     Auth.federatedSignIn({ provider: "AzureAD" }).catch(err => {
       setError(err);
     });

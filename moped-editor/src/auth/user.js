@@ -9,24 +9,24 @@ export const UserContext = React.createContext(null);
 // components bellow via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
-
   /**
    * Retrieves persisted user context object
    * @return {object}
    */
   const getPersistedContext = () => {
     return JSON.parse(localStorage.getItem("atd_moped_user_context")) || null;
-  }
+  };
 
   /**
    * Persists user context object into localstorage
    * @param {str} context - The user context object
    */
-  const setPersistedContext = (context) => {
+  const setPersistedContext = context => {
     localStorage.setItem("atd_moped_user_context", JSON.stringify(context));
-  }
+  };
 
   const [user, setUser] = React.useState(getPersistedContext());
+  const [loginLoading, setLoginLoading] = React.useState(false);
 
   React.useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
@@ -53,10 +53,13 @@ export const UserProvider = ({ children }) => {
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
   // a message that our React components can use.
-  const login = (usernameOrEmail, password) =>
-    Auth.signIn(usernameOrEmail, password)
+  const login = (usernameOrEmail, password) => {
+    setLoginLoading(true);
+
+    return Auth.signIn(usernameOrEmail, password)
       .then(cognitoUser => {
         setUser(cognitoUser);
+        setLoginLoading(false);
         return cognitoUser;
       })
       .catch(err => {
@@ -65,9 +68,10 @@ export const UserProvider = ({ children }) => {
         }
 
         // ... (other checks)
-
+        setLoginLoading(false);
         throw err;
       });
+  };
 
   // same thing here
   const logout = () =>
@@ -85,9 +89,10 @@ export const UserProvider = ({ children }) => {
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(() => ({ user, getToken, login, logout }), [
-    user,
-  ]);
+  const values = React.useMemo(
+    () => ({ user, getToken, login, logout, loginLoading }),
+    [user, loginLoading]
+  );
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;

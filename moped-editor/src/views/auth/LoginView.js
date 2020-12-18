@@ -3,8 +3,10 @@ import { Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
+  Backdrop,
   Box,
   Button,
+  CircularProgress,
   Container,
   Grid,
   Link,
@@ -24,13 +26,17 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: theme.palette.background.default,
+  },
 }));
 
 const LoginView = () => {
   const classes = useStyles();
 
-  const { login } = useUser();
-  const { signIn } = useAuthentication();
+  const { login, loginLoading } = useUser();
+  const { signIn, isLoading } = useAuthentication();
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -57,6 +63,9 @@ const LoginView = () => {
         height="100%"
         justifyContent="center"
       >
+        <Backdrop className={classes.backdrop} open={isLoading || loginLoading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Container maxWidth="sm">
           <Formik
             initialValues={{
