@@ -9,6 +9,7 @@ const ProjectSummaryDetails = details => {
     start_date,
     fiscal_year,
     project_priority,
+    capitally_funded,
     eCapris_id,
   } = details.details;
 
@@ -16,32 +17,68 @@ const ProjectSummaryDetails = details => {
     {
       field: current_status,
       label: "Current Status",
+      type: "string",
     },
     {
       field: current_phase,
       label: "Current Phase",
+      type: "string",
     },
     {
       field: project_description,
       label: "Description",
+      type: "string",
     },
     {
       field: start_date,
       label: "Start Date",
+      type: "string",
     },
     {
       field: fiscal_year,
       label: "Fiscal Year",
+      type: "string",
     },
     {
       field: project_priority,
       label: "Priority",
+      type: "string",
+    },
+    {
+      field: capitally_funded,
+      label: "Capital Funding",
+      type: "boolean",
     },
     {
       field: eCapris_id,
       label: "eCapris ID",
+      type: "string",
     },
   ];
+
+  const formatValue = value => {
+    let formattedValue = value.field;
+    switch (value.type) {
+      case "boolean":
+        formattedValue = value.field === true ? "Yes" : "No";
+        break;
+      case "string":
+        console.log(value.field);
+        formattedValue =
+          value.field === "" ? (
+            <Box color="text.disabled">
+              <p>No data</p>
+            </Box>
+          ) : (
+            value.field
+          );
+        break;
+      default:
+        break;
+    }
+    console.log(formattedValue);
+    return formattedValue;
+  };
 
   return (
     <Grid container spacing={2}>
@@ -49,13 +86,7 @@ const ProjectSummaryDetails = details => {
         <Grid item xs={6}>
           <Box mb={2}>
             <h4>{detail.label}</h4>
-            {detail.field ? (
-              <p>{detail.field}</p>
-            ) : (
-              <Box color="text.disabled">
-                <p>No data</p>
-              </Box>
-            )}
+            <p>{formatValue(detail)}</p>
           </Box>
         </Grid>
       ))}
