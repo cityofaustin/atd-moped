@@ -63,7 +63,6 @@ const ProjectSummaryDetails = details => {
         formattedValue = value.field === true ? "Yes" : "No";
         break;
       case "string":
-        console.log(value.field);
         formattedValue =
           value.field === "" ? (
             <Box color="text.disabled">
@@ -76,7 +75,6 @@ const ProjectSummaryDetails = details => {
       default:
         break;
     }
-    console.log(formattedValue);
     return formattedValue;
   };
 
