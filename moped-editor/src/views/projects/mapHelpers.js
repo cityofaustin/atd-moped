@@ -12,8 +12,16 @@ export const mapInit = {
 export const getPolygonId = e =>
   e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
-export const createProjectLayerConfig = (polygonId, selectedIds) => {
+export const getLayerSource = e =>
+  e.features && e.features.length > 0 && e.features[0].layer["source-layer"];
+
+export const createProjectLayerConfig = (
+  polygonId,
+  layerSourceName,
+  selectedIds
+) => {
   const hoverId = polygonId;
+  const layerIds = selectedIds[layerSourceName] || [];
 
   return {
     id: "location-polygons",
@@ -24,13 +32,13 @@ export const createProjectLayerConfig = (polygonId, selectedIds) => {
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       ],
     },
-    "source-layer": "asmp_polygons",
+    "source-layer": layerSourceName,
     paint: {
       "fill-color": [
         "case",
         ["==", ["get", "polygon_id"], hoverId],
         theme.palette.map.selected,
-        ["in", ["get", "polygon_id"], ["literal", selectedIds]],
+        ["in", ["get", "polygon_id"], ["literal", layerIds]],
         theme.palette.primary.main,
         theme.palette.map.transparent,
       ],

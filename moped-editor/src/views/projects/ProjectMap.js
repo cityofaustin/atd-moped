@@ -7,6 +7,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
+  getLayerSource,
   getPolygonId,
   MAPBOX_TOKEN,
   mapInit,
@@ -70,14 +71,23 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
 
   const handleClick = e => {
     const polygonId = getPolygonId(e);
+    const layerSource = getLayerSource(e);
 
-    const updatedSelectedIds =
-      !!polygonId && !selectedIds.includes(polygonId)
-        ? [...selectedIds, polygonId]
-        : selectedIds.filter(id => id !== polygonId);
+    if (!!polygonId && !!layerSource) {
+      const layerIds = selectedIds[layerSource] || [];
 
-    !!polygonId && setSelectedIds(updatedSelectedIds);
-    console.log(e);
+      const updatedLayerIds =
+        !!polygonId && !layerIds.includes(polygonId)
+          ? [...layerIds, polygonId]
+          : layerIds.filter(id => id !== polygonId);
+
+      const updatedSelectedIds = {
+        ...selectedIds,
+        [layerSource]: updatedLayerIds,
+      };
+
+      !!polygonId && setSelectedIds(updatedSelectedIds);
+    }
   };
 
   const handleViewportChange = viewport => setViewport(viewport);
@@ -113,10 +123,12 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
           mapboxApiAccessToken={MAPBOX_TOKEN}
           position="top-right"
         />
+
         <Layer
-          key={"location-polygon"}
-          {...createProjectLayerConfig(polygonId, selectedIds)}
+          key={"location-polygons"}
+          {...createProjectLayerConfig(polygonId, "asmp_polygons", selectedIds)}
         />
+
         {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>

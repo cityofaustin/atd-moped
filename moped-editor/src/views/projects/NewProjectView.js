@@ -95,7 +95,7 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
-  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedIds, setSelectedIds] = useState({});
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
