@@ -39,7 +39,7 @@ const LoginView = () => {
       // value here)
       await login(values.email, values.password);
 
-      // mark the form as non-subbmitting
+      // mark the form as non-submitting
       setSubmitting(false);
     } catch (err) {
       // If an error occured, showcase the proper message (we customised the
@@ -93,7 +93,7 @@ const LoginView = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on with Microsoft Office 365
+                    Sign in with Microsoft Office 365
                   </Typography>
                 </Box>
                 <Grid container spacing={3}>

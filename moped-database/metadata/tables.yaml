@@ -1953,6 +1953,15 @@
 - table:
     schema: public
     name: moped_proj_notes
+  array_relationships:
+  - name: moped_proj_notes
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_project
+        column_mapping:
+          project_id: project_id
   insert_permissions:
   - role: moped-admin
     permission:
