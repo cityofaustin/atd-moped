@@ -9,7 +9,7 @@ import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
-import NewProjectView from "src/views/projects/newProject/NewProjectView";
+import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectSummary from "src/views/projects/projectView/ProjectView";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
