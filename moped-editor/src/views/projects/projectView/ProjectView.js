@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
-import ProjectSummaryDetails from "./ProjectSummaryDetails";
+import ProjectSummary from "./ProjectSummary";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -104,7 +104,7 @@ function a11yProps(index) {
   };
 }
 
-const ProjectSummary = () => {
+const ProjectView = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -162,9 +162,7 @@ const ProjectSummary = () => {
                 {projectLoading ? (
                   <CircularProgress />
                 ) : (
-                  <ProjectSummaryDetails
-                    details={projectData.moped_project[0]}
-                  />
+                  <ProjectSummary details={projectData.moped_project[0]} />
                 )}
               </CardContent>
             </TabPanel>
@@ -207,4 +205,4 @@ const ProjectSummary = () => {
   );
 };
 
-export default ProjectSummary;
+export default ProjectView;

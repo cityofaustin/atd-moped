@@ -9,11 +9,11 @@ import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import NotFoundView from "src/views/errors/NotFoundView";
-import NewProjectView from "src/views/projects/NewProjectView";
-import ProjectSummary from "src/views/projects/ProjectSummary";
+import NewProjectView from "src/views/projects/newProject/NewProjectView";
+import ProjectSummary from "src/views/projects/projectView/ProjectView";
 import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
-import ProjectsListView from "./views/projects/ProjectsListView";
+import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
 const routes = [
   { path: "/", element: <Navigate to="/moped" /> },

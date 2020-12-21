@@ -11,7 +11,7 @@ import {
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
-} from "./mapHelpers";
+} from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles(theme => ({
   locationCountText: {

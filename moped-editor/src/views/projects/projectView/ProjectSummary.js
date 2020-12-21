@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Grid } from "@material-ui/core";
 
-const ProjectSummaryDetails = details => {
+const ProjectSummary = details => {
   const {
     current_status,
     current_phase,
@@ -92,4 +92,4 @@ const ProjectSummaryDetails = details => {
   );
 };
 
-export default ProjectSummaryDetails;
+export default ProjectSummary;
