@@ -12,6 +12,7 @@ import {
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
+  sumFeaturesSelected,
 } from "./mapHelpers";
 
 const useStyles = makeStyles(theme => ({
@@ -132,7 +133,7 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
         {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
-        {selectedIds.length} locations selected
+        {sumFeaturesSelected(selectedIds)} locations selected
       </Typography>
     </Box>
   );

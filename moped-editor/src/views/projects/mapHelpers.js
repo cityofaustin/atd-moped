@@ -62,3 +62,9 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
     )
   );
 };
+
+export const sumFeaturesSelected = selectedIdsObj =>
+  Object.values(selectedIdsObj).reduce(
+    (acc, selectedIds) => (acc += selectedIds.length),
+    0
+  );
