@@ -7,6 +7,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
+  getLayerGeometry,
   getLayerSource,
   getPolygonId,
   MAPBOX_TOKEN,
@@ -71,23 +72,26 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
   };
 
   const handleClick = e => {
+    console.log(e);
     const polygonId = getPolygonId(e);
     const layerSource = getLayerSource(e);
+    const geometry = getLayerGeometry(e);
 
     if (!!polygonId && !!layerSource) {
       const layerIds = selectedIds[layerSource] || [];
 
-      const updatedLayerIds =
-        !!polygonId && !layerIds.includes(polygonId)
-          ? [...layerIds, polygonId]
-          : layerIds.filter(id => id !== polygonId);
+      const updatedLayerIds = !layerIds.includes(polygonId)
+        ? [...layerIds, polygonId]
+        : layerIds.filter(id => id !== polygonId);
 
       const updatedSelectedIds = {
         ...selectedIds,
         [layerSource]: updatedLayerIds,
       };
 
-      !!polygonId && setSelectedIds(updatedSelectedIds);
+      console.log(geometry);
+
+      setSelectedIds(updatedSelectedIds);
     }
   };
 

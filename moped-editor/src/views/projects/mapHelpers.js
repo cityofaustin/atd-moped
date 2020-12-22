@@ -15,6 +15,9 @@ export const getPolygonId = e =>
 export const getLayerSource = e =>
   e.features && e.features.length > 0 && e.features[0].layer["source-layer"];
 
+export const getLayerGeometry = e =>
+  e.features && e.features.length > 0 && e.features[0].geometry;
+
 export const createProjectLayerConfig = (
   polygonId,
   layerSourceName,
