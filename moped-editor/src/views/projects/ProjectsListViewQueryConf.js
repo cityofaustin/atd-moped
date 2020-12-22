@@ -7,8 +7,8 @@ export const ProjectsListViewQueryConf = {
             primary_key: true,
             searchable: false,
             sortable: false,
-            label_search: "Search by Project ID",
-            label_table: "Project ID",
+            label_search: "",
+            label_table: "",
             type: "Int",
         },
         project_name: {
