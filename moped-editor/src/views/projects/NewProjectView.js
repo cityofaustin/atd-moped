@@ -176,6 +176,7 @@ const NewProjectView = () => {
       $start_date: date = ""
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
+      $project_extent_ids: json = {}
     ) {
       insert_moped_project(
         objects: {
@@ -188,6 +189,7 @@ const NewProjectView = () => {
           start_date: $start_date
           capitally_funded: $capitally_funded
           project_priority: $project_priority
+          project_extent_ids: $project_extent_ids
         }
       ) {
         affected_rows
@@ -202,6 +204,7 @@ const NewProjectView = () => {
           fiscal_year
           capitally_funded
           start_date
+          project_extent_ids
         }
       }
     }
@@ -255,7 +258,7 @@ const NewProjectView = () => {
     setLoading(true);
 
     addProject({
-      variables: projectDetails,
+      variables: { ...projectDetails, project_extent_ids: selectedIds },
     })
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
