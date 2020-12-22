@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 import {
@@ -6,11 +6,11 @@ import {
   CircularProgress,
   Container,
   Paper,
-  TableContainer,
+  Typography,
 } from "@material-ui/core";
 
 // Abstract & GridTable
-import {useQuery} from "@apollo/react-hooks";
+import { useQuery } from "@apollo/react-hooks";
 import GridTableToolbar from "./GridTableToolbar";
 import GridTableList from "./GridTableList";
 
@@ -24,6 +24,11 @@ const useStyles = makeStyles(theme => ({
   paper: {
     width: "100%",
     marginBottom: theme.spacing(2),
+  },
+  title: {
+    position: "relative",
+    top: "1rem",
+    "text-shadow": "1px 1px 0px white",
   },
   table: {
     minWidth: 750,
@@ -40,10 +45,6 @@ const useStyles = makeStyles(theme => ({
     width: 1,
   },
 }));
-
-
-
-
 
 /**
  * GridTable Component for Material UI
@@ -83,9 +84,9 @@ const GridTable = ({
     if (data) {
       const currentProjectList = data.moped_project.filter(item => {
         return item.project_name
-            .toString()
-            .toLowerCase()
-            .includes(searchKeyword.toLowerCase());
+          .toString()
+          .toLowerCase()
+          .includes(searchKeyword.toLowerCase());
       });
       setProjectList(currentProjectList);
     }
@@ -93,10 +94,22 @@ const GridTable = ({
 
   return (
     <Container maxWidth={false} className={classes.root}>
+      <Typography
+        variant="h1"
+        component="h2"
+        align="left"
+        className={classes.title}
+      >
+        {title}
+      </Typography>
       <GridTableToolbar change={filterSearch} />
       <Paper className={classes.paper}>
         <Box mt={3}>
-          {loading ? <CircularProgress /> : <GridTableList projects={projectList}/>}
+          {loading ? (
+            <CircularProgress />
+          ) : (
+            <GridTableList projects={projectList} />
+          )}
         </Box>
       </Paper>
     </Container>
