@@ -18,6 +18,17 @@ export const getLayerSource = e =>
 export const getLayerGeometry = e =>
   e.features && e.features.length > 0 && e.features[0].geometry;
 
+export const getFeature = e =>
+  e.features &&
+  e.features.length > 0 && { ...e.features[0], ...getLayerGeometry(e) };
+
+export const isFeaturePresent = (selectedFeature, features) =>
+  features.find(
+    feature =>
+      feature.id === selectedFeature.id &&
+      feature.sourceLayer === selectedFeature.sourceLayer
+  );
+
 export const createProjectLayerConfig = (
   polygonId,
   layerSourceName,

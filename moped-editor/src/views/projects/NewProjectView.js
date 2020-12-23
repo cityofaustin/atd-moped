@@ -96,6 +96,10 @@ const NewProjectView = () => {
     },
   ]);
   const [selectedIds, setSelectedIds] = useState({});
+  const [featureCollection, setFeatureCollection] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -119,6 +123,8 @@ const NewProjectView = () => {
           <ProjectMap
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
+            featureCollection={featureCollection}
+            setFeatureCollection={setFeatureCollection}
           />
         );
       default:

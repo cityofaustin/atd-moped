@@ -7,9 +7,10 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
-  getLayerGeometry,
+  getFeature,
   getLayerSource,
   getPolygonId,
+  isFeaturePresent,
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
@@ -44,7 +45,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectMap = ({ selectedIds, setSelectedIds }) => {
+const ProjectMap = ({
+  selectedIds,
+  setSelectedIds,
+  featureCollection,
+  setFeatureCollection,
+}) => {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -75,7 +81,7 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
     console.log(e);
     const polygonId = getPolygonId(e);
     const layerSource = getLayerSource(e);
-    const geometry = getLayerGeometry(e);
+    const selectedFeature = getFeature(e);
 
     if (!!polygonId && !!layerSource) {
       const layerIds = selectedIds[layerSource] || [];
@@ -89,9 +95,25 @@ const ProjectMap = ({ selectedIds, setSelectedIds }) => {
         [layerSource]: updatedLayerIds,
       };
 
-      console.log(geometry);
+      const updatedFeatureCollection = isFeaturePresent(
+        selectedFeature,
+        featureCollection.features
+      )
+        ? {
+            ...featureCollection,
+            features: featureCollection.features.filter(
+              feature =>
+                feature.id === selectedFeature.id &&
+                feature.sourceLayer === selectedFeature.sourceLayer
+            ),
+          }
+        : {
+            ...featureCollection,
+            features: [...featureCollection.features, selectedFeature],
+          };
 
       setSelectedIds(updatedSelectedIds);
+      setFeatureCollection(updatedFeatureCollection);
     }
   };
 
