@@ -19,10 +19,6 @@ export const getLayerSource = e =>
 export const getLayerGeometry = e =>
   e.features && e.features.length > 0 && e.features[0].geometry;
 
-export const getFeature = e =>
-  e.features &&
-  e.features.length > 0 && { ...e.features[0], ...getLayerGeometry(e) };
-
 export const getGeoJSON = e =>
   e.features &&
   e.features.length > 0 &&

@@ -8,7 +8,6 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
-  getFeature,
   getGeoJSON,
   getLayerSource,
   getPolygonId,
@@ -80,7 +79,6 @@ const ProjectMap = ({
   };
 
   const handleClick = e => {
-    console.log(e);
     const polygonId = getPolygonId(e);
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);

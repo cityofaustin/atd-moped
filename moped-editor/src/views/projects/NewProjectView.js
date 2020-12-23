@@ -183,6 +183,7 @@ const NewProjectView = () => {
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
       $project_extent_ids: json = {}
+      $project_geometries: geometry
     ) {
       insert_moped_project(
         objects: {
@@ -196,6 +197,7 @@ const NewProjectView = () => {
           capitally_funded: $capitally_funded
           project_priority: $project_priority
           project_extent_ids: $project_extent_ids
+          project_geometries: $project_geometries
         }
       ) {
         affected_rows
@@ -264,7 +266,11 @@ const NewProjectView = () => {
     setLoading(true);
 
     addProject({
-      variables: { ...projectDetails, project_extent_ids: selectedIds },
+      variables: {
+        ...projectDetails,
+        project_extent_ids: selectedIds,
+        project_geometries: featureCollection,
+      },
     })
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
