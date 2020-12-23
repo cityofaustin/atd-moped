@@ -21,8 +21,16 @@ export const getLayerGeometry = e =>
 
 export const getGeoJSON = e =>
   e.features &&
-  e.features.length > 0 &&
-  e.features[0]._vectorTileFeature.toGeoJSON();
+  e.features.length > 0 && {
+    geometry: e.features[0].geometry,
+    id: e.features[0].id,
+    properties: {
+      ...e.features[0].properties,
+      sourceLayer: e.features[0].sourceLayer,
+      source: e.features[0].source,
+    },
+    type: e.features[0].type,
+  };
 
 export const isFeaturePresent = (selectedFeature, features) =>
   features.some(feature => isEqual(selectedFeature, feature));

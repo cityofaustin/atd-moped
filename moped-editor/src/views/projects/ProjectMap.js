@@ -79,9 +79,11 @@ const ProjectMap = ({
   };
 
   const handleClick = e => {
+    console.log(e);
     const polygonId = getPolygonId(e);
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);
+    console.log(selectedFeature);
 
     if (!!polygonId && !!layerSource) {
       const layerIds = selectedIds[layerSource] || [];

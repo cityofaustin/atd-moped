@@ -183,7 +183,7 @@ const NewProjectView = () => {
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
       $project_extent_ids: json = {}
-      $project_geometries: geometry
+      $project_geometries: json = {}
     ) {
       insert_moped_project(
         objects: {

@@ -1,1 +1,1 @@
-ALTER TABLE "public"."moped_project" ADD COLUMN "project_geometries" geometry NULL;
+ALTER TABLE "public"."moped_project" ADD COLUMN "project_geometries" json NULL;
