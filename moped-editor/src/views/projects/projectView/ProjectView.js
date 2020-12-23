@@ -1,6 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { Link as RouterLink, useParams } from "react-router-dom";
+import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
+import { createBrowserHistory } from "history";
+
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -49,14 +51,36 @@ function a11yProps(index) {
   };
 }
 
+function useQueryParams() {
+  return new URLSearchParams(useLocation().search);
+}
+
+const TABS = [
+  { label: "Summary", Component: ProjectSummary, param: "summary" },
+  { label: "Team", Component: ProjectTeam, param: "team" },
+  { label: "Timeline", Component: ProjectTabPlaceholder, param: "timeline" },
+  { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
+  {
+    label: "Activity Log",
+    Component: ProjectTabPlaceholder,
+    param: "activity_log",
+  },
+];
+
+const history = createBrowserHistory();
+
 const ProjectView = () => {
   const { projectId } = useParams();
+  let query = useQueryParams();
   const classes = useStyles();
 
-  const [activeTab, setActiveTab] = React.useState(0);
+  let activeTabIndex = TABS.findIndex(tab => tab.param === query.get("tab"));
+
+  const [activeTab, setActiveTab] = React.useState(activeTabIndex);
 
   const handleChange = (event, newTab) => {
     setActiveTab(newTab);
+    history.push(`?tab=${TABS[newTab].param}`);
   };
 
   const {
@@ -68,15 +92,6 @@ const ProjectView = () => {
   });
 
   if (projectError) return `Error! ${projectError.message}`;
-
-  const TABS = [
-    { label: "Summary", Component: ProjectSummary },
-    { label: "Team", Component: ProjectTeam },
-    { label: "Timeline", Component: ProjectTabPlaceholder },
-    { label: "Notes", Component: ProjectTabPlaceholder },
-    { label: "Summary", Component: ProjectTabPlaceholder },
-    { label: "Activity Log", Component: ProjectTabPlaceholder },
-  ];
 
   return (
     <Page title="Project Summary Page">
