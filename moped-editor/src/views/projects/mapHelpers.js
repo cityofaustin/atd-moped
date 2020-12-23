@@ -1,5 +1,6 @@
 import React from "react";
 import theme from "../../theme/index";
+import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
 
@@ -22,12 +23,13 @@ export const getFeature = e =>
   e.features &&
   e.features.length > 0 && { ...e.features[0], ...getLayerGeometry(e) };
 
+export const getGeoJSON = e =>
+  e.features &&
+  e.features.length > 0 &&
+  e.features[0]._vectorTileFeature.toGeoJSON();
+
 export const isFeaturePresent = (selectedFeature, features) =>
-  features.find(
-    feature =>
-      feature.id === selectedFeature.id &&
-      feature.sourceLayer === selectedFeature.sourceLayer
-  );
+  features.some(feature => isEqual(selectedFeature, feature));
 
 export const createProjectLayerConfig = (
   polygonId,

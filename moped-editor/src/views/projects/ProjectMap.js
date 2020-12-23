@@ -2,12 +2,14 @@ import React, { useState, useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, Typography, makeStyles } from "@material-ui/core";
+import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectLayerConfig,
   getFeature,
+  getGeoJSON,
   getLayerSource,
   getPolygonId,
   isFeaturePresent,
@@ -81,7 +83,7 @@ const ProjectMap = ({
     console.log(e);
     const polygonId = getPolygonId(e);
     const layerSource = getLayerSource(e);
-    const selectedFeature = getFeature(e);
+    const selectedFeature = getGeoJSON(e);
 
     if (!!polygonId && !!layerSource) {
       const layerIds = selectedIds[layerSource] || [];
@@ -102,9 +104,7 @@ const ProjectMap = ({
         ? {
             ...featureCollection,
             features: featureCollection.features.filter(
-              feature =>
-                feature.id === selectedFeature.id &&
-                feature.sourceLayer === selectedFeature.sourceLayer
+              feature => !isEqual(feature, selectedFeature)
             ),
           }
         : {
