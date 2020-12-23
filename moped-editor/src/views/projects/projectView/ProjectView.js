@@ -2,7 +2,6 @@ import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
-
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
@@ -24,7 +23,7 @@ import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import TabPanel from "./TabPanel";
-import { SUMMARY_QUERY } from "../../../queries/projects/projectSummaryQuery";
+import { PROJECT_NAME } from "../../../queries/project";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -83,33 +82,25 @@ const ProjectView = () => {
     history.push(`?tab=${TABS[newTab].param}`);
   };
 
-  const {
-    loading: projectLoading,
-    error: projectError,
-    data: projectData,
-  } = useQuery(SUMMARY_QUERY, {
+  const { loading, error, data } = useQuery(PROJECT_NAME, {
     variables: { projectId },
   });
 
-  if (projectError) return `Error! ${projectError.message}`;
+  if (error) return `Error! ${error.message}`;
 
   return (
     <Page title="Project Summary Page">
       <Container>
         <Card className={classes.cardWrapper}>
-          {projectLoading ? (
+          {loading ? (
             <CircularProgress />
           ) : (
             <div className={classes.root}>
-              {projectLoading ? (
-                <CircularProgress />
-              ) : (
-                <Box p={4} pb={2}>
-                  <Typography color="textPrimary" variant="h2">
-                    {projectData.moped_project[0].project_name}
-                  </Typography>
-                </Box>
-              )}
+              <Box p={4} pb={2}>
+                <Typography color="textPrimary" variant="h2">
+                  {data.moped_project[0].project_name}
+                </Typography>
+              </Box>
               <Divider />
               <AppBar position="static">
                 <Tabs
@@ -126,7 +117,7 @@ const ProjectView = () => {
                 const TabComponent = tab.Component;
                 return (
                   <TabPanel value={activeTab} index={i}>
-                    <TabComponent details={projectData.moped_project[0]} />
+                    <TabComponent />
                   </TabPanel>
                 );
               })}

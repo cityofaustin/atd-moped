@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { TEAM_QUERY } from "../../../queries/projects/projectTeamQuery";
+import { TEAM_QUERY } from "../../../queries/project";
 
 const useStyles = makeStyles(theme => ({
   paper: {
