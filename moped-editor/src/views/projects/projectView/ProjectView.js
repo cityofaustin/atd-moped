@@ -73,7 +73,11 @@ const ProjectView = () => {
   let query = useQueryParams();
   const classes = useStyles();
 
-  let activeTabIndex = TABS.findIndex(tab => tab.param === query.get("tab"));
+  // Get the tab query string value and associated tab index.
+  // If there's no query string, default to first tab in TABS array
+  let activeTabIndex = !!query.get("tab")
+    ? TABS.findIndex(tab => tab.param === query.get("tab"))
+    : 0;
 
   const [activeTab, setActiveTab] = React.useState(activeTabIndex);
 
