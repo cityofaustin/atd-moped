@@ -1,5 +1,27 @@
 import React from "react";
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid, CardContent } from "@material-ui/core";
+
+const formatValue = value => {
+  let formattedValue = value.field;
+  switch (value.type) {
+    case "boolean":
+      formattedValue = value.field === true ? "Yes" : "No";
+      break;
+    case "string":
+      formattedValue =
+        value.field === "" ? (
+          <Box color="text.disabled">
+            <p>No data</p>
+          </Box>
+        ) : (
+          value.field
+        );
+      break;
+    default:
+      break;
+  }
+  return formattedValue;
+};
 
 const ProjectSummary = details => {
   const {
@@ -56,39 +78,19 @@ const ProjectSummary = details => {
     },
   ];
 
-  const formatValue = value => {
-    let formattedValue = value.field;
-    switch (value.type) {
-      case "boolean":
-        formattedValue = value.field === true ? "Yes" : "No";
-        break;
-      case "string":
-        formattedValue =
-          value.field === "" ? (
-            <Box color="text.disabled">
-              <p>No data</p>
-            </Box>
-          ) : (
-            value.field
-          );
-        break;
-      default:
-        break;
-    }
-    return formattedValue;
-  };
-
   return (
-    <Grid container spacing={2}>
-      {projectDetails.map(detail => (
-        <Grid item xs={6}>
-          <Box mb={2}>
-            <h4>{detail.label}</h4>
-            <p>{formatValue(detail)}</p>
-          </Box>
-        </Grid>
-      ))}
-    </Grid>
+    <CardContent>
+      <Grid container spacing={2}>
+        {projectDetails.map(detail => (
+          <Grid item xs={6}>
+            <Box mb={2}>
+              <h4>{detail.label}</h4>
+              <p>{formatValue(detail)}</p>
+            </Box>
+          </Grid>
+        ))}
+      </Grid>
+    </CardContent>
   );
 };
 
