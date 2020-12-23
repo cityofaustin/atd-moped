@@ -83,7 +83,7 @@ const ProjectView = () => {
 
   const handleChange = (event, newTab) => {
     setActiveTab(newTab);
-    history.push(`?tab=${TABS[newTab].param}`);
+    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
   };
 
   const { loading, error, data } = useQuery(PROJECT_NAME, {
