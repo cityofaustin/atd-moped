@@ -87,21 +87,18 @@ const GridTable = ({
   aggregateQueryConfig,
   toolbar,
 }) => {
-  // Load up the styles
+  // Style
   const classes = useStyles();
-  const { data, loading, error } = useQuery(query.gql);
-
-  /**
-   * Data Management
-   */
-  const items = data ? data[query.config.table] : [];
-  let tableRows = [];
 
   /**
    * State Management
    */
-  const [searchKeyword, setSearchKeyword] = useState("");
-  const [projectList, setProjectList] = useState([]);
+  const [currentQuery, setCurrentQuery]  = useState(query);
+
+  /**
+   * Data Management
+   */
+  const { data, loading, error } = useQuery(currentQuery.gql);
 
   /**
    * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
@@ -209,20 +206,9 @@ const GridTable = ({
     console.log(error);
   }
 
-  useEffect(() => {
-    if (data) {
-      const currentProjectList = data.moped_project.filter(item => {
-        return item.project_name
-          .toString()
-          .toLowerCase()
-          .includes(searchKeyword.toLowerCase());
-      });
-      setProjectList(currentProjectList);
-    }
-  }, [data, searchKeyword]);
-
   return (
     <Container maxWidth={false} className={classes.root}>
+      {/*Title*/}
       <Typography
         variant="h1"
         component="h2"
@@ -231,7 +217,9 @@ const GridTable = ({
       >
         {title}
       </Typography>
+      {/*Toolbar Space*/}
       <GridTableToolbar>{toolbar}</GridTableToolbar>
+      {/*Main Table Body*/}
       <Paper className={classes.paper}>
         <Box mt={3}>
           {loading ? (
@@ -240,7 +228,7 @@ const GridTable = ({
             <Card className={classes.root}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
-                  <GridTableListHeader query={query} />
+                  <GridTableListHeader query={currentQuery} updateQuery={setCurrentQuery} />
                   <TableBody>
                     {data[query.table].map((row, rowIndex) => {
                       return (
@@ -291,7 +279,13 @@ const GridTable = ({
                   </TableBody>
                 </Table>
               </TableContainer>
-              <GridTablePagination query={query} data={data} />
+
+              {/*Pagination Management*/}
+              <GridTablePagination
+                  query={currentQuery}
+                  updateQuery={setCurrentQuery}
+                  data={data}
+              />
             </Card>
           ) : (
             <span>{error ? error : "Could not fetch data"}</span>
