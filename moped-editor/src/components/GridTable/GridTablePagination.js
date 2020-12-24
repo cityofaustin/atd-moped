@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { TablePagination } from "@material-ui/core";
 
 import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { expandEnvs } from "env-cmd/dist/expand-envs";
 
 // Styles
 const useStyles = makeStyles(theme => ({
@@ -19,23 +18,21 @@ const useStyles = makeStyles(theme => ({
  * GridTablePagination Component
  * @param {GQLAbstract} query - The GQLAbstract class being passed down for reference
  * @param {Object} data - It's the GraphQL query results as provided by Apollo in the form of an array of objects.
- * @param {number} itemsPerPage - The initial number of items per single page
+ * @param {func} updateQuery - The method to use to update the query
  * @return {JSX.Element}
  * @constructor
  */
-const GridTablePagination = ({ query, data }) => {
-
+const GridTablePagination = ({ query, updateQuery, data }) => {
   const classes = useStyles();
   const theme = useTheme();
 
   const aggregateDataCount =
     data[query.config.table + "_aggregate"].aggregate.count;
 
-  const getTotalPages = limit => Math.ceil(aggregateDataCount / limit);
-
   /**
    * State Management
    */
+  const [localQuery, setLocalQuery] = useState(query);
   const [limit, setLimit] = useState(query.config.limit);
   const [offset, setOffset] = useState(0);
   const [page, setPage] = useState(0);
@@ -46,8 +43,9 @@ const GridTablePagination = ({ query, data }) => {
 
   const handleChangeRowsPerPage = event => {
     const rowsPerPage = parseInt(event.target.value, 10);
-    query.limit = rowsPerPage;
+    localQuery.limit = rowsPerPage;
     setLimit(rowsPerPage);
+    setLocalQuery(localQuery);
   };
 
   useEffect(() => {
@@ -59,12 +57,18 @@ const GridTablePagination = ({ query, data }) => {
   }, [limit]);
 
   useEffect(() => {
-    query.offset = offset;
+    localQuery.offset = offset;
+    setLocalQuery(localQuery);
   }, [offset]);
+
+  useEffect(() => {
+    console.log("Updating query");
+    updateQuery(localQuery);
+  }, [localQuery]);
 
   return data ? (
     <TablePagination
-      rowsPerPageOptions={query.config.pagination.rowsPerPageOptions}
+      rowsPerPageOptions={localQuery.config.pagination.rowsPerPageOptions}
       component="div"
       count={aggregateDataCount}
       rowsPerPage={limit}
