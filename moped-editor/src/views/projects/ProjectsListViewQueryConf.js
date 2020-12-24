@@ -2,6 +2,9 @@ export const ProjectsListViewQueryConf = {
     table: "moped_project",
     single_item: "project",
     showDateRange: false,
+    pagination: {
+        rowsPerPageOptions: [1, 5, 10, 25, 50, 100],
+    },
     columns: {
         project_id: {
             primary_key: true,
