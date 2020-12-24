@@ -80,9 +80,6 @@ export const UserProvider = ({ children }) => {
       return data;
     });
 
-  // Get JWT token with roles
-  const getToken = user => user && user.signInUserSession.idToken.jwtToken;
-
   const isUserSSO = () =>
     user.signInUserSession.idToken.payload["cognito:username"].startsWith(
       "azuread_"
@@ -95,7 +92,7 @@ export const UserProvider = ({ children }) => {
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
   const values = React.useMemo(
-    () => ({ user, getToken, login, logout, loginLoading, isUserSSO }),
+    () => ({ user, login, logout, loginLoading, isUserSSO }),
     [user, loginLoading]
   );
 

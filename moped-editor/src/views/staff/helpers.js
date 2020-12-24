@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser } from "../../auth/user";
+import { useUser, getJwt } from "../../auth/user";
 import axios from "axios";
 
 // Custom Hook for API calls
@@ -7,19 +7,19 @@ export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const { user, getToken } = useUser();
+  const { user } = useUser();
 
   const requestApi = ({ method, path, payload, callback }) => {
     // Use local API dev server for now
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
-    const token = getToken(user);
+    const jwt = getJwt(user);
 
     let config = {
       url,
       method,
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${jwt}`,
       },
     };
 
