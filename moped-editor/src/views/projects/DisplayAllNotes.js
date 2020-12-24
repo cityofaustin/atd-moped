@@ -4,6 +4,8 @@ import Note from "./Note";
 import ModifyNote from "./ModifyNote";
 import { Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useMutation } from "@apollo/react-hooks";
+import { gql } from "apollo-boost";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -23,6 +25,23 @@ const DisplayAllNotes = () => {
 
   // Initialize useRef
   const getContent = useRef(null);
+
+  const NOTES_MUTATION = gql`
+    mutation Notes($project_note: String! = "") {
+      insert_moped_proj_notes(
+        objects: { project_note: $project_note, project_id: 1 }
+      ) {
+        affected_rows
+        returning {
+          project_id
+          project_note
+          comm_id
+        }
+      }
+    }
+  `;
+
+  const [sendNote] = useMutation(NOTES_MUTATION);
 
   const saveNoteContentToState = event => {
     setContent(event.target.innerHTML);
@@ -44,8 +63,7 @@ const DisplayAllNotes = () => {
     });
     setAllNotes(modifiedNote);
   };
-  const updateNote = event => {
-    event.preventDefault();
+  const updateNote = () => {
     const updatedNote = allNotes.map(eachNote => {
       if (eachNote.id === editNoteId) {
         console.log([eachNote.id, editNoteId]);
@@ -64,7 +82,10 @@ const DisplayAllNotes = () => {
     event.preventDefault();
     const id = Date.now();
     setAllNotes([...allNotes, { content, id }]);
-    console.log(allNotes);
+    allNotes.forEach(eachNote => {
+      let project_note = eachNote.content;
+      sendNote({ variables: { project_note } });
+    });
     setContent("");
     getContent.current.value = "";
     toggleCreateNewNote();
@@ -73,8 +94,8 @@ const DisplayAllNotes = () => {
     return (
       <>
         <CreateNewNote
-          saveNoteContentToState={saveNoteContentToState}
           getContent={getContent}
+          saveNoteContentToState={saveNoteContentToState}
           saveNote={saveNote}
           deleteNote={deleteNote}
         />

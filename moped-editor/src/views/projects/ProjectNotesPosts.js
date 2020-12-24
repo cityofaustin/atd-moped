@@ -47,7 +47,7 @@ const ProjectNotesPosts = () => {
 
   const NOTES_QUERY = gql`
     query Notes {
-      moped_proj_notes(limit: 1, order_by: { project_note_id: desc }) {
+      moped_proj_notes(order_by: { project_note_id: asc }) {
         project_note
         date_created
       }
@@ -75,21 +75,20 @@ const ProjectNotesPosts = () => {
 
   return (
     <Card className={classes.cardWrapper}>
-      <div className={classes.root}>
-        <Box p={4} pb={2}>
-          <Typography color="textPrimary" variant="p">
-            added by {userData.moped_users[0].first_name}{" "}
-            {userData.moped_users[0].last_name}
-            {notesData.moped_proj_notes.map(detail => (
-              <p key={detail.date_created} value={detail.date_created}>
-                {detail.date_created}
-                <Divider />
-                {detail.project_note}
-              </p>
-            ))}
-          </Typography>
-        </Box>
-      </div>
+      <Box p={4} pb={2}>
+        <Typography color="textPrimary" variant="p">
+          added by {userData.moped_users[0].first_name}{" "}
+          {userData.moped_users[0].last_name}
+          {notesData.moped_proj_notes.map(detail => (
+            <p key={detail.date_created} value={detail.date_created}>
+              {detail.date_created}
+              <Divider />
+              {detail.project_note}
+            </p>
+          ))}
+        </Typography>
+      </Box>
+
       <Divider />
     </Card>
   );

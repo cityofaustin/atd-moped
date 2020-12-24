@@ -5,12 +5,12 @@ import DisplayAllNotes from "./DisplayAllNotes";
 //import { useMutation } from "@apollo/react-hooks";
 //import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
-//import Page from "src/components/Page";
+import Page from "src/components/Page";
 //import ProjectNotesPosts from "./ProjectNotesPosts";
 import {
   // Button,
   //Box,
-  //Container,
+  Container,
   Card,
   Divider,
   // CardActions,
@@ -77,10 +77,10 @@ const ProjectNotes = () => {
   // };
 
   return (
-    // <Page title="Project Notes Page">
-    //   <Container>
-    <Card className={classes.cardWrapper}>
-      {/* <JoditEditor
+    <Page title="Project Notes Page">
+      <Container>
+        <Card className={classes.cardWrapper}>
+          {/* <JoditEditor
             ref={editor}
             value={content}
             config={config}
@@ -101,11 +101,11 @@ const ProjectNotes = () => {
           <Box p={4} pb={2}>
             {showPost ? <ProjectNotesPosts /> : null}
           </Box> */}
-      <DisplayAllNotes />
-      <Divider />
-    </Card>
-    //   </Container>
-    // </Page>
+          <DisplayAllNotes />
+          <Divider />
+        </Card>
+      </Container>
+    </Page>
   );
 };
 

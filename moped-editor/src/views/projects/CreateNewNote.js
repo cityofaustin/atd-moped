@@ -17,23 +17,19 @@ const CreateNewNote = props => {
   };
   return (
     <>
-      <section>
-        <form onSubmit={props.saveNote}>
-          <h3>Create New Note</h3>
-          <JoditEditor
-            ref={props.getContent}
-            value={props.content}
-            config={config}
-            onBlur={props.saveNoteContentToState}
-            tabIndex={1} // tabIndex of textarea
-          />
-          <Box>
-            <Button type="submit" className={classes.button}>
-              Save Note
-            </Button>
-          </Box>
-        </form>
-      </section>
+      <h3>Create New Note</h3>
+      <JoditEditor
+        ref={props.getContent}
+        value={props.content}
+        config={config}
+        onBlur={props.saveNoteContentToState}
+        tabIndex={1} // tabIndex of textarea
+      />
+      <Box>
+        <Button onClick={props.saveNote} className={classes.button}>
+          Save Note
+        </Button>
+      </Box>
     </>
   );
 };
