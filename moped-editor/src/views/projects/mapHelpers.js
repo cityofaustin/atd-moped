@@ -10,7 +10,7 @@ export const mapInit = {
   zoom: 12,
 };
 
-export const getPolygonId = e =>
+export const getVectorTilePolygonId = e =>
   e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
 export const getLayerSource = e =>

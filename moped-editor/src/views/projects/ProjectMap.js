@@ -10,7 +10,7 @@ import {
   createProjectLayerConfig,
   getGeoJSON,
   getLayerSource,
-  getPolygonId,
+  getVectorTilePolygonId,
   isFeaturePresent,
   MAPBOX_TOKEN,
   mapInit,
@@ -56,41 +56,39 @@ const ProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
-  const [polygonId, setPolygonId] = useState("");
+  const [vectorTilePolygonId, setVectorTilePolygonId] = useState("");
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
-  const handleHover = e => {
+  const handleLayerHover = e => {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const polygonId = getPolygonId(e);
+    const vectorTilePolygonId = getVectorTilePolygonId(e);
 
-    if (!!polygonId) {
-      setPolygonId(polygonId);
-      setHoveredFeature(polygonId);
+    if (!!vectorTilePolygonId) {
+      setVectorTilePolygonId(vectorTilePolygonId);
+      setHoveredFeature(vectorTilePolygonId);
       setHoveredCoords({ x: offsetX, y: offsetY });
     } else {
       setHoveredFeature(null);
       setHoveredCoords(null);
-      setPolygonId(null);
+      setVectorTilePolygonId(null);
     }
   };
 
-  const handleClick = e => {
-    console.log(e);
-    const polygonId = getPolygonId(e);
+  const handleLayerClick = e => {
+    const vectorTilePolygonId = getVectorTilePolygonId(e);
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);
-    console.log(selectedFeature);
 
-    if (!!polygonId && !!layerSource) {
+    if (!!vectorTilePolygonId && !!layerSource) {
       const layerIds = selectedIds[layerSource] || [];
 
-      const updatedLayerIds = !layerIds.includes(polygonId)
-        ? [...layerIds, polygonId]
-        : layerIds.filter(id => id !== polygonId);
+      const updatedLayerIds = !layerIds.includes(vectorTilePolygonId)
+        ? [...layerIds, vectorTilePolygonId]
+        : layerIds.filter(id => id !== vectorTilePolygonId);
 
       const updatedSelectedIds = {
         ...selectedIds,
@@ -136,8 +134,8 @@ const ProjectMap = ({
         width="100%"
         height={500}
         interactiveLayerIds={["location-polygons"]}
-        onHover={handleHover}
-        onClick={handleClick}
+        onHover={handleLayerHover}
+        onClick={handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
       >
@@ -150,12 +148,14 @@ const ProjectMap = ({
           mapboxApiAccessToken={MAPBOX_TOKEN}
           position="top-right"
         />
-
         <Layer
           key={"location-polygons"}
-          {...createProjectLayerConfig(polygonId, "asmp_polygons", selectedIds)}
+          {...createProjectLayerConfig(
+            vectorTilePolygonId,
+            "asmp_polygons",
+            selectedIds
+          )}
         />
-
         {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
