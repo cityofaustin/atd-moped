@@ -1,5 +1,5 @@
-import React, { useState, useRef, useCallback } from "react";
-import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
+import React, { useState, useRef } from "react";
+import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import { Box, Typography, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -11,6 +11,7 @@ import {
   mapInit,
   renderTooltip,
   sumFeaturesSelected,
+  projectExtentStyles,
 } from "./mapHelpers";
 
 const useStyles = makeStyles(theme => ({
@@ -36,12 +37,9 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     padding: "10px",
   },
-  mapBox: {
-    padding: 25,
-  },
 }));
 
-const ProjectMap = () => {
+const ProjectSummaryDetailsMap = ({ projectExtentGeoJSON }) => {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -79,28 +77,23 @@ const ProjectMap = () => {
         height={500}
         interactiveLayerIds={["location-polygons"]}
         onHover={handleLayerHover}
-        onClick={handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
       >
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        <Layer
-          key={"location-polygons"}
-          {...createProjectLayerConfig(
-            vectorTilePolygonId,
-            "asmp_polygons",
-            selectedIds
-          )}
-        />
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {projectExtentGeoJSON && (
+          <Source type="geojson" data={projectExtentGeoJSON}>
+            <Layer {...projectExtentStyles} />
+          </Source>
+        )}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedIds)} locations in this project
+        {/* {sumFeaturesSelected(selectedIds)} locations in this project */}
       </Typography>
     </Box>
   );
 };
 
-export default ProjectMap;
+export default ProjectSummaryDetailsMap;

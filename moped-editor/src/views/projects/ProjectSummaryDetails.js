@@ -1,4 +1,5 @@
 import React from "react";
+import ProjectSummaryMap from "./ProjectSummaryDetailsMap";
 import { Box, Grid } from "@material-ui/core";
 
 const ProjectSummaryDetails = details => {
@@ -10,6 +11,7 @@ const ProjectSummaryDetails = details => {
     fiscal_year,
     project_priority,
     eCapris_id,
+    project_extent_geojson,
   } = details.details;
 
   const projectDetails = [
@@ -45,20 +47,27 @@ const ProjectSummaryDetails = details => {
 
   return (
     <Grid container spacing={2}>
-      {projectDetails.map(detail => (
-        <Grid item xs={6}>
-          <Box mb={2}>
-            <h4>{detail.label}</h4>
-            {detail.field ? (
-              <p>{detail.field}</p>
-            ) : (
-              <Box color="text.disabled">
-                <p>No data</p>
+      <Grid item xs={6}>
+        <Grid container>
+          {projectDetails.map(detail => (
+            <Grid item xs={6}>
+              <Box mb={2} mr={2}>
+                <h4>{detail.label}</h4>
+                {detail.field ? (
+                  <p>{detail.field}</p>
+                ) : (
+                  <Box color="text.disabled">
+                    <p>No data</p>
+                  </Box>
+                )}
               </Box>
-            )}
-          </Box>
+            </Grid>
+          ))}
         </Grid>
-      ))}
+      </Grid>
+      <Grid item xs={6}>
+        <ProjectSummaryMap projectExtentGeoJSON={project_extent_geojson} />
+      </Grid>
     </Grid>
   );
 };

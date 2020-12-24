@@ -67,6 +67,15 @@ export const createProjectLayerConfig = (
   };
 };
 
+export const projectExtentStyles = {
+  id: "projectExtent",
+  type: "fill",
+  paint: {
+    "fill-color": "#f46d43",
+    "fill-opacity": 0.8,
+  },
+};
+
 export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
   return (
     hoveredFeature && (
