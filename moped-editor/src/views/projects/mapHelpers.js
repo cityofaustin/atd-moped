@@ -2,7 +2,7 @@ import React from "react";
 import theme from "../../theme/index";
 import { isEqual } from "lodash";
 
-export const MAPBOX_TOKEN = `pk.eyJ1Ijoiam9obmNsYXJ5IiwiYSI6ImNraWV4dHR0ZjAwNnYyd3FwYjFoNHduaDcifQ.--3vRm2KHq1gh5K_L0pqtA`;
+export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export const mapInit = {
   latitude: 30.268039,

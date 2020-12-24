@@ -16,7 +16,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import ProjectMap from "./ProjectMap";
+import ProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
