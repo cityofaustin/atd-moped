@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableCell, TableRow } from "@material-ui/core";
+import { TableHead, TableRow, TableCell } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 /**
@@ -49,31 +49,33 @@ const GridTableListHeader = ({
   };
 
   return (
-    <TableRow>
-      {query.columns.map(
-        (column, index) =>
-          // If column is hidden, don't render <th>
-          !query.isHidden(column) && (
-            <TableCell
-              onClick={
-                query.isSortable(column)
-                  ? e => handleTableHeaderClick(column)
-                  : null
-              }
-              key={`th-${index}`}
-            >
-              {renderLabel(
-                // Get a human-readable label string
-                query.getLabel(column, "table"),
-                // If it is sortable, render as such
-                query.isSortable(column),
-                // If sort column is defined, use sort order, or false as default
-                sortColumn === column ? sortOrder === "asc" : false
-              )}
-            </TableCell>
-          )
-      )}
-    </TableRow>
+    <TableHead>
+      <TableRow>
+        {query.columns.map(
+          (column, index) =>
+            // If column is hidden, don't render <th>
+            !query.isHidden(column) && (
+              <TableCell
+                onClick={
+                  query.isSortable(column)
+                    ? e => handleTableHeaderClick(column)
+                    : null
+                }
+                key={`th-${index}`}
+              >
+                {renderLabel(
+                  // Get a human-readable label string
+                  query.getLabel(column, "table"),
+                  // If it is sortable, render as such
+                  query.isSortable(column),
+                  // If sort column is defined, use sort order, or false as default
+                  sortColumn === column ? sortOrder === "asc" : false
+                )}
+              </TableCell>
+            )
+        )}
+      </TableRow>
+    </TableHead>
   );
 };
 
