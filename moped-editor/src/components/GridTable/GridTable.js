@@ -108,7 +108,7 @@ const GridTable = ({
           {loading ? (
             <CircularProgress />
           ) : (
-            <GridTableList query={query} projects={projectList} />
+            <GridTableList query={query} data={data} />
           )}
         </Box>
       </Paper>
