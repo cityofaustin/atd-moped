@@ -12,14 +12,19 @@ import {
   Link,
   Chip,
   Icon,
+  TableContainer,
 } from "@material-ui/core";
 
 // GridTable
 import GridTableListHeader from "./GridTableListHeader";
+import GridTablePagination from "./GridTablePagination";
 
 // Styles
 const useStyles = makeStyles(() => ({
   root: {},
+  container: {
+    maxHeight: "55vh",
+  },
   tableCell: {
     "text-transform": "capitalize",
   },
@@ -28,13 +33,14 @@ const useStyles = makeStyles(() => ({
 /**
  * Builds a List of items using the Table component in Material-UI
  * @param {GQLAbstract} query - The GQLAbstract class passed down as reference
- * @param {Object[]} projects - An array of objects containing the data for each project
+ * @param {Object} data - An array of objects containing the data for each item
  * @param {string} helperText - Helper Text
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableList = ({ query, projects, helperText }) => {
+const GridTableList = ({ query, data, helperText }) => {
   const classes = useStyles();
+  const items = data[query.config.table] || [];
 
   /**
    * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
@@ -87,36 +93,43 @@ const GridTableList = ({ query, projects, helperText }) => {
               <small>{helperText}</small>
             </Box>
           )}
-          <Table>
-            <GridTableListHeader query={query} />
-            <TableBody>
-              {projects.map(project => (
-                <TableRow hover key={project.project_id}>
-                  <TableCell align="center">
-                    <RouterLink to={`/moped/projects/${project.project_id}`}>
-                      <Icon color={"primary"}>edit_road</Icon>
-                    </RouterLink>
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    <Link href={"/moped/projects/" + project.project_id}>
-                      {project.project_name}
-                    </Link>
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {project.project_description}
-                  </TableCell>
-                  <TableCell className={classes.tableCell}>
-                    {getProjectStatus(project.current_status)}
-                  </TableCell>
-                  <TableCell>{parseDateReadable(project.date_added)}</TableCell>
-                  <TableCell>{parseDateReadable(project.start_date)}</TableCell>
-                  <TableCell>
-                    {project.capitally_funded ? "Yes" : "No"}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+          <TableContainer className={classes.container}>
+            <Table stickyHeader aria-label="sticky table">
+              <GridTableListHeader query={query} />
+              <TableBody>
+                {items.map(project => (
+                  <TableRow hover key={project.project_id}>
+                    <TableCell align="center">
+                      <RouterLink to={`/moped/projects/${project.project_id}`}>
+                        <Icon color={"primary"}>edit_road</Icon>
+                      </RouterLink>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      <Link href={"/moped/projects/" + project.project_id}>
+                        {project.project_name}
+                      </Link>
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {project.project_description}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>
+                      {getProjectStatus(project.current_status)}
+                    </TableCell>
+                    <TableCell>
+                      {parseDateReadable(project.date_added)}
+                    </TableCell>
+                    <TableCell>
+                      {parseDateReadable(project.start_date)}
+                    </TableCell>
+                    <TableCell>
+                      {project.capitally_funded ? "Yes" : "No"}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <GridTablePagination query={query} data={data} />
         </Box>
       </PerfectScrollbar>
     </Card>
