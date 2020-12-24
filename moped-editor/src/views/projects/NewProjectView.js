@@ -183,7 +183,7 @@ const NewProjectView = () => {
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
       $project_extent_ids: json = {}
-      $project_geometries: json = {}
+      $project_extent_geojson: json = {}
     ) {
       insert_moped_project(
         objects: {
@@ -197,7 +197,7 @@ const NewProjectView = () => {
           capitally_funded: $capitally_funded
           project_priority: $project_priority
           project_extent_ids: $project_extent_ids
-          project_geometries: $project_geometries
+          project_extent_geojson: $project_extent_geojson
         }
       ) {
         affected_rows
@@ -213,6 +213,7 @@ const NewProjectView = () => {
           capitally_funded
           start_date
           project_extent_ids
+          project_extent_geojson
         }
       }
     }
@@ -269,7 +270,7 @@ const NewProjectView = () => {
       variables: {
         ...projectDetails,
         project_extent_ids: selectedIds,
-        project_geometries: featureCollection,
+        project_extent_geojson: featureCollection,
       },
     })
       .then(response => {
