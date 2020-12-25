@@ -90,16 +90,19 @@ const GridTable = ({
   const classes = useStyles();
 
   /**
-   * State Management
+   * Pagination State Management
    */
-  const [page, setPage] = useState(0);
-  const [limit, setLimit] = useState(query.limit);
-  const [offset, setOffset] = useState(query.offset);
+  const [pagination, setPagination] = useState({
+    limit: query.limit,
+    offset: query.offset,
+    page: 0
+  });
 
   /**
-   * Data Management
+   * Query Management
    */
-  const { data, loading, error } = useQuery(query.gql, query.useQueryOptions);
+
+  const { data, loading, error } = useQuery(query.gql);
 
   /**
    * Removes any non-alphanumeric characters from a string
@@ -186,7 +189,7 @@ const GridTable = ({
     const cleanLabel = cleanUpText(label);
     return String(label) !== "" ? (
       <Chip
-        color={labelColorMap[cleanLabel.toLowerCase()] || "disabled"}
+        color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
         size={"small"}
         label={cleanLabel}
       />
@@ -195,9 +198,8 @@ const GridTable = ({
     );
   };
 
-  if (error) {
-    console.log(error);
-  }
+
+  console.log(query.query);
 
   return (
     <Container maxWidth={false} className={classes.root}>
@@ -230,7 +232,16 @@ const GridTable = ({
                             (column, columnIndex) =>
                               // If column is hidden, don't render <td>
                               !query.isHidden(column) && (
-                                <TableCell key={columnIndex}>
+                                <TableCell
+                                  key={columnIndex}
+                                  width={
+                                    query.config.columns[column].hasOwnProperty(
+                                      "width"
+                                    )
+                                      ? query.config.columns[column].width
+                                      : 0
+                                  }
+                                >
                                   {query.isPK(column) ? (
                                     <RouterLink
                                       to={`/${query.singleItem}/${row[column]}`}
@@ -238,8 +249,8 @@ const GridTable = ({
                                       {query.config.columns[
                                         column
                                       ].hasOwnProperty("icon") ? (
-                                        <Icon color={"primary"}>
-                                          {query.config.columns[column].icon}
+                                        <Icon color={query.config.columns[column].icon.color}>
+                                          {query.config.columns[column].icon.name}
                                         </Icon>
                                       ) : (
                                         row[column]
@@ -279,12 +290,8 @@ const GridTable = ({
               <GridTablePagination
                 query={query}
                 data={data}
-                page={page}
-                setPage={setPage}
-                limit={limit}
-                setLimit={setLimit}
-                offset={offset}
-                setOffset={setOffset}
+                pagination={pagination}
+                setPagination={setPagination}
               />
             </Card>
           ) : (
