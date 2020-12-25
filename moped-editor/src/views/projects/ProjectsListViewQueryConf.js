@@ -59,6 +59,7 @@ export const ProjectsListViewQueryConf = {
       label_search: null,
       label_table: "Date Added",
       width: "10%",
+      filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
     start_date: {
@@ -67,6 +68,7 @@ export const ProjectsListViewQueryConf = {
       label_search: null,
       label_table: "Start Date",
       width: "10%",
+      filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
     capitally_funded: {
