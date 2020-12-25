@@ -1,6 +1,11 @@
 export const ProjectsListViewQueryConf = {
+  options: {
+    useQuery: {
+      fetchPolicy: "cache-first", // Default
+    },
+  },
   table: "moped_project",
-  single_item: "project",
+  single_item: "/moped/projects",
   showDateRange: false,
   pagination: {
     rowsPerPageOptions: [1, 5, 10, 25, 50, 100],
