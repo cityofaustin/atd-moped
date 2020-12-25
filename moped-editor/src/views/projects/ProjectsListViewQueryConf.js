@@ -1,7 +1,7 @@
 export const ProjectsListViewQueryConf = {
   options: {
     useQuery: {
-      fetchPolicy: "cache-first", // Default
+      fetchPolicy: "no-cache",
     },
   },
   table: "moped_project",
@@ -17,7 +17,11 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: "",
       label_table: "",
-      icon: "edit_road",
+      icon: {
+        name: "edit_road",
+        color: "primary"
+      },
+      width: "*",
       type: "Int",
     },
     project_name: {
@@ -25,6 +29,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: null,
       label_table: "Project Name",
+      width: "20%",
       type: "String",
     },
     project_description: {
@@ -32,6 +37,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: null,
       label_table: "Description",
+      width: "50%",
       type: "String",
     },
     current_status: {
@@ -40,10 +46,11 @@ export const ProjectsListViewQueryConf = {
       label_search: null,
       label_table: "Status",
       type: "String",
+      width: "5%",
       chip: {
         active: "primary",
         hold: "secondary",
-        canceled: "disabled",
+        canceled: "default",
       },
     },
     date_added: {
@@ -51,6 +58,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: null,
       label_table: "Date Added",
+      width: "10%",
       type: "date_iso",
     },
     start_date: {
@@ -58,6 +66,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: null,
       label_table: "Start Date",
+      width: "10%",
       type: "date_iso",
     },
     capitally_funded: {
@@ -65,6 +74,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label_search: null,
       label_table: "Capital Funding",
+      width: "5%",
       type: "boolean",
     },
   },
