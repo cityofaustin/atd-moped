@@ -1,41 +1,31 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { TablePagination } from "@material-ui/core";
-
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-
-// Styles
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexShrink: 0,
-    marginLeft: theme.spacing(2.5),
-  },
-  disablePointerEvents: {
-    "pointer-events": "none",
-  },
-}));
 
 /**
  * GridTablePagination Component
  * @param {GQLAbstract} query - The GQLAbstract class being passed down for reference
  * @param {Object} data - It's the GraphQL query results as provided by Apollo in the form of an array of objects.
- * @param {func} updateQuery - The method to use to update the query
+ * @param {integer} page - The current state of Page
+ * @param {func} setPage - The method to use to update the state of Page
+ * @param {int} limit - The current state of Limit
+ * @param {func} setLimit - The method to use to update the state of Limit
+ * @param {int} offset - The current state of offset
+ * @param {func} setOffset - The method to use to update the state of Offset
  * @return {JSX.Element}
  * @constructor
  */
-const GridTablePagination = ({ query, updateQuery, data }) => {
-  const classes = useStyles();
-  const theme = useTheme();
-
+const GridTablePagination = ({
+  query,
+  data,
+  page,
+  setPage,
+  limit,
+  setLimit,
+  offset,
+  setOffset,
+}) => {
   const aggregateDataCount =
     data[query.config.table + "_aggregate"].aggregate.count;
-
-  /**
-   * State Management
-   */
-  const [localQuery, setLocalQuery] = useState(query);
-  const [limit, setLimit] = useState(query.config.limit);
-  const [offset, setOffset] = useState(0);
-  const [page, setPage] = useState(0);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -43,32 +33,27 @@ const GridTablePagination = ({ query, updateQuery, data }) => {
 
   const handleChangeRowsPerPage = event => {
     const rowsPerPage = parseInt(event.target.value, 10);
-    localQuery.limit = rowsPerPage;
+    setPage(0);
+    query.limit = rowsPerPage;
     setLimit(rowsPerPage);
-    setLocalQuery(localQuery);
   };
 
   useEffect(() => {
-    setOffset(page * limit);
-  }, [page]);
+    const offsetUpdate = page * query.limit;
+    query.offset = offsetUpdate;
+    setOffset(offsetUpdate);
+  }, [page, query.offset, query.limit, setOffset]);
 
-  useEffect(() => {
-    setPage(0);
-  }, [limit]);
-
-  useEffect(() => {
-    localQuery.offset = offset;
-    setLocalQuery(localQuery);
-  }, [offset]);
-
-  useEffect(() => {
-    console.log("Updating query");
-    updateQuery(localQuery);
-  }, [localQuery]);
+  /**
+   * Make sure we don't go below 0 for offset
+   */
+  if (offset < 0) {
+    setOffset(0);
+  }
 
   return data ? (
     <TablePagination
-      rowsPerPageOptions={localQuery.config.pagination.rowsPerPageOptions}
+      rowsPerPageOptions={query.config.pagination.rowsPerPageOptions}
       component="div"
       count={aggregateDataCount}
       rowsPerPage={limit}
