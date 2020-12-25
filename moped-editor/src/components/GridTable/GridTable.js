@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 
 /**
@@ -11,7 +11,6 @@ import {
   CircularProgress,
   Container,
   Icon,
-  Link,
   Paper,
   Table,
   TableBody,
@@ -93,21 +92,14 @@ const GridTable = ({
   /**
    * State Management
    */
-  const [currentQuery, setCurrentQuery]  = useState(query);
+  const [page, setPage] = useState(0);
+  const [limit, setLimit] = useState(query.limit);
+  const [offset, setOffset] = useState(query.offset);
 
   /**
    * Data Management
    */
-  const { data, loading, error } = useQuery(currentQuery.gql);
-
-  /**
-   * Parses a PostgreSQL timestamp string and returns a human-readable date-time string
-   * @param {string} date - The date as provided by the database
-   * @return {string} - A human-readable date
-   */
-  const parseDateReadable = date => {
-    return new Date(date).toLocaleDateString();
-  };
+  const { data, loading, error } = useQuery(query.gql, query.useQueryOptions);
 
   /**
    * Removes any non-alphanumeric characters from a string
@@ -171,15 +163,16 @@ const GridTable = ({
     }
 
     // If it is an array, resolve each and aggregate
-    section.map(item => {
-      const val = responseValue(item, keys);
+    for (let item of section) {
+      let val = responseValue(item, keys);
+
       if (val !== null) {
         map.set(val, true);
         result.push(val);
       }
-    });
-
-    return result.join(", "); // Merge all into a string
+    }
+    // Merge all into a string
+    return result.join(", ");
   };
 
   /**
@@ -189,13 +182,13 @@ const GridTable = ({
    * @param {string} defaultLabel - The the text that goes inside the Chip component
    * @return {JSX.Element}
    */
-  const buildChip = (label, labelColorMap, defaultLabel="No Status") => {
+  const buildChip = (label, labelColorMap, defaultLabel = "No Status") => {
     const cleanLabel = cleanUpText(label);
     return String(label) !== "" ? (
       <Chip
         color={labelColorMap[cleanLabel.toLowerCase()] || "disabled"}
         size={"small"}
-        label={cleanLabel} lable
+        label={cleanLabel}
       />
     ) : (
       <span>{defaultLabel}</span>
@@ -228,7 +221,7 @@ const GridTable = ({
             <Card className={classes.root}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
-                  <GridTableListHeader query={currentQuery} updateQuery={setCurrentQuery} />
+                  <GridTableListHeader query={query} />
                   <TableBody>
                     {data[query.table].map((row, rowIndex) => {
                       return (
@@ -243,9 +236,11 @@ const GridTable = ({
                                       to={`/${query.singleItem}/${row[column]}`}
                                     >
                                       {query.config.columns[
-                                        "project_id"
+                                        column
                                       ].hasOwnProperty("icon") ? (
-                                        <Icon color={"primary"}>edit_road</Icon>
+                                        <Icon color={"primary"}>
+                                          {query.config.columns[column].icon}
+                                        </Icon>
                                       ) : (
                                         row[column]
                                       )}
@@ -256,8 +251,8 @@ const GridTable = ({
                                         column
                                       ].hasOwnProperty("chip")
                                         ? buildChip(
-                                              row[column],
-                                              query.config.columns[column].chip
+                                            row[column],
+                                            query.config.columns[column].chip
                                           )
                                         : query.getFormattedValue(
                                             column,
@@ -282,9 +277,14 @@ const GridTable = ({
 
               {/*Pagination Management*/}
               <GridTablePagination
-                  query={currentQuery}
-                  updateQuery={setCurrentQuery}
-                  data={data}
+                query={query}
+                data={data}
+                page={page}
+                setPage={setPage}
+                limit={limit}
+                setLimit={setLimit}
+                offset={offset}
+                setOffset={setOffset}
               />
             </Card>
           ) : (
