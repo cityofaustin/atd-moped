@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useUser } from "../../../auth/user";
+import { useUser, isUserSSO } from "../../../auth/user";
 import { useUserApi } from "../../staff/helpers";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -37,7 +37,7 @@ const passwordValidationSchema = yup.object().shape({
 
 const ProfileDetails = () => {
   const classes = useStyles();
-  const { user, isUserSSO } = useUser();
+  const { user } = useUser();
   const { result, loading, requestApi } = useUserApi();
 
   const { register, handleSubmit, errors, formState } = useForm({
@@ -61,7 +61,7 @@ const ProfileDetails = () => {
   };
 
   return (
-    !isUserSSO() && (
+    !isUserSSO(user) && (
       <Card>
         <CardHeader title="Change Your Password" />
         <Divider />

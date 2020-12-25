@@ -80,21 +80,16 @@ export const UserProvider = ({ children }) => {
       return data;
     });
 
-  const isUserSSO = () =>
-    user.signInUserSession.idToken.payload["cognito:username"].startsWith(
-      "azuread_"
-    );
-
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimisation that is mostly needed in cases
   // where the parent of the current component re-renders and thus the current component is forced
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(
-    () => ({ user, login, logout, loginLoading, isUserSSO }),
-    [user, loginLoading]
-  );
+  const values = React.useMemo(() => ({ user, login, logout, loginLoading }), [
+    user,
+    loginLoading,
+  ]);
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
@@ -117,6 +112,11 @@ export const useUser = () => {
 export const getJwt = user => {
   return user.signInUserSession.idToken.jwtToken;
 };
+
+export const isUserSSO = user =>
+  user.signInUserSession.idToken.payload["cognito:username"].startsWith(
+    "azuread_"
+  );
 
 // This function takes a CognitoUser Object and returns the role with the
 // highest permissions level within their allowed roles.
