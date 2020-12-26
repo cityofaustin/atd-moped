@@ -1,7 +1,8 @@
 export const ProjectsListViewQueryConf = {
   options: {
     useQuery: {
-      fetchPolicy: "no-cache",
+      fetchPolicy: "cache-first", // Default, or use 'no-cache'
+      // More info: https://www.apollographql.com/docs/react/get-started/#graphql-config-options-fetchPolicy
     },
   },
   table: "moped_project",
@@ -55,7 +56,7 @@ export const ProjectsListViewQueryConf = {
     },
     date_added: {
       searchable: false,
-      sortable: false,
+      sortable: true,
       label_search: null,
       label_table: "Date Added",
       width: "10%",
@@ -64,7 +65,7 @@ export const ProjectsListViewQueryConf = {
     },
     start_date: {
       searchable: false,
-      sortable: false,
+      sortable: true,
       label_search: null,
       label_table: "Start Date",
       width: "10%",
