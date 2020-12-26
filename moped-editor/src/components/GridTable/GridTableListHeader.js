@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableHead, TableRow, TableCell } from "@material-ui/core";
+import { TableHead, TableRow, TableCell, Icon } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 /**
@@ -10,6 +10,10 @@ const useStyles = makeStyles(theme => ({
   columnTitle: {
     "font-weight": "bold",
   },
+  columnCell: {
+    cursor: "pointer",
+    "user-select": "none",
+  },
 }));
 
 /**
@@ -18,7 +22,6 @@ const useStyles = makeStyles(theme => ({
  * @param {function} handleTableHeaderClick - A handler for table header clicks
  * @param {string} sortColumn - The name of the column to sort by
  * @param {string} sortOrder - The order in which the sorting is made: asc, desc
- * @param {string} helperText - Any helper text
  * @return {JSX.Element}
  * @constructor
  */
@@ -40,9 +43,7 @@ const GridTableListHeader = ({
   const renderLabel = (col, sortable = false, ascending = false) => {
     return (
       <span className={classes.columnTitle}>
-        {sortable && (
-          <i className={`fa fa-arrow-circle-${ascending ? "up" : "down"}`} />
-        )}{" "}
+        {sortable && <Icon>keyboard_arrow_{ascending ? "up" : "down"}</Icon>}{" "}
         &nbsp;{col}
       </span>
     );
@@ -56,6 +57,7 @@ const GridTableListHeader = ({
             // If column is hidden, don't render <th>
             !query.isHidden(column) && (
               <TableCell
+                className={classes.columnCell}
                 onClick={
                   query.isSortable(column)
                     ? e => handleTableHeaderClick(column)
