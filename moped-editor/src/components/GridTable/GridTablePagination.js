@@ -24,12 +24,12 @@ const GridTablePagination = ({ query, data, pagination, setPagination }) => {
     // Calculate new offset
     const newOffset = newPage * pagination.limit;
     // Update query.offset and current pagination state
-    query.offset = newOffset;
+    // query.offset = newOffset;
     // Update State
     setPagination({
       ...pagination, // Copy any previous values
       page: newPage, // Change state of page
-      offset: query.offset, // Update state of offset
+      offset: newOffset, // Update state of offset
     });
   };
 
@@ -42,13 +42,13 @@ const GridTablePagination = ({ query, data, pagination, setPagination }) => {
     const newLimit = parseInt(event.target.value, 10);
 
     // Update the query's new limit, and reset offset
-    query.limit = newLimit;
-    query.offset = 0;
+    // query.limit = newLimit;
+    // query.offset = 0;
     // Update state
     setPagination({
       page: 0, // Back to first page
-      limit: query.limit, // Update new limit to state
-      offset: query.offset, // Reset state of offset back to zero
+      limit: newLimit, // Update new limit to state
+      offset: 0, // Reset state of offset back to zero
     });
   };
 
