@@ -90,7 +90,7 @@ const GridTable = ({
   const classes = useStyles();
 
   /**
-   * Pagination State Management
+   * State Management
    */
   const [pagination, setPagination] = useState({
     limit: query.limit,
@@ -98,11 +98,52 @@ const GridTable = ({
     page: 0
   });
 
+  const [sort, setSort] = useState({
+    column: "",
+    order: "",
+  });
+
   /**
    * Query Management
    */
+  // Manage the ORDER BY clause of our query
+  if (sort.column !== "" && sort.order !== "") {
+    query.setOrder(sort.column, sort.order);
+  }
 
-  const { data, loading, error } = useQuery(query.gql);
+  query.limit = pagination.limit;
+  query.offset = pagination.offset;
+
+  /**
+   * Handles the header click for sorting asc/desc.
+   * @param {string} columnName - The name of the column
+   **/
+  const handleTableHeaderClick = columnName => {
+    // Before anything, let's clear all current conditions
+    query.clearOrderBy();
+
+    // If both column and order are empty...
+    if (sort.order === "" && sort.column === "") {
+      // First time sort is applied
+      setSort({
+        order: "asc",
+        column: columnName,
+      });
+    } else if (sort.column === columnName) {
+      // Else if the current sortColumn is the same as the new
+      // then invert values and repeat sort on column
+      setSort({
+        order: sort.order === "desc" ? "asc" : "desc",
+        column: columnName,
+      });
+    } else if (sort.column !== columnName) {
+      // Sort different column after initial sort, then reset
+      setSort({
+        order: "desc",
+        column: columnName
+      });
+    }
+  };
 
   /**
    * Removes any non-alphanumeric characters from a string
@@ -199,7 +240,11 @@ const GridTable = ({
   };
 
 
+  /**
+   * Data Management
+   */
   console.log(query.query);
+  const { data, loading, error } = useQuery(query.gql);
 
   return (
     <Container maxWidth={false} className={classes.root}>
@@ -223,7 +268,12 @@ const GridTable = ({
             <Card className={classes.root}>
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
-                  <GridTableListHeader query={query} />
+                  <GridTableListHeader
+                      query={query}
+                      sortOrder={sort.order}
+                      sortColumn={sort.column}
+                      handleTableHeaderClick={handleTableHeaderClick}
+                  />
                   <TableBody>
                     {data[query.table].map((row, rowIndex) => {
                       return (
