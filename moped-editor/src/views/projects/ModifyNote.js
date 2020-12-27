@@ -14,17 +14,19 @@ const ModifyNote = props => {
   const classes = useStyles();
   return (
     <>
-      <h3>Modify Note</h3>
-      <JoditEditor
-        value={props.content}
-        onBlur={props.saveNoteContentToState}
-        tabIndex={1} // tabIndex of textarea
-      />
-      <Box>
-        <Button onClick={props.updateNote} className={classes.button}>
-          Update Note
-        </Button>
-      </Box>
+      <form onSubmit={props.updateNote}>
+        <h3>Modify Note</h3>
+        <JoditEditor
+          value={props.content}
+          onBlur={props.saveNoteContentToState}
+          tabIndex={1} // tabIndex of textarea
+        />
+        <Box>
+          <Button type="submit" className={classes.button}>
+            Update Note
+          </Button>
+        </Box>
+      </form>
     </>
   );
 };

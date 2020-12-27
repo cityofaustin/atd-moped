@@ -35,7 +35,6 @@ const DisplayAllNotes = () => {
         returning {
           project_id
           project_note
-          comm_id
         }
       }
     }
@@ -63,7 +62,8 @@ const DisplayAllNotes = () => {
     });
     setAllNotes(modifiedNote);
   };
-  const updateNote = () => {
+  const updateNote = event => {
+    event.preventDefault();
     const updatedNote = allNotes.map(eachNote => {
       if (eachNote.id === editNoteId) {
         console.log([eachNote.id, editNoteId]);

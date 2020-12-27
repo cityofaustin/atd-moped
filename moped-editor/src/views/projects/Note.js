@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Box, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import JoditEditor from "jodit-react";
+import { useUser } from "../../auth/user";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -19,10 +20,19 @@ const Note = ({ content, editNote, id, deleteNote }) => {
     height: 100,
     // all options from https://xdsoft.net/jodit/doc/
   };
+
+  const parseDateReadable = date => {
+    return new Date(date).toLocaleDateString();
+  };
+
+  const { user } = useUser();
+  let userArray = Object.values(user);
   return (
     <>
       <Box>
         <Divider />
+        <p>Created on: {parseDateReadable(Date.now())}</p>
+        <p>Created by: {userArray[0]}</p>
         <JoditEditor
           value={content}
           config={config}
