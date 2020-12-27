@@ -53,7 +53,6 @@ const DisplayAllNotes = () => {
   };
   const editNote = id => {
     setEditNoteId(id);
-    console.log(id);
     toggleModifyNoteComponent();
   };
   const deleteNote = id => {
@@ -66,13 +65,11 @@ const DisplayAllNotes = () => {
     event.preventDefault();
     const updatedNote = allNotes.map(eachNote => {
       if (eachNote.id === editNoteId) {
-        console.log([eachNote.id, editNoteId]);
         return {
           ...eachNote,
           content: content || eachNote.content,
         };
       }
-      console.log(eachNote);
       return eachNote;
     });
     setAllNotes(updatedNote);
