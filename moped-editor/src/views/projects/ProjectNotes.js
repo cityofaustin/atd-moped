@@ -7,7 +7,7 @@ const ProjectNotes = () => {
   return (
     <Page title="Project Notes Page">
       <Container>
-        <Card className={classes.cardWrapper}>
+        <Card>
           <DisplayAllNotes />
           <Divider />
         </Card>
