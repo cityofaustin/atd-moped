@@ -4,8 +4,6 @@ import Page from "src/components/Page";
 import { Container, Card, Divider } from "@material-ui/core";
 
 const ProjectNotes = () => {
-  const classes = useStyles();
-
   return (
     <Page title="Project Notes Page">
       <Container>
