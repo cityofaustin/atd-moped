@@ -53,6 +53,7 @@ const SUMMARY_QUERY = gql`
       start_date
       current_phase
       current_status
+      capitally_funded
       eCapris_id
       fiscal_year
       project_priority
