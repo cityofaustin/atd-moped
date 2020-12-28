@@ -92,9 +92,9 @@ const ProjectsTable = ({ projects }) => {
                     </RouterLink>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
-                    <Link href={"/moped/projects/" + project.project_id}>
-                      {project.project_name}
-                    </Link>
+                    <RouterLink to={`/moped/projects/${project.project_id}`}>
+                      <Link>{project.project_name}</Link>
+                    </RouterLink>
                   </TableCell>
                   <TableCell className={classes.tableCell}>
                     {project.project_description}

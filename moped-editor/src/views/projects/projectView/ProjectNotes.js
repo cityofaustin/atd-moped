@@ -1,5 +1,5 @@
 import React from "react";
-import DisplayAllNotes from "./DisplayAllNotes";
+import DisplayAllNotes from "../DisplayAllNotes";
 import Page from "src/components/Page";
 import { Container, Card, Divider } from "@material-ui/core";
 
