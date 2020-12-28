@@ -28,6 +28,8 @@ import { useQuery } from "@apollo/react-hooks";
 import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
+import GridTableSearch from "./GridTableSearch";
+import GridTableExport from "./GridTableExport";
 
 /**
  * GridTable Style
@@ -260,7 +262,11 @@ const GridTable = ({
         {title}
       </Typography>
       {/*Toolbar Space*/}
-      <GridTableToolbar>{toolbar}</GridTableToolbar>
+      <GridTableToolbar>
+        <GridTableSearch query={query}>
+          <GridTableExport query={query} />
+        </GridTableSearch>
+      </GridTableToolbar>
       {/*Main Table Body*/}
       <Paper className={classes.paper}>
         <Box mt={3}>
