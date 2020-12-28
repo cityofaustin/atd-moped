@@ -10,6 +10,17 @@ export const mapInit = {
   zoom: 12,
 };
 
+// Set the layer attributes to render on map
+export const layerConfigs = [
+  {
+    layerId: "location-polygons",
+    layerSourceName: "asmp_polygons",
+    layerColor: theme.palette.primary.main,
+    layerUrl:
+      "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+  },
+];
+
 export const getVectorTilePolygonId = e =>
   e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
@@ -37,29 +48,27 @@ export const isFeaturePresent = (selectedFeature, features) =>
 
 export const createProjectLayerConfig = (
   polygonId,
-  layerSourceName,
+  config,
   selectedLayerIds
 ) => {
   const hoverId = polygonId;
-  const layerIds = selectedLayerIds[layerSourceName] || [];
+  const layerIds = selectedLayerIds[config.layerSourceName] || [];
 
   return {
-    id: "location-polygons",
+    id: config.layerId,
     type: "fill",
     source: {
       type: "vector",
-      tiles: [
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-      ],
+      tiles: [config.layerUrl],
     },
-    "source-layer": layerSourceName,
+    "source-layer": config.layerSourceName,
     paint: {
       "fill-color": [
         "case",
         ["==", ["get", "polygon_id"], hoverId],
         theme.palette.map.selected,
         ["in", ["get", "polygon_id"], ["literal", layerIds]],
-        theme.palette.primary.main,
+        config.layerColor,
         theme.palette.map.transparent,
       ],
       "fill-opacity": 0.4,

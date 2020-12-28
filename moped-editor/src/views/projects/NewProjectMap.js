@@ -12,6 +12,7 @@ import {
   getLayerSource,
   getVectorTilePolygonId,
   isFeaturePresent,
+  layerConfigs,
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
@@ -148,6 +149,16 @@ const ProjectMap = ({
           mapboxApiAccessToken={MAPBOX_TOKEN}
           position="top-right"
         />
+        {layerConfigs.map(config => (
+          <Layer
+            key={config.layerId}
+            {...createProjectLayerConfig(
+              vectorTilePolygonId,
+              config,
+              selectedLayerIds
+            )}
+          />
+        ))}
         <Layer
           key={"location-polygons"}
           {...createProjectLayerConfig(
