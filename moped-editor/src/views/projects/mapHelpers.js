@@ -38,10 +38,10 @@ export const isFeaturePresent = (selectedFeature, features) =>
 export const createProjectLayerConfig = (
   polygonId,
   layerSourceName,
-  selectedIds
+  selectedLayerIds
 ) => {
   const hoverId = polygonId;
-  const layerIds = selectedIds[layerSourceName] || [];
+  const layerIds = selectedLayerIds[layerSourceName] || [];
 
   return {
     id: "location-polygons",
@@ -92,8 +92,8 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
   );
 };
 
-export const sumFeaturesSelected = selectedIdsObj =>
-  Object.values(selectedIdsObj).reduce(
+export const sumFeaturesSelected = selectedLayerIds =>
+  Object.values(selectedLayerIds).reduce(
     (acc, selectedIds) => (acc += selectedIds.length),
     0
   );

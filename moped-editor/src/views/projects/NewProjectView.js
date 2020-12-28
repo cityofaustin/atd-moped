@@ -95,7 +95,7 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
-  const [selectedIds, setSelectedIds] = useState({});
+  const [selectedLayerIds, setSelectedLayerIds] = useState({});
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
@@ -121,8 +121,8 @@ const NewProjectView = () => {
       case 2:
         return (
           <ProjectMap
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
+            selectedLayerIds={selectedLayerIds}
+            setSelectedLayerIds={setSelectedLayerIds}
             featureCollection={featureCollection}
             setFeatureCollection={setFeatureCollection}
           />
@@ -269,7 +269,7 @@ const NewProjectView = () => {
     addProject({
       variables: {
         ...projectDetails,
-        project_extent_ids: selectedIds,
+        project_extent_ids: selectedLayerIds,
         project_extent_geojson: featureCollection,
       },
     })

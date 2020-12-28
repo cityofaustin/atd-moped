@@ -47,8 +47,8 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProjectMap = ({
-  selectedIds,
-  setSelectedIds,
+  selectedLayerIds,
+  setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
 }) => {
@@ -84,14 +84,14 @@ const ProjectMap = ({
     const selectedFeature = getGeoJSON(e);
 
     if (!!vectorTilePolygonId && !!layerSource) {
-      const layerIds = selectedIds[layerSource] || [];
+      const layerIds = selectedLayerIds[layerSource] || [];
 
       const updatedLayerIds = !layerIds.includes(vectorTilePolygonId)
         ? [...layerIds, vectorTilePolygonId]
         : layerIds.filter(id => id !== vectorTilePolygonId);
 
       const updatedSelectedIds = {
-        ...selectedIds,
+        ...selectedLayerIds,
         [layerSource]: updatedLayerIds,
       };
 
@@ -110,7 +110,7 @@ const ProjectMap = ({
             features: [...featureCollection.features, selectedFeature],
           };
 
-      setSelectedIds(updatedSelectedIds);
+      setSelectedLayerIds(updatedSelectedIds);
       setFeatureCollection(updatedFeatureCollection);
     }
   };
@@ -153,13 +153,13 @@ const ProjectMap = ({
           {...createProjectLayerConfig(
             vectorTilePolygonId,
             "asmp_polygons",
-            selectedIds
+            selectedLayerIds
           )}
         />
         {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedIds)} locations selected
+        {sumFeaturesSelected(selectedLayerIds)} locations selected
       </Typography>
     </Box>
   );
