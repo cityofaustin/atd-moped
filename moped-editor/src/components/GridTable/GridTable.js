@@ -95,7 +95,7 @@ const GridTable = ({
   const [pagination, setPagination] = useState({
     limit: query.limit,
     offset: query.offset,
-    page: 0
+    page: 0,
   });
 
   const [sort, setSort] = useState({
@@ -140,7 +140,7 @@ const GridTable = ({
       // Sort different column after initial sort, then reset
       setSort({
         order: "desc",
-        column: columnName
+        column: columnName,
       });
     }
   };
@@ -239,12 +239,14 @@ const GridTable = ({
     );
   };
 
-
   /**
    * Data Management
    */
   console.log(query.query);
-  const { data, loading, error } = useQuery(query.gql);
+  const { data, loading, error } = useQuery(
+    query.gql,
+    query.config.options.useQuery
+  );
 
   return (
     <Container maxWidth={false} className={classes.root}>
@@ -269,10 +271,10 @@ const GridTable = ({
               <TableContainer className={classes.container}>
                 <Table stickyHeader aria-label="sticky table">
                   <GridTableListHeader
-                      query={query}
-                      sortOrder={sort.order}
-                      sortColumn={sort.column}
-                      handleTableHeaderClick={handleTableHeaderClick}
+                    query={query}
+                    sortOrder={sort.order}
+                    sortColumn={sort.column}
+                    handleTableHeaderClick={handleTableHeaderClick}
                   />
                   <TableBody>
                     {data[query.table].map((row, rowIndex) => {
@@ -299,8 +301,16 @@ const GridTable = ({
                                       {query.config.columns[
                                         column
                                       ].hasOwnProperty("icon") ? (
-                                        <Icon color={query.config.columns[column].icon.color}>
-                                          {query.config.columns[column].icon.name}
+                                        <Icon
+                                          color={
+                                            query.config.columns[column].icon
+                                              .color
+                                          }
+                                        >
+                                          {
+                                            query.config.columns[column].icon
+                                              .name
+                                          }
                                         </Icon>
                                       ) : (
                                         row[column]
