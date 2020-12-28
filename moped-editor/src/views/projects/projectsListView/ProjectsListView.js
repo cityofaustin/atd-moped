@@ -6,7 +6,7 @@ import Page from "src/components/Page";
 
 // Abstract
 import { GQLAbstract } from "atd-kickstand";
-import GridTable from "../../components/GridTable/GridTable";
+import GridTable from "../../../components/GridTable/GridTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 import Toolbar from "./Toolbar";
 
