@@ -21,6 +21,9 @@ export const layerConfigs = [
   },
 ];
 
+export const getInteractiveIds = () =>
+  layerConfigs.map(config => config.layerId);
+
 export const getVectorTilePolygonId = e =>
   e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
@@ -46,7 +49,7 @@ export const getGeoJSON = e =>
 export const isFeaturePresent = (selectedFeature, features) =>
   features.some(feature => isEqual(selectedFeature, feature));
 
-export const createProjectLayerConfig = (
+export const createProjectSelectLayerConfig = (
   polygonId,
   config,
   selectedLayerIds
@@ -76,14 +79,22 @@ export const createProjectLayerConfig = (
   };
 };
 
-export const projectExtentStyles = {
+// Build cases to match GeoJSON features with corresponding colors set for their layer
+// https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
+const fillColorCases = layerConfigs.reduce((acc, config) => {
+  acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
+  acc.push(config.layerColor);
+  return acc;
+}, []);
+
+export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
   type: "fill",
   paint: {
-    "fill-color": "#f46d43",
-    "fill-opacity": 0.8,
+    "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
+    "fill-opacity": 0.4,
   },
-};
+});
 
 export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
   return (

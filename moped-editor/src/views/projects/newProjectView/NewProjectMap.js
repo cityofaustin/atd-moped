@@ -7,8 +7,9 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectLayerConfig,
+  createProjectSelectLayerConfig,
   getGeoJSON,
+  getInteractiveIds,
   getLayerSource,
   getVectorTilePolygonId,
   isFeaturePresent,
@@ -134,7 +135,7 @@ const NewProjectMap = ({
         ref={mapRef}
         width="100%"
         height={500}
-        interactiveLayerIds={["location-polygons"]}
+        interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         onClick={handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -152,21 +153,13 @@ const NewProjectMap = ({
         {layerConfigs.map(config => (
           <Layer
             key={config.layerId}
-            {...createProjectLayerConfig(
+            {...createProjectSelectLayerConfig(
               vectorTilePolygonId,
               config,
               selectedLayerIds
             )}
           />
         ))}
-        <Layer
-          key={"location-polygons"}
-          {...createProjectLayerConfig(
-            vectorTilePolygonId,
-            "asmp_polygons",
-            selectedLayerIds
-          )}
-        />
         {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>

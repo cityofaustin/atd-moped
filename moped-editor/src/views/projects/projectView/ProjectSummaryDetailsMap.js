@@ -5,10 +5,10 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
+  createProjectViewLayerConfig,
   getVectorTilePolygonId,
   MAPBOX_TOKEN,
   mapInit,
-  projectExtentStyles,
   sumFeaturesSelected,
 } from "../../../utils/mapHelpers";
 
@@ -76,7 +76,7 @@ const ProjectSummaryDetailsMap = ({
         ref={mapRef}
         width="100%"
         height={500}
-        interactiveLayerIds={["location-polygons"]}
+        interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -86,7 +86,7 @@ const ProjectSummaryDetailsMap = ({
         </div>
         {projectExtentGeoJSON && (
           <Source type="geojson" data={projectExtentGeoJSON}>
-            <Layer {...projectExtentStyles} />
+            <Layer {...createProjectViewLayerConfig()} />
           </Source>
         )}
       </ReactMapGL>
