@@ -2,6 +2,7 @@ export const ProjectsListViewQueryConf = {
   options: {
     useQuery: {
       fetchPolicy: "no-cache", // Default ise "cache-first", or use "no-cache"
+      // Use no-cache as per issue https://github.com/cityofaustin/atd-data-tech/issues/4788
       // More info: https://www.apollographql.com/docs/react/get-started/#graphql-config-options-fetchPolicy
     },
   },
