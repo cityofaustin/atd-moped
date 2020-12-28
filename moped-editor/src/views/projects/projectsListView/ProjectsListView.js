@@ -73,7 +73,7 @@ const projectsQueryConf = {
       searchable: false,
       sortable: false,
       label_search: null,
-      label_table: "Capitally Funded",
+      label_table: "Capital Funding",
       type: "String",
     },
   },

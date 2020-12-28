@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useUser } from "../../../auth/user";
+import { useUser, isUserSSO } from "../../../auth/user";
 import { useUserApi } from "../../staff/helpers";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -61,70 +61,72 @@ const ProfileDetails = () => {
   };
 
   return (
-    <Card>
-      <CardHeader title="Change Your Password" />
-      <Divider />
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                name="password"
-                type="password"
-                id="password"
-                label="New password"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-                inputRef={register}
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
+    !isUserSSO(user) && (
+      <Card>
+        <CardHeader title="Change Your Password" />
+        <Divider />
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  name="password"
+                  type="password"
+                  id="password"
+                  label="New password"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                  inputRef={register}
+                  error={!!errors.password}
+                  helperText={errors.password?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  name="passwordConfirm"
+                  type="password"
+                  id="password-confirm"
+                  label="Confirm new password"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
+                  variant="outlined"
+                  inputRef={register}
+                  error={!!errors.passwordConfirm}
+                  helperText={errors.passwordConfirm?.message}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {loading || isSubmitting ? (
+                  <CircularProgress />
+                ) : (
+                  <>
+                    <Button
+                      className={classes.formButton}
+                      disabled={isSubmitting}
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                    >
+                      Change Password
+                    </Button>
+                  </>
+                )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                {result?.success && (
+                  <Alert severity="success">Password updated</Alert>
+                )}
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                name="passwordConfirm"
-                type="password"
-                id="password-confirm"
-                label="Confirm new password"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-                inputRef={register}
-                error={!!errors.passwordConfirm}
-                helperText={errors.passwordConfirm?.message}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {loading || isSubmitting ? (
-                <CircularProgress />
-              ) : (
-                <>
-                  <Button
-                    className={classes.formButton}
-                    disabled={isSubmitting}
-                    type="submit"
-                    color="primary"
-                    variant="contained"
-                  >
-                    Change Password
-                  </Button>
-                </>
-              )}
-            </Grid>
-            <Grid item xs={12} md={6}>
-              {result?.success && (
-                <Alert severity="success">Password updated</Alert>
-              )}
-            </Grid>
-          </Grid>
-        </form>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    )
   );
 };
 
