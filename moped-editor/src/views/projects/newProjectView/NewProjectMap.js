@@ -11,32 +11,22 @@ import {
   getGeoJSON,
   getInteractiveIds,
   getLayerSource,
-  getVectorTilePolygonId,
+  getFeaturePolygonId,
   isFeaturePresent,
   layerConfigs,
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
   sumFeaturesSelected,
+  toolTipStyles,
 } from "../../../utils/mapHelpers";
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(() => ({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: {
-    position: "absolute",
-    margin: 8,
-    padding: 4,
-    background: theme.palette.text.primary,
-    color: theme.palette.background.default,
-    maxWidth: 300,
-    fontSize: "0.875rem",
-    fontWeight: 500,
-    zIndex: 9,
-    pointerEvents: "none",
-  },
+  toolTip: toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -67,7 +57,7 @@ const NewProjectMap = ({
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const vectorTilePolygonId = getVectorTilePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e);
 
     if (!!vectorTilePolygonId) {
       setVectorTilePolygonId(vectorTilePolygonId);
@@ -81,7 +71,7 @@ const NewProjectMap = ({
   };
 
   const handleLayerClick = e => {
-    const vectorTilePolygonId = getVectorTilePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e);
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);
 

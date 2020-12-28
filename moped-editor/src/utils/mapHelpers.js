@@ -24,7 +24,7 @@ export const layerConfigs = [
 export const getInteractiveIds = () =>
   layerConfigs.map(config => config.layerId);
 
-export const getVectorTilePolygonId = e =>
+export const getFeaturePolygonId = e =>
   e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
 
 export const getLayerSource = e =>
@@ -95,6 +95,19 @@ export const createProjectViewLayerConfig = () => ({
     "fill-opacity": 0.4,
   },
 });
+
+export const toolTipStyles = {
+  position: "absolute",
+  margin: 8,
+  padding: 4,
+  background: theme.palette.text.primary,
+  color: theme.palette.background.default,
+  maxWidth: 300,
+  fontSize: "0.875rem",
+  fontWeight: 500,
+  zIndex: 9,
+  pointerEvents: "none",
+};
 
 export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
   return (

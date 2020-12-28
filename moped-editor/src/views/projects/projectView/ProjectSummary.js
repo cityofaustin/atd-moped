@@ -97,15 +97,16 @@ const ProjectSummary = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <Grid container></Grid>
-          {projectDetails.map(detail => (
-            <Grid item xs={6}>
-              <Box mb={2}>
-                <h4>{detail.label}</h4>
-                <p>{formatValue(detail)}</p>
-              </Box>
-            </Grid>
-          ))}
+          <Grid container>
+            {projectDetails.map(detail => (
+              <Grid item xs={6}>
+                <Box mb={2}>
+                  <h4>{detail.label}</h4>
+                  <p>{formatValue(detail)}</p>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
         </Grid>
         <Grid item xs={6}>
           <ProjectSummaryMap

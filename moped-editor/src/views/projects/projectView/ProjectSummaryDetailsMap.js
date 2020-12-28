@@ -6,10 +6,12 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getVectorTilePolygonId,
+  getFeaturePolygonId,
   MAPBOX_TOKEN,
   mapInit,
+  renderTooltip,
   sumFeaturesSelected,
+  toolTipStyles,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles(theme => ({
@@ -17,18 +19,7 @@ const useStyles = makeStyles(theme => ({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: {
-    position: "absolute",
-    margin: 8,
-    padding: 4,
-    background: theme.palette.text.primary,
-    color: theme.palette.background.default,
-    maxWidth: 300,
-    fontSize: "0.875rem",
-    fontWeight: 500,
-    zIndex: 9,
-    pointerEvents: "none",
-  },
+  toolTip: toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -45,7 +36,6 @@ const ProjectSummaryDetailsMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
-  const [vectorTilePolygonId, setVectorTilePolygonId] = useState("");
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
@@ -54,16 +44,14 @@ const ProjectSummaryDetailsMap = ({
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const vectorTilePolygonId = getVectorTilePolygonId(e);
+    const featurePolygonId = getFeaturePolygonId(e);
 
-    if (!!vectorTilePolygonId) {
-      setVectorTilePolygonId(vectorTilePolygonId);
-      setHoveredFeature(vectorTilePolygonId);
+    if (!!featurePolygonId) {
+      setHoveredFeature(featurePolygonId);
       setHoveredCoords({ x: offsetX, y: offsetY });
     } else {
       setHoveredFeature(null);
       setHoveredCoords(null);
-      setVectorTilePolygonId(null);
     }
   };
 
@@ -89,6 +77,7 @@ const ProjectSummaryDetailsMap = ({
             <Layer {...createProjectViewLayerConfig()} />
           </Source>
         )}
+        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations in this project
