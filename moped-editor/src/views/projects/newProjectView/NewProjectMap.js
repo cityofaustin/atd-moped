@@ -47,7 +47,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectMap = ({
+const NewProjectMap = ({
   selectedLayerIds,
   setSelectedLayerIds,
   featureCollection,
@@ -176,4 +176,4 @@ const ProjectMap = ({
   );
 };
 
-export default ProjectMap;
+export default NewProjectMap;

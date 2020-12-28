@@ -16,7 +16,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import ProjectMap from "./NewProjectMap";
+import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -120,7 +120,7 @@ const NewProjectView = () => {
         );
       case 2:
         return (
-          <ProjectMap
+          <NewProjectMap
             selectedLayerIds={selectedLayerIds}
             setSelectedLayerIds={setSelectedLayerIds}
             featureCollection={featureCollection}

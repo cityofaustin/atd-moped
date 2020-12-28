@@ -10,7 +10,7 @@ import {
   mapInit,
   projectExtentStyles,
   sumFeaturesSelected,
-} from "./mapHelpers";
+} from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles(theme => ({
   locationCountText: {
