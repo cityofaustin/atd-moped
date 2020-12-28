@@ -5,13 +5,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectLayerConfig,
   getVectorTilePolygonId,
   MAPBOX_TOKEN,
   mapInit,
-  renderTooltip,
-  sumFeaturesSelected,
   projectExtentStyles,
+  sumFeaturesSelected,
 } from "./mapHelpers";
 
 const useStyles = makeStyles(theme => ({
@@ -39,7 +37,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectSummaryDetailsMap = ({ projectExtentGeoJSON }) => {
+const ProjectSummaryDetailsMap = ({
+  selectedLayerIds,
+  projectExtentGeoJSON,
+}) => {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -90,7 +91,7 @@ const ProjectSummaryDetailsMap = ({ projectExtentGeoJSON }) => {
         )}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
-        {/* {sumFeaturesSelected(selectedIds)} locations in this project */}
+        {sumFeaturesSelected(selectedLayerIds)} locations in this project
       </Typography>
     </Box>
   );

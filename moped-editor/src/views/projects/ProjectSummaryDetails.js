@@ -11,6 +11,7 @@ const ProjectSummaryDetails = details => {
     fiscal_year,
     project_priority,
     eCapris_id,
+    project_extent_ids,
     project_extent_geojson,
   } = details.details;
 
@@ -66,7 +67,10 @@ const ProjectSummaryDetails = details => {
         </Grid>
       </Grid>
       <Grid item xs={6}>
-        <ProjectSummaryMap projectExtentGeoJSON={project_extent_geojson} />
+        <ProjectSummaryMap
+          selectedLayerIds={project_extent_ids}
+          projectExtentGeoJSON={project_extent_geojson}
+        />
       </Grid>
     </Grid>
   );

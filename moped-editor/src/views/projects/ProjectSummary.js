@@ -55,6 +55,7 @@ const SUMMARY_QUERY = gql`
       eCapris_id
       fiscal_year
       project_priority
+      project_extent_ids
       project_extent_geojson
     }
   }
