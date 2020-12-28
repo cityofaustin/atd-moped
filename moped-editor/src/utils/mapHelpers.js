@@ -1,5 +1,5 @@
 import React from "react";
-import theme from "../../theme/index";
+import theme from "../theme/index";
 import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
