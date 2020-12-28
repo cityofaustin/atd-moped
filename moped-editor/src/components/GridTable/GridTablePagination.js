@@ -23,8 +23,6 @@ const GridTablePagination = ({ query, data, pagination, setPagination }) => {
   const handleChangePage = (event, newPage) => {
     // Calculate new offset
     const newOffset = newPage * pagination.limit;
-    // Update query.offset and current pagination state
-    // query.offset = newOffset;
     // Update State
     setPagination({
       ...pagination, // Copy any previous values
@@ -40,10 +38,6 @@ const GridTablePagination = ({ query, data, pagination, setPagination }) => {
   const handleChangeRowsPerPage = event => {
     // Transform the RowsPerPage number from string to integer, call it newLimit
     const newLimit = parseInt(event.target.value, 10);
-
-    // Update the query's new limit, and reset offset
-    // query.limit = newLimit;
-    // query.offset = 0;
     // Update state
     setPagination({
       page: 0, // Back to first page
