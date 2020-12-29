@@ -73,7 +73,7 @@ const useStyles = makeStyles(theme => ({
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
- * @param {Object} filters - Filter configuration
+ * @param {Object} filterConfig - Filter configuration
  * @param {string[]} columnsToExport - An array of strings containing the names of columns to export
  * @param {Object} aggregateQueryConfig - Aggregate query configuration
  * @param {JSX.Element} header - Any elements to be rendered for the header
@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
 const GridTable = ({
   title,
   query,
-  filters,
+  filterConfig,
   columnsToExport,
   aggregateQueryConfig,
   toolbar,
@@ -92,7 +92,7 @@ const GridTable = ({
   const classes = useStyles();
 
   /**
-   * State Management
+   * State Management for pagination
    */
   const [pagination, setPagination] = useState({
     limit: query.limit,
@@ -100,10 +100,18 @@ const GridTable = ({
     page: 0,
   });
 
+  /**
+   * State Management for sorting by column
+   */
   const [sort, setSort] = useState({
     column: "",
     order: "",
   });
+
+  /**
+   * State Management for stackable filters
+   */
+  const [filters, setFilters] = useState({});
 
   /**
    * Query Management
