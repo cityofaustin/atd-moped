@@ -14,7 +14,7 @@ import {
   toolTipStyles,
 } from "../../../utils/mapHelpers";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     padding: "10px",
   },
-}));
+});
 
 const ProjectSummaryDetailsMap = ({
   selectedLayerIds,

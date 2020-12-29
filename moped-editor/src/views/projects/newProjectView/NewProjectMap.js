@@ -48,8 +48,7 @@ const NewProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
-  const [vectorTilePolygonId, setVectorTilePolygonId] = useState("");
-  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [vectorTilePolygonId, setVectorTilePolygonId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   const handleLayerHover = e => {
@@ -61,10 +60,8 @@ const NewProjectMap = ({
 
     if (!!vectorTilePolygonId) {
       setVectorTilePolygonId(vectorTilePolygonId);
-      setHoveredFeature(vectorTilePolygonId);
       setHoveredCoords({ x: offsetX, y: offsetY });
     } else {
-      setHoveredFeature(null);
       setHoveredCoords(null);
       setVectorTilePolygonId(null);
     }
@@ -150,7 +147,7 @@ const NewProjectMap = ({
             )}
           />
         ))}
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {renderTooltip(vectorTilePolygonId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations selected

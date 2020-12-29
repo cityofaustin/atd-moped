@@ -152,27 +152,23 @@ export const toolTipStyles = {
  * @param {Object} className - Styles from the classes object
  * @return {JSX} Mapbox layer style object
  */
-export const renderTooltip = (hoveredFeature, hoveredCoords, className) => {
-  console.log(hoveredCoords);
-  return (
-    hoveredFeature && (
-      <div
-        className={className}
-        style={{
-          left: hoveredCoords?.x,
-          top: hoveredCoords?.y,
-        }}
-      >
-        <div>Polygon ID: {hoveredFeature}</div>
-      </div>
-    )
+export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
+  hoveredFeature && (
+    <div
+      className={className}
+      style={{
+        left: hoveredCoords?.x,
+        top: hoveredCoords?.y,
+      }}
+    >
+      <div>Polygon ID: {hoveredFeature}</div>
+    </div>
   );
-};
 
 /**
- * Count the number of IDs
+ * Count the number of IDs in all arrays nested in the selectLayerIds object
  * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
- * @return {Number} Total number of string IDs in all arrays nested in the selectLayerIds object
+ * @return {Number} Total number of string IDs
  */
 export const sumFeaturesSelected = selectedLayerIds =>
   Object.values(selectedLayerIds).reduce(
