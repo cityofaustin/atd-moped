@@ -48,12 +48,6 @@ const useStyles = makeStyles(theme => ({
 
 const GridTableFilters = ({
   query,
-  clearFilters,
-  searchParameters,
-  setSearchParameters,
-  resetPage,
-  filters,
-  toggleAdvancedFilters,
 }) => {
   const classes = useStyles();
 
