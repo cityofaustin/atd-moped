@@ -21,7 +21,7 @@ import {
   toolTipStyles,
 } from "../../../utils/mapHelpers";
 
-export const useStyles = makeStyles(() => ({
+export const useStyles = makeStyles({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -36,7 +36,7 @@ export const useStyles = makeStyles(() => ({
   mapBox: {
     padding: 25,
   },
-}));
+});
 
 const NewProjectMap = ({
   selectedLayerIds,
