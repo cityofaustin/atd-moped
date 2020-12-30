@@ -123,12 +123,12 @@ const GridTable = ({
   });
 
   /**
-   * Stores an array of objects storing a column, operator, and value.
+   * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
    * @function setFilter - Sets the state of filters
-   * @default {[]}
+   * @default {{}}
    */
-  const [filters, setFilter] = useState([]);
+  const [filters, setFilter] = useState({});
 
   /**
    * Query Management
