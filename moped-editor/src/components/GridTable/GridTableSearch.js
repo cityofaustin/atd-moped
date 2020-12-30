@@ -5,7 +5,7 @@ import { Box, Card, CardContent } from "@material-ui/core";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 
-const GridTableSearch = ({ query, searchSettings, children }) => {
+const GridTableSearch = ({ query, searchState, children }) => {
   const [showFilters, setShowFilters] = useState(false);
 
   return (
@@ -16,8 +16,8 @@ const GridTableSearch = ({ query, searchSettings, children }) => {
           <CardContent>
             <GridTableSearchBar
               query={query}
-              searchSettings={searchSettings}
-              showFilterSettings={{
+              searchState={searchState}
+              filtersState={{
                 showFilters: showFilters,
                 setShowFilters: setShowFilters,
               }}
