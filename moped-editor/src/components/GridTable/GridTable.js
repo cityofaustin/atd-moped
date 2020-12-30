@@ -73,27 +73,19 @@ const useStyles = makeStyles(theme => ({
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
- * @param {Object} filterConfig - Filter configuration
- * @param {string[]} columnsToExport - An array of strings containing the names of columns to export
- * @param {Object} aggregateQueryConfig - Aggregate query configuration
- * @param {JSX.Element} header - Any elements to be rendered for the header
  * @return {JSX.Element}
  * @constructor
  */
 const GridTable = ({
   title,
   query,
-  filterConfig,
-  columnsToExport,
-  aggregateQueryConfig,
-  toolbar,
 }) => {
   // Style
   const classes = useStyles();
 
   /**
    * State Management for pagination
-   * {Object} pagination:
+   * @type {Object} pagination:
    *    {integer} limit: The limit of records to be shown in a single page (default: query.limit)
    *    {integer} offset: The number of records to be skipped in GraphQL (default: query.limit)
    *    {integer} page: Current page being shown (0 to N) where 0 is the first page (default: 0)
@@ -106,7 +98,7 @@ const GridTable = ({
 
   /**
    * State Management for sorting
-   * {Object} sort:
+   * @type {Object} sort:
    *    {string} column: The column name in graphql to sort by
    *    {string} order: Either "asc" or "desc" or "" (default: "")
    */
@@ -117,7 +109,7 @@ const GridTable = ({
 
   /**
    * State Management for search parameters
-   * {Object} search
+   * @type {Object} search
    *    {string} value: The string to search for
    *    {string} column: The name of the column to search against
    */
@@ -128,9 +120,9 @@ const GridTable = ({
 
   /**
    * State Management for filters
-   * {Object} filters
+   * @type {Object} filters
    */
-  const [filters, setFilters] = useState({});
+  const [filters, setFilter] = useState({});
 
   /**
    * Query Management
@@ -277,6 +269,7 @@ const GridTable = ({
     query.config.options.useQuery
   );
 
+  console.log("Filter Config: ", query.config.filters);
   console.log("Search State: ", search);
   console.log("Filters State: ", filters);
 
