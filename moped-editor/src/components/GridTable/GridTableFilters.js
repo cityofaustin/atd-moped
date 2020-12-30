@@ -16,6 +16,11 @@ import {
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
+/**
+ * The styling for the filter components
+ * @type {Object}
+ * @constant
+ */
 const useStyles = makeStyles(theme => ({
   root: {},
   searchBox: {
