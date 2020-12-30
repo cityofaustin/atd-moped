@@ -54,10 +54,11 @@ const useStyles = makeStyles(theme => ({
 /**
  * Filter Search Component
  * @param {Object} query - The main query object
+ * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query }) => {
+const GridTableFilters = ({ query, filterState }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -70,7 +71,7 @@ const GridTableFilters = ({ query }) => {
    * @param {Object} field - The field object being clicked
    */
   const handleFilterMenuClick = field => {
-    console.log("handleFilterMenuClick", field);
+    console.debug("handleFilterMenuClick", field);
   };
 
   /**
@@ -78,8 +79,10 @@ const GridTableFilters = ({ query }) => {
    * @param {Object} operator - The operator object being clicked
    */
   const handleFilterOperatorClick = operator => {
-    console.log(`handleFilterOperatorItemClick: ${operator}`);
+    console.debug(`handleFilterOperatorItemClick: ${operator}`);
   };
+
+  console.debug("Filter state: ", filterState.filterParameters);
 
   return (
     <Grid>
