@@ -128,7 +128,7 @@ export const createProjectViewLayerConfig = () => ({
   type: "fill",
   paint: {
     "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "fill-opacity": 0.4,
+    "fill-opacity": 0.5,
   },
 });
 
