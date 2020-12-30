@@ -97,10 +97,12 @@ const GridTable = ({
   });
 
   /**
-   * State Management for sorting
-   * @type {Object} sort:
-   *    {string} column: The column name in graphql to sort by
-   *    {string} order: Either "asc" or "desc" or "" (default: "")
+   * Stores the column name and the order to order by
+   * @type {Object} sort
+   * @property {string} column - The column name in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or "" (default: "")
+   * @function setSort - Sets the state of sort
+   * @default {{value: "", column: ""}}
    */
   const [sort, setSort] = useState({
     column: "",
@@ -108,10 +110,12 @@ const GridTable = ({
   });
 
   /**
-   * State Management for search parameters
+   * Stores the string to search for and the column to search against
    * @type {Object} search
-   *    {string} value: The string to search for
-   *    {string} column: The name of the column to search against
+   * @property {string} value - The string to be searched for
+   * @property {string} column - The name of the column to search against
+   * @function setSearch - Sets the state of search
+   * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
     value: "",
@@ -119,10 +123,12 @@ const GridTable = ({
   });
 
   /**
-   * State Management for filters
+   * Stores an array of objects storing a column, operator, and value.
    * @type {Object} filters
+   * @function setFilter - Sets the state of filters
+   * @default {[]}
    */
-  const [filters, setFilter] = useState({});
+  const [filters, setFilter] = useState([]);
 
   /**
    * Query Management
@@ -291,6 +297,10 @@ const GridTable = ({
           searchState={{
             searchParameters: search,
             setSearchParameters: setSearch,
+          }}
+          filterState={{
+            filterParameters: filters,
+            setFilterParameters: setFilter
           }}
         >
           <GridTableExport query={query} />
