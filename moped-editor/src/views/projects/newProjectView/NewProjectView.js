@@ -182,8 +182,8 @@ const NewProjectView = () => {
       $start_date: date = ""
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
-      $project_extent_ids: json = {}
-      $project_extent_geojson: json = {}
+      $project_extent_ids: jsonb = {}
+      $project_extent_geojson: jsonb = {}
     ) {
       insert_moped_project(
         objects: {
