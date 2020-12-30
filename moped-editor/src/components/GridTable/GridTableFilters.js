@@ -46,8 +46,22 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * Filter Search Component
+ * @param {Object} query - The main query object
+ * @return {JSX.Element}
+ * @constructor
+ */
 const GridTableFilters = ({ query }) => {
   const classes = useStyles();
+
+  const handleFilterMenuItemClick = fieldId => {
+    console.log(`handleFilterMenuItemClick: ${fieldId}`);
+  };
+
+  const handleFilterOperatorItemClick = operatorId => {
+    console.log(`handleFilterOperatorItemClick: ${operatorId}`);
+  };
 
   return (
     <Grid>
@@ -66,14 +80,22 @@ const GridTableFilters = ({ query }) => {
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               value={"project_name"}
-              onChange={null}
+              onChange={e => handleFilterMenuItemClick(e.target.value)}
               label="field"
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={"project_name"}>Project Name</MenuItem>
-              <MenuItem value={"project_description"}>Description</MenuItem>
+              {query.config.filters.fields.map((field, fieldIndex) => {
+                return (
+                  <MenuItem
+                    value={field.name}
+                    key={`filter-menuitem-${field.name}-${fieldIndex}`}
+                  >
+                    {field.label}
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </Grid>
@@ -91,7 +113,7 @@ const GridTableFilters = ({ query }) => {
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               value={"project_name"}
-              onChange={null}
+              onChange={e => handleFilterOperatorItemClick(e.target.value)}
               label="field"
             >
               <MenuItem value="">
