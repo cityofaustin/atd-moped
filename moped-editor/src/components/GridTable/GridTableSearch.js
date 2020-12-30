@@ -16,7 +16,6 @@ import GridTableSearchBar from "./GridTableSearchBar";
 const GridTableSearch = ({ query, searchState, children }) => {
   /**
    * If true, it shows the filters in the UI, else it hides them.
-   * @constant
    * @type {boolean} searchFieldValue
    * @function setShowFilters - Sets the state of searchFieldValue
    * @default {false}
