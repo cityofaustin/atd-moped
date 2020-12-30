@@ -29,7 +29,7 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "project_id",
       label: "Project ID",
-      type: "integer",
+      type: "number",
       operators: [
         "*" // All of them (shortcut)
       ],
@@ -37,52 +37,62 @@ export const ProjectsListViewFiltersConf = {
   ],
 
   operators: {
-    string: [
-      {
-        id: "string_contains_case_insensitive",
-        operator: "_ilike",
-        label: "Contains",
-        envelope: "%{VALUE}%",
-      },
-      {
-        id: "string_begins_with_case_insensitive",
-        operator: "_ilike",
-        label: "Begins With",
-        envelope: "{VALUE}%",
-      },
-      {
-        id: "string_ends_with_case_insensitive",
-        operator: "_ilike",
-        label: "Ends With",
-        envelope: "%{VALUE}",
-      },
-      {
-        id: "string_equals_case_insensitive",
-        operator: "_ieq",
-        label: "Equals",
-        envelope: null,
-      },
-    ],
-    integer: [
-      {
-        id: "integer_equals",
-        operator: "_eq",
-        label: "Equals",
-        envelope: null,
-      },
-      {
-        id: "integer_greater_than",
-        operator: "_gt",
-        label: "Greater Than",
-        envelope: null,
-      },
-      {
-        id: "integer_less_than",
-        operator: "_lt",
-        label: "Greater Than",
-        envelope: null,
-      },
-    ],
+    "string_contains_case_insensitive": {
+      id: "string_begins_with_case_insensitive",
+      operator: "_ilike",
+      label: "Contains",
+      description: "String is contained in field (case-insensitive)",
+      envelope: "%{VALUE}%",
+      type: "string",
+    },
+    "string_begins_with_case_insensitive": {
+      id: "string_begins_with_case_insensitive",
+      operator: "_ilike",
+      label: "Begins With",
+      description: "Field content begins with string (case-insensitive)",
+      envelope: "{VALUE}%",
+      type: "string",
+    },
+    string_ends_with_case_insensitive: {
+      id: "string_ends_with_case_insensitive",
+      operator: "_ilike",
+      label: "Ends With",
+      description: "Field content ends with string (case-insensitive)",
+      envelope: "%{VALUE}",
+      type: "string",
+    },
+    string_equals_case_insensitive: {
+      id: "string_equals_case_insensitive",
+      operator: "_ieq",
+      label: "Equals",
+      description: "Field content equals string (case-insensitive)",
+      envelope: null,
+      type: "string",
+    },
+    "number_equals": {
+      id: "integer_equals",
+      operator: "_eq",
+      label: "Equals",
+      description: "The field value is equal to number.",
+      envelope: null,
+      type: "number",
+    },
+    "number_greater_than": {
+      id: "number_greater_than",
+      operator: "_gt",
+      label: "Greater Than",
+      description: "The field value is greater than number and not equal.",
+      envelope: null,
+      type: "number",
+    },
+    "number_less_than": {
+      id: "number_less_than",
+      operator: "_lt",
+      label: "Greater Than",
+      description: "The field value is less than number and not equal.",
+      envelope: null,
+      type: "number",
+    }
   },
 };
 
