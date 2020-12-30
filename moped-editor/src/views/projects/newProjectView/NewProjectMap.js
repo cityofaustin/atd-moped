@@ -7,34 +7,26 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectLayerConfig,
+  createProjectSelectLayerConfig,
   getGeoJSON,
+  getInteractiveIds,
   getLayerSource,
-  getVectorTilePolygonId,
+  getFeaturePolygonId,
   isFeaturePresent,
+  layerConfigs,
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
   sumFeaturesSelected,
+  toolTipStyles,
 } from "../../../utils/mapHelpers";
 
-const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: {
-    position: "absolute",
-    margin: 8,
-    padding: 4,
-    background: theme.palette.text.primary,
-    color: theme.palette.background.default,
-    maxWidth: 300,
-    fontSize: "0.875rem",
-    fontWeight: 500,
-    zIndex: 9,
-    pointerEvents: "none",
-  },
+  toolTip: toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -44,9 +36,9 @@ const useStyles = makeStyles(theme => ({
   mapBox: {
     padding: 25,
   },
-}));
+});
 
-const ProjectMap = ({
+const NewProjectMap = ({
   selectedLayerIds,
   setSelectedLayerIds,
   featureCollection,
@@ -56,8 +48,7 @@ const ProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapInit);
-  const [vectorTilePolygonId, setVectorTilePolygonId] = useState("");
-  const [hoveredFeature, setHoveredFeature] = useState(null);
+  const [vectorTilePolygonId, setVectorTilePolygonId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   const handleLayerHover = e => {
@@ -65,21 +56,19 @@ const ProjectMap = ({
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const vectorTilePolygonId = getVectorTilePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e);
 
     if (!!vectorTilePolygonId) {
       setVectorTilePolygonId(vectorTilePolygonId);
-      setHoveredFeature(vectorTilePolygonId);
       setHoveredCoords({ x: offsetX, y: offsetY });
     } else {
-      setHoveredFeature(null);
       setHoveredCoords(null);
       setVectorTilePolygonId(null);
     }
   };
 
   const handleLayerClick = e => {
-    const vectorTilePolygonId = getVectorTilePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e);
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);
 
@@ -133,7 +122,7 @@ const ProjectMap = ({
         ref={mapRef}
         width="100%"
         height={500}
-        interactiveLayerIds={["location-polygons"]}
+        interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         onClick={handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -148,15 +137,17 @@ const ProjectMap = ({
           mapboxApiAccessToken={MAPBOX_TOKEN}
           position="top-right"
         />
-        <Layer
-          key={"location-polygons"}
-          {...createProjectLayerConfig(
-            vectorTilePolygonId,
-            "asmp_polygons",
-            selectedLayerIds
-          )}
-        />
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {layerConfigs.map(config => (
+          <Layer
+            key={config.layerId}
+            {...createProjectSelectLayerConfig(
+              vectorTilePolygonId,
+              config,
+              selectedLayerIds
+            )}
+          />
+        ))}
+        {renderTooltip(vectorTilePolygonId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations selected
@@ -165,4 +156,4 @@ const ProjectMap = ({
   );
 };
 
-export default ProjectMap;
+export default NewProjectMap;
