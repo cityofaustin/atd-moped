@@ -8,12 +8,13 @@ import GridTableSearchBar from "./GridTableSearchBar";
 /**
  * Renders a table search component with a search bar and search filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param searchState - The current state/state-modifier bundle for search
+ * @param {Object} searchState - The current state/state-modifier bundle for search
+ * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @param {JSX.Element} children - Any components to be rendered above the search bar
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearch = ({ query, searchState, children }) => {
+const GridTableSearch = ({ query, searchState, filterState, children }) => {
   /**
    * If true, it shows the filters in the UI, else it hides them.
    * @type {boolean} searchFieldValue
@@ -24,10 +25,12 @@ const GridTableSearch = ({ query, searchState, children }) => {
 
   return (
     <div>
+      {/*Any optional children passed from the parent*/}
       {children}
       <Box mt={3}>
         <Card>
           <CardContent>
+            {/*Search-bar component (controls filter visibility)*/}
             <GridTableSearchBar
               query={query}
               searchState={searchState}
@@ -36,7 +39,10 @@ const GridTableSearch = ({ query, searchState, children }) => {
                 setShowFilters: setShowFilters,
               }}
             />
-            {showFilters && <GridTableFilters query={query} />}
+            {/*Filter Component (Hide by default)*/}
+            {showFilters && (
+              <GridTableFilters query={query} filterState={filterState} />
+            )}
           </CardContent>
         </Card>
       </Box>
