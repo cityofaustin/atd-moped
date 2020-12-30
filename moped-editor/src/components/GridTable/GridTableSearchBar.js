@@ -63,7 +63,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
 
   /**
    * The contents of the search box
-   * @constant
    * @type {string} searchFieldValue
    * @function setSearchFieldValue - Sets the state of the field
    * @default {?searchState.searchParameters.value}
@@ -74,7 +73,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
 
   /**
    * Stores the name of the column to search
-   * @constant
    * @type {boolean} fieldToSearch
    * @function setFieldToSearch - Sets the state of the field
    * @default {?searchState.searchParameters.column}
@@ -85,7 +83,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
 
   /**
    * True if a field is selected
-   * @constant
    * @type {boolean} isFieldSelected - The state of the field being selected
    * @function setIsFieldSelected - Sets the state of isFieldSelected
    * @default false
