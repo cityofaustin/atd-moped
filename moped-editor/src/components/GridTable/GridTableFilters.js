@@ -46,9 +46,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const GridTableFilters = ({
-  query,
-}) => {
+const GridTableFilters = ({ query }) => {
   const classes = useStyles();
 
   return (
@@ -132,7 +130,7 @@ const GridTableFilters = ({
           <Button
             className={classes.filterButton}
             fullWidth
-            variant="contained"
+            variant="outlined"
             color="secondary"
             startIcon={<Icon>delete_outline</Icon>}
           >
