@@ -58,14 +58,27 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const GridTableFilters = ({ query }) => {
+  /**
+   * The styling of the search bar
+   * @constant
+   * @default
+   */
   const classes = useStyles();
 
-  const handleFilterMenuItemClick = fieldId => {
-    console.log(`handleFilterMenuItemClick: ${fieldId}`);
+  /**
+   * Handles the click event on the filter drop-down menu
+   * @param {Object} field - The field object being clicked
+   */
+  const handleFilterMenuClick = field => {
+    console.log("handleFilterMenuClick", field);
   };
 
-  const handleFilterOperatorItemClick = operatorId => {
-    console.log(`handleFilterOperatorItemClick: ${operatorId}`);
+  /**
+   * Handles the click event on the operator drop-down
+   * @param {Object} operator - The operator object being clicked
+   */
+  const handleFilterOperatorClick = operator => {
+    console.log(`handleFilterOperatorItemClick: ${operator}`);
   };
 
   return (
@@ -85,7 +98,7 @@ const GridTableFilters = ({ query }) => {
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               value={"project_name"}
-              onChange={e => handleFilterMenuItemClick(e.target.value)}
+              onChange={e => handleFilterMenuClick(e.target.value)}
               label="field"
             >
               <MenuItem value="">
@@ -118,7 +131,7 @@ const GridTableFilters = ({ query }) => {
               labelId="demo-simple-select-outlined-label"
               id="demo-simple-select-outlined"
               value={"project_name"}
-              onChange={e => handleFilterOperatorItemClick(e.target.value)}
+              onChange={e => handleFilterOperatorClick(e.target.value)}
               label="field"
             >
               <MenuItem value="">
