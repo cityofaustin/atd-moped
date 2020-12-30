@@ -167,8 +167,11 @@ const GridTableSearch = ({ query, searchState, filtersState }) => {
             <MenuItem value="" disabled>
               <em>Select a field</em>
             </MenuItem>
-            <MenuItem value={"project_name"}>Project Name</MenuItem>
-            <MenuItem value={"project_description"}>Description</MenuItem>
+            {query.searchableFields.map((field, fieldIndex) => {
+              return <MenuItem value={field} key={fieldIndex}>
+                {getFieldName(field)}
+              </MenuItem>;
+            })}
           </Select>
         </FormControl>
       </Grid>
