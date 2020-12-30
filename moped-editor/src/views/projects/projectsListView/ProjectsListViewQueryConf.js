@@ -1,3 +1,94 @@
+/**
+ * Filters configuration
+ * @type {Object}
+ */
+export const ProjectsListViewFiltersConf = {
+  fields: [
+    {
+      name: "project_name",
+      label: "Project Name",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
+      name: "project_description",
+      label: "Project Description",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
+      name: "project_id",
+      label: "Project ID",
+      type: "integer",
+      operators: [
+        "*" // All of them (shortcut)
+      ],
+    },
+  ],
+
+  operators: {
+    string: [
+      {
+        id: "string_contains_case_insensitive",
+        operator: "_ilike",
+        label: "Contains",
+        envelope: "%{VALUE}%",
+      },
+      {
+        id: "string_begins_with_case_insensitive",
+        operator: "_ilike",
+        label: "Begins With",
+        envelope: "{VALUE}%",
+      },
+      {
+        id: "string_ends_with_case_insensitive",
+        operator: "_ilike",
+        label: "Ends With",
+        envelope: "%{VALUE}",
+      },
+      {
+        id: "string_equals_case_insensitive",
+        operator: "_ieq",
+        label: "Equals",
+        envelope: null,
+      },
+    ],
+    integer: [
+      {
+        id: "integer_equals",
+        operator: "_eq",
+        label: "Equals",
+        envelope: null,
+      },
+      {
+        id: "integer_greater_than",
+        operator: "_gt",
+        label: "Greater Than",
+        envelope: null,
+      },
+      {
+        id: "integer_less_than",
+        operator: "_lt",
+        label: "Greater Than",
+        envelope: null,
+      },
+    ],
+  },
+};
+
+
+/**
+ * The Query configuration (now also including filters)
+ * @type {Object}
+ */
 export const ProjectsListViewQueryConf = {
   options: {
     useQuery: {
@@ -12,6 +103,7 @@ export const ProjectsListViewQueryConf = {
   pagination: {
     rowsPerPageOptions: [1, 5, 10, 25, 50, 100],
   },
+  filters: ProjectsListViewFiltersConf,
   columns: {
     project_id: {
       primary_key: true,
@@ -30,7 +122,7 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label_search: "Project Name",
-      label_table: "project_name",
+      label_table: "Project Name",
       width: "20%",
       type: "String",
     },
@@ -38,7 +130,7 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label_search: "Project Description",
-      label_table: "project_description",
+      label_table: "Project Description",
       width: "50%",
       type: "String",
     },
