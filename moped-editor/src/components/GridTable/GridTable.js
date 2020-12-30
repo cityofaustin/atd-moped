@@ -93,6 +93,10 @@ const GridTable = ({
 
   /**
    * State Management for pagination
+   * {Object} pagination:
+   *    {integer} limit: The limit of records to be shown in a single page (default: query.limit)
+   *    {integer} offset: The number of records to be skipped in GraphQL (default: query.limit)
+   *    {integer} page: Current page being shown (0 to N) where 0 is the first page (default: 0)
    */
   const [pagination, setPagination] = useState({
     limit: query.limit,
@@ -101,7 +105,10 @@ const GridTable = ({
   });
 
   /**
-   * State Management for sorting by column
+   * State Management for sorting
+   * {Object} sort:
+   *    {string} column: The column name in graphql to sort by
+   *    {string} order: Either "asc" or "desc" or "" (default: "")
    */
   const [sort, setSort] = useState({
     column: "",
@@ -109,7 +116,19 @@ const GridTable = ({
   });
 
   /**
-   * State Management for stackable filters
+   * State Management for search parameters
+   * {Object} search
+   *    {string} value: The string to search for
+   *    {string} column: The name of the column to search against
+   */
+  const [search, setSearch] = useState({
+    value: "",
+    column: "",
+  });
+
+  /**
+   * State Management for filters
+   * {Object} filters
    */
   const [filters, setFilters] = useState({});
 
@@ -258,6 +277,9 @@ const GridTable = ({
     query.config.options.useQuery
   );
 
+  console.log("Search State: ", search);
+  console.log("Filters State: ", filters);
+
   return (
     <Container maxWidth={false} className={classes.root}>
       {/*Title*/}
@@ -271,7 +293,13 @@ const GridTable = ({
       </Typography>
       {/*Toolbar Space*/}
       <GridTableToolbar>
-        <GridTableSearch query={query}>
+        <GridTableSearch
+          query={query}
+          searchState={{
+            searchParameters: search,
+            setSearchParameters: setSearch,
+          }}
+        >
           <GridTableExport query={query} />
         </GridTableSearch>
       </GridTableToolbar>
