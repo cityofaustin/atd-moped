@@ -67,120 +67,251 @@ const GridTableFilters = ({ query, filterState }) => {
   const classes = useStyles();
 
   /**
+   * An alias of the state, to make it easy to access.
+   * @type {Object}
+   * @constant
+   */
+  const filters = filterState.filterParameters;
+
+  /**
    * Handles the click event on the filter drop-down menu
+   * @param {string} filterId - State FieldID to modify
    * @param {Object} field - The field object being clicked
    */
-  const handleFilterMenuClick = field => {
-    console.debug("handleFilterMenuClick", field);
+  const handleFilterFieldMenuClick = (filterId, field) => {
+    console.debug(`handleFilterFieldMenuClick: ${filterId} - ${field}`);
+
+    // If the filter exists
+    if (filterId in filterState.filterParameters) {
+      // Clone state
+      const filtersNewState = { ...filterState.filterParameters };
+
+
+
+      // Find the field we need to gather options from
+      const fieldIndex = query.config.filters.fields.findIndex(
+        filter => filter.name === field
+      );
+
+      // Gather field details
+      const fieldDetails = query.config.filters.fields[fieldIndex];
+
+      // Update field & type
+      filtersNewState[filterId].field = fieldDetails.name;
+      filtersNewState[filterId].type = fieldDetails.type;
+
+      // Update Available Operators
+      if (
+        fieldDetails.operators.length === 1 &&
+        fieldDetails.operators[0] === "*"
+      ) {
+        // Add all operators and filter by specific type (defined in fieldDetails.type)
+        filtersNewState[
+          filterId
+        ].availableOperators = Object.keys(query.config.filters.operators).filter(
+          operator => query.config.filters.operators[operator].type === fieldDetails.type
+        );
+      } else {
+        // Append listed operators for that field
+        filtersNewState[
+          filterId
+        ].availableOperators = fieldDetails.operators.map(
+          operator => query.config.filters.operators[operator]
+        );
+      }
+
+      filterState.setFilterParameters(filtersNewState);
+    } else {
+      console.debug(
+        `The filter id ${filterId} does not exist, ignoring click event.`
+      );
+    }
+
+    // Ignore the click?
   };
 
   /**
    * Handles the click event on the operator drop-down
+   * @param {string} filterId - State FieldID to modify
    * @param {Object} operator - The operator object being clicked
    */
-  const handleFilterOperatorClick = operator => {
-    console.debug(`handleFilterOperatorItemClick: ${operator}`);
+  const handleFilterOperatorClick = (filterId, operator) => {
+    console.debug(`handleFilterOperatorClick: ${filterId} - ${operator}`);
+  };
+
+  /**
+   * Generates a random UUID as a string
+   * @return {string}
+   */
+  const generateUuid = () => {
+    let dt = new Date().getTime();
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+      const r = (dt + Math.random() * 16) % 16 | 0;
+      dt = Math.floor(dt / 16);
+      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+    });
+  };
+
+  /**
+   * Adds an empty filter to the state
+   */
+  const handleAddFilterButtonClick = () => {
+    const uuid = generateUuid();
+    console.log("UUID being added to state", uuid);
+    const filtersNewState = {
+      ...filterState.filterParameters,
+    };
+
+    filtersNewState[uuid] = {
+      id: uuid,
+      field: null,
+      operator: null,
+      availableOperators: [],
+      value: null,
+      type: null,
+    };
+
+    filterState.setFilterParameters(filtersNewState);
+  };
+
+  /**
+   * Deletes a filter from the state
+   * @param {string} filterId - The UUID of the filter to be deleted
+   */
+  const handleDeleteFilterButtonClick = filterId => {
+    // Copy the state into a new object
+    const filtersNewState = {
+      ...filterState.filterParameters,
+    };
+
+    try {
+      // Delete the key (if it's there)
+      delete filtersNewState[filterId];
+    } finally {
+      // Finally, reset the state
+      filterState.setFilterParameters(filtersNewState);
+    }
   };
 
   console.debug("Filter state: ", filterState.filterParameters);
 
   return (
     <Grid>
-      <Grid container spacing={3}>
-        <Grid item xs={4}>
-          <FormControl
-            fullWidth
-            variant="outlined"
-            className={classes.formControl}
-          >
-            <InputLabel id="demo-simple-select-outlined-label">
-              Field
-            </InputLabel>
-            <Select
-              fullWidth
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={"project_name"}
-              onChange={e => handleFilterMenuClick(e.target.value)}
-              label="field"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              {query.config.filters.fields.map((field, fieldIndex) => {
-                return (
-                  <MenuItem
-                    value={field.name}
-                    key={`filter-menuitem-${field.name}-${fieldIndex}`}
+      {Object.keys(filterState.filterParameters).map(
+        (filterId, filterIndex) => {
+          console.log("Rendering filter: " + filterId + " @ " + filterIndex);
+          return (
+            <Grid container spacing={3}>
+              {/*Select Field to search from drop-down menu*/}
+              <Grid item xs={4}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  className={classes.formControl}
+                >
+                  <InputLabel
+                    id={"filter-field-label" + filterIndex}
+                    key={"filter-field-label" + filterIndex}
                   >
-                    {field.label}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={3}>
-          <FormControl
-            fullWidth
-            variant="outlined"
-            className={classes.formControl}
-          >
-            <InputLabel id="demo-simple-select-outlined-label">
-              Operator
-            </InputLabel>
-            <Select
-              fullWidth
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={"project_name"}
-              onChange={e => handleFilterOperatorClick(e.target.value)}
-              label="field"
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={"project_name"}>Contains</MenuItem>
-              <MenuItem value={"project_description"}>
-                Does Not Contain
-              </MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-        <Grid item xs={4}>
-          <FormControl
-            fullWidth
-            variant="outlined"
-            className={classes.formControl}
-          >
-            <TextField
-              onChange={null}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SvgIcon fontSize="small" color="action">
-                      <SearchIcon />
-                    </SvgIcon>
-                  </InputAdornment>
-                ),
-              }}
-              placeholder="Search project name, description"
-              variant="outlined"
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={1}>
-          <Button
-            className={classes.filterButton}
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            startIcon={<Icon>delete_outline</Icon>}
-          >
-            Delete
-          </Button>
-        </Grid>
-      </Grid>
+                    Field
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId={"filter-field-label" + filterIndex}
+                    id={"filter-field-select" + filterId}
+                    value={filters[filterId].field}
+                    onChange={e =>
+                      handleFilterFieldMenuClick(filterId, e.target.value)
+                    }
+                    label="field"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {query.config.filters.fields.map((field, fieldIndex) => {
+                      return (
+                        <MenuItem
+                          value={field.name}
+                          key={`filter-menuitem-${field.name}-${fieldIndex}`}
+                        >
+                          {field.label}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              {/*Select the operator from drop-down menu*/}
+              <Grid item xs={3}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  className={classes.formControl}
+                >
+                  <InputLabel id="demo-simple-select-outlined-label">
+                    Operator
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId="demo-simple-select-outlined-label"
+                    id="demo-simple-select-outlined"
+                    value={filters[filterId].operator}
+                    onChange={e =>
+                      handleFilterOperatorClick(filterId, e.target.value)
+                    }
+                    label="field"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {filters[filterId].availableOperators.map((operator, operatorIndex) => {
+                      return (
+                        <MenuItem value={operator.name}>
+                          {operator.label}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  className={classes.formControl}
+                >
+                  <TextField
+                    onChange={null}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon fontSize="small" color="action">
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Search project name, description"
+                    variant="outlined"
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={1}>
+                <Button
+                  className={classes.filterButton}
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<Icon>delete_outline</Icon>}
+                  onClick={() => handleDeleteFilterButtonClick(filterId)}
+                >
+                  Delete
+                </Button>
+              </Grid>
+            </Grid>
+          );
+        }
+      )}
       <Grid container spacing={3}>
         <Grid item xs={3}>
           <Button
@@ -189,8 +320,9 @@ const GridTableFilters = ({ query, filterState }) => {
             variant="contained"
             color="default"
             startIcon={<Icon>playlist_add</Icon>}
+            onClick={handleAddFilterButtonClick}
           >
-            Add Field
+            Add Filter
           </Button>
         </Grid>
         <Grid item xs={3}>
