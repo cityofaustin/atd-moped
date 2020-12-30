@@ -5,8 +5,22 @@ import { Box, Card, CardContent } from "@material-ui/core";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 
-const GridTableSearch = ({ query, searchState, filterState, children }) => {
-
+/**
+ * Renders a table search component with a search bar and search filters
+ * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
+ * @param searchState - The current state/state-modifier bundle for search
+ * @param {JSX.Element} children - Any components to be rendered above the search bar
+ * @return {JSX.Element}
+ * @constructor
+ */
+const GridTableSearch = ({ query, searchState, children }) => {
+  /**
+   * If true, it shows the filters in the UI, else it hides them.
+   * @constant
+   * @type {boolean} searchFieldValue
+   * @function setShowFilters - Sets the state of searchFieldValue
+   * @default {false}
+   */
   const [showFilters, setShowFilters] = useState(false);
 
   return (
