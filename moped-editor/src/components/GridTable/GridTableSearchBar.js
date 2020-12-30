@@ -16,6 +16,11 @@ import {
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
+/**
+ * The styling for the search bar components
+ * @type {Object}
+ * @constant
+ */
 const useStyles = makeStyles(theme => ({
   root: {},
   formControl: {
@@ -40,15 +45,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const GridTableSearch = ({ query, searchState, filtersState }) => {
+/**
+ * Renders a search bar with optional filters
+ * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
+ * @param {Object} searchState - The current state/state-modifier bundle for search
+ * @param {Object} showFilterState - The state/state-modifier bundle for filters
+ * @return {JSX.Element}
+ * @constructor
+ */
+const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   /**
-   * If we are not provided a search or field state, then render a message
+   * The styling of the search bar
+   * @constant
+   * @default
    */
   const classes = useStyles();
 
   /**
    * The contents of the search box
-   *  {string} searchFieldValue - Default: searchState.searchParameters.value
+   * @constant
+   * @type {string} searchFieldValue
+   * @function setSearchFieldValue - Sets the state of the field
+   * @default {?searchState.searchParameters.value}
    */
   const [searchFieldValue, setSearchFieldValue] = useState(
     (searchState.searchParameters && searchState.searchParameters.value) || ""
@@ -56,25 +74,32 @@ const GridTableSearch = ({ query, searchState, filtersState }) => {
 
   /**
    * Stores the name of the column to search
-   * {string} fieldToSearch - Default: searchState.searchParameters.column or None
+   * @constant
+   * @type {boolean} fieldToSearch
+   * @function setFieldToSearch - Sets the state of the field
+   * @default {?searchState.searchParameters.column}
    */
   const [fieldToSearch, setFieldToSearch] = useState(
     (searchState.searchParameters && searchState.searchParameters.column) || ""
   );
+
   /**
-   *  {boolean} isFieldSelected - True if a field is selected.
-   *          Default: False
+   * True if a field is selected
+   * @constant
+   * @type {boolean} isFieldSelected - The state of the field being selected
+   * @function setIsFieldSelected - Sets the state of isFieldSelected
+   * @default false
    */
   const [isFieldSelected, setIsFieldSelected] = useState(
     !!searchState.searchParameters || false
   );
 
-  if (!searchState || !filtersState)
+  if (!searchState || !showFilterState)
     return <span>No search or filter state provided</span>;
 
   /**
    * Handles the submission of our search form
-   * @param {object} e - the event object
+   * @param {Object} e - The event object
    */
   const handleSearchSubmission = e => {
     e.preventDefault();
@@ -100,7 +125,7 @@ const GridTableSearch = ({ query, searchState, filtersState }) => {
 
   /**
    * Handles the selection of our search mode in the dropdown
-   * @param {object} e - the event object
+   * @param {Object} e - the event object
    */
   const handleFieldSelect = e => {
     setIsFieldSelected(true);
@@ -120,7 +145,7 @@ const GridTableSearch = ({ query, searchState, filtersState }) => {
    * Toggles Showing filters
    */
   const handleFiltersClick = () => {
-    filtersState.setShowFilters(!filtersState.showFilters);
+    showFilterState.setShowFilters(!showFilterState.showFilters);
   };
 
   return (
@@ -215,8 +240,8 @@ const GridTableSearch = ({ query, searchState, filtersState }) => {
   );
 };
 
-GridTableSearch.propTypes = {
+GridTableSearchBar.propTypes = {
   className: PropTypes.string,
 };
 
-export default GridTableSearch;
+export default GridTableSearchBar;
