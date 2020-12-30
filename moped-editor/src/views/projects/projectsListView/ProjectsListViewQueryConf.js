@@ -1,6 +1,8 @@
 /**
- * Filters configuration
+ * Filter Configuration
+ * @constant
  * @type {Object}
+ * @default
  */
 export const ProjectsListViewFiltersConf = {
   fields: [
@@ -87,7 +89,10 @@ export const ProjectsListViewFiltersConf = {
 
 /**
  * The Query configuration (now also including filters)
+ * @constant
  * @type {Object}
+ * @augments ProjectsListViewFiltersConf
+ * @default
  */
 export const ProjectsListViewQueryConf = {
   options: {
