@@ -21,6 +21,7 @@ import {
   DialogActions,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
+import { Alert } from "@material-ui/lab";
 
 /**
  * The styling for the filter components
@@ -29,8 +30,9 @@ import { Search as SearchIcon } from "react-feather";
  */
 const useStyles = makeStyles(theme => ({
   root: {},
-  searchBox: {
-    marginTop: theme.spacing(6),
+  filterAlert: {
+    margin: theme.spacing(1),
+    marginRight: theme.spacing(0),
   },
   formControl: {
     margin: theme.spacing(1),
@@ -44,6 +46,10 @@ const useStyles = makeStyles(theme => ({
   },
   bottomButton: {
     margin: theme.spacing(1),
+  },
+  applyButton: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
   },
   buttonDark: {
     marginTop: theme.spacing(2),
@@ -331,6 +337,11 @@ const GridTableFilters = ({ query, filterState }) => {
 
   return (
     <Grid>
+      {Object.keys(filterParameters).length === 0 && (
+        <Alert className={classes.filterAlert} severity="info">
+          You don't have any search filters, add one below.
+        </Alert>
+      )}
       {Object.keys(filterParameters).map(filterId => {
         return (
           <Grow in={true}>
@@ -462,17 +473,17 @@ const GridTableFilters = ({ query, filterState }) => {
                   fullWidth
                   variant="outlined"
                   color="secondary"
-                  startIcon={<Icon>delete_outline</Icon>}
+                  // startIcon={<Icon>delete_outline</Icon>}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
                 >
-                  Delete
+                  <Icon>delete_outline</Icon>
                 </Button>
               </Grid>
             </Grid>
           </Grow>
         );
       })}
-      <Grid container spacing={3}>
+      <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
         <Grid item xs={3}>
           <Button
             className={classes.bottomButton}
@@ -503,7 +514,7 @@ const GridTableFilters = ({ query, filterState }) => {
         <Grid item xs={3}>
           <Button
             fullWidth
-            className={classes.bottomButton}
+            className={classes.applyButton}
             variant="contained"
             color="primary"
             startIcon={<Icon>check</Icon>}
