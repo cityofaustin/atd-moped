@@ -9,6 +9,7 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "project_name",
       label: "Project Name",
+      placeholder: "Enter project name",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
@@ -19,6 +20,7 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "project_description",
       label: "Project Description",
+      placeholder: "Enter project description",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
@@ -29,7 +31,17 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "project_id",
       label: "Project ID",
+      placeholder: "Type Project ID number",
       type: "number",
+      operators: [
+        "*", // All of them (shortcut)
+      ],
+    },
+    {
+      name: "start_date",
+      label: "Start Date",
+      placeholder: "Select date",
+      type: "date",
       operators: [
         "*", // All of them (shortcut)
       ],
@@ -119,6 +131,22 @@ export const ProjectsListViewFiltersConf = {
       description: "The field value is less than number and not equal.",
       envelope: null,
       type: "number",
+    },
+    date_greater_than: {
+      id: "date_greater_than",
+      operator: "_gt",
+      label: "Greater Than",
+      description: "The date is greater than.",
+      envelope: null,
+      type: "date",
+    },
+    date_less_than: {
+      id: "date_less_than",
+      operator: "_lt",
+      label: "Less Than",
+      description: "The date is less than.",
+      envelope: null,
+      type: "date",
     },
   },
 };
