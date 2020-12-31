@@ -9,8 +9,6 @@ import Amplify from "aws-amplify";
 import { Hub } from "aws-amplify";
 import config from "./config";
 
-console.log("🤖", "Release Drafter Test");
-
 // https://aws-amplify.github.io/docs/js/hub
 Hub.listen(/.*/, ({ channel, payload }) =>
   console.debug(`[hub::${channel}::${payload.event}]`, payload)
