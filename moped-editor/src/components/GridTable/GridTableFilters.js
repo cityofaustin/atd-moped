@@ -10,7 +10,6 @@ import {
   FormControl,
   MenuItem,
   Grid,
-  SvgIcon,
   Icon,
   Grow,
   makeStyles,
@@ -343,8 +342,9 @@ const GridTableFilters = ({ query, filterState }) => {
    * Clears the filters, closes the dialog
    */
   const handleClearFilters = () => {
-    setFilterParameters({});
     handleDialogClose();
+    setFilterParameters({});
+    filterState.setFilterParameters({});
   };
 
   /**
