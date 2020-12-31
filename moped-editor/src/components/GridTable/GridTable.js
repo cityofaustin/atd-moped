@@ -76,10 +76,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({
-  title,
-  query,
-}) => {
+const GridTable = ({ title, query }) => {
   // Style
   const classes = useStyles();
 
@@ -138,8 +135,20 @@ const GridTable = ({
     query.setOrder(sort.column, sort.order);
   }
 
+  // Set limit, offset and clear any 'Where' filters
   query.limit = pagination.limit;
   query.offset = pagination.offset;
+  query.cleanWhere();
+
+  // For each filter added to state, add a where clause in GraphQL
+  Object.keys(filters).forEach(filter => {
+    let { envelope, field, gqlOperator, value, type } = filters[filter];
+
+    value = envelope ? envelope.replace("{VALUE}", value) : value;
+    value = type in ["number", "boolean"] ? value : `"${value}"`;
+
+    query.setWhere(field, `${gqlOperator}: ${value}`);
+  });
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -300,7 +309,7 @@ const GridTable = ({
           }}
           filterState={{
             filterParameters: filters,
-            setFilterParameters: setFilter
+            setFilterParameters: setFilter,
           }}
         >
           <GridTableExport query={query} />
