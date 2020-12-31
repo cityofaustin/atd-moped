@@ -131,6 +131,7 @@ const GridTableFilters = ({ query, filterState }) => {
     availableOperators: [],
     gqlOperator: null,
     envelope: null,
+    placeholder: null,
     value: null,
     type: null,
   };
@@ -158,6 +159,22 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
+   * Returns the icon we want to show in the search field value
+   * @param {string} type - The field's type as a string
+   * @return {string}
+   */
+  const getIconForType = type => {
+    const typeIconMap = {
+      string: "font_download",
+      number: "looks_one",
+      date: "event",
+      default: "info",
+    };
+
+    return type in typeIconMap ? typeIconMap[type] : typeIconMap["default"];
+  };
+
+  /**
    * Handles the click event on the filter drop-down menu
    * @param {string} filterId - State FieldID to modify
    * @param {Object} field - The field object being clicked
@@ -182,6 +199,7 @@ const GridTableFilters = ({ query, filterState }) => {
         // Update field & type
         filtersNewState[filterId].field = fieldDetails.name;
         filtersNewState[filterId].type = fieldDetails.type;
+        filtersNewState[filterId].placeholder = fieldDetails.placeholder;
 
         // Update Available Operators
         if (
@@ -446,19 +464,30 @@ const GridTableFilters = ({ query, filterState }) => {
                   <TextField
                     key={`filter-search-value-${filterId}`}
                     id={`filter-search-value-${filterId}`}
+                    type={
+                      filterParameters[filterId].type
+                        ? filterParameters[filterId].type
+                        : "text"
+                    }
                     onChange={e =>
                       handleSearchValueChange(filterId, e.target.value)
                     }
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <SvgIcon fontSize="small" color="action">
-                            <SearchIcon />
-                          </SvgIcon>
+                          <Icon fontSize="small" color="action">
+                            {getIconForType(filterParameters[filterId].type)}
+                          </Icon>
                         </InputAdornment>
                       ),
                     }}
-                    placeholder="Search project name, description"
+                    placeholder={
+                      filterParameters[filterId].placeholder
+                        ? filterParameters[filterId].operator
+                          ? filterParameters[filterId].placeholder
+                          : "Select operator"
+                        : "Select field"
+                    }
                     variant="outlined"
                     disabled={
                       filters[filterId].operator === null ||
