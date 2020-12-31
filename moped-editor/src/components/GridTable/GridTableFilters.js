@@ -66,10 +66,21 @@ const GridTableFilters = ({ query, filterState }) => {
    */
   const classes = useStyles();
 
+  /**
+   * The
+   * @type {Object} filterParameters - Contains all the current filters
+   * @function setFilterParameters - Update the state of filterParameters
+   * @default {filterState.filterParameters}
+   */
   const [filterParameters, setFilterParameters] = useState(
     filterState.filterParameters
   );
 
+  /**
+   * This is a timer allocation that will update the state after the user is finished typing.
+   * @type {integer} - The returned timeoutID is a positive integer value which identifies the timer created by the call to setTimeout()
+   * @default null
+   */
   let typingTimer = null;
 
   /**
@@ -222,14 +233,15 @@ const GridTableFilters = ({ query, filterState }) => {
    * Adds an empty filter to the state
    */
   const handleAddFilterButtonClick = () => {
+    // Generate a random UUID string
     const uuid = generateUuid();
-    console.log("UUID being added to state", uuid);
+    // Clone state
     const filtersNewState = {
       ...filterParameters,
     };
-
+    // Patch new state
     filtersNewState[uuid] = generateEmptyField(uuid);
-
+    // Update new state
     setFilterParameters(filtersNewState);
   };
 
@@ -242,7 +254,7 @@ const GridTableFilters = ({ query, filterState }) => {
     const filtersNewState = {
       ...filterParameters,
     };
-
+    // Try to delete the filter by filterId
     try {
       // Delete the key (if it's there)
       delete filtersNewState[filterId];
@@ -252,16 +264,21 @@ const GridTableFilters = ({ query, filterState }) => {
     }
   };
 
+  /**
+   * The user will type a new search value, wait 1/3rd of a second to update state.
+   * @param {string} filterId - The FilterID uuid
+   * @param {string} value - The value to assign to that filter
+   */
   const handleSearchValueChange = (filterId, value) => {
-    const filtersNewState = {
-      ...filterParameters,
-    };
+    // Clone the state
+    const filtersNewState = { ...filterParameters };
+    // Patch the new state
     filtersNewState[filterId].value = value;
-
+    // Clear the current timer
     clearTimeout(typingTimer);
-
+    // Start a new timer with a 1/3rd of a second delay.
     typingTimer = setTimeout(() => {
-      console.log(filtersNewState);
+      // Update the state
       setFilterParameters(filtersNewState);
     }, 333);
   };
