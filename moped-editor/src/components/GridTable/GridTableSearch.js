@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { Box, Card, CardContent } from "@material-ui/core";
+import { Box, Card, CardContent, Collapse } from "@material-ui/core";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 
@@ -40,9 +40,9 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
               }}
             />
             {/*Filter Component (Hide by default)*/}
-            {showFilters && (
+            <Collapse in={showFilters}>
               <GridTableFilters query={query} filterState={filterState} />
-            )}
+            </Collapse>
           </CardContent>
         </Card>
       </Box>
