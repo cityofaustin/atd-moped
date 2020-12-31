@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -66,77 +66,51 @@ const GridTableFilters = ({ query, filterState }) => {
    */
   const classes = useStyles();
 
+  const [filterParameters, setFilterParameters] = useState(
+    filterState.filterParameters
+  );
+
+  let typingTimer = null;
+
   /**
    * An alias of the state, to make it easy to access.
    * @type {Object}
    * @constant
    */
-  const filters = filterState.filterParameters;
+  const filters = filterParameters;
 
   /**
-   * Handles the click event on the filter drop-down menu
-   * @param {string} filterId - State FieldID to modify
-   * @param {Object} field - The field object being clicked
+   * The default structure of an empty field
+   * @type {Object}
+   * @property {string} id - The uuid of the field
+   * @property {string} field - The name of the column
+   * @property {operator} operator - The name of the operator
+   * @property {string[]} availableOperators - A string array containing the names of available operators
+   * @property {string} gqlOperator - A string containing the GraphQL operator
+   * @property {string} envelope - The a pattern to use as an envelope
+   * @property {string} value - The text value to be searched
+   * @property {string} type - The type of field it is (string, number, etc.)
+   * @constant
+   * @default
    */
-  const handleFilterFieldMenuClick = (filterId, field) => {
-    console.debug(`handleFilterFieldMenuClick: ${filterId} - ${field}`);
-
-    // If the filter exists
-    if (filterId in filterState.filterParameters) {
-      // Clone state
-      const filtersNewState = { ...filterState.filterParameters };
-
-
-
-      // Find the field we need to gather options from
-      const fieldIndex = query.config.filters.fields.findIndex(
-        filter => filter.name === field
-      );
-
-      // Gather field details
-      const fieldDetails = query.config.filters.fields[fieldIndex];
-
-      // Update field & type
-      filtersNewState[filterId].field = fieldDetails.name;
-      filtersNewState[filterId].type = fieldDetails.type;
-
-      // Update Available Operators
-      if (
-        fieldDetails.operators.length === 1 &&
-        fieldDetails.operators[0] === "*"
-      ) {
-        // Add all operators and filter by specific type (defined in fieldDetails.type)
-        filtersNewState[
-          filterId
-        ].availableOperators = Object.keys(query.config.filters.operators).filter(
-          operator => query.config.filters.operators[operator].type === fieldDetails.type
-        );
-      } else {
-        // Append listed operators for that field
-        filtersNewState[
-          filterId
-        ].availableOperators = fieldDetails.operators.map(
-          operator => query.config.filters.operators[operator]
-        );
-      }
-
-      filterState.setFilterParameters(filtersNewState);
-    } else {
-      console.debug(
-        `The filter id ${filterId} does not exist, ignoring click event.`
-      );
-    }
-
-    // Ignore the click?
+  const defaultNewFieldState = {
+    id: null,
+    field: null,
+    operator: null,
+    availableOperators: [],
+    gqlOperator: null,
+    envelope: null,
+    value: null,
+    type: null,
   };
 
   /**
-   * Handles the click event on the operator drop-down
-   * @param {string} filterId - State FieldID to modify
-   * @param {Object} operator - The operator object being clicked
+   * Generates a copy of an empty field
+   * @param uuid
+   * @return {Object}
    */
-  const handleFilterOperatorClick = (filterId, operator) => {
-    console.debug(`handleFilterOperatorClick: ${filterId} - ${operator}`);
+  const generateEmptyField = uuid => {
+    return { ...defaultNewFieldState, id: uuid };
   };
 
   /**
@@ -153,25 +127,110 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
+   * Handles the click event on the filter drop-down menu
+   * @param {string} filterId - State FieldID to modify
+   * @param {Object} field - The field object being clicked
+   */
+  const handleFilterFieldMenuClick = (filterId, field) => {
+    // If the filter exists
+    if (filterId in filterParameters) {
+      // Clone state
+      const filtersNewState = { ...filterParameters };
+
+      // Find the field we need to gather options from
+      const fieldIndex = query.config.filters.fields.findIndex(
+        filter => filter.name === field
+      );
+
+      // Gather field details
+      const fieldDetails = query.config.filters.fields[fieldIndex];
+
+      if (!fieldDetails) {
+        filtersNewState[filterId] = generateEmptyField(filterId);
+      } else {
+        // Update field & type
+        filtersNewState[filterId].field = fieldDetails.name;
+        filtersNewState[filterId].type = fieldDetails.type;
+
+        // Update Available Operators
+        if (
+          fieldDetails.operators.length === 1 &&
+          fieldDetails.operators[0] === "*"
+        ) {
+          // Add all operators and filter by specific type (defined in fieldDetails.type)
+          filtersNewState[filterId].availableOperators = Object.keys(
+            query.config.filters.operators
+          )
+            .filter(
+              operator =>
+                query.config.filters.operators[operator].type ===
+                fieldDetails.type
+            )
+            .map(operator => query.config.filters.operators[operator]);
+        } else {
+          // Append listed operators for that field
+          filtersNewState[
+            filterId
+          ].availableOperators = fieldDetails.operators.map(
+            operator => query.config.filters.operators[operator]
+          );
+        }
+      }
+
+      // Update the state
+      setFilterParameters(filtersNewState);
+    } else {
+      console.debug(
+        `The filter id ${filterId} does not exist, ignoring click event.`
+      );
+    }
+  };
+
+  /**
+   * Handles the click event on the operator drop-down
+   * @param {string} filterId - State FieldID to modify
+   * @param {Object} operator - The operator object being clicked
+   */
+  const handleFilterOperatorClick = (filterId, operator) => {
+    // If the filter exists
+    if (
+      filterId in filterParameters &&
+      operator in query.config.filters.operators
+    ) {
+      // Clone state
+      const filtersNewState = { ...filterParameters };
+
+      // Update Operator Value
+      filtersNewState[filterId].operator =
+        operator && operator !== "" ? operator : null;
+
+      filtersNewState[filterId].gqlOperator =
+        query.config.filters.operators[operator].operator;
+
+      filtersNewState[filterId].envelope =
+        query.config.filters.operators[operator].envelope;
+
+      setFilterParameters(filtersNewState);
+    } else {
+      console.debug(
+        `The filter id ${filterId} does not exist, ignoring click event.`
+      );
+    }
+  };
+
+  /**
    * Adds an empty filter to the state
    */
   const handleAddFilterButtonClick = () => {
     const uuid = generateUuid();
     console.log("UUID being added to state", uuid);
     const filtersNewState = {
-      ...filterState.filterParameters,
+      ...filterParameters,
     };
 
-    filtersNewState[uuid] = {
-      id: uuid,
-      field: null,
-      operator: null,
-      availableOperators: [],
-      value: null,
-      type: null,
-    };
+    filtersNewState[uuid] = generateEmptyField(uuid);
 
-    filterState.setFilterParameters(filtersNewState);
+    setFilterParameters(filtersNewState);
   };
 
   /**
@@ -181,7 +240,7 @@ const GridTableFilters = ({ query, filterState }) => {
   const handleDeleteFilterButtonClick = filterId => {
     // Copy the state into a new object
     const filtersNewState = {
-      ...filterState.filterParameters,
+      ...filterParameters,
     };
 
     try {
@@ -189,129 +248,161 @@ const GridTableFilters = ({ query, filterState }) => {
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      filterState.setFilterParameters(filtersNewState);
+      setFilterParameters(filtersNewState);
     }
   };
 
-  console.debug("Filter state: ", filterState.filterParameters);
+  const handleSearchValueChange = (filterId, value) => {
+    const filtersNewState = {
+      ...filterParameters,
+    };
+    filtersNewState[filterId].value = value;
+
+    clearTimeout(typingTimer);
+
+    typingTimer = setTimeout(() => {
+      console.log(filtersNewState);
+      setFilterParameters(filtersNewState);
+    }, 333);
+  };
+
+  /**
+   * Applies the current local state and updates the parent's
+   */
+  const handleApplyButtonClick = () => {
+    filterState.setFilterParameters(filterParameters);
+  };
 
   return (
     <Grid>
-      {Object.keys(filterState.filterParameters).map(
-        (filterId, filterIndex) => {
-          console.log("Rendering filter: " + filterId + " @ " + filterIndex);
-          return (
-            <Grid container spacing={3}>
-              {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={4}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
+      {Object.keys(filterParameters).map((filterId, filterIndex) => {
+        return (
+          <Grid container spacing={3}>
+            {/*Select Field to search from drop-down menu*/}
+            <Grid item xs={4}>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <InputLabel
+                  id={`filter-field-select-${filterId}-label`}
+                  key={`filter-field-select-${filterId}-label`}
                 >
-                  <InputLabel
-                    id={"filter-field-label" + filterIndex}
-                    key={"filter-field-label" + filterIndex}
-                  >
-                    Field
-                  </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId={"filter-field-label" + filterIndex}
-                    id={"filter-field-select" + filterId}
-                    value={filters[filterId].field}
-                    onChange={e =>
-                      handleFilterFieldMenuClick(filterId, e.target.value)
-                    }
-                    label="field"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {query.config.filters.fields.map((field, fieldIndex) => {
+                  Field
+                </InputLabel>
+                <Select
+                  fullWidth
+                  labelId={`filter-field-select-${filterId}`}
+                  id={`filter-field-select-${filterId}`}
+                  value={filters[filterId].field}
+                  onChange={e =>
+                    handleFilterFieldMenuClick(filterId, e.target.value)
+                  }
+                  label="field"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {query.config.filters.fields.map((field, fieldIndex) => {
+                    return (
+                      <MenuItem
+                        value={field.name}
+                        key={`filter-field-select-item-${field.name}-${fieldIndex}`}
+                        id={`filter-field-select-item-${field.name}-${fieldIndex}`}
+                      >
+                        {field.label}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            </Grid>
+            {/*Select the operator from drop-down menu*/}
+            <Grid item xs={3}>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <InputLabel id={`filter-operator-select-${filterId}-label`}>
+                  Operator
+                </InputLabel>
+                <Select
+                  fullWidth
+                  disabled={filters[filterId].availableOperators.length === 0}
+                  labelId={`filter-operator-select-${filterId}-label`}
+                  id={`filter-operator-select-${filterId}`}
+                  value={filters[filterId].operator}
+                  onChange={e =>
+                    handleFilterOperatorClick(filterId, e.target.value)
+                  }
+                  label="field"
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  {filters[filterId].availableOperators.map(
+                    (operator, operatorIndex) => {
                       return (
                         <MenuItem
-                          value={field.name}
-                          key={`filter-menuitem-${field.name}-${fieldIndex}`}
+                          value={operator.id}
+                          key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                          id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                         >
-                          {field.label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
-              {/*Select the operator from drop-down menu*/}
-              <Grid item xs={3}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
-                  <InputLabel id="demo-simple-select-outlined-label">
-                    Operator
-                  </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId="demo-simple-select-outlined-label"
-                    id="demo-simple-select-outlined"
-                    value={filters[filterId].operator}
-                    onChange={e =>
-                      handleFilterOperatorClick(filterId, e.target.value)
-                    }
-                    label="field"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {filters[filterId].availableOperators.map((operator, operatorIndex) => {
-                      return (
-                        <MenuItem value={operator.name}>
                           {operator.label}
                         </MenuItem>
                       );
-                    })}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
-                  <TextField
-                    onChange={null}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <SvgIcon fontSize="small" color="action">
-                            <SearchIcon />
-                          </SvgIcon>
-                        </InputAdornment>
-                      ),
-                    }}
-                    placeholder="Search project name, description"
-                    variant="outlined"
-                  />
-                </FormControl>
-              </Grid>
-              <Grid item xs={1}>
-                <Button
-                  className={classes.filterButton}
-                  fullWidth
-                  variant="outlined"
-                  color="secondary"
-                  startIcon={<Icon>delete_outline</Icon>}
-                  onClick={() => handleDeleteFilterButtonClick(filterId)}
-                >
-                  Delete
-                </Button>
-              </Grid>
+                    }
+                  )}
+                </Select>
+              </FormControl>
             </Grid>
-          );
-        }
-      )}
+            <Grid item xs={4}>
+              <FormControl
+                fullWidth
+                variant="outlined"
+                className={classes.formControl}
+              >
+                <TextField
+                  key={`filter-search-value-${filterId}`}
+                  id={`filter-search-value-${filterId}`}
+                  onChange={e =>
+                    handleSearchValueChange(filterId, e.target.value)
+                  }
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <SvgIcon fontSize="small" color="action">
+                          <SearchIcon />
+                        </SvgIcon>
+                      </InputAdornment>
+                    ),
+                  }}
+                  placeholder="Search project name, description"
+                  variant="outlined"
+                  disabled={
+                    filters[filterId].operator === null ||
+                    filters[filterId].operator === ""
+                  }
+                />
+              </FormControl>
+            </Grid>
+            <Grid item xs={1}>
+              <Button
+                className={classes.filterButton}
+                fullWidth
+                variant="outlined"
+                color="secondary"
+                startIcon={<Icon>delete_outline</Icon>}
+                onClick={() => handleDeleteFilterButtonClick(filterId)}
+              >
+                Delete
+              </Button>
+            </Grid>
+          </Grid>
+        );
+      })}
       <Grid container spacing={3}>
         <Grid item xs={3}>
           <Button
@@ -336,8 +427,20 @@ const GridTableFilters = ({ query, filterState }) => {
             Reset
           </Button>
         </Grid>
-        <Grid item xs={6}>
-          {" "}
+        <Grid item xs={3}>
+          {""}
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            fullWidth
+            className={classes.bottomButton}
+            variant="contained"
+            color="primary"
+            startIcon={<Icon>check</Icon>}
+            onClick={handleApplyButtonClick}
+          >
+            Apply
+          </Button>
         </Grid>
       </Grid>
     </Grid>
