@@ -16,12 +16,32 @@ import GridTableSearchBar from "./GridTableSearchBar";
  */
 const GridTableSearch = ({ query, searchState, filterState, children }) => {
   /**
+   * The initial value from the configuration to show filters
+   * @type {boolean}
+   * @constant
+   * @default false
+   */
+  const defaultShowFiltersValue = query.config.hasOwnProperty("showFilters")
+    ? query.config.showFilters
+    : false;
+
+  /**
+   * The initial value from the configuration to show search bar
+   * @type {boolean}
+   * @constant
+   * @default false
+   */
+  const defaultShowSearchBarValue = query.config.hasOwnProperty("showSearchBar")
+    ? query.config.showSearchBar
+    : true;
+
+  /**
    * If true, it shows the filters in the UI, else it hides them.
    * @type {boolean} searchFieldValue
    * @function setShowFilters - Sets the state of searchFieldValue
-   * @default {false}
+   * @default {defaultShowFiltersValue}
    */
-  const [showFilters, setShowFilters] = useState(false);
+  const [showFilters, setShowFilters] = useState(defaultShowFiltersValue);
 
   return (
     <div>
@@ -30,15 +50,17 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
       <Box mt={3}>
         <Card>
           <CardContent>
-            {/*Search-bar component (controls filter visibility)*/}
-            <GridTableSearchBar
-              query={query}
-              searchState={searchState}
-              showFilterState={{
-                showFilters: showFilters,
-                setShowFilters: setShowFilters,
-              }}
-            />
+            {/* Search-bar component */}
+            {defaultShowSearchBarValue && (
+              <GridTableSearchBar
+                query={query}
+                searchState={searchState}
+                showFilterState={{
+                  showFilters: showFilters,
+                  setShowFilters: setShowFilters,
+                }}
+              />
+            )}
             {/*Filter Component (Hide by default)*/}
             <Collapse in={showFilters}>
               <GridTableFilters query={query} filterState={filterState} />
