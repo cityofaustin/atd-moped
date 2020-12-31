@@ -12,7 +12,13 @@ import {
   Grid,
   SvgIcon,
   Icon,
+  Grow,
   makeStyles,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
@@ -67,7 +73,7 @@ const GridTableFilters = ({ query, filterState }) => {
   const classes = useStyles();
 
   /**
-   * The
+   * The current local filter parameters
    * @type {Object} filterParameters - Contains all the current filters
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filterState.filterParameters}
@@ -75,6 +81,14 @@ const GridTableFilters = ({ query, filterState }) => {
   const [filterParameters, setFilterParameters] = useState(
     filterState.filterParameters
   );
+
+  /**
+   * The current local filter parameters
+   * @type {boolean} confirmDialogOpen - Contains all the current filters
+   * @function setConfirmDialogOpen - Update the state of filterParameters
+   * @default false
+   */
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   /**
    * This is a timer allocation that will update the state after the user is finished typing.
@@ -204,22 +218,25 @@ const GridTableFilters = ({ query, filterState }) => {
    */
   const handleFilterOperatorClick = (filterId, operator) => {
     // If the filter exists
-    if (
-      filterId in filterParameters &&
-      operator in query.config.filters.operators
-    ) {
+    if (filterId in filterParameters) {
       // Clone state
       const filtersNewState = { ...filterParameters };
 
-      // Update Operator Value
-      filtersNewState[filterId].operator =
-        operator && operator !== "" ? operator : null;
-
-      filtersNewState[filterId].gqlOperator =
-        query.config.filters.operators[operator].operator;
-
-      filtersNewState[filterId].envelope =
-        query.config.filters.operators[operator].envelope;
+      if (operator in query.config.filters.operators) {
+        // Update Operator Value
+        filtersNewState[filterId].operator = operator;
+        // Get the GraphQL operator details
+        filtersNewState[filterId].gqlOperator =
+          query.config.filters.operators[operator].operator;
+        // Copy the envelope if available
+        filtersNewState[filterId].envelope =
+          query.config.filters.operators[operator].envelope;
+      } else {
+        // Reset operator values
+        filtersNewState[filterId].operator = null;
+        filtersNewState[filterId].gqlOperator = null;
+        filtersNewState[filterId].envelope = null;
+      }
 
       setFilterParameters(filtersNewState);
     } else {
@@ -284,6 +301,28 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
+   * Clears all the current filters
+   */
+  const handleResetFiltersButtonClick = () => {
+    if (Object.keys(filterParameters).length > 0) setConfirmDialogOpen(true);
+  };
+
+  /**
+   * Closes the dialog
+   */
+  const handleDialogClose = () => {
+    setConfirmDialogOpen(false);
+  };
+
+  /**
+   * Clears the filters, closes the dialog
+   */
+  const handleClearFilters = () => {
+    setFilterParameters({});
+    handleDialogClose();
+  };
+
+  /**
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
@@ -292,132 +331,145 @@ const GridTableFilters = ({ query, filterState }) => {
 
   return (
     <Grid>
-      {Object.keys(filterParameters).map((filterId, filterIndex) => {
+      {Object.keys(filterParameters).map(filterId => {
         return (
-          <Grid container spacing={3}>
-            {/*Select Field to search from drop-down menu*/}
-            <Grid item xs={4}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                className={classes.formControl}
-              >
-                <InputLabel
-                  id={`filter-field-select-${filterId}-label`}
-                  key={`filter-field-select-${filterId}-label`}
-                >
-                  Field
-                </InputLabel>
-                <Select
+          <Grow in={true}>
+            <Grid
+              container
+              spacing={3}
+              id={`filter-${filterId}`}
+              key={`filter-${filterId}`}
+            >
+              {/*Select Field to search from drop-down menu*/}
+              <Grid item xs={4}>
+                <FormControl
                   fullWidth
-                  labelId={`filter-field-select-${filterId}`}
-                  id={`filter-field-select-${filterId}`}
-                  value={filters[filterId].field}
-                  onChange={e =>
-                    handleFilterFieldMenuClick(filterId, e.target.value)
-                  }
-                  label="field"
+                  variant="outlined"
+                  className={classes.formControl}
                 >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {query.config.filters.fields.map((field, fieldIndex) => {
-                    return (
-                      <MenuItem
-                        value={field.name}
-                        key={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                        id={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                      >
-                        {field.label}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-              </FormControl>
-            </Grid>
-            {/*Select the operator from drop-down menu*/}
-            <Grid item xs={3}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                className={classes.formControl}
-              >
-                <InputLabel id={`filter-operator-select-${filterId}-label`}>
-                  Operator
-                </InputLabel>
-                <Select
-                  fullWidth
-                  disabled={filters[filterId].availableOperators.length === 0}
-                  labelId={`filter-operator-select-${filterId}-label`}
-                  id={`filter-operator-select-${filterId}`}
-                  value={filters[filterId].operator}
-                  onChange={e =>
-                    handleFilterOperatorClick(filterId, e.target.value)
-                  }
-                  label="field"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  {filters[filterId].availableOperators.map(
-                    (operator, operatorIndex) => {
+                  <InputLabel
+                    id={`filter-field-select-${filterId}-label`}
+                    key={`filter-field-select-${filterId}-label`}
+                  >
+                    Field
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    labelId={`filter-field-select-${filterId}`}
+                    id={`filter-field-select-${filterId}`}
+                    value={
+                      filters[filterId].field ? filters[filterId].field : ""
+                    }
+                    onChange={e =>
+                      handleFilterFieldMenuClick(filterId, e.target.value)
+                    }
+                    label="field"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {query.config.filters.fields.map((field, fieldIndex) => {
                       return (
                         <MenuItem
-                          value={operator.id}
-                          key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
-                          id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                          value={field.name}
+                          key={`filter-field-select-item-${field.name}-${fieldIndex}`}
+                          id={`filter-field-select-item-${field.name}-${fieldIndex}`}
                         >
-                          {operator.label}
+                          {field.label}
                         </MenuItem>
                       );
-                    }
-                  )}
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              <FormControl
-                fullWidth
-                variant="outlined"
-                className={classes.formControl}
-              >
-                <TextField
-                  key={`filter-search-value-${filterId}`}
-                  id={`filter-search-value-${filterId}`}
-                  onChange={e =>
-                    handleSearchValueChange(filterId, e.target.value)
-                  }
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SvgIcon fontSize="small" color="action">
-                          <SearchIcon />
-                        </SvgIcon>
-                      </InputAdornment>
-                    ),
-                  }}
-                  placeholder="Search project name, description"
+                    })}
+                  </Select>
+                </FormControl>
+              </Grid>
+              {/*Select the operator from drop-down menu*/}
+              <Grid item xs={3}>
+                <FormControl
+                  fullWidth
                   variant="outlined"
-                  disabled={
-                    filters[filterId].operator === null ||
-                    filters[filterId].operator === ""
-                  }
-                />
-              </FormControl>
+                  className={classes.formControl}
+                >
+                  <InputLabel id={`filter-operator-select-${filterId}-label`}>
+                    Operator
+                  </InputLabel>
+                  <Select
+                    fullWidth
+                    disabled={filters[filterId].availableOperators.length === 0}
+                    labelId={`filter-operator-select-${filterId}-label`}
+                    id={`filter-operator-select-${filterId}`}
+                    value={
+                      filters[filterId].operator
+                        ? filters[filterId].operator
+                        : ""
+                    }
+                    onChange={e =>
+                      handleFilterOperatorClick(filterId, e.target.value)
+                    }
+                    label="field"
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    {filters[filterId].availableOperators.map(
+                      (operator, operatorIndex) => {
+                        return (
+                          <MenuItem
+                            value={operator.id}
+                            key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                            id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                          >
+                            {operator.label}
+                          </MenuItem>
+                        );
+                      }
+                    )}
+                  </Select>
+                </FormControl>
+              </Grid>
+              <Grid item xs={4}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  className={classes.formControl}
+                >
+                  <TextField
+                    key={`filter-search-value-${filterId}`}
+                    id={`filter-search-value-${filterId}`}
+                    onChange={e =>
+                      handleSearchValueChange(filterId, e.target.value)
+                    }
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <SvgIcon fontSize="small" color="action">
+                            <SearchIcon />
+                          </SvgIcon>
+                        </InputAdornment>
+                      ),
+                    }}
+                    placeholder="Search project name, description"
+                    variant="outlined"
+                    disabled={
+                      filters[filterId].operator === null ||
+                      filters[filterId].operator === ""
+                    }
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={1}>
+                <Button
+                  className={classes.filterButton}
+                  fullWidth
+                  variant="outlined"
+                  color="secondary"
+                  startIcon={<Icon>delete_outline</Icon>}
+                  onClick={() => handleDeleteFilterButtonClick(filterId)}
+                >
+                  Delete
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs={1}>
-              <Button
-                className={classes.filterButton}
-                fullWidth
-                variant="outlined"
-                color="secondary"
-                startIcon={<Icon>delete_outline</Icon>}
-                onClick={() => handleDeleteFilterButtonClick(filterId)}
-              >
-                Delete
-              </Button>
-            </Grid>
-          </Grid>
+          </Grow>
         );
       })}
       <Grid container spacing={3}>
@@ -425,8 +477,8 @@ const GridTableFilters = ({ query, filterState }) => {
           <Button
             className={classes.bottomButton}
             fullWidth
-            variant="contained"
-            color="default"
+            variant="outlined"
+            color="primary"
             startIcon={<Icon>playlist_add</Icon>}
             onClick={handleAddFilterButtonClick}
           >
@@ -437,9 +489,10 @@ const GridTableFilters = ({ query, filterState }) => {
           <Button
             className={classes.bottomButton}
             fullWidth
-            variant="contained"
-            color="default"
-            startIcon={<Icon>delete_forever</Icon>}
+            variant="outlined"
+            color="secondary"
+            startIcon={<Icon>backspace</Icon>}
+            onClick={handleResetFiltersButtonClick}
           >
             Reset
           </Button>
@@ -460,6 +513,29 @@ const GridTableFilters = ({ query, filterState }) => {
           </Button>
         </Grid>
       </Grid>
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Delete all your filters?"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This will remove all your filters, continue?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClearFilters} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
