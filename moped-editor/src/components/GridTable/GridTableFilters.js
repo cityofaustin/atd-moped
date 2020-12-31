@@ -352,7 +352,7 @@ const GridTableFilters = ({ query, filterState }) => {
               key={`filter-${filterId}`}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={4}>
+              <Grid item xs={12} lg={4}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -394,7 +394,7 @@ const GridTableFilters = ({ query, filterState }) => {
                 </FormControl>
               </Grid>
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={3}>
+              <Grid item xs={12} lg={3}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -437,7 +437,7 @@ const GridTableFilters = ({ query, filterState }) => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={4}>
+              <Grid item xs={12} lg={4}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -467,13 +467,12 @@ const GridTableFilters = ({ query, filterState }) => {
                   />
                 </FormControl>
               </Grid>
-              <Grid item xs={1}>
+              <Grid item xs={12} lg={1}>
                 <Button
-                  className={classes.filterButton}
                   fullWidth
-                  variant="outlined"
+                  className={classes.filterButton}
+                  variant="contained"
                   color="secondary"
-                  // startIcon={<Icon>delete_outline</Icon>}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
                 >
                   <Icon>delete_outline</Icon>
@@ -484,7 +483,7 @@ const GridTableFilters = ({ query, filterState }) => {
         );
       })}
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
-        <Grid item xs={3}>
+        <Grid item xs={12} lg={3}>
           <Button
             className={classes.bottomButton}
             fullWidth
@@ -496,7 +495,7 @@ const GridTableFilters = ({ query, filterState }) => {
             Add Filter
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} lg={3}>
           <Button
             className={classes.bottomButton}
             fullWidth
@@ -508,10 +507,10 @@ const GridTableFilters = ({ query, filterState }) => {
             Reset
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} lg={3}>
           {""}
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={12} lg={3}>
           <Button
             fullWidth
             className={classes.applyButton}
