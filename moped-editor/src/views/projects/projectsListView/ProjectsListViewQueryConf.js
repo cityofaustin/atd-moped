@@ -31,25 +31,38 @@ export const ProjectsListViewFiltersConf = {
       label: "Project ID",
       type: "number",
       operators: [
-        "*" // All of them (shortcut)
+        "*", // All of them (shortcut)
       ],
     },
   ],
 
   operators: {
-    "string_contains_case_insensitive": {
-      id: "string_begins_with_case_insensitive",
+    string_contains_case_insensitive: {
+      id: "string_contains_case_insensitive",
       operator: "_ilike",
       label: "Contains",
       description: "String is contained in field (case-insensitive)",
+      /*
+        Envelope:
+          % sign is used to pattern match any sequence of zero or more characters.
+          _ sign is used to match any single character.
+          {VALUE} is exactly the value of the entered string
+      */
       envelope: "%{VALUE}%",
       type: "string",
     },
-    "string_begins_with_case_insensitive": {
+    string_begins_with_case_insensitive: {
       id: "string_begins_with_case_insensitive",
       operator: "_ilike",
       label: "Begins With",
       description: "Field content begins with string (case-insensitive)",
+      /*
+        Envelope:
+          % sign is used to pattern match any sequence of zero or more characters.
+          _ sign is used to match any single character.
+          {VALUE} is exactly the value of the entered string
+          use null to pass value directly or do not define
+      */
       envelope: "{VALUE}%",
       type: "string",
     },
@@ -58,6 +71,13 @@ export const ProjectsListViewFiltersConf = {
       operator: "_ilike",
       label: "Ends With",
       description: "Field content ends with string (case-insensitive)",
+      /*
+        Envelope:
+          % sign is used to pattern match any sequence of zero or more characters.
+          _ sign is used to match any single character.
+          {VALUE} is exactly the value of the entered string
+          use null to pass value directly or do not define
+      */
       envelope: "%{VALUE}",
       type: "string",
     },
@@ -66,18 +86,25 @@ export const ProjectsListViewFiltersConf = {
       operator: "_ieq",
       label: "Equals",
       description: "Field content equals string (case-insensitive)",
+      /*
+        Envelope:
+          % sign is used to pattern match any sequence of zero or more characters.
+          _ sign is used to match any single character.
+          {VALUE} is exactly the value of the entered string
+          use null to pass value directly or do not define
+      */
       envelope: null,
       type: "string",
     },
-    "number_equals": {
-      id: "integer_equals",
+    number_equals: {
+      id: "number_equals",
       operator: "_eq",
       label: "Equals",
       description: "The field value is equal to number.",
       envelope: null,
       type: "number",
     },
-    "number_greater_than": {
+    number_greater_than: {
       id: "number_greater_than",
       operator: "_gt",
       label: "Greater Than",
@@ -85,17 +112,16 @@ export const ProjectsListViewFiltersConf = {
       envelope: null,
       type: "number",
     },
-    "number_less_than": {
+    number_less_than: {
       id: "number_less_than",
       operator: "_lt",
-      label: "Greater Than",
+      label: "Less Than",
       description: "The field value is less than number and not equal.",
       envelope: null,
       type: "number",
-    }
+    },
   },
 };
-
 
 /**
  * The Query configuration (now also including filters)
@@ -128,7 +154,7 @@ export const ProjectsListViewQueryConf = {
       label_table: "",
       icon: {
         name: "edit_road",
-        color: "primary"
+        color: "primary",
       },
       width: "*",
       type: "Int",
