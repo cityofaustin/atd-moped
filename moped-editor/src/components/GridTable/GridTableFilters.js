@@ -20,7 +20,7 @@ import {
   DialogContentText,
   DialogActions,
 } from "@material-ui/core";
-import { Search as SearchIcon } from "react-feather";
+
 import { Alert } from "@material-ui/lab";
 
 /**
@@ -102,13 +102,6 @@ const GridTableFilters = ({ query, filterState }) => {
    * @default null
    */
   let typingTimer = null;
-
-  /**
-   * An alias of the state, to make it easy to access.
-   * @type {Object}
-   * @constant
-   */
-  const filters = filterParameters;
 
   /**
    * The default structure of an empty field
@@ -215,14 +208,22 @@ const GridTableFilters = ({ query, filterState }) => {
                 query.config.filters.operators[operator].type ===
                 fieldDetails.type
             )
-            .map(operator => query.config.filters.operators[operator]);
+            .map(operator => {
+              return {
+                ...query.config.filters.operators[operator],
+                ...{ id: operator },
+              };
+            });
         } else {
           // Append listed operators for that field
           filtersNewState[
             filterId
-          ].availableOperators = fieldDetails.operators.map(
-            operator => query.config.filters.operators[operator]
-          );
+          ].availableOperators = fieldDetails.operators.map(operator => {
+            return {
+              ...query.config.filters.operators[operator],
+              ...{ id: operator },
+            };
+          });
         }
       }
 
@@ -387,7 +388,9 @@ const GridTableFilters = ({ query, filterState }) => {
                     labelId={`filter-field-select-${filterId}`}
                     id={`filter-field-select-${filterId}`}
                     value={
-                      filters[filterId].field ? filters[filterId].field : ""
+                      filterParameters[filterId].field
+                        ? filterParameters[filterId].field
+                        : ""
                     }
                     onChange={e =>
                       handleFilterFieldMenuClick(filterId, e.target.value)
@@ -423,12 +426,14 @@ const GridTableFilters = ({ query, filterState }) => {
                   </InputLabel>
                   <Select
                     fullWidth
-                    disabled={filters[filterId].availableOperators.length === 0}
+                    disabled={
+                      filterParameters[filterId].availableOperators.length === 0
+                    }
                     labelId={`filter-operator-select-${filterId}-label`}
                     id={`filter-operator-select-${filterId}`}
                     value={
-                      filters[filterId].operator
-                        ? filters[filterId].operator
+                      filterParameters[filterId].operator
+                        ? filterParameters[filterId].operator
                         : ""
                     }
                     onChange={e =>
@@ -439,7 +444,7 @@ const GridTableFilters = ({ query, filterState }) => {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    {filters[filterId].availableOperators.map(
+                    {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (
                           <MenuItem
@@ -490,8 +495,8 @@ const GridTableFilters = ({ query, filterState }) => {
                     }
                     variant="outlined"
                     disabled={
-                      filters[filterId].operator === null ||
-                      filters[filterId].operator === ""
+                      filterParameters[filterId].operator === null ||
+                      filterParameters[filterId].operator === ""
                     }
                   />
                 </FormControl>
