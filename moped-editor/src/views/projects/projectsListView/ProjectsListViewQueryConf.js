@@ -50,7 +50,6 @@ export const ProjectsListViewFiltersConf = {
 
   operators: {
     string_contains_case_insensitive: {
-      id: "string_contains_case_insensitive",
       operator: "_ilike",
       label: "Contains",
       description: "String is contained in field (case-insensitive)",
@@ -64,7 +63,6 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
     },
     string_begins_with_case_insensitive: {
-      id: "string_begins_with_case_insensitive",
       operator: "_ilike",
       label: "Begins With",
       description: "Field content begins with string (case-insensitive)",
@@ -79,7 +77,6 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
     },
     string_ends_with_case_insensitive: {
-      id: "string_ends_with_case_insensitive",
       operator: "_ilike",
       label: "Ends With",
       description: "Field content ends with string (case-insensitive)",
@@ -94,7 +91,6 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
     },
     string_equals_case_insensitive: {
-      id: "string_equals_case_insensitive",
       operator: "_ieq",
       label: "Equals",
       description: "Field content equals string (case-insensitive)",
@@ -109,7 +105,6 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
     },
     number_equals: {
-      id: "number_equals",
       operator: "_eq",
       label: "Equals",
       description: "The field value is equal to number.",
@@ -117,7 +112,6 @@ export const ProjectsListViewFiltersConf = {
       type: "number",
     },
     number_greater_than: {
-      id: "number_greater_than",
       operator: "_gt",
       label: "Greater Than",
       description: "The field value is greater than number and not equal.",
@@ -125,7 +119,6 @@ export const ProjectsListViewFiltersConf = {
       type: "number",
     },
     number_less_than: {
-      id: "number_less_than",
       operator: "_lt",
       label: "Less Than",
       description: "The field value is less than number and not equal.",
@@ -133,7 +126,6 @@ export const ProjectsListViewFiltersConf = {
       type: "number",
     },
     date_greater_than: {
-      id: "date_greater_than",
       operator: "_gt",
       label: "Greater Than",
       description: "The date is greater than.",
@@ -141,7 +133,6 @@ export const ProjectsListViewFiltersConf = {
       type: "date",
     },
     date_less_than: {
-      id: "date_less_than",
       operator: "_lt",
       label: "Less Than",
       description: "The date is less than.",
