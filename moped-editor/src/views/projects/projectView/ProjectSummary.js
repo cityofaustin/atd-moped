@@ -1,7 +1,7 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { useParams } from "react-router-dom";
-
+import ProjectSummaryMap from "./ProjectSummaryDetailsMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
 
@@ -46,6 +46,8 @@ const ProjectSummary = () => {
     project_priority,
     capitally_funded,
     eCapris_id,
+    project_extent_ids,
+    project_extent_geojson,
   } = data.moped_project[0];
 
   const projectDetails = [
@@ -94,14 +96,26 @@ const ProjectSummary = () => {
   return (
     <CardContent>
       <Grid container spacing={2}>
-        {projectDetails.map(detail => (
-          <Grid item xs={6}>
-            <Box mb={2}>
-              <h4>{detail.label}</h4>
-              <p>{formatValue(detail)}</p>
-            </Box>
+        <Grid item xs={12} md={6}>
+          <Grid container>
+            {projectDetails.map(detail => (
+              <Grid item xs={6}>
+                <Box mb={2}>
+                  <h4>{detail.label}</h4>
+                  <p>{formatValue(detail)}</p>
+                </Box>
+              </Grid>
+            ))}
           </Grid>
-        ))}
+        </Grid>
+        <Grid item xs={12} md={6}>
+          {project_extent_geojson && project_extent_ids && (
+            <ProjectSummaryMap
+              selectedLayerIds={project_extent_ids}
+              projectExtentGeoJSON={project_extent_geojson}
+            />
+          )}
+        </Grid>
       </Grid>
     </CardContent>
   );
