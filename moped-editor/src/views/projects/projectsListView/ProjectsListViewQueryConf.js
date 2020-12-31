@@ -141,8 +141,11 @@ export const ProjectsListViewQueryConf = {
   table: "moped_project",
   single_item: "/moped/projects",
   showDateRange: false,
+  showSearchBar: false,
+  showFilters: true,
+  showPagination: true,
   pagination: {
-    rowsPerPageOptions: [1, 5, 10, 25, 50, 100],
+    rowsPerPageOptions: [5, 10, 25, 50, 100],
   },
   filters: ProjectsListViewFiltersConf,
   columns: {
