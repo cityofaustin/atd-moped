@@ -10,6 +10,27 @@ export const mapInit = {
   zoom: 12,
 };
 
+// Query that returns feature collection with bbox for Austin Full Purpose Jurisdiction\
+// https://services.arcgis.com/0L95CJ0VTaxqcmED/arcgis/rest/services/BOUNDARIES_jurisdiction_1231_1951/FeatureServer/0/query?where=1%3D1&objectIds=&time=&geometry=&geometryType=esriGeometryEnvelope&inSR=&spatialRel=esriSpatialRelIntersects&resultType=none&distance=0.0&units=esriSRUnit_Meter&returnGeodetic=false&outFields=&returnGeometry=true&returnCentroid=false&featureEncoding=esriDefault&multipatchOption=xyFootprint&maxAllowableOffset=&geometryPrecision=&outSR=&datumTransformation=&applyVCSProjection=false&returnIdsOnly=false&returnUniqueIdsOnly=false&returnCountOnly=false&returnExtentOnly=true&returnQueryGeometry=false&returnDistinctValues=false&cacheHint=false&orderByFields=&groupByFieldsForStatistics=&outStatistics=&having=&resultOffset=&resultRecordCount=&returnZ=false&returnM=false&returnExceededLimitFeatures=true&quantizationParameters=&sqlFormat=none&f=pgeojson&token=
+const austinFullPurposeJurisdictionFeatureCollection = {
+  type: "FeatureCollection",
+  crs: {
+    type: "name",
+    properties: {
+      name: "EPSG:4326",
+    },
+  },
+  bbox: [
+    -97.940377028014,
+    30.1337172258415,
+    -97.578205982277,
+    30.4648268798927,
+  ],
+  features: [],
+};
+
+export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
+
 // Set the layer attributes to render on map
 export const layerConfigs = [
   {
