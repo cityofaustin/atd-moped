@@ -122,7 +122,7 @@ export const createProjectSelectLayerConfig = (
         theme.palette.map.selected,
         ["in", ["get", "polygon_id"], ["literal", layerIds]],
         config.layerColor,
-        theme.palette.map.transparent,
+        theme.palette.map.outline,
       ],
       "fill-opacity": 0.4,
     },
