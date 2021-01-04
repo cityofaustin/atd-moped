@@ -11,6 +11,9 @@ const useStyles = makeStyles(theme => ({
     "font-weight": "bold",
   },
   columnCell: {
+    "user-select": "none",
+  },
+  columnCellCursor: {
     cursor: "pointer",
     "user-select": "none",
   },
@@ -57,7 +60,11 @@ const GridTableListHeader = ({
             // If column is hidden, don't render <th>
             !query.isHidden(column) && (
               <TableCell
-                className={classes.columnCell}
+                className={
+                  query.isSortable(column)
+                    ? classes.columnCellCursor
+                    : classes.columnCell
+                }
                 onClick={
                   query.isSortable(column)
                     ? e => handleTableHeaderClick(column)
