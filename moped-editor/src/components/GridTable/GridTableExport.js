@@ -19,17 +19,24 @@ const GridTableExport = ({ query }) => {
 
   return (
     <Box display="flex" justifyContent="flex-end">
-      <Button className={classes.importButton}>Import</Button>
-      <Button className={classes.exportButton}>Export</Button>
-      <Button
-        color="primary"
-        variant="contained"
-        component={RouterLink}
-        to={"/moped/projects/new"}
-        startIcon={<Icon>add_circle</Icon>}
-      >
-        New Project
-      </Button>
+      {query.config.showExport && (
+        <>
+          <Button className={classes.importButton}>Import</Button>
+          <Button className={classes.exportButton}>Export</Button>
+        </>
+      )}
+
+      {query.config.showNewItemButton && (
+        <Button
+          color="primary"
+          variant="contained"
+          component={RouterLink}
+          to={query.config.new_item}
+          startIcon={<Icon>add_circle</Icon>}
+        >
+          {query.config.new_item_label}
+        </Button>
+      )}
     </Box>
   );
 };
