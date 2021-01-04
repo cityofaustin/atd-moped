@@ -363,7 +363,7 @@ const GridTableFilters = ({ query, filterState }) => {
       )}
       {Object.keys(filterParameters).map(filterId => {
         return (
-          <Grow in={true}>
+          <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
               container
               spacing={3}
@@ -489,14 +489,19 @@ const GridTableFilters = ({ query, filterState }) => {
                     placeholder={
                       filterParameters[filterId].placeholder
                         ? filterParameters[filterId].operator
-                          ? filterParameters[filterId].placeholder
+                          ? filterParameters[filterId].gqlOperator.includes(
+                              "is_null"
+                            )
+                            ? "(value not needed)"
+                            : filterParameters[filterId].placeholder
                           : "Select operator"
                         : "Select field"
                     }
                     variant="outlined"
                     disabled={
                       filterParameters[filterId].operator === null ||
-                      filterParameters[filterId].operator === ""
+                      filterParameters[filterId].operator === "" ||
+                      filterParameters[filterId].gqlOperator.includes("is_null")
                     }
                   />
                 </FormControl>
