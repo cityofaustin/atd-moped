@@ -144,8 +144,30 @@ const GridTable = ({ title, query }) => {
   Object.keys(filters).forEach(filter => {
     let { envelope, field, gqlOperator, value, type } = filters[filter];
 
-    value = envelope ? envelope.replace("{VALUE}", value) : value;
-    value = type in ["number", "boolean"] ? value : `"${value}"`;
+    // If we have no operator, then there is nothing we can do.
+    if(field === null || gqlOperator === null) {
+      console.log("No valid field or operator selected, skipping this filter.");
+      return;
+    }
+
+    // If the operator includes "is_null", then the value is always true
+    if (gqlOperator.includes("is_null")) {
+      value = "true";
+    } else {
+      // We have a normal operator, if we have a normal value
+      if(value !== null) {
+        // There is a value, if there is an envelope, put inside envelope.
+        value = envelope ? envelope.replace("{VALUE}", value) : value;
+
+        // If it is a number or boolean, it does not need quotation marks
+        // do not envelope in quotation marks.
+        value = type in ["number", "boolean"] ? value : `"${value}"`;
+      } else {
+        // We don't have a value
+        console.log(`Field '${field}' with operator '${gqlOperator}' does not have a value, skipping this filter.`);
+        return;
+      }
+    }
 
     query.setWhere(field, `${gqlOperator}: ${value}`);
   });
