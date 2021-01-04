@@ -1,3 +1,5 @@
+import { GridTableFiltersCommonOperators } from "../../../components/GridTable/GridTableFiltersCommonOperators";
+
 /**
  * Filter Configuration
  * @constant
@@ -15,6 +17,8 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
@@ -38,6 +42,15 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
+      name: "date_added",
+      label: "Date Added",
+      placeholder: "Select date",
+      type: "date",
+      operators: [
+        "*", // All of them (shortcut)
+      ],
+    },
+    {
       name: "start_date",
       label: "Start Date",
       placeholder: "Select date",
@@ -49,95 +62,6 @@ export const ProjectsListViewFiltersConf = {
   ],
 
   operators: {
-    string_contains_case_insensitive: {
-      operator: "_ilike",
-      label: "Contains",
-      description: "String is contained in field (case-insensitive)",
-      /*
-          Envelope:
-            % sign is used to pattern match any sequence of zero or more characters.
-            _ sign is used to match any single character.
-            {VALUE} is exactly the value of the entered string
-        */
-      envelope: "%{VALUE}%",
-      type: "string",
-    },
-    string_begins_with_case_insensitive: {
-      operator: "_ilike",
-      label: "Begins With",
-      description: "Field content begins with string (case-insensitive)",
-      /*
-          Envelope:
-            % sign is used to pattern match any sequence of zero or more characters.
-            _ sign is used to match any single character.
-            {VALUE} is exactly the value of the entered string
-            use null to pass value directly or do not define
-        */
-      envelope: "{VALUE}%",
-      type: "string",
-    },
-    string_ends_with_case_insensitive: {
-      operator: "_ilike",
-      label: "Ends With",
-      description: "Field content ends with string (case-insensitive)",
-      /*
-          Envelope:
-            % sign is used to pattern match any sequence of zero or more characters.
-            _ sign is used to match any single character.
-            {VALUE} is exactly the value of the entered string
-            use null to pass value directly or do not define
-        */
-      envelope: "%{VALUE}",
-      type: "string",
-    },
-    string_equals_case_insensitive: {
-      operator: "_ieq",
-      label: "Equals",
-      description: "Field content equals string (case-insensitive)",
-      /*
-          Envelope:
-            % sign is used to pattern match any sequence of zero or more characters.
-            _ sign is used to match any single character.
-            {VALUE} is exactly the value of the entered string
-            use null to pass value directly or do not define
-        */
-      envelope: null,
-      type: "string",
-    },
-    number_equals: {
-      operator: "_eq",
-      label: "Equals",
-      description: "The field value is equal to number.",
-      envelope: null,
-      type: "number",
-    },
-    number_greater_than: {
-      operator: "_gt",
-      label: "Greater Than",
-      description: "The field value is greater than number and not equal.",
-      envelope: null,
-      type: "number",
-    },
-    number_less_than: {
-      operator: "_lt",
-      label: "Less Than",
-      description: "The field value is less than number and not equal.",
-      envelope: null,
-      type: "number",
-    },
-    date_greater_than: {
-      operator: "_gt",
-      label: "Greater Than",
-      description: "The date is greater than.",
-      envelope: null,
-      type: "date",
-    },
-    date_less_than: {
-      operator: "_lt",
-      label: "Less Than",
-      description: "The date is less than.",
-      envelope: null,
-      type: "date",
-    },
+    ...GridTableFiltersCommonOperators,
   },
 };
