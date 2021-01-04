@@ -88,17 +88,17 @@ const GridTableFilters = ({ query, filterState }) => {
   );
 
   /**
-   * The current local filter parameters
-   * @type {boolean} confirmDialogOpen - Contains all the current filters
-   * @function setConfirmDialogOpen - Update the state of filterParameters
+   * Confirm dialog state. .
+   * @type {boolean} confirmDialogOpen - True to show, False to hide
+   * @function setConfirmDialogOpen - Update the state of confirmDialogOpen
    * @default false
    */
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   /**
    * The current local filter parameters
-   * @type {boolean} confirmDialogOpen - Contains all the current filters
-   * @function setConfirmDialogOpen - Update the state of filterParameters
+   * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
+   * @function setDialogSettings - Updates the state of confirmDialogOpen
    * @default false
    */
   const [dialogSettings, setDialogSettings] = useState({
@@ -391,6 +391,11 @@ const GridTableFilters = ({ query, filterState }) => {
     filterState.setFilterParameters({});
   };
 
+  /**
+   * Returns an array of strings containing messages about the filters.
+   * Returns null if no problems were found.
+   * @return {[]|null}
+   */
   const handleApplyValidation = () => {
     let feedback = [];
     if (filterParameters) {
