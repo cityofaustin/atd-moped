@@ -67,7 +67,7 @@ const GridTableListHeader = ({
               >
                 {renderLabel(
                   // Get a human-readable label string
-                  query.getLabel(column, "table"),
+                  query.config.columns[column].label,
                   // If it is sortable, render as such
                   query.isSortable(column),
                   // If sort column is defined, use sort order, or false as default

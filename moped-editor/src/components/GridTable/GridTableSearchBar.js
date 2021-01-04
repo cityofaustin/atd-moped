@@ -138,19 +138,19 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @returns {string}
    */
   const getFieldName = fieldKey => {
-    return query.getLabel(fieldKey, "search");
+    return query.config.columns[fieldKey].search.label;
   };
 
-  /**
-   * Toggles Showing filters
-   */
-  const handleFiltersClick = () => {
-    showFilterState.setShowFilters(!showFilterState.showFilters);
-  };
+  // /**
+  //  * Toggles Showing filters
+  //  */
+  // const handleFiltersClick = () => {
+  //   showFilterState.setShowFilters(!showFilterState.showFilters);
+  // };
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={6}>
+      <Grid item xs={5}>
         <FormControl
           fullWidth
           variant="outlined"
@@ -200,7 +200,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={1}>
+      <Grid item xs={2}>
         <Button
           className={classes.filterButton}
           fullWidth
@@ -212,7 +212,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           Search
         </Button>
       </Grid>
-      <Grid item xs={1}>
+      <Grid item xs={2}>
         <Button
           className={classes.filterButton}
           fullWidth
@@ -224,18 +224,18 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           Clear
         </Button>
       </Grid>
-      <Grid item xs={1}>
-        <Button
-          className={classes.filterButtonFilters}
-          fullWidth
-          variant="contained"
-          color="secondary"
-          startIcon={<Icon>rule</Icon>}
-          onClick={handleFiltersClick}
-        >
-          Filters
-        </Button>
-      </Grid>
+      {/*<Grid item xs={1}>*/}
+      {/*  <Button*/}
+      {/*    className={classes.filterButtonFilters}*/}
+      {/*    fullWidth*/}
+      {/*    variant="contained"*/}
+      {/*    color="secondary"*/}
+      {/*    startIcon={<Icon>rule</Icon>}*/}
+      {/*    onClick={handleFiltersClick}*/}
+      {/*  >*/}
+      {/*    Filters*/}
+      {/*  </Button>*/}
+      {/*</Grid>*/}
     </Grid>
   );
 };
