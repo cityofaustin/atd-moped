@@ -96,6 +96,18 @@ const GridTableFilters = ({ query, filterState }) => {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
 
   /**
+   * The current local filter parameters
+   * @type {boolean} confirmDialogOpen - Contains all the current filters
+   * @function setConfirmDialogOpen - Update the state of filterParameters
+   * @default false
+   */
+  const [dialogSettings, setDialogSettings] = useState({
+    title: null,
+    message: null,
+    actions: null,
+  });
+
+  /**
    * This is a timer allocation that will update the state after the user is finished typing.
    * @type {integer} - The returned timeoutID is a positive integer value which identifies the timer created by the call to setTimeout()
    * @default null
@@ -164,6 +176,20 @@ const GridTableFilters = ({ query, filterState }) => {
     };
 
     return type in typeIconMap ? typeIconMap[type] : typeIconMap["default"];
+  };
+
+  /**
+   * Updates the dialog settings
+   * @param {string} title - The title for the dialog
+   * @param {string|string[]} message - The message within the dialog
+   * @param {JSX.Element} actions - Any buttons you would like to add
+   */
+  const updateDialog = (title = null, message = null, actions = null) => {
+    let newDialogState = { ...dialogSettings };
+    newDialogState.title = title;
+    newDialogState.message = message;
+    newDialogState.actions = actions;
+    setDialogSettings(newDialogState);
   };
 
   /**
@@ -328,13 +354,31 @@ const GridTableFilters = ({ query, filterState }) => {
    * Clears all the current filters
    */
   const handleResetFiltersButtonClick = () => {
-    if (Object.keys(filterParameters).length > 0) setConfirmDialogOpen(true);
+    if (Object.keys(filterParameters).length > 0) {
+      const actions = (
+        <>
+          <Button onClick={handleDialogClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleClearFilters} color="primary" autoFocus>
+            Yes
+          </Button>
+        </>
+      );
+      updateDialog(
+        "Delete all your filters?",
+        "This will remove all your filters, continue?",
+        actions
+      );
+      setConfirmDialogOpen(true);
+    }
   };
 
   /**
    * Closes the dialog
    */
   const handleDialogClose = () => {
+    updateDialog();
     setConfirmDialogOpen(false);
   };
 
@@ -347,11 +391,56 @@ const GridTableFilters = ({ query, filterState }) => {
     filterState.setFilterParameters({});
   };
 
+  const handleApplyValidation = () => {
+    let feedback = [];
+    if (filterParameters) {
+      if (Object.keys(filterParameters).length === 0) {
+        feedback.push("• No filters have been added.");
+      } else {
+        Object.keys(filterParameters).forEach((filterKey, fieldKeyIndex) => {
+          const { field, value, gqlOperator } = filterParameters[filterKey];
+          if (field === null) {
+            feedback.push("• One or more fields have not been selected.");
+          }
+
+          if (gqlOperator === null) {
+            feedback.push("• One or more operators have not been selected.");
+          }
+
+          if (value === null || value === "") {
+            if (gqlOperator && !gqlOperator.includes("is_null")) {
+              feedback.push("• One or more missing values.");
+            }
+          }
+        });
+      }
+    }
+    return feedback.length > 0 ? feedback : null;
+  };
+
   /**
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
-    filterState.setFilterParameters(filterParameters);
+    const feedback = handleApplyValidation();
+
+    if (feedback) {
+      updateDialog(
+        "Invalid Filters",
+        [
+          "There is a problem with your filters:",
+          ...feedback,
+          " ",
+          "No action taken",
+        ],
+        <Button onClick={handleDialogClose} color="primary">
+          OK
+        </Button>
+      );
+      setConfirmDialogOpen(true);
+    } else {
+      filterState.setFilterParameters(filterParameters);
+    }
   };
 
   return (
@@ -569,21 +658,25 @@ const GridTableFilters = ({ query, filterState }) => {
         aria-describedby="alert-dialog-description"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Delete all your filters?"}
+          {dialogSettings.title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            This will remove all your filters, continue?
-          </DialogContentText>
+          {typeof dialogSettings.message === "string" ? (
+            <DialogContentText id="alert-dialog-description">
+              {dialogSettings.message}
+            </DialogContentText>
+          ) : (
+            dialogSettings.message &&
+            dialogSettings.message.map((message, messageIndex) => {
+              return (
+                <DialogContentText key={messageIndex}>
+                  {message}
+                </DialogContentText>
+              );
+            })
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClearFilters} color="primary" autoFocus>
-            Yes
-          </Button>
-        </DialogActions>
+        <DialogActions>{dialogSettings.actions}</DialogActions>
       </Dialog>
     </Grid>
   );
