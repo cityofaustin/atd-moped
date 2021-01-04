@@ -140,13 +140,30 @@ const GridTable = ({ title, query }) => {
   query.offset = pagination.offset;
   query.cleanWhere();
 
+  // If we have a search, use the terms...
+  if (search.value !== "" && search.column !== "") {
+    if (query.config.columns[search.column]) {
+      // Deconstruct search settings
+      const { operator, quoted, envelope } = query.config.columns[
+          search.column
+          ].search;
+
+      // Generate value within envelope
+      const value = quoted
+          ? `"${envelope.replace("{VALUE}", search.value)}"`
+          : search.value;
+
+      // Where statement
+      query.setWhere(search.column, `${operator}: ${value}`);
+    }
+  }
+
   // For each filter added to state, add a where clause in GraphQL
   Object.keys(filters).forEach(filter => {
     let { envelope, field, gqlOperator, value, type } = filters[filter];
 
     // If we have no operator, then there is nothing we can do.
-    if(field === null || gqlOperator === null) {
-      console.log("No valid field or operator selected, skipping this filter.");
+    if (field === null || gqlOperator === null) {
       return;
     }
 
@@ -155,7 +172,7 @@ const GridTable = ({ title, query }) => {
       value = "true";
     } else {
       // We have a normal operator, if we have a normal value
-      if(value !== null) {
+      if (value !== null) {
         // There is a value, if there is an envelope, put inside envelope.
         value = envelope ? envelope.replace("{VALUE}", value) : value;
 
@@ -164,7 +181,6 @@ const GridTable = ({ title, query }) => {
         value = type in ["number", "boolean"] ? value : `"${value}"`;
       } else {
         // We don't have a value
-        console.log(`Field '${field}' with operator '${gqlOperator}' does not have a value, skipping this filter.`);
         return;
       }
     }
