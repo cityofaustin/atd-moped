@@ -1,4 +1,6 @@
 import React from "react";
+import Can from "../../auth/Can";
+import { getHighestRole, useUser } from "../../auth/user";
 import { useQuery } from "@apollo/react-hooks";
 
 import {
@@ -10,7 +12,7 @@ import {
 import Page from "src/components/Page";
 import StaffTable from "./StaffTable";
 import Toolbar from "./Toolbar";
-import {GQLAbstract} from "atd-kickstand";
+import { GQLAbstract } from "atd-kickstand";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -116,19 +118,24 @@ let staffQuery = new GQLAbstract(staffQueryConf);
 const StaffListView = () => {
   const classes = useStyles();
   const { data, loading, error } = useQuery(staffQuery.gql);
-  
+  const { user } = useUser();
+
   if (error) {
     console.log(error);
   }
 
-  if(data) {
+  if (data) {
     console.log(staffQuery.query);
   }
 
   return (
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
-        <Toolbar />
+        <Can
+          roles={[getHighestRole(user)]}
+          perform="user:create"
+          yes={() => <Toolbar />}
+        />
         <Box mt={3}>
           {loading ? (
             <CircularProgress />
