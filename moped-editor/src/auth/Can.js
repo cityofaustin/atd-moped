@@ -1,30 +1,20 @@
 import rules from "./rolesBasedRules";
 
-const check = (rules, roles, action, data) => {
+const check = (rules, role, action) => {
   // Collect user roles and check if any are authorized to render child component
-  const isAuthorizedArray = roles.reduce((acc, role) => {
-    const permissions = rules[role];
-    if (!permissions) {
-      // role is not present in the rules
-      acc.push(false);
-    }
+  const permissions = rules[role];
+  const staticPermissions = permissions?.static;
 
-    const staticPermissions = permissions.static;
+  if (staticPermissions && staticPermissions.includes(action)) {
+    // Permissions for user's role allow this action
+    return true;
+  }
 
-    if (staticPermissions && staticPermissions.includes(action)) {
-      // static rule not provided for action
-      acc.push(true);
-    }
-    return acc;
-  }, []);
-
-  return isAuthorizedArray.includes(true);
+  return false;
 };
 
 const Can = props =>
-  check(rules, props.roles, props.perform, props.data)
-    ? props.yes()
-    : props.no();
+  check(rules, props.role, props.perform) ? props.yes() : props.no();
 
 Can.defaultProps = {
   yes: () => null,

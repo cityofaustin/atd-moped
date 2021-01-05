@@ -132,7 +132,7 @@ const StaffListView = () => {
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
         <Can
-          roles={[getHighestRole(user)]}
+          role={getHighestRole(user)}
           perform="user:create"
           yes={() => <Toolbar />}
         />
