@@ -134,7 +134,7 @@ const StaffListView = () => {
         <Can
           role={getHighestRole(user)}
           perform="user:create"
-          yes={() => <Toolbar />}
+          yes={<Toolbar />}
         />
         <Box mt={3}>
           {loading ? (
