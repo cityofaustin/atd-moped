@@ -1,6 +1,5 @@
 import React from "react";
 import Can from "../../auth/Can";
-import { getHighestRole, useUser } from "../../auth/user";
 import { useQuery } from "@apollo/react-hooks";
 
 import {
@@ -118,7 +117,6 @@ let staffQuery = new GQLAbstract(staffQueryConf);
 const StaffListView = () => {
   const classes = useStyles();
   const { data, loading, error } = useQuery(staffQuery.gql);
-  const { user } = useUser();
 
   if (error) {
     console.log(error);
@@ -131,11 +129,7 @@ const StaffListView = () => {
   return (
     <Page className={classes.root} title="Staff">
       <Container maxWidth={false}>
-        <Can
-          role={getHighestRole(user)}
-          perform="user:create"
-          yes={<Toolbar />}
-        />
+        <Can perform="user:create" yes={<Toolbar />} />
         <Box mt={3}>
           {loading ? (
             <CircularProgress />

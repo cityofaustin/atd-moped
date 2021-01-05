@@ -1,7 +1,8 @@
+import { getHighestRole, useUser } from "../auth/user";
 import rules from "./rolesBasedRules";
 
 const check = (rules, role, action) => {
-  // Collect user roles and check if any are authorized to render child component
+  // Collect user permissions and see if they include the given action
   const permissions = rules[role];
   const staticPermissions = permissions?.static;
 
@@ -10,10 +11,14 @@ const check = (rules, role, action) => {
     return true;
   }
 
+  // User permissions don't allow this action or they are undefined
   return false;
 };
 
-const Can = ({ role, perform, yes = null, no = null }) => {
+const Can = ({ perform, yes = null, no = null }) => {
+  const { user } = useUser();
+  const role = getHighestRole(user);
+
   return check(rules, role, perform) ? yes : no;
 };
 
