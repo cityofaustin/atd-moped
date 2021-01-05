@@ -36,3 +36,21 @@ export const TEAM_QUERY = gql`
     }
   }
 `;
+
+export const TIMELINE_QUERY = gql`
+  query TeamTimeline($projectId: Int) {
+    moped_proj_phases(where: { project_id: { _eq: $projectId } }) {
+      completed_by_user_id
+      date_added
+      is_current_phase
+      phase_description
+      phase_end
+      phase_priority
+      phase_privacy
+      phase_rank
+      phase_start
+      phase_status
+      started_by_user_id
+    }
+  }
+`;
