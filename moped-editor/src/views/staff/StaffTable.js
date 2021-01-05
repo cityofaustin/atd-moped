@@ -1,5 +1,6 @@
 import React from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import Can from "../../auth/Can";
 import { NavLink as RouterLink } from "react-router-dom";
 import {
   Box,
@@ -40,9 +41,14 @@ const StaffTable = ({ staff }) => {
               {staff.map(person => (
                 <TableRow hover key={person.staff_uuid}>
                   <TableCell align="center">
-                    <RouterLink to={`/moped/staff/edit/${person.user_id}`}>
-                      <EditIcon color="primary" />
-                    </RouterLink>
+                    <Can
+                      perform="user:edit"
+                      yes={
+                        <RouterLink to={`/moped/staff/edit/${person.user_id}`}>
+                          <EditIcon color="primary" />
+                        </RouterLink>
+                      }
+                    />
                   </TableCell>
                   <TableCell>{person.first_name}</TableCell>
                   <TableCell>{person.last_name}</TableCell>
