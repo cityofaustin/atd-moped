@@ -322,10 +322,6 @@ const GridTable = ({ title, query }) => {
     query.config.options.useQuery
   );
 
-  console.log("Filter Config: ", query.config.filters);
-  console.log("Search State: ", search);
-  console.log("Filters State: ", filters);
-
   return (
     <Container maxWidth={false} className={classes.root}>
       {/*Title*/}
