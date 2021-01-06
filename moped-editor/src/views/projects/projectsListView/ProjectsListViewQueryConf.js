@@ -1,9 +1,10 @@
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
+import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 
 /**
  * The Query configuration (now also including filters)
  * @constant
- * @type {Object}
+ * @type {object}
  * @augments ProjectsListViewFiltersConf
  * @default
  */
@@ -29,6 +30,7 @@ export const ProjectsListViewQueryConf = {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
   },
   filters: ProjectsListViewFiltersConf,
+  export: ProjectsListViewExportConf,
   columns: {
     project_id: {
       primary_key: true,
@@ -89,6 +91,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Capital Funding",
       width: "5%",
+      filter: value => (value === true ? "True" : "False"),
       type: "boolean",
     },
   },
