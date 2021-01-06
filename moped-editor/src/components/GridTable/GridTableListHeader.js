@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableHead, TableRow, TableCell, Icon } from "@material-ui/core";
+import { TableHead, TableRow, TableCell, Icon, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 /**
@@ -8,6 +8,10 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
  */
 const useStyles = makeStyles(theme => ({
   columnTitle: {
+    "font-weight": "bold",
+  },
+  columnTitleSortable: {
+    paddingTop: "8px",
     "font-weight": "bold",
   },
   columnCell: {
@@ -45,10 +49,17 @@ const GridTableListHeader = ({
    */
   const renderLabel = (col, sortable = false, ascending = false) => {
     return (
-      <span className={classes.columnTitle}>
-        {sortable && <Icon>keyboard_arrow_{ascending ? "up" : "down"}</Icon>}{" "}
-        &nbsp;{col}
-      </span>
+      <Grid
+        container
+        className={sortable ? classes.columnTitleSortable : classes.columnTitle}
+      >
+        <Grid item>{col}&nbsp;</Grid>
+        {sortable && (
+          <Grid item>
+            <Icon>arrow_{ascending ? "up" : "down"}ward</Icon>
+          </Grid>
+        )}
+      </Grid>
     );
   };
 
