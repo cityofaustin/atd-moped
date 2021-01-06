@@ -1,7 +1,7 @@
 /**
  * The ProjectsListView export settings
  * @constant
- * @type {Object}
+ * @type {object}
  * @default
  */
 export const ProjectsListViewExportConf = {
