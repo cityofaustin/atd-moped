@@ -629,31 +629,35 @@ const GridTableFilters = ({ query, filterState }) => {
           </Button>
         </Grid>
         <Grid item xs={12} lg={3}>
-          <Button
-            className={classes.bottomButton}
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            startIcon={<Icon>backspace</Icon>}
-            onClick={handleResetFiltersButtonClick}
-          >
-            Reset
-          </Button>
+          {Object.keys(filterParameters).length > 0 && (
+            <Button
+              className={classes.bottomButton}
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              startIcon={<Icon>backspace</Icon>}
+              onClick={handleResetFiltersButtonClick}
+            >
+              Reset
+            </Button>
+          )}
         </Grid>
         <Grid item xs={12} lg={3}>
           {""}
         </Grid>
         <Grid item xs={12} lg={3}>
-          <Button
-            fullWidth
-            className={classes.applyButton}
-            variant="contained"
-            color="primary"
-            startIcon={<Icon>check</Icon>}
-            onClick={handleApplyButtonClick}
-          >
-            Apply
-          </Button>
+          {Object.keys(filterParameters).length > 0 && (
+            <Button
+              fullWidth
+              className={classes.applyButton}
+              variant="contained"
+              color="primary"
+              startIcon={<Icon>check</Icon>}
+              onClick={handleApplyButtonClick}
+            >
+              Apply
+            </Button>
+          )}
         </Grid>
       </Grid>
       <Dialog
