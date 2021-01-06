@@ -36,10 +36,11 @@ const useStyles = makeStyles(theme => ({
 /**
  * Renders the GridTableExport functionality
  * @param {GQLAbstract} query - The GQLAbstract query object that provides the configuration
+ * @param {Object} showFilterState - The state/state-change bundle object
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableExport = ({ query }) => {
+const GridTableExport = ({ query, showFilterState }) => {
   const classes = useStyles();
 
   // Controls typing timer
@@ -162,6 +163,13 @@ const GridTableExport = ({ query }) => {
   };
 
   /**
+   * Toggles Showing filters
+   */
+  const handleFiltersClick = () => {
+    showFilterState.setShowFilters(!showFilterState.showFilters);
+  };
+
+  /**
    * Update the export whenever the dialog is open
    */
   useEffect(() => {
@@ -185,6 +193,18 @@ const GridTableExport = ({ query }) => {
 
   return (
     <Box display="flex" justifyContent="flex-end">
+      {query.config.showExport && (
+        <Button
+          className={classes.exportButton}
+          onClick={handleFiltersClick}
+          startIcon={
+            <Icon>{showFilterState.showFilters ? "search" : "rule"}</Icon>
+          }
+        >
+          {showFilterState.showFilters ? "General Search" : "Filter Search"}
+        </Button>
+      )}
+
       {query.config.showExport && (
         <Button
           className={classes.exportButton}
