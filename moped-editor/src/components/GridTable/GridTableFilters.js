@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -427,26 +427,18 @@ const GridTableFilters = ({ query, filterState }) => {
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
-    const feedback = handleApplyValidation();
+    filterState.setFilterParameters(filterParameters);
+  };
 
-    if (feedback) {
-      updateDialog(
-        "Invalid Filters",
-        [
-          "There is a problem with your filters:",
-          ...feedback,
-          " ",
-          "No action taken",
-        ],
-        <Button onClick={handleDialogClose} color="primary">
-          OK
-        </Button>
-      );
-      setConfirmDialogOpen(true);
-    } else {
+  /**
+   * This side effect monitors the count of filters
+   * if the count of filters is zero, then resets the state
+   */
+  useEffect(() => {
+    if(Object.keys(filterParameters).length === 0) {
       filterState.setFilterParameters(filterParameters);
     }
-  };
+  }, [filterParameters])
 
   return (
     <Grid>
@@ -625,17 +617,19 @@ const GridTableFilters = ({ query, filterState }) => {
         </Grid>
         <Grid item xs={12} lg={3}>
           {Object.keys(filterParameters).length > 0 && (
-            <Button
-              fullWidth
-              className={classes.applyButton}
-              variant="contained"
-              color="primary"
-              startIcon={<Icon>check</Icon>}
-              onClick={handleApplyButtonClick}
-            >
-              Apply
-            </Button>
-          )}
+              <Grow in={handleApplyValidation() === null}>
+                <Button
+                  fullWidth
+                  className={classes.applyButton}
+                  variant="contained"
+                  color="primary"
+                  startIcon={<Icon>check</Icon>}
+                  onClick={handleApplyButtonClick}
+                >
+                  Apply
+                </Button>
+              </Grow>
+            )}
         </Grid>
       </Grid>
       <Dialog
