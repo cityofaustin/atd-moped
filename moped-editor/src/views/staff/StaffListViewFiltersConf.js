@@ -13,6 +13,7 @@ export const StaffListViewFiltersConf = {
       label: "First Name",
       placeholder: "Enter first name",
       type: "string",
+      defaultOperator: "string_contains_case_insensitive",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
@@ -26,6 +27,7 @@ export const StaffListViewFiltersConf = {
       label: "Last Name",
       placeholder: "Enter last name",
       type: "string",
+      defaultOperator: "string_contains_case_insensitive",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
