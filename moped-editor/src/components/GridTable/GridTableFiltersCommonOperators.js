@@ -89,7 +89,7 @@ export const GridTableFiltersCommonOperators = {
     envelope: null,
     type: "number",
   },
-  date_equal_to: {
+  date_equals: {
     operator: "_eq",
     label: "is",
     description: "The date is equal to.",
