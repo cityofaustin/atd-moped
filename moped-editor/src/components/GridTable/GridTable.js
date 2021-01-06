@@ -347,9 +347,7 @@ const GridTable = ({ title, query }) => {
             filterParameters: filters,
             setFilterParameters: setFilter,
           }}
-        >
-          <GridTableExport query={query} />
-        </GridTableSearch>
+        />
       </GridTableToolbar>
       {/*Main Table Body*/}
       <Paper className={classes.paper}>
