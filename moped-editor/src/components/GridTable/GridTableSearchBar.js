@@ -155,7 +155,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
       setDialogOpen(true);
     }
 
-    if (fieldToSearch.length === 0) {
+    if (!isFieldSelected) {
       setDialogSettings({
         title: "No Field Selected",
         message: "You must select field to search.",

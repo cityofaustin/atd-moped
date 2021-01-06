@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -6,7 +6,6 @@ import {
   TextField,
   InputLabel,
   Select,
-  InputAdornment,
   FormControl,
   MenuItem,
   Grid,
@@ -151,22 +150,6 @@ const GridTableFilters = ({ query, filterState }) => {
       dt = Math.floor(dt / 16);
       return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
-  };
-
-  /**
-   * Returns the icon we want to show in the search field value
-   * @param {string} type - The field's type as a string
-   * @return {string}
-   */
-  const getIconForType = type => {
-    const typeIconMap = {
-      string: "font_download",
-      number: "looks_one",
-      date: "event",
-      default: "info",
-    };
-
-    return type in typeIconMap ? typeIconMap[type] : typeIconMap["default"];
   };
 
   /**
@@ -378,7 +361,7 @@ const GridTableFilters = ({ query, filterState }) => {
       if (Object.keys(filterParameters).length === 0) {
         feedback.push("• No filters have been added.");
       } else {
-        Object.keys(filterParameters).forEach((filterKey) => {
+        Object.keys(filterParameters).forEach(filterKey => {
           const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
@@ -411,10 +394,10 @@ const GridTableFilters = ({ query, filterState }) => {
    * if the count of filters is zero, then resets the state
    */
   useEffect(() => {
-    if(Object.keys(filterParameters).length === 0) {
+    if (Object.keys(filterParameters).length === 0) {
       filterState.setFilterParameters(filterParameters);
     }
-  }, [filterParameters])
+  }, [filterParameters, filterState]);
 
   return (
     <Grid>
@@ -526,24 +509,36 @@ const GridTableFilters = ({ query, filterState }) => {
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  <TextField
-                    key={`filter-search-value-${filterId}`}
-                    id={`filter-search-value-${filterId}`}
-                    type={
-                      filterParameters[filterId].type
-                        ? filterParameters[filterId].type
-                        : "text"
+                  <Grow
+                    in={
+                      filterParameters[filterId].operator !== null ||
+                      filterParameters[filterId].operator !== "" ||
+                      filterParameters[filterId].gqlOperator.includes(
+                          "is_null"
+                      ) === false
                     }
-                    onChange={e =>
-                      handleSearchValueChange(filterId, e.target.value)
-                    }
-                    variant="outlined"
-                    disabled={
-                      filterParameters[filterId].operator === null ||
-                      filterParameters[filterId].operator === "" ||
-                      filterParameters[filterId].gqlOperator.includes("is_null")
-                    }
-                  />
+                  >
+                    <TextField
+                      key={`filter-search-value-${filterId}`}
+                      id={`filter-search-value-${filterId}`}
+                      type={
+                        filterParameters[filterId].type
+                          ? filterParameters[filterId].type
+                          : "text"
+                      }
+                      onChange={e =>
+                        handleSearchValueChange(filterId, e.target.value)
+                      }
+                      variant="outlined"
+                      // disabled={
+                      //   filterParameters[filterId].operator === null ||
+                      //   filterParameters[filterId].operator === "" ||
+                      //   filterParameters[filterId].gqlOperator.includes(
+                      //     "is_null"
+                      //   )
+                      // }
+                    />
+                  </Grow>
                 </FormControl>
               </Grid>
               <Grid item xs={12} lg={1}>
@@ -593,19 +588,19 @@ const GridTableFilters = ({ query, filterState }) => {
         </Grid>
         <Grid item xs={12} lg={3}>
           {Object.keys(filterParameters).length > 0 && (
-              <Grow in={handleApplyValidation() === null}>
-                <Button
-                  fullWidth
-                  className={classes.applyButton}
-                  variant="contained"
-                  color="primary"
-                  startIcon={<Icon>check</Icon>}
-                  onClick={handleApplyButtonClick}
-                >
-                  Apply
-                </Button>
-              </Grow>
-            )}
+            <Grow in={handleApplyValidation() === null}>
+              <Button
+                fullWidth
+                className={classes.applyButton}
+                variant="contained"
+                color="primary"
+                startIcon={<Icon>check</Icon>}
+                onClick={handleApplyButtonClick}
+              >
+                Apply
+              </Button>
+            </Grow>
+          )}
         </Grid>
       </Grid>
       <Dialog
