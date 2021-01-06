@@ -45,13 +45,43 @@ const GridTableExport = ({ query }) => {
   // Controls typing timer
   let typingTimer = null;
 
+  /**
+   * When True, the dialog is open.
+   * @type {boolean} dialogOpen
+   * @function setDialogOpen - Sets the state of dialogOpen
+   * @default false
+   */
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  /**
+   * A static initial limit to revert to whenever the dialog is closed.
+   * @type {integer} initialLimit
+   * @default query.limit
+   */
   const [initialLimit] = useState(query.limit);
+
+  /**
+   * The current export limit
+   * @type {integer} limit
+   * @function setLimit - Sets the state of limit
+   * @default query.limit
+   */
   const [limit, setLimit] = useState(query.limit);
+
+  /**
+   * When true, the query downloads all records. Also controls the switch behavior.
+   * @type {boolean} selectAll
+   * @function setSelectAll - Sets the state of selectAll
+   * @default query.limit
+   */
   const [selectAll, setSelectAll] = useState(false);
 
-  // Use .queryCSV to insert columnsToExport prop into query
+  /**
+   * Instantiates getExport, loading and data variables
+   * @function getExport - It is called to load the data
+   * @property {boolean} loading - True whenever the data is being loaded
+   * @property {object} data - The data as retrieved from query (if available)
+   */
   let [getExport, { loading, data }] = useLazyQuery(
     query.queryCSV(Object.keys(query.config.export).join(" \n")),
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
