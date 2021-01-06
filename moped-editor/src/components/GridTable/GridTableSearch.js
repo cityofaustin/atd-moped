@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Box, Card, CardContent, Collapse } from "@material-ui/core";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
+import GridTableExport from "./GridTableExport";
 
 /**
  * Renders a table search component with a search bar and search filters
@@ -45,13 +46,19 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
 
   return (
     <div>
-      {/*Any optional children passed from the parent*/}
+      <GridTableExport
+        query={query}
+        showFilterState={{
+          showFilters: showFilters,
+          setShowFilters: setShowFilters,
+        }}
+      />
       {children}
       <Box mt={3}>
         <Card>
           <CardContent>
             {/* Search-bar component */}
-            {defaultShowSearchBarValue && (
+            <Collapse in={defaultShowSearchBarValue && !showFilters}>
               <GridTableSearchBar
                 query={query}
                 searchState={searchState}
@@ -60,7 +67,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
                   setShowFilters: setShowFilters,
                 }}
               />
-            )}
+            </Collapse>
             {/*Filter Component (Hide by default)*/}
             <Collapse in={showFilters}>
               <GridTableFilters query={query} filterState={filterState} />
