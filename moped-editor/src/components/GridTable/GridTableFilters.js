@@ -41,7 +41,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
   },
   filterButton: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    height: "3.4rem",
   },
   bottomButton: {
     margin: theme.spacing(1),
@@ -49,16 +50,6 @@ const useStyles = makeStyles(theme => ({
   applyButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
-  },
-  buttonDark: {
-    marginTop: theme.spacing(2),
-    backgroundColor: "#464646",
-    "&:hover, &:focus": {
-      backgroundColor: "#2b2b2b",
-    },
-    "&:active": {
-      backgroundColor: "#464646",
-    },
   },
 }));
 
@@ -251,6 +242,15 @@ const GridTableFilters = ({ query, filterState }) => {
           });
         }
       }
+
+      // Select the default operator, if not defined select first.
+      if (fieldDetails)
+        handleFilterOperatorClick(
+          filterId,
+          fieldDetails.defaultOperator
+            ? fieldDetails.defaultOperator
+            : filtersNewState[filterId].availableOperators[0].id
+        );
 
       // Update the state
       setFilterParameters(filtersNewState);
@@ -508,6 +508,7 @@ const GridTableFilters = ({ query, filterState }) => {
                   </Select>
                 </FormControl>
               </Grid>
+
               {/*Select the operator from drop-down menu*/}
               <Grid item xs={12} lg={3}>
                 <FormControl
@@ -535,9 +536,6 @@ const GridTableFilters = ({ query, filterState }) => {
                     }
                     label="field"
                   >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
                     {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (
@@ -570,26 +568,6 @@ const GridTableFilters = ({ query, filterState }) => {
                     }
                     onChange={e =>
                       handleSearchValueChange(filterId, e.target.value)
-                    }
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Icon fontSize="small" color="action">
-                            {getIconForType(filterParameters[filterId].type)}
-                          </Icon>
-                        </InputAdornment>
-                      ),
-                    }}
-                    placeholder={
-                      filterParameters[filterId].placeholder
-                        ? filterParameters[filterId].operator
-                          ? filterParameters[filterId].gqlOperator.includes(
-                              "is_null"
-                            )
-                            ? "(value not needed)"
-                            : filterParameters[filterId].placeholder
-                          : "Select operator"
-                        : "Select field"
                     }
                     variant="outlined"
                     disabled={
