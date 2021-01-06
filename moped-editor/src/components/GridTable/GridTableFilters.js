@@ -351,30 +351,6 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
-   * Clears all the current filters
-   */
-  const handleResetFiltersButtonClick = () => {
-    if (Object.keys(filterParameters).length > 0) {
-      const actions = (
-        <>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClearFilters} color="primary" autoFocus>
-            Yes
-          </Button>
-        </>
-      );
-      updateDialog(
-        "Delete all your filters?",
-        "This will remove all your filters, continue?",
-        actions
-      );
-      setConfirmDialogOpen(true);
-    }
-  };
-
-  /**
    * Closes the dialog
    */
   const handleDialogClose = () => {
@@ -606,7 +582,7 @@ const GridTableFilters = ({ query, filterState }) => {
               variant="outlined"
               color="secondary"
               startIcon={<Icon>backspace</Icon>}
-              onClick={handleResetFiltersButtonClick}
+              onClick={handleClearFilters}
             >
               Reset
             </Button>
