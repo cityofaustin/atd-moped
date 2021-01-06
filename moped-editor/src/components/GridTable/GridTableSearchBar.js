@@ -13,6 +13,11 @@ import {
   Select,
   MenuItem,
   Grid,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Dialog,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
@@ -31,10 +36,12 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
   },
   filterButton: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    height: "3.4rem",
   },
   filterButtonFilters: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    height: "3.4rem",
     backgroundColor: "#464646",
     "&:hover, &:focus": {
       backgroundColor: "#2b2b2b",
@@ -60,6 +67,26 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @default
    */
   const classes = useStyles();
+
+  /**
+   * Dialog Open State
+   * @type {boolean} dialogOpen - True to show, False to hide
+   * @function setDialogOpen - Update the state of confirmDialogOpen
+   * @default false
+   */
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  /**
+   * The current local filter parameters
+   * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
+   * @function setDialogSettings - Updates the state of confirmDialogOpen
+   * @default false
+   */
+  const [dialogSettings, setDialogSettings] = useState({
+    title: null,
+    message: null,
+    actions: null,
+  });
 
   /**
    * The contents of the search box
@@ -94,22 +121,57 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   if (!searchState || !showFilterState)
     return <span>No search or filter state provided</span>;
 
-  if(isFieldSelected)
-    console.debug("Field Selected: ", fieldToSearch);
+  if (isFieldSelected) console.debug("Field Selected: ", fieldToSearch);
+
+
+  /**
+   * Closes the dialog
+   */
+  const handleDialogClose = () => setDialogOpen(false);
+
+  /**
+   * The default acknowledge button
+   * @type {JSX.Element}
+   * @constant
+   * @default
+   */
+  const closeDialogActions = (
+      <Button onClick={handleDialogClose} color="primary" autoFocus>
+        OK
+      </Button>
+  );
 
   /**
    * Handles the submission of our search form
    * @param {Object} e - The event object
    */
-  const handleSearchSubmission = e => {
-    e.preventDefault();
+  const handleSearchSubmission = event => {
+    if (!!event) event.preventDefault();
+
+    if (searchFieldValue.length === 0) {
+      setDialogSettings({
+        title: "Empty Search Value",
+        message: "Enter a valid search value, do not leave empty.",
+        actions: closeDialogActions,
+      });
+
+      setDialogOpen(true);
+    }
+
+    if (fieldToSearch.length === 0) {
+      setDialogSettings({
+        title: "No Field Selected",
+        message: "You must select field to search.",
+        actions: closeDialogActions,
+      });
+
+      setDialogOpen(true);
+    }
 
     searchState.setSearchParameters({
       column: fieldToSearch,
       value: searchFieldValue,
     });
-
-    // resetPage();
   };
 
   /**
@@ -141,16 +203,15 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     return query.config.columns[fieldKey].search.label;
   };
 
-  // /**
-  //  * Toggles Showing filters
-  //  */
-  // const handleFiltersClick = () => {
-  //   showFilterState.setShowFilters(!showFilterState.showFilters);
-  // };
+  const handleKeyDown = key => {
+    if (key === "Enter") {
+      handleSearchSubmission(null);
+    }
+  };
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={5}>
+      <Grid item xs={12} lg={5}>
         <FormControl
           fullWidth
           variant="outlined"
@@ -158,6 +219,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
         >
           <TextField
             onChange={e => setSearchFieldValue(e.target.value)}
+            onKeyDown={e => handleKeyDown(e.key)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -173,7 +235,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           />
         </FormControl>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} lg={3}>
         <FormControl
           fullWidth
           variant="outlined"
@@ -193,14 +255,16 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
               <em>Select a field</em>
             </MenuItem>
             {query.searchableFields.map((field, fieldIndex) => {
-              return <MenuItem value={field} key={fieldIndex}>
-                {getFieldName(field)}
-              </MenuItem>;
+              return (
+                <MenuItem value={field} key={fieldIndex}>
+                  {getFieldName(field)}
+                </MenuItem>
+              );
             })}
           </Select>
         </FormControl>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} lg={2}>
         <Button
           className={classes.filterButton}
           fullWidth
@@ -212,7 +276,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           Search
         </Button>
       </Grid>
-      <Grid item xs={2}>
+      <Grid item xs={6} lg={2}>
         <Button
           className={classes.filterButton}
           fullWidth
@@ -224,18 +288,33 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           Clear
         </Button>
       </Grid>
-      {/*<Grid item xs={1}>*/}
-      {/*  <Button*/}
-      {/*    className={classes.filterButtonFilters}*/}
-      {/*    fullWidth*/}
-      {/*    variant="contained"*/}
-      {/*    color="secondary"*/}
-      {/*    startIcon={<Icon>rule</Icon>}*/}
-      {/*    onClick={handleFiltersClick}*/}
-      {/*  >*/}
-      {/*    Filters*/}
-      {/*  </Button>*/}
-      {/*</Grid>*/}
+      <Dialog
+        open={dialogOpen}
+        onClose={handleDialogClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {dialogSettings.title}
+        </DialogTitle>
+        <DialogContent>
+          {typeof dialogSettings.message === "string" ? (
+            <DialogContentText id="alert-dialog-description">
+              {dialogSettings.message}
+            </DialogContentText>
+          ) : (
+            dialogSettings.message &&
+            dialogSettings.message.map((message, messageIndex) => {
+              return (
+                <DialogContentText key={messageIndex}>
+                  {message}
+                </DialogContentText>
+              );
+            })
+          )}
+        </DialogContent>
+        <DialogActions>{dialogSettings.actions}</DialogActions>
+      </Dialog>
     </Grid>
   );
 };
