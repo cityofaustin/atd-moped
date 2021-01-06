@@ -123,7 +123,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
 
   if (isFieldSelected) console.debug("Field Selected: ", fieldToSearch);
 
-
   /**
    * Closes the dialog
    */
@@ -136,9 +135,9 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @default
    */
   const closeDialogActions = (
-      <Button onClick={handleDialogClose} color="primary" autoFocus>
-        OK
-      </Button>
+    <Button onClick={handleDialogClose} color="primary" autoFocus>
+      OK
+    </Button>
   );
 
   /**
@@ -209,6 +208,22 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     }
   };
 
+  const getSearchPlaceholder = () => {
+    try {
+      return query.config.search.placeholder;
+    } catch {
+      return "Enter search value";
+    }
+  };
+
+  const getSearchDefaultField = () => {
+    try {
+      return query.config.search.defaultField;
+    } catch {
+      return "Enter search value";
+    }
+  };
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} lg={5}>
@@ -229,7 +244,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
                 </InputAdornment>
               ),
             }}
-            placeholder="Search project name, description"
+            placeholder={getSearchPlaceholder()}
             variant="outlined"
             value={searchFieldValue}
           />
@@ -247,16 +262,20 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
             fullWidth
             labelId="demo-simple-select-outlined-label"
             id="demo-simple-select-outlined"
-            value={fieldToSearch}
+            value={
+              fieldToSearch !== "" ? fieldToSearch : getSearchDefaultField()
+            }
             onChange={handleFieldSelect}
             label="field"
           >
-            <MenuItem value="" disabled>
-              <em>Select a field</em>
-            </MenuItem>
             {query.searchableFields.map((field, fieldIndex) => {
+              console.log(getSearchDefaultField() === field);
               return (
-                <MenuItem value={field} key={fieldIndex}>
+                <MenuItem
+                  selected={getSearchDefaultField() === field}
+                  value={field}
+                  key={fieldIndex}
+                >
                   {getFieldName(field)}
                 </MenuItem>
               );
