@@ -121,8 +121,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   if (!searchState || !showFilterState)
     return <span>No search or filter state provided</span>;
 
-  if (isFieldSelected) console.debug("Field Selected: ", fieldToSearch);
-
   /**
    * Closes the dialog
    */
@@ -269,7 +267,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
             label="field"
           >
             {query.searchableFields.map((field, fieldIndex) => {
-              console.log(getSearchDefaultField() === field);
               return (
                 <MenuItem
                   selected={getSearchDefaultField() === field}
