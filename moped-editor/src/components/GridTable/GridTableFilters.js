@@ -402,7 +402,7 @@ const GridTableFilters = ({ query, filterState }) => {
       if (Object.keys(filterParameters).length === 0) {
         feedback.push("• No filters have been added.");
       } else {
-        Object.keys(filterParameters).forEach((filterKey, fieldKeyIndex) => {
+        Object.keys(filterParameters).forEach((filterKey) => {
           const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
