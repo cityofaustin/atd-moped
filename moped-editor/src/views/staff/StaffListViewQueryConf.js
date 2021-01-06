@@ -30,6 +30,10 @@ export const StaffListViewQueryConf = {
   },
   filters: StaffListViewFiltersConf,
   export: StaffListViewExportConf,
+  search: {
+    placeholder: "Search user by email, or select field.",
+    defaultField: "email",
+  },
   columns: {
     user_id: {
       primary_key: true,
@@ -87,12 +91,6 @@ export const StaffListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
-    staff_uuid: {
-      searchable: false,
-      sortable: false,
-      label: "Staff UUID",
-      type: "String",
-    },
     title: {
       searchable: true,
       sortable: true,
@@ -131,7 +129,7 @@ export const StaffListViewQueryConf = {
     },
     is_coa_staff: {
       searchable: false,
-      sortable: false,
+      sortable: true,
       label: "COA Staff",
       filter: value => value === true ? "True" : "False",
       type: "Boolean",

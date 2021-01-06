@@ -31,6 +31,10 @@ export const ProjectsListViewQueryConf = {
   },
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
+  search: {
+    placeholder: "Search project by name, or select field.",
+    defaultField: "project_name",
+  },
   columns: {
     project_id: {
       primary_key: true,
