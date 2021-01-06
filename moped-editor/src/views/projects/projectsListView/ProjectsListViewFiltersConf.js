@@ -3,7 +3,7 @@ import { GridTableFiltersCommonOperators } from "../../../components/GridTable/G
 /**
  * Filter Configuration
  * @constant
- * @type {Object}
+ * @type {object}
  * @default
  */
 export const ProjectsListViewFiltersConf = {

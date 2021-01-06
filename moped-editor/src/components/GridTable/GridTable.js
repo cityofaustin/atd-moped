@@ -82,10 +82,12 @@ const GridTable = ({ title, query }) => {
 
   /**
    * State Management for pagination
-   * @type {Object} pagination:
-   *    {integer} limit: The limit of records to be shown in a single page (default: query.limit)
-   *    {integer} offset: The number of records to be skipped in GraphQL (default: query.limit)
-   *    {integer} page: Current page being shown (0 to N) where 0 is the first page (default: 0)
+   * @type {Object} pagination
+   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
+   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
+   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
+   * @function setPagination - Sets the state of pagination
+   * @default {{limit: query.limit, offset: query.offset, page: 0}}
    */
   const [pagination, setPagination] = useState({
     limit: query.limit,
@@ -145,13 +147,13 @@ const GridTable = ({ title, query }) => {
     if (query.config.columns[search.column]) {
       // Deconstruct search settings
       const { operator, quoted, envelope } = query.config.columns[
-          search.column
-          ].search;
+        search.column
+      ].search;
 
       // Generate value within envelope
       const value = quoted
-          ? `"${envelope.replace("{VALUE}", search.value)}"`
-          : search.value;
+        ? `"${envelope.replace("{VALUE}", search.value)}"`
+        : search.value;
 
       // Where statement
       query.setWhere(search.column, `${operator}: ${value}`);
