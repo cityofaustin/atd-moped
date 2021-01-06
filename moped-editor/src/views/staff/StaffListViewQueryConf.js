@@ -1,8 +1,10 @@
+import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
+import { StaffListViewExportConf } from "./StaffListViewExportConf";
+
 /**
  * The Query configuration (now also including filters)
  * @constant
  * @type {Object}
- * @augments StaffListViewFiltersConf
  * @default
  */
 export const StaffListViewQueryConf = {
@@ -26,7 +28,8 @@ export const StaffListViewQueryConf = {
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
   },
-  filters: {},
+  filters: StaffListViewFiltersConf,
+  export: StaffListViewExportConf,
   columns: {
     user_id: {
       primary_key: true,
@@ -46,9 +49,9 @@ export const StaffListViewQueryConf = {
       label: "First Name",
       search: {
         label: "Search by First Name",
-        operator: "_eq",
+        operator: "_ilike",
         quoted: true,
-        envelope: "{VALUE}",
+        envelope: "%{VALUE}%",
       },
       type: "String",
     },
@@ -58,9 +61,9 @@ export const StaffListViewQueryConf = {
       label: "Last Name",
       search: {
         label: "Search by Last Name",
-        operator: "_eq",
+        operator: "_ilike",
         quoted: true,
-        envelope: "{VALUE}",
+        envelope: "%{VALUE}%",
       },
       type: "String",
     },
@@ -130,13 +133,14 @@ export const StaffListViewQueryConf = {
       searchable: false,
       sortable: false,
       label: "COA Staff",
+      filter: value => value === true ? "True" : "False",
       type: "Boolean",
     },
     status_id: {
       searchable: false,
       sortable: false,
       label: "Status ID",
-      type: "Boolean",
+      type: "Int",
     },
   },
   order_by: {},
