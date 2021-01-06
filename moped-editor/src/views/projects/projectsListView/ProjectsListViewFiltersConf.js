@@ -13,6 +13,7 @@ export const ProjectsListViewFiltersConf = {
       label: "Project Name",
       placeholder: "Enter project name",
       type: "string",
+      defaultOperator: "string_contains_case_insensitive",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
@@ -26,6 +27,7 @@ export const ProjectsListViewFiltersConf = {
       label: "Project Description",
       placeholder: "Enter project description",
       type: "string",
+      defaultOperator: "string_contains_case_insensitive",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
@@ -39,6 +41,7 @@ export const ProjectsListViewFiltersConf = {
       label: "Project ID",
       placeholder: "Type Project ID number",
       type: "number",
+      defaultOperator: "number_equals",
       operators: [
         "*", // All of them (shortcut)
       ],
