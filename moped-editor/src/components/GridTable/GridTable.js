@@ -145,13 +145,13 @@ const GridTable = ({ title, query }) => {
     if (query.config.columns[search.column]) {
       // Deconstruct search settings
       const { operator, quoted, envelope } = query.config.columns[
-          search.column
-          ].search;
+        search.column
+      ].search;
 
       // Generate value within envelope
       const value = quoted
-          ? `"${envelope.replace("{VALUE}", search.value)}"`
-          : search.value;
+        ? `"${envelope.replace("{VALUE}", search.value)}"`
+        : search.value;
 
       // Where statement
       query.setWhere(search.column, `${operator}: ${value}`);
