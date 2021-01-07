@@ -168,7 +168,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = event => {
-
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       setDialogSettings({
@@ -237,19 +236,22 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @param {string} key - The key name being typed
    */
   const handleKeyDown = key => {
-    switch(key) {
+    switch (key) {
       /**
        * On Escape key, clear the search
        */
-      case "Escape": {
+      case "Escape":
         handleClearSearchResults();
-      } break;
+        break;
       /**
        * On Enter key, initialize the search
        */
-      case "Enter": {
+      case "Enter":
         handleSearchSubmission(null);
-      }
+        break;
+
+      default:
+        return;
     }
   };
 
