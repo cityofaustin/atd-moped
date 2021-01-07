@@ -66,6 +66,9 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     "text-transform": "capitalize",
   },
+  tableChip: {
+    "text-transform": "capitalize",
+  },
 }));
 
 /**
@@ -305,6 +308,7 @@ const GridTable = ({ title, query }) => {
     const cleanLabel = cleanUpText(label);
     return String(label) !== "" ? (
       <Chip
+        className={classes.tableChip}
         color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
         size={"small"}
         label={cleanLabel}
@@ -317,7 +321,6 @@ const GridTable = ({ title, query }) => {
   /**
    * Data Management
    */
-  console.log("Filters available? " + (query.hasFilter ? "True" : "False"))
   console.log(query.query);
   const { data, loading, error } = useQuery(
     query.gql,
