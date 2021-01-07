@@ -41,6 +41,12 @@ export const layerConfigs = [
   },
 ];
 
+const fillOpacities = {
+  selected: 0.75,
+  hovered: 0.5,
+  unselected: 0.25,
+};
+
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
@@ -115,15 +121,15 @@ export const createProjectSelectLayerConfig = (
     },
     "source-layer": config.layerSourceName,
     paint: {
-      "fill-color": [
+      "fill-color": config.layerColor,
+      "fill-opacity": [
         "case",
         ["==", ["get", "polygon_id"], hoveredId],
-        theme.palette.map.selected,
+        fillOpacities.hovered,
         ["in", ["get", "polygon_id"], ["literal", layerIds]],
-        config.layerColor,
-        theme.palette.map.outline,
+        fillOpacities.selected,
+        fillOpacities.unselected,
       ],
-      "fill-opacity": 0.4,
     },
   };
 };
@@ -148,7 +154,7 @@ export const createProjectViewLayerConfig = () => ({
   type: "fill",
   paint: {
     "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "fill-opacity": 0.5,
+    "fill-opacity": fillOpacities.selected,
   },
 });
 

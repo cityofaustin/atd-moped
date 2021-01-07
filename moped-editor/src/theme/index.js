@@ -20,9 +20,9 @@ const theme = createMuiTheme({
       secondary: "#000000",
     },
     map: {
-      selected: "#00AAB1",
+      selected: "#1e88e5",
       transparent: "rgba(0,0,0,0)",
-      outline: "#000000",
+      outline: "#1e88e5",
     },
   },
   shadows,
