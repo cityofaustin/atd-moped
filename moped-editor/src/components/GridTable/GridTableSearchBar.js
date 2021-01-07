@@ -208,8 +208,8 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   const handleClearSearchResults = () => {
     // clearFilters();
     setSearchFieldValue("");
-    setFieldToSearch("");
-    setIsFieldSelected(false);
+    setFieldToSearch(getSearchDefaultField());
+    setIsFieldSelected(true);
     searchState.setSearchParameters({});
   };
 
