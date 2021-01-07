@@ -69,6 +69,30 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   const classes = useStyles();
 
   /**
+   * Attempts to retrieve the default placeholder for the search input field
+   * @return {string}
+   */
+  const getSearchPlaceholder = () => {
+    try {
+      return query.config.search.placeholder;
+    } catch {
+      return "Enter search value";
+    }
+  };
+
+  /**
+   * Attempts to retrieve the default search field
+   * @return {string}
+   */
+  const getSearchDefaultField = () => {
+    try {
+      return query.config.search.defaultField;
+    } catch {
+      return "";
+    }
+  };
+
+  /**
    * Dialog Open State
    * @type {boolean} dialogOpen - True to show, False to hide
    * @function setDialogOpen - Update the state of confirmDialogOpen
@@ -102,10 +126,11 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * Stores the name of the column to search
    * @type {boolean} fieldToSearch
    * @function setFieldToSearch - Sets the state of the field
-   * @default {?searchState.searchParameters.column}
+   * @default {?searchState.searchParameters.column || getSearchDefaultField()}
    */
   const [fieldToSearch, setFieldToSearch] = useState(
-    (searchState.searchParameters && searchState.searchParameters.column) || ""
+    (searchState.searchParameters && searchState.searchParameters.column) ||
+      getSearchDefaultField()
   );
 
   /**
@@ -143,8 +168,8 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = event => {
-    if (!!event) event.preventDefault();
 
+    // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       setDialogSettings({
         title: "Empty Search Value",
@@ -153,9 +178,11 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
       });
 
       setDialogOpen(true);
+      return;
     }
 
-    if (!isFieldSelected) {
+    // Stop if we don't have a valid search field selected
+    if (!isFieldSelected || fieldToSearch === "") {
       setDialogSettings({
         title: "No Field Selected",
         message: "You must select field to search.",
@@ -163,8 +190,13 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
       });
 
       setDialogOpen(true);
+      return;
     }
 
+    // Prevent default behavior on any event
+    if (event) event.preventDefault();
+
+    // Update state if we are ready, triggers search.
     searchState.setSearchParameters({
       column: fieldToSearch,
       value: searchFieldValue,
@@ -206,22 +238,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     }
   };
 
-  const getSearchPlaceholder = () => {
-    try {
-      return query.config.search.placeholder;
-    } catch {
-      return "Enter search value";
-    }
-  };
-
-  const getSearchDefaultField = () => {
-    try {
-      return query.config.search.defaultField;
-    } catch {
-      return "Enter search value";
-    }
-  };
-
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} lg={5}>
@@ -255,11 +271,11 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           className={classes.formControl}
           id="fieldToSearch"
         >
-          <InputLabel id="demo-simple-select-outlined-label">Field</InputLabel>
+          <InputLabel id="field-select-label">Field</InputLabel>
           <Select
             fullWidth
-            labelId="demo-simple-select-outlined-label"
-            id="demo-simple-select-outlined"
+            labelId="field-select-label"
+            id="field-select-menu"
             value={
               fieldToSearch !== "" ? fieldToSearch : getSearchDefaultField()
             }
@@ -268,11 +284,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           >
             {query.searchableFields.map((field, fieldIndex) => {
               return (
-                <MenuItem
-                  selected={getSearchDefaultField() === field}
-                  value={field}
-                  key={fieldIndex}
-                >
+                <MenuItem value={field} key={fieldIndex}>
                   {getFieldName(field)}
                 </MenuItem>
               );
