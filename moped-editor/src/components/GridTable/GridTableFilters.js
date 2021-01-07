@@ -390,6 +390,15 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
+   * It returns true if the operator is null
+   * @param {object} field - The field being checked
+   * @returns {boolean}
+   */
+  const isFilterNullType = field => {
+    return field.gqlOperator && field.gqlOperator.includes("is_null");
+  };
+
+  /**
    * This side effect monitors the count of filters
    * if the count of filters is zero, then resets the state
    */
@@ -509,15 +518,7 @@ const GridTableFilters = ({ query, filterState }) => {
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  <Grow
-                    in={
-                      filterParameters[filterId].operator !== null ||
-                      filterParameters[filterId].operator !== "" ||
-                      filterParameters[filterId].gqlOperator.includes(
-                          "is_null"
-                      ) === false
-                    }
-                  >
+                  {isFilterNullType(filterParameters[filterId]) !== true && (
                     <TextField
                       key={`filter-search-value-${filterId}`}
                       id={`filter-search-value-${filterId}`}
@@ -530,15 +531,8 @@ const GridTableFilters = ({ query, filterState }) => {
                         handleSearchValueChange(filterId, e.target.value)
                       }
                       variant="outlined"
-                      // disabled={
-                      //   filterParameters[filterId].operator === null ||
-                      //   filterParameters[filterId].operator === "" ||
-                      //   filterParameters[filterId].gqlOperator.includes(
-                      //     "is_null"
-                      //   )
-                      // }
                     />
-                  </Grow>
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} lg={1}>
