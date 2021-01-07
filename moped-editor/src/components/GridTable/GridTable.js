@@ -317,6 +317,7 @@ const GridTable = ({ title, query }) => {
   /**
    * Data Management
    */
+  console.log("Filters available? " + (query.hasFilter ? "True" : "False"))
   console.log(query.query);
   const { data, loading, error } = useQuery(
     query.gql,
