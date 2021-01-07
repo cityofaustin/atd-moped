@@ -232,9 +232,24 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     return query.config.columns[fieldKey].search.label;
   };
 
+  /**
+   * Handles special keys typed in the search bar
+   * @param {string} key - The key name being typed
+   */
   const handleKeyDown = key => {
-    if (key === "Enter") {
-      handleSearchSubmission(null);
+    switch(key) {
+      /**
+       * On Escape key, clear the search
+       */
+      case "Escape": {
+        handleClearSearchResults();
+      } break;
+      /**
+       * On Enter key, initialize the search
+       */
+      case "Enter": {
+        handleSearchSubmission(null);
+      }
     }
   };
 
