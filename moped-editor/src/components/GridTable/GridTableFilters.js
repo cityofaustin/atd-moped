@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -6,7 +6,6 @@ import {
   TextField,
   InputLabel,
   Select,
-  InputAdornment,
   FormControl,
   MenuItem,
   Grid,
@@ -41,7 +40,8 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(2),
   },
   filterButton: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
+    height: "3.4rem",
   },
   bottomButton: {
     margin: theme.spacing(1),
@@ -49,16 +49,6 @@ const useStyles = makeStyles(theme => ({
   applyButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
-  },
-  buttonDark: {
-    marginTop: theme.spacing(2),
-    backgroundColor: "#464646",
-    "&:hover, &:focus": {
-      backgroundColor: "#2b2b2b",
-    },
-    "&:active": {
-      backgroundColor: "#464646",
-    },
   },
 }));
 
@@ -163,22 +153,6 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
-   * Returns the icon we want to show in the search field value
-   * @param {string} type - The field's type as a string
-   * @return {string}
-   */
-  const getIconForType = type => {
-    const typeIconMap = {
-      string: "font_download",
-      number: "looks_one",
-      date: "event",
-      default: "info",
-    };
-
-    return type in typeIconMap ? typeIconMap[type] : typeIconMap["default"];
-  };
-
-  /**
    * Updates the dialog settings
    * @param {string} title - The title for the dialog
    * @param {string|string[]} message - The message within the dialog
@@ -251,6 +225,15 @@ const GridTableFilters = ({ query, filterState }) => {
           });
         }
       }
+
+      // Select the default operator, if not defined select first.
+      if (fieldDetails)
+        handleFilterOperatorClick(
+          filterId,
+          fieldDetails.defaultOperator
+            ? fieldDetails.defaultOperator
+            : filtersNewState[filterId].availableOperators[0].id
+        );
 
       // Update the state
       setFilterParameters(filtersNewState);
@@ -351,30 +334,6 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
-   * Clears all the current filters
-   */
-  const handleResetFiltersButtonClick = () => {
-    if (Object.keys(filterParameters).length > 0) {
-      const actions = (
-        <>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleClearFilters} color="primary" autoFocus>
-            Yes
-          </Button>
-        </>
-      );
-      updateDialog(
-        "Delete all your filters?",
-        "This will remove all your filters, continue?",
-        actions
-      );
-      setConfirmDialogOpen(true);
-    }
-  };
-
-  /**
    * Closes the dialog
    */
   const handleDialogClose = () => {
@@ -402,7 +361,7 @@ const GridTableFilters = ({ query, filterState }) => {
       if (Object.keys(filterParameters).length === 0) {
         feedback.push("• No filters have been added.");
       } else {
-        Object.keys(filterParameters).forEach((filterKey, fieldKeyIndex) => {
+        Object.keys(filterParameters).forEach(filterKey => {
           const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
@@ -427,26 +386,27 @@ const GridTableFilters = ({ query, filterState }) => {
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
-    const feedback = handleApplyValidation();
+    filterState.setFilterParameters(filterParameters);
+  };
 
-    if (feedback) {
-      updateDialog(
-        "Invalid Filters",
-        [
-          "There is a problem with your filters:",
-          ...feedback,
-          " ",
-          "No action taken",
-        ],
-        <Button onClick={handleDialogClose} color="primary">
-          OK
-        </Button>
-      );
-      setConfirmDialogOpen(true);
-    } else {
+  /**
+   * It returns true if the operator is null
+   * @param {object} field - The field being checked
+   * @returns {boolean}
+   */
+  const isFilterNullType = field => {
+    return field.gqlOperator && field.gqlOperator.includes("is_null");
+  };
+
+  /**
+   * This side effect monitors the count of filters
+   * if the count of filters is zero, then resets the state
+   */
+  useEffect(() => {
+    if (Object.keys(filterParameters).length === 0) {
       filterState.setFilterParameters(filterParameters);
     }
-  };
+  }, [filterParameters, filterState]);
 
   return (
     <Grid>
@@ -508,6 +468,7 @@ const GridTableFilters = ({ query, filterState }) => {
                   </Select>
                 </FormControl>
               </Grid>
+
               {/*Select the operator from drop-down menu*/}
               <Grid item xs={12} lg={3}>
                 <FormControl
@@ -535,9 +496,6 @@ const GridTableFilters = ({ query, filterState }) => {
                     }
                     label="field"
                   >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
                     {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (
@@ -560,44 +518,21 @@ const GridTableFilters = ({ query, filterState }) => {
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  <TextField
-                    key={`filter-search-value-${filterId}`}
-                    id={`filter-search-value-${filterId}`}
-                    type={
-                      filterParameters[filterId].type
-                        ? filterParameters[filterId].type
-                        : "text"
-                    }
-                    onChange={e =>
-                      handleSearchValueChange(filterId, e.target.value)
-                    }
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <Icon fontSize="small" color="action">
-                            {getIconForType(filterParameters[filterId].type)}
-                          </Icon>
-                        </InputAdornment>
-                      ),
-                    }}
-                    placeholder={
-                      filterParameters[filterId].placeholder
-                        ? filterParameters[filterId].operator
-                          ? filterParameters[filterId].gqlOperator.includes(
-                              "is_null"
-                            )
-                            ? "(value not needed)"
-                            : filterParameters[filterId].placeholder
-                          : "Select operator"
-                        : "Select field"
-                    }
-                    variant="outlined"
-                    disabled={
-                      filterParameters[filterId].operator === null ||
-                      filterParameters[filterId].operator === "" ||
-                      filterParameters[filterId].gqlOperator.includes("is_null")
-                    }
-                  />
+                  {isFilterNullType(filterParameters[filterId]) !== true && (
+                    <TextField
+                      key={`filter-search-value-${filterId}`}
+                      id={`filter-search-value-${filterId}`}
+                      type={
+                        filterParameters[filterId].type
+                          ? filterParameters[filterId].type
+                          : "text"
+                      }
+                      onChange={e =>
+                        handleSearchValueChange(filterId, e.target.value)
+                      }
+                      variant="outlined"
+                    />
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12} lg={1}>
@@ -629,31 +564,37 @@ const GridTableFilters = ({ query, filterState }) => {
           </Button>
         </Grid>
         <Grid item xs={12} lg={3}>
-          <Button
-            className={classes.bottomButton}
-            fullWidth
-            variant="outlined"
-            color="secondary"
-            startIcon={<Icon>backspace</Icon>}
-            onClick={handleResetFiltersButtonClick}
-          >
-            Reset
-          </Button>
+          {Object.keys(filterParameters).length > 0 && (
+            <Button
+              className={classes.bottomButton}
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              startIcon={<Icon>backspace</Icon>}
+              onClick={handleClearFilters}
+            >
+              Reset
+            </Button>
+          )}
         </Grid>
         <Grid item xs={12} lg={3}>
           {""}
         </Grid>
         <Grid item xs={12} lg={3}>
-          <Button
-            fullWidth
-            className={classes.applyButton}
-            variant="contained"
-            color="primary"
-            startIcon={<Icon>check</Icon>}
-            onClick={handleApplyButtonClick}
-          >
-            Apply
-          </Button>
+          {Object.keys(filterParameters).length > 0 && (
+            <Grow in={handleApplyValidation() === null}>
+              <Button
+                fullWidth
+                className={classes.applyButton}
+                variant="contained"
+                color="primary"
+                startIcon={<Icon>check</Icon>}
+                onClick={handleApplyButtonClick}
+              >
+                Apply
+              </Button>
+            </Grow>
+          )}
         </Grid>
       </Grid>
       <Dialog

@@ -29,7 +29,6 @@ import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
-import GridTableExport from "./GridTableExport";
 
 /**
  * GridTable Style
@@ -65,6 +64,9 @@ const useStyles = makeStyles(theme => ({
     maxHeight: "55vh",
   },
   tableCell: {
+    "text-transform": "capitalize",
+  },
+  tableChip: {
     "text-transform": "capitalize",
   },
 }));
@@ -306,6 +308,7 @@ const GridTable = ({ title, query }) => {
     const cleanLabel = cleanUpText(label);
     return String(label) !== "" ? (
       <Chip
+        className={classes.tableChip}
         color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
         size={"small"}
         label={cleanLabel}
@@ -347,9 +350,7 @@ const GridTable = ({ title, query }) => {
             filterParameters: filters,
             setFilterParameters: setFilter,
           }}
-        >
-          <GridTableExport query={query} />
-        </GridTableSearch>
+        />
       </GridTableToolbar>
       {/*Main Table Body*/}
       <Paper className={classes.paper}>

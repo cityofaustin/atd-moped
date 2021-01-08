@@ -21,8 +21,8 @@ export const ProjectsListViewQueryConf = {
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
   showDateRange: false,
-  showSearchBar: false,
-  showFilters: true,
+  showSearchBar: true,
+  showFilters: false,
   showExport: true,
   showNewItemButton: true,
   showPagination: true,
@@ -31,6 +31,10 @@ export const ProjectsListViewQueryConf = {
   },
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
+  search: {
+    placeholder: "Search project by name, or select field.",
+    defaultField: "project_name",
+  },
   columns: {
     project_id: {
       primary_key: true,
@@ -48,6 +52,12 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label: "Project Name",
+      search: {
+        label: "Search by project name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
       width: "20%",
       type: "String",
     },
@@ -55,6 +65,12 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label: "Project Description",
+      search: {
+        label: "Search by project description",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
       width: "50%",
       type: "String",
     },

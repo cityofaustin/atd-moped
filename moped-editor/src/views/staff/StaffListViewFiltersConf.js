@@ -1,4 +1,4 @@
-import { GridTableFiltersCommonOperators } from "../../../components/GridTable/GridTableFiltersCommonOperators";
+import { GridTableFiltersCommonOperators } from "../../components/GridTable/GridTableFiltersCommonOperators";
 
 /**
  * Filter Configuration
@@ -6,12 +6,12 @@ import { GridTableFiltersCommonOperators } from "../../../components/GridTable/G
  * @type {object}
  * @default
  */
-export const ProjectsListViewFiltersConf = {
+export const StaffListViewFiltersConf = {
   fields: [
     {
-      name: "project_name",
-      label: "Project Name",
-      placeholder: "Enter project name",
+      name: "first_name",
+      label: "First Name",
+      placeholder: "Enter first name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
       operators: [
@@ -23,9 +23,9 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "project_description",
-      label: "Project Description",
-      placeholder: "Enter project description",
+      name: "last_name",
+      label: "Last Name",
+      placeholder: "Enter last name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
       operators: [
@@ -37,29 +37,37 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "project_id",
-      label: "Project ID",
-      placeholder: "Type Project ID number",
-      type: "number",
-      defaultOperator: "number_equals",
+      name: "email",
+      label: "E-Mail",
+      placeholder: "Enter email",
+      type: "string",
       operators: [
         "*", // All of them (shortcut)
       ],
     },
     {
-      name: "date_added",
-      label: "Date Added",
-      placeholder: "Select date",
-      type: "date",
+      name: "title",
+      label: "Title",
+      placeholder: "Enter title",
+      type: "string",
       operators: [
         "*", // All of them (shortcut)
       ],
     },
     {
-      name: "start_date",
-      label: "Start Date",
-      placeholder: "Select date",
-      type: "date",
+      name: "workgroup",
+      label: "Workgroup",
+      placeholder: "Enter Workgroup",
+      type: "string",
+      operators: [
+        "*", // All of them (shortcut)
+      ],
+    },
+    {
+      name: "is_coa_staff",
+      label: "Is COA Staff",
+      placeholder: "Select Staff",
+      type: "boolean",
       operators: [
         "*", // All of them (shortcut)
       ],

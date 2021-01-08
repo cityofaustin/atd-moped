@@ -1,8 +1,10 @@
+import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
+import { StaffListViewExportConf } from "./StaffListViewExportConf";
+
 /**
  * The Query configuration (now also including filters)
  * @constant
  * @type {Object}
- * @augments StaffListViewFiltersConf
  * @default
  */
 export const StaffListViewQueryConf = {
@@ -26,7 +28,12 @@ export const StaffListViewQueryConf = {
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
   },
-  filters: {},
+  filters: StaffListViewFiltersConf,
+  export: StaffListViewExportConf,
+  search: {
+    placeholder: "Search user by email, or select field.",
+    defaultField: "email",
+  },
   columns: {
     user_id: {
       primary_key: true,
@@ -46,9 +53,9 @@ export const StaffListViewQueryConf = {
       label: "First Name",
       search: {
         label: "Search by First Name",
-        operator: "_eq",
+        operator: "_ilike",
         quoted: true,
-        envelope: "{VALUE}",
+        envelope: "%{VALUE}%",
       },
       type: "String",
     },
@@ -58,9 +65,9 @@ export const StaffListViewQueryConf = {
       label: "Last Name",
       search: {
         label: "Search by Last Name",
-        operator: "_eq",
+        operator: "_ilike",
         quoted: true,
-        envelope: "{VALUE}",
+        envelope: "%{VALUE}%",
       },
       type: "String",
     },
@@ -83,12 +90,6 @@ export const StaffListViewQueryConf = {
       width: "10%",
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
-    },
-    staff_uuid: {
-      searchable: false,
-      sortable: false,
-      label: "Staff UUID",
-      type: "String",
     },
     title: {
       searchable: true,
@@ -128,15 +129,16 @@ export const StaffListViewQueryConf = {
     },
     is_coa_staff: {
       searchable: false,
-      sortable: false,
+      sortable: true,
       label: "COA Staff",
+      filter: value => value === true ? "True" : "False",
       type: "Boolean",
     },
     status_id: {
       searchable: false,
       sortable: false,
       label: "Status ID",
-      type: "Boolean",
+      type: "Int",
     },
   },
   order_by: {},
