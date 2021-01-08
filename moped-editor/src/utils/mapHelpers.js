@@ -10,6 +10,26 @@ export const mapInit = {
   zoom: 12,
 };
 
+// See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
+const austinFullPurposeJurisdictionFeatureCollection = {
+  type: "FeatureCollection",
+  crs: {
+    type: "name",
+    properties: {
+      name: "EPSG:4326",
+    },
+  },
+  bbox: [
+    -97.940377028014,
+    30.1337172258415,
+    -97.578205982277,
+    30.4648268798927,
+  ],
+  features: [],
+};
+
+export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
+
 // Set the layer attributes to render on map
 export const layerConfigs = [
   {
@@ -20,6 +40,12 @@ export const layerConfigs = [
       "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
   },
 ];
+
+const fillOpacities = {
+  selected: 0.75,
+  hovered: 0.5,
+  unselected: 0.25,
+};
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
@@ -95,15 +121,15 @@ export const createProjectSelectLayerConfig = (
     },
     "source-layer": config.layerSourceName,
     paint: {
-      "fill-color": [
+      "fill-color": config.layerColor,
+      "fill-opacity": [
         "case",
         ["==", ["get", "polygon_id"], hoveredId],
-        theme.palette.map.selected,
+        fillOpacities.hovered,
         ["in", ["get", "polygon_id"], ["literal", layerIds]],
-        config.layerColor,
-        theme.palette.map.transparent,
+        fillOpacities.selected,
+        fillOpacities.unselected,
       ],
-      "fill-opacity": 0.4,
     },
   };
 };
@@ -128,7 +154,7 @@ export const createProjectViewLayerConfig = () => ({
   type: "fill",
   paint: {
     "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "fill-opacity": 0.5,
+    "fill-opacity": fillOpacities.selected,
   },
 });
 
