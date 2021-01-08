@@ -1,3 +1,13 @@
+import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
+import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+
+/**
+ * The Query configuration (now also including filters)
+ * @constant
+ * @type {object}
+ * @augments ProjectsListViewFiltersConf
+ * @default
+ */
 export const ProjectsListViewQueryConf = {
   options: {
     useQuery: {
@@ -8,45 +18,66 @@ export const ProjectsListViewQueryConf = {
   },
   table: "moped_project",
   single_item: "/moped/projects",
+  new_item: "/moped/projects/new",
+  new_item_label: "New Project",
   showDateRange: false,
+  showSearchBar: true,
+  showFilters: false,
+  showExport: true,
+  showNewItemButton: true,
+  showPagination: true,
   pagination: {
-    rowsPerPageOptions: [1, 5, 10, 25, 50, 100],
+    rowsPerPageOptions: [5, 10, 25, 50, 100],
+  },
+  filters: ProjectsListViewFiltersConf,
+  export: ProjectsListViewExportConf,
+  search: {
+    placeholder: "Search project by name, or select field.",
+    defaultField: "project_name",
   },
   columns: {
     project_id: {
       primary_key: true,
       searchable: false,
       sortable: false,
-      label_search: "",
-      label_table: "",
+      label: "",
       icon: {
         name: "edit_road",
-        color: "primary"
+        color: "primary",
       },
       width: "*",
       type: "Int",
     },
     project_name: {
-      searchable: false,
+      searchable: true,
       sortable: false,
-      label_search: null,
-      label_table: "Project Name",
+      label: "Project Name",
+      search: {
+        label: "Search by project name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
       width: "20%",
       type: "String",
     },
     project_description: {
-      searchable: false,
+      searchable: true,
       sortable: false,
-      label_search: null,
-      label_table: "Description",
+      label: "Project Description",
+      search: {
+        label: "Search by project description",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
       width: "50%",
       type: "String",
     },
     current_status: {
       searchable: false,
       sortable: false,
-      label_search: null,
-      label_table: "Status",
+      label: "Status",
       type: "String",
       width: "5%",
       chip: {
@@ -58,8 +89,7 @@ export const ProjectsListViewQueryConf = {
     date_added: {
       searchable: false,
       sortable: true,
-      label_search: null,
-      label_table: "Date Added",
+      label: "Date Added",
       width: "10%",
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
@@ -67,8 +97,7 @@ export const ProjectsListViewQueryConf = {
     start_date: {
       searchable: false,
       sortable: true,
-      label_search: null,
-      label_table: "Start Date",
+      label: "Start Date",
       width: "10%",
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
@@ -76,9 +105,9 @@ export const ProjectsListViewQueryConf = {
     capitally_funded: {
       searchable: false,
       sortable: false,
-      label_search: null,
-      label_table: "Capital Funding",
+      label: "Capital Funding",
       width: "5%",
+      filter: value => (value === true ? "True" : "False"),
       type: "boolean",
     },
   },

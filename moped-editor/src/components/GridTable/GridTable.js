@@ -28,6 +28,7 @@ import { useQuery } from "@apollo/react-hooks";
 import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
+import GridTableSearch from "./GridTableSearch";
 
 /**
  * GridTable Style
@@ -65,32 +66,30 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     "text-transform": "capitalize",
   },
+  tableChip: {
+    "text-transform": "capitalize",
+  },
 }));
 
 /**
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
- * @param {Object} filters - Filter configuration
- * @param {string[]} columnsToExport - An array of strings containing the names of columns to export
- * @param {Object} aggregateQueryConfig - Aggregate query configuration
- * @param {JSX.Element} header - Any elements to be rendered for the header
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({
-  title,
-  query,
-  filters,
-  columnsToExport,
-  aggregateQueryConfig,
-  toolbar,
-}) => {
+const GridTable = ({ title, query }) => {
   // Style
   const classes = useStyles();
 
   /**
-   * State Management
+   * State Management for pagination
+   * @type {Object} pagination
+   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
+   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
+   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
+   * @function setPagination - Sets the state of pagination
+   * @default {{limit: query.limit, offset: query.offset, page: 0}}
    */
   const [pagination, setPagination] = useState({
     limit: query.limit,
@@ -98,10 +97,39 @@ const GridTable = ({
     page: 0,
   });
 
+  /**
+   * Stores the column name and the order to order by
+   * @type {Object} sort
+   * @property {string} column - The column name in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or "" (default: "")
+   * @function setSort - Sets the state of sort
+   * @default {{value: "", column: ""}}
+   */
   const [sort, setSort] = useState({
     column: "",
     order: "",
   });
+
+  /**
+   * Stores the string to search for and the column to search against
+   * @type {Object} search
+   * @property {string} value - The string to be searched for
+   * @property {string} column - The name of the column to search against
+   * @function setSearch - Sets the state of search
+   * @default {{value: "", column: ""}}
+   */
+  const [search, setSearch] = useState({
+    value: "",
+    column: "",
+  });
+
+  /**
+   * Stores objects storing a random id, column, operator, and value.
+   * @type {Object} filters
+   * @function setFilter - Sets the state of filters
+   * @default {{}}
+   */
+  const [filters, setFilter] = useState({});
 
   /**
    * Query Management
@@ -111,8 +139,58 @@ const GridTable = ({
     query.setOrder(sort.column, sort.order);
   }
 
+  // Set limit, offset and clear any 'Where' filters
   query.limit = pagination.limit;
   query.offset = pagination.offset;
+  query.cleanWhere();
+
+  // If we have a search, use the terms...
+  if (search.value !== "" && search.column !== "") {
+    if (query.config.columns[search.column]) {
+      // Deconstruct search settings
+      const { operator, quoted, envelope } = query.config.columns[
+        search.column
+      ].search;
+
+      // Generate value within envelope
+      const value = quoted
+        ? `"${envelope.replace("{VALUE}", search.value)}"`
+        : search.value;
+
+      // Where statement
+      query.setWhere(search.column, `${operator}: ${value}`);
+    }
+  }
+
+  // For each filter added to state, add a where clause in GraphQL
+  Object.keys(filters).forEach(filter => {
+    let { envelope, field, gqlOperator, value, type } = filters[filter];
+
+    // If we have no operator, then there is nothing we can do.
+    if (field === null || gqlOperator === null) {
+      return;
+    }
+
+    // If the operator includes "is_null", then the value is always true
+    if (gqlOperator.includes("is_null")) {
+      value = "true";
+    } else {
+      // We have a normal operator, if we have a normal value
+      if (value !== null) {
+        // There is a value, if there is an envelope, put inside envelope.
+        value = envelope ? envelope.replace("{VALUE}", value) : value;
+
+        // If it is a number or boolean, it does not need quotation marks
+        // do not envelope in quotation marks.
+        value = type in ["number", "boolean"] ? value : `"${value}"`;
+      } else {
+        // We don't have a value
+        return;
+      }
+    }
+
+    query.setWhere(field, `${gqlOperator}: ${value}`);
+  });
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -230,6 +308,7 @@ const GridTable = ({
     const cleanLabel = cleanUpText(label);
     return String(label) !== "" ? (
       <Chip
+        className={classes.tableChip}
         color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
         size={"small"}
         label={cleanLabel}
@@ -260,7 +339,19 @@ const GridTable = ({
         {title}
       </Typography>
       {/*Toolbar Space*/}
-      <GridTableToolbar>{toolbar}</GridTableToolbar>
+      <GridTableToolbar>
+        <GridTableSearch
+          query={query}
+          searchState={{
+            searchParameters: search,
+            setSearchParameters: setSearch,
+          }}
+          filterState={{
+            filterParameters: filters,
+            setFilterParameters: setFilter,
+          }}
+        />
+      </GridTableToolbar>
       {/*Main Table Body*/}
       <Paper className={classes.paper}>
         <Box mt={3}>
