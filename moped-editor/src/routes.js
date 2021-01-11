@@ -1,5 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
+import Can from "src/auth/Can";
 import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 import AccountView from "src/views/account/AccountView/AccountView";
@@ -15,7 +16,7 @@ import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
-const routes = [
+const routesObj = [
   { path: "/", element: <Navigate to="/moped" /> },
   {
     path: "moped/session",
@@ -49,4 +50,18 @@ const routes = [
   },
 ];
 
-export default routes;
+const unprotectedRoutes = ["/", "moped/session"];
+
+const restrictedRoutes = () =>
+  routesObj.map(route => {
+    if (!unprotectedRoutes.includes(route.path)) {
+      debugger;
+    } else {
+      return route;
+    }
+  });
+
+// 1. Add action to each route above
+// 2. Iterate through routes and wrap elements with Can
+
+export default restrictedRoutes;
