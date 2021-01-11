@@ -81,7 +81,7 @@ const unprotectedRoutePaths = ["/", "moped/session"];
 /**
  * Map through defined routes and child routes to wrap protected route elements with the Can component
  * Route actions are passed to the Can component to check access and render the route's element or redirect to root
- * @param {Array} routes - Routes composed to pass as arg to React Route useRoutes hook
+ * @param {Array} routes - Routes composed to pass as arg to React Router useRoutes hook
  * @return {Array} Routes array with protected route's element wrapped with Can component
  */
 export const restrictRoutes = routes =>

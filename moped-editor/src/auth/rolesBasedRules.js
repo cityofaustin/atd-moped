@@ -9,12 +9,14 @@ const readOnlyStaticRules = [
   "dashboard:visit",
   "account:visit",
   "staff:visit",
+  "project:visit",
+  "projects:visit",
   "settings:visit",
   "notFound:visit",
   "undefinedRoute:visit",
 ];
 
-const editorStaticRules = [];
+const editorStaticRules = ["newProjects:visit"];
 
 const adminStaticRules = [
   "user:create",
@@ -23,9 +25,6 @@ const adminStaticRules = [
   "user:delete",
   "newStaff:visit",
   "editStaff:visit",
-  "projects:visit",
-  "newProjects:visit",
-  "project:visit",
 ];
 
 export const rules = {
