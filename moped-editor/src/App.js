@@ -5,7 +5,7 @@ import { ThemeProvider } from "@material-ui/core";
 import GlobalStyles from "src/components/GlobalStyles";
 import "src/mixins/chartjs";
 import theme from "src/theme";
-import routes from "src/routes";
+import { routesArr, restrictRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 
 // Apollo GraphQL Client
@@ -13,7 +13,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 
 const App = () => {
-  const routing = useRoutes(routes());
+  const routing = useRoutes(restrictRoutes(routesArr));
   const { user } = useUser();
 
   // Setup initial Apollo instance

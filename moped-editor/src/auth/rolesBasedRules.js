@@ -5,6 +5,7 @@ const readOnlyStaticRules = [
   "projects:visit",
   "users:visit",
   "user:get",
+  "moped:visit",
 ];
 
 const editorStaticRules = [];
