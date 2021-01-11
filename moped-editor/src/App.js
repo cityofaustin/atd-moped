@@ -13,7 +13,9 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 
 const App = () => {
-  const routing = useRoutes(restrictRoutes(routesArr));
+  const restrictedRoutes = restrictRoutes(routesArr);
+  console.log(restrictedRoutes);
+  const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
 
   // Setup initial Apollo instance

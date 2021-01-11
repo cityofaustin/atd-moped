@@ -78,10 +78,13 @@ export const routesArr = [
 
 const unprotectedRoutes = ["/", "moped/session"];
 
-export const restrictRoutes = routes => {
-  const wrappedRoutes = routes.map(route => {
-    // TODO: Handle child routes
+export const restrictRoutes = routes =>
+  routes.map(route => {
     if (unprotectedRoutes.includes(route.path)) {
+      return route;
+    } else if (route.children) {
+      const wrappedChildren = restrictRoutes(route.children);
+      route.children = wrappedChildren;
       return route;
     } else {
       const wrappedRouteElement = (
@@ -91,5 +94,4 @@ export const restrictRoutes = routes => {
 
       return protectedRoute;
     }
-  debugger;
-};
+  });
