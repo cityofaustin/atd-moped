@@ -16,7 +16,7 @@ import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
-const routesObj = [
+export const routesObj = [
   { path: "/", element: <Navigate to="/moped" /> },
   {
     path: "moped/session",
@@ -29,33 +29,63 @@ const routesObj = [
   },
   {
     path: "moped",
+    action: "visit:moped",
     element: <DashboardLayout />,
     children: [
-      { path: "/", element: <DashboardView /> },
-      { path: "dashboard", element: <DashboardView /> },
-      { path: "account", element: <AccountView /> },
-      { path: "staff", element: <StaffListView /> },
-      { path: "staff/new", element: <NewStaffView /> },
-      { path: "staff/edit/:userId", element: <EditStaffView /> },
-      { path: "projects", element: <ProjectsListView /> },
-      { path: "projects/new", element: <NewProjectView /> },
+      { path: "/", action: "visit:moped", element: <DashboardView /> },
+      {
+        path: "dashboard",
+        action: "visit:dashboard",
+        element: <DashboardView />,
+      },
+      { path: "account", action: "visit:account", element: <AccountView /> },
+      { path: "staff", action: "visit:staff", element: <StaffListView /> },
+      {
+        path: "staff/new",
+        action: "visit:newStaff",
+        element: <NewStaffView />,
+      },
+      {
+        path: "staff/edit/:userId",
+        action: "visit:editStaff",
+        element: <EditStaffView />,
+      },
+      {
+        path: "projects",
+        action: "visit:projects",
+        element: <ProjectsListView />,
+      },
+      {
+        path: "projects/new",
+        action: "visit:newProjects",
+        element: <NewProjectView />,
+      },
       {
         path: "projects/:projectId",
+        action: "visit:project",
         element: <ProjectSummary />,
       },
-      { path: "settings", element: <SettingsView /> },
-      { path: "404", element: <NotFoundView /> },
-      { path: "*", element: <Navigate to="/moped/404" /> },
+      { path: "settings", action: "visit:settings", element: <SettingsView /> },
+      { path: "404", action: "visit:notFound", element: <NotFoundView /> },
+      {
+        path: "*",
+        action: "visit:undefinedRoute",
+        element: <Navigate to="/moped/404" />,
+      },
     ],
   },
 ];
 
 const unprotectedRoutes = ["/", "moped/session"];
 
-const restrictedRoutes = () =>
-  routesObj.map(route => {
+export const restrictRoutes = routes =>
+  routes.map(route => {
     if (!unprotectedRoutes.includes(route.path)) {
-      debugger;
+      if (route.children) {
+        route.children = restrictedRoutes(route.children);
+      } else {
+        // const wrappedComponent =
+      }
     } else {
       return route;
     }
@@ -63,5 +93,3 @@ const restrictedRoutes = () =>
 
 // 1. Add action to each route above
 // 2. Iterate through routes and wrap elements with Can
-
-export default restrictedRoutes;
