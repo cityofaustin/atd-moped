@@ -22,7 +22,7 @@ const adminStaticRules = [
   "user:editRole",
   "user:delete",
   "newStaff:visit",
-  // "editStaff:visit",
+  "editStaff:visit",
   "projects:visit",
   "newProjects:visit",
   "project:visit",

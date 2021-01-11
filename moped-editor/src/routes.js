@@ -16,7 +16,7 @@ import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
-export const routesArr = [
+export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
   {
     path: "moped/session",
@@ -76,19 +76,29 @@ export const routesArr = [
   },
 ];
 
-const unprotectedRoutes = ["/", "moped/session"];
+const unprotectedRoutePaths = ["/", "moped/session"];
 
+/**
+ * Map through defined routes and child routes to wrap protected route elements with the Can component
+ * Route actions are passed to the Can component to check access and render the route's element or redirect to root
+ * @param {Array} routes - Routes composed to pass as arg to React Route useRoutes hook
+ * @return {Array} Routes array with protected route's element wrapped with Can component
+ */
 export const restrictRoutes = routes =>
   routes.map(route => {
-    if (unprotectedRoutes.includes(route.path)) {
+    if (unprotectedRoutePaths.includes(route.path)) {
       return route;
     } else if (route.children) {
-      const wrappedChildren = restrictRoutes(route.children);
-      route.children = wrappedChildren;
+      const restrictedChildren = restrictRoutes(route.children);
+      route.children = restrictedChildren;
       return route;
     } else {
       const wrappedRouteElement = (
-        <Can perform={route.action} yes={route.element} />
+        <Can
+          perform={route.action}
+          yes={route.element}
+          no={<Navigate to="/" />}
+        />
       );
       const protectedRoute = { ...route, element: wrappedRouteElement };
 
