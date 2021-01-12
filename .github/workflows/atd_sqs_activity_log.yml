@@ -39,8 +39,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          ATD_VZ_DATA_EVENTS_ROLE: ${{ secrets.ATD_VZ_DATA_EVENTS_ROLE }}
-          ZAPPA_SETTINGS: ${{ secrets.ZAPPA_SETTINGS }}
+          ATD_MOPED_EVENTS_ROLE: ${{ secrets.ATD_MOPED_EVENTS_ROLE }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
