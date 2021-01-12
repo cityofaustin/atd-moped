@@ -8,6 +8,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectSelectLayerConfig,
+  geocoderBbox,
   getGeoJSON,
   getInteractiveIds,
   getLayerSource,
@@ -135,6 +136,7 @@ const NewProjectMap = ({
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
+          bbox={geocoderBbox}
           position="top-right"
         />
         {layerConfigs.map(config => (

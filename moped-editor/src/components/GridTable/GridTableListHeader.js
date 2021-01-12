@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TableHead, TableRow, TableCell, Icon } from "@material-ui/core";
+import { TableHead, TableRow, TableCell, Icon, Grid } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 /**
@@ -10,7 +10,14 @@ const useStyles = makeStyles(theme => ({
   columnTitle: {
     "font-weight": "bold",
   },
+  columnTitleSortable: {
+    paddingTop: "8px",
+    "font-weight": "bold",
+  },
   columnCell: {
+    "user-select": "none",
+  },
+  columnCellCursor: {
     cursor: "pointer",
     "user-select": "none",
   },
@@ -42,10 +49,17 @@ const GridTableListHeader = ({
    */
   const renderLabel = (col, sortable = false, ascending = false) => {
     return (
-      <span className={classes.columnTitle}>
-        {sortable && <Icon>keyboard_arrow_{ascending ? "up" : "down"}</Icon>}{" "}
-        &nbsp;{col}
-      </span>
+      <Grid
+        container
+        className={sortable ? classes.columnTitleSortable : classes.columnTitle}
+      >
+        <Grid item>{col}&nbsp;</Grid>
+        {sortable && (
+          <Grid item>
+            <Icon>arrow_{ascending ? "up" : "down"}ward</Icon>
+          </Grid>
+        )}
+      </Grid>
     );
   };
 
@@ -57,7 +71,11 @@ const GridTableListHeader = ({
             // If column is hidden, don't render <th>
             !query.isHidden(column) && (
               <TableCell
-                className={classes.columnCell}
+                className={
+                  query.isSortable(column)
+                    ? classes.columnCellCursor
+                    : classes.columnCell
+                }
                 onClick={
                   query.isSortable(column)
                     ? e => handleTableHeaderClick(column)
@@ -67,7 +85,7 @@ const GridTableListHeader = ({
               >
                 {renderLabel(
                   // Get a human-readable label string
-                  query.getLabel(column, "table"),
+                  query.config.columns[column].label,
                   // If it is sortable, render as such
                   query.isSortable(column),
                   // If sort column is defined, use sort order, or false as default
