@@ -386,27 +386,33 @@ const GridTable = ({ title, query }) => {
                                   }
                                 >
                                   {query.isPK(column) ? (
-                                    <RouterLink
-                                      to={`/${query.singleItem}/${row[column]}`}
-                                    >
-                                      {query.config.columns[
-                                        column
-                                      ].hasOwnProperty("icon") ? (
-                                        <Icon
-                                          color={
-                                            query.config.columns[column].icon
-                                              .color
-                                          }
-                                        >
-                                          {
-                                            query.config.columns[column].icon
-                                              .name
-                                          }
-                                        </Icon>
-                                      ) : (
+                                    // If there is custom JSX for the PK single item button, render it
+                                    (query.config.customSingleItemButton &&
+                                      query.config.customSingleItemButton(
                                         row[column]
-                                      )}
-                                    </RouterLink>
+                                      )) || (
+                                      <RouterLink
+                                        to={`/${query.singleItem}/${row[column]}`}
+                                      >
+                                        {query.config.columns[
+                                          column
+                                        ].hasOwnProperty("icon") ? (
+                                          <Icon
+                                            color={
+                                              query.config.columns[column].icon
+                                                .color
+                                            }
+                                          >
+                                            {
+                                              query.config.columns[column].icon
+                                                .name
+                                            }
+                                          </Icon>
+                                        ) : (
+                                          row[column]
+                                        )}
+                                      </RouterLink>
+                                    )
                                   ) : isAlphanumeric(column) ? (
                                     <>
                                       {query.config.columns[

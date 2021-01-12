@@ -1,5 +1,6 @@
 import React from "react";
 import Can from "../../auth/Can";
+import EditIcon from "@material-ui/icons/Edit";
 import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
 import { StaffListViewExportConf } from "./StaffListViewExportConf";
 import { NavLink as RouterLink } from "react-router-dom";
@@ -20,17 +21,16 @@ export const StaffListViewQueryConf = {
     },
   },
   table: "moped_users",
-  single_item: "/moped/staff/edit",
-  // single_item: (
-  //   <Can
-  //     perform="user:edit"
-  //     yes={
-  //       <RouterLink to={`/moped/staff/edit/${person.user_id}`}>
-  //         <EditIcon color="primary" />
-  //       </RouterLink>
-  //     }
-  //   />
-  // ),
+  customSingleItemButton: id => (
+    <Can
+      perform="user:edit"
+      yes={
+        <RouterLink to={`/moped/staff/edit/${id}`}>
+          <EditIcon color="primary" />
+        </RouterLink>
+      }
+    />
+  ),
   showDateRange: false,
   showSearchBar: true,
   showFilters: false,
