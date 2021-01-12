@@ -325,6 +325,46 @@
       check: null
 - table:
     schema: public
+    name: moped_activity_log
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+- table:
+    schema: public
     name: moped_fund_opp
   insert_permissions:
   - role: moped-admin
