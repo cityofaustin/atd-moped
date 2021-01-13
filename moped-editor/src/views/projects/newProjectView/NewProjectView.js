@@ -16,7 +16,7 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
-import ProjectMap from "./ProjectMap";
+import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -95,7 +95,11 @@ const NewProjectView = () => {
       notes: "",
     },
   ]);
-  const [selectedIds, setSelectedIds] = useState([]);
+  const [selectedLayerIds, setSelectedLayerIds] = useState({});
+  const [featureCollection, setFeatureCollection] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -116,9 +120,11 @@ const NewProjectView = () => {
         );
       case 2:
         return (
-          <ProjectMap
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
+          <NewProjectMap
+            selectedLayerIds={selectedLayerIds}
+            setSelectedLayerIds={setSelectedLayerIds}
+            featureCollection={featureCollection}
+            setFeatureCollection={setFeatureCollection}
           />
         );
       default:
@@ -176,6 +182,8 @@ const NewProjectView = () => {
       $start_date: date = ""
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
+      $project_extent_ids: jsonb = {}
+      $project_extent_geojson: jsonb = {}
     ) {
       insert_moped_project(
         objects: {
@@ -188,6 +196,8 @@ const NewProjectView = () => {
           start_date: $start_date
           capitally_funded: $capitally_funded
           project_priority: $project_priority
+          project_extent_ids: $project_extent_ids
+          project_extent_geojson: $project_extent_geojson
         }
       ) {
         affected_rows
@@ -202,6 +212,8 @@ const NewProjectView = () => {
           fiscal_year
           capitally_funded
           start_date
+          project_extent_ids
+          project_extent_geojson
         }
       }
     }
@@ -255,7 +267,11 @@ const NewProjectView = () => {
     setLoading(true);
 
     addProject({
-      variables: projectDetails,
+      variables: {
+        ...projectDetails,
+        project_extent_ids: selectedLayerIds,
+        project_extent_geojson: featureCollection,
+      },
     })
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
