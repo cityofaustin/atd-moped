@@ -37,19 +37,19 @@ function bundle_function {
 # Generates environment variables for deployment
 #
 function generate_env_vars {
-  FUNCTION_NAME=$1
+  FUNCTION_NAME_CONFIG=$1
   aws secretsmanager get-secret-value \
   --secret-id "ATD_MOPED_EVENT_SQS_ENV_${WORKING_STAGE^^}" | \
   jq -rc ".SecretString" > handler_config.json;
 
   # Replaces the %FUNCTION_NAME% string in the template
-  sed -i "s/%FUNCTION_NAME%/${FUNCTION_NAME}/g" handler_config.json;
+  sed -i "s/%FUNCTION_NAME%/${FUNCTION_NAME_CONFIG}/g" handler_config.json;
 }
 
 #
 # Deploys a single function
 #
-function deploy_event_function {
+function deploy_lambda_function {
   FUNCTION_NAME=$1
   echo "Deploying function: ${FUNCTION_NAME} @ ${PWD}";
   # Create or update function
@@ -142,18 +142,20 @@ function deploy_sqs {
 #
 function deploy_event_function {
   MAIN_DIR=$PWD
-  FUNCTION=$1
-  FUNCTION_NAME="atd-moped-events-${FUNCTION}_${WORKING_STAGE}";
+  FUNCTION_NAME_MIN=$1
+  FUNCTION_NAME_AWS="atd-moped-events-${FUNCTION_NAME_MIN}_${WORKING_STAGE}";
+  FUNCTION_DIR="${MAIN_DIR}/moped-data-events/${FUNCTION_NAME_MIN}";
 
   echo "Current directory: ${PWD}";
-  echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'";
-
-  FUNCTION_DIR="${MAIN_DIR}/moped-data-events/${FUNCTION}";
+  echo "Building function '${FUNCTION_NAME_AWS}' @ path: '${FUNCTION_DIR}'";
   echo "Entering Directory: ${FUNCTION_DIR}";
   cd $FUNCTION_DIR;
 
   install_requirements;
   bundle_function;
-  generate_env_vars $FUNCTION;
-  deploy_sqs "$FUNCTION_NAME";
+  generate_env_vars "${FUNCTION_NAME_MIN}";
+  deploy_lambda_function "${FUNCTION_NAME_AWS}";
+  deploy_sqs "${FUNCTION_NAME_AWS}";
+  cd $MAIN_DIR;
+  echo "Exit, current path: ${PWD}";
 }
