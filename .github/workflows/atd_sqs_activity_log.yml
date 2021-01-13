@@ -1,13 +1,14 @@
 #
 # Builds SQS Triggers for the ATD-Events
 #
-name: "Build & Publish SQS"
+name: "Build & Publish Activity Log SQS"
 
 on:
   push:
     branches:
       - master
       - production
+      - "4895-sg-activity-log-aws-sqs"
     paths:
       - "moped-data-events/activity_log/**"
   pull_request:
