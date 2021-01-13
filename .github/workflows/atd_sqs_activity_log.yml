@@ -11,11 +11,8 @@ on:
       - "4895-sg-activity-log-aws-sqs"
     paths:
       - "moped-data-events/activity_log/**"
-  pull_request:
-    branches:
-      - "4895-sg-activity-log-aws-sqs"
-    paths:
-      - "moped-data-events/activity_log/**"
+      - ".github/workflows/atd_sqs_activity_log.yml"
+      - ".github/workflows/aws-moped-sqs-helper.sh"
 
 jobs:
   build:
