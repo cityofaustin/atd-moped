@@ -142,17 +142,18 @@ function deploy_sqs {
 #
 function deploy_event_function {
   MAIN_DIR=$PWD
-  FUNCTION_DIR=$1
-  FUNCTION_NAME="atd-moped-events-${FUNCTION_DIR}_${WORKING_STAGE}";
+  FUNCTION=$1
+  FUNCTION_NAME="atd-moped-events-${FUNCTION}_${WORKING_STAGE}";
 
   echo "Current directory: ${PWD}";
   echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'";
 
-  cd "${MAIN_DIR}/${FUNCTION_DIR}";
-  echo "Entered directory: ${PWD}";
+  FUNCTION_DIR="${MAIN_DIR}/moped-data-events/${FUNCTION}";
+  echo "Entering Directory: ${FUNCTION_DIR}";
+  cd $FUNCTION_DIR;
 
   install_requirements;
   bundle_function;
-  generate_env_vars $FUNCTION_DIR;
+  generate_env_vars $FUNCTION;
 #  deploy_sqs "$FUNCTION_NAME";
 }
