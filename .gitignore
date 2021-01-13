@@ -25,6 +25,7 @@ handler_config.json
 env/
 venv/
 ENV/
+package/
 
 
 # Database Hasura YAML or ENV files
