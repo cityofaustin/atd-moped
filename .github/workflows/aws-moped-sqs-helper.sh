@@ -155,5 +155,5 @@ function deploy_event_function {
   install_requirements;
   bundle_function;
   generate_env_vars $FUNCTION;
-#  deploy_sqs "$FUNCTION_NAME";
+  deploy_sqs "$FUNCTION_NAME";
 }
