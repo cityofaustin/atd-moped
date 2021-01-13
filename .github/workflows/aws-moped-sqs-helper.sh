@@ -4,13 +4,8 @@ case "${BRANCH_NAME}" in
   "production")
     export WORKING_STAGE="production";
   ;;
-  "master")
-    export WORKING_STAGE="staging";
-  ;;
   *)
-    echo "PR Detected, resetting working stage";
-    export WORKING_STAGE="pr_${PR_NUMBER}";
-    echo "New working stage: ${WORKING_STAGE}...";
+    export WORKING_STAGE="staging";
   ;;
 esac
 
@@ -159,6 +154,5 @@ function deploy_event_function {
   install_requirements;
   bundle_function;
   generate_env_vars $FUNCTION_DIR;
-#  deploy_event_function "$FUNCTION_NAME";
 #  deploy_sqs "$FUNCTION_NAME";
 }
