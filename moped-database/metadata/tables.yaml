@@ -1,5 +1,45 @@
 - table:
     schema: public
+    name: moped_activity_log
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      - updated_by
+      filter: {}
+- table:
+    schema: public
     name: moped_categories
   insert_permissions:
   - role: moped-admin
@@ -323,46 +363,6 @@
       - entity_uuid
       filter: {}
       check: null
-- table:
-    schema: public
-    name: moped_activity_log
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
 - table:
     schema: public
     name: moped_fund_opp
@@ -3136,6 +3136,47 @@
       - timeline_id
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_project
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - capitally_funded
+        - end_date
+        - start_date
+        - added_by
+        - project_id
+        - project_importance
+        - project_length
+        - project_order
+        - timeline_id
+        - project_extent_geojson
+        - project_extent_ids
+        - current_phase
+        - current_status
+        - eCapris_id
+        - fiscal_year
+        - project_description
+        - project_description_public
+        - project_name
+        - project_priority
+        - date_added
+        - project_uuid
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook: http://moped-api:5000/events/
+    headers:
+    - value: activity_log_staging
+      name: HASURA_EVENT_NAME
+    - value: test123
+      name: HASURA_EVENT_API
 - table:
     schema: public
     name: moped_project_roles
