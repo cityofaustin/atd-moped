@@ -2,8 +2,8 @@ import React from "react";
 import DeleteIcon from "@material-ui/icons/Delete";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Table,

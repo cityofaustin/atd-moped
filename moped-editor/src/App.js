@@ -9,8 +9,8 @@ import routes from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 
 // Apollo GraphQL Client
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import ApolloClient from "@apollo/client";
+import { ApolloProvider } from "@apollo/client";
 
 const App = () => {
   const routing = useRoutes(routes);

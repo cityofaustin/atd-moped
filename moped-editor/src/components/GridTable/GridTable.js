@@ -24,7 +24,7 @@ import {
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 // Abstract & GridTable
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";

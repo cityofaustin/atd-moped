@@ -8,8 +8,8 @@ import {
   Switch,
   CircularProgress,
 } from "@material-ui/core";
-import { useQuery } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { useQuery } from "@apollo/client";
+import { gql } from "@apollo/client";
 
 const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
   const handleFieldChange = (value, name) => {
