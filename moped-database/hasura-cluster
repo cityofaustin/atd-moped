@@ -164,7 +164,7 @@ function setenv() {
 # Stops the cluster and removes any created volumes
 #
 function stop() {
-  docker-compose -f docker-compose.yml down --volumes;
+  docker-compose -f docker-compose.yml down --volumes --remove-orphans;
 }
 
 #
