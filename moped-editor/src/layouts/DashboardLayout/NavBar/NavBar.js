@@ -3,9 +3,9 @@ import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
+import InputIcon from "@material-ui/icons/Input";
 import {
   BarChart as BarChartIcon,
-  Lock as LockIcon,
   Settings as SettingsIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
@@ -40,20 +40,15 @@ const items = [
     title: "Settings",
   },
   {
-    href: "/login",
-    icon: LockIcon,
-    title: "Login",
-  },
-  {
     href: "/register",
     icon: UserPlusIcon,
     title: "Register",
   },
-  // {
-  //   href: '/404',
-  //   icon: AlertCircleIcon,
-  //   title: 'Error'
-  // }
+  {
+    href: "/login",
+    icon: InputIcon,
+    title: "Logout",
+  },
 ];
 
 const useStyles = makeStyles(() => ({
