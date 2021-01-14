@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import { useUser } from "../../../auth/user";
 import PropTypes from "prop-types";
 import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
