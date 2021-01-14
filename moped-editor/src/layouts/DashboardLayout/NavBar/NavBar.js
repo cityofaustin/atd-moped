@@ -3,13 +3,13 @@ import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
-import InputIcon from "@material-ui/icons/Input";
 import {
   BarChart as BarChartIcon,
   Settings as SettingsIcon,
   User as UserIcon,
   UserPlus as UserPlusIcon,
   Users as UsersIcon,
+  LogOut as LogOutIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
 
@@ -46,7 +46,7 @@ const items = [
   },
   {
     href: "/moped/logout",
-    icon: InputIcon,
+    icon: LogOutIcon,
     title: "Logout",
   },
 ];
