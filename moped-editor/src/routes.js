@@ -8,6 +8,7 @@ import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
+import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
 import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectSummary from "src/views/projects/projectView/ProjectView";
@@ -42,6 +43,7 @@ const routes = [
         path: "projects/:projectId",
         element: <ProjectSummary />,
       },
+      { path: "logout", element: <Logout /> },
       { path: "settings", element: <SettingsView /> },
       { path: "404", element: <NotFoundView /> },
       { path: "*", element: <Navigate to="/moped/404" /> },
