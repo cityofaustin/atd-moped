@@ -9,20 +9,21 @@ import routes from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 
 // Apollo GraphQL Client
-import ApolloClient from "@apollo/client";
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+
+const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
 const App = () => {
   const routing = useRoutes(routes);
   const { user } = useUser();
 
   // Setup initial Apollo instance
-  let client = useRef(new ApolloClient());
+  let client = useRef(
+    new ApolloClient({ uri: HASURA_ENDPOINT, cache: new InMemoryCache() })
+  );
 
   // Setup Apollo connection to Hasura with Cognito token and roles
   useEffect(() => {
-    const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
-
     // Make sure user is authenticated and has valid user claims
     if (user) {
       const token = getJwt(user);
