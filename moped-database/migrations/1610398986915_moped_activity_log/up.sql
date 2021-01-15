@@ -8,7 +8,6 @@ create table moped_activity_log
 	record_data jsonb not null,
 	description jsonb not null,
 	created_at timestamp default now(),
-	updated_by varchar(64) not null,
 	updated_by_id int default null
 );
 
