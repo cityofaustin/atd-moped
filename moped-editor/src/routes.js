@@ -9,6 +9,7 @@ import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
 import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
+import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
 import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectSummary from "src/views/projects/projectView/ProjectView";
@@ -65,13 +66,10 @@ export const routes = [
         action: "project:visit",
         element: <ProjectSummary />,
       },
+      { path: "logout", action: "logout:visit", element: <Logout /> },
       { path: "settings", action: "settings:visit", element: <SettingsView /> },
-      { path: "404", action: "notFound:visit", element: <NotFoundView /> },
-      {
-        path: "*",
-        action: "undefinedRoute:visit",
-        element: <Navigate to="/moped/404" />,
-      },
+      { path: "404", action: "404:visit", element: <NotFoundView /> },
+      { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
   },
 ];
