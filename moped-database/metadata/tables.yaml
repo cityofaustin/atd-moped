@@ -21,6 +21,7 @@
       - created_at
       - activity_id
       - record_type
+      - updated_by
       filter: {}
   - role: moped-editor
     permission:
@@ -32,6 +33,7 @@
       - created_at
       - activity_id
       - record_type
+      - updated_by
       filter: {}
   - role: moped-viewer
     permission:
@@ -43,6 +45,7 @@
       - created_at
       - activity_id
       - record_type
+      - updated_by
       filter: {}
 - table:
     schema: public
