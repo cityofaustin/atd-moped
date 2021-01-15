@@ -12,7 +12,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import InputIcon from "@material-ui/icons/Input";
+import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
 import { defaultUser } from "../../views/account/AccountView/Profile";
@@ -45,7 +45,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         </Box>
         <Hidden mdDown>
           <IconButton color="inherit" onClick={logout}>
-            <InputIcon />
+            <LogOutIcon />
           </IconButton>
         </Hidden>
         <Hidden lgUp>
