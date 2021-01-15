@@ -3149,8 +3149,6 @@
   - name: activity_log_moped_project
     definition:
       enable_manual: false
-      insert:
-        columns: '*'
       delete:
         columns: '*'
       update:
