@@ -1,5 +1,51 @@
 - table:
     schema: public
+    name: moped_activity_log
+  object_relationships:
+  - name: moped_user
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_users
+        column_mapping:
+          updated_by_id: user_id
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - record_id
+      - updated_by_id
+      - description
+      - record_data
+      - created_at
+      - activity_id
+      - record_type
+      filter: {}
+- table:
+    schema: public
     name: moped_categories
   insert_permissions:
   - role: moped-admin
@@ -323,46 +369,6 @@
       - entity_uuid
       filter: {}
       check: null
-- table:
-    schema: public
-    name: moped_activity_log
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
 - table:
     schema: public
     name: moped_fund_opp
