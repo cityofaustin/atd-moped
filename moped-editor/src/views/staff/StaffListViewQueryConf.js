@@ -1,10 +1,6 @@
-import React from "react";
-import Can from "../../auth/Can";
-import EditIcon from "@material-ui/icons/Edit";
+import { newItemButton, editItemButton } from "./StaffListViewCustomComponents";
 import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
 import { StaffListViewExportConf } from "./StaffListViewExportConf";
-import { NavLink as RouterLink } from "react-router-dom";
-import { Button, Icon } from "@material-ui/core";
 
 /**
  * The Query configuration (now also including filters)
@@ -21,37 +17,13 @@ export const StaffListViewQueryConf = {
     },
   },
   table: "moped_users",
-  customSingleItemButton: id => (
-    <Can
-      perform="user:edit"
-      yes={
-        <RouterLink to={`/moped/staff/edit/${id}`}>
-          <EditIcon color="primary" />
-        </RouterLink>
-      }
-    />
-  ),
+  customSingleItemButton: editItemButton,
   showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,
   showNewItemButton: true,
-  customNewItemButton: (
-    <Can
-      perform="user:create"
-      yes={
-        <Button
-          color="primary"
-          variant="contained"
-          component={RouterLink}
-          to={"/moped/staff/new"}
-          startIcon={<Icon>add_circle</Icon>}
-        >
-          Add Staff
-        </Button>
-      }
-    />
-  ),
+  customNewItemButton: newItemButton,
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
