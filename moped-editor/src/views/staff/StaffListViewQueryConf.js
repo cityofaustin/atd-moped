@@ -1,3 +1,4 @@
+import { newItemButton, editItemButton } from "./StaffListViewCustomComponents";
 import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
 import { StaffListViewExportConf } from "./StaffListViewExportConf";
 
@@ -16,14 +17,13 @@ export const StaffListViewQueryConf = {
     },
   },
   table: "moped_users",
-  single_item: "/moped/staff/edit",
-  new_item: "/moped/staff/new",
-  new_item_label: "Add Staff",
+  customSingleItemButton: editItemButton,
   showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,
   showNewItemButton: true,
+  customNewItemButton: newItemButton,
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
@@ -131,7 +131,7 @@ export const StaffListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "COA Staff",
-      filter: value => value === true ? "True" : "False",
+      filter: value => (value === true ? "True" : "False"),
       type: "Boolean",
     },
     status_id: {

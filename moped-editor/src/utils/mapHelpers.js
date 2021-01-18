@@ -19,12 +19,7 @@ const austinFullPurposeJurisdictionFeatureCollection = {
       name: "EPSG:4326",
     },
   },
-  bbox: [
-    -97.940377028014,
-    30.1337172258415,
-    -97.578205982277,
-    30.4648268798927,
-  ],
+  bbox: [-97.940377, 30.133717, -97.578205, 30.464826],
   features: [],
 };
 
