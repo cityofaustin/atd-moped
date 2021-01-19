@@ -27,12 +27,21 @@ export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
 
 // Set the layer attributes to render on map
 export const layerConfigs = [
+  // {
+  //   layerId: "location-polygons",
+  //   type: "fill",
+  //   layerSourceName: "asmp_polygons",
+  //   layerColor: theme.palette.primary.main,
+  //   layerUrl:
+  //     "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+  // },
   {
-    layerId: "location-polygons",
-    layerSourceName: "asmp_polygons",
+    layerId: "ctn-lines",
+    type: "line",
+    layerSourceName: "CTN",
     layerColor: theme.palette.primary.main,
     layerUrl:
-      "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
   },
 ];
 
@@ -52,10 +61,11 @@ export const getInteractiveIds = () =>
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
+ * @param {String} idKey - Key that exposes the id of the polygon in the layer
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeaturePolygonId = e =>
-  e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
+export const getFeaturePolygonId = (e, idKey) =>
+  e.features && e.features.length > 0 && e.features[0].properties[idKey];
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -109,19 +119,20 @@ export const createProjectSelectLayerConfig = (
   // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
   return {
     id: config.layerId,
-    type: "fill",
+    type: config.type,
     source: {
       type: "vector",
       tiles: [config.layerUrl],
     },
     "source-layer": config.layerSourceName,
     paint: {
-      "fill-color": config.layerColor,
-      "fill-opacity": [
+      "line-color": config.layerColor,
+      "line-width": 5,
+      "line-opacity": [
         "case",
-        ["==", ["get", "polygon_id"], hoveredId],
+        ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
         fillOpacities.hovered,
-        ["in", ["get", "polygon_id"], ["literal", layerIds]],
+        ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
         fillOpacities.selected,
         fillOpacities.unselected,
       ],

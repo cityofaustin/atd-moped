@@ -57,7 +57,7 @@ const NewProjectMap = ({
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const vectorTilePolygonId = getFeaturePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e, "PROJECT_EXTENT_ID");
 
     if (!!vectorTilePolygonId) {
       setVectorTilePolygonId(vectorTilePolygonId);
@@ -69,7 +69,7 @@ const NewProjectMap = ({
   };
 
   const handleLayerClick = e => {
-    const vectorTilePolygonId = getFeaturePolygonId(e);
+    const vectorTilePolygonId = getFeaturePolygonId(e, "PROJECT_EXTENT_ID");
     const layerSource = getLayerSource(e);
     const selectedFeature = getGeoJSON(e);
 
