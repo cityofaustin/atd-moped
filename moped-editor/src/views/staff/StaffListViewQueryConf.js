@@ -10,9 +10,7 @@ import { StaffListViewExportConf } from "./StaffListViewExportConf";
 export const StaffListViewQueryConf = {
   options: {
     useQuery: {
-      fetchPolicy: "no-cache", // Default ise "cache-first", or use "no-cache"
-      // Use no-cache as per issue https://github.com/cityofaustin/atd-data-tech/issues/4788
-      // More info: https://www.apollographql.com/docs/react/get-started/#graphql-config-options-fetchPolicy
+      fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
     },
   },
   table: "moped_users",
@@ -131,7 +129,7 @@ export const StaffListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "COA Staff",
-      filter: value => value === true ? "True" : "False",
+      filter: value => (value === true ? "True" : "False"),
       type: "Boolean",
     },
     status_id: {
