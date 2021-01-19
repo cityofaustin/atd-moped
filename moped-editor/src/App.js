@@ -23,6 +23,7 @@ const App = () => {
   const routing = useRoutes(routes);
   const { user } = useUser();
 
+  // https://www.apollographql.com/docs/react/networking/authentication/#header
   const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
 
   const authLink = setContext((_, { headers }) => {
@@ -41,6 +42,7 @@ const App = () => {
   });
 
   const client = new ApolloClient({
+    // Join authLink and httpLink to handle auth in each request
     link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
   });
