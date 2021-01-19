@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 // Material
 import { makeStyles } from "@material-ui/core";
@@ -16,6 +16,7 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import MaterialTable from "material-table";
 
 // Query
 import { TIMELINE_QUERY } from "../../../queries/project";
@@ -32,73 +33,94 @@ const ProjectTimeline = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  console.log(data);
-
-  const tableConfig = {
-    columns: {
-      project_id: {
-        label_table: "",
-      },
-      phase_name: {
-        label_table: "Phase Name",
-        format: value => value.charAt(0).toUpperCase() + value.slice(1),
-      },
-      is_current_phase: {
-        label_table: "Active?",
-      },
-      phase_start: {
-        label_table: "Start Date",
-      },
-      phase_end: {
-        label_table: "End Date",
-      },
+  const columns = [
+    { title: "Phase Name", field: "phase_name" },
+    {
+      title: "Active?",
+      field: "is_current_phase",
     },
-  };
+    { title: "Start Date", field: "phase_start" },
+    { title: "End Date", field: "phase_end" },
+  ];
 
-  const formatValue = (value, column) => {
-    console.log(value, column);
-    console.log(tableConfig.columns[column]);
-    if (!tableConfig.columns[column].format) return value;
-
-    const formattedValue = tableConfig.columns[column].format(value);
-    console.log(formattedValue);
-    return formattedValue;
-  };
+  console.log("tk", data);
 
   return (
     <CardContent>
       <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <Grid container>
-            <Typography>Project Phases</Typography>
-            <Table size="small">
-              <TableHead>
-                {Object.keys(tableConfig.columns).map(column => (
-                  <TableCell>
-                    {tableConfig.columns[column].label_table}
-                  </TableCell>
-                ))}
-              </TableHead>
-              <TableBody>
-                {data.moped_proj_phases.map(row => (
-                  <TableRow key={row.project_phase_id}>
-                    {Object.keys(tableConfig.columns).map(column => (
-                      <TableCell>{formatValue(row[column], column)}</TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <Button
-              color="primary"
-              variant="contained"
-              // component={RouterLink}
-              // to={"/moped/projects/new"}
-              startIcon={<Icon>add_circle</Icon>}
-            >
-              New Phase
-            </Button>
-          </Grid>
+        <Grid item xs={12}>
+          <div style={{ maxWidth: "100%" }}>
+            <MaterialTable
+              columns={columns}
+              data={data.moped_proj_phases}
+              title="Project Phases"
+              editable={{
+                // isEditable: rowData => rowData.name === "phase_name",
+                onRowAdd: newData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      console.log(newData);
+                      resolve();
+                    }, 1000);
+                  }),
+                // onRowAdd: newData =>
+                //   new Promise((resolve, reject) => {
+                //     setTimeout(() => {
+                //       setData([...data, newData]);
+
+                //       resolve();
+                //     }, 1000);
+                //   }),
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      console.log("newData", newData);
+                      console.log("oldData", oldData);
+                      resolve();
+                    }, 1000);
+                  }),
+                // onRowUpdate: (newData, oldData) =>
+                //   new Promise((resolve, reject) => {
+                //     setTimeout(() => {
+                //       const dataUpdate = [...data];
+                //       const index = oldData.tableData.id;
+                //       dataUpdate[index] = newData;
+                //       setData([...dataUpdate]);
+
+                //       resolve();
+                //     }, 1000);
+                //   }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      console.log(oldData);
+
+                      resolve();
+                    }, 1000);
+                  }),
+                // onRowDelete: oldData =>
+                //   new Promise((resolve, reject) => {
+                //     setTimeout(() => {
+                //       const dataDelete = [...data];
+                //       const index = oldData.tableData.id;
+                //       dataDelete.splice(index, 1);
+                //       setData([...dataDelete]);
+
+                //       resolve();
+                //     }, 1000);
+                //   }),
+              }}
+            />
+          </div>
+          <Button
+            color="primary"
+            variant="contained"
+            // component={RouterLink}
+            // to={"/moped/projects/new"}
+            startIcon={<Icon>add_circle</Icon>}
+          >
+            New Phase
+          </Button>
         </Grid>
       </Grid>
     </CardContent>
