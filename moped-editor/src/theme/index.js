@@ -20,7 +20,6 @@ const theme = createMuiTheme({
       secondary: "#000000",
     },
     map: {
-      selected: "#00AAB1",
       transparent: "rgba(0,0,0,0)",
     },
   },
