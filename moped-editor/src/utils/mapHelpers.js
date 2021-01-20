@@ -64,7 +64,7 @@ export const getInteractiveIds = () =>
  * @param {String} idKey - Key that exposes the id of the polygon in the layer
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeaturePolygonId = (e, idKey) =>
+export const getFeatureId = (e, idKey) =>
   e.features && e.features.length > 0 && e.features[0].properties[idKey];
 
 /**
@@ -157,10 +157,11 @@ const fillColorCases = layerConfigs.reduce((acc, config) => {
  */
 export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
-  type: "fill",
+  type: "line",
   paint: {
-    "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "fill-opacity": fillOpacities.selected,
+    "line-width": 5,
+    "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
+    "line-opacity": fillOpacities.selected,
   },
 });
 

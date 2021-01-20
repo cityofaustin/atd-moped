@@ -6,7 +6,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getFeaturePolygonId,
+  getFeatureId,
   MAPBOX_TOKEN,
   mapInit,
   renderTooltip,
@@ -44,7 +44,7 @@ const ProjectSummaryDetailsMap = ({
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const featurePolygonId = getFeaturePolygonId(e);
+    const featurePolygonId = getFeatureId(e, "PROJECT_EXTENT_ID");
 
     if (!!featurePolygonId) {
       setHoveredFeature(featurePolygonId);
