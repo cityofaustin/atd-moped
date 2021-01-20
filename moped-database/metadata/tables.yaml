@@ -3178,12 +3178,12 @@
       num_retries: 0
       interval_sec: 10
       timeout_sec: 60
-    webhook: http://moped-api:5000/events/
+    webhook_from_env: MOPED_API_HASURA_EVENTS_SQS_URL
     headers:
     - value: activity_log_staging
-      name: HASURA_EVENT_NAME
-    - value: test123
-      name: HASURA_EVENT_API
+      name: MOPED_API_HASURA_EVENT_NAME
+    - name: MOPED_API_HASURA_EVENT_APIKEY
+      value_from_env: MOPED_API_HASURA_EVENT_APIKEY
 - table:
     schema: public
     name: moped_project_roles
