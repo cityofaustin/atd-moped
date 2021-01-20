@@ -53,3 +53,48 @@ export const TIMELINE_QUERY = gql`
     }
   }
 `;
+
+export const PROJECT_PHASES_MUTATION = gql`
+  mutation ProjectPhasesMutation(
+    $is_current_phase: Boolean
+    $phase_start: date
+    $phase_end: date
+    $project_phase_id: Int!
+  ) {
+    update_moped_proj_phases_by_pk(
+      pk_columns: { project_phase_id: $project_phase_id }
+      _set: {
+        is_current_phase: $is_current_phase
+        phase_start: $phase_start
+        phase_end: $phase_end
+      }
+    ) {
+      project_id
+      project_phase_id
+      phase_name
+      phase_start
+      phase_end
+      is_current_phase
+    }
+  }
+`;
+
+export const DELETE_PROJECT_PHASE = gql`
+  mutation DeleteProjectPhase($project_phase_id: Int!) {
+    delete_moped_proj_phases_by_pk(project_phase_id: $project_phase_id) {
+      project_phase_id
+    }
+  }
+`;
+
+export const ADD_PROJECT_PHASE = gql`
+  mutation AddProjectPhase($objects: [moped_proj_phases_insert_input!]!) {
+    insert_moped_proj_phases(objects: $objects) {
+      returning {
+        phase_name
+        phase_start
+        phase_end
+      }
+    }
+  }
+`;

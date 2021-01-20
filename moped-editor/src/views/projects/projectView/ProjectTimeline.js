@@ -8,27 +8,37 @@ import {
   CardContent,
   CircularProgress,
   Grid,
-  Icon,
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  Typography,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 // Query
-import { TIMELINE_QUERY } from "../../../queries/project";
-import { useQuery } from "@apollo/react-hooks";
+import {
+  TIMELINE_QUERY,
+  PROJECT_PHASES_MUTATION,
+  DELETE_PROJECT_PHASE,
+  ADD_PROJECT_PHASE,
+} from "../../../queries/project";
+import { useQuery, useMutation } from "@apollo/react-hooks";
 import { useParams } from "react-router-dom";
 
 const ProjectTimeline = () => {
   const { projectId } = useParams();
 
-  const { loading, error, data } = useQuery(TIMELINE_QUERY, {
+  const { loading, error, data, refetch } = useQuery(TIMELINE_QUERY, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
+
+  const [updateProjectPhase, { mutationData }] = useMutation(
+    PROJECT_PHASES_MUTATION
+  );
+
+  const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
+  const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
@@ -43,7 +53,9 @@ const ProjectTimeline = () => {
     { title: "End Date", field: "phase_end" },
   ];
 
-  console.log("tk", data);
+  // Notes:
+  // Update Hasura config so that moped-admin & moped-editor can DELETE
+  // `moped_proj_phases`.
 
   return (
     <CardContent>
@@ -60,67 +72,66 @@ const ProjectTimeline = () => {
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
                       console.log(newData);
+                      let leData = newData;
+                      addProjectPhase({
+                        variables: {
+                          objects: [
+                            {
+                              phase_name: newData.phase_name,
+                              completion_percentage:
+                                newData.completion_percentage || 0,
+                              completed: newData.completed || false,
+                              project_id: projectId,
+                            },
+                          ],
+                        },
+                      });
+                      refetch();
                       resolve();
                     }, 1000);
                   }),
-                // onRowAdd: newData =>
-                //   new Promise((resolve, reject) => {
-                //     setTimeout(() => {
-                //       setData([...data, newData]);
-
-                //       resolve();
-                //     }, 1000);
-                //   }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      console.log("newData", newData);
-                      console.log("oldData", oldData);
+                      let difference = Object.keys(oldData).filter(
+                        key => oldData[key] !== newData[key]
+                      );
+
+                      if (difference.length < 1) {
+                        resolve();
+                      }
+
+                      let leData = {
+                        project_phase_id: newData.project_phase_id,
+                      };
+
+                      difference.forEach(diff => {
+                        if (diff === "tableData") return;
+                        leData[diff] = newData[diff];
+                      });
+
+                      updateProjectPhase({
+                        variables: leData,
+                      });
+                      refetch();
                       resolve();
                     }, 1000);
                   }),
-                // onRowUpdate: (newData, oldData) =>
-                //   new Promise((resolve, reject) => {
-                //     setTimeout(() => {
-                //       const dataUpdate = [...data];
-                //       const index = oldData.tableData.id;
-                //       dataUpdate[index] = newData;
-                //       setData([...dataUpdate]);
-
-                //       resolve();
-                //     }, 1000);
-                //   }),
                 onRowDelete: oldData =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      console.log(oldData);
-
+                      deleteProjectPhase({
+                        variables: {
+                          project_phase_id: oldData.project_phase_id,
+                        },
+                      });
+                      refetch();
                       resolve();
                     }, 1000);
                   }),
-                // onRowDelete: oldData =>
-                //   new Promise((resolve, reject) => {
-                //     setTimeout(() => {
-                //       const dataDelete = [...data];
-                //       const index = oldData.tableData.id;
-                //       dataDelete.splice(index, 1);
-                //       setData([...dataDelete]);
-
-                //       resolve();
-                //     }, 1000);
-                //   }),
               }}
             />
           </div>
-          <Button
-            color="primary"
-            variant="contained"
-            // component={RouterLink}
-            // to={"/moped/projects/new"}
-            startIcon={<Icon>add_circle</Icon>}
-          >
-            New Phase
-          </Button>
         </Grid>
       </Grid>
     </CardContent>
