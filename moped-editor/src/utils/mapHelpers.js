@@ -120,14 +120,19 @@ export const createProjectSelectLayerConfig = (
   return {
     id: config.layerId,
     type: config.type,
-    source: {
-      type: "vector",
-      tiles: [config.layerUrl],
-    },
+    // source: {
+    //   type: "vector",
+    //   tiles: [config.layerUrl],
+    // },
     "source-layer": config.layerSourceName,
+    layout: {
+      "line-cap": "round",
+      "line-join": "round",
+    },
     paint: {
+      "line-blur": 0,
       "line-color": config.layerColor,
-      "line-width": 5,
+      "line-width": 2,
       "line-opacity": [
         "case",
         ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],

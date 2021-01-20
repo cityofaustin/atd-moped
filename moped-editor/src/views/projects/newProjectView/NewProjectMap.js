@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
+import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, Typography, makeStyles } from "@material-ui/core";
 import { isEqual } from "lodash";
@@ -140,14 +140,16 @@ const NewProjectMap = ({
           position="top-right"
         />
         {layerConfigs.map(config => (
-          <Layer
-            key={config.layerId}
-            {...createProjectSelectLayerConfig(
-              vectorTilePolygonId,
-              config,
-              selectedLayerIds
-            )}
-          />
+          <Source key={config.layerId} type="vector" tiles={[config.layerUrl]}>
+            <Layer
+              key={config.layerId}
+              {...createProjectSelectLayerConfig(
+                vectorTilePolygonId,
+                config,
+                selectedLayerIds
+              )}
+            />
+          </Source>
         ))}
         {renderTooltip(vectorTilePolygonId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
