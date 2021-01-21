@@ -35,6 +35,7 @@ moped-database/config/*.yaml
 !moped-database/config/hasura.local.yaml
 !moped-database/config/hasura.cognito.staging.env
 moped-database/hasura.current_environment.yaml
+moped-database/docker-compose-*.yaml
 
 # Logs
 logs

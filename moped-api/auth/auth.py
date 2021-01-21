@@ -1,3 +1,5 @@
+import datetime
+
 from flask import Blueprint, jsonify
 from flask_cognito import cognito_auth_required, current_cognito_jwt
 
@@ -13,9 +15,13 @@ def auth_index() -> str:
     Returns a simple message.
     :return str:
     """
-    return jsonify({
-        "message": "Hello from Auth! :)"
-    })
+    now = datetime.datetime.now()
+    return jsonify(
+        {
+            "message": "MOPED API Available - Auth - Health Check - Available @ %s"
+            % now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
 
 
 #

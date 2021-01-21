@@ -10,7 +10,12 @@ on:
       - production
     paths:
       - "moped-api/**"
-
+  pull_request:
+    branches-ignore:
+      - main
+      - production
+    paths:
+      - "moped-api/**"
 jobs:
   build:
     name: Build
