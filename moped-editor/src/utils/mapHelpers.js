@@ -57,10 +57,31 @@ export const mapConfig = {
     CTN: {
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
-      type: "line",
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          return {
+            type: "line",
+            layout: {
+              "line-join": "round",
+            },
+            paint: {
+              "line-color": this.layerColor,
+              "line-width": mapStyles.lineWidthStops,
+              "line-opacity": [
+                "case",
+                ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
+                mapStyles.statusOpacities.hovered,
+                ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
+                mapStyles.statusOpacities.selected,
+                mapStyles.statusOpacities.unselected,
+              ],
+            },
+          };
+        };
+      },
     },
   },
 };
@@ -131,26 +152,11 @@ export const createProjectSelectLayerConfig = (
   const layerIds = selectedLayerIds[sourceName] || [];
   const config = mapConfig.layerConfigs[sourceName];
 
-  // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
+  // Merge common layer attributes with those unique to each layer type
   return {
     id: config.layerIdName,
-    type: config.type,
     "source-layer": sourceName,
-    layout: {
-      "line-join": "round",
-    },
-    paint: {
-      "line-color": config.layerColor,
-      "line-width": mapStyles.lineWidthStops,
-      "line-opacity": [
-        "case",
-        ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
-        mapStyles.statusOpacities.hovered,
-        ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
-        mapStyles.statusOpacities.selected,
-        mapStyles.statusOpacities.unselected,
-      ],
-    },
+    ...config.layerStyleSpec(hoveredId, layerIds),
   };
 };
 
