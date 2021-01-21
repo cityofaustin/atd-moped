@@ -11,7 +11,7 @@ import {
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
 } from "../../../queries/project";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 const ProjectTimeline = () => {
@@ -26,9 +26,9 @@ const ProjectTimeline = () => {
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  // useEffect(() => {
+  //   refetch();
+  // }, [refetch]);
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
