@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryDetailsMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";

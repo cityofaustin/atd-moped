@@ -18,8 +18,7 @@ import DefineProjectForm from "./DefineProjectForm";
 import ProjectTeamTable from "./ProjectTeamTable";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { useMutation, gql } from "@apollo/client";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
