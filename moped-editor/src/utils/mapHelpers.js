@@ -27,14 +27,6 @@ export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
 
 // Set the layer attributes to render on map
 export const layerConfigs = [
-  // {
-  //   layerId: "location-polygons",
-  //   type: "fill",
-  //   layerSourceName: "asmp_polygons",
-  //   layerColor: theme.palette.primary.main,
-  //   layerUrl:
-  //     "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-  // },
   {
     layerId: "ctn-lines",
     type: "line",
@@ -120,17 +112,11 @@ export const createProjectSelectLayerConfig = (
   return {
     id: config.layerId,
     type: config.type,
-    // source: {
-    //   type: "vector",
-    //   tiles: [config.layerUrl],
-    // },
     "source-layer": config.layerSourceName,
     layout: {
-      "line-cap": "round",
       "line-join": "round",
     },
     paint: {
-      "line-blur": 0,
       "line-color": config.layerColor,
       "line-width": 2,
       "line-opacity": [
