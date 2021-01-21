@@ -158,7 +158,15 @@ export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
   type: "line",
   paint: {
-    "line-width": 5,
+    "line-width": {
+      base: 1,
+      stops: [
+        [10, 1],
+        [13, 2],
+        [16, 5],
+        [18, 10],
+      ],
+    },
     "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
     "line-opacity": fillOpacities.selected,
   },
