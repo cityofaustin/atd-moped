@@ -118,7 +118,15 @@ export const createProjectSelectLayerConfig = (
     },
     paint: {
       "line-color": config.layerColor,
-      "line-width": 2,
+      "line-width": {
+        base: 1,
+        stops: [
+          [10, 1],
+          [13, 2],
+          [16, 5],
+          [18, 10],
+        ],
+      },
       "line-opacity": [
         "case",
         ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
