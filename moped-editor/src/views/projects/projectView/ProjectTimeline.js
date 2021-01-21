@@ -22,6 +22,7 @@ const ProjectTimeline = () => {
     fetchPolicy: "no-cache",
   });
 
+  // Mutations
   const [updateProjectPhase] = useMutation(PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
@@ -32,6 +33,9 @@ const ProjectTimeline = () => {
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
+
+  // console.log("moped_phases", data.moped_phases);
+  // debugger;
 
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
@@ -47,6 +51,7 @@ const ProjectTimeline = () => {
     {
       title: "Active?",
       field: "is_current_phase",
+      lookup: { true: "True", false: "False" },
     },
     { title: "Start Date", field: "phase_start" },
     { title: "End Date", field: "phase_end" },
@@ -69,24 +74,27 @@ const ProjectTimeline = () => {
                 // isEditable: rowData => rowData.name === "phase_name",
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
+                    // Merge input fields with required fields
+                    const object = Object.assign(
+                      {
+                        project_id: projectId,
+                        completion_percentage: 0,
+                        completed: false,
+                      },
+                      newData
+                    );
+
+                    console.log(object);
+
                     setTimeout(() => {
                       addProjectPhase({
                         variables: {
-                          objects: [
-                            {
-                              phase_name: newData.phase_name,
-                              completion_percentage:
-                                newData.completion_percentage || 0,
-                              completed: newData.completed || false,
-                              project_id: projectId,
-                            },
-                          ],
+                          objects: [object],
                         },
                       });
-                      refetch();
                       resolve();
                     }, 1000);
-                  }),
+                  }).then(() => refetch()),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
@@ -97,26 +105,32 @@ const ProjectTimeline = () => {
                       if (difference.length < 1) {
                         resolve();
                       }
-
-                      let leData = {
-                        project_phase_id: newData.project_phase_id,
-                        phase_name: newData.phase_name
-                          ? newData.phase_name
-                          : oldData.phase_name,
-                      };
+                      console.log("newData", newData);
+                      console.log("oldData", oldData);
+                      const leData = Object.assign(newData, oldData);
+                      delete leData.tableData;
+                      delete leData.project_id;
+                      delete leData.__typename;
+                      // let leData = {
+                      //   project_phase_id: newData.project_phase_id,
+                      //   phase_name: newData.phase_name
+                      //     ? newData.phase_name
+                      //     : oldData.phase_name,
+                      // };
 
                       difference.forEach(diff => {
                         if (diff === "tableData") return;
                         leData[diff] = newData[diff];
                       });
 
+                      console.log("onRowUpdate leData", leData);
+
                       updateProjectPhase({
                         variables: leData,
                       });
-                      refetch();
                       resolve();
                     }, 1000);
-                  }),
+                  }).then(() => refetch()),
                 onRowDelete: oldData =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
@@ -125,10 +139,9 @@ const ProjectTimeline = () => {
                           project_phase_id: oldData.project_phase_id,
                         },
                       });
-                      refetch();
                       resolve();
                     }, 1000);
-                  }),
+                  }).then(() => refetch()),
               }}
             />
           </div>
