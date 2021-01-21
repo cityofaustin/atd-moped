@@ -1,5 +1,5 @@
 import "react-perfect-scrollbar/dist/css/styles.css";
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider } from "@material-ui/core";
 import GlobalStyles from "src/components/GlobalStyles";
@@ -7,48 +7,49 @@ import "src/mixins/chartjs";
 import theme from "src/theme";
 import { routes, restrictRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
+import { setContext } from "@apollo/client/link/context";
 
 // Apollo GraphQL Client
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import {
+  ApolloProvider,
+  ApolloClient,
+  InMemoryCache,
+  createHttpLink,
+} from "@apollo/client";
+
+const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
 const App = () => {
   const restrictedRoutes = restrictRoutes(routes);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
 
-  // Setup initial Apollo instance
-  let client = useRef(new ApolloClient());
+  // https://www.apollographql.com/docs/react/networking/authentication/#header
+  const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
 
-  // Setup Apollo connection to Hasura with Cognito token and roles
-  useEffect(() => {
-    const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
+  const authLink = setContext((_, { headers }) => {
+    // Get the authentication token and role from user if it exists
+    const token = getJwt(user);
+    const role = getHighestRole(user);
 
-    // Make sure user is authenticated and has valid user claims
-    if (user) {
-      const token = getJwt(user);
-      const role = getHighestRole(user);
+    // Return the headers and role to the context so httpLink can read them
+    return {
+      headers: {
+        ...headers,
+        authorization: token ? `Bearer ${token}` : "",
+        "x-hasura-role": role ? role : "",
+      },
+    };
+  });
 
-      let clientData = {
-        uri: HASURA_ENDPOINT,
-      };
-
-      // In the local environment, Hasura doesn't expect auth headers and errors
-      // if they are passed. For staging & prod, we need do need to pass the JWT
-      // token and claim for the user roles.
-      if (process.env.REACT_APP_HASURA_ENV !== "local") {
-        clientData["headers"] = {
-          Authorization: `Bearer ${token}`,
-          "x-hasura-role": role,
-        };
-      }
-
-      client.current = new ApolloClient(clientData);
-    }
-  }, [user, client]);
+  const client = new ApolloClient({
+    // Join authLink and httpLink to handle auth in each request
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache(),
+  });
 
   return (
-    <ApolloProvider client={client.current}>
+    <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
         <GlobalStyles />
         {routing}
