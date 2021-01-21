@@ -100,6 +100,9 @@ const ProjectTimeline = () => {
 
                       let leData = {
                         project_phase_id: newData.project_phase_id,
+                        phase_name: newData.phase_name
+                          ? newData.phase_name
+                          : oldData.phase_name,
                       };
 
                       difference.forEach(diff => {

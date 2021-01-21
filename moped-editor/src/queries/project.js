@@ -60,6 +60,7 @@ export const PROJECT_PHASES_MUTATION = gql`
     $phase_start: date
     $phase_end: date
     $project_phase_id: Int!
+    $phase_name: String!
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -67,6 +68,7 @@ export const PROJECT_PHASES_MUTATION = gql`
         is_current_phase: $is_current_phase
         phase_start: $phase_start
         phase_end: $phase_end
+        phase_name: $phase_name
       }
     ) {
       project_id
