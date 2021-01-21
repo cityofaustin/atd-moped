@@ -7,8 +7,8 @@ from requests import Response
 events_blueprint = Blueprint('events_blueprint', __name__)
 
 # Hasura Config
-HASURA_EVENT_API = os.getenv("MOPED_API_HASURA_EVENT_APIKEY", "")
-HASURA_EVENTS_SQS_URL = os.getenv("MOPED_API_HASURA_EVENTS_SQS_URL", "")
+HASURA_EVENT_API = os.getenv("MOPED_API_HASURA_APIKEY", "")
+HASURA_EVENTS_SQS_URL = os.getenv("MOPED_API_HASURA_SQS_URL", "")
 
 
 @events_blueprint.route('/', methods=["GET"])
@@ -32,7 +32,7 @@ def events_process() -> (Response, int):
     Processes event payloads from Hasura
     :return Response:
     """
-    incoming_token = request.headers.get("MOPED_API_HASURA_EVENT_APIKEY")
+    incoming_token = request.headers.get("MOPED_API_HASURA_APIKEY")
     incoming_event_name = request.headers.get("MOPED_API_HASURA_EVENT_NAME", "")
     hashed_events_api = hashlib.md5()
     hashed_events_api.update(str(HASURA_EVENT_API).encode("utf-8"))
