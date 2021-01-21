@@ -4,12 +4,6 @@ import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
-export const mapInit = {
-  latitude: 30.268039,
-  longitude: -97.742828,
-  zoom: 12,
-};
-
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
   type: "FeatureCollection",
@@ -23,24 +17,49 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   features: [],
 };
 
-export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
-
-// Set the layer attributes to render on map
-export const layerConfigs = [
-  {
-    layerId: "ctn-lines",
-    type: "line",
-    layerSourceName: "CTN",
-    layerColor: theme.palette.primary.main,
-    layerUrl:
-      "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+export const mapConfig = {
+  mapInit: {
+    latitude: 30.268039,
+    longitude: -97.742828,
+    zoom: 12,
   },
-];
-
-const fillOpacities = {
-  selected: 0.75,
-  hovered: 0.5,
-  unselected: 0.25,
+  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
+  layerConfigs: [
+    {
+      layerId: "ctn-lines",
+      type: "line",
+      layerSourceName: "CTN",
+      layerColor: theme.palette.primary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+    },
+  ],
+  statusOpacities: {
+    selected: 0.75,
+    hovered: 0.5,
+    unselected: 0.25,
+  },
+  lineWidthStops: {
+    base: 1,
+    stops: [
+      [10, 1],
+      [13, 2],
+      [16, 10],
+      [18, 25],
+    ],
+  },
+  toolTipStyles: {
+    position: "absolute",
+    margin: 8,
+    padding: 4,
+    background: theme.palette.text.primary,
+    color: theme.palette.background.default,
+    maxWidth: 300,
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    zIndex: 9,
+    pointerEvents: "none",
+  },
 };
 
 /**
@@ -48,7 +67,7 @@ const fillOpacities = {
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
 export const getInteractiveIds = () =>
-  layerConfigs.map(config => config.layerId);
+  mapConfig.layerConfigs.map(config => config.layerId);
 
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
@@ -118,22 +137,14 @@ export const createProjectSelectLayerConfig = (
     },
     paint: {
       "line-color": config.layerColor,
-      "line-width": {
-        base: 1,
-        stops: [
-          [10, 1],
-          [13, 2],
-          [16, 5],
-          [18, 10],
-        ],
-      },
+      "line-width": mapConfig.lineWidthStops,
       "line-opacity": [
         "case",
         ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
-        fillOpacities.hovered,
+        mapConfig.statusOpacities.hovered,
         ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
-        fillOpacities.selected,
-        fillOpacities.unselected,
+        mapConfig.statusOpacities.selected,
+        mapConfig.statusOpacities.unselected,
       ],
     },
   };
@@ -141,7 +152,7 @@ export const createProjectSelectLayerConfig = (
 
 // Builds cases to match GeoJSON features with corresponding colors set for their layer
 // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = layerConfigs.reduce((acc, config) => {
+const fillColorCases = mapConfig.layerConfigs.reduce((acc, config) => {
   acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
   acc.push(config.layerColor);
   return acc;
@@ -158,32 +169,11 @@ export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
   type: "line",
   paint: {
-    "line-width": {
-      base: 1,
-      stops: [
-        [10, 1],
-        [13, 2],
-        [16, 5],
-        [18, 10],
-      ],
-    },
+    "line-width": mapConfig.lineWidthStops,
     "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "line-opacity": fillOpacities.selected,
+    "line-opacity": mapConfig.statusOpacities.selected,
   },
 });
-
-export const toolTipStyles = {
-  position: "absolute",
-  margin: 8,
-  padding: 4,
-  background: theme.palette.text.primary,
-  color: theme.palette.background.default,
-  maxWidth: 300,
-  fontSize: "0.875rem",
-  fontWeight: 500,
-  zIndex: 9,
-  pointerEvents: "none",
-};
 
 /**
  * Build the JSX of the hover tooltip on map

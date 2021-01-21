@@ -8,18 +8,15 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectSelectLayerConfig,
-  geocoderBbox,
   getGeoJSON,
   getInteractiveIds,
   getLayerSource,
   getFeatureId,
   isFeaturePresent,
-  layerConfigs,
   MAPBOX_TOKEN,
-  mapInit,
+  mapConfig,
   renderTooltip,
   sumFeaturesSelected,
-  toolTipStyles,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
@@ -27,7 +24,7 @@ export const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: toolTipStyles,
+  toolTip: mapConfig.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -48,7 +45,7 @@ const NewProjectMap = ({
   const classes = useStyles();
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState(mapInit);
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   const [vectorTilePolygonId, setVectorTilePolygonId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
@@ -136,10 +133,10 @@ const NewProjectMap = ({
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
-          bbox={geocoderBbox}
+          bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {layerConfigs.map(config => (
+        {mapConfig.layerConfigs.map(config => (
           <Source key={config.layerId} type="vector" tiles={[config.layerUrl]}>
             <Layer
               key={config.layerId}

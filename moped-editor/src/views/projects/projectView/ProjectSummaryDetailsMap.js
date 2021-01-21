@@ -8,7 +8,7 @@ import {
   createProjectViewLayerConfig,
   getFeatureId,
   MAPBOX_TOKEN,
-  mapInit,
+  mapConfig,
   renderTooltip,
   sumFeaturesSelected,
   toolTipStyles,
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: toolTipStyles,
+  toolTip: mapConfig.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -35,7 +35,7 @@ const ProjectSummaryDetailsMap = ({
   const classes = useStyles();
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState(mapInit);
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   const [hoveredFeature, setHoveredFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
