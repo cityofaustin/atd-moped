@@ -24,16 +24,16 @@ export const mapConfig = {
     zoom: 12,
   },
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
-  layerConfigs: [
-    {
-      layerId: "ctn-lines",
+  layerConfigs: {
+    CTN: {
+      layerIdName: "ctn-lines",
+      layerIdField: "PROJECT_EXTENT_ID",
       type: "line",
-      layerSourceName: "CTN",
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
     },
-  ],
+  },
   statusOpacities: {
     selected: 0.75,
     hovered: 0.5,
@@ -67,7 +67,7 @@ export const mapConfig = {
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
 export const getInteractiveIds = () =>
-  mapConfig.layerConfigs.map(config => config.layerId);
+  Object.values(mapConfig.layerConfigs).map(config => config.layerId);
 
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
@@ -116,22 +116,23 @@ export const isFeaturePresent = (selectedFeature, features) =>
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features
  * @param {String} hoveredId - The ID of the feature hovered
- * @param {Object} config - Configuration with layer attributes
+ * @param {String} sourceName - Source name to get config properties for layer styles
  * @param {Array} selectedLayerIds - Array of string IDs that a user has selected
  * @return {Object} Mapbox layer style object
  */
 export const createProjectSelectLayerConfig = (
   hoveredId,
-  config,
+  sourceName,
   selectedLayerIds
 ) => {
-  const layerIds = selectedLayerIds[config.layerSourceName] || [];
+  const layerIds = selectedLayerIds[sourceName] || [];
+  const config = mapConfig.layerConfigs[sourceName];
 
   // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
   return {
     id: config.layerId,
     type: config.type,
-    "source-layer": config.layerSourceName,
+    "source-layer": sourceName,
     layout: {
       "line-join": "round",
     },
@@ -152,11 +153,14 @@ export const createProjectSelectLayerConfig = (
 
 // Builds cases to match GeoJSON features with corresponding colors set for their layer
 // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = mapConfig.layerConfigs.reduce((acc, config) => {
-  acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
-  acc.push(config.layerColor);
-  return acc;
-}, []);
+const fillColorCases = Object.values(mapConfig.layerConfigs).reduce(
+  (acc, config) => {
+    acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
+    acc.push(config.layerColor);
+    return acc;
+  },
+  []
+);
 
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features

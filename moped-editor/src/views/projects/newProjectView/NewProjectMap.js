@@ -50,14 +50,21 @@ const NewProjectMap = ({
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   const handleLayerHover = e => {
+    const layerSource = getLayerSource(e);
+
+    if (!layerSource) return;
+
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
 
-    const vectorTilePolygonId = getFeatureId(e, "PROJECT_EXTENT_ID");
+    const hoveredFeatureId = getFeatureId(
+      e,
+      mapConfig.layerConfigs[layerSource].layerIdField
+    );
 
-    if (!!vectorTilePolygonId) {
-      setVectorTilePolygonId(vectorTilePolygonId);
+    if (!!hoveredFeatureId) {
+      setVectorTilePolygonId(hoveredFeatureId);
       setHoveredCoords({ x: offsetX, y: offsetY });
     } else {
       setHoveredCoords(null);
@@ -66,8 +73,14 @@ const NewProjectMap = ({
   };
 
   const handleLayerClick = e => {
-    const vectorTilePolygonId = getFeatureId(e, "PROJECT_EXTENT_ID");
     const layerSource = getLayerSource(e);
+
+    if (!layerSource) return;
+
+    const vectorTilePolygonId = getFeatureId(
+      e,
+      mapConfig.layerConfigs[layerSource].layerIdField
+    );
     const selectedFeature = getGeoJSON(e);
 
     if (!!vectorTilePolygonId && !!layerSource) {
@@ -136,13 +149,13 @@ const NewProjectMap = ({
           bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {mapConfig.layerConfigs.map(config => (
-          <Source key={config.layerId} type="vector" tiles={[config.layerUrl]}>
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
+          <Source key={sourceName} type="vector" tiles={[config.layerUrl]}>
             <Layer
               key={config.layerId}
               {...createProjectSelectLayerConfig(
                 vectorTilePolygonId,
-                config,
+                sourceName,
                 selectedLayerIds
               )}
             />

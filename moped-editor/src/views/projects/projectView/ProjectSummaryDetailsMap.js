@@ -11,7 +11,6 @@ import {
   mapConfig,
   renderTooltip,
   sumFeaturesSelected,
-  toolTipStyles,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
