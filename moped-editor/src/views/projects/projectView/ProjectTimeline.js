@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
 // Material
-import { makeStyles } from "@material-ui/core";
-import {
-  Box,
-  Button,
-  CardContent,
-  CircularProgress,
-  Grid,
-} from "@material-ui/core";
+import { CardContent, CircularProgress, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 // Query
@@ -29,10 +22,7 @@ const ProjectTimeline = () => {
     fetchPolicy: "no-cache",
   });
 
-  const [updateProjectPhase, { mutationData }] = useMutation(
-    PROJECT_PHASES_MUTATION
-  );
-
+  const [updateProjectPhase] = useMutation(PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
@@ -43,8 +33,17 @@ const ProjectTimeline = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
+  const phaseNameLookup = data.moped_phases.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.phase_name]:
+          item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
+      }),
+    {}
+  );
+
   const columns = [
-    { title: "Phase Name", field: "phase_name" },
+    { title: "Phase Name", field: "phase_name", lookup: phaseNameLookup },
     {
       title: "Active?",
       field: "is_current_phase",
@@ -71,8 +70,6 @@ const ProjectTimeline = () => {
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      console.log(newData);
-                      let leData = newData;
                       addProjectPhase({
                         variables: {
                           objects: [
