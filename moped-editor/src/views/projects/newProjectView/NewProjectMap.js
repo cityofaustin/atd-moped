@@ -15,6 +15,7 @@ import {
   isFeaturePresent,
   MAPBOX_TOKEN,
   mapConfig,
+  mapStyles,
   renderTooltip,
   sumFeaturesSelected,
 } from "../../../utils/mapHelpers";
@@ -24,7 +25,7 @@ export const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: mapConfig.toolTipStyles,
+  toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -46,30 +47,30 @@ const NewProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const [vectorTilePolygonId, setVectorTilePolygonId] = useState(null);
+  const [featureId, setFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   const handleLayerHover = e => {
     const layerSource = getLayerSource(e);
 
-    if (!layerSource) return;
+    // If a layer isn't hovered, reset state and don't proceed
+    if (!layerSource) {
+      setHoveredCoords(null);
+      setFeature(null);
+      return;
+    }
 
+    // Otherwise, get details for tooltip
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-
     const hoveredFeatureId = getFeatureId(
       e,
       mapConfig.layerConfigs[layerSource].layerIdField
     );
 
-    if (!!hoveredFeatureId) {
-      setVectorTilePolygonId(hoveredFeatureId);
-      setHoveredCoords({ x: offsetX, y: offsetY });
-    } else {
-      setHoveredCoords(null);
-      setVectorTilePolygonId(null);
-    }
+    setFeature(hoveredFeatureId);
+    setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
   const handleLayerClick = e => {
@@ -77,18 +78,18 @@ const NewProjectMap = ({
 
     if (!layerSource) return;
 
-    const vectorTilePolygonId = getFeatureId(
+    const clickedFeatureId = getFeatureId(
       e,
       mapConfig.layerConfigs[layerSource].layerIdField
     );
     const selectedFeature = getGeoJSON(e);
 
-    if (!!vectorTilePolygonId && !!layerSource) {
+    if (!!clickedFeatureId && !!layerSource) {
       const layerIds = selectedLayerIds[layerSource] || [];
 
-      const updatedLayerIds = !layerIds.includes(vectorTilePolygonId)
-        ? [...layerIds, vectorTilePolygonId]
-        : layerIds.filter(id => id !== vectorTilePolygonId);
+      const updatedLayerIds = !layerIds.includes(clickedFeatureId)
+        ? [...layerIds, clickedFeatureId]
+        : layerIds.filter(id => id !== clickedFeatureId);
 
       const updatedSelectedIds = {
         ...selectedLayerIds,
@@ -150,18 +151,22 @@ const NewProjectMap = ({
           position="top-right"
         />
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
-          <Source key={sourceName} type="vector" tiles={[config.layerUrl]}>
+          <Source
+            key={config.layerIdName}
+            type="vector"
+            tiles={[config.layerUrl]}
+          >
             <Layer
-              key={config.layerId}
+              key={config.layerIdName}
               {...createProjectSelectLayerConfig(
-                vectorTilePolygonId,
+                featureId,
                 sourceName,
                 selectedLayerIds
               )}
             />
           </Source>
         ))}
-        {renderTooltip(vectorTilePolygonId, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations selected

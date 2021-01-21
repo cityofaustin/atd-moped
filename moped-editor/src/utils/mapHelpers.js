@@ -17,23 +17,7 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   features: [],
 };
 
-export const mapConfig = {
-  mapInit: {
-    latitude: 30.268039,
-    longitude: -97.742828,
-    zoom: 12,
-  },
-  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
-  layerConfigs: {
-    CTN: {
-      layerIdName: "ctn-lines",
-      layerIdField: "PROJECT_EXTENT_ID",
-      type: "line",
-      layerColor: theme.palette.primary.main,
-      layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-    },
-  },
+export const mapStyles = {
   statusOpacities: {
     selected: 0.75,
     hovered: 0.5,
@@ -62,12 +46,31 @@ export const mapConfig = {
   },
 };
 
+export const mapConfig = {
+  mapInit: {
+    latitude: 30.268039,
+    longitude: -97.742828,
+    zoom: 12,
+  },
+  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
+  layerConfigs: {
+    CTN: {
+      layerIdName: "ctn-lines",
+      layerIdField: "PROJECT_EXTENT_ID",
+      type: "line",
+      layerColor: theme.palette.primary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+    },
+  },
+};
+
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
 export const getInteractiveIds = () =>
-  Object.values(mapConfig.layerConfigs).map(config => config.layerId);
+  Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
 
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
@@ -130,7 +133,7 @@ export const createProjectSelectLayerConfig = (
 
   // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
   return {
-    id: config.layerId,
+    id: config.layerIdName,
     type: config.type,
     "source-layer": sourceName,
     layout: {
@@ -138,14 +141,14 @@ export const createProjectSelectLayerConfig = (
     },
     paint: {
       "line-color": config.layerColor,
-      "line-width": mapConfig.lineWidthStops,
+      "line-width": mapStyles.lineWidthStops,
       "line-opacity": [
         "case",
         ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
-        mapConfig.statusOpacities.hovered,
+        mapStyles.statusOpacities.hovered,
         ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
-        mapConfig.statusOpacities.selected,
-        mapConfig.statusOpacities.unselected,
+        mapStyles.statusOpacities.selected,
+        mapStyles.statusOpacities.unselected,
       ],
     },
   };
@@ -153,9 +156,9 @@ export const createProjectSelectLayerConfig = (
 
 // Builds cases to match GeoJSON features with corresponding colors set for their layer
 // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = Object.values(mapConfig.layerConfigs).reduce(
-  (acc, config) => {
-    acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
+const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
+  (acc, [sourceName, config]) => {
+    acc.push(["==", ["get", "sourceLayer"], sourceName]);
     acc.push(config.layerColor);
     return acc;
   },
@@ -173,9 +176,9 @@ export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
   type: "line",
   paint: {
-    "line-width": mapConfig.lineWidthStops,
+    "line-width": mapStyles.lineWidthStops,
     "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "line-opacity": mapConfig.statusOpacities.selected,
+    "line-opacity": mapStyles.statusOpacities.selected,
   },
 });
 
