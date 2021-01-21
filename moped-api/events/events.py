@@ -1,4 +1,4 @@
-import hashlib, json, boto3, os, pdb
+import hashlib, json, boto3, os, datetime
 from flask import Blueprint, jsonify, request
 
 # Import our custom code
@@ -17,9 +17,13 @@ def events_index() -> str:
     Returns a simple message.
     :return str:
     """
-    return jsonify({
-        "message": "Hello from Events! :)"
-    })
+    now = datetime.datetime.now()
+    return jsonify(
+        {
+            "message": "MOPED API Available - Events - Health Check - Available @ %s"
+            % now.strftime("%Y-%m-%d %H:%M:%S")
+        }
+    )
 
 
 #
