@@ -54,11 +54,11 @@ export const TIMELINE_QUERY = gql`
   }
 `;
 
-export const PROJECT_PHASES_MUTATION = gql`
+export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
     $is_current_phase: Boolean
-    $phase_start: date
-    $phase_end: date
+    $phase_start: date = null
+    $phase_end: date = null
     $project_phase_id: Int!
     $phase_name: String!
   ) {

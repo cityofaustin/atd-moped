@@ -1,41 +1,80 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 
 // Material
-import { CardContent, CircularProgress, Grid } from "@material-ui/core";
+import {
+  CardContent,
+  CircularProgress,
+  Grid,
+  TextField,
+} from "@material-ui/core";
 import MaterialTable from "material-table";
 
 // Query
 import {
   TIMELINE_QUERY,
-  PROJECT_PHASES_MUTATION,
+  UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
+/**
+ * DateFieldEditComponent - renders a Date type Calendar select
+ * @param {object} props - Values passed through Material Table `editComponent`
+ * @param {string} name - Field name
+ * @param {string} label - Display label
+ * @return {JSX.Element}
+ * @constructor
+ */
+const DateFieldEditComponent = (props, name, label) => (
+  <TextField
+    name={name}
+    label={label}
+    type="date"
+    variant="standard"
+    value={props.value}
+    onChange={e => props.onChange(e.target.value)}
+    InputLabelProps={{
+      shrink: true,
+    }}
+  />
+);
+
+/**
+ * ProjectTimeline Component - renders the view displayed when the "Timeline"
+ * tab is active
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectTimeline = () => {
+  /** Params Hook
+   * @type {integer} projectId
+   * */
   const { projectId } = useParams();
 
+  //
+  /**
+   * Queries Hook
+   * @type {boolean} loading
+   * @type {object} error
+   * @type {object} data
+   * @function refetch - Provides a manual callback to update the Apollo cache
+   * */
   const { loading, error, data, refetch } = useQuery(TIMELINE_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
 
+  console.log(loading, error, data, refetch);
+
   // Mutations
-  const [updateProjectPhase] = useMutation(PROJECT_PHASES_MUTATION);
+  const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
-  // useEffect(() => {
-  //   refetch();
-  // }, [refetch]);
-
-  if (loading) return <CircularProgress />;
+  if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
-
-  // console.log("moped_phases", data.moped_phases);
-  // debugger;
 
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
@@ -53,8 +92,24 @@ const ProjectTimeline = () => {
       field: "is_current_phase",
       lookup: { true: "True", false: "False" },
     },
-    { title: "Start Date", field: "phase_start" },
-    { title: "End Date", field: "phase_end" },
+    {
+      title: "Start Date",
+      field: "phase_start",
+      editComponent: props => (
+        <DateFieldEditComponent
+          {...props}
+          name="phase_start"
+          label="Start Date"
+        />
+      ),
+    },
+    {
+      title: "End Date",
+      field: "phase_end",
+      editComponent: props => (
+        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+      ),
+    },
   ];
 
   // Notes:
@@ -98,32 +153,26 @@ const ProjectTimeline = () => {
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      let difference = Object.keys(oldData).filter(
+                      const leData = { ...oldData };
+
+                      let differences = Object.keys(oldData).filter(
                         key => oldData[key] !== newData[key]
                       );
 
-                      if (difference.length < 1) {
-                        resolve();
-                      }
-                      console.log("newData", newData);
-                      console.log("oldData", oldData);
-                      const leData = Object.assign(newData, oldData);
+                      differences.forEach(diff => {
+                        if (
+                          newData[diff] === "" &&
+                          (diff === "phase_start" || diff === "phase_end")
+                        ) {
+                          leData[diff] = null;
+                        } else {
+                          leData[diff] = newData[diff];
+                        }
+                      });
+
                       delete leData.tableData;
                       delete leData.project_id;
                       delete leData.__typename;
-                      // let leData = {
-                      //   project_phase_id: newData.project_phase_id,
-                      //   phase_name: newData.phase_name
-                      //     ? newData.phase_name
-                      //     : oldData.phase_name,
-                      // };
-
-                      difference.forEach(diff => {
-                        if (diff === "tableData") return;
-                        leData[diff] = newData[diff];
-                      });
-
-                      console.log("onRowUpdate leData", leData);
 
                       updateProjectPhase({
                         variables: leData,
