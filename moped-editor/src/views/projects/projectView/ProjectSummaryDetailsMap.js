@@ -6,7 +6,6 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getInteractiveIds,
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
@@ -52,7 +51,7 @@ const ProjectSummaryDetailsMap = ({
         ref={mapRef}
         width="100%"
         height={500}
-        interactiveLayerIds={getInteractiveIds()}
+        interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}

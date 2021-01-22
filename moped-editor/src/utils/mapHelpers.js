@@ -108,7 +108,10 @@ export const getFeatureId = (e, idKey) =>
  * @return {String} The name of the source layer
  */
 export const getLayerSource = e =>
-  e.features && e.features.length > 0 && e.features[0].layer["source-layer"];
+  e.features &&
+  e.features.length > 0 &&
+  (e.features[0].layer["source-layer"] ||
+    e.features[0].properties["sourceLayer"]);
 
 /**
  * Get a feature's GeoJSON from a Mapbox map click or hover event
@@ -120,7 +123,6 @@ export const getGeoJSON = e =>
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
     id: e.features[0].id,
-    sourceLayer: e.features[0].sourceLayer,
     source: e.features[0].source,
     properties: {
       ...e.features[0].properties,
@@ -233,7 +235,7 @@ export function useHoverLayer() {
       setFeature(null);
       return;
     }
-    // debugger;
+
     // Otherwise, get details for tooltip
     const {
       srcEvent: { offsetX, offsetY },
