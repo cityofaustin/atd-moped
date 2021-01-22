@@ -6,11 +6,13 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getFeatureId,
+  getInteractiveIds,
   MAPBOX_TOKEN,
   mapConfig,
+  mapStyles,
   renderTooltip,
   sumFeaturesSelected,
+  useHoverLayer,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -18,7 +20,7 @@ const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: mapConfig.toolTipStyles,
+  toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -35,23 +37,10 @@ const ProjectSummaryDetailsMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const [hoveredFeature, setHoveredFeature] = useState(null);
-  const [hoveredCoords, setHoveredCoords] = useState(null);
+  const { handleHover, featureId, hoveredCoords } = useHoverLayer();
 
   const handleLayerHover = e => {
-    const {
-      srcEvent: { offsetX, offsetY },
-    } = e;
-
-    const featurePolygonId = getFeatureId(e, "PROJECT_EXTENT_ID");
-
-    if (!!featurePolygonId) {
-      setHoveredFeature(featurePolygonId);
-      setHoveredCoords({ x: offsetX, y: offsetY });
-    } else {
-      setHoveredFeature(null);
-      setHoveredCoords(null);
-    }
+    handleHover(e);
   };
 
   const handleViewportChange = viewport => setViewport(viewport);
@@ -63,7 +52,7 @@ const ProjectSummaryDetailsMap = ({
         ref={mapRef}
         width="100%"
         height={500}
-        interactiveLayerIds={["projectExtent"]}
+        interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -76,7 +65,7 @@ const ProjectSummaryDetailsMap = ({
             <Layer {...createProjectViewLayerConfig()} />
           </Source>
         )}
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations in this project

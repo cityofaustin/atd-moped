@@ -18,6 +18,7 @@ import {
   mapStyles,
   renderTooltip,
   sumFeaturesSelected,
+  useHoverLayer,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
@@ -47,30 +48,10 @@ const NewProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const [featureId, setFeature] = useState(null);
-  const [hoveredCoords, setHoveredCoords] = useState(null);
+  const { handleHover, featureId, hoveredCoords } = useHoverLayer();
 
   const handleLayerHover = e => {
-    const layerSource = getLayerSource(e);
-
-    // If a layer isn't hovered, reset state and don't proceed
-    if (!layerSource) {
-      setHoveredCoords(null);
-      setFeature(null);
-      return;
-    }
-
-    // Otherwise, get details for tooltip
-    const {
-      srcEvent: { offsetX, offsetY },
-    } = e;
-    const hoveredFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
-
-    setFeature(hoveredFeatureId);
-    setHoveredCoords({ x: offsetX, y: offsetY });
+    handleHover(e);
   };
 
   const handleLayerClick = e => {

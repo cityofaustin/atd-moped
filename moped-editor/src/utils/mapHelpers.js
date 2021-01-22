@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import theme from "../theme/index";
 import { isEqual } from "lodash";
 
@@ -72,9 +72,9 @@ export const mapConfig = {
               "line-width": mapStyles.lineWidthStops,
               "line-opacity": [
                 "case",
-                ["==", ["get", "PROJECT_EXTENT_ID"], hoveredId],
+                ["==", ["get", this.layerIdField], hoveredId],
                 mapStyles.statusOpacities.hovered,
-                ["in", ["get", "PROJECT_EXTENT_ID"], ["literal", layerIds]],
+                ["in", ["get", this.layerIdField], ["literal", layerIds]],
                 mapStyles.statusOpacities.selected,
                 mapStyles.statusOpacities.unselected,
               ],
@@ -120,10 +120,11 @@ export const getGeoJSON = e =>
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
     id: e.features[0].id,
+    sourceLayer: e.features[0].sourceLayer,
+    source: e.features[0].source,
     properties: {
       ...e.features[0].properties,
       sourceLayer: e.features[0].sourceLayer,
-      source: e.features[0].source,
     },
     type: e.features[0].type,
   };
@@ -218,3 +219,33 @@ export const sumFeaturesSelected = selectedLayerIds =>
     (acc, selectedIds) => (acc += selectedIds.length),
     0
   );
+
+export function useHoverLayer() {
+  const [featureId, setFeature] = useState(null);
+  const [hoveredCoords, setHoveredCoords] = useState(null);
+
+  const handleHover = e => {
+    const layerSource = getLayerSource(e);
+
+    // If a layer isn't hovered, reset state and don't proceed
+    if (!layerSource) {
+      setHoveredCoords(null);
+      setFeature(null);
+      return;
+    }
+    // debugger;
+    // Otherwise, get details for tooltip
+    const {
+      srcEvent: { offsetX, offsetY },
+    } = e;
+    const hoveredFeatureId = getFeatureId(
+      e,
+      mapConfig.layerConfigs[layerSource].layerIdField
+    );
+
+    setFeature(hoveredFeatureId);
+    setHoveredCoords({ x: offsetX, y: offsetY });
+  };
+
+  return { handleHover, featureId, hoveredCoords };
+}
