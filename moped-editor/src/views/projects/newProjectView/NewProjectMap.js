@@ -48,11 +48,7 @@ const NewProjectMap = ({
   const mapRef = useRef();
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const { handleHover, featureId, hoveredCoords } = useHoverLayer();
-
-  const handleLayerHover = e => {
-    handleHover(e);
-  };
+  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
   const handleLayerClick = e => {
     const layerSource = getLayerSource(e);

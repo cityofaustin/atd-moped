@@ -196,7 +196,7 @@ export const createProjectViewLayerConfig = () => ({
  * @param {String} hoveredFeature - The ID of the feature hovered
  * @param {Object} hoveredCoords - Object with keys x and y that describe position of cursor
  * @param {Object} className - Styles from the classes object
- * @return {JSX} Mapbox layer style object
+ * @return {JSX} The populated tooltip JSX
  */
 export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
   hoveredFeature && (
@@ -222,11 +222,31 @@ export const sumFeaturesSelected = selectedLayerIds =>
     0
   );
 
+/**
+ * Custom hook that returns a vector tile layer hover event handler and the details to place and populate a tooltip
+ * @return {{handleLayerHover:Function, featuredId:String, hoveredCoords:Object}}
+ * @return {HoverObject} Object that exposes the setter and getters for a hovered feature
+ */
+/**
+ * @typedef {Object} HoverObject
+ * @property {Function} handleLayerHover - Function that get and sets featureId and Point for tooltip
+ * @property {String} featuredId - The ID of the hovered feature
+ * @property {Point} hoveredCoords - The coordinates used to place the tooltip
+ */
+/**
+ * @typedef {Object} Point
+ * @property {Number} x - The x coordinate to the place the tooltip
+ * @property {Number} y - The y coordinate to the place the tooltip
+ */
 export function useHoverLayer() {
   const [featureId, setFeature] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
-  const handleHover = e => {
+  /**
+   * Gets and sets data from a map feature used to populate and place a tooltip
+   * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates
+   */
+  const handleLayerHover = e => {
     const layerSource = getLayerSource(e);
 
     // If a layer isn't hovered, reset state and don't proceed
@@ -249,5 +269,5 @@ export function useHoverLayer() {
     setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
-  return { handleHover, featureId, hoveredCoords };
+  return { handleLayerHover, featureId, hoveredCoords };
 }
