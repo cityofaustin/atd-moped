@@ -1,4 +1,4 @@
-import json
+import json, boto3
 
 import requests
 from cerberus import Validator
@@ -6,13 +6,21 @@ from cerberus import Validator
 from config import (
     HASURA_HTTP_HEADERS,
     HASURA_ENDPOINT,
+    HASURA_EVENT_VALIDATION_SCHEMA,
 )
 
 
 class MopedEvent:
+    """
+    The Moped Event Class
+    """
 
-    VALIDATION_SCHEMA = None
+    HASURA_EVENT_VALIDATION_SCHEMA = None
+
     HASURA_EVENT_PAYLOAD = {}
+
+    MOPED_PRIMARY_KEY_MAP = {}
+
     MOPED_GRAPHQL_MUTATION = """
         mutation InsertMopedActivityLog (
           $recordId:Int!,
@@ -40,6 +48,8 @@ class MopedEvent:
         Constructor for Moped Event
         """
         self.HASURA_EVENT_PAYLOAD = payload
+        self.HASURA_EVENT_VALIDATION_SCHEMA = HASURA_EVENT_VALIDATION_SCHEMA
+        self.load_primary_keys()
 
     def __repr__(self) -> str:
         """
@@ -68,9 +78,9 @@ class MopedEvent:
 
     def load_payload_from_file(self, file: str) -> None:
         """
-
-        :param file:
-        :type file:
+        Loads a json file from file
+        :param file: The path to the file
+        :type file: str
         """
         with open(file) as fp:
             self.HASURA_EVENT_PAYLOAD = json.load(fp)
@@ -100,6 +110,7 @@ class MopedEvent:
         :return: Returns True if it can validate, false otherwise
         :rtype: bool
         """
+        return False if self.HASURA_EVENT_VALIDATION_SCHEMA is None else True
 
     def validate_state(self, mode: str = "old") -> tuple:
         """
@@ -115,10 +126,10 @@ class MopedEvent:
         if self.HASURA_EVENT_PAYLOAD is None:
             return False, {"error": "Empty payload document"}
 
-        if self.VALIDATION_SCHEMA is None:
+        if self.HASURA_EVENT_VALIDATION_SCHEMA is None:
             return False, {"error": "Empty validation schema"}
 
-        event_validator = Validator(self.VALIDATION_SCHEMA)
+        event_validator = Validator(self.HASURA_EVENT_VALIDATION_SCHEMA)
         return event_validator.validate(document=self.get_state(mode)), event_validator.errors
 
     def request(self, variables: dict, headers: dict = {}) -> dict:
@@ -146,6 +157,28 @@ class MopedEvent:
         )
         response.encoding = "utf-8"
         return response.json()
+
+    def load_primary_keys(self):
+        """
+        Reads the primary key settings
+        :return: A dictionary containing the primary key for every table
+        :rtype: dict
+        """
+        s3 = boto3.Session().client('s3')
+        s3_object = s3.get_object(Bucket="atd-moped-data-events", Key="settings/moped_primary_keys_staging.json")
+        self.MOPED_PRIMARY_KEY_MAP = json.loads(s3_object['Body'].read())
+
+    def get_primary_key(self, table: str, default: str = None) -> None:
+        """
+        Returns the name of a primary key column for a table
+        :param table: The table name
+        :type table: str
+        :param default: The default value in case it can't find it
+        :type default: None
+        :return: The name of the primary key field
+        :rtype: str
+        """
+        return self.MOPED_PRIMARY_KEY_MAP.get(table, default)
 
     def get_diff(self) -> dict:
         """
