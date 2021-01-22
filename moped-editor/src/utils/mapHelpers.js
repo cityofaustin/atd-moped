@@ -66,6 +66,7 @@ export const mapConfig = {
             type: "line",
             layout: {
               "line-join": "round",
+              "line-cap": "round",
             },
             paint: {
               "line-color": this.layerColor,
@@ -184,6 +185,10 @@ const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
 export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
   type: "line",
+  layout: {
+    "line-join": "round",
+    "line-cap": "round",
+  },
   paint: {
     "line-width": mapStyles.lineWidthStops,
     "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
