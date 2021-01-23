@@ -28,11 +28,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  selectedLayerIds,
-  projectExtentGeoJSON,
-  isEditingProjectExtent = false,
-}) => {
+const ProjectSummaryMap = ({ selectedLayerIds, projectExtentGeoJSON }) => {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -41,13 +37,7 @@ const ProjectSummaryMap = ({
 
   const handleViewportChange = viewport => setViewport(viewport);
 
-  return isEditingProjectExtent ? // <NewProjectMap
-  //   selectedLayerIds={}
-  //   setSelectedLayerIds={}
-  //   featureCollection={}
-  //   setFeatureCollection={}
-  // />
-  null : (
+  return (
     <Box className={classes.mapBox}>
       <ReactMapGL
         {...viewport}

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
+import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
 
@@ -30,6 +31,7 @@ const formatValue = value => {
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
+  const [isEditing, setIsEditing] = useState(false);
   const { loading, error, data } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
@@ -115,6 +117,7 @@ const ProjectSummary = () => {
               projectExtentGeoJSON={project_extent_geojson}
             />
           )}
+          {isEditing && <ProjectSummaryEditMap />}
         </Grid>
       </Grid>
     </CardContent>
