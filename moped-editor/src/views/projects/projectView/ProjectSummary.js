@@ -113,10 +113,13 @@ const ProjectSummary = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           {project_extent_geojson && project_extent_ids && (
-            <ProjectSummaryMap
-              selectedLayerIds={project_extent_ids}
-              projectExtentGeoJSON={project_extent_geojson}
-            />
+            <>
+              <ProjectSummaryMap
+                selectedLayerIds={project_extent_ids}
+                projectExtentGeoJSON={project_extent_geojson}
+              />
+              <button onClick={() => setIsEditing(true)}>Edit Map</button>
+            </>
           )}
           {isEditing && (
             <ProjectSummaryEditMap

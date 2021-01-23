@@ -1,5 +1,16 @@
 import React, { useState } from "react";
 import NewProjectMap from "../newProjectView/NewProjectMap";
+import {
+  AppBar,
+  Button,
+  IconButton,
+  Dialog,
+  makeStyles,
+  Toolbar,
+  Typography,
+  Slide,
+} from "@material-ui/core";
+import { Close as CloseIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -53,7 +64,7 @@ const ProjectSummaryMap = ({
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Sound
+            Edit Map
           </Typography>
           <Button autoFocus color="inherit" onClick={handleSave}>
             save
