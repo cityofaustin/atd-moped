@@ -31,6 +31,7 @@ const formatValue = value => {
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
+  // TODO: Add toggle UI to trigger ProjectSummaryEditMap
   const [isEditing, setIsEditing] = useState(false);
   const { loading, error, data } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
@@ -117,7 +118,14 @@ const ProjectSummary = () => {
               projectExtentGeoJSON={project_extent_geojson}
             />
           )}
-          {isEditing && <ProjectSummaryEditMap />}
+          {isEditing && (
+            <ProjectSummaryEditMap
+              selectedLayerIds={project_extent_ids}
+              projectExtentGeoJSON={project_extent_geojson}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+            />
+          )}
         </Grid>
       </Grid>
     </CardContent>
