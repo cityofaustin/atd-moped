@@ -11,15 +11,11 @@ import {
   DialogTitle,
   DialogActions,
   DialogContentText,
-  Input,
-  FormControlLabel,
-  Switch,
   Grid,
   makeStyles,
   CircularProgress,
 } from "@material-ui/core";
 import { NavLink as RouterLink } from "react-router-dom";
-import { CSVLink } from "react-csv";
 import { useLazyQuery } from "@apollo/client";
 import moment from "moment";
 
@@ -43,9 +39,6 @@ const useStyles = makeStyles(theme => ({
 const GridTableExport = ({ query, showFilterState }) => {
   const classes = useStyles();
 
-  // Controls typing timer
-  let typingTimer = null;
-
   /**
    * When True, the dialog is open.
    * @type {boolean} dialogOpen
@@ -55,39 +48,72 @@ const GridTableExport = ({ query, showFilterState }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
-   * A static initial limit to revert to whenever the dialog is closed.
-   * @type {integer} initialLimit
-   * @default query.limit
-   */
-  const [initialLimit] = useState(query.limit);
-
-  /**
-   * The current export limit
-   * @type {integer} limit
-   * @function setLimit - Sets the state of limit
-   * @default query.limit
-   */
-  const [limit, setLimit] = useState(query.limit);
-
-  /**
-   * When true, the query downloads all records. Also controls the switch behavior.
-   * @type {boolean} selectAll
-   * @function setSelectAll - Sets the state of selectAll
-   * @default query.limit
-   */
-  const [selectAll, setSelectAll] = useState(false);
-
-  /**
    * Instantiates getExport, loading and data variables
    * @function getExport - It is called to load the data
    * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
-  let [getExport, { loading, data }] = useLazyQuery(
+  let [getExport, { called, stopPolling, loading, data }] = useLazyQuery(
     query.queryCSV(Object.keys(query.config.export).join(" \n")),
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
     query.config.useQuery
   );
+
+  /**
+   * Generates a sanitized string for CSV
+   * @param {*} value - Any value
+   * @return {string}
+   */
+  const dataSanitizeValueExport = (value) => {
+    return typeof value !== "number" ? `"${value}"` : String(value);
+  }
+
+  /**
+   * Retrieves a list of headers for the data
+   * @param {Array} data - The data payload
+   * @return {string[]}
+   */
+  const dataGetHeaders = data => {
+    return Array.isArray(data)
+      ? Object.keys(data[0]).filter(key => key !== "__typename")
+      : [];
+  };
+
+  /**
+   * Converts a single data entry into a CSV line
+   * @param {string[]} headers - The list of headers that determines the order
+   * @param {Object} data - The data as provided by Hasura
+   * @return {string}
+   */
+  const dataToCSV = (headers, data) => {
+    return (
+      headers.join(",") +
+      "\n" +
+      data
+        .map(item => {
+          return headers.map(key => dataSanitizeValueExport(item[key])).join(",");
+        })
+        .join("\n")
+    );
+  };
+
+  /**
+   * Downloads the contents of fileContents into a file
+   * @param {string} fileContents
+   */
+  const downloadFile = fileContents => {
+    const exportFileName = query.table + moment(Date.now()).format();
+    const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    if (link.download !== undefined) {
+      link.style.visibility = "hidden";
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", exportFileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
 
   /**
    * Builds a record entry given a specific configuration and filters
@@ -140,26 +166,8 @@ const GridTableExport = ({ query, showFilterState }) => {
    * Handles the closing of the dialog
    */
   const handleDialogClose = () => {
+    if(called) stopPolling();
     setDialogOpen(false);
-  };
-
-  /**
-   * Handles the click on the switch to download all
-   */
-  const handleDownloadAllClick = () => setSelectAll(!selectAll);
-
-  /**
-   * Handles the change of the value of the input field
-   * @param {string} value - The numeric value that you get from the dialog
-   */
-  const handleLimitChange = value => {
-    // Clear the current timer
-    clearTimeout(typingTimer);
-    // Start a new timer with a 1/3rd of a second delay.
-    typingTimer = setTimeout(() => {
-      // Update the state
-      setLimit(value);
-    }, 333);
   };
 
   /**
@@ -170,26 +178,28 @@ const GridTableExport = ({ query, showFilterState }) => {
   };
 
   /**
-   * Update the export whenever the dialog is open
-   */
-  useEffect(() => {
-    if (dialogOpen) {
-      getExport();
-    } else {
-      // Reset the query limit
-      query.limit = initialLimit;
-    }
-  }, [dialogOpen, getExport, initialLimit, query.limit]);
-
-  /**
    * Update the export whenever limit or selectall change
    */
   useEffect(() => {
     if (dialogOpen) {
-      query.limit = limit;
+      query.limit = 0;
       getExport();
     }
-  }, [limit, selectAll, dialogOpen, query.limit, getExport]);
+  }, [dialogOpen, query.limit, getExport]);
+
+  /**
+   * Make the data download
+   */
+  if (dialogOpen && !loading && data) {
+    const formattedData = formatExportData(data[query.table]);
+    const headers = dataGetHeaders(formattedData);
+    const csvString = dataToCSV(headers, formattedData);
+    setTimeout(() => {
+      // Update the state
+      setDialogOpen(false);
+      downloadFile(csvString);
+    }, 1500);
+  }
 
   return (
     <Box display="flex" justifyContent="flex-end">
@@ -233,38 +243,16 @@ const GridTableExport = ({ query, showFilterState }) => {
         onClose={handleDialogClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Export Data</DialogTitle>
+        <DialogTitle id="form-dialog-title">Downloading CSV</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Enter the number of records you wish to download, or select "All
-            Records" to download all.
-          </DialogContentText>
           <Grid container spacing={3}>
-            <Grid item xs={12} lg={8}>
-              <Input
-                id="csv-number-input"
-                type="number"
-                placeholder={
-                  selectAll ? "Selecting all rows" : "Number of rows"
-                }
-                min={0}
-                disabled={selectAll === true}
-                onChange={e => handleLimitChange(e.target.value)}
-                fullWidth
-              />
+            <Grid item xs={2} lg={2}>
+              <CircularProgress />
             </Grid>
-            <Grid item xs={12} lg={4}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={selectAll}
-                    onChange={handleDownloadAllClick}
-                    name="allRecords"
-                    color="primary"
-                  />
-                }
-                label="All Records"
-              />
+            <Grid item xs={10} lg={10}>
+              <DialogContentText>
+                Generating download file, please wait.
+              </DialogContentText>
             </Grid>
           </Grid>
         </DialogContent>
@@ -272,23 +260,6 @@ const GridTableExport = ({ query, showFilterState }) => {
           <Button onClick={handleDialogClose} color="primary">
             Cancel
           </Button>
-          {!loading && data ? (
-            <CSVLink
-              className=""
-              data={formatExportData(data[query.table])}
-              filename={query.table + moment(Date.now()).format()}
-            >
-              <Button
-                onClick={handleDialogClose}
-                color="primary"
-                startIcon={<Icon>save</Icon>}
-              >
-                Download
-              </Button>
-            </CSVLink>
-          ) : (
-            <CircularProgress />
-          )}
         </DialogActions>
       </Dialog>
     </Box>
