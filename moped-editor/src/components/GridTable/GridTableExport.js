@@ -243,7 +243,7 @@ const GridTableExport = ({ query, showFilterState }) => {
         onClose={handleDialogClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Downloading CSV</DialogTitle>
+        <DialogTitle id="form-dialog-title">{" "}</DialogTitle>
         <DialogContent>
           <Grid container spacing={3}>
             <Grid item xs={2} lg={2}>
@@ -251,7 +251,7 @@ const GridTableExport = ({ query, showFilterState }) => {
             </Grid>
             <Grid item xs={10} lg={10}>
               <DialogContentText>
-                Generating download file, please wait.
+                Preparing download, please wait.
               </DialogContentText>
             </Grid>
           </Grid>
