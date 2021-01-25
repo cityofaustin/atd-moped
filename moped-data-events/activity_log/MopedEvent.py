@@ -183,9 +183,10 @@ class MopedEvent:
         :return: The dictionary containing all the variables needed
         :rtype: dict
         """
+        primary_key = self.get_primary_key(table=self.get_event_type())
         return {
-            "recordId": None,
-            "recordType": None,
+            "recordId": self.get_state("new")[primary_key],
+            "recordType": self.get_event_type(),
             "recordData": self.payload(),
             "description": self.get_diff(),
             "updatedBy": None,
