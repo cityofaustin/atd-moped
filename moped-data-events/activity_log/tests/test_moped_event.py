@@ -122,3 +122,13 @@ class TestMopedEvent:
 
         moped_event = MopedEvent(payload=None, load_primary_keys=False)
         assert moped_event.payload() is None
+
+    def test_can_validate(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert moped_event.can_validate()
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert moped_event.can_validate()
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert moped_event.can_validate()
