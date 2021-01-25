@@ -33,24 +33,18 @@ class TestMopedEvent:
         """
         Tests whether the primary keys are going to be loaded
         """
-        moped_event = MopedEvent(self.event_update)
-        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
-        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert len(moped_event.MOPED_PRIMARY_KEY_MAP.keys()) == 0
         assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
         assert moped_event.HASURA_EVENT_PAYLOAD != {}
 
-        moped_event = MopedEvent(self.event_insert)
-        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
-        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert len(moped_event.MOPED_PRIMARY_KEY_MAP.keys()) == 0
         assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
         assert moped_event.HASURA_EVENT_PAYLOAD != {}
 
-        moped_event = MopedEvent(None)
-        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
-        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert len(moped_event.MOPED_PRIMARY_KEY_MAP.keys()) == 0
         assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
         assert moped_event.HASURA_EVENT_PAYLOAD is None
 
@@ -70,7 +64,7 @@ class TestMopedEvent:
         assert moped_event.get_primary_key(None) is None
 
     def test_diff(self) -> None:
-        moped_event = MopedEvent(self.event_update)
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
         diff = moped_event.get_diff()
         assert isinstance(diff, list)
         assert len(diff) == 2
@@ -81,7 +75,7 @@ class TestMopedEvent:
         assert diff[1]["old"] == "Project name old state"
         assert diff[1]["new"] == "Project name new state"
 
-        moped_event = MopedEvent(None)
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
         diff = moped_event.get_diff()
         assert isinstance(diff, list)
         assert len(diff) == 0
