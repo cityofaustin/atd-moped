@@ -139,6 +139,19 @@ class MopedEvent:
         """
         return self.MOPED_PRIMARY_KEY_MAP.get(table, default)
 
+    def get_event_user(self, default: str = None) -> str:
+        """
+        Retrieves the event's user id (Cognito UUID or AzureID)
+        :param default: If the value is not found, default: None
+        :type default: str
+        :return: The event's Cognito UUID or Azure ID signature
+        :rtype: str
+        """
+        try:
+            return self.HASURA_EVENT_PAYLOAD["event"]["session_variables"]["x-hasura-user-id"]
+        except (TypeError,KeyError):
+            return default
+
     def get_event_type(self) -> str:
         """
         Safely retrieves the event type from the event payload
@@ -189,7 +202,7 @@ class MopedEvent:
             "recordType": self.get_event_type(),
             "recordData": self.payload(),
             "description": self.get_diff(),
-            "updatedBy": None,
+            "updatedBy": self.get_event_user(),
             "updatedById": 0,
         }
 
