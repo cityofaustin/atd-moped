@@ -127,7 +127,7 @@ class MopedEvent:
         s3_object = s3.get_object(Bucket="atd-moped-data-events", Key="settings/moped_primary_keys_staging.json")
         self.MOPED_PRIMARY_KEY_MAP = json.loads(s3_object['Body'].read())
 
-    def get_primary_key(self, table: str, default: str = None) -> None:
+    def get_primary_key(self, table: str, default: str = None) -> str:
         """
         Returns the name of a primary key column for a table
         :param table: The table name
