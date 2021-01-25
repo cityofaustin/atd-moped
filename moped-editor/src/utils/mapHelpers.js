@@ -52,6 +52,7 @@ export const mapConfig = {
     longitude: -97.742828,
     zoom: 12,
   },
+  mapboxDefaultMaxZoom: 18,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
@@ -60,6 +61,7 @@ export const mapConfig = {
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      layerMaxLOD: 14,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
           return {
