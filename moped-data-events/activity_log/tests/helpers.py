@@ -28,3 +28,18 @@ def create_sqs_event(event: dict) -> dict:
             }
         ]
     }
+
+
+def is_str_dict(string: str) -> bool:
+    """
+    Returns True if a string is a valid dictionary
+    :param string: The dictionary to be evaluated
+    :type string: str
+    :return: True if the string is a parsable json
+    :rtype: bool
+    """
+    try:
+        json.loads(string)
+        return True
+    except:
+        return False
