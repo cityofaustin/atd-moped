@@ -48,6 +48,14 @@ const GridTableExport = ({ query, showFilterState }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
+   * When True, the download happens.
+   * @type {boolean} downloading
+   * @function setDownloading - Sets the state of downloading
+   * @default false
+   */
+  const [downloading, setDownloading] = useState(false);
+
+  /**
    * Instantiates getExport, loading and data variables
    * @function getExport - It is called to load the data
    * @property {boolean} loading - True whenever the data is being loaded
@@ -112,6 +120,7 @@ const GridTableExport = ({ query, showFilterState }) => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      setDownloading(false);
     }
   };
 
@@ -181,25 +190,25 @@ const GridTableExport = ({ query, showFilterState }) => {
    * Update the export whenever limit or selectall change
    */
   useEffect(() => {
-    if (dialogOpen) {
+    if (dialogOpen && !downloading) {
       query.limit = 0;
       getExport();
+      setDownloading(true);
     }
-  }, [dialogOpen, query.limit, getExport]);
 
-  /**
-   * Make the data download
-   */
-  if (dialogOpen && !loading && data) {
-    const formattedData = formatExportData(data[query.table]);
-    const headers = dataGetHeaders(formattedData);
-    const csvString = dataToCSV(headers, formattedData);
-    setTimeout(() => {
-      // Update the state
-      setDialogOpen(false);
-      downloadFile(csvString);
-    }, 1500);
-  }
+    if (dialogOpen && downloading && data && !loading) {
+      const formattedData = formatExportData(data[query.table]);
+      const headers = dataGetHeaders(formattedData);
+      const csvString = dataToCSV(headers, formattedData);
+      setTimeout(() => {
+        // Update the state
+        setDialogOpen(false);
+        downloadFile(csvString);
+      }, 1500);
+    }
+  },
+  // eslint-disable-next-line
+  [dialogOpen, downloading, loading, query.limit, getExport]);
 
   return (
     <Box display="flex" justifyContent="flex-end">
