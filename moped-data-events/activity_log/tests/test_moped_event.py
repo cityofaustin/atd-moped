@@ -79,3 +79,13 @@ class TestMopedEvent:
         diff = moped_event.get_diff()
         assert isinstance(diff, list)
         assert len(diff) == 0
+
+    def test_repr(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert repr(moped_event) == "MopedEvent(moped_project)"
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert repr(moped_event) == "MopedEvent(moped_project)"
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert repr(moped_event) == "MopedEvent()"
