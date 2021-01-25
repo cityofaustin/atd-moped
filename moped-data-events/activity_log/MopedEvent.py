@@ -43,13 +43,18 @@ class MopedEvent:
         }
     """
 
-    def __init__(self, payload: dict):
+    def __init__(self, payload: dict, load_primary_keys: bool = True):
         """
         Constructor for Moped Event
+        :param payload: The event payload as provided by Lambda/SQS
+        :type payload: dict
+        :param load_primary_keys: If True, it will download the primary keys from S3. Default: True
+        :type load_primary_keys: bool
         """
         self.HASURA_EVENT_PAYLOAD = payload
         self.HASURA_EVENT_VALIDATION_SCHEMA = HASURA_EVENT_VALIDATION_SCHEMA
-        self.load_primary_keys()
+        if load_primary_keys:
+            self.load_primary_keys()
 
     def __repr__(self) -> str:
         """
@@ -57,7 +62,7 @@ class MopedEvent:
         :return: The name of the class
         :rtype: str
         """
-        return "MopedEvent()"
+        return f"MopedEvent({self.get_event_type()})"
 
     def __str__(self) -> str:
         """
@@ -179,6 +184,17 @@ class MopedEvent:
         :rtype: str
         """
         return self.MOPED_PRIMARY_KEY_MAP.get(table, default)
+
+    def get_event_type(self) -> str:
+        """
+        Safely retrieves the event type from the event payload
+        :return: The name of the table being modified
+        :rtype: str
+        """
+        try:
+            return self.HASURA_EVENT_PAYLOAD["table"]["name"]
+        except (TypeError, KeyError):
+            return ""
 
     def get_diff(self) -> dict:
         """
