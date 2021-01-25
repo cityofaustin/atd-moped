@@ -3,17 +3,7 @@ import json, pdb
 
 from MopedEvent import MopedEvent
 
-
-def load_json_file(file: str) -> dict:
-    """
-    Parses a JSON from file
-    :param file: File name
-    :type file: str
-    :return: The file contents as a dictionary
-    :rtype: dict
-    """
-    with open(file) as filePointer:
-            return json.load(fp=filePointer)
+from .helpers import *
 
 
 class TestMopedEvent:
@@ -89,3 +79,13 @@ class TestMopedEvent:
 
         moped_event = MopedEvent(payload=None, load_primary_keys=False)
         assert repr(moped_event) == "MopedEvent()"
+
+    def test_str(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert is_str_dict(str(moped_event))
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert is_str_dict(str(moped_event))
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert str(moped_event) == "null"
