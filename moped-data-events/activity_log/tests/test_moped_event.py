@@ -156,3 +156,11 @@ class TestMopedEvent:
 
         assert variables.get("updatedBy", "") is None
         assert variables.get("updatedById", -1) == 0
+
+    def test_get_variables_fail(self) -> None:
+        moped_event = MopedEvent(payload=None, load_primary_keys=True)
+        try:
+            moped_event.get_variables()
+            assert False
+        except KeyError:
+            assert True
