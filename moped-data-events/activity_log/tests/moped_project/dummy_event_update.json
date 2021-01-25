@@ -1,7 +1,8 @@
 {
     "event": {
         "session_variables": {
-            "x-hasura-role": "admin"
+            "x-hasura-role": "admin",
+            "x-hasura-user-id": "7eee07c6-5f50-11eb-8ea9-371fc07428f6"
         },
         "op": "UPDATE",
         "data": {

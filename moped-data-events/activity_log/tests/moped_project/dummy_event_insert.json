@@ -1,7 +1,8 @@
 {
     "event": {
         "session_variables": {
-            "x-hasura-role": "admin"
+            "x-hasura-role": "admin",
+            "x-hasura-user-id": "azuread_dummy.user@none.org"
         },
         "op": "INSERT",
         "data": {
