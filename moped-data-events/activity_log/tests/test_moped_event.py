@@ -37,3 +37,13 @@ class TestMopedEvent:
         assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
         assert moped_event != {}
         assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+
+        moped_event = MopedEvent(self.event_insert)
+        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
+        assert moped_event != {}
+        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+
+        moped_event = MopedEvent(None)
+        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
+        assert moped_event != {}
+        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
