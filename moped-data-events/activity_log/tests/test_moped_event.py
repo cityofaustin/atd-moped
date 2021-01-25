@@ -47,3 +47,18 @@ class TestMopedEvent:
         assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
         assert moped_event != {}
         assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        
+    def test_get_primary_key(self) -> None:
+        """
+        Tests if we can get a primary key (once map is loaded)
+        """
+        moped_event = MopedEvent(self.event_update)
+
+        assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
+        assert moped_event != {}
+        assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        assert "activity_id" == moped_event.get_primary_key("moped_activity_log")
+        assert "user_id" == moped_event.get_primary_key("moped_users")
+        assert "project_id" == moped_event.get_primary_key("moped_project")
+        assert moped_event.get_primary_key("nowhere_to_be_found") is None
+        assert moped_event.get_primary_key(None) is None
