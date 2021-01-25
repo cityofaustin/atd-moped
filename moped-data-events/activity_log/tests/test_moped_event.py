@@ -53,23 +53,6 @@ class TestMopedEvent:
         assert moped_event.get_primary_key("nowhere_to_be_found") is None
         assert moped_event.get_primary_key(None) is None
 
-    def test_diff(self) -> None:
-        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
-        diff = moped_event.get_diff()
-        assert isinstance(diff, list)
-        assert len(diff) == 2
-        assert diff[0]["field"] == "project_priority"
-        assert diff[0]["old"] == "Low"
-        assert diff[0]["new"] == "High"
-        assert diff[1]["field"] == "project_name"
-        assert diff[1]["old"] == "Project name old state"
-        assert diff[1]["new"] == "Project name new state"
-
-        moped_event = MopedEvent(payload=None, load_primary_keys=False)
-        diff = moped_event.get_diff()
-        assert isinstance(diff, list)
-        assert len(diff) == 0
-
     def test_repr(self) -> None:
         moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
         assert repr(moped_event) == "MopedEvent(moped_project)"
@@ -132,3 +115,20 @@ class TestMopedEvent:
 
         moped_event = MopedEvent(payload=None, load_primary_keys=False)
         assert moped_event.can_validate()
+
+    def test_diff(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        diff = moped_event.get_diff()
+        assert isinstance(diff, list)
+        assert len(diff) == 2
+        assert diff[0]["field"] == "project_priority"
+        assert diff[0]["old"] == "Low"
+        assert diff[0]["new"] == "High"
+        assert diff[1]["field"] == "project_name"
+        assert diff[1]["old"] == "Project name old state"
+        assert diff[1]["new"] == "Project name new state"
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        diff = moped_event.get_diff()
+        assert isinstance(diff, list)
+        assert len(diff) == 0
