@@ -132,3 +132,27 @@ class TestMopedEvent:
         diff = moped_event.get_diff()
         assert isinstance(diff, list)
         assert len(diff) == 0
+
+    def test_get_variables_success(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=True)
+        variables = moped_event.get_variables()
+        assert isinstance(variables, dict)
+        assert "recordId" in variables
+        assert "recordType" in variables
+        assert "recordData" in variables
+        assert "description" in variables
+        assert "updatedBy" in variables
+        assert "updatedById" in variables
+
+        assert variables.get("recordId", 0) == 1
+        assert variables.get("recordType", "") == "moped_project"
+
+        assert variables.get("recordData", None) is not None
+        assert isinstance(variables.get("recordData", None), dict)
+
+        assert variables.get("description", None) is not None
+        assert isinstance(variables.get("description", None), list)
+        assert len(variables.get("description")) == 2
+
+        assert variables.get("updatedBy", "") is None
+        assert variables.get("updatedById", -1) == 0
