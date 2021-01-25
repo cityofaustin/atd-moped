@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-import json, pdb
-
+import pdb
 from MopedEvent import MopedEvent
 
 from .helpers import *
-
+from config import *
 
 class TestMopedEvent:
     @classmethod
@@ -92,6 +91,17 @@ class TestMopedEvent:
         assert isinstance(state, dict)
         assert moped_event.get_state("old") == {}
 
+    def test_get_event_user(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert moped_event.get_event_user() == "7eee07c6-5f50-11eb-8ea9-371fc07428f6"
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert moped_event.get_event_user() == "azuread_dummy.user@none.org"
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert moped_event.get_event_user() == None
+
+
     def test_payload(self) -> None:
         moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
         assert isinstance(moped_event.payload(), dict)
@@ -154,7 +164,7 @@ class TestMopedEvent:
         assert isinstance(variables.get("description", None), list)
         assert len(variables.get("description")) == 2
 
-        assert variables.get("updatedBy", "") is None
+        assert variables.get("updatedBy", "") == "7eee07c6-5f50-11eb-8ea9-371fc07428f6"
         assert variables.get("updatedById", -1) == 0
 
     def test_get_variables_fail(self) -> None:
