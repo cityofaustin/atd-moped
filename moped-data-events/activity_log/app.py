@@ -66,12 +66,6 @@ def get_event_type(event: dict) -> str:
         return ""
 
 
-def get_object_constructor(event_type: str = None) -> Callable:
-    return {
-        "moped_project": MopedProject,
-    }.get(event_type, MopedEvent)
-
-
 def process_event(event: dict) -> None:
     """
     Processes a single event from Hasura, it compares the old and new
@@ -86,9 +80,8 @@ def process_event(event: dict) -> None:
         event_type = get_event_type(event)
 
         if event_type != "" and event is not None:
-            AbstractEvent = get_object_constructor(event_type)
             # Build load event object
-            moped_event = AbstractEvent(event)
+            moped_event = MopedEvent(event)
             # Validate if possible
             event_valid, event_errors = moped_event.validate_state() if moped_event.can_validate() else (True, {})
             # If we don't have any major problems
