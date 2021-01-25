@@ -108,3 +108,17 @@ class TestMopedEvent:
         moped_event = MopedEvent(payload=None, load_primary_keys=False)
         assert isinstance(state, dict)
         assert moped_event.get_state("old") == {}
+
+    def test_payload(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        assert isinstance(moped_event.payload(), dict)
+        assert moped_event.payload() != {}
+        assert "event" in moped_event.payload()
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert isinstance(moped_event.payload(), dict)
+        assert moped_event.payload() != {}
+        assert "event" in moped_event.payload()
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert moped_event.payload() is None
