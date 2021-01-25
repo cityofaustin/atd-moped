@@ -89,3 +89,22 @@ class TestMopedEvent:
 
         moped_event = MopedEvent(payload=None, load_primary_keys=False)
         assert str(moped_event) == "null"
+
+    def test_get_state(self) -> None:
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=False)
+        state = moped_event.get_state("new")
+        assert isinstance(state, dict)
+        assert "project_priority" in state
+        assert state["project_priority"] == "High"
+
+        state = moped_event.get_state("old")
+        assert isinstance(state, dict)
+        assert "project_priority" in state
+        assert state["project_priority"] == "Low"
+
+        moped_event = MopedEvent(payload=self.event_insert, load_primary_keys=False)
+        assert moped_event.get_state("old") is None
+
+        moped_event = MopedEvent(payload=None, load_primary_keys=False)
+        assert isinstance(state, dict)
+        assert moped_event.get_state("old") == {}
