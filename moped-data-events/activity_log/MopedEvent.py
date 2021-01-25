@@ -117,32 +117,6 @@ class MopedEvent:
         """
         return False if self.HASURA_EVENT_VALIDATION_SCHEMA is None else True
 
-    def request(self, variables: dict, headers: dict = {}) -> dict:
-        """
-        Makes the GraphQL query via HTTP
-        :param variables: GraphQL variables and values in kay-pair dictionary form
-        :type variables: dict
-        :param headers: Any additional HTTP Headers
-        :type headers: dict
-        :return: The HTTP response from Hasura
-        :rtype: dict
-        """
-        response = requests.post(
-            url=HASURA_ENDPOINT,
-            headers={
-                **HASURA_HTTP_HEADERS,
-                **headers
-            },
-            data=json.dumps(
-                {
-                    "query": self.MOPED_GRAPHQL_MUTATION,
-                    "variables": variables
-                }
-            )
-        )
-        response.encoding = "utf-8"
-        return response.json()
-
     def load_primary_keys(self):
         """
         Reads the primary key settings
@@ -217,6 +191,32 @@ class MopedEvent:
             "updatedBy": None,
             "updatedById": 0,
         }
+
+    def request(self, variables: dict, headers: dict = {}) -> dict:
+        """
+        Makes the GraphQL query via HTTP
+        :param variables: GraphQL variables and values in kay-pair dictionary form
+        :type variables: dict
+        :param headers: Any additional HTTP Headers
+        :type headers: dict
+        :return: The HTTP response from Hasura
+        :rtype: dict
+        """
+        response = requests.post(
+            url=HASURA_ENDPOINT,
+            headers={
+                **HASURA_HTTP_HEADERS,
+                **headers
+            },
+            data=json.dumps(
+                {
+                    "query": self.MOPED_GRAPHQL_MUTATION,
+                    "variables": variables
+                }
+            )
+        )
+        response.encoding = "utf-8"
+        return response.json()
 
     def save(self) -> dict:
         """
