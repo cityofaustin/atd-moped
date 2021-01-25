@@ -6,7 +6,6 @@ import time
 from typing import Optional, Callable
 
 from MopedEvent import MopedEvent
-from MopedProject import MopedProject
 
 from cerberus import Validator
 
