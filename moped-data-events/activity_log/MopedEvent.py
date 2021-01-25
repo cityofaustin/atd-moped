@@ -139,17 +139,19 @@ class MopedEvent:
         """
         return self.MOPED_PRIMARY_KEY_MAP.get(table, default)
 
-    def get_event_user(self, default: str = None) -> str:
+    def get_event_session_var(self, variable: str, default: str = None) -> str:
         """
-        Retrieves the event's user id (Cognito UUID or AzureID)
+        Retrieves the event's session variable value by it's name
+        :param variable: The session's variable name
+        :type variable: str
         :param default: If the value is not found, default: None
         :type default: str
         :return: The event's Cognito UUID or Azure ID signature
         :rtype: str
         """
         try:
-            return self.HASURA_EVENT_PAYLOAD["event"]["session_variables"]["x-hasura-user-id"]
-        except (TypeError,KeyError):
+            return self.HASURA_EVENT_PAYLOAD["event"]["session_variables"][variable]
+        except (TypeError, KeyError):
             return default
 
     def get_event_type(self) -> str:
@@ -202,8 +204,8 @@ class MopedEvent:
             "recordType": self.get_event_type(),
             "recordData": self.payload(),
             "description": self.get_diff(),
-            "updatedBy": self.get_event_user(),
-            "updatedById": 0,
+            "updatedBy": self.get_event_session_var(variable="x-hasura-user-id",default=None),
+            "updatedById": self.get_event_session_var(variable="x-hasura-user-db-id",default=0),
         }
 
     def request(self, variables: dict, headers: dict = {}) -> dict:
