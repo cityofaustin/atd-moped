@@ -117,26 +117,6 @@ class MopedEvent:
         """
         return False if self.HASURA_EVENT_VALIDATION_SCHEMA is None else True
 
-    def validate_state(self, mode: str = "old") -> tuple:
-        """
-        Validates the schema of either the old or new state using Cerberus
-        :param mode: The state mode we want to examine, either old or new
-        :type mode: str
-        :return: True if valid, False otherwise.
-        :rtype: bool
-        """
-        if mode not in ["old", "new"]:
-            return False, {"error": f"Invalid mode {mode}, must be either 'old' or 'new'"}
-
-        if self.HASURA_EVENT_PAYLOAD is None:
-            return False, {"error": "Empty payload document"}
-
-        if self.HASURA_EVENT_VALIDATION_SCHEMA is None:
-            return False, {"error": "Empty validation schema"}
-
-        event_validator = Validator(self.HASURA_EVENT_VALIDATION_SCHEMA)
-        return event_validator.validate(document=self.get_state(mode)), event_validator.errors
-
     def request(self, variables: dict, headers: dict = {}) -> dict:
         """
         Makes the GraphQL query via HTTP
