@@ -36,3 +36,16 @@ class TestApp:
         valid, errors = validate_hasura_event(None)
         assert valid == False
         assert errors != {}
+
+    def test_get_event_type(self) -> None:
+        """
+        Basic testing of the Cerberus validator
+        """
+        event_type = get_event_type(self.event_insert)
+        assert event_type == "moped_project"
+
+        event_type = get_event_type(self.event_update)
+        assert event_type == "moped_project"
+
+        event_type = get_event_type(None)
+        assert event_type == ""
