@@ -173,3 +173,20 @@ class TestMopedEvent:
             assert False
         except KeyError:
             assert True
+
+    def test_request(self) -> None:
+        if HASURA_ENDPOINT == "":
+            print("Cannot test without HASURA_ENDPOINT")
+            assert True
+            return
+
+        print("HASURA_ADMIN_SECRET: " + HASURA_ADMIN_SECRET)
+        print("HASURA_ENDPOINT: " + HASURA_ENDPOINT)
+
+        moped_event = MopedEvent(payload=self.event_update, load_primary_keys=True)
+        response = moped_event.request(variables=moped_event.get_variables())
+        assert isinstance(response, dict)
+        assert "data" in response
+        assert "insert_moped_activity_log" in response["data"]
+        assert "affected_rows" in response["data"]["insert_moped_activity_log"]
+        assert response["data"]["insert_moped_activity_log"]["affected_rows"] == 1
