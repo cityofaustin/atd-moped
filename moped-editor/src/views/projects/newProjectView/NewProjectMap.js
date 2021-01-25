@@ -132,6 +132,7 @@ const NewProjectMap = ({
             key={config.layerIdName}
             type="vector"
             tiles={[config.layerUrl]}
+            maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
           >
             <Layer
               key={config.layerIdName}
