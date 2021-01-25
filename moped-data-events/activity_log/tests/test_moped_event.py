@@ -29,25 +29,31 @@ class TestMopedEvent:
         cls.event_update = None
         cls.event_insert = None
 
-    def test_load_primary_keys(self) -> None:
+    def test_init(self) -> None:
         """
         Tests whether the primary keys are going to be loaded
         """
         moped_event = MopedEvent(self.event_update)
         assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event != {}
+        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
         assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
+        assert moped_event.HASURA_EVENT_PAYLOAD != {}
 
         moped_event = MopedEvent(self.event_insert)
         assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event != {}
+        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
         assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
+        assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
+        assert moped_event.HASURA_EVENT_PAYLOAD != {}
 
         moped_event = MopedEvent(None)
         assert moped_event.MOPED_PRIMARY_KEY_MAP.keys is not None
-        assert moped_event != {}
+        assert moped_event.MOPED_PRIMARY_KEY_MAP != {}
         assert "moped_activity_log" in moped_event.MOPED_PRIMARY_KEY_MAP
-        
+        assert moped_event.HASURA_EVENT_VALIDATION_SCHEMA is not None
+        assert moped_event.HASURA_EVENT_PAYLOAD is None
+
     def test_get_primary_key(self) -> None:
         """
         Tests if we can get a primary key (once map is loaded)
