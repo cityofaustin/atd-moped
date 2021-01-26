@@ -63,7 +63,7 @@ docker build -f Dockerfile . -t $ATD_SCHEMASPY_CONTAINER_NAME;
 
 echo -e "\n\nGenerating documentation...";
 mkdir output;
-docker run -it --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
+docker run -d --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
 
 #echo "Copying to S3";
 #aws s3 cp --recursive output/ s3://db-docs.austinmobility.io;
