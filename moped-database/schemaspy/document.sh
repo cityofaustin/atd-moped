@@ -72,10 +72,13 @@ docker build -f Dockerfile . -t $ATD_SCHEMASPY_CONTAINER_NAME;
 
 echo -e "\n\nGenerating documentation...";
 mkdir output;
-docker run -d --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
+docker run --tty --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
+
+echo -e "\n\nFinished generating documentation"
+ls -lha ./output;
 
 echo "Copying to S3";
-aws s3 sync output/* s3://db-docs.austinmobility.io/atd-moped-$WORKING_STAGE;
+aws s3 sync output/ s3://db-docs.austinmobility.io/atd-moped-$WORKING_STAGE;
 
 echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
 rm -rf output;
