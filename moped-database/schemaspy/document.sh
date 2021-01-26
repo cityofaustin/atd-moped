@@ -59,7 +59,7 @@ if [[ "${STATUS}" != "OK" ]]; then
 fi;
 
 echo "Gathering docker requirements...";
-docker build -f Dockerfile $(pwd)/moped-database/schemaspy/. -t $ATD_SCHEMASPY_CONTAINER_NAME;
+docker build -f Dockerfile . -t $ATD_SCHEMASPY_CONTAINER_NAME;
 
 echo -e "\n\nGenerating documentation...";
 mkdir output;
