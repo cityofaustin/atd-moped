@@ -14,7 +14,7 @@ import {
   CircularProgress,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
-import { Close as CloseIcon } from "@material-ui/icons";
+import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
 
 const useStyles = makeStyles(theme => ({
@@ -78,11 +78,16 @@ const ProjectSummaryMap = ({
           >
             <CloseIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            Edit Map
+          <Typography variant="h5" className={classes.title}>
+            Edit Project Extent
           </Typography>
           {!loading ? (
-            <Button autoFocus color="inherit" onClick={handleSave}>
+            <Button
+              autoFocus
+              color="inherit"
+              onClick={handleSave}
+              startIcon={<SaveIcon />}
+            >
               save
             </Button>
           ) : (
