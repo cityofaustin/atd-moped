@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Button, Typography, makeStyles } from "@material-ui/core";
+import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -26,11 +27,21 @@ const useStyles = makeStyles({
     left: 0,
     padding: "10px",
   },
+  editButton: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
 });
 
-const ProjectSummaryMap = ({ selectedLayerIds, projectExtentGeoJSON }) => {
+const ProjectSummaryMap = ({
+  selectedLayerIds,
+  projectExtentGeoJSON,
+  setIsEditing,
+}) => {
   const classes = useStyles();
   const mapRef = useRef();
+  const featureSum = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
@@ -58,9 +69,18 @@ const ProjectSummaryMap = ({ selectedLayerIds, projectExtentGeoJSON }) => {
           </Source>
         )}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsEditing(true)}
+          startIcon={<EditLocationIcon />}
+          className={classes.editButton}
+        >
+          Edit
+        </Button>
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedLayerIds)} locations in this project
+        {featureSum} location{featureSum === 1 ? "" : "s"} in this project
       </Typography>
     </Box>
   );

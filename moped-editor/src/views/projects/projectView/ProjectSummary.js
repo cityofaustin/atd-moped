@@ -3,13 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
-import {
-  Box,
-  Button,
-  Grid,
-  CardContent,
-  CircularProgress,
-} from "@material-ui/core";
+import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
 
 const formatValue = value => {
@@ -122,14 +116,8 @@ const ProjectSummary = () => {
               <ProjectSummaryMap
                 selectedLayerIds={project_extent_ids}
                 projectExtentGeoJSON={project_extent_geojson}
+                setIsEditing={setIsEditing}
               />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setIsEditing(true)}
-              >
-                Edit Map
-              </Button>
             </>
           )}
           {isEditing && (
