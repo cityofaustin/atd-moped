@@ -28,9 +28,9 @@ function install_requirements {
 function bundle_function {
   echo "Bundling function...";
   cd package;
-  zip -r9 ../function.zip . -x "venv/*" "tests/*" "events/*" ".pytest_cache/*" "__pycache__/*" "*.txt" "*.md";
+  zip -r9 ../function.zip .;
   cd ${OLDPWD};
-  zip -g function.zip app.py;
+  zip -g function.zip *.py -x "venv/*" "tests/*" "events/*" ".pytest_cache/*" "__pycache__/*" "*.txt" "*.md";
 }
 
 #
