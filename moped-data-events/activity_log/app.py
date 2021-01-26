@@ -101,6 +101,9 @@ def handler(event, context):
     :param dict context: Event context
     """
 
+    print("Event: ")
+    print(json.dumps(event))
+
     if "Records" in event:
         for record in event["Records"]:
             time_str = time.ctime()
