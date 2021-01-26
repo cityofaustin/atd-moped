@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 
 import json
-import pdb
 import requests
-import time
 
 
 def make_update() -> dict:
