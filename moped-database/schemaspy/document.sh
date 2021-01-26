@@ -71,7 +71,7 @@ docker build -f Dockerfile . -t $ATD_SCHEMASPY_CONTAINER_NAME
 
 echo -e "\n\nGenerating documentation..."
 mkdir output
-docker run --attach --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME
+docker run --tty --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME
 
 echo -e "\n\nFinished generating documentation"
 ls -lha ./output
