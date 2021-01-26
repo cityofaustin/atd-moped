@@ -135,26 +135,27 @@ const ProjectTimeline = () => {
               editable={{
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
-                    // Merge input fields with required fields default data.
-                    const newPhaseObject = Object.assign(
-                      {
-                        project_id: projectId,
-                        completion_percentage: 0,
-                        completed: false,
-                      },
-                      newData
-                    );
-
                     setTimeout(() => {
+                      // Merge input fields with required fields default data.
+                      const newPhaseObject = Object.assign(
+                        {
+                          project_id: projectId,
+                          completion_percentage: 0,
+                          completed: false,
+                        },
+                        newData
+                      );
+
                       // Execute insert mutation
                       addProjectPhase({
                         variables: {
                           objects: [newPhaseObject],
                         },
                       });
+                      setTimeout(() => refetch(), 501);
                       resolve();
-                    }, 1000);
-                  }).then(() => refetch()),
+                    }, 500);
+                  }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
@@ -192,6 +193,8 @@ const ProjectTimeline = () => {
                       updateProjectPhase({
                         variables: updatedPhaseObject,
                       });
+
+                      refetch();
                       resolve();
                     }, 1000);
                   }).then(() => refetch()),
@@ -204,9 +207,10 @@ const ProjectTimeline = () => {
                           project_phase_id: oldData.project_phase_id,
                         },
                       });
+                      refetch();
                       resolve();
                     }, 1000);
-                  }).then(() => refetch()),
+                  }),
               }}
             />
           </div>

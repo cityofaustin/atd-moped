@@ -96,6 +96,11 @@ export const ADD_PROJECT_PHASE = gql`
         phase_name
         phase_start
         phase_end
+        project_phase_id
+        is_current_phase
+        project_id
+        completion_percentage
+        completed
       }
     }
   }
