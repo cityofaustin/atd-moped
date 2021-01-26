@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback } from "react";
-import ReactMapGL, { Layer, NavigationControl } from "react-map-gl";
+import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, Typography, makeStyles } from "@material-ui/core";
 import { isEqual } from "lodash";
@@ -8,18 +8,17 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectSelectLayerConfig,
-  geocoderBbox,
   getGeoJSON,
   getInteractiveIds,
   getLayerSource,
-  getFeaturePolygonId,
+  getFeatureId,
   isFeaturePresent,
-  layerConfigs,
   MAPBOX_TOKEN,
-  mapInit,
+  mapConfig,
+  mapStyles,
   renderTooltip,
   sumFeaturesSelected,
-  toolTipStyles,
+  useHoverLayer,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
@@ -27,7 +26,7 @@ export const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: toolTipStyles,
+  toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -48,37 +47,26 @@ const NewProjectMap = ({
   const classes = useStyles();
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState(mapInit);
-  const [vectorTilePolygonId, setVectorTilePolygonId] = useState(null);
-  const [hoveredCoords, setHoveredCoords] = useState(null);
-
-  const handleLayerHover = e => {
-    const {
-      srcEvent: { offsetX, offsetY },
-    } = e;
-
-    const vectorTilePolygonId = getFeaturePolygonId(e);
-
-    if (!!vectorTilePolygonId) {
-      setVectorTilePolygonId(vectorTilePolygonId);
-      setHoveredCoords({ x: offsetX, y: offsetY });
-    } else {
-      setHoveredCoords(null);
-      setVectorTilePolygonId(null);
-    }
-  };
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
+  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
   const handleLayerClick = e => {
-    const vectorTilePolygonId = getFeaturePolygonId(e);
     const layerSource = getLayerSource(e);
+
+    if (!layerSource) return;
+
+    const clickedFeatureId = getFeatureId(
+      e,
+      mapConfig.layerConfigs[layerSource].layerIdField
+    );
     const selectedFeature = getGeoJSON(e);
 
-    if (!!vectorTilePolygonId && !!layerSource) {
+    if (!!clickedFeatureId && !!layerSource) {
       const layerIds = selectedLayerIds[layerSource] || [];
 
-      const updatedLayerIds = !layerIds.includes(vectorTilePolygonId)
-        ? [...layerIds, vectorTilePolygonId]
-        : layerIds.filter(id => id !== vectorTilePolygonId);
+      const updatedLayerIds = !layerIds.includes(clickedFeatureId)
+        ? [...layerIds, clickedFeatureId]
+        : layerIds.filter(id => id !== clickedFeatureId);
 
       const updatedSelectedIds = {
         ...selectedLayerIds,
@@ -136,20 +124,27 @@ const NewProjectMap = ({
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
-          bbox={geocoderBbox}
+          bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {layerConfigs.map(config => (
-          <Layer
-            key={config.layerId}
-            {...createProjectSelectLayerConfig(
-              vectorTilePolygonId,
-              config,
-              selectedLayerIds
-            )}
-          />
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
+          <Source
+            key={config.layerIdName}
+            type="vector"
+            tiles={[config.layerUrl]}
+            maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+          >
+            <Layer
+              key={config.layerIdName}
+              {...createProjectSelectLayerConfig(
+                featureId,
+                sourceName,
+                selectedLayerIds
+              )}
+            />
+          </Source>
         ))}
-        {renderTooltip(vectorTilePolygonId, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations selected

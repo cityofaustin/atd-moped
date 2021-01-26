@@ -1,14 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import theme from "../theme/index";
 import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
-
-export const mapInit = {
-  latitude: 30.268039,
-  longitude: -97.742828,
-  zoom: 12,
-};
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
@@ -23,23 +17,76 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   features: [],
 };
 
-export const geocoderBbox = austinFullPurposeJurisdictionFeatureCollection.bbox;
-
-// Set the layer attributes to render on map
-export const layerConfigs = [
-  {
-    layerId: "location-polygons",
-    layerSourceName: "asmp_polygons",
-    layerColor: theme.palette.primary.main,
-    layerUrl:
-      "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/location_polygons_vector_tiles_w_IDs/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+export const mapStyles = {
+  statusOpacities: {
+    selected: 0.75,
+    hovered: 0.5,
+    unselected: 0.25,
   },
-];
+  lineWidthStops: {
+    base: 1,
+    stops: [
+      [10, 1],
+      [13, 2],
+      [16, 10],
+      [18, 25],
+    ],
+  },
+  toolTipStyles: {
+    position: "absolute",
+    margin: 8,
+    padding: 4,
+    background: theme.palette.text.primary,
+    color: theme.palette.background.default,
+    maxWidth: 300,
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    zIndex: 9,
+    pointerEvents: "none",
+  },
+};
 
-const fillOpacities = {
-  selected: 0.75,
-  hovered: 0.5,
-  unselected: 0.25,
+export const mapConfig = {
+  mapInit: {
+    latitude: 30.268039,
+    longitude: -97.742828,
+    zoom: 12,
+  },
+  mapboxDefaultMaxZoom: 18,
+  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
+  layerConfigs: {
+    CTN: {
+      layerIdName: "ctn-lines",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerColor: theme.palette.primary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      layerMaxLOD: 14,
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          return {
+            type: "line",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": this.layerColor,
+              "line-width": mapStyles.lineWidthStops,
+              "line-opacity": [
+                "case",
+                ["==", ["get", this.layerIdField], hoveredId],
+                mapStyles.statusOpacities.hovered,
+                ["in", ["get", this.layerIdField], ["literal", layerIds]],
+                mapStyles.statusOpacities.selected,
+                mapStyles.statusOpacities.unselected,
+              ],
+            },
+          };
+        };
+      },
+    },
+  },
 };
 
 /**
@@ -47,15 +94,16 @@ const fillOpacities = {
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
 export const getInteractiveIds = () =>
-  layerConfigs.map(config => config.layerId);
+  Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
 
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
+ * @param {String} idKey - Key that exposes the id of the polygon in the layer
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeaturePolygonId = e =>
-  e.features && e.features.length > 0 && e.features[0].properties.polygon_id;
+export const getFeatureId = (e, idKey) =>
+  e.features && e.features.length > 0 && e.features[0].properties[idKey];
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -63,7 +111,10 @@ export const getFeaturePolygonId = e =>
  * @return {String} The name of the source layer
  */
 export const getLayerSource = e =>
-  e.features && e.features.length > 0 && e.features[0].layer["source-layer"];
+  e.features &&
+  e.features.length > 0 &&
+  (e.features[0].layer["source-layer"] ||
+    e.features[0].properties["sourceLayer"]);
 
 /**
  * Get a feature's GeoJSON from a Mapbox map click or hover event
@@ -75,10 +126,10 @@ export const getGeoJSON = e =>
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
     id: e.features[0].id,
+    source: e.features[0].source,
     properties: {
       ...e.features[0].properties,
       sourceLayer: e.features[0].sourceLayer,
-      source: e.features[0].source,
     },
     type: e.features[0].type,
   };
@@ -95,47 +146,36 @@ export const isFeaturePresent = (selectedFeature, features) =>
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features
  * @param {String} hoveredId - The ID of the feature hovered
- * @param {Object} config - Configuration with layer attributes
+ * @param {String} sourceName - Source name to get config properties for layer styles
  * @param {Array} selectedLayerIds - Array of string IDs that a user has selected
  * @return {Object} Mapbox layer style object
  */
 export const createProjectSelectLayerConfig = (
   hoveredId,
-  config,
+  sourceName,
   selectedLayerIds
 ) => {
-  const layerIds = selectedLayerIds[config.layerSourceName] || [];
+  const layerIds = selectedLayerIds[sourceName] || [];
+  const config = mapConfig.layerConfigs[sourceName];
 
-  // https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
+  // Merge common layer attributes with those unique to each layer type
   return {
-    id: config.layerId,
-    type: "fill",
-    source: {
-      type: "vector",
-      tiles: [config.layerUrl],
-    },
-    "source-layer": config.layerSourceName,
-    paint: {
-      "fill-color": config.layerColor,
-      "fill-opacity": [
-        "case",
-        ["==", ["get", "polygon_id"], hoveredId],
-        fillOpacities.hovered,
-        ["in", ["get", "polygon_id"], ["literal", layerIds]],
-        fillOpacities.selected,
-        fillOpacities.unselected,
-      ],
-    },
+    id: config.layerIdName,
+    "source-layer": sourceName,
+    ...config.layerStyleSpec(hoveredId, layerIds),
   };
 };
 
 // Builds cases to match GeoJSON features with corresponding colors set for their layer
 // https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = layerConfigs.reduce((acc, config) => {
-  acc.push(["==", ["get", "sourceLayer"], config.layerSourceName]);
-  acc.push(config.layerColor);
-  return acc;
-}, []);
+const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
+  (acc, [sourceName, config]) => {
+    acc.push(["==", ["get", "sourceLayer"], sourceName]);
+    acc.push(config.layerColor);
+    return acc;
+  },
+  []
+);
 
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
@@ -146,32 +186,24 @@ const fillColorCases = layerConfigs.reduce((acc, config) => {
  */
 export const createProjectViewLayerConfig = () => ({
   id: "projectExtent",
-  type: "fill",
+  type: "line",
+  layout: {
+    "line-join": "round",
+    "line-cap": "round",
+  },
   paint: {
-    "fill-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "fill-opacity": fillOpacities.selected,
+    "line-width": mapStyles.lineWidthStops,
+    "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
+    "line-opacity": mapStyles.statusOpacities.selected,
   },
 });
-
-export const toolTipStyles = {
-  position: "absolute",
-  margin: 8,
-  padding: 4,
-  background: theme.palette.text.primary,
-  color: theme.palette.background.default,
-  maxWidth: 300,
-  fontSize: "0.875rem",
-  fontWeight: 500,
-  zIndex: 9,
-  pointerEvents: "none",
-};
 
 /**
  * Build the JSX of the hover tooltip on map
  * @param {String} hoveredFeature - The ID of the feature hovered
  * @param {Object} hoveredCoords - Object with keys x and y that describe position of cursor
  * @param {Object} className - Styles from the classes object
- * @return {JSX} Mapbox layer style object
+ * @return {JSX} The populated tooltip JSX
  */
 export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
   hoveredFeature && (
@@ -196,3 +228,53 @@ export const sumFeaturesSelected = selectedLayerIds =>
     (acc, selectedIds) => (acc += selectedIds.length),
     0
   );
+
+/**
+ * Custom hook that returns a vector tile layer hover event handler and the details to place and populate a tooltip
+ * @return {{handleLayerHover:Function, featuredId:String, hoveredCoords:Object}}
+ * @return {HoverObject} Object that exposes the setter and getters for a hovered feature
+ */
+/**
+ * @typedef {Object} HoverObject
+ * @property {Function} handleLayerHover - Function that get and sets featureId and Point for tooltip
+ * @property {String} featuredId - The ID of the hovered feature
+ * @property {Point} hoveredCoords - The coordinates used to place the tooltip
+ */
+/**
+ * @typedef {Object} Point
+ * @property {Number} x - The x coordinate to the place the tooltip
+ * @property {Number} y - The y coordinate to the place the tooltip
+ */
+export function useHoverLayer() {
+  const [featureId, setFeature] = useState(null);
+  const [hoveredCoords, setHoveredCoords] = useState(null);
+
+  /**
+   * Gets and sets data from a map feature used to populate and place a tooltip
+   * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates
+   */
+  const handleLayerHover = e => {
+    const layerSource = getLayerSource(e);
+
+    // If a layer isn't hovered, reset state and don't proceed
+    if (!layerSource) {
+      setHoveredCoords(null);
+      setFeature(null);
+      return;
+    }
+
+    // Otherwise, get details for tooltip
+    const {
+      srcEvent: { offsetX, offsetY },
+    } = e;
+    const hoveredFeatureId = getFeatureId(
+      e,
+      mapConfig.layerConfigs[layerSource].layerIdField
+    );
+
+    setFeature(hoveredFeatureId);
+    setHoveredCoords({ x: offsetX, y: offsetY });
+  };
+
+  return { handleLayerHover, featureId, hoveredCoords };
+}
