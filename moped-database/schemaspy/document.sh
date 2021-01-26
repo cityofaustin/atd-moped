@@ -65,8 +65,8 @@ echo -e "\n\nGenerating documentation...";
 mkdir output;
 docker run -d --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
 
-#echo "Copying to S3";
-#aws s3 cp --recursive output/ s3://db-docs.austinmobility.io;
-#
-#echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
-#rm -rf output;
+echo "Copying to S3";
+aws s3 sync output/ s3://db-docs.austinmobility.io;
+
+echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
+rm -rf output;
