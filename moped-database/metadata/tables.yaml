@@ -1,54 +1,5 @@
 - table:
     schema: public
-    name: moped_activity_log
-  object_relationships:
-  - name: moped_user
-    using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: moped_users
-        column_mapping:
-          updated_by_id: user_id
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-- table:
-    schema: public
     name: moped_categories
   insert_permissions:
   - role: moped-admin
@@ -2464,6 +2415,13 @@
       - date_added
       filter: {}
       check: null
+  delete_permissions:
+  - role: moped-admin
+    permission:
+      filter: {}
+  - role: moped-editor
+    permission:
+      filter: {}
 - table:
     schema: public
     name: moped_proj_sponsors
@@ -2965,184 +2923,170 @@
     permission:
       check: {}
       columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
+      - project_uuid
+      - project_name
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
+      - eCapris_id
       - project_importance
-      - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - current_status
+      - project_id
       - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
+      - project_uuid
+      - project_name
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
+      - eCapris_id
       - project_importance
-      - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - current_status
+      - project_id
       - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
       - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
+      - start_date
+      - added_by
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
       - project_priority
-      - project_uuid
-      - start_date
       - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
       - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
+      - start_date
+      - added_by
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
       - project_priority
-      - project_uuid
-      - start_date
       - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
+      - project_uuid
+      - project_name
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
+      - eCapris_id
       - project_importance
-      - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - current_status
+      - project_id
       - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
       - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
+      - start_date
+      - added_by
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
       - project_priority
-      - project_uuid
-      - start_date
       - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
       - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
+      - start_date
+      - added_by
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
       - project_priority
-      - project_uuid
-      - start_date
       - timeline_id
+      - current_phase
+      - current_status
+      - eCapris_id
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - date_added
+      - project_uuid
       filter: {}
       check: null
 - table:
