@@ -81,9 +81,11 @@ aws s3 sync output/ s3://db-docs.austinmobility.io/atd-moped-$WORKING_STAGE
 
 echo "Generate Primary Key Map"
 mkdir maps
-python3 generate-pk-map.py > maps/atd-moped-pk-map-WORKING_STAGE.json
+./generate-pk-map.py > maps/atd-moped-pk-map-$WORKING_STAGE.json
+
 
 echo "Done Generating Map, copying to S3"
+ls -lha ./maps
 aws s3 cp maps/atd-moped-pk-map-$WORKING_STAGE.json  s3://db-docs.austinmobility.io/maps/atd-moped-pk-map-$WORKING_STAGE.json
 
 echo "Clear Cache"
