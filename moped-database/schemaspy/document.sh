@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -o errexit;
+
 ATD_SCHEMASPY_CONTAINER_NAME="atd-moped-schemaspy:local";
 
 #
@@ -55,14 +59,14 @@ if [[ "${STATUS}" != "OK" ]]; then
 fi;
 
 echo "Gathering docker requirements...";
-docker build -f Dockerfile . -t $ATD_SCHEMASPY_CONTAINER_NAME;
+docker build -f Dockerfile $(pwd)/moped-database/schemaspy/. -t $ATD_SCHEMASPY_CONTAINER_NAME;
 
 echo -e "\n\nGenerating documentation...";
 mkdir output;
 docker run -it --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
 
-echo "Copying to S3";
-aws s3 cp --recursive output/ s3://db-docs.austinmobility.io;
-
-echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
-rm -rf output;
+#echo "Copying to S3";
+#aws s3 cp --recursive output/ s3://db-docs.austinmobility.io;
+#
+#echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
+#rm -rf output;
