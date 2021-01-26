@@ -29,7 +29,7 @@ jobs:
       - name: "Install Python Requirements"
         run: |
           sudo apt-get install -y python3-setuptools
-          pip3 install awscli boto3 virtualenv
+          pip3 install awscli boto3 virtualenv requests
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
       # Run the shell commands using the AWS environment variables
       - name: "Build & Publish Database Documentation"
