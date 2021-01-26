@@ -1,12 +1,15 @@
 import json, boto3
+import re
+
+from boto3.dynamodb.conditions import Key
 
 import requests
-from cerberus import Validator
 
 from config import (
     HASURA_HTTP_HEADERS,
     HASURA_ENDPOINT,
     HASURA_EVENT_VALIDATION_SCHEMA,
+    COGNITO_DYNAMO_TABLE_NAME,
 )
 
 
@@ -72,6 +75,20 @@ class MopedEvent:
         """
         return json.dumps(self.HASURA_EVENT_PAYLOAD)
 
+    @staticmethod
+    def is_valid_uuid(uuid: str) -> bool:
+        """
+        Returns true if the uuid string is a valid UUID format.
+        :param uuid: The string to be evaluated
+        :type uuid: str
+        :return: True if the uuid is valid
+        :rtype: str
+        """
+        pattern = re.compile(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+        )
+        return True if pattern.search(uuid) else False
+
     def load_payload_from_str(self, payload: str) -> None:
         """
         :param payload: The event payload
@@ -127,6 +144,64 @@ class MopedEvent:
         s3_object = s3.get_object(Bucket="atd-moped-data-events", Key="settings/moped_primary_keys_staging.json")
         self.MOPED_PRIMARY_KEY_MAP = json.loads(s3_object['Body'].read())
 
+    @staticmethod
+    def get_user_profile(user_id: str) -> dict:
+        """
+        Retrieves the user profile from DynamoDB
+        :param user_id: The user's unique email address
+        :type user_id: str
+        :return: The user's profile
+        :rtype: dict
+        """
+        dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+        return dynamodb.get_item(
+            TableName=COGNITO_DYNAMO_TABLE_NAME,
+            Key={
+                "user_id": {"S": user_id.replace("azuread_", "")},
+            },
+        )
+
+    def get_user_profile_uuid(self, user_id: str) -> dict:
+        """
+        Retrieves the user profile from DynamoDB
+        :param user_id: The user's cognito uuid
+        :type user_id: str
+        :return: The user's profile
+        :rtype: dict
+        """
+        if not self.is_valid_uuid(user_id):
+            raise TypeError("Invalid user id")
+
+        dynamodb = boto3.client("dynamodb", region_name="us-east-1")
+        return dynamodb.query(
+            # Add the name of the index you want to use in your query.
+            TableName=COGNITO_DYNAMO_TABLE_NAME,
+            IndexName="cognito_uuid_idx",
+            ExpressionAttributeValues={
+                ":cid": {
+                    "S": user_id,
+                },
+            },
+            KeyConditionExpression='cognito_uuid = :cid',
+        )
+
+    def get_user_database_id(self, user_id: str, default: int = 0) -> int:
+        """
+        Returns the user's database id if provided in DynamoDB
+        :param user_id: Either the email address or the cognito uuid
+        :type user_id: str
+        :param default:
+        :type default:
+        :return:
+        :rtype:
+        """
+
+        try:
+            profile = (self.get_user_profile if "@" in user_id else self.get_user_profile_uuid)(user_id=str(user_id))
+            return int(profile["Item"]["database_id"]["N"] if "Item" in profile else profile["Items"][0]["database_id"]["N"])
+        except (TypeError, KeyError, IndexError):
+            return default
+
     def get_primary_key(self, table: str, default: str = None) -> str:
         """
         Returns the name of a primary key column for a table
@@ -175,18 +250,21 @@ class MopedEvent:
         old_state = self.get_state("old")
         new_state = self.get_state("new")
 
-        # Gather a list of keys that present a difference in values
-        keys_with_diff = list(
-            filter(
-                lambda k: new_state[k] != old_state[k],  # Compare between old and new state
-                new_state.keys()  # For every key in new_state
+        if old_state is None:
+            return change_list
+        else:
+            # Gather a list of keys that present a difference in values
+            keys_with_diff = list(
+                filter(
+                    lambda k: new_state[k] != old_state[k],  # Compare between old and new state
+                    new_state.keys()  # For every key in new_state
+                )
             )
-        )
 
         for key in keys_with_diff:
             change_list.append({
                 "field": key,
-                "old": old_state[key],
+                "old": old_state[key] if old_state is not None else "",
                 "new": new_state[key]
             })
 
@@ -204,8 +282,8 @@ class MopedEvent:
             "recordType": self.get_event_type(),
             "recordData": self.payload(),
             "description": self.get_diff(),
-            "updatedBy": self.get_event_session_var(variable="x-hasura-user-id",default=None),
-            "updatedById": self.get_event_session_var(variable="x-hasura-user-db-id",default=0),
+            "updatedBy": self.get_event_session_var(variable="x-hasura-user-id", default=None),
+            "updatedById": self.get_event_session_var(variable="x-hasura-user-db-id", default=0),
         }
 
     def request(self, variables: dict, headers: dict = {}) -> dict:
