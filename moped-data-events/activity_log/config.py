@@ -30,7 +30,7 @@ HASURA_EVENT_VALIDATION_SCHEMA = {
                     },
                     "x-hasura-user-id": {
                         "type": "string",
-                        "required": False,
+                        "required": True,
                     },
                     "x-hasura-user-db-id": {
                         "type": "number",
