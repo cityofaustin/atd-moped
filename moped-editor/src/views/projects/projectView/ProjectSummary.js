@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
@@ -37,7 +37,6 @@ const formatValue = value => {
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
-  // TODO: Add toggle UI to trigger ProjectSummaryEditMap
   const [isEditing, setIsEditing] = useState(false);
   const { loading, error, data } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
