@@ -42,9 +42,12 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          ./moped-database/hasura-cluster start
-          ./moped-database/schemaspy/document.sh
-          ./moped-database/hasura-cluster stop
+          cd ./moped-database;
+          ./moped-database/hasura-cluster start;
+          cd ./schemaspy;
+          ./document.sh;
+          cd ..;
+          ./moped-database/hasura-cluster stop;
 #      # Build
 #      - name: "SQS Activity Log - Primary Keys"
 #        env:
