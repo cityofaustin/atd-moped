@@ -48,3 +48,14 @@ class TestApp:
 
         event_type = app.get_event_type(None)
         assert event_type == ""
+
+    def test_app_handler(self, mocker: MockerFixture) -> None:
+        """
+        Makes sure that the app handler runs the process_event method
+        :param mocker:
+        :type mocker: MockerFixture
+        """
+        mocker.patch.object(app, 'process_event', autospec=True)
+        mock_event = create_sqs_event(self.event_update)
+        app.handler(mock_event, {})
+        app.process_event.assert_called_once_with(mock_event["Records"][0]["body"])
