@@ -80,8 +80,8 @@ def process_event(event: dict) -> None:
         if event_type != "":
             # Build event object
             moped_event = MopedEvent(event)
-            moped_event.save()
-
+            response = moped_event.save()
+            print(f"Hasura Response: {json.dumps(response)}")
         else:
             raise_critical_error(
                 message=f"Event type not specified",
@@ -101,8 +101,7 @@ def handler(event, context):
     :param dict context: Event context
     """
 
-    print("Event: ")
-    print(json.dumps(event))
+    print(f"Event: {json.dumps(event)}")
 
     if "Records" in event:
         for record in event["Records"]:
