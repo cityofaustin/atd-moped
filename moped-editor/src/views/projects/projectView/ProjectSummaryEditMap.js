@@ -55,7 +55,6 @@ const ProjectSummaryMap = ({
     });
     // TODO: Close full screen dialog on success
     // TODO: Handle error in mutation
-    // TODO: Solve bug with how features are added/removed from feature collection
   };
 
   return (

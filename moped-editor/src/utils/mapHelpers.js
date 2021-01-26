@@ -126,7 +126,6 @@ export const getGeoJSON = e =>
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
     id: e.features[0].id,
-    source: e.features[0].source,
     properties: {
       ...e.features[0].properties,
       sourceLayer: e.features[0].sourceLayer,
