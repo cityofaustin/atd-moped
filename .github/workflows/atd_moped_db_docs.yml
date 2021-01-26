@@ -43,7 +43,7 @@ jobs:
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
           cd ./moped-database;
-          ./hasura-console setenv local;
+          ./hasura-cluster setenv local;
           ./hasura-cluster start;
           cd ./schemaspy;
           ./document.sh;
