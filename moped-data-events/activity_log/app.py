@@ -1,5 +1,5 @@
 #
-# Resolves the location for a crash.
+# Activity Log SQS Handler
 #
 import json
 import requests
