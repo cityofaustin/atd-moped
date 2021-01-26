@@ -78,23 +78,16 @@ def process_event(event: dict) -> None:
     if event_format_valid:
         event_type = get_event_type(event)
 
-        if event_type != "" and event is not None:
-            # Build load event object
+        if event_type != "":
+            # Build event object
             moped_event = MopedEvent(event)
-            # Validate if possible
-            event_valid, event_errors = moped_event.validate_state() if moped_event.can_validate() else (True, {})
-            # If we don't have any major problems
-            if event_valid and event_errors == {}:
-                # Commit the event in the database
-                response = moped_event.request(
-                    variables=moped_event.get_variables()
-                )
-                print(f"Processed Event, Response: {json.dumps(response)}")
-            else:
-                raise_critical_error(
-                    message=f"Invalid event of type {event_type}, errors: {json.dumps(event_errors)}",
-                    data=event
-                )
+            moped_event.save()
+
+        else:
+            raise_critical_error(
+                message=f"Event type not specified",
+                data=event
+            )
     else:
         raise_critical_error(
             message=f"Invalid event format: {json.dumps(event_format_errors)}",
