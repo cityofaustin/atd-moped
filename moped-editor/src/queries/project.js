@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from "@apollo/client";
 
 export const PROJECT_NAME = gql`
   query ProjectName($projectId: Int) {

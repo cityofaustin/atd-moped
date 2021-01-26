@@ -1,7 +1,6 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { gql } from "apollo-boost";
 import StaffForm, { initialFormValues } from "./StaffForm";
 
 import {

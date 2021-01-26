@@ -1,21 +1,19 @@
 #
-# Builds Cognito Triggers for Moped Authentication
+# Builds SQS Triggers for the ATD-Events
 #
-name: "Build & Publish Moped API"
+name: "Build & Publish Activity Log SQS"
 
 on:
   push:
     branches:
-      - main
+      - master
       - production
+      - "4895-sg-activity-log-aws-sqs"
     paths:
-      - "moped-api/**"
-  pull_request:
-    branches-ignore:
-      - main
-      - production
-    paths:
-      - "moped-api/**"
+      - "moped-data-events/activity_log/**"
+      - ".github/workflows/atd_sqs_activity_log.yml"
+      - ".github/workflows/aws-moped-sqs-helper.sh"
+
 jobs:
   build:
     name: Build
@@ -32,19 +30,21 @@ jobs:
       - name: "Install AWS Cli"
         run: |
           sudo apt-get install python3-setuptools
-          pip3 install awscli boto3 zappa virtualenv
+          pip3 install awscli boto3
       # Run the shell commands using the AWS environment variables
       - name: "Build"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE: ${{ secrets.AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE }}
+          ATD_MOPED_EVENTS_ROLE: ${{ secrets.ATD_MOPED_EVENTS_ROLE }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
           echo "SHA: ${GITHUB_SHA}"
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-moped-api-helper.sh
-          deploy_moped_api
+          echo "PR_NUMBER: ${PR_NUMBER}"
+          source $(pwd)/.github/workflows/aws-moped-sqs-helper.sh
+          deploy_event_function "activity_log"

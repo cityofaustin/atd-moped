@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React from "react";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
