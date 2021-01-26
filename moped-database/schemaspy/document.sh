@@ -4,6 +4,15 @@ set -o errexit;
 
 ATD_SCHEMASPY_CONTAINER_NAME="atd-moped-schemaspy:local";
 
+case "${BRANCH_NAME}" in
+"production")
+  export WORKING_STAGE="production"
+  ;;
+*)
+  export WORKING_STAGE="staging"
+  ;;
+esac
+
 #
 # Check if docker is running
 #
@@ -66,7 +75,14 @@ mkdir output;
 docker run -d --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY_CONTAINER_NAME;
 
 echo "Copying to S3";
-aws s3 sync output/ s3://db-docs.austinmobility.io;
+aws s3 sync output/* s3://db-docs.austinmobility.io/atd-moped-$WORKING_STAGE;
 
 echo -e "\n\nFinished generating documentation. You may visit http://db-docs.austinmobility.io/";
 rm -rf output;
+
+echo "Clear Cache";
+aws cloudfront create-invalidation \
+    --distribution-id E1QMRCYLR76UOL \
+    --paths "/*";
+
+echo "Process Finished";
