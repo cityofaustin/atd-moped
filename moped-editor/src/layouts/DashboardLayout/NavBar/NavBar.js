@@ -5,9 +5,7 @@ import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
 import {
   BarChart as BarChartIcon,
-  Settings as SettingsIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   Users as UsersIcon,
   LogOut as LogOutIcon,
 } from "react-feather";
@@ -33,16 +31,6 @@ const items = [
     href: "/moped/account",
     icon: UserIcon,
     title: "Account",
-  },
-  {
-    href: "/moped/settings",
-    icon: SettingsIcon,
-    title: "Settings",
-  },
-  {
-    href: "/register",
-    icon: UserPlusIcon,
-    title: "Register",
   },
   {
     href: "/moped/logout",
