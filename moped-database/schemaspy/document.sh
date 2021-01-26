@@ -76,8 +76,15 @@ docker run --tty --rm -v "$(pwd)"/output:/output --network="host" $ATD_SCHEMASPY
 echo -e "\n\nFinished generating documentation"
 ls -lha ./output
 
-echo "Copying to S3"
+echo "Copying Documentation to S3"
 aws s3 sync output/ s3://db-docs.austinmobility.io/atd-moped-$WORKING_STAGE
+
+echo "Generate Primary Key Map"
+mkdir maps
+python3 generate-pk-map.py > maps/atd-moped-pk-map-WORKING_STAGE.json
+
+echo "Done Generating Map, copying to S3"
+aws s3 cp maps/atd-moped-pk-map-$WORKING_STAGE.json  s3://db-docs.austinmobility.io/maps/atd-moped-pk-map-$WORKING_STAGE.json
 
 echo "Clear Cache"
 aws cloudfront create-invalidation \
