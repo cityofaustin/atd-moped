@@ -38,7 +38,7 @@ const ProjectSummary = () => {
   const { projectId } = useParams();
 
   const [isEditing, setIsEditing] = useState(false);
-  const { loading, error, data } = useQuery(SUMMARY_QUERY, {
+  const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
 
@@ -139,6 +139,7 @@ const ProjectSummary = () => {
               projectExtentGeoJSON={project_extent_geojson}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
+              refetchProjectDetails={refetch}
             />
           )}
         </Grid>

@@ -37,6 +37,7 @@ const ProjectSummaryMap = ({
   projectExtentGeoJSON,
   isEditing,
   setIsEditing,
+  refetchProjectDetails,
 }) => {
   const classes = useStyles();
   const [updateProjectExtent, { loading, error }] = useMutation(
@@ -54,7 +55,10 @@ const ProjectSummaryMap = ({
   const handleSave = () => {
     updateProjectExtent({
       variables: { projectId, editLayerIds, editFeatureCollection },
-    }).then(() => setIsEditing(false));
+    }).then(() => {
+      refetchProjectDetails();
+      setIsEditing(false);
+    });
   };
 
   return (
