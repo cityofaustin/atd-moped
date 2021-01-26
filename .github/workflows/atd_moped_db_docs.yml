@@ -26,7 +26,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
       # Then install the AWC CLI tools & boto3
-      - name: "Install Java, AWS CLI & JQ"
+      - name: "Build Documentation"
         run: |
           sudo apt-get install -y python3-setuptools
           pip3 install awscli boto3 virtualenv
@@ -43,11 +43,11 @@ jobs:
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
           cd ./moped-database;
-          ./moped-database/hasura-cluster start;
+          ./hasura-cluster start;
           cd ./schemaspy;
           ./document.sh;
           cd ..;
-          ./moped-database/hasura-cluster stop;
+          ./hasura-cluster stop;
 #      # Build
 #      - name: "SQS Activity Log - Primary Keys"
 #        env:
