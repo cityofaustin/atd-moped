@@ -77,3 +77,21 @@ class TestApp:
         # Make sure it gets called
         app.validate_hasura_event.assert_called_once_with(self.event_update)
         mocker.stopall()
+
+    def test_event_handler_get_event_type(self, mocker: MockerFixture) -> None:
+        """
+        Makes sure that event handler executes as expected
+        """
+        # Patch validate_hasura_event
+        mocker.patch.object(app,
+            "get_event_type",
+            return_value="",
+            autospec=True
+        )
+        # Execute process_event, expecting an exception
+        with pytest.raises(Exception):
+            app.process_event(self.event_update)
+
+        # Make sure it gets called
+        app.get_event_type.assert_called_once_with(self.event_update)
+        mocker.stopall()
