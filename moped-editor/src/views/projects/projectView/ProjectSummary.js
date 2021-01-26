@@ -134,6 +134,7 @@ const ProjectSummary = () => {
           )}
           {isEditing && (
             <ProjectSummaryEditMap
+              projectId={projectId}
               selectedLayerIds={project_extent_ids}
               projectExtentGeoJSON={project_extent_geojson}
               isEditing={isEditing}

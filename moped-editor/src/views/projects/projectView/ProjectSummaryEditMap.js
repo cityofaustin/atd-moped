@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import {
   AppBar,
@@ -9,8 +10,10 @@ import {
   Toolbar,
   Typography,
   Slide,
+  CircularProgress,
 } from "@material-ui/core";
 import { Close as CloseIcon } from "@material-ui/icons";
+import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -27,12 +30,16 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 const ProjectSummaryMap = ({
+  projectId,
   selectedLayerIds,
   projectExtentGeoJSON,
   isEditing,
   setIsEditing,
 }) => {
   const classes = useStyles();
+  const [updateProjectExtent, { data, loading, error }] = useMutation(
+    UPDATE_PROJECT_EXTENT
+  );
   const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
@@ -43,7 +50,12 @@ const ProjectSummaryMap = ({
   };
 
   const handleSave = () => {
-    // TODO: Add GraphQL mutation
+    updateProjectExtent({
+      variables: { projectId, editLayerIds, editFeatureCollection },
+    });
+    // TODO: Close full screen dialog on success
+    // TODO: Handle error in mutation
+    // TODO: Solve bug with how features are added/removed from feature collection
   };
 
   return (
@@ -66,9 +78,13 @@ const ProjectSummaryMap = ({
           <Typography variant="h6" className={classes.title}>
             Edit Map
           </Typography>
-          <Button autoFocus color="inherit" onClick={handleSave}>
-            save
-          </Button>
+          {!loading ? (
+            <Button autoFocus color="inherit" onClick={handleSave}>
+              save
+            </Button>
+          ) : (
+            <CircularProgress />
+          )}
         </Toolbar>
       </AppBar>
       <NewProjectMap
