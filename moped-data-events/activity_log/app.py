@@ -3,7 +3,6 @@
 #
 import json
 import time
-from typing import Optional, Callable
 
 from MopedEvent import MopedEvent
 
