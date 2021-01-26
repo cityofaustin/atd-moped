@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 // Material
 import {
@@ -53,12 +53,11 @@ const ProjectTimeline = () => {
    * */
   const { projectId } = useParams();
 
-  //
   /**
    * Queries Hook
-   * @type {boolean} loading
-   * @type {object} error
-   * @type {object} data
+   * @type {boolean} - loading state
+   * @type {object} - details and messages when there is a query error
+   * @type {object} - data returned from Hasura
    * @function refetch - Provides a manual callback to update the Apollo cache
    * */
   const { loading, error, data, refetch } = useQuery(TIMELINE_QUERY, {
@@ -66,16 +65,21 @@ const ProjectTimeline = () => {
     fetchPolicy: "no-cache",
   });
 
-  console.log(loading, error, data, refetch);
-
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
+  // If the query is loading or data object is undefined,
+  // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
+  /**
+   * Phase table lookup object formatted into the shape that <MaterialTable>
+   * expects.
+   * Ex: { construction: "Construction", hold: "Hold", ...}
+   */
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
       Object.assign(obj, {
@@ -85,6 +89,9 @@ const ProjectTimeline = () => {
     {}
   );
 
+  /**
+   * Column configuration for <MaterialTable>
+   */
   const columns = [
     { title: "Phase Name", field: "phase_name", lookup: phaseNameLookup },
     {
@@ -126,11 +133,10 @@ const ProjectTimeline = () => {
               data={data.moped_proj_phases}
               title="Project Phases"
               editable={{
-                // isEditable: rowData => rowData.name === "phase_name",
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
-                    // Merge input fields with required fields
-                    const object = Object.assign(
+                    // Merge input fields with required fields default data.
+                    const newPhaseObject = Object.assign(
                       {
                         project_id: projectId,
                         completion_percentage: 0,
@@ -139,12 +145,11 @@ const ProjectTimeline = () => {
                       newData
                     );
 
-                    console.log(object);
-
                     setTimeout(() => {
+                      // Execute insert mutation
                       addProjectPhase({
                         variables: {
-                          objects: [object],
+                          objects: [newPhaseObject],
                         },
                       });
                       resolve();
@@ -153,29 +158,39 @@ const ProjectTimeline = () => {
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      const leData = { ...oldData };
+                      const updatedPhaseObject = {
+                        ...oldData,
+                      };
 
+                      // Array of differences between new and old data
                       let differences = Object.keys(oldData).filter(
                         key => oldData[key] !== newData[key]
                       );
 
+                      // Loop through the differences and assign newData values.
+                      // If one of the Date fields is blanked out, coerce empty
+                      // string to null.
                       differences.forEach(diff => {
-                        if (
+                        let shouldCoerceEmptyStringToNull =
                           newData[diff] === "" &&
-                          (diff === "phase_start" || diff === "phase_end")
-                        ) {
-                          leData[diff] = null;
+                          (diff === "phase_start" || diff === "phase_end");
+
+                        if (shouldCoerceEmptyStringToNull) {
+                          updatedPhaseObject[diff] = null;
                         } else {
-                          leData[diff] = newData[diff];
+                          updatedPhaseObject[diff] = newData[diff];
                         }
                       });
 
-                      delete leData.tableData;
-                      delete leData.project_id;
-                      delete leData.__typename;
+                      // Remove extraneous fields given by MaterialTable that
+                      // Hasura doesn't need
+                      delete updatedPhaseObject.tableData;
+                      delete updatedPhaseObject.project_id;
+                      delete updatedPhaseObject.__typename;
 
+                      // Execute update mutation
                       updateProjectPhase({
-                        variables: leData,
+                        variables: updatedPhaseObject,
                       });
                       resolve();
                     }, 1000);
@@ -183,6 +198,7 @@ const ProjectTimeline = () => {
                 onRowDelete: oldData =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
+                      // Execute delete mutation
                       deleteProjectPhase({
                         variables: {
                           project_phase_id: oldData.project_phase_id,
