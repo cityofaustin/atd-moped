@@ -50,23 +50,3 @@ jobs:
           ./document.sh;
           cd ..;
           ./hasura-cluster stop;
-#      # Build
-#      - name: "SQS Activity Log - Primary Keys"
-#        env:
-#          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#          AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE: ${{ secrets.AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE }}
-#        run: |
-#          export BRANCH_NAME=${GITHUB_REF##*/}
-#          echo "SHA: ${GITHUB_SHA}"
-#          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
-#          echo "GR: ${GITHUB_REF}"
-#          echo "PWD: $(pwd)"
-#          # Download settings (AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE) from AWS (using shell)
-#          # Parse and extract Hasura API settings from Zappa config file.
-#          # Use API Settings to run SQL, extract list of primary keys
-#          source $(pwd)/.github/workflows/aws-moped-database-helper.sh
-#          alpk_initialize_settings
-#          alpk_generate_map
-#          alpk_publish_map
