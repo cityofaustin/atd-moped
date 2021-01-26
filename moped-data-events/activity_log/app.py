@@ -109,7 +109,8 @@ def handler(event, context):
             time_str = time.ctime()
             if "body" in record:
                 try:
-                    process_event(record["body"])
+                    payload = json.loads(record["body"])
+                    process_event(payload)
                 except Exception as e:
                     print(f"Start Time: {time_str}", str(e))
                     time_str = time.ctime()
