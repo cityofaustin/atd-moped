@@ -1,7 +1,7 @@
 #
 # Builds Cognito Triggers for Moped Authentication
 #
-name: "Build & Publish Moped API"
+name: "Build & Publish DB Documentation"
 
 on:
   push:
@@ -26,12 +26,12 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
       # Then install the AWC CLI tools & boto3
-      - name: "Build Documentation"
+      - name: "Install Python Requirements"
         run: |
           sudo apt-get install -y python3-setuptools
           pip3 install awscli boto3 virtualenv
       # Run the shell commands using the AWS environment variables
-      - name: "Database Documentation"
+      - name: "Build & Publish Database Documentation"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -43,6 +43,7 @@ jobs:
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
           cd ./moped-database;
+          ./hasura-console setenv local;
           ./hasura-cluster start;
           cd ./schemaspy;
           ./document.sh;
