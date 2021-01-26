@@ -4,6 +4,7 @@ import NewProjectMap from "../newProjectView/NewProjectMap";
 import {
   AppBar,
   Button,
+  Container,
   IconButton,
   Dialog,
   makeStyles,
@@ -12,6 +13,7 @@ import {
   Slide,
   CircularProgress,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon } from "@material-ui/icons";
 import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
 
@@ -37,7 +39,7 @@ const ProjectSummaryMap = ({
   setIsEditing,
 }) => {
   const classes = useStyles();
-  const [updateProjectExtent, { data, loading, error }] = useMutation(
+  const [updateProjectExtent, { loading, error }] = useMutation(
     UPDATE_PROJECT_EXTENT
   );
   const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
@@ -52,9 +54,7 @@ const ProjectSummaryMap = ({
   const handleSave = () => {
     updateProjectExtent({
       variables: { projectId, editLayerIds, editFeatureCollection },
-    });
-    // TODO: Close full screen dialog on success
-    // TODO: Handle error in mutation
+    }).then(() => setIsEditing(false));
   };
 
   return (
@@ -92,6 +92,13 @@ const ProjectSummaryMap = ({
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
       />
+      {error && (
+        <Container>
+          <Alert severity="error">
+            The map edit failed to save. Please try again.
+          </Alert>
+        </Container>
+      )}
     </Dialog>
   );
 };
