@@ -1,13 +1,12 @@
 #!/usr/bin/env python
-import json, pdb
+import pytest, json, pdb
+from pytest_mock import MockerFixture
+from .helpers import *
 
-from .helpers import load_json_file
-
-from app import *
+import app
 
 
 class TestApp:
-    eventList = {}
 
     @classmethod
     def setup_class(cls) -> None:
@@ -25,15 +24,15 @@ class TestApp:
         """
         Basic testing of the Cerberus validator
         """
-        valid, errors = validate_hasura_event(self.event_insert)
+        valid, errors = app.validate_hasura_event(self.event_insert)
         assert valid
         assert errors == {}
 
-        valid, errors = validate_hasura_event(self.event_update)
+        valid, errors = app.validate_hasura_event(self.event_update)
         assert valid
         assert errors == {}
 
-        valid, errors = validate_hasura_event(None)
+        valid, errors = app.validate_hasura_event(None)
         assert valid == False
         assert errors != {}
 
@@ -41,11 +40,11 @@ class TestApp:
         """
         Basic testing of the Cerberus validator
         """
-        event_type = get_event_type(self.event_insert)
+        event_type = app.get_event_type(self.event_insert)
         assert event_type == "moped_project"
 
-        event_type = get_event_type(self.event_update)
+        event_type = app.get_event_type(self.event_update)
         assert event_type == "moped_project"
 
-        event_type = get_event_type(None)
+        event_type = app.get_event_type(None)
         assert event_type == ""
