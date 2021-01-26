@@ -35,6 +35,8 @@ export const useStyles = makeStyles({
   },
   mapBox: {
     padding: 25,
+    height: "60vh",
+    width: "100%",
   },
 });
 
@@ -110,7 +112,7 @@ const NewProjectMap = ({
         {...viewport}
         ref={mapRef}
         width="100%"
-        height={500}
+        height="100%"
         interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         onClick={handleLayerClick}

@@ -49,12 +49,12 @@ const ProjectSummaryMap = ({
   const handleViewportChange = viewport => setViewport(viewport);
 
   return (
-    <Box className={classes.mapBox}>
+    <Box>
       <ReactMapGL
         {...viewport}
         ref={mapRef}
         width="100%"
-        height={500}
+        height="50vw"
         interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
