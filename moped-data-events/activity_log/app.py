@@ -4,7 +4,6 @@
 import json
 import time
 
-from MopedEvent import MopedEvent
 
 from cerberus import Validator
 
@@ -12,6 +11,7 @@ from config import (
     HASURA_EVENT_VALIDATION_SCHEMA,
 )
 
+from MopedEvent import MopedEvent
 
 def raise_critical_error(
         message: str,
