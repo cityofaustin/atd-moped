@@ -16,5 +16,5 @@ CMD [ \
     "java", "-jar", "/app/schemaspy-6.1.0.jar", \
     "-configFile", "/app/database.cfg", \
     "-o", "/output", \
-    "-imageformat", "svg", "-hq" \
+    "-imageformat", "svg", "-hq", "-nopages"\
 ]
