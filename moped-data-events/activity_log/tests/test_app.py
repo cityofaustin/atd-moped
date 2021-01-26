@@ -59,3 +59,21 @@ class TestApp:
         mock_event = create_sqs_event(self.event_update)
         app.handler(mock_event, {})
         app.process_event.assert_called_once_with(mock_event["Records"][0]["body"])
+
+    def test_event_handler_validate_hasura_event(self, mocker: MockerFixture) -> None:
+        """
+        Makes sure that event handler executes as expected
+        """
+        mocker.patch.object(app,
+            "validate_hasura_event",
+            return_value=(False, dict(success="test")),
+            autospec=True
+        )
+
+        # Execute process_event, expecting an exception
+        with pytest.raises(Exception):
+            app.process_event(self.event_update)
+
+        # Make sure it gets called
+        app.validate_hasura_event.assert_called_once_with(self.event_update)
+        mocker.stopall()
