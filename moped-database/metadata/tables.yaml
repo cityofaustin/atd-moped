@@ -9,44 +9,7 @@
           schema: public
           name: moped_users
         column_mapping:
-          updated_by_id: user_id
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - record_id
-      - updated_by_id
-      - description
-      - record_data
-      - created_at
-      - activity_id
-      - record_type
-      - updated_by
-      filter: {}
+          updated_by: cognito_user_id
 - table:
     schema: public
     name: moped_categories
