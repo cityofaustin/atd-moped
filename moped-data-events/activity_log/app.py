@@ -81,7 +81,11 @@ def process_event(event: dict) -> None:
             # Build event object
             moped_event = MopedEvent(event)
             response = moped_event.save()
-            print(f"Hasura Response: {json.dumps(response)}")
+            if "errors" in response:
+                raise_critical_error(
+                    message=f"Error while running GraphQL Query: {json.dumps(response)}",
+                    data=event
+                )
         else:
             raise_critical_error(
                 message=f"Event type not specified",
@@ -100,8 +104,6 @@ def handler(event, context):
     :param dict event: One or many SQS messages
     :param dict context: Event context
     """
-
-    print(f"Event: {json.dumps(event)}")
 
     if "Records" in event:
         for record in event["Records"]:
