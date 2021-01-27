@@ -3145,6 +3145,45 @@
       - timeline_id
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_project
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns:
+        - capitally_funded
+        - end_date
+        - start_date
+        - added_by
+        - project_id
+        - project_importance
+        - project_length
+        - project_order
+        - timeline_id
+        - project_extent_geojson
+        - project_extent_ids
+        - current_phase
+        - current_status
+        - eCapris_id
+        - fiscal_year
+        - project_description
+        - project_description_public
+        - project_name
+        - project_priority
+        - date_added
+        - project_uuid
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_project_roles
