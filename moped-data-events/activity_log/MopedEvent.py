@@ -29,15 +29,13 @@ class MopedEvent:
           $recordData:jsonb!,
           $description:jsonb!,
           $updatedBy:String,
-          $updatedById:Int,
         ) {
           insert_moped_activity_log(objects: {
             record_id: $recordId,
             record_type: $recordType,
             record_data: $recordData,
             description: $description,
-            updated_by: $updatedBy,
-            updated_by_id: $updatedById,
+            updated_by: $updatedBy
           }) {
             affected_rows
           }
@@ -281,7 +279,6 @@ class MopedEvent:
             "recordData": self.payload(),
             "description": self.get_diff(),
             "updatedBy": self.get_event_session_var(variable="x-hasura-user-id", default=None),
-            "updatedById": self.get_event_session_var(variable="x-hasura-user-db-id", default=0),
         }
 
     def request(self, variables: dict, headers: dict = {}) -> dict:
