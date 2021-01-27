@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import theme from "../theme/index";
+import { Typography } from "@material-ui/core";
 import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -216,6 +217,22 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
       <div>Polygon ID: {hoveredFeature}</div>
     </div>
   );
+
+/**
+ * Build the JSX for the map feature count subtext
+ * @param {Number} featureCount - The number of features in a project's feature collection
+ * @return {JSX} The populated feature count text JSX
+ */
+export const renderFeatureCount = featureCount => (
+  <Typography
+    style={{
+      fontSize: "0.875rem",
+      fontWeight: 500,
+    }}
+  >
+    {featureCount} location{featureCount === 1 ? "" : "s"} in this project
+  </Typography>
+);
 
 /**
  * Count the number of IDs in all arrays nested in the selectLayerIds object

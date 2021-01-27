@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -19,13 +19,10 @@ import {
   renderTooltip,
   sumFeaturesSelected,
   useHoverLayer,
+  renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
-  locationCountText: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-  },
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
@@ -46,6 +43,7 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
+  const featureCount = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
@@ -158,9 +156,7 @@ const NewProjectMap = ({
         ))}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
-      <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedLayerIds)} locations selected
-      </Typography>
+      {renderFeatureCount(featureCount)}
     </Box>
   );
 };

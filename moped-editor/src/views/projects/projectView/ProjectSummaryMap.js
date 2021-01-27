@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
-import { Box, Button, Typography, makeStyles } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -11,6 +11,7 @@ import {
   mapConfig,
   mapStyles,
   renderTooltip,
+  renderFeatureCount,
   sumFeaturesSelected,
   useHoverLayer,
 } from "../../../utils/mapHelpers";
@@ -41,7 +42,7 @@ const ProjectSummaryMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureSum = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
@@ -83,9 +84,7 @@ const ProjectSummaryMap = ({
           Edit
         </Button>
       </ReactMapGL>
-      <Typography className={classes.locationCountText}>
-        {featureSum} location{featureSum === 1 ? "" : "s"} in this project
-      </Typography>
+      {renderFeatureCount(featureCount)}
     </Box>
   );
 };
