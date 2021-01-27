@@ -8,7 +8,7 @@ on:
     branches:
       - master
       - production
-      - "4895-sg-activity-log-aws-sqs"
+
     paths:
       - "moped-data-events/activity_log/**"
       - ".github/workflows/atd_sqs_activity_log.yml"

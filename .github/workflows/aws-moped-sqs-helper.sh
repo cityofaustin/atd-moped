@@ -30,7 +30,7 @@ function bundle_function {
   cd package;
   zip -r9 ../function.zip .;
   cd ${OLDPWD};
-  zip -g function.zip app.py;
+  zip -g function.zip *.py -x "venv/*" "tests/*" "events/*" ".pytest_cache/*" "__pycache__/*" "*.txt" "*.md";
 }
 
 #
