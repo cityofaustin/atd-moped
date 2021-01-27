@@ -94,7 +94,7 @@ const ProjectView = () => {
 
   return (
     <Page title="Project Summary Page">
-      <Container>
+      <Container maxWidth="xl">
         <Card className={classes.cardWrapper}>
           {loading ? (
             <CircularProgress />

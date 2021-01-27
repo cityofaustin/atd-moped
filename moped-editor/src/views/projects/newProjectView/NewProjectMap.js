@@ -35,8 +35,6 @@ export const useStyles = makeStyles({
   },
   mapBox: {
     padding: 25,
-    height: "60vh",
-    width: "100%",
   },
 });
 
@@ -52,6 +50,10 @@ const NewProjectMap = ({
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
+  /**
+   * Adds or removes an interactive map feature from the project's feature collection
+   * @param {Object} e - Event object for click
+   */
   const handleLayerClick = e => {
     const layerSource = getLayerSource(e);
 
@@ -95,8 +97,16 @@ const NewProjectMap = ({
     }
   };
 
+  /**
+   * Updates viewport on zoom, scroll, and other events
+   * @param {Object} viewport - Mapbox object that stores properties of the map view
+   */
   const handleViewportChange = viewport => setViewport(viewport);
 
+  /**
+   * Updates viewport on select of location from geocoder form
+   * @param {Object} newViewport - Mapbox object that stores updated location for viewport
+   */
   const handleGeocoderViewportChange = useCallback(newViewport => {
     const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
@@ -112,7 +122,7 @@ const NewProjectMap = ({
         {...viewport}
         ref={mapRef}
         width="100%"
-        height="100%"
+        height="60vh"
         interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         onClick={handleLayerClick}

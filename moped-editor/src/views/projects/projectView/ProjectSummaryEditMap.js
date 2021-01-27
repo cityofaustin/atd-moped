@@ -48,16 +48,22 @@ const ProjectSummaryMap = ({
     projectExtentGeoJSON
   );
 
+  /**
+   * Updates isEditing state to close dialog on cancel button click
+   */
   const handleClose = () => {
     setIsEditing(false);
   };
 
+  /**
+   * Calls update project mutation, refetches data and handles dialog close on success
+   */
   const handleSave = () => {
     updateProjectExtent({
       variables: { projectId, editLayerIds, editFeatureCollection },
     }).then(() => {
       refetchProjectDetails();
-      setIsEditing(false);
+      handleClose();
     });
   };
 

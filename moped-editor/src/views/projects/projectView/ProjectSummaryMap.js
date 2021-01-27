@@ -46,6 +46,10 @@ const ProjectSummaryMap = ({
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
+  /**
+   * Updates viewport on zoom, scroll, and other events
+   * @param {Object} viewport - Mapbox object that stores properties of the map view
+   */
   const handleViewportChange = viewport => setViewport(viewport);
 
   return (
@@ -54,7 +58,7 @@ const ProjectSummaryMap = ({
         {...viewport}
         ref={mapRef}
         width="100%"
-        height="50vw"
+        height="60vh"
         interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
