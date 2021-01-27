@@ -68,8 +68,10 @@ def events_process() -> (Response, int):
             # https://sqs.us-east-1.amazonaws.com/{AWS_ACCOUNT_NUMBER}/{THE_QUEUE_NAME}
             HASURA_EVENTS_SQS_URL[0:48]  # This is the length of the url with the account number
             + "/atd-moped-events-"  # We're going to add a prefix pattern for our ATD VisionZero queues
-            + f"{incoming_event_name}_{MOPED_API_CURRENT_ENVIRONMENT}"  # And event name plus current environment
+            + f"{incoming_event_name}_{MOPED_API_CURRENT_ENVIRONMENT}".lower()  # And event name plus current environment
         )
+
+        print(f"Queue URL: {queue_url}")
 
         # Send message to SQS queue
         response = sqs.send_message(
