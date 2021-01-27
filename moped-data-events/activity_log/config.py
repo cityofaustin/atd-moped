@@ -17,6 +17,7 @@ HASURA_EVENT_VALIDATION_SCHEMA = {
         "schema": {
             "session_variables": {
                 "type": "dict",
+                "allow_unknown": True,
                 "schema": {
                     "x-hasura-role": {
                         "type": "string",
