@@ -39,7 +39,7 @@ const ProjectsListView = () => {
   return (
     <Page className={classes.root} title="Projects">
       <GridTable
-        title={"Projects List"}
+        title={"Projects"}
         query={projectsQuery}
         toolbar={toolbar}
       />
