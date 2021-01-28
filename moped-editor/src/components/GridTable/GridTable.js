@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     position: "relative",
-    top: "1rem",
+    top: "1.2rem",
+    left: "0.3rem",
     "text-shadow": "1px 1px 0px white",
   },
   table: {
