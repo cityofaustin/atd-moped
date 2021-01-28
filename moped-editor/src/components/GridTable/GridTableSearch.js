@@ -143,34 +143,6 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
     }
   };
 
-  /**
-   * The initial value from the configuration to show filters
-   * @type {boolean}
-   * @constant
-   * @default false
-   */
-  const defaultShowFiltersValue = query.config.hasOwnProperty("showFilters")
-    ? query.config.showFilters
-    : false;
-
-  /**
-   * The initial value from the configuration to show search bar
-   * @type {boolean}
-   * @constant
-   * @default false
-   */
-  const defaultShowSearchBarValue = query.config.hasOwnProperty("showSearchBar")
-    ? query.config.showSearchBar
-    : true;
-
-  /**
-   * If true, it shows the filters in the UI, else it hides them.
-   * @type {boolean} searchFieldValue
-   * @function setShowFilters - Sets the state of searchFieldValue
-   * @default {defaultShowFiltersValue}
-   */
-  const [showFilters, setShowFilters] = useState(defaultShowFiltersValue);
-
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -232,6 +204,17 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
     setDialogOpen(false);
   };
 
+  const handleSwitchToSearch = () => {
+    filterState.setFilterParameters({});
+  }
+
+  const handleSwitchToAdvancedSearch = () => {
+    searchState.setSearchParameters({
+      value: "",
+      column: "",
+    });
+  }
+
   /**
    * Update the export whenever limit or selectall change
    */
@@ -276,6 +259,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
               >
                 <Tab
                   className={classes.tabStyle}
+                  onClick={handleSwitchToSearch}
                   label={
                     <div>
                       <Icon style={{ verticalAlign: "middle" }}>search</Icon>{" "}
@@ -285,6 +269,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
                 />
                 <Tab
                   className={classes.tabStyle}
+                  onClick={handleSwitchToAdvancedSearch}
                   label={
                     <div>
                       <Icon style={{ verticalAlign: "middle" }}>rule</Icon>{" "}
@@ -322,14 +307,13 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
             <GridTableSearchBar
               query={query}
               searchState={searchState}
-              showFilterState={{
-                showFilters: showFilters,
-                setShowFilters: setShowFilters,
-              }}
             />
           </TabPanel>
           <TabPanel value={value} index={1} dir={theme.direction}>
-            <GridTableFilters query={query} filterState={filterState} />
+            <GridTableFilters
+                query={query}
+                filterState={filterState}
+            />
           </TabPanel>
         </Paper>
       </Box>
