@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Typography } from "@material-ui/core";
 import { isEqual } from "lodash";
@@ -89,6 +90,8 @@ export const mapConfig = {
     },
   },
 };
+
+export const createZoomBbox = featureCollection => bbox(featureCollection);
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components

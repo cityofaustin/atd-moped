@@ -40,6 +40,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
+    "@turf/bbox": "^6.3.0",
     "apollo-boost": "^0.4.9",
     "atd-kickstand": "github:cityofaustin/atd-kickstand#b287a2190b1bf8c9d2f3c5fef5fe3c9d5df1323e",
     "aws-amplify": "^3.3.4",
