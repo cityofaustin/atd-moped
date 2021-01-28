@@ -57,6 +57,14 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
   const theme = useTheme();
 
   /**
+   * Controls what tab is being displayed
+   * @type {boolean} tabValue
+   * @function setTabValue - Sets the state of tabValue
+   * @default false
+   */
+  const [tabValue, setTabValue] = React.useState(0);
+
+  /**
    * When True, the dialog is open.
    * @type {boolean} dialogOpen
    * @function setDialogOpen - Sets the state of dialogOpen
@@ -143,12 +151,6 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
     }
   };
 
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
   /**
    * Builds a record entry given a specific configuration and filters
    * @param {object} record - The record to build
@@ -204,16 +206,31 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
     setDialogOpen(false);
   };
 
+  /**
+   * Clears the filters when switching to simple search
+   */
   const handleSwitchToSearch = () => {
     filterState.setFilterParameters({});
   }
 
+  /**
+   * Clears the simple search when switching to filters
+   */
   const handleSwitchToAdvancedSearch = () => {
     searchState.setSearchParameters({
       value: "",
       column: "",
     });
   }
+
+  /**
+   * Handles the click on a tab to switch between tabs
+   * @param {Object} event - The tab being clicked event
+   * @param {number} newTabValue - The clicked tab value
+   */
+  const handleTabChange = (event, newTabValue) => {
+    setTabValue(newTabValue);
+  };
 
   /**
    * Update the export whenever limit or selectall change
@@ -251,8 +268,8 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
           <Grid container lg={12}>
             <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
               <Tabs
-                value={value}
-                onChange={handleChange}
+                value={tabValue}
+                onChange={handleTabChange}
                 indicatorColor="primary"
                 textColor="primary"
                 aria-label="Search Data Table"
@@ -303,13 +320,13 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
             </Grid>
           </Grid>
 
-          <TabPanel value={value} index={0} dir={theme.direction}>
+          <TabPanel value={tabValue} index={0} dir={theme.direction}>
             <GridTableSearchBar
               query={query}
               searchState={searchState}
             />
           </TabPanel>
-          <TabPanel value={value} index={1} dir={theme.direction}>
+          <TabPanel value={tabValue} index={1} dir={theme.direction}>
             <GridTableFilters
                 query={query}
                 filterState={filterState}
