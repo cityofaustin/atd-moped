@@ -56,11 +56,10 @@ const useStyles = makeStyles(theme => ({
  * Renders a search bar with optional filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
  * @param {Object} searchState - The current state/state-modifier bundle for search
- * @param {Object} showFilterState - The state/state-modifier bundle for filters
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
+const GridTableSearchBar = ({ query, searchState }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -143,7 +142,7 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     !!searchState.searchParameters || false
   );
 
-  if (!searchState || !showFilterState)
+  if (!searchState)
     return <span>No search or filter state provided</span>;
 
   /**
