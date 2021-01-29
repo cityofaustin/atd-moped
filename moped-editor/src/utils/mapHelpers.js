@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Typography } from "@material-ui/core";
-import { isEqual } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -53,8 +52,6 @@ export const mapConfig = {
     latitude: 30.268039,
     longitude: -97.742828,
     zoom: 12,
-    bearing: 0,
-    pitch: 0,
   },
   mapboxDefaultMaxZoom: 18,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
@@ -150,10 +147,14 @@ export const getGeoJSON = e =>
  * Determine if a feature is present/absent from the feature collection state
  * @param {Object} selectedFeature - Feature selected
  * @param {Array} features - Array of GeoJSON features
+ * @param {String} idField - Key for id field in feature properties
  * @return {Boolean} Is feature present in features of feature collection in state
  */
-export const isFeaturePresent = (selectedFeature, features) =>
-  features.some(feature => isEqual(selectedFeature, feature));
+export const isFeaturePresent = (selectedFeature, features, idField) =>
+  features.some(
+    feature =>
+      selectedFeature.properties[idField] === feature.properties[idField]
+  );
 
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features

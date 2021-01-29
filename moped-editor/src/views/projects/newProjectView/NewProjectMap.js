@@ -57,10 +57,8 @@ const NewProjectMap = ({
 
     if (!layerSource) return;
 
-    const clickedFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
+    const { layerIdField } = mapConfig.layerConfigs[layerSource];
+    const clickedFeatureId = getFeatureId(e, layerIdField);
     const selectedFeature = getGeoJSON(e);
 
     if (!!clickedFeatureId && !!layerSource) {
@@ -77,7 +75,8 @@ const NewProjectMap = ({
 
       const updatedFeatureCollection = isFeaturePresent(
         selectedFeature,
-        featureCollection.features
+        featureCollection.features,
+        layerIdField
       )
         ? {
             ...featureCollection,

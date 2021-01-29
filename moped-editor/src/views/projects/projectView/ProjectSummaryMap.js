@@ -5,6 +5,7 @@ import ReactMapGL, {
   Source,
   WebMercatorViewport,
 } from "react-map-gl";
+import { AutoSizer } from "react-virtualized";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -23,6 +24,7 @@ import {
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
+  mapBox: { width: "100%", height: "60vh" },
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -50,7 +52,6 @@ const ProjectSummaryMap = ({
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
   const mapBounds = createZoomBbox(projectExtentGeoJSON);
-  console.log(mapBounds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
@@ -62,29 +63,31 @@ const ProjectSummaryMap = ({
   const handleViewportChange = viewport => setViewport(viewport);
 
   useEffect(() => {
-    if (projectExtentGeoJSON.features.length === 0) return;
-
-    const vp = new WebMercatorViewport(viewport);
-    debugger;
-    const { longitude, latitude, zoom } = vp.fitBounds(mapBounds, {
-      padding: 0,
+    // if (projectExtentGeoJSON.features.length === 0) return;
+    const vp = new WebMercatorViewport({
+      viewport,
+      width: 500,
+      height: 500,
     });
 
+    const newViewport = vp.fitBounds(mapBounds, { padding: 40 });
+    console.log(newViewport);
+    const { longitude, latitude, zoom } = newViewport;
     setViewport({
       ...viewport,
       longitude,
       latitude,
       zoom,
     });
-  }, [viewport, projectExtentGeoJSON, mapBounds]);
+  }, []);
 
   return (
-    <Box>
+    <Box className={classes.mapBox}>
       <ReactMapGL
         {...viewport}
         ref={mapRef}
-        width="100%"
-        height="60vh"
+        width={"100%"}
+        height={"100%"}
         interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
