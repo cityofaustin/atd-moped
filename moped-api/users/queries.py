@@ -18,6 +18,10 @@ GRAPHQL_CREATE_USER = """
         }
       ) {
         affected_rows
+        returning {
+          user_id
+          workgroup_id
+        }
       }
     }
 """
