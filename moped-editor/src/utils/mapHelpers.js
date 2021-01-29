@@ -53,6 +53,8 @@ export const mapConfig = {
     latitude: 30.268039,
     longitude: -97.742828,
     zoom: 12,
+    bearing: 0,
+    pitch: 0,
   },
   mapboxDefaultMaxZoom: 18,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
@@ -92,10 +94,11 @@ export const mapConfig = {
 };
 
 export const createZoomBbox = featureCollection => {
-  const [p1, p2, p3, p4] = bbox(featureCollection);
+  const [minLng, minLat, maxLng, maxLat] = bbox(featureCollection);
+
   return [
-    [p1, p2],
-    [p3, p4],
+    [minLng, minLat],
+    [maxLng, maxLat],
   ];
 };
 

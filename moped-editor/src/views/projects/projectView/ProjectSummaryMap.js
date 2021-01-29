@@ -1,5 +1,10 @@
-import React, { useState, useRef } from "react";
-import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import React, { useState, useRef, useEffect } from "react";
+import ReactMapGL, {
+  Layer,
+  NavigationControl,
+  Source,
+  WebMercatorViewport,
+} from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -55,6 +60,23 @@ const ProjectSummaryMap = ({
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
   const handleViewportChange = viewport => setViewport(viewport);
+
+  useEffect(() => {
+    if (projectExtentGeoJSON.features.length === 0) return;
+
+    const vp = new WebMercatorViewport(viewport);
+    debugger;
+    const { longitude, latitude, zoom } = vp.fitBounds(mapBounds, {
+      padding: 0,
+    });
+
+    setViewport({
+      ...viewport,
+      longitude,
+      latitude,
+      zoom,
+    });
+  }, [viewport, projectExtentGeoJSON, mapBounds]);
 
   return (
     <Box>
