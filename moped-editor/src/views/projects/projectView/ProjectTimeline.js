@@ -190,10 +190,10 @@ const ProjectTimeline = () => {
                         variables: updatedPhaseObject,
                       });
 
-                      refetch();
+                      setTimeout(() => refetch(), 501);
                       resolve();
-                    }, 1000);
-                  }).then(() => refetch()),
+                    }, 500);
+                  }),
                 onRowDelete: oldData =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
@@ -203,9 +203,9 @@ const ProjectTimeline = () => {
                           project_phase_id: oldData.project_phase_id,
                         },
                       });
-                      refetch();
+                      setTimeout(() => refetch(), 501);
                       resolve();
-                    }, 1000);
+                    }, 500);
                   }),
               }}
             />
