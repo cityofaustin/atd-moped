@@ -10,7 +10,14 @@ on:
       - production
     paths:
       - "moped-auth/**"
-
+  pull_request:
+    branches-ignore:
+      - main
+      - production
+    paths:
+      - ".github/workflows/atd_cognito_hooks_build.yml"
+      - ".github/workflows/aws-cognito-helper.sh"
+      - "moped-auth/**"
 jobs:
   build:
     name: Build
