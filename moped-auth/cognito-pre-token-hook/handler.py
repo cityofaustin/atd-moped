@@ -141,6 +141,9 @@ def load_claims(user_email: str) -> dict:
     profile = retrieve_user_profile(user_email=user_email)
     claims_encrypted = profile["claims"]["S"]
     cognito_uuid = profile["cognito_uuid"]["S"]
+    # Attempt to retrieve the database_id/workgroup_id or default to 0
+    database_id = profile.get("database_id", {}).get("N", 0)
+    workgroup_id = profile.get("workgroup_id", {}).get("N", 0)
 
     fernet_key = get_secret(AWS_COGNITO_DYNAMO_SECRET_NAME)
     decrypted_claims = decrypt(
@@ -149,6 +152,15 @@ def load_claims(user_email: str) -> dict:
     )
     claims = json.loads(decrypted_claims)
     claims["x-hasura-user-id"] = cognito_uuid
+
+    # If database_id or workgroup_Id is not present in
+    # encrypted claims, attempt to retrieve from dynamoDB
+    if "x-hasura-user-db-id" not in claims:
+        claims["x-hasura-user-db-id"] = database_id
+
+    if "x-hasura-user-wg-id" not in claims:
+        claims["x-hasura-user-wg-id"] = workgroup_id
+
     return claims
 
 
