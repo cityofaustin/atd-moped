@@ -5,7 +5,6 @@ import ReactMapGL, {
   Source,
   WebMercatorViewport,
 } from "react-map-gl";
-import { AutoSizer } from "react-virtualized";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -51,7 +50,6 @@ const ProjectSummaryMap = ({
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
-  const mapBounds = createZoomBbox(projectExtentGeoJSON);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
@@ -63,23 +61,27 @@ const ProjectSummaryMap = ({
   const handleViewportChange = viewport => setViewport(viewport);
 
   useEffect(() => {
-    // if (projectExtentGeoJSON.features.length === 0) return;
-    const vp = new WebMercatorViewport({
-      viewport,
-      width: 500,
-      height: 500,
-    });
+    const currentMap = mapRef.current;
+    const mapBounds = createZoomBbox(projectExtentGeoJSON);
 
-    const newViewport = vp.fitBounds(mapBounds, { padding: 40 });
-    console.log(newViewport);
-    const { longitude, latitude, zoom } = newViewport;
-    setViewport({
-      ...viewport,
-      longitude,
-      latitude,
-      zoom,
+    setViewport(viewport => {
+      const vp = new WebMercatorViewport({
+        viewport,
+        width: currentMap._width,
+        height: currentMap._height,
+      });
+      const newViewport = vp.fitBounds(mapBounds, { padding: 100 });
+
+      const { longitude, latitude, zoom } = newViewport;
+
+      return {
+        ...viewport,
+        longitude,
+        latitude,
+        zoom,
+      };
     });
-  }, []);
+  }, [projectExtentGeoJSON]);
 
   return (
     <Box className={classes.mapBox}>
