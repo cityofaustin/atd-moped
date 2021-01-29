@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useMemo } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -20,7 +20,6 @@ import {
   sumFeaturesSelected,
   useHoverLayer,
   renderFeatureCount,
-  createZoomBbox,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
@@ -45,9 +44,6 @@ const NewProjectMap = ({
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
-  const mapZoomBbox = useMemo(() => {
-    createZoomBbox(featureCollection);
-  }, [featureCollection]);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();

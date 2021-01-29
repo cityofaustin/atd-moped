@@ -14,6 +14,7 @@ import {
   renderFeatureCount,
   sumFeaturesSelected,
   useHoverLayer,
+  createZoomBbox,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -43,6 +44,8 @@ const ProjectSummaryMap = ({
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const mapBounds = createZoomBbox(projectExtentGeoJSON);
+  console.log(mapBounds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();

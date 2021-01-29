@@ -91,7 +91,13 @@ export const mapConfig = {
   },
 };
 
-export const createZoomBbox = featureCollection => bbox(featureCollection);
+export const createZoomBbox = featureCollection => {
+  const [p1, p2, p3, p4] = bbox(featureCollection);
+  return [
+    [p1, p2],
+    [p3, p4],
+  ];
+};
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
