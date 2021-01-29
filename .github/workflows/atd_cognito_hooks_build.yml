@@ -12,6 +12,7 @@ on:
       - "moped-auth/**"
   pull_request:
     branches:
+      - "**"
       - "!main"
       - "!production"
     paths:
