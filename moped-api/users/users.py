@@ -232,11 +232,22 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            user_claims = format_claims(id, roles)
+            database_id = db_response["data"]["update_moped_users"]["returning"]["user_id"]
+            workgroup_id = db_response["data"]["update_moped_users"]["returning"]["workgroup_id"]
+
+            user_claims = format_claims(
+                user_id=id,
+                roles=roles,
+                database_id=database_id,
+                workgroup_id=workgroup_id
+            )
+
             put_claims(
                 user_email=user_profile["email"],
                 user_claims=user_claims,
                 cognito_uuid=id,
+                database_id=database_id,
+                workgroup_id=workgroup_id
             )
 
         response = {
