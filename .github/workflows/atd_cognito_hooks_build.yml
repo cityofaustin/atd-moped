@@ -12,7 +12,8 @@ on:
       - "moped-auth/**"
   pull_request:
     branches:
-      - "**-sg-**"
+      - "!main"
+      - "!production"
     paths:
       - ".github/workflows/atd_cognito_hooks_build.yml"
       - ".github/workflows/aws-cognito-helper.sh"
