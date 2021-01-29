@@ -6,12 +6,12 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getFeaturePolygonId,
   MAPBOX_TOKEN,
-  mapInit,
+  mapConfig,
+  mapStyles,
   renderTooltip,
   sumFeaturesSelected,
-  toolTipStyles,
+  useHoverLayer,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -19,7 +19,7 @@ const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: toolTipStyles,
+  toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
@@ -35,25 +35,8 @@ const ProjectSummaryDetailsMap = ({
   const classes = useStyles();
   const mapRef = useRef();
 
-  const [viewport, setViewport] = useState(mapInit);
-  const [hoveredFeature, setHoveredFeature] = useState(null);
-  const [hoveredCoords, setHoveredCoords] = useState(null);
-
-  const handleLayerHover = e => {
-    const {
-      srcEvent: { offsetX, offsetY },
-    } = e;
-
-    const featurePolygonId = getFeaturePolygonId(e);
-
-    if (!!featurePolygonId) {
-      setHoveredFeature(featurePolygonId);
-      setHoveredCoords({ x: offsetX, y: offsetY });
-    } else {
-      setHoveredFeature(null);
-      setHoveredCoords(null);
-    }
-  };
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
+  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
   const handleViewportChange = viewport => setViewport(viewport);
 
@@ -77,7 +60,7 @@ const ProjectSummaryDetailsMap = ({
             <Layer {...createProjectViewLayerConfig()} />
           </Source>
         )}
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       <Typography className={classes.locationCountText}>
         {sumFeaturesSelected(selectedLayerIds)} locations in this project

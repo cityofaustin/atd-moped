@@ -11,6 +11,7 @@ MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAG
 #
 from auth.auth import auth_blueprint
 from users.users import users_blueprint
+from events.events import events_blueprint
 
 app = Flask(__name__)
 
@@ -19,6 +20,7 @@ app = Flask(__name__)
 #
 app.register_blueprint(auth_blueprint, url_prefix="/auth")
 app.register_blueprint(users_blueprint, url_prefix="/users")
+app.register_blueprint(events_blueprint, url_prefix="/events")
 
 #
 # Cognito
@@ -51,3 +53,7 @@ def app_index() -> Response:
             % now.strftime("%Y-%m-%d %H:%M:%S")
         }
     )
+
+
+if __name__ == '__main__':
+    app.run(debug=True, host="0.0.0.0")
