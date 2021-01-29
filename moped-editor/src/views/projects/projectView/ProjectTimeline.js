@@ -119,10 +119,6 @@ const ProjectTimeline = () => {
     },
   ];
 
-  // Notes:
-  // Update Hasura config so that moped-admin & moped-editor can DELETE
-  // `moped_proj_phases`.
-
   return (
     <CardContent>
       <Grid container spacing={2}>
