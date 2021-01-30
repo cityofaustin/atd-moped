@@ -114,7 +114,7 @@ export const StaffListViewQueryConf = {
       type: "String",
     },
     cognito_user_id: {
-      searchable: true,
+      searchable: false,
       sortable: false,
       label: "Cognito User ID",
       search: {
