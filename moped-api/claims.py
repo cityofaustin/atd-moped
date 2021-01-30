@@ -193,8 +193,8 @@ def format_claims(user_id: str, roles: list, database_id: int = 0, workgroup_id:
         "x-hasura-user-id": user_id,
         "x-hasura-default-role": "moped-viewer",
         "x-hasura-allowed-roles": roles,
-        "x-hasura-user-db-id": database_id,
-        "x-hasura-user-wg-id": workgroup_id
+        "x-hasura-user-db-id": str(database_id),
+        "x-hasura-user-wg-id": str(workgroup_id)
     }
 
 
@@ -216,8 +216,8 @@ def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, dat
             "user_id": {"S": user_email},
             "claims": {"S": encrypted_claims},
             "cognito_uuid": {"S": cognito_uuid},
-            "database_id": {"N": database_id},
-            "workgroup_id": {"N": workgroup_id}
+            "database_id": {"S": database_id},
+            "workgroup_id": {"S": workgroup_id}
         },
     )
 
