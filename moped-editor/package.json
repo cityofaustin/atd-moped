@@ -41,7 +41,7 @@
     "@material-ui/lab": "^4.0.0-alpha.56",
     "@material-ui/styles": "^4.10.0",
     "apollo-boost": "^0.4.9",
-    "atd-kickstand": "github:cityofaustin/atd-kickstand#32e66c9750770b34a62ad2b1b5fc0e4652c6d9dc",
+    "atd-kickstand": "github:cityofaustin/atd-kickstand#c2c305f810fab6a1c1e1e76b8aa6d189e0034547",
     "aws-amplify": "^3.3.4",
     "axios": "^0.21.0",
     "chart.js": "^2.9.3",
