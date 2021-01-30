@@ -8,7 +8,6 @@ import Page from "src/components/Page";
 import { GQLAbstract } from "atd-kickstand";
 import GridTable from "../../../components/GridTable/GridTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
-import Toolbar from "./Toolbar";
 
 // Styles
 const useStyles = makeStyles(theme => ({
@@ -34,14 +33,11 @@ let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 const ProjectsListView = () => {
   const classes = useStyles();
 
-  const toolbar = <Toolbar />;
-
   return (
     <Page className={classes.root} title="Projects">
       <GridTable
         title={"Projects"}
         query={projectsQuery}
-        toolbar={toolbar}
       />
     </Page>
   );
