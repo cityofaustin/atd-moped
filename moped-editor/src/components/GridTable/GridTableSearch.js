@@ -314,7 +314,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
                   color="primary"
                   fullWidth
                 >
-                  Export CSV
+                  Download
                 </Button>
               )}
             </Grid>
