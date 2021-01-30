@@ -156,10 +156,10 @@ def load_claims(user_email: str) -> dict:
     # If database_id or workgroup_Id is not present in
     # encrypted claims, attempt to retrieve from dynamoDB
     if "x-hasura-user-db-id" not in claims:
-        claims["x-hasura-user-db-id"] = database_id
+        claims["x-hasura-user-db-id"] = str(database_id)
 
     if "x-hasura-user-wg-id" not in claims:
-        claims["x-hasura-user-wg-id"] = workgroup_id
+        claims["x-hasura-user-wg-id"] = str(workgroup_id)
 
     return claims
 
