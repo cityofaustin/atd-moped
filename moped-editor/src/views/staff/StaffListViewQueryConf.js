@@ -113,6 +113,18 @@ export const StaffListViewQueryConf = {
       },
       type: "String",
     },
+    cognito_user_id: {
+      searchable: true,
+      sortable: false,
+      label: "Cognito User ID",
+      search: {
+        label: "Search by Cognito User ID",
+        operator: "_eq",
+        quoted: true,
+        envelope: "{VALUE}",
+      },
+      type: "String",
+    },
     is_coa_staff: {
       searchable: false,
       sortable: true,
