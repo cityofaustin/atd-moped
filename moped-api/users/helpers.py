@@ -189,12 +189,12 @@ def get_user_database_ids(response: dict) -> tuple:
     """
     # Put separately because if workgroup_id fails, database_id shouldn't default to zero...
     try:
-        database_id = response["data"]["insert_moped_users"]["returning"][0]["user_id"]
+        database_id = str(response["data"]["insert_moped_users"]["returning"][0]["user_id"])
     except (TypeError, KeyError, IndexError):
         database_id = "0"
     # Put separately because if user_id fails, workgroup_id shouldn't default to zero..
     try:
-        workgroup_id = response["data"]["insert_moped_users"]["returning"][0]["workgroup_id"]
+        workgroup_id = str(response["data"]["insert_moped_users"]["returning"][0]["workgroup_id"])
     except (TypeError, KeyError, IndexError):
         workgroup_id = "0"
 
