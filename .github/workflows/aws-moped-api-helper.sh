@@ -4,11 +4,8 @@ case "${BRANCH_NAME}" in
 "production")
   export WORKING_STAGE="production"
   ;;
-"main")
-  export WORKING_STAGE="staging"
-  ;;
 *)
-  export WORKING_STAGE="development"
+  export WORKING_STAGE="staging"
   ;;
 esac
 
