@@ -12,6 +12,7 @@ from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
     get_user_email_from_attr,
+    get_user_database_ids,
     is_valid_user_password,
     is_users_password,
     is_valid_user_profile,
@@ -143,8 +144,9 @@ def user_create_user(claims: list) -> (Response, int):
 
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
-        database_id = db_response["data"]["insert_moped_users"]["returning"].get("user_id", "0")
-        workgroup_id = db_response["data"]["insert_moped_users"]["returning"].get("workgroup_id", "0")
+
+        # Retrieve database id values as strings
+        database_id, workgroup_id = get_user_database_ids(response=db_response)
 
         user_claims = format_claims(
             user_id=cognito_username,
@@ -232,8 +234,8 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            database_id = db_response["data"]["update_moped_users"]["returning"].get("user_id", "0")
-            workgroup_id = db_response["data"]["update_moped_users"]["returning"].get("workgroup_id", "0")
+            # Retrieve database id values as strings
+            database_id, workgroup_id = get_user_database_ids(response=db_response)
 
             user_claims = format_claims(
                 user_id=id,
