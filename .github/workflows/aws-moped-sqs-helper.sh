@@ -11,6 +11,7 @@ esac
 
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}";
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}";
+echo "PR_NUMBER: '${PR_NUMBER}'";
 
 #
 # First, we need to create the python package by installing requirements
