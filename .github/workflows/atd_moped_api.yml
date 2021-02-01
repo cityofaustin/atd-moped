@@ -11,9 +11,6 @@ on:
     paths:
       - "moped-api/**"
   pull_request:
-    branches-ignore:
-      - main
-      - production
     paths:
       - ".github/workflows/atd_moped_api.yml"
       - ".github/workflows/aws-moped-api-helper.sh"
