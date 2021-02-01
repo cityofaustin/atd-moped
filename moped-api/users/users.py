@@ -143,8 +143,8 @@ def user_create_user(claims: list) -> (Response, int):
 
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
-        database_id = db_response["data"]["insert_moped_users"]["returning"]["user_id"]
-        workgroup_id = db_response["data"]["insert_moped_users"]["returning"]["workgroup_id"]
+        database_id = db_response["data"]["insert_moped_users"]["returning"].get("user_id", "0")
+        workgroup_id = db_response["data"]["insert_moped_users"]["returning"].get("workgroup_id", "0")
 
         user_claims = format_claims(
             user_id=cognito_username,
@@ -232,8 +232,8 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            database_id = db_response["data"]["update_moped_users"]["returning"]["user_id"]
-            workgroup_id = db_response["data"]["update_moped_users"]["returning"]["workgroup_id"]
+            database_id = db_response["data"]["update_moped_users"]["returning"].get("user_id", "0")
+            workgroup_id = db_response["data"]["update_moped_users"]["returning"].get("workgroup_id", "0")
 
             user_claims = format_claims(
                 user_id=id,
