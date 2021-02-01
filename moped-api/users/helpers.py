@@ -180,3 +180,22 @@ def get_user_email_from_attr(user_attr: object) -> str:
     )[0]["Value"]
 
     return email.replace("azuread_", "")
+
+def get_user_database_ids(response: dict) -> tuple:
+    """
+    Returns the database_id and workgroup_id from a mutation response
+    :param dict response: The mutation response as provided from Hasura
+    :return (database_id: str, workroup_id: str):
+    """
+    # Put separately because if workgroup_id fails, database_id shouldn't default to zero...
+    try:
+        database_id = response["data"]["insert_moped_users"]["returning"][0]["user_id"]
+    except (TypeError, KeyError, IndexError):
+        database_id = "0"
+    # Put separately because if user_id fails, workgroup_id shouldn't default to zero..
+    try:
+        workgroup_id = response["data"]["insert_moped_users"]["returning"][0]["workgroup_id"]
+    except (TypeError, KeyError, IndexError):
+        workgroup_id = "0"
+
+    return (database_id, workgroup_id)
