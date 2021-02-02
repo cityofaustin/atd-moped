@@ -23,7 +23,6 @@ import {
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
-  mapBox: { width: "100%", height: "60vh" },
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -84,12 +83,12 @@ const ProjectSummaryMap = ({
   }, [projectExtentGeoJSON]);
 
   return (
-    <Box className={classes.mapBox}>
+    <Box>
       <ReactMapGL
         {...viewport}
         ref={mapRef}
         width={"100%"}
-        height={"100%"}
+        height={"60vh"}
         interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
