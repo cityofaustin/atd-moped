@@ -88,7 +88,7 @@ const ProjectSummaryMap = ({
       };
     };
 
-    setViewport(viewport => fitViewportToBounds(viewport));
+    setViewport(prevViewport => fitViewportToBounds(prevViewport));
   }, [projectExtentGeoJSON]);
 
   return (

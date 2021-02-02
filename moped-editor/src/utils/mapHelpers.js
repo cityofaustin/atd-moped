@@ -91,7 +91,7 @@ export const mapConfig = {
 };
 
 /**
- * Create a Mapbox LngLatBounds object from a bbox feature collection
+ * Create a Mapbox LngLatBounds object from a bbox generated from a feature collection
  * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Array} A nested array that fits the LngLatBounds Mapbox object format
  */
