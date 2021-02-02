@@ -33,6 +33,7 @@ class MopedEvent:
           $updatedBy:uuid!,
         ) {
           insert_moped_activity_log(objects: {
+            record_project_id: $recordProjectId,
             record_id: $recordId,
             record_type: $recordType,
             record_data: $recordData,
