@@ -8,6 +8,7 @@ from config import (
     HASURA_ENDPOINT,
     HASURA_EVENT_VALIDATION_SCHEMA,
     COGNITO_DYNAMO_TABLE_NAME,
+    API_ENVIRONMENT,
 )
 
 
@@ -24,11 +25,12 @@ class MopedEvent:
 
     MOPED_GRAPHQL_MUTATION = """
         mutation InsertMopedActivityLog (
+          $recordProjectId:Int = 0,
           $recordId:Int!,
           $recordType:String!,
           $recordData:jsonb!,
           $description:jsonb!,
-          $updatedBy:String,
+          $updatedBy:uuid!,
         ) {
           insert_moped_activity_log(objects: {
             record_id: $recordId,
@@ -137,7 +139,7 @@ class MopedEvent:
         :rtype: dict
         """
         s3 = boto3.Session().client('s3')
-        s3_object = s3.get_object(Bucket="atd-moped-data-events", Key="settings/moped_primary_keys_staging.json")
+        s3_object = s3.get_object(Bucket="atd-moped-data-events", Key=f"settings/moped_primary_keys_{API_ENVIRONMENT}.json")
         self.MOPED_PRIMARY_KEY_MAP = json.loads(s3_object['Body'].read())
 
     @staticmethod
@@ -266,6 +268,16 @@ class MopedEvent:
 
         return change_list
 
+
+    def get_project_id(self) -> int:
+        """
+        Retrieves the project_id if present in the record
+        :return: The project_id value of the record as an integer (from the new state).
+        :rtype: int
+        """
+        return self.get_state("new").get("project_id", 0)
+
+
     def get_variables(self) -> dict:
         """
         Builds the variables needed for a Hasura HTTP request
@@ -274,6 +286,7 @@ class MopedEvent:
         """
         primary_key = self.get_primary_key(table=self.get_event_type())
         return {
+            "recordProjectId": self.get_project_id(),
             "recordId": self.get_state("new")[primary_key],
             "recordType": self.get_event_type(),
             "recordData": self.payload(),
