@@ -63,13 +63,20 @@ const ProjectSummaryMap = ({
     const currentMap = mapRef.current;
     const mapBounds = createZoomBbox(projectExtentGeoJSON);
 
-    setViewport(viewport => {
-      const vp = new WebMercatorViewport({
+    /**
+     * Takes the existing viewport and transforms it to fit the project's features
+     * @param {Object} viewport - Describes the map view
+     * @return {Object} Viewport object with updated attributes based on project's features
+     */
+    const fitViewportToBounds = viewport => {
+      const featureViewport = new WebMercatorViewport({
         viewport,
         width: currentMap._width,
         height: currentMap._height,
       });
-      const newViewport = vp.fitBounds(mapBounds, { padding: 100 });
+      const newViewport = featureViewport.fitBounds(mapBounds, {
+        padding: 100,
+      });
 
       const { longitude, latitude, zoom } = newViewport;
 
@@ -79,7 +86,9 @@ const ProjectSummaryMap = ({
         latitude,
         zoom,
       };
-    });
+    };
+
+    setViewport(viewport => fitViewportToBounds(viewport));
   }, [projectExtentGeoJSON]);
 
   return (
