@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Typography } from "@material-ui/core";
@@ -311,4 +312,42 @@ export function useHoverLayer() {
   };
 
   return { handleLayerHover, featureId, hoveredCoords };
+}
+
+export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
+
+  useEffect(() => {
+    const currentMap = mapRef.current;
+    const mapBounds = createZoomBbox(featureCollection);
+
+    /**
+     * Takes the existing viewport and transforms it to fit the project's features
+     * @param {Object} viewport - Describes the map view
+     * @return {Object} Viewport object with updated attributes based on project's features
+     */
+    const fitViewportToBounds = viewport => {
+      const featureViewport = new WebMercatorViewport({
+        viewport,
+        width: currentMap._width,
+        height: currentMap._height,
+      });
+      const newViewport = featureViewport.fitBounds(mapBounds, {
+        padding: 100,
+      });
+
+      const { longitude, latitude, zoom } = newViewport;
+
+      return {
+        ...viewport,
+        longitude,
+        latitude,
+        zoom,
+      };
+    };
+
+    setViewport(prevViewport => fitViewportToBounds(prevViewport));
+  }, [featureCollection]);
+
+  return [viewport, setViewport];
 }
