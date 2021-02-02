@@ -315,7 +315,7 @@ export function useHoverLayer() {
 }
 
 /**
- * Custom hook that returns a vector tile layer hover event handler and the details to place and populate a tooltip
+ * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {Object} mapRef - Ref object whose current property exposes the map instance
  * @param {Object} featureCollection - A GeoJSON feature collection to fit the map bounds around
  * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
