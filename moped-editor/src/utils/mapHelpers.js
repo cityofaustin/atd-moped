@@ -314,6 +314,17 @@ export function useHoverLayer() {
   return { handleLayerHover, featureId, hoveredCoords };
 }
 
+/**
+ * Custom hook that returns a vector tile layer hover event handler and the details to place and populate a tooltip
+ * @param {Object} mapRef - Ref object whose current property exposes the map instance
+ * @param {Object} featureCollection - A GeoJSON feature collection to fit the map bounds around
+ * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
+ */
+/**
+ * @typedef {Array} ViewportStateArray
+ * @property {Object} StateArray[0] - A Mapbox viewport object
+ * @property {Function} StateArray[1] - Setter for viewport state
+ */
 export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
   const [viewport, setViewport] = useState(mapConfig.mapInit);
 
