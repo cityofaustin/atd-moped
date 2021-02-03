@@ -36,3 +36,20 @@ export const TEAM_QUERY = gql`
     }
   }
 `;
+
+export const PROJECT_ACTIVITY_LOG = gql`
+  query getMopedProjectChanges($projectId: Int!) {
+    moped_activity_log(where: {record_project_id: {_eq: $projectId}}) {
+      activity_id
+      created_at
+      record_project_id
+      record_type
+      description
+      moped_user {
+        first_name
+        last_name
+        user_id
+      }
+    }
+  }
+`
