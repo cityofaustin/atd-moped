@@ -98,6 +98,16 @@ const ProjectActivityLog = () => {
           .substr(0, 2)
           .toUpperCase();
 
+  /**
+   * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
+   * @param {string} type
+   * @param {string} field
+   * @return {string}
+   */
+  const getChangeIcon = type => {
+    return ProjectActivityLogTableMaps[type.toLowerCase()]?.icon ?? "create";
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
