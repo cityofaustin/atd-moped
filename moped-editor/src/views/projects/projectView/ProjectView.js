@@ -24,6 +24,7 @@ import ProjectTeam from "./ProjectTeam";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import TabPanel from "./TabPanel";
 import { PROJECT_NAME } from "../../../queries/project";
+import ProjectActivityLog from "./ProjectActivityLog";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,7 +62,7 @@ const TABS = [
   { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
   {
     label: "Activity Log",
-    Component: ProjectTabPlaceholder,
+    Component: ProjectActivityLog,
     param: "activity_log",
   },
 ];
