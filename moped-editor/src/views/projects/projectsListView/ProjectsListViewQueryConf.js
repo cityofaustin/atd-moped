@@ -30,8 +30,8 @@ export const ProjectsListViewQueryConf = {
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
   search: {
-    placeholder: "Search project by name, or select field.",
-    defaultField: "project_name",
+    placeholder: "Search by project name, project description, and eCAPRIS subproject ID.",
+    defaultFieldsOperator: "_or",
   },
   columns: {
     project_id: {
@@ -108,6 +108,19 @@ export const ProjectsListViewQueryConf = {
       filter: value => (value === true ? "True" : "False"),
       type: "boolean",
     },
+    eCapris_id: {
+      hidden: false,
+      searchable: true,
+      sortable: false,
+      label: "eCapris Subp.",
+      type: "string",
+      search: {
+        label: "Search by eCapris subproject id",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+    }
   },
   order_by: {},
   where: {},
