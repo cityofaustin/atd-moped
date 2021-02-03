@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
@@ -8,12 +8,12 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   createProjectViewLayerConfig,
   MAPBOX_TOKEN,
-  mapConfig,
   mapStyles,
   renderTooltip,
   renderFeatureCount,
   sumFeaturesSelected,
   useHoverLayer,
+  useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -44,8 +44,11 @@ const ProjectSummaryMap = ({
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
 
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+    mapRef,
+    projectExtentGeoJSON
+  );
 
   /**
    * Updates viewport on zoom, scroll, and other events

@@ -49,7 +49,7 @@ const NewProjectMap = ({
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
   /**
-   * Adds or removes an interactive map feature from the project's feature collection
+   * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
    */
   const handleLayerClick = e => {
@@ -57,42 +57,39 @@ const NewProjectMap = ({
 
     if (!layerSource) return;
 
-    const clickedFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
+    const { layerIdField } = mapConfig.layerConfigs[layerSource];
+    const clickedFeatureId = getFeatureId(e, layerIdField);
     const selectedFeature = getGeoJSON(e);
 
-    if (!!clickedFeatureId && !!layerSource) {
-      const layerIds = selectedLayerIds[layerSource] || [];
+    const layerIds = selectedLayerIds[layerSource] || [];
 
-      const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-        ? [...layerIds, clickedFeatureId]
-        : layerIds.filter(id => id !== clickedFeatureId);
+    const updatedLayerIds = !layerIds.includes(clickedFeatureId)
+      ? [...layerIds, clickedFeatureId]
+      : layerIds.filter(id => id !== clickedFeatureId);
 
-      const updatedSelectedIds = {
-        ...selectedLayerIds,
-        [layerSource]: updatedLayerIds,
-      };
+    const updatedSelectedIds = {
+      ...selectedLayerIds,
+      [layerSource]: updatedLayerIds,
+    };
 
-      const updatedFeatureCollection = isFeaturePresent(
-        selectedFeature,
-        featureCollection.features
-      )
-        ? {
-            ...featureCollection,
-            features: featureCollection.features.filter(
-              feature => !isEqual(feature, selectedFeature)
-            ),
-          }
-        : {
-            ...featureCollection,
-            features: [...featureCollection.features, selectedFeature],
-          };
+    const updatedFeatureCollection = isFeaturePresent(
+      selectedFeature,
+      featureCollection.features,
+      layerIdField
+    )
+      ? {
+          ...featureCollection,
+          features: featureCollection.features.filter(
+            feature => !isEqual(feature, selectedFeature)
+          ),
+        }
+      : {
+          ...featureCollection,
+          features: [...featureCollection.features, selectedFeature],
+        };
 
-      setSelectedLayerIds(updatedSelectedIds);
-      setFeatureCollection(updatedFeatureCollection);
-    }
+    setSelectedLayerIds(updatedSelectedIds);
+    setFeatureCollection(updatedFeatureCollection);
   };
 
   /**
