@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { WebMercatorViewport } from "react-map-gl";
+import bbox from "@turf/bbox";
 import theme from "../theme/index";
-import { isEqual } from "lodash";
+import { Typography } from "@material-ui/core";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -90,6 +92,20 @@ export const mapConfig = {
 };
 
 /**
+ * Create a Mapbox LngLatBounds object from a bbox generated from a feature collection
+ * @param {Object} featureCollection - A GeoJSON feature collection
+ * @return {Array} A nested array that fits the LngLatBounds Mapbox object format
+ */
+export const createZoomBbox = featureCollection => {
+  const [minLng, minLat, maxLng, maxLat] = bbox(featureCollection);
+
+  return [
+    [minLng, minLat],
+    [maxLng, maxLat],
+  ];
+};
+
+/**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
@@ -126,7 +142,6 @@ export const getGeoJSON = e =>
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
     id: e.features[0].id,
-    source: e.features[0].source,
     properties: {
       ...e.features[0].properties,
       sourceLayer: e.features[0].sourceLayer,
@@ -138,10 +153,14 @@ export const getGeoJSON = e =>
  * Determine if a feature is present/absent from the feature collection state
  * @param {Object} selectedFeature - Feature selected
  * @param {Array} features - Array of GeoJSON features
+ * @param {String} idField - Key for id field in feature properties
  * @return {Boolean} Is feature present in features of feature collection in state
  */
-export const isFeaturePresent = (selectedFeature, features) =>
-  features.some(feature => isEqual(selectedFeature, feature));
+export const isFeaturePresent = (selectedFeature, features, idField) =>
+  features.some(
+    feature =>
+      selectedFeature.properties[idField] === feature.properties[idField]
+  );
 
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features
@@ -219,6 +238,22 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
   );
 
 /**
+ * Build the JSX for the map feature count subtext
+ * @param {Number} featureCount - The number of features in a project's feature collection
+ * @return {JSX} The populated feature count text JSX
+ */
+export const renderFeatureCount = featureCount => (
+  <Typography
+    style={{
+      fontSize: "0.875rem",
+      fontWeight: 500,
+    }}
+  >
+    {featureCount} location{featureCount === 1 ? "" : "s"} in this project
+  </Typography>
+);
+
+/**
  * Count the number of IDs in all arrays nested in the selectLayerIds object
  * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
  * @return {Number} Total number of string IDs
@@ -277,4 +312,55 @@ export function useHoverLayer() {
   };
 
   return { handleLayerHover, featureId, hoveredCoords };
+}
+
+/**
+ * Custom hook that initializes a map viewport and fits it to a provided feature collection
+ * @param {Object} mapRef - Ref object whose current property exposes the map instance
+ * @param {Object} featureCollection - A GeoJSON feature collection to fit the map bounds around
+ * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
+ */
+/**
+ * @typedef {Array} ViewportStateArray
+ * @property {Object} StateArray[0] - A Mapbox viewport object
+ * @property {Function} StateArray[1] - Setter for viewport state
+ */
+export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
+
+  useEffect(() => {
+    const mapBounds = createZoomBbox(featureCollection);
+    const currentMap = mapRef.current;
+
+    /**
+     * Takes the existing viewport and transforms it to fit the project's features
+     * @param {Object} viewport - Describes the map view
+     * @return {Object} Viewport object with updated attributes based on project's features
+     */
+    const fitViewportToBounds = viewport => {
+      if (featureCollection.features.length === 0) return viewport;
+
+      const featureViewport = new WebMercatorViewport({
+        viewport,
+        width: currentMap._width,
+        height: currentMap._height,
+      });
+      const newViewport = featureViewport.fitBounds(mapBounds, {
+        padding: 100,
+      });
+
+      const { longitude, latitude, zoom } = newViewport;
+
+      return {
+        ...viewport,
+        longitude,
+        latitude,
+        zoom,
+      };
+    };
+
+    setViewport(prevViewport => fitViewportToBounds(prevViewport));
+  }, [featureCollection, mapRef]);
+
+  return [viewport, setViewport];
 }
