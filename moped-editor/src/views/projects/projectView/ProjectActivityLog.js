@@ -59,6 +59,20 @@ const ProjectActivityLog = () => {
    */
   const formatDate = date => new Date(date).toLocaleDateString();
 
+  /**
+   * Returns a human-readable field name (translates the column into a readable label)
+   * @param {string} type - The table name
+   * @param {string} field - The column name
+   * @return {string}
+   */
+  const getHumanReadableField = (type, field) => {
+    return (
+      ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[
+        field.toLowerCase()
+      ]?.label ?? field
+    );
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
