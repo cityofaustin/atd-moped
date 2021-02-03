@@ -73,6 +73,15 @@ const ProjectActivityLog = () => {
     );
   };
 
+  /**
+   * Returns the
+   * @param {string} type - The name of the table
+   * @return {string}
+   */
+  const getRecordTypeLabel = type => {
+    return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
