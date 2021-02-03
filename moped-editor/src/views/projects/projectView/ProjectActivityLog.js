@@ -82,6 +82,22 @@ const ProjectActivityLog = () => {
     return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
   };
 
+  /**
+   * Safely returns the initials from a full name
+   * @param {string} name - The full name of the user
+   * @return {string}
+   */
+  const getInitials = name =>
+      name
+          .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
+          .replace(/ +/gi, " ")
+          .split(/ /)
+          .reduce((acc, item) => acc + item[0], "")
+          .concat(name.substr(1))
+          .concat(name)
+          .substr(0, 2)
+          .toUpperCase();
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
