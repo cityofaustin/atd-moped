@@ -31,6 +31,7 @@ class MopedEvent:
           $recordData:jsonb!,
           $description:jsonb!,
           $updatedBy:uuid!,
+          $operationType:String!
         ) {
           insert_moped_activity_log(objects: {
             record_project_id: $recordProjectId,
@@ -38,7 +39,8 @@ class MopedEvent:
             record_type: $recordType,
             record_data: $recordData,
             description: $description,
-            updated_by: $updatedBy
+            updated_by: $updatedBy,
+            operation_type: $operationType
           }) {
             affected_rows
           }
@@ -269,7 +271,6 @@ class MopedEvent:
 
         return change_list
 
-
     def get_project_id(self) -> int:
         """
         Retrieves the project_id if present in the record
@@ -278,6 +279,15 @@ class MopedEvent:
         """
         return self.get_state("new").get("project_id", 0)
 
+    def get_operation_type(self, default: str = None) -> str:
+        """
+        Returns the operation type from the hasura payload
+        :return str:
+        """
+        try:
+            return self.HASURA_EVENT_PAYLOAD["event"]["op"]
+        except (TypeError, KeyError):
+            return default
 
     def get_variables(self) -> dict:
         """
@@ -293,6 +303,7 @@ class MopedEvent:
             "recordData": self.payload(),
             "description": self.get_diff(),
             "updatedBy": self.get_event_session_var(variable="x-hasura-user-id", default=None),
+            "operationType": self.get_operation_type(default=None),
         }
 
     def request(self, variables: dict, headers: dict = {}) -> dict:

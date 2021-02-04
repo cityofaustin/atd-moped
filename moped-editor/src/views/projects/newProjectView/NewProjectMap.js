@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -19,13 +19,10 @@ import {
   renderTooltip,
   sumFeaturesSelected,
   useHoverLayer,
+  renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
 export const useStyles = makeStyles({
-  locationCountText: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-  },
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
@@ -46,55 +43,65 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
+  const featureCount = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
 
+  /**
+   * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
+   * @param {Object} e - Event object for click
+   */
   const handleLayerClick = e => {
     const layerSource = getLayerSource(e);
 
     if (!layerSource) return;
 
-    const clickedFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
+    const { layerIdField } = mapConfig.layerConfigs[layerSource];
+    const clickedFeatureId = getFeatureId(e, layerIdField);
     const selectedFeature = getGeoJSON(e);
 
-    if (!!clickedFeatureId && !!layerSource) {
-      const layerIds = selectedLayerIds[layerSource] || [];
+    const layerIds = selectedLayerIds[layerSource] || [];
 
-      const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-        ? [...layerIds, clickedFeatureId]
-        : layerIds.filter(id => id !== clickedFeatureId);
+    const updatedLayerIds = !layerIds.includes(clickedFeatureId)
+      ? [...layerIds, clickedFeatureId]
+      : layerIds.filter(id => id !== clickedFeatureId);
 
-      const updatedSelectedIds = {
-        ...selectedLayerIds,
-        [layerSource]: updatedLayerIds,
-      };
+    const updatedSelectedIds = {
+      ...selectedLayerIds,
+      [layerSource]: updatedLayerIds,
+    };
 
-      const updatedFeatureCollection = isFeaturePresent(
-        selectedFeature,
-        featureCollection.features
-      )
-        ? {
-            ...featureCollection,
-            features: featureCollection.features.filter(
-              feature => !isEqual(feature, selectedFeature)
-            ),
-          }
-        : {
-            ...featureCollection,
-            features: [...featureCollection.features, selectedFeature],
-          };
+    const updatedFeatureCollection = isFeaturePresent(
+      selectedFeature,
+      featureCollection.features,
+      layerIdField
+    )
+      ? {
+          ...featureCollection,
+          features: featureCollection.features.filter(
+            feature => !isEqual(feature, selectedFeature)
+          ),
+        }
+      : {
+          ...featureCollection,
+          features: [...featureCollection.features, selectedFeature],
+        };
 
-      setSelectedLayerIds(updatedSelectedIds);
-      setFeatureCollection(updatedFeatureCollection);
-    }
+    setSelectedLayerIds(updatedSelectedIds);
+    setFeatureCollection(updatedFeatureCollection);
   };
 
+  /**
+   * Updates viewport on zoom, scroll, and other events
+   * @param {Object} viewport - Mapbox object that stores properties of the map view
+   */
   const handleViewportChange = viewport => setViewport(viewport);
 
+  /**
+   * Updates viewport on select of location from geocoder form
+   * @param {Object} newViewport - Mapbox object that stores updated location for viewport
+   */
   const handleGeocoderViewportChange = useCallback(newViewport => {
     const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
@@ -110,7 +117,7 @@ const NewProjectMap = ({
         {...viewport}
         ref={mapRef}
         width="100%"
-        height={500}
+        height="60vh"
         interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         onClick={handleLayerClick}
@@ -146,9 +153,7 @@ const NewProjectMap = ({
         ))}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
-      <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedLayerIds)} locations selected
-      </Typography>
+      {renderFeatureCount(featureCount)}
     </Box>
   );
 };

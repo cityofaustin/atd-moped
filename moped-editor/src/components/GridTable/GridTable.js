@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme => ({
   },
   title: {
     position: "relative",
-    top: "1rem",
+    top: "1.2rem",
+    left: "0.3rem",
     "text-shadow": "1px 1px 0px white",
   },
   table: {
@@ -145,21 +146,25 @@ const GridTable = ({ title, query }) => {
   query.cleanWhere();
 
   // If we have a search, use the terms...
-  if (search.value !== "" && search.column !== "") {
-    if (query.config.columns[search.column]) {
-      // Deconstruct search settings
-      const { operator, quoted, envelope } = query.config.columns[
-        search.column
-      ].search;
+  if (search.value && search.value !== "") {
+    query.setOrSimple = (key, value) => {
+      if(!query.config.or) query.config.or = {};
+      query.config.or[key] = value;
+    }
 
-      // Generate value within envelope
+    /**
+     * Iterate through all column keys, if they are searchable
+     * add the to the Or list.
+     */
+    Object.keys(query.config.columns).filter(
+        column => query.config.columns[column]?.searchable
+    ).forEach(column => {
+      const { operator, quoted, envelope } = query.config.columns[column].search;
       const value = quoted
         ? `"${envelope.replace("{VALUE}", search.value)}"`
         : search.value;
-
-      // Where statement
-      query.setWhere(search.column, `${operator}: ${value}`);
-    }
+      query.setOrSimple(column, `${operator}: ${value}`)
+    });
   }
 
   // For each filter added to state, add a where clause in GraphQL
@@ -188,7 +193,6 @@ const GridTable = ({ title, query }) => {
         return;
       }
     }
-
     query.setWhere(field, `${gqlOperator}: ${value}`);
   });
 

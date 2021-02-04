@@ -37,6 +37,24 @@ export const TEAM_QUERY = gql`
   }
 `;
 
+export const UPDATE_PROJECT_EXTENT = gql`
+  mutation UpdateProjectExtent(
+    $projectId: Int
+    $editLayerIds: jsonb
+    $editFeatureCollection: jsonb
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: {
+        project_extent_geojson: $editFeatureCollection
+        project_extent_ids: $editLayerIds
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(where: {record_project_id: {_eq: $projectId}}) {
