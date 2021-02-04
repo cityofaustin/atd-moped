@@ -694,66 +694,66 @@ export const ProjectActivityLogTableMaps = {
   },
 
   moped_proj_sponsors: {
-    label: "",
+    label: "Project Sponsors",
     fields: {
       entity_id: {
         icon: "",
-        label: "",
+        label: "Entity ID",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       added_by: {
         icon: "",
-        label: "",
+        label: "Added By",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       project_sponsor_id: {
         icon: "",
-        label: "",
+        label: "Project Sponsor ID",
         type: "uuid",
       },
       sponsor_website: {
         icon: "",
-        label: "",
+        label: "Website",
         type: "text",
       },
       sponsor_context: {
         icon: "",
-        label: "",
+        label: "Context",
         type: "text",
       },
       sponsor_context_file: {
         icon: "",
-        label: "",
+        label: "Context File",
         type: "text",
       },
       sponsor_description: {
         icon: "",
-        label: "",
+        label: "Description",
         type: "text",
       },
       is_external_sponsor: {
         icon: "",
-        label: "",
+        label: "Is External Sponsor",
         type: "bool",
       },
       sponsor_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
       sponsor_allocation: {
         icon: "",
-        label: "",
+        label: "Allocation",
         type: "float4",
       },
     },
