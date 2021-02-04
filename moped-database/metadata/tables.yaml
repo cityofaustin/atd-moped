@@ -2,4052 +2,4045 @@
     schema: public
     name: moped_activity_log
   object_relationships:
-  - name: moped_user
-    using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: moped_users
-        column_mapping:
-          updated_by: cognito_user_id
+    - name: moped_user
+      using:
+        manual_configuration:
+          remote_table:
+            schema: public
+            name: moped_users
+          column_mapping:
+            updated_by: cognito_user_id
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - activity_id
-      - created_at
-      - description
-      - operation_type
-      - record_data
-      - record_id
-      - record_project_id
-      - record_type
-      - updated_by
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - activity_id
-      - created_at
-      - description
-      - operation_type
-      - record_data
-      - record_id
-      - record_project_id
-      - record_type
-      - updated_by
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - activity_id
-      - created_at
-      - description
-      - operation_type
-      - record_data
-      - record_id
-      - record_project_id
-      - record_type
-      - updated_by
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - activity_id
+          - created_at
+          - description
+          - operation_type
+          - record_data
+          - record_id
+          - record_project_id
+          - record_type
+          - updated_by
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - activity_id
+          - created_at
+          - description
+          - operation_type
+          - record_data
+          - record_id
+          - record_project_id
+          - record_type
+          - updated_by
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - activity_id
+          - created_at
+          - description
+          - operation_type
+          - record_data
+          - record_id
+          - record_project_id
+          - record_type
+          - updated_by
+        filter: {}
+        allow_aggregations: true
 - table:
     schema: public
     name: moped_categories
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - category_name
-      - category_id
-      - active_category
-      - on_street
-      - sensitivity
-      - category_order
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - category_name
-      - category_id
-      - active_category
-      - on_street
-      - sensitivity
-      - category_order
-      - date_added
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - category_name
+          - category_id
+          - active_category
+          - on_street
+          - sensitivity
+          - category_order
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - category_name
+          - category_id
+          - active_category
+          - on_street
+          - sensitivity
+          - category_order
+          - date_added
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_category
-      - on_street
-      - sensitivity
-      - category_id
-      - category_order
-      - category_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - active_category
-      - on_street
-      - sensitivity
-      - category_id
-      - category_order
-      - category_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - category_name
-      - category_id
-      - active_category
-      - on_street
-      - sensitivity
-      - category_order
-      - date_added
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - active_category
+          - on_street
+          - sensitivity
+          - category_id
+          - category_order
+          - category_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - active_category
+          - on_street
+          - sensitivity
+          - category_id
+          - category_order
+          - category_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - category_name
+          - category_id
+          - active_category
+          - on_street
+          - sensitivity
+          - category_order
+          - date_added
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_category
-      - on_street
-      - sensitivity
-      - category_id
-      - category_order
-      - category_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - active_category
-      - on_street
-      - sensitivity
-      - category_id
-      - category_order
-      - category_name
-      - date_added
-      filter: {}
-      check: {}
+    - role: moped-admin
+      permission:
+        columns:
+          - active_category
+          - on_street
+          - sensitivity
+          - category_id
+          - category_order
+          - category_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - active_category
+          - on_street
+          - sensitivity
+          - category_id
+          - category_order
+          - category_name
+          - date_added
+        filter: {}
+        check: {}
 - table:
     schema: public
     name: moped_city_fiscal_years
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - fiscal_year_value
-      - fiscal_year_start_date
-      - fiscal_year_end_date
-      - active_fy
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - fiscal_year_value
-      - fiscal_year_start_date
-      - fiscal_year_end_date
-      - active_fy
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - fiscal_year_value
+          - fiscal_year_start_date
+          - fiscal_year_end_date
+          - active_fy
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - fiscal_year_value
+          - fiscal_year_start_date
+          - fiscal_year_end_date
+          - active_fy
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_fy
-      - fiscal_year_end_date
-      - fiscal_year_start_date
-      - fiscal_year_value
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - active_fy
-      - fiscal_year_end_date
-      - fiscal_year_start_date
-      - fiscal_year_value
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - fiscal_year_value
-      - fiscal_year_start_date
-      - fiscal_year_end_date
-      - active_fy
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - active_fy
+          - fiscal_year_end_date
+          - fiscal_year_start_date
+          - fiscal_year_value
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - active_fy
+          - fiscal_year_end_date
+          - fiscal_year_start_date
+          - fiscal_year_value
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - fiscal_year_value
+          - fiscal_year_start_date
+          - fiscal_year_end_date
+          - active_fy
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_fy
-      - fiscal_year_end_date
-      - fiscal_year_start_date
-      - fiscal_year_value
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - active_fy
-      - fiscal_year_end_date
-      - fiscal_year_start_date
-      - fiscal_year_value
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - active_fy
+          - fiscal_year_end_date
+          - fiscal_year_start_date
+          - fiscal_year_value
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - active_fy
+          - fiscal_year_end_date
+          - fiscal_year_start_date
+          - fiscal_year_value
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_components
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - component_id
-      - component_name
-      - component_categories
-      - map_representation
-      - component_order
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - component_id
-      - component_name
-      - component_categories
-      - map_representation
-      - component_order
-      - date_added
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - component_id
+          - component_name
+          - component_categories
+          - map_representation
+          - component_order
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - component_id
+          - component_name
+          - component_categories
+          - map_representation
+          - component_order
+          - date_added
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - component_id
-      - component_order
-      - component_categories
-      - component_name
-      - map_representation
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - component_id
-      - component_order
-      - component_categories
-      - component_name
-      - map_representation
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - component_id
-      - component_name
-      - component_categories
-      - map_representation
-      - component_order
-      - date_added
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - component_id
+          - component_order
+          - component_categories
+          - component_name
+          - map_representation
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - component_id
+          - component_order
+          - component_categories
+          - component_name
+          - map_representation
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - component_id
+          - component_name
+          - component_categories
+          - map_representation
+          - component_order
+          - date_added
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - component_id
-      - component_order
-      - component_categories
-      - component_name
-      - map_representation
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - component_id
-      - component_order
-      - component_categories
-      - component_name
-      - map_representation
-      - date_added
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - component_id
+          - component_order
+          - component_categories
+          - component_name
+          - map_representation
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - component_id
+          - component_order
+          - component_categories
+          - component_name
+          - map_representation
+          - date_added
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_entity
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
-      - entity_id
-      - affiliated_workgroup
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
-      - entity_id
-      - affiliated_workgroup
-      - date_added
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - entity_uuid
+          - workgroup_name
+          - abbreviated_name
+          - entity_id
+          - affiliated_workgroup
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - entity_uuid
+          - workgroup_name
+          - abbreviated_name
+          - entity_id
+          - affiliated_workgroup
+          - date_added
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - affiliated_workgroup
-      - entity_id
-      - abbreviated_name
-      - workgroup_name
-      - date_added
-      - entity_uuid
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - affiliated_workgroup
-      - entity_id
-      - abbreviated_name
-      - workgroup_name
-      - date_added
-      - entity_uuid
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
-      - entity_id
-      - affiliated_workgroup
-      - date_added
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - affiliated_workgroup
+          - entity_id
+          - abbreviated_name
+          - workgroup_name
+          - date_added
+          - entity_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - affiliated_workgroup
+          - entity_id
+          - abbreviated_name
+          - workgroup_name
+          - date_added
+          - entity_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - entity_uuid
+          - workgroup_name
+          - abbreviated_name
+          - entity_id
+          - affiliated_workgroup
+          - date_added
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - affiliated_workgroup
-      - entity_id
-      - abbreviated_name
-      - workgroup_name
-      - date_added
-      - entity_uuid
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - affiliated_workgroup
-      - entity_id
-      - abbreviated_name
-      - workgroup_name
-      - date_added
-      - entity_uuid
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - affiliated_workgroup
+          - entity_id
+          - abbreviated_name
+          - workgroup_name
+          - date_added
+          - entity_uuid
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - affiliated_workgroup
+          - entity_id
+          - abbreviated_name
+          - workgroup_name
+          - date_added
+          - entity_uuid
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_fund_opp
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_opportunity_id
-      - funding_opportunity_name
-      - funding_source_cat
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_opportunity_id
+          - funding_opportunity_name
+          - funding_source_cat
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_fund_source_cat
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_category_id
-      - funding_source_category_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_category_id
+          - funding_source_category_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_fund_sources
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - funding_source_id
-      - funding_source_name
-      - funding_source_category
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - funding_source_id
-      - funding_source_name
-      - funding_source_category
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - funding_source_id
+          - funding_source_name
+          - funding_source_category
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - funding_source_id
+          - funding_source_name
+          - funding_source_category
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_id
-      - funding_source_category
-      - funding_source_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_id
-      - funding_source_category
-      - funding_source_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - funding_source_id
-      - funding_source_name
-      - funding_source_category
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_id
+          - funding_source_category
+          - funding_source_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_id
+          - funding_source_category
+          - funding_source_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - funding_source_id
+          - funding_source_name
+          - funding_source_category
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_id
-      - funding_source_category
-      - funding_source_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_id
-      - funding_source_category
-      - funding_source_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_id
+          - funding_source_category
+          - funding_source_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_id
+          - funding_source_category
+          - funding_source_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_group
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - group_id
-      - group_name
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - group_id
-      - group_name
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - group_id
+          - group_name
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - group_id
+          - group_name
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - group_id
-      - group_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - group_id
-      - group_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - group_id
-      - group_name
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - group_id
+          - group_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - group_id
+          - group_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - group_id
+          - group_name
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - group_id
-      - group_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - group_id
-      - group_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - group_id
+          - group_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - group_id
+          - group_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_milestones
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - required_milestone
-      - milestone_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - required_milestone
-      - milestone_id
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - required_milestone
+          - milestone_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - required_milestone
+          - milestone_id
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - required_milestone
-      - milestone_id
-      - milestone_order
-      - milestone_description
-      - milestone_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - required_milestone
-      - milestone_id
-      - milestone_order
-      - milestone_description
-      - milestone_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - required_milestone
-      - milestone_id
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - required_milestone
+          - milestone_id
+          - milestone_order
+          - milestone_description
+          - milestone_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - required_milestone
+          - milestone_id
+          - milestone_order
+          - milestone_description
+          - milestone_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - required_milestone
+          - milestone_id
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - required_milestone
-      - milestone_id
-      - milestone_order
-      - milestone_description
-      - milestone_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - required_milestone
-      - milestone_id
-      - milestone_order
-      - milestone_description
-      - milestone_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - required_milestone
+          - milestone_id
+          - milestone_order
+          - milestone_description
+          - milestone_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - required_milestone
+          - milestone_id
+          - milestone_order
+          - milestone_description
+          - milestone_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_phases
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - phase_average_length
-      - required_phase
-      - phase_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - phase_average_length
-      - required_phase
-      - phase_id
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - phase_name
+          - phase_description
+          - phase_rank
+          - phase_average_length
+          - required_phase
+          - phase_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - phase_name
+          - phase_description
+          - phase_rank
+          - phase_average_length
+          - required_phase
+          - phase_id
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - required_phase
-      - phase_average_length
-      - phase_id
-      - phase_rank
-      - phase_description
-      - phase_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - required_phase
-      - phase_average_length
-      - phase_id
-      - phase_rank
-      - phase_description
-      - phase_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - phase_average_length
-      - required_phase
-      - phase_id
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - required_phase
+          - phase_average_length
+          - phase_id
+          - phase_rank
+          - phase_description
+          - phase_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - required_phase
+          - phase_average_length
+          - phase_id
+          - phase_rank
+          - phase_description
+          - phase_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - phase_name
+          - phase_description
+          - phase_rank
+          - phase_average_length
+          - required_phase
+          - phase_id
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - required_phase
-      - phase_average_length
-      - phase_id
-      - phase_rank
-      - phase_description
-      - phase_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - required_phase
-      - phase_average_length
-      - phase_id
-      - phase_rank
-      - phase_description
-      - phase_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - required_phase
+          - phase_average_length
+          - phase_id
+          - phase_rank
+          - phase_description
+          - phase_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - required_phase
+          - phase_average_length
+          - phase_id
+          - phase_rank
+          - phase_description
+          - phase_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_proj_categories
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_id
-      - category_name
-      - proj_category_id
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_id
-      - category_name
-      - proj_category_id
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - proj_category_id
-      - project_id
-      - category_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - proj_category_id
-      - project_id
-      - category_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_id
-      - category_name
-      - proj_category_id
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - proj_category_id
-      - project_id
-      - category_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - proj_category_id
-      - project_id
-      - category_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_categories
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - proj_category_id
-        - project_id
-        - category_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - project_id
+          - category_name
+          - proj_category_id
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_id
+          - category_name
+          - proj_category_id
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - proj_category_id
+          - project_id
+          - category_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - proj_category_id
+          - project_id
+          - category_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_id
+          - category_name
+          - proj_category_id
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - proj_category_id
+          - project_id
+          - category_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - proj_category_id
+          - project_id
+          - category_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_categories
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - proj_category_id
+            - project_id
+            - category_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_communication
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_memo
-      - pending_request
-      - pending_request_user
-      - pending_review_date
-      - pending_review_user
-      - last_note
-      - last_note_user
-      - last_note_date
-      - channel_id
-      - comm_id
-      - project_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_memo
-      - pending_request
-      - pending_request_user
-      - pending_review_date
-      - pending_review_user
-      - last_note
-      - last_note_user
-      - last_note_date
-      - channel_id
-      - comm_id
-      - project_id
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - project_memo
+          - pending_request
+          - pending_request_user
+          - pending_review_date
+          - pending_review_user
+          - last_note
+          - last_note_user
+          - last_note_date
+          - channel_id
+          - comm_id
+          - project_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_memo
+          - pending_request
+          - pending_request_user
+          - pending_review_date
+          - pending_review_user
+          - last_note
+          - last_note_user
+          - last_note_date
+          - channel_id
+          - comm_id
+          - project_id
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - channel_id
-      - last_note_user
-      - pending_request_user
-      - pending_review_user
-      - last_note_date
-      - pending_request
-      - pending_review_date
-      - comm_id
-      - project_id
-      - last_note
-      - project_memo
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - channel_id
-      - last_note_user
-      - pending_request_user
-      - pending_review_user
-      - last_note_date
-      - pending_request
-      - pending_review_date
-      - comm_id
-      - project_id
-      - last_note
-      - project_memo
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_memo
-      - pending_request
-      - pending_request_user
-      - pending_review_date
-      - pending_review_user
-      - last_note
-      - last_note_user
-      - last_note_date
-      - channel_id
-      - comm_id
-      - project_id
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - channel_id
+          - last_note_user
+          - pending_request_user
+          - pending_review_user
+          - last_note_date
+          - pending_request
+          - pending_review_date
+          - comm_id
+          - project_id
+          - last_note
+          - project_memo
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - channel_id
+          - last_note_user
+          - pending_request_user
+          - pending_review_user
+          - last_note_date
+          - pending_request
+          - pending_review_date
+          - comm_id
+          - project_id
+          - last_note
+          - project_memo
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_memo
+          - pending_request
+          - pending_request_user
+          - pending_review_date
+          - pending_review_user
+          - last_note
+          - last_note_user
+          - last_note_date
+          - channel_id
+          - comm_id
+          - project_id
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - channel_id
-      - last_note_user
-      - pending_request_user
-      - pending_review_user
-      - last_note_date
-      - pending_request
-      - pending_review_date
-      - comm_id
-      - project_id
-      - last_note
-      - project_memo
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - channel_id
-      - last_note_user
-      - pending_request_user
-      - pending_review_user
-      - last_note_date
-      - pending_request
-      - pending_review_date
-      - comm_id
-      - project_id
-      - last_note
-      - project_memo
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - channel_id
+          - last_note_user
+          - pending_request_user
+          - pending_review_user
+          - last_note_date
+          - pending_request
+          - pending_review_date
+          - comm_id
+          - project_id
+          - last_note
+          - project_memo
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - channel_id
+          - last_note_user
+          - pending_request_user
+          - pending_review_user
+          - last_note_date
+          - pending_request
+          - pending_review_date
+          - comm_id
+          - project_id
+          - last_note
+          - project_memo
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_proj_components
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - moped_project_id
-      - moped_component_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      - moped_proj_component_id
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - moped_project_id
-      - moped_component_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      - moped_proj_component_id
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - moped_component_id
-      - moped_proj_component_id
-      - moped_project_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - moped_component_id
-      - moped_proj_component_id
-      - moped_project_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - moped_project_id
-      - moped_component_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      - moped_proj_component_id
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - moped_component_id
-      - moped_proj_component_id
-      - moped_project_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - moped_component_id
-      - moped_proj_component_id
-      - moped_project_id
-      - component_length
-      - component_notes
-      - component_unique_id
-      - component_unique_id_code
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_components
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - moped_component_id
-        - moped_proj_component_id
-        - moped_project_id
-        - component_length
-        - component_notes
-        - component_unique_id
-        - component_unique_id_code
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - moped_project_id
+          - moped_component_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+          - moped_proj_component_id
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - moped_project_id
+          - moped_component_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+          - moped_proj_component_id
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - moped_component_id
+          - moped_proj_component_id
+          - moped_project_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - moped_component_id
+          - moped_proj_component_id
+          - moped_project_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - moped_project_id
+          - moped_component_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+          - moped_proj_component_id
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - moped_component_id
+          - moped_proj_component_id
+          - moped_project_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - moped_component_id
+          - moped_proj_component_id
+          - moped_project_id
+          - component_length
+          - component_notes
+          - component_unique_id
+          - component_unique_id_code
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_components
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - moped_component_id
+            - moped_proj_component_id
+            - moped_project_id
+            - component_length
+            - component_notes
+            - component_unique_id
+            - component_unique_id_code
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_dates
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_date
-      - date_type
-      - date_year
-      - date_month
-      - date_day
-      - active_date
-      - date_id
-      - project_id
-      - date_added
-      - project_milestone_id
-      - project_phase_id
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_date
-      - date_type
-      - date_year
-      - date_month
-      - date_day
-      - active_date
-      - date_id
-      - project_id
-      - date_added
-      - project_milestone_id
-      - project_phase_id
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_date
-      - project_date
-      - added_by
-      - date_day
-      - date_id
-      - date_month
-      - date_year
-      - project_id
-      - project_milestone_id
-      - project_phase_id
-      - date_type
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - active_date
-      - project_date
-      - added_by
-      - date_day
-      - date_id
-      - date_month
-      - date_year
-      - project_id
-      - project_milestone_id
-      - project_phase_id
-      - date_type
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_date
-      - date_type
-      - date_year
-      - date_month
-      - date_day
-      - active_date
-      - date_id
-      - project_id
-      - date_added
-      - project_milestone_id
-      - project_phase_id
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_date
-      - project_date
-      - added_by
-      - date_day
-      - date_id
-      - date_month
-      - date_year
-      - project_id
-      - project_milestone_id
-      - project_phase_id
-      - date_type
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - active_date
-      - project_date
-      - added_by
-      - date_day
-      - date_id
-      - date_month
-      - date_year
-      - project_id
-      - project_milestone_id
-      - project_phase_id
-      - date_type
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_dates
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - active_date
-        - project_date
-        - added_by
-        - date_day
-        - date_id
-        - date_month
-        - date_year
-        - project_id
-        - project_milestone_id
-        - project_phase_id
-        - date_type
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - project_date
+          - date_type
+          - date_year
+          - date_month
+          - date_day
+          - active_date
+          - date_id
+          - project_id
+          - date_added
+          - project_milestone_id
+          - project_phase_id
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_date
+          - date_type
+          - date_year
+          - date_month
+          - date_day
+          - active_date
+          - date_id
+          - project_id
+          - date_added
+          - project_milestone_id
+          - project_phase_id
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - active_date
+          - project_date
+          - added_by
+          - date_day
+          - date_id
+          - date_month
+          - date_year
+          - project_id
+          - project_milestone_id
+          - project_phase_id
+          - date_type
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - active_date
+          - project_date
+          - added_by
+          - date_day
+          - date_id
+          - date_month
+          - date_year
+          - project_id
+          - project_milestone_id
+          - project_phase_id
+          - date_type
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_date
+          - date_type
+          - date_year
+          - date_month
+          - date_day
+          - active_date
+          - date_id
+          - project_id
+          - date_added
+          - project_milestone_id
+          - project_phase_id
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - active_date
+          - project_date
+          - added_by
+          - date_day
+          - date_id
+          - date_month
+          - date_year
+          - project_id
+          - project_milestone_id
+          - project_phase_id
+          - date_type
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - active_date
+          - project_date
+          - added_by
+          - date_day
+          - date_id
+          - date_month
+          - date_year
+          - project_id
+          - project_milestone_id
+          - project_phase_id
+          - date_type
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_dates
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - active_date
+            - project_date
+            - added_by
+            - date_day
+            - date_id
+            - date_month
+            - date_year
+            - project_id
+            - project_milestone_id
+            - project_phase_id
+            - date_type
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_entities
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_sponsors
-      - project_groups
-      - partners
-      - workgroups
-      - project_personnel
-      - entity_list_id
-      - project_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_sponsors
-      - project_groups
-      - partners
-      - workgroups
-      - project_personnel
-      - entity_list_id
-      - project_id
-      - date_added
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - partners
-      - project_personnel
-      - project_sponsors
-      - project_groups
-      - entity_list_id
-      - project_id
-      - workgroups
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - partners
-      - project_personnel
-      - project_sponsors
-      - project_groups
-      - entity_list_id
-      - project_id
-      - workgroups
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_sponsors
-      - project_groups
-      - partners
-      - workgroups
-      - project_personnel
-      - entity_list_id
-      - project_id
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - partners
-      - project_personnel
-      - project_sponsors
-      - project_groups
-      - entity_list_id
-      - project_id
-      - workgroups
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - partners
-      - project_personnel
-      - project_sponsors
-      - project_groups
-      - entity_list_id
-      - project_id
-      - workgroups
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_entities
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - project_groups
-        - entity_list_id
-        - project_id
-        - workgroups
-        - partners
-        - project_personnel
-        - project_sponsors
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - project_sponsors
+          - project_groups
+          - partners
+          - workgroups
+          - project_personnel
+          - entity_list_id
+          - project_id
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_sponsors
+          - project_groups
+          - partners
+          - workgroups
+          - project_personnel
+          - entity_list_id
+          - project_id
+          - date_added
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - partners
+          - project_personnel
+          - project_sponsors
+          - project_groups
+          - entity_list_id
+          - project_id
+          - workgroups
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - partners
+          - project_personnel
+          - project_sponsors
+          - project_groups
+          - entity_list_id
+          - project_id
+          - workgroups
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_sponsors
+          - project_groups
+          - partners
+          - workgroups
+          - project_personnel
+          - entity_list_id
+          - project_id
+          - date_added
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - partners
+          - project_personnel
+          - project_sponsors
+          - project_groups
+          - entity_list_id
+          - project_id
+          - workgroups
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - partners
+          - project_personnel
+          - project_sponsors
+          - project_groups
+          - entity_list_id
+          - project_id
+          - workgroups
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_entities
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - project_groups
+            - entity_list_id
+            - project_id
+            - workgroups
+            - partners
+            - project_personnel
+            - project_sponsors
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_financials
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - subproject_name
-      - eCapris_id
-      - subproject_status
-      - budget_total
-      - expenses_total
-      - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
-      - financials_id
-      - project_id
-      - last_updated
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - subproject_name
-      - eCapris_id
-      - subproject_status
-      - budget_total
-      - expenses_total
-      - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
-      - financials_id
-      - project_id
-      - last_updated
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - budget_available
-      - budget_previous
-      - budget_total
-      - expenses_previous
-      - expenses_total
-      - expenses_ytd
-      - financials_id
-      - project_id
-      - eCapris_id
-      - primary_funding_source
-      - subproject_name
-      - subproject_status
-      - last_updated
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - budget_available
-      - budget_previous
-      - budget_total
-      - expenses_previous
-      - expenses_total
-      - expenses_ytd
-      - financials_id
-      - project_id
-      - eCapris_id
-      - primary_funding_source
-      - subproject_name
-      - subproject_status
-      - last_updated
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - subproject_name
-      - eCapris_id
-      - subproject_status
-      - budget_total
-      - expenses_total
-      - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
-      - financials_id
-      - project_id
-      - last_updated
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - budget_available
-      - budget_previous
-      - budget_total
-      - expenses_previous
-      - expenses_total
-      - expenses_ytd
-      - financials_id
-      - project_id
-      - eCapris_id
-      - primary_funding_source
-      - subproject_name
-      - subproject_status
-      - last_updated
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - budget_available
-      - budget_previous
-      - budget_total
-      - expenses_previous
-      - expenses_total
-      - expenses_ytd
-      - financials_id
-      - project_id
-      - eCapris_id
-      - primary_funding_source
-      - subproject_name
-      - subproject_status
-      - last_updated
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_financials
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - budget_available
-        - budget_previous
-        - budget_total
-        - expenses_previous
-        - expenses_total
-        - expenses_ytd
-        - financials_id
-        - project_id
-        - eCapris_id
-        - primary_funding_source
-        - subproject_name
-        - subproject_status
-        - last_updated
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - subproject_name
+          - eCapris_id
+          - subproject_status
+          - budget_total
+          - expenses_total
+          - expenses_ytd
+          - expenses_previous
+          - budget_previous
+          - budget_available
+          - primary_funding_source
+          - financials_id
+          - project_id
+          - last_updated
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - subproject_name
+          - eCapris_id
+          - subproject_status
+          - budget_total
+          - expenses_total
+          - expenses_ytd
+          - expenses_previous
+          - budget_previous
+          - budget_available
+          - primary_funding_source
+          - financials_id
+          - project_id
+          - last_updated
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - budget_available
+          - budget_previous
+          - budget_total
+          - expenses_previous
+          - expenses_total
+          - expenses_ytd
+          - financials_id
+          - project_id
+          - eCapris_id
+          - primary_funding_source
+          - subproject_name
+          - subproject_status
+          - last_updated
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - budget_available
+          - budget_previous
+          - budget_total
+          - expenses_previous
+          - expenses_total
+          - expenses_ytd
+          - financials_id
+          - project_id
+          - eCapris_id
+          - primary_funding_source
+          - subproject_name
+          - subproject_status
+          - last_updated
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - subproject_name
+          - eCapris_id
+          - subproject_status
+          - budget_total
+          - expenses_total
+          - expenses_ytd
+          - expenses_previous
+          - budget_previous
+          - budget_available
+          - primary_funding_source
+          - financials_id
+          - project_id
+          - last_updated
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - budget_available
+          - budget_previous
+          - budget_total
+          - expenses_previous
+          - expenses_total
+          - expenses_ytd
+          - financials_id
+          - project_id
+          - eCapris_id
+          - primary_funding_source
+          - subproject_name
+          - subproject_status
+          - last_updated
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - budget_available
+          - budget_previous
+          - budget_total
+          - expenses_previous
+          - expenses_total
+          - expenses_ytd
+          - financials_id
+          - project_id
+          - eCapris_id
+          - primary_funding_source
+          - subproject_name
+          - subproject_status
+          - last_updated
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_financials
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - budget_available
+            - budget_previous
+            - budget_total
+            - expenses_previous
+            - expenses_total
+            - expenses_ytd
+            - financials_id
+            - project_id
+            - eCapris_id
+            - primary_funding_source
+            - subproject_name
+            - subproject_status
+            - last_updated
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fiscal_years
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - fiscal_year_name
-      - fiscal_year_start
-      - fiscal_year_end
-      - budget_total
-      - expenses_total
-      - budget_available_at_end
-      - project_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - fiscal_year_name
-      - fiscal_year_start
-      - fiscal_year_end
-      - budget_total
-      - expenses_total
-      - budget_available_at_end
-      - project_id
-      - date_added
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - fiscal_year_end
-      - fiscal_year_start
-      - budget_available_at_end
-      - budget_total
-      - expenses_total
-      - project_id
-      - fiscal_year_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - fiscal_year_end
-      - fiscal_year_start
-      - budget_available_at_end
-      - budget_total
-      - expenses_total
-      - project_id
-      - fiscal_year_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - fiscal_year_name
-      - fiscal_year_start
-      - fiscal_year_end
-      - budget_total
-      - expenses_total
-      - budget_available_at_end
-      - project_id
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - fiscal_year_end
-      - fiscal_year_start
-      - budget_available_at_end
-      - budget_total
-      - expenses_total
-      - project_id
-      - fiscal_year_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - fiscal_year_end
-      - fiscal_year_start
-      - budget_available_at_end
-      - budget_total
-      - expenses_total
-      - project_id
-      - fiscal_year_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_fiscal_years
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - fiscal_year_end
-        - fiscal_year_start
-        - budget_available_at_end
-        - budget_total
-        - expenses_total
-        - project_id
-        - fiscal_year_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - fiscal_year_name
+          - fiscal_year_start
+          - fiscal_year_end
+          - budget_total
+          - expenses_total
+          - budget_available_at_end
+          - project_id
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - fiscal_year_name
+          - fiscal_year_start
+          - fiscal_year_end
+          - budget_total
+          - expenses_total
+          - budget_available_at_end
+          - project_id
+          - date_added
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - fiscal_year_end
+          - fiscal_year_start
+          - budget_available_at_end
+          - budget_total
+          - expenses_total
+          - project_id
+          - fiscal_year_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - fiscal_year_end
+          - fiscal_year_start
+          - budget_available_at_end
+          - budget_total
+          - expenses_total
+          - project_id
+          - fiscal_year_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - fiscal_year_name
+          - fiscal_year_start
+          - fiscal_year_end
+          - budget_total
+          - expenses_total
+          - budget_available_at_end
+          - project_id
+          - date_added
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - fiscal_year_end
+          - fiscal_year_start
+          - budget_available_at_end
+          - budget_total
+          - expenses_total
+          - project_id
+          - fiscal_year_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - fiscal_year_end
+          - fiscal_year_start
+          - budget_available_at_end
+          - budget_total
+          - expenses_total
+          - project_id
+          - fiscal_year_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_fiscal_years
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - fiscal_year_end
+            - fiscal_year_start
+            - budget_available_at_end
+            - budget_total
+            - expenses_total
+            - project_id
+            - fiscal_year_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fund_opp
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - fund_opp_id
-      - fund_opp_name
-      - project_id
-      - proj_fund_opp_id
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - fund_opp_id
-      - fund_opp_name
-      - project_id
-      - proj_fund_opp_id
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - fund_opp_id
-      - proj_fund_opp_id
-      - project_id
-      - fund_opp_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - fund_opp_id
-      - proj_fund_opp_id
-      - project_id
-      - fund_opp_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - fund_opp_id
-      - fund_opp_name
-      - project_id
-      - proj_fund_opp_id
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - fund_opp_id
-      - proj_fund_opp_id
-      - project_id
-      - fund_opp_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - fund_opp_id
-      - proj_fund_opp_id
-      - project_id
-      - fund_opp_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_fund_opp
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - fund_opp_id
-        - project_id
-        - proj_fund_opp_id
-        - fund_opp_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - fund_opp_id
+          - fund_opp_name
+          - project_id
+          - proj_fund_opp_id
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - fund_opp_id
+          - fund_opp_name
+          - project_id
+          - proj_fund_opp_id
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - fund_opp_id
+          - proj_fund_opp_id
+          - project_id
+          - fund_opp_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - fund_opp_id
+          - proj_fund_opp_id
+          - project_id
+          - fund_opp_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - fund_opp_id
+          - fund_opp_name
+          - project_id
+          - proj_fund_opp_id
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - fund_opp_id
+          - proj_fund_opp_id
+          - project_id
+          - fund_opp_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - fund_opp_id
+          - proj_fund_opp_id
+          - project_id
+          - fund_opp_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_fund_opp
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - fund_opp_id
+            - project_id
+            - proj_fund_opp_id
+            - fund_opp_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fund_source
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_other
-      - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_other
-      - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - funding_source_other
-      - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - funding_source_other
-      - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_fund_source
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - funding_source_other
-        - added_by
-        - project_id
-        - proj_fund_source_id
-        - funding_source_category
-        - funding_source_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
+          - proj_fund_source_id
+          - funding_source_name
+          - funding_source_category
+          - project_id
+          - funding_source_other
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - proj_fund_source_id
+          - funding_source_name
+          - funding_source_category
+          - project_id
+          - funding_source_other
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_other
+          - added_by
+          - proj_fund_source_id
+          - project_id
+          - funding_source_category
+          - funding_source_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_other
+          - added_by
+          - proj_fund_source_id
+          - project_id
+          - funding_source_category
+          - funding_source_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - proj_fund_source_id
+          - funding_source_name
+          - funding_source_category
+          - project_id
+          - funding_source_other
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - funding_source_other
+          - added_by
+          - proj_fund_source_id
+          - project_id
+          - funding_source_category
+          - funding_source_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - funding_source_other
+          - added_by
+          - proj_fund_source_id
+          - project_id
+          - funding_source_category
+          - funding_source_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_fund_source
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - funding_source_other
+            - added_by
+            - project_id
+            - proj_fund_source_id
+            - funding_source_category
+            - funding_source_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
 - table:
     schema: public
     name: moped_proj_groups
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - group_name
-      - proj_group_id
-      - project_id
-      - group_id
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - group_name
-      - proj_group_id
-      - project_id
-      - group_id
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - group_id
-      - proj_group_id
-      - project_id
-      - group_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - group_id
-      - proj_group_id
-      - project_id
-      - group_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - group_name
-      - proj_group_id
-      - project_id
-      - group_id
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - group_id
-      - proj_group_id
-      - project_id
-      - group_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - group_id
-      - proj_group_id
-      - project_id
-      - group_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_groups
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - group_id
-        - project_id
-        - proj_group_id
-        - group_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - group_name
+          - proj_group_id
+          - project_id
+          - group_id
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - group_name
+          - proj_group_id
+          - project_id
+          - group_id
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - group_id
+          - proj_group_id
+          - project_id
+          - group_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - group_id
+          - proj_group_id
+          - project_id
+          - group_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - group_name
+          - proj_group_id
+          - project_id
+          - group_id
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - group_id
+          - proj_group_id
+          - project_id
+          - group_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - group_id
+          - proj_group_id
+          - project_id
+          - group_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_groups
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - group_id
+            - project_id
+            - proj_group_id
+            - group_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_location
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - location_name
-      - shape
-      - location_notes
-      - location_id
-      - project_id
-      - feature_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - location_name
-      - shape
-      - location_notes
-      - location_id
-      - project_id
-      - feature_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - location_id
-      - project_id
-      - feature_id
-      - location_name
-      - location_notes
-      - shape
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - location_id
-      - project_id
-      - feature_id
-      - location_name
-      - location_notes
-      - shape
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - location_name
-      - shape
-      - location_notes
-      - location_id
-      - project_id
-      - feature_id
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - location_id
-      - project_id
-      - feature_id
-      - location_name
-      - location_notes
-      - shape
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - location_id
-      - project_id
-      - feature_id
-      - location_name
-      - location_notes
-      - shape
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_location
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - location_id
-        - project_id
-        - feature_id
-        - location_name
-        - location_notes
-        - shape
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
+          - location_name
+          - shape
+          - location_notes
+          - location_id
+          - project_id
+          - feature_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - location_name
+          - shape
+          - location_notes
+          - location_id
+          - project_id
+          - feature_id
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - location_id
+          - project_id
+          - feature_id
+          - location_name
+          - location_notes
+          - shape
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - location_id
+          - project_id
+          - feature_id
+          - location_name
+          - location_notes
+          - shape
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - location_name
+          - shape
+          - location_notes
+          - location_id
+          - project_id
+          - feature_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - location_id
+          - project_id
+          - feature_id
+          - location_name
+          - location_notes
+          - shape
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - location_id
+          - project_id
+          - feature_id
+          - location_name
+          - location_notes
+          - shape
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_location
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - location_id
+            - project_id
+            - feature_id
+            - location_name
+            - location_notes
+            - shape
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
 - table:
     schema: public
     name: moped_proj_milestones
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - days_left
-      - is_current_milestone
-      - completed
-      - project_milestone_id
-      - project_id
-      - project_timeline_id
-      - milestone_owner_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - days_left
-      - is_current_milestone
-      - completed
-      - project_milestone_id
-      - project_id
-      - project_timeline_id
-      - milestone_owner_id
-      - date_added
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_milestone
-      - milestone_privacy
-      - milestone_end
-      - milestone_start
-      - days_left
-      - milestone_length
-      - milestone_order
-      - milestone_owner_id
-      - project_id
-      - project_milestone_id
-      - project_timeline_id
-      - milestone_description
-      - milestone_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_milestone
-      - milestone_privacy
-      - milestone_end
-      - milestone_start
-      - days_left
-      - milestone_length
-      - milestone_order
-      - milestone_owner_id
-      - project_id
-      - project_milestone_id
-      - project_timeline_id
-      - milestone_description
-      - milestone_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - days_left
-      - is_current_milestone
-      - completed
-      - project_milestone_id
-      - project_id
-      - project_timeline_id
-      - milestone_owner_id
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_milestone
-      - milestone_privacy
-      - milestone_end
-      - milestone_start
-      - days_left
-      - milestone_length
-      - milestone_order
-      - milestone_owner_id
-      - project_id
-      - project_milestone_id
-      - project_timeline_id
-      - milestone_description
-      - milestone_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_milestone
-      - milestone_privacy
-      - milestone_end
-      - milestone_start
-      - days_left
-      - milestone_length
-      - milestone_order
-      - milestone_owner_id
-      - project_id
-      - project_milestone_id
-      - project_timeline_id
-      - milestone_description
-      - milestone_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_milestones
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - completed
-        - is_current_milestone
-        - milestone_privacy
-        - milestone_end
-        - milestone_start
-        - days_left
-        - milestone_length
-        - milestone_order
-        - milestone_owner_id
-        - project_id
-        - project_milestone_id
-        - project_timeline_id
-        - milestone_description
-        - milestone_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - days_left
+          - is_current_milestone
+          - completed
+          - project_milestone_id
+          - project_id
+          - project_timeline_id
+          - milestone_owner_id
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - days_left
+          - is_current_milestone
+          - completed
+          - project_milestone_id
+          - project_id
+          - project_timeline_id
+          - milestone_owner_id
+          - date_added
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - completed
+          - is_current_milestone
+          - milestone_privacy
+          - milestone_end
+          - milestone_start
+          - days_left
+          - milestone_length
+          - milestone_order
+          - milestone_owner_id
+          - project_id
+          - project_milestone_id
+          - project_timeline_id
+          - milestone_description
+          - milestone_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - completed
+          - is_current_milestone
+          - milestone_privacy
+          - milestone_end
+          - milestone_start
+          - days_left
+          - milestone_length
+          - milestone_order
+          - milestone_owner_id
+          - project_id
+          - project_milestone_id
+          - project_timeline_id
+          - milestone_description
+          - milestone_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - days_left
+          - is_current_milestone
+          - completed
+          - project_milestone_id
+          - project_id
+          - project_timeline_id
+          - milestone_owner_id
+          - date_added
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - completed
+          - is_current_milestone
+          - milestone_privacy
+          - milestone_end
+          - milestone_start
+          - days_left
+          - milestone_length
+          - milestone_order
+          - milestone_owner_id
+          - project_id
+          - project_milestone_id
+          - project_timeline_id
+          - milestone_description
+          - milestone_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - completed
+          - is_current_milestone
+          - milestone_privacy
+          - milestone_end
+          - milestone_start
+          - days_left
+          - milestone_length
+          - milestone_order
+          - milestone_owner_id
+          - project_id
+          - project_milestone_id
+          - project_timeline_id
+          - milestone_description
+          - milestone_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_milestones
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - completed
+            - is_current_milestone
+            - milestone_privacy
+            - milestone_end
+            - milestone_start
+            - days_left
+            - milestone_length
+            - milestone_order
+            - milestone_owner_id
+            - project_id
+            - project_milestone_id
+            - project_timeline_id
+            - milestone_description
+            - milestone_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_notes
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_notes
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - comm_id
-        - project_id
-        - project_note_id
-        - project_note
-        - date_created
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - project_note_id
+          - project_note
+          - added_by
+          - date_created
+          - comm_id
+          - project_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_note_id
+          - project_note
+          - added_by
+          - date_created
+          - comm_id
+          - project_id
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - comm_id
+          - project_id
+          - project_note_id
+          - project_note
+          - date_created
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - comm_id
+          - project_id
+          - project_note_id
+          - project_note
+          - date_created
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_note_id
+          - project_note
+          - added_by
+          - date_created
+          - comm_id
+          - project_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - comm_id
+          - project_id
+          - project_note_id
+          - project_note
+          - date_created
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - comm_id
+          - project_id
+          - project_note_id
+          - project_note
+          - date_created
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_notes
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - comm_id
+            - project_id
+            - project_note_id
+            - project_note
+            - date_created
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_partners
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - partner_name
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - partner_name
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - partner_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - partner_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - partner_name
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - partner_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - entity_id
-      - proj_partner_id
-      - project_id
-      - partner_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_partners
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - added_by
-        - entity_id
-        - project_id
-        - proj_partner_id
-        - partner_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - partner_name
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - partner_name
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - partner_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - partner_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - partner_name
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - partner_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - entity_id
+          - proj_partner_id
+          - project_id
+          - partner_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_partners
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - added_by
+            - entity_id
+            - project_id
+            - proj_partner_id
+            - partner_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_personnel
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
-      - project_id
-      - project_personnel_id
-      - project_personnel_user_id
-      - role_name
-      - role_order
-      - status
-      - workgroup
-      - workgroup_id
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_personnel
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - join_date
-        - added_by
-        - allocation
-        - project_id
-        - project_personnel_id
-        - project_personnel_user_id
-        - role_order
-        - workgroup_id
-        - first_name
-        - last_name
-        - notes
-        - role_name
-        - status
-        - workgroup
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - added_by
+          - allocation
+          - date_added
+          - first_name
+          - join_date
+          - last_name
+          - notes
+          - project_id
+          - project_personnel_id
+          - project_personnel_user_id
+          - role_name
+          - role_order
+          - status
+          - workgroup
+          - workgroup_id
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_personnel
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - join_date
+            - added_by
+            - allocation
+            - project_id
+            - project_personnel_id
+            - project_personnel_user_id
+            - role_order
+            - workgroup_id
+            - first_name
+            - last_name
+            - notes
+            - role_name
+            - status
+            - workgroup
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_phases
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
-      - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
-      - completed_by_user_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
-      - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
-      - completed_by_user_id
-      - date_added
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
-      - completed_by_user_id
-      - completion_percentage
-      - phase_priority
-      - phase_rank
-      - project_id
-      - project_phase_id
-      - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
-      - completed_by_user_id
-      - completion_percentage
-      - phase_priority
-      - phase_rank
-      - project_id
-      - project_phase_id
-      - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
-      - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
-      - completed_by_user_id
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
-      - completed_by_user_id
-      - completion_percentage
-      - phase_priority
-      - phase_rank
-      - project_id
-      - project_phase_id
-      - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
-      - completed_by_user_id
-      - completion_percentage
-      - phase_priority
-      - phase_rank
-      - project_id
-      - project_phase_id
-      - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_phases
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - completed
-        - is_current_phase
-        - phase_privacy
-        - phase_end
-        - phase_start
-        - completed_by_user_id
-        - completion_percentage
-        - phase_priority
-        - phase_rank
-        - project_id
-        - project_phase_id
-        - started_by_user_id
-        - phase_description
-        - phase_name
-        - phase_status
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - phase_name
+          - phase_description
+          - phase_rank
+          - completion_percentage
+          - phase_status
+          - phase_privacy
+          - phase_start
+          - phase_end
+          - phase_priority
+          - is_current_phase
+          - completed
+          - project_phase_id
+          - project_id
+          - started_by_user_id
+          - completed_by_user_id
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - phase_name
+          - phase_description
+          - phase_rank
+          - completion_percentage
+          - phase_status
+          - phase_privacy
+          - phase_start
+          - phase_end
+          - phase_priority
+          - is_current_phase
+          - completed
+          - project_phase_id
+          - project_id
+          - started_by_user_id
+          - completed_by_user_id
+          - date_added
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - completed
+          - is_current_phase
+          - phase_privacy
+          - phase_end
+          - phase_start
+          - completed_by_user_id
+          - completion_percentage
+          - phase_priority
+          - phase_rank
+          - project_id
+          - project_phase_id
+          - started_by_user_id
+          - phase_description
+          - phase_name
+          - phase_status
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - completed
+          - is_current_phase
+          - phase_privacy
+          - phase_end
+          - phase_start
+          - completed_by_user_id
+          - completion_percentage
+          - phase_priority
+          - phase_rank
+          - project_id
+          - project_phase_id
+          - started_by_user_id
+          - phase_description
+          - phase_name
+          - phase_status
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - phase_name
+          - phase_description
+          - phase_rank
+          - completion_percentage
+          - phase_status
+          - phase_privacy
+          - phase_start
+          - phase_end
+          - phase_priority
+          - is_current_phase
+          - completed
+          - project_phase_id
+          - project_id
+          - started_by_user_id
+          - completed_by_user_id
+          - date_added
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - completed
+          - is_current_phase
+          - phase_privacy
+          - phase_end
+          - phase_start
+          - completed_by_user_id
+          - completion_percentage
+          - phase_priority
+          - phase_rank
+          - project_id
+          - project_phase_id
+          - started_by_user_id
+          - phase_description
+          - phase_name
+          - phase_status
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - completed
+          - is_current_phase
+          - phase_privacy
+          - phase_end
+          - phase_start
+          - completed_by_user_id
+          - completion_percentage
+          - phase_priority
+          - phase_rank
+          - project_id
+          - project_phase_id
+          - started_by_user_id
+          - phase_description
+          - phase_name
+          - phase_status
+          - date_added
+        filter: {}
+        check: null
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        filter: {}
+    - role: moped-editor
+      permission:
+        filter: {}
+  event_triggers:
+    - name: activity_log_moped_proj_phases
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - completed
+            - is_current_phase
+            - phase_privacy
+            - phase_end
+            - phase_start
+            - completed_by_user_id
+            - completion_percentage
+            - phase_priority
+            - phase_rank
+            - project_id
+            - project_phase_id
+            - started_by_user_id
+            - phase_description
+            - phase_name
+            - phase_status
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_sponsors
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_sponsors
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - is_external_sponsor
-        - sponsor_allocation
-        - added_by
-        - entity_id
-        - project_id
-        - sponsor_context
-        - sponsor_context_file
-        - sponsor_description
-        - sponsor_name
-        - sponsor_website
-        - date_added
-        - project_sponsor_id
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - sponsor_name
+          - sponsor_context
+          - sponsor_context_file
+          - date_added
+          - project_sponsor_id
+          - sponsor_description
+          - sponsor_website
+          - is_external_sponsor
+          - sponsor_allocation
+          - entity_id
+          - project_id
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - sponsor_name
+          - sponsor_context
+          - sponsor_context_file
+          - date_added
+          - project_sponsor_id
+          - sponsor_description
+          - sponsor_website
+          - is_external_sponsor
+          - sponsor_allocation
+          - entity_id
+          - project_id
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_external_sponsor
+          - sponsor_allocation
+          - added_by
+          - entity_id
+          - project_id
+          - sponsor_context
+          - sponsor_context_file
+          - sponsor_description
+          - sponsor_name
+          - sponsor_website
+          - date_added
+          - project_sponsor_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - is_external_sponsor
+          - sponsor_allocation
+          - added_by
+          - entity_id
+          - project_id
+          - sponsor_context
+          - sponsor_context_file
+          - sponsor_description
+          - sponsor_name
+          - sponsor_website
+          - date_added
+          - project_sponsor_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - sponsor_name
+          - sponsor_context
+          - sponsor_context_file
+          - date_added
+          - project_sponsor_id
+          - sponsor_description
+          - sponsor_website
+          - is_external_sponsor
+          - sponsor_allocation
+          - entity_id
+          - project_id
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_external_sponsor
+          - sponsor_allocation
+          - added_by
+          - entity_id
+          - project_id
+          - sponsor_context
+          - sponsor_context_file
+          - sponsor_description
+          - sponsor_name
+          - sponsor_website
+          - date_added
+          - project_sponsor_id
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - is_external_sponsor
+          - sponsor_allocation
+          - added_by
+          - entity_id
+          - project_id
+          - sponsor_context
+          - sponsor_context_file
+          - sponsor_description
+          - sponsor_name
+          - sponsor_website
+          - date_added
+          - project_sponsor_id
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_sponsors
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - is_external_sponsor
+            - sponsor_allocation
+            - added_by
+            - entity_id
+            - project_id
+            - sponsor_context
+            - sponsor_context_file
+            - sponsor_description
+            - sponsor_name
+            - sponsor_website
+            - date_added
+            - project_sponsor_id
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_status_history
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - is_current_milestone
-      - is_milestone_completed
-      - status_name
-      - project_status_history_id
-      - date_status_changed
-      - project_id
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - is_current_milestone
-      - is_milestone_completed
-      - status_name
-      - project_status_history_id
-      - date_status_changed
-      - project_id
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_current_milestone
-      - is_milestone_completed
-      - milestone_privacy
-      - date_status_changed
-      - milestone_end
-      - milestone_start
-      - added_by
-      - milestone_length
-      - milestone_order
-      - project_id
-      - project_status_history_id
-      - milestone_description
-      - milestone_name
-      - status_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - is_current_milestone
-      - is_milestone_completed
-      - milestone_privacy
-      - date_status_changed
-      - milestone_end
-      - milestone_start
-      - added_by
-      - milestone_length
-      - milestone_order
-      - project_id
-      - project_status_history_id
-      - milestone_description
-      - milestone_name
-      - status_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - milestone_name
-      - milestone_description
-      - milestone_order
-      - milestone_start
-      - milestone_end
-      - milestone_length
-      - milestone_privacy
-      - is_current_milestone
-      - is_milestone_completed
-      - status_name
-      - project_status_history_id
-      - date_status_changed
-      - project_id
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_current_milestone
-      - is_milestone_completed
-      - milestone_privacy
-      - date_status_changed
-      - milestone_end
-      - milestone_start
-      - added_by
-      - milestone_length
-      - milestone_order
-      - project_id
-      - project_status_history_id
-      - milestone_description
-      - milestone_name
-      - status_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - is_current_milestone
-      - is_milestone_completed
-      - milestone_privacy
-      - date_status_changed
-      - milestone_end
-      - milestone_start
-      - added_by
-      - milestone_length
-      - milestone_order
-      - project_id
-      - project_status_history_id
-      - milestone_description
-      - milestone_name
-      - status_name
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_status_history
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - is_current_milestone
-        - is_milestone_completed
-        - milestone_privacy
-        - date_status_changed
-        - milestone_end
-        - milestone_start
-        - added_by
-        - milestone_length
-        - milestone_order
-        - project_id
-        - project_status_history_id
-        - milestone_description
-        - milestone_name
-        - status_name
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - is_current_milestone
+          - is_milestone_completed
+          - status_name
+          - project_status_history_id
+          - date_status_changed
+          - project_id
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - is_current_milestone
+          - is_milestone_completed
+          - status_name
+          - project_status_history_id
+          - date_status_changed
+          - project_id
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_current_milestone
+          - is_milestone_completed
+          - milestone_privacy
+          - date_status_changed
+          - milestone_end
+          - milestone_start
+          - added_by
+          - milestone_length
+          - milestone_order
+          - project_id
+          - project_status_history_id
+          - milestone_description
+          - milestone_name
+          - status_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - is_current_milestone
+          - is_milestone_completed
+          - milestone_privacy
+          - date_status_changed
+          - milestone_end
+          - milestone_start
+          - added_by
+          - milestone_length
+          - milestone_order
+          - project_id
+          - project_status_history_id
+          - milestone_description
+          - milestone_name
+          - status_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - milestone_name
+          - milestone_description
+          - milestone_order
+          - milestone_start
+          - milestone_end
+          - milestone_length
+          - milestone_privacy
+          - is_current_milestone
+          - is_milestone_completed
+          - status_name
+          - project_status_history_id
+          - date_status_changed
+          - project_id
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_current_milestone
+          - is_milestone_completed
+          - milestone_privacy
+          - date_status_changed
+          - milestone_end
+          - milestone_start
+          - added_by
+          - milestone_length
+          - milestone_order
+          - project_id
+          - project_status_history_id
+          - milestone_description
+          - milestone_name
+          - status_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - is_current_milestone
+          - is_milestone_completed
+          - milestone_privacy
+          - date_status_changed
+          - milestone_end
+          - milestone_start
+          - added_by
+          - milestone_length
+          - milestone_order
+          - project_id
+          - project_status_history_id
+          - milestone_description
+          - milestone_name
+          - status_name
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_status_history
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - is_current_milestone
+            - is_milestone_completed
+            - milestone_privacy
+            - date_status_changed
+            - milestone_end
+            - milestone_start
+            - added_by
+            - milestone_length
+            - milestone_order
+            - project_id
+            - project_status_history_id
+            - milestone_description
+            - milestone_name
+            - status_name
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_status_notes
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - status_note
-      - created_by_personnel
-      - date_written
-      - proj_status_id
-      - project_id
-      - status_name
-      - date_added
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - status_note
-      - created_by_personnel
-      - date_written
-      - proj_status_id
-      - project_id
-      - status_name
-      - date_added
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - date_written
-      - added_by
-      - proj_status_id
-      - project_id
-      - created_by_personnel
-      - status_name
-      - status_note
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - date_written
-      - added_by
-      - proj_status_id
-      - project_id
-      - created_by_personnel
-      - status_name
-      - status_note
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - status_note
-      - created_by_personnel
-      - date_written
-      - proj_status_id
-      - project_id
-      - status_name
-      - date_added
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - date_written
-      - added_by
-      - proj_status_id
-      - project_id
-      - created_by_personnel
-      - status_name
-      - status_note
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - date_written
-      - added_by
-      - proj_status_id
-      - project_id
-      - created_by_personnel
-      - status_name
-      - status_note
-      - date_added
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_status_notes
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - date_written
-        - added_by
-        - project_id
-        - proj_status_id
-        - created_by_personnel
-        - status_name
-        - status_note
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - status_note
+          - created_by_personnel
+          - date_written
+          - proj_status_id
+          - project_id
+          - status_name
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - status_note
+          - created_by_personnel
+          - date_written
+          - proj_status_id
+          - project_id
+          - status_name
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - date_written
+          - added_by
+          - proj_status_id
+          - project_id
+          - created_by_personnel
+          - status_name
+          - status_note
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - date_written
+          - added_by
+          - proj_status_id
+          - project_id
+          - created_by_personnel
+          - status_name
+          - status_note
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - status_note
+          - created_by_personnel
+          - date_written
+          - proj_status_id
+          - project_id
+          - status_name
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - date_written
+          - added_by
+          - proj_status_id
+          - project_id
+          - created_by_personnel
+          - status_name
+          - status_note
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - date_written
+          - added_by
+          - proj_status_id
+          - project_id
+          - created_by_personnel
+          - status_name
+          - status_note
+          - date_added
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_status_notes
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - date_written
+            - added_by
+            - project_id
+            - proj_status_id
+            - created_by_personnel
+            - status_name
+            - status_note
+            - date_added
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_timeline
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - active_phase
-      - active_phase_start
-      - active_phase_end
-      - active_phase_length
-      - active_milestone_start
-      - active_milestone_end
-      - active_milestone_length
-      - current_status
-      - capital_projects_explorer_id
-      - timeline_id
-      - project_id
-      - active_milestone
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - active_phase
-      - active_phase_start
-      - active_phase_end
-      - active_phase_length
-      - active_milestone_start
-      - active_milestone_end
-      - active_milestone_length
-      - current_status
-      - capital_projects_explorer_id
-      - timeline_id
-      - project_id
-      - active_milestone
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_milestone_end
-      - active_milestone_start
-      - active_phase_end
-      - active_phase_start
-      - active_milestone_length
-      - active_phase_length
-      - project_id
-      - timeline_id
-      - active_milestone
-      - active_phase
-      - capital_projects_explorer_id
-      - current_status
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - active_milestone_end
-      - active_milestone_start
-      - active_phase_end
-      - active_phase_start
-      - active_milestone_length
-      - active_phase_length
-      - project_id
-      - timeline_id
-      - active_milestone
-      - active_phase
-      - capital_projects_explorer_id
-      - current_status
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - active_phase
-      - active_phase_start
-      - active_phase_end
-      - active_phase_length
-      - active_milestone_start
-      - active_milestone_end
-      - active_milestone_length
-      - current_status
-      - capital_projects_explorer_id
-      - timeline_id
-      - project_id
-      - active_milestone
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_milestone_end
-      - active_milestone_start
-      - active_phase_end
-      - active_phase_start
-      - active_milestone_length
-      - active_phase_length
-      - project_id
-      - timeline_id
-      - active_milestone
-      - active_phase
-      - capital_projects_explorer_id
-      - current_status
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - active_milestone_end
-      - active_milestone_start
-      - active_phase_end
-      - active_phase_start
-      - active_milestone_length
-      - active_phase_length
-      - project_id
-      - timeline_id
-      - active_milestone
-      - active_phase
-      - capital_projects_explorer_id
-      - current_status
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_timeline
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - active_milestone_end
-        - active_milestone_start
-        - active_phase_end
-        - active_phase_start
-        - active_milestone_length
-        - active_phase_length
-        - project_id
-        - timeline_id
-        - active_milestone
-        - active_phase
-        - capital_projects_explorer_id
-        - current_status
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - active_phase
+          - active_phase_start
+          - active_phase_end
+          - active_phase_length
+          - active_milestone_start
+          - active_milestone_end
+          - active_milestone_length
+          - current_status
+          - capital_projects_explorer_id
+          - timeline_id
+          - project_id
+          - active_milestone
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - active_phase
+          - active_phase_start
+          - active_phase_end
+          - active_phase_length
+          - active_milestone_start
+          - active_milestone_end
+          - active_milestone_length
+          - current_status
+          - capital_projects_explorer_id
+          - timeline_id
+          - project_id
+          - active_milestone
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - active_milestone_end
+          - active_milestone_start
+          - active_phase_end
+          - active_phase_start
+          - active_milestone_length
+          - active_phase_length
+          - project_id
+          - timeline_id
+          - active_milestone
+          - active_phase
+          - capital_projects_explorer_id
+          - current_status
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - active_milestone_end
+          - active_milestone_start
+          - active_phase_end
+          - active_phase_start
+          - active_milestone_length
+          - active_phase_length
+          - project_id
+          - timeline_id
+          - active_milestone
+          - active_phase
+          - capital_projects_explorer_id
+          - current_status
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - active_phase
+          - active_phase_start
+          - active_phase_end
+          - active_phase_length
+          - active_milestone_start
+          - active_milestone_end
+          - active_milestone_length
+          - current_status
+          - capital_projects_explorer_id
+          - timeline_id
+          - project_id
+          - active_milestone
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - active_milestone_end
+          - active_milestone_start
+          - active_phase_end
+          - active_phase_start
+          - active_milestone_length
+          - active_phase_length
+          - project_id
+          - timeline_id
+          - active_milestone
+          - active_phase
+          - capital_projects_explorer_id
+          - current_status
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - active_milestone_end
+          - active_milestone_start
+          - active_phase_end
+          - active_phase_start
+          - active_milestone_length
+          - active_phase_length
+          - project_id
+          - timeline_id
+          - active_milestone
+          - active_phase
+          - capital_projects_explorer_id
+          - current_status
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_proj_timeline
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - active_milestone_end
+            - active_milestone_start
+            - active_phase_end
+            - active_phase_start
+            - active_milestone_length
+            - active_phase_length
+            - project_id
+            - timeline_id
+            - active_milestone
+            - active_phase
+            - capital_projects_explorer_id
+            - current_status
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_project
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - eCapris_id
-      - end_date
-      - fiscal_year
-      - project_description
-      - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
-      - project_id
-      - project_importance
-      - project_length
-      - project_name
-      - project_order
-      - project_priority
-      - project_uuid
-      - start_date
-      - timeline_id
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_project
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
+    - role: moped-admin
+      permission:
+        check: {}
         columns:
-        - capitally_funded
-        - end_date
-        - start_date
-        - added_by
-        - project_id
-        - project_importance
-        - project_length
-        - project_order
-        - timeline_id
-        - project_extent_geojson
-        - project_extent_ids
-        - current_phase
-        - current_status
-        - eCapris_id
-        - fiscal_year
-        - project_description
-        - project_description_public
-        - project_name
-        - project_priority
-        - date_added
-        - project_uuid
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
+          - project_uuid
+          - project_name
+          - project_description
+          - project_description_public
+          - eCapris_id
+          - project_importance
+          - project_order
+          - current_status
+          - project_id
+          - timeline_id
+          - current_phase
+          - end_date
+          - project_length
+          - start_date
+          - fiscal_year
+          - capitally_funded
+          - project_priority
+          - date_added
+          - added_by
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_uuid
+          - project_name
+          - project_description
+          - project_description_public
+          - eCapris_id
+          - project_importance
+          - project_order
+          - current_status
+          - project_id
+          - timeline_id
+          - current_phase
+          - end_date
+          - project_length
+          - start_date
+          - fiscal_year
+          - capitally_funded
+          - project_priority
+          - date_added
+          - added_by
+        backend_only: false
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - capitally_funded
+          - end_date
+          - start_date
+          - added_by
+          - project_id
+          - project_importance
+          - project_length
+          - project_order
+          - project_priority
+          - timeline_id
+          - current_phase
+          - current_status
+          - eCapris_id
+          - fiscal_year
+          - project_description
+          - project_description_public
+          - project_name
+          - date_added
+          - project_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - capitally_funded
+          - end_date
+          - start_date
+          - added_by
+          - project_id
+          - project_importance
+          - project_length
+          - project_order
+          - project_priority
+          - timeline_id
+          - current_phase
+          - current_status
+          - eCapris_id
+          - fiscal_year
+          - project_description
+          - project_description_public
+          - project_name
+          - date_added
+          - project_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_uuid
+          - project_name
+          - project_description
+          - project_description_public
+          - eCapris_id
+          - project_importance
+          - project_order
+          - current_status
+          - project_id
+          - timeline_id
+          - current_phase
+          - end_date
+          - project_length
+          - start_date
+          - fiscal_year
+          - capitally_funded
+          - project_priority
+          - date_added
+          - added_by
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - capitally_funded
+          - end_date
+          - start_date
+          - added_by
+          - project_id
+          - project_importance
+          - project_length
+          - project_order
+          - project_priority
+          - timeline_id
+          - current_phase
+          - current_status
+          - eCapris_id
+          - fiscal_year
+          - project_description
+          - project_description_public
+          - project_name
+          - date_added
+          - project_uuid
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - capitally_funded
+          - end_date
+          - start_date
+          - added_by
+          - project_id
+          - project_importance
+          - project_length
+          - project_order
+          - project_priority
+          - timeline_id
+          - current_phase
+          - current_status
+          - eCapris_id
+          - fiscal_year
+          - project_description
+          - project_description_public
+          - project_name
+          - date_added
+          - project_uuid
+        filter: {}
+        check: null
+  event_triggers:
+    - name: activity_log_moped_project
+      definition:
+        enable_manual: false
+        insert:
+          columns: "*"
+        delete:
+          columns: "*"
+        update:
+          columns:
+            - capitally_funded
+            - end_date
+            - start_date
+            - added_by
+            - project_id
+            - project_importance
+            - project_length
+            - project_order
+            - timeline_id
+            - project_extent_geojson
+            - project_extent_ids
+            - current_phase
+            - current_status
+            - eCapris_id
+            - fiscal_year
+            - project_description
+            - project_description_public
+            - project_name
+            - project_priority
+            - date_added
+            - project_uuid
+      retry_conf:
+        num_retries: 0
+        interval_sec: 10
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - value: activity_log
+          name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_project_roles
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_role_id
-      - project_role_name
-      - active_role
-      - role_order
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_role_id
-      - project_role_name
-      - active_role
-      - role_order
-      - date_added
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - project_role_id
+          - project_role_name
+          - active_role
+          - role_order
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - project_role_id
+          - project_role_name
+          - active_role
+          - role_order
+          - date_added
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_role_id
-      - project_role_name
-      - active_role
-      - role_order
-      - date_added
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - active_role
+          - project_role_id
+          - role_order
+          - project_role_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - active_role
+          - project_role_id
+          - role_order
+          - project_role_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_role_id
+          - project_role_name
+          - active_role
+          - role_order
+          - date_added
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
-      - date_added
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - active_role
+          - project_role_id
+          - role_order
+          - project_role_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - active_role
+          - project_role_id
+          - role_order
+          - project_role_name
+          - date_added
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_status
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - status_name
-      - status_flag
-      - status_priority
-      - status_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - status_name
-      - status_flag
-      - status_priority
-      - status_id
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - status_name
+          - status_flag
+          - status_priority
+          - status_id
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - status_name
+          - status_flag
+          - status_priority
+          - status_id
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - status_flag
-      - status_id
-      - status_priority
-      - status_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - status_flag
-      - status_id
-      - status_priority
-      - status_name
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - status_name
-      - status_flag
-      - status_priority
-      - status_id
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - status_flag
+          - status_id
+          - status_priority
+          - status_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - status_flag
+          - status_id
+          - status_priority
+          - status_name
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - status_name
+          - status_flag
+          - status_priority
+          - status_id
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - status_flag
-      - status_id
-      - status_priority
-      - status_name
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - status_flag
-      - status_id
-      - status_priority
-      - status_name
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - status_flag
+          - status_id
+          - status_priority
+          - status_name
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - status_flag
+          - status_id
+          - status_priority
+          - status_name
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_users
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - staff_uuid
-      - first_name
-      - last_name
-      - title
-      - workgroup
-      - user_id
-      - workgroup_id
-      - cognito_user_id
-      - date_added
-      - is_coa_staff
-      - status_id
-      - email
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - staff_uuid
+          - first_name
+          - last_name
+          - title
+          - workgroup
+          - user_id
+          - workgroup_id
+          - cognito_user_id
+          - date_added
+          - is_coa_staff
+          - status_id
+          - email
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_coa_staff
-      - email
-      - status_id
-      - user_id
-      - workgroup_id
-      - first_name
-      - last_name
-      - title
-      - workgroup
-      - date_added
-      - cognito_user_id
-      - staff_uuid
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - is_coa_staff
-      - email
-      - status_id
-      - user_id
-      - workgroup_id
-      - first_name
-      - last_name
-      - title
-      - workgroup
-      - date_added
-      - cognito_user_id
-      - staff_uuid
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - is_coa_staff
-      - email
-      - status_id
-      - user_id
-      - workgroup_id
-      - first_name
-      - last_name
-      - title
-      - workgroup
-      - date_added
-      - cognito_user_id
-      - staff_uuid
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - is_coa_staff
+          - email
+          - status_id
+          - user_id
+          - workgroup_id
+          - first_name
+          - last_name
+          - title
+          - workgroup
+          - date_added
+          - cognito_user_id
+          - staff_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - is_coa_staff
+          - email
+          - status_id
+          - user_id
+          - workgroup_id
+          - first_name
+          - last_name
+          - title
+          - workgroup
+          - date_added
+          - cognito_user_id
+          - staff_uuid
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_coa_staff
+          - email
+          - status_id
+          - user_id
+          - workgroup_id
+          - first_name
+          - last_name
+          - title
+          - workgroup
+          - date_added
+          - cognito_user_id
+          - staff_uuid
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_coa_staff
-      - email
-      - status_id
-      - user_id
-      - workgroup_id
-      - first_name
-      - last_name
-      - title
-      - workgroup
-      - date_added
-      - cognito_user_id
-      - staff_uuid
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - is_coa_staff
+          - email
+          - status_id
+          - user_id
+          - workgroup_id
+          - first_name
+          - last_name
+          - title
+          - workgroup
+          - date_added
+          - cognito_user_id
+          - staff_uuid
+        filter: {}
+        check: null
 - table:
     schema: public
     name: moped_workgroup
   insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - workgroup_name
-      - workgroup_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - workgroup_name
-      - workgroup_id
-      - date_added
-      backend_only: false
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - workgroup_name
+          - workgroup_id
+          - date_added
+        backend_only: false
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - workgroup_name
+          - workgroup_id
+          - date_added
+        backend_only: false
   select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - workgroup_id
-      - workgroup_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - workgroup_id
-      - workgroup_name
-      - date_added
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - workgroup_name
-      - workgroup_id
-      - date_added
-      filter: {}
-      allow_aggregations: true
+    - role: moped-admin
+      permission:
+        columns:
+          - workgroup_id
+          - workgroup_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - workgroup_id
+          - workgroup_name
+          - date_added
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - workgroup_name
+          - workgroup_id
+          - date_added
+        filter: {}
+        allow_aggregations: true
   update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - workgroup_id
-      - workgroup_name
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - workgroup_id
-      - workgroup_name
-      - date_added
-      filter: {}
-      check: null
+    - role: moped-admin
+      permission:
+        columns:
+          - workgroup_id
+          - workgroup_name
+          - date_added
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - workgroup_id
+          - workgroup_name
+          - date_added
+        filter: {}
+        check: null
