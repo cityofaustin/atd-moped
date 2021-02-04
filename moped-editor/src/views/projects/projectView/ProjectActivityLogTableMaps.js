@@ -527,81 +527,81 @@ export const ProjectActivityLogTableMaps = {
   },
 
   moped_proj_personnel: {
-    label: "",
+    label: "Project Personnel",
     fields: {
       role_order: {
         icon: "",
-        label: "",
+        label: "Role Order",
         type: "int4",
       },
       added_by: {
         icon: "",
-        label: "",
+        label: "Added By",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       project_personnel_id: {
         icon: "",
-        label: "",
+        label: "ID",
         type: "int4",
       },
       workgroup_id: {
         icon: "",
-        label: "",
+        label: "Workgroup ID",
         type: "int4",
       },
       project_personnel_user_id: {
         icon: "",
-        label: "",
+        label: "User ID",
         type: "int4",
       },
       first_name: {
         icon: "",
-        label: "",
+        label: "First Name",
         type: "text",
       },
       last_name: {
         icon: "",
-        label: "",
+        label: "Last Name",
         type: "text",
       },
       notes: {
         icon: "",
-        label: "",
+        label: "Notes",
         type: "text",
       },
       join_date: {
         icon: "",
-        label: "",
+        label: "Join Date",
         type: "date",
       },
       status: {
         icon: "",
-        label: "",
+        label: "Status",
         type: "text",
       },
       allocation: {
         icon: "",
-        label: "",
+        label: "Allocation",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       workgroup: {
         icon: "",
-        label: "",
+        label: "workgroup",
         type: "text",
       },
       role_name: {
         icon: "",
-        label: "",
+        label: "Role Name",
         type: "text",
       },
     },
