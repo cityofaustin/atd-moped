@@ -17,6 +17,7 @@
       - activity_id
       - created_at
       - description
+      - operation_type
       - record_data
       - record_id
       - record_project_id
@@ -30,6 +31,7 @@
       - activity_id
       - created_at
       - description
+      - operation_type
       - record_data
       - record_id
       - record_project_id
@@ -43,6 +45,7 @@
       - activity_id
       - created_at
       - description
+      - operation_type
       - record_data
       - record_id
       - record_project_id
