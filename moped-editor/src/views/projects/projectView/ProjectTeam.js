@@ -25,7 +25,13 @@ const ProjectTeam = () => {
   if (error) return `Error! ${error.message}`;
 
   const team = data.moped_proj_personnel;
-  const workgroups = data.moped_workgroup;
+  const workgroups = data.moped_workgroup.reduce(
+    (acc, workgroup) => ({
+      ...acc,
+      [workgroup.workgroup_id]: workgroup.workgroup_name,
+    }),
+    {}
+  );
 
   console.log(team, workgroups);
 
@@ -46,7 +52,7 @@ const ProjectTeam = () => {
     {
       title: "Workgroup",
       field: "workgroup_id",
-      // lookup: workgroups,
+      lookup: workgroups,
       // editComponent: props => (
       //   <DateFieldEditComponent
       //     {...props}
