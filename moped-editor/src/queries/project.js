@@ -32,12 +32,19 @@ export const TEAM_QUERY = gql`
       first_name
       last_name
       role_name
-      workgroup_id
       notes
     }
     moped_workgroup {
       workgroup_id
       workgroup_name
+    }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
+      first_name
+      last_name
+      workgroup_id
     }
   }
 `;

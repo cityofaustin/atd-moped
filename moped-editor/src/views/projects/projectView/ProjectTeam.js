@@ -32,35 +32,31 @@ const ProjectTeam = () => {
     }),
     {}
   );
+  const users = data.moped_users;
 
-  console.log(team, workgroups);
+  console.log(team, workgroups, users);
 
   /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
+    // This can come from the user table
     {
       title: "Name",
-      field: "first_name",
-      // lookup: phaseNameLookup
+      render: team => `${team.first_name} ${team.last_name}`,
     },
+    // This is saved in the personnel table
     {
       title: "Role",
       field: "role_name",
-      // lookup: { true: "True", false: "False" },
     },
+    // This can come come from the user table
     {
       title: "Workgroup",
       field: "workgroup_id",
       lookup: workgroups,
-      // editComponent: props => (
-      //   <DateFieldEditComponent
-      //     {...props}
-      //     name="phase_start"
-      //     label="Start Date"
-      //   />
-      // ),
     },
+    // This is saved in the personnel table
     {
       title: "Notes",
       field: "notes",
@@ -69,7 +65,7 @@ const ProjectTeam = () => {
           name="Notes"
           style={{ width: 250, paddingLeft: 10 }}
           multiline
-          inputProps={{ maxLength: 75 }}
+          inputProps={{ maxLength: 125 }}
           variant="outlined"
           helperText="75 character max"
           value={""}
