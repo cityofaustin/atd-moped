@@ -3,7 +3,12 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 // Material
-import { CardContent, CircularProgress, Grid } from "@material-ui/core";
+import {
+  CardContent,
+  CircularProgress,
+  Grid,
+  TextField,
+} from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
@@ -25,30 +30,43 @@ const ProjectTeam = () => {
    * Column configuration for <MaterialTable>
    */
   const columns = [
-    // { title: "Phase Name", field: "phase_name", lookup: phaseNameLookup },
-    // {
-    //   title: "Active?",
-    //   field: "is_current_phase",
-    //   lookup: { true: "True", false: "False" },
-    // },
-    // {
-    //   title: "Start Date",
-    //   field: "phase_start",
-    //   editComponent: props => (
-    //     <DateFieldEditComponent
-    //       {...props}
-    //       name="phase_start"
-    //       label="Start Date"
-    //     />
-    //   ),
-    // },
-    // {
-    //   title: "End Date",
-    //   field: "phase_end",
-    //   editComponent: props => (
-    //     <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
-    //   ),
-    // },
+    {
+      title: "Name",
+      field: "phase_name",
+      // lookup: phaseNameLookup
+    },
+    {
+      title: "Role",
+      field: "is_current_phase",
+      lookup: { true: "True", false: "False" },
+    },
+    {
+      title: "Workgroup",
+      field: "phase_start",
+      // editComponent: props => (
+      //   <DateFieldEditComponent
+      //     {...props}
+      //     name="phase_start"
+      //     label="Start Date"
+      //   />
+      // ),
+    },
+    {
+      title: "Notes",
+      field: "phase_end",
+      editComponent: props => (
+        <TextField
+          name="Notes"
+          style={{ width: 250, paddingLeft: 10 }}
+          multiline
+          inputProps={{ maxLength: 75 }}
+          variant="outlined"
+          helperText="75 character max"
+          value={""}
+          // onChange={e => handleNoteChange(e.target.value, index)}
+        />
+      ),
+    },
   ];
 
   return (
@@ -59,7 +77,10 @@ const ProjectTeam = () => {
             <MaterialTable
               columns={columns}
               data={team}
-              title="Project Phases"
+              title="Project Team"
+              options={{
+                search: false,
+              }}
               editable={{
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
