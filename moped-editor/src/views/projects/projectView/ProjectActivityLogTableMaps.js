@@ -455,36 +455,36 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_notes: {
-    label: "",
+    label: "Project Note",
     fields: {
       added_by: {
         icon: "",
-        label: "",
+        label: "Added By",
         type: "bpchar",
       },
       comm_id: {
         icon: "",
-        label: "",
+        label: "Comm ID",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       project_note_id: {
         icon: "",
-        label: "",
+        label: "Note ID",
         type: "int4",
       },
       date_created: {
         icon: "",
-        label: "",
+        label: "Date Created",
         type: "timestamptz",
       },
       project_note: {
         icon: "",
-        label: "",
+        label: "Note",
         type: "text",
       },
     },
