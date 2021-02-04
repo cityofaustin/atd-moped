@@ -2173,142 +2173,132 @@
     permission:
       check: {}
       columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
       - join_date
-      - last_name
-      - notes
+      - allocation
+      - status
       - project_id
-      - project_personnel_id
       - project_personnel_user_id
+      - project_personnel_id
+      - first_name
+      - last_name
+      - workgroup_id
       - role_name
       - role_order
-      - status
-      - workgroup
-      - workgroup_id
+      - date_added
+      - added_by
+      - notes
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
+      - join_date
       - added_by
       - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
       - project_id
       - project_personnel_id
       - project_personnel_user_id
-      - role_name
       - role_order
-      - status
-      - workgroup
       - workgroup_id
+      - first_name
+      - last_name
+      - notes
+      - role_name
+      - status
+      - date_added
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
+      - join_date
       - added_by
       - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
       - project_id
       - project_personnel_id
       - project_personnel_user_id
-      - role_name
       - role_order
-      - status
-      - workgroup
       - workgroup_id
+      - first_name
+      - last_name
+      - notes
+      - role_name
+      - status
+      - date_added
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
+      - join_date
       - added_by
       - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
       - project_id
       - project_personnel_id
       - project_personnel_user_id
-      - role_name
       - role_order
-      - status
-      - workgroup
       - workgroup_id
+      - first_name
+      - last_name
+      - notes
+      - role_name
+      - status
+      - date_added
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - added_by
-      - allocation
-      - date_added
-      - first_name
       - join_date
-      - last_name
-      - notes
+      - allocation
+      - status
       - project_id
-      - project_personnel_id
       - project_personnel_user_id
+      - project_personnel_id
+      - first_name
+      - last_name
+      - workgroup_id
       - role_name
       - role_order
-      - status
-      - workgroup
-      - workgroup_id
+      - date_added
+      - added_by
+      - notes
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
+      - join_date
       - added_by
       - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
       - project_id
       - project_personnel_id
       - project_personnel_user_id
-      - role_name
       - role_order
-      - status
-      - workgroup
       - workgroup_id
+      - first_name
+      - last_name
+      - notes
+      - role_name
+      - status
+      - date_added
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
+      - join_date
       - added_by
       - allocation
-      - date_added
-      - first_name
-      - join_date
-      - last_name
-      - notes
       - project_id
       - project_personnel_id
       - project_personnel_user_id
-      - role_name
       - role_order
-      - status
-      - workgroup
       - workgroup_id
+      - first_name
+      - last_name
+      - notes
+      - role_name
+      - status
+      - date_added
       filter: {}
       check: null
 - table:
