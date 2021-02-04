@@ -21,12 +21,13 @@ const ProjectTeam = () => {
     fetchPolicy: "no-cache",
   });
 
-  console.log(data);
-
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
   const team = data.moped_proj_personnel;
+  const workgroups = data.moped_workgroup;
+
+  console.log(team, workgroups);
 
   /**
    * Column configuration for <MaterialTable>
@@ -45,6 +46,7 @@ const ProjectTeam = () => {
     {
       title: "Workgroup",
       field: "workgroup_id",
+      // lookup: workgroups,
       // editComponent: props => (
       //   <DateFieldEditComponent
       //     {...props}

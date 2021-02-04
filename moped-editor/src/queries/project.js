@@ -35,6 +35,10 @@ export const TEAM_QUERY = gql`
       workgroup_id
       notes
     }
+    moped_workgroup {
+      workgroup_id
+      workgroup_name
+    }
   }
 `;
 
