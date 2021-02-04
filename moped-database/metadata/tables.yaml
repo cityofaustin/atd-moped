@@ -2868,6 +2868,13 @@
           - date_added
         filter: {}
         check: null
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        filter: {}
+    - role: moped-editor
+      permission:
+        filter: {}
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
