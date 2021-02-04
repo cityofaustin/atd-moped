@@ -32,6 +32,7 @@ export const TEAM_QUERY = gql`
       first_name
       last_name
       role_name
+      workgroup
       notes
     }
   }

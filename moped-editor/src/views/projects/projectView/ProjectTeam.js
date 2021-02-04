@@ -15,13 +15,18 @@ import { TEAM_QUERY } from "../../../queries/project";
 
 const ProjectTeam = () => {
   const { projectId } = useParams();
-  console.log(projectId);
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
 
-  if (loading) return <CircularProgress />;
+  console.log(data);
+  // workgroup_id 3
+  // Role Name Project Manager
+  // project_role_id
+
+  if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
   const team = data.moped_proj_personnel;
@@ -32,17 +37,17 @@ const ProjectTeam = () => {
   const columns = [
     {
       title: "Name",
-      field: "phase_name",
+      field: "first_name",
       // lookup: phaseNameLookup
     },
     {
       title: "Role",
-      field: "is_current_phase",
-      lookup: { true: "True", false: "False" },
+      field: "role_name",
+      // lookup: { true: "True", false: "False" },
     },
     {
       title: "Workgroup",
-      field: "phase_start",
+      field: "workgroup",
       // editComponent: props => (
       //   <DateFieldEditComponent
       //     {...props}
@@ -53,19 +58,19 @@ const ProjectTeam = () => {
     },
     {
       title: "Notes",
-      field: "phase_end",
-      editComponent: props => (
-        <TextField
-          name="Notes"
-          style={{ width: 250, paddingLeft: 10 }}
-          multiline
-          inputProps={{ maxLength: 75 }}
-          variant="outlined"
-          helperText="75 character max"
-          value={""}
-          // onChange={e => handleNoteChange(e.target.value, index)}
-        />
-      ),
+      field: "notes",
+      // editComponent: props => (
+      //   <TextField
+      //     name="Notes"
+      //     style={{ width: 250, paddingLeft: 10 }}
+      //     multiline
+      //     inputProps={{ maxLength: 75 }}
+      //     variant="outlined"
+      //     helperText="75 character max"
+      //     value={""}
+      //     // onChange={e => handleNoteChange(e.target.value, index)}
+      //   />
+      // ),
     },
   ];
 
@@ -81,35 +86,35 @@ const ProjectTeam = () => {
               options={{
                 search: false,
               }}
-              editable={{
-                onRowAdd: newData =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      // Add team member
+              // editable={{
+              //   onRowAdd: newData =>
+              //     new Promise((resolve, reject) => {
+              //       setTimeout(() => {
+              //         // Add team member
 
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
-                onRowUpdate: (newData, oldData) =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      // Update team member
+              //         setTimeout(() => refetch(), 501);
+              //         resolve();
+              //       }, 500);
+              //     }),
+              //   onRowUpdate: (newData, oldData) =>
+              //     new Promise((resolve, reject) => {
+              //       setTimeout(() => {
+              //         // Update team member
 
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      // Execute delete mutation
+              //         setTimeout(() => refetch(), 501);
+              //         resolve();
+              //       }, 500);
+              //     }),
+              //   onRowDelete: oldData =>
+              //     new Promise((resolve, reject) => {
+              //       setTimeout(() => {
+              //         // Execute delete mutation
 
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
-              }}
+              //         setTimeout(() => refetch(), 501);
+              //         resolve();
+              //       }, 500);
+              //     }),
+              // }}
             />
           </div>
         </Grid>
