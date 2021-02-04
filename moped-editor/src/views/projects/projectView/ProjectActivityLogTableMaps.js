@@ -305,36 +305,36 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_groups: {
-    label: "",
+    label: "Project Group",
     fields: {
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       added_by: {
         icon: "",
-        label: "",
+        label: "Added by",
         type: "int4",
       },
       group_id: {
         icon: "",
-        label: "",
+        label: "Group ID",
         type: "int4",
       },
       group_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
       proj_group_id: {
         icon: "",
-        label: "",
+        label: "ID",
         type: "int4",
       },
     },
