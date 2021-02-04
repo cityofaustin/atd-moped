@@ -608,86 +608,86 @@ export const ProjectActivityLogTableMaps = {
   },
 
   moped_proj_phases: {
-    label: "",
+    label: "Project Phases",
     fields: {
       phase_rank: {
         icon: "",
-        label: "",
+        label: "Rank",
         type: "int4",
       },
       phase_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
       phase_description: {
         icon: "",
-        label: "",
+        label: "Description",
         type: "text",
       },
       completion_percentage: {
         icon: "",
-        label: "",
+        label: "Completion Percentage",
         type: "int4",
       },
       phase_status: {
         icon: "",
-        label: "",
+        label: "Status",
         type: "text",
       },
       phase_privacy: {
         icon: "",
-        label: "",
+        label: "Privacy",
         type: "bool",
       },
       phase_start: {
         icon: "",
-        label: "",
+        label: "Start Date",
         type: "date",
       },
       phase_end: {
         icon: "",
-        label: "",
+        label: "End Date",
         type: "date",
       },
       phase_priority: {
         icon: "",
-        label: "",
+        label: "Priority",
         type: "int4",
       },
       is_current_phase: {
         icon: "",
-        label: "",
+        label: "Is Current Phase",
         type: "bool",
       },
       completed: {
         icon: "",
-        label: "",
+        label: "Completed",
         type: "bool",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       started_by_user_id: {
         icon: "",
-        label: "",
+        label: "Started By User ID",
         type: "int4",
       },
       completed_by_user_id: {
         icon: "",
-        label: "",
+        label: "Completed by User ID",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       project_phase_id: {
         icon: "",
-        label: "",
+        label: "ID",
         type: "int4",
       },
     },
