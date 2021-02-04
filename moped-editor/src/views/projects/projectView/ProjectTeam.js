@@ -1,15 +1,10 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import {
-  Box,
-  CardContent,
-  CircularProgress,
-  Grid,
-  makeStyles,
-  Paper,
-  Typography,
-} from "@material-ui/core";
+
+// Material
+import { CardContent, CircularProgress, Grid } from "@material-ui/core";
+import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
 
@@ -36,21 +31,44 @@ const ProjectTeam = () => {
   return (
     <CardContent>
       <Grid container spacing={2}>
-        {team.length > 0 ? (
-          team.map(person => (
-            <Paper className={classes.paper}>
-              <Typography variant="h2">
-                {person.first_name} {person.last_name}
-              </Typography>
-              <Typography variant="overline">{person.role_name}</Typography>
-              <Typography variant="body1">{person.notes}</Typography>
-            </Paper>
-          ))
-        ) : (
-          <Box color="text.disabled">
-            <Typography>No Project Personnel Data</Typography>
-          </Box>
-        )}
+        <Grid item xs={12}>
+          <div style={{ maxWidth: "100%" }}>
+            <MaterialTable
+              columns={columns}
+              data={data.moped_proj_phases}
+              title="Project Phases"
+              editable={{
+                onRowAdd: newData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      // Add team member
+
+                      setTimeout(() => refetch(), 501);
+                      resolve();
+                    }, 500);
+                  }),
+                onRowUpdate: (newData, oldData) =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      // Update team member
+
+                      setTimeout(() => refetch(), 501);
+                      resolve();
+                    }, 500);
+                  }),
+                onRowDelete: oldData =>
+                  new Promise((resolve, reject) => {
+                    setTimeout(() => {
+                      // Execute delete mutation
+
+                      setTimeout(() => refetch(), 501);
+                      resolve();
+                    }, 500);
+                  }),
+              }}
+            />
+          </div>
+        </Grid>
       </Grid>
     </CardContent>
   );
