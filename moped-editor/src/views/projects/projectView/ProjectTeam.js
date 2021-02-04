@@ -3,26 +3,14 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 // Material
-import {
-  CardContent,
-  CircularProgress,
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
+import { CardContent, CircularProgress, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
 
-const useStyles = makeStyles(theme => ({
-  paper: {
-    marginRight: theme.spacing(3),
-    padding: theme.spacing(2),
-  },
-}));
-
 const ProjectTeam = () => {
   const { projectId } = useParams();
-  const classes = useStyles();
+  console.log(projectId);
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
