@@ -340,36 +340,36 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_location: {
-    label: "",
+    label: "Project Location",
     fields: {
       location_id: {
         icon: "",
-        label: "",
+        label: "ID",
         type: "int4",
       },
       feature_id: {
         icon: "",
-        label: "",
+        label: "Feature ID",
         type: "text",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       location_notes: {
         icon: "",
-        label: "",
+        label: "Notes",
         type: "text",
       },
       shape: {
         icon: "",
-        label: "",
+        label: "Shape",
         type: "text",
       },
       location_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
     },
