@@ -185,7 +185,7 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_fiscal_years: {
-    label: "Project Fiscal Year",
+    label: "Fiscal Year",
     fields: {
       fiscal_year_name: {
         icon: "",
@@ -230,36 +230,36 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_fund_opp: {
-    label: "",
+    label: "Funding Opportunity",
     fields: {
       fund_opp_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
       fund_opp_id: {
         icon: "",
-        label: "",
+        label: "Opportunity ID",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       added_by: {
         icon: "",
-        label: "",
+        label: "Added By",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       proj_fund_opp_id: {
         icon: "",
-        label: "",
+        label: "Fund ID",
         type: "int4",
       },
     },
