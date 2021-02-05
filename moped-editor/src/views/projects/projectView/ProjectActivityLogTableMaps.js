@@ -1221,6 +1221,73 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+
+
+  moped_proj_dates: {
+    label: "Project Date",
+    fields: {
+      project_date: {
+        icon: "",
+        label: "Date",
+        data_type: "date",
+      },
+      date_type: {
+        icon: "",
+        label: "Type",
+        data_type: "text",
+      },
+      date_year: {
+        icon: "",
+        label: "Year",
+        data_type: "int4",
+      },
+      date_month: {
+        icon: "",
+        label: "Month",
+        data_type: "int4",
+      },
+      date_day: {
+        icon: "",
+        label: "Day",
+        data_type: "int4",
+      },
+      active_date: {
+        icon: "",
+        label: "Date",
+        data_type: "bool",
+      },
+      date_id: {
+        icon: "",
+        label: "OD",
+        data_type: "int4",
+      },
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "int4",
+      },
+      date_added: {
+        icon: "",
+        label: "Date Added",
+        data_type: "timestamptz",
+      },
+      project_milestone_id: {
+        icon: "",
+        label: "Milestone ID",
+        data_type: "int4",
+      },
+      project_phase_id: {
+        icon: "",
+        label: "Phase ID",
+        data_type: "int4",
+      },
+      added_by: {
+        icon: "",
+        label: "Added By",
+        data_type: "int4",
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
