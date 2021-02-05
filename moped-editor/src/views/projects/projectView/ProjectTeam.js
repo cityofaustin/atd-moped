@@ -45,16 +45,16 @@ const ProjectTeam = () => {
       title: "Name",
       render: team => `${team.first_name} ${team.last_name}`,
     },
-    // This is saved in the personnel table
-    {
-      title: "Role",
-      field: "role_name",
-    },
     // This can come come from the user table
     {
       title: "Workgroup",
       field: "workgroup_id",
       lookup: workgroups,
+    },
+    // This is saved in the personnel table
+    {
+      title: "Role",
+      field: "role_name",
     },
     // This is saved in the personnel table
     {

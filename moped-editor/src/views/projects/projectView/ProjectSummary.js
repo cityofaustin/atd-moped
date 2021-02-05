@@ -101,7 +101,7 @@ const ProjectSummary = () => {
         <Grid item xs={12} md={6}>
           <Grid container>
             {projectDetails.map(detail => (
-              <Grid item xs={6}>
+              <Grid key={detail.label} item xs={6}>
                 <Box mb={2}>
                   <h4>{detail.label}</h4>
                   <p>{formatValue(detail)}</p>
