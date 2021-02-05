@@ -39,6 +39,8 @@ const ProjectTeam = () => {
   /**
    * Column configuration for <MaterialTable>
    */
+  // TODO: Need to store only user_id in personnel table
+  // TODO: Use that to get first_name, last_name, workgroup_id from the users table
   const columns = [
     // This can come from the user table
     {
@@ -79,45 +81,45 @@ const ProjectTeam = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <div style={{ maxWidth: "100%" }}>
-            <MaterialTable
-              columns={columns}
-              data={team}
-              title="Project Team"
-              options={{
-                search: false,
-              }}
-              editable={{
-                onRowAdd: newData =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      // Add team member
+          {/* <div style={{ maxWidth: "100%" }}> */}
+          <MaterialTable
+            columns={columns}
+            data={team}
+            title="Project Team"
+            options={{
+              search: false,
+            }}
+            editable={{
+              onRowAdd: newData =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // Add team member
 
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
-                // onRowUpdate: (newData, oldData) =>
-                //   new Promise((resolve, reject) => {
-                //     setTimeout(() => {
-                //       // Update team member
+                    setTimeout(() => refetch(), 501);
+                    resolve();
+                  }, 500);
+                }),
+              onRowUpdate: (newData, oldData) =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // Update team member
 
-                //       setTimeout(() => refetch(), 501);
-                //       resolve();
-                //     }, 500);
-                //   }),
-                // onRowDelete: oldData =>
-                //   new Promise((resolve, reject) => {
-                //     setTimeout(() => {
-                //       // Execute delete mutation
+                    setTimeout(() => refetch(), 501);
+                    resolve();
+                  }, 500);
+                }),
+              // onRowDelete: oldData =>
+              //   new Promise((resolve, reject) => {
+              //     setTimeout(() => {
+              //       // Execute delete mutation
 
-                //       setTimeout(() => refetch(), 501);
-                //       resolve();
-                //     }, 500);
-                //   }),
-              }}
-            />
-          </div>
+              //       setTimeout(() => refetch(), 501);
+              //       resolve();
+              //     }, 500);
+              //   }),
+            }}
+          />
+          {/* </div> */}
         </Grid>
       </Grid>
     </CardContent>
