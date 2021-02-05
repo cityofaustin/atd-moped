@@ -760,81 +760,81 @@ export const ProjectActivityLogTableMaps = {
   },
 
   moped_proj_status_history: {
-    label: "",
+    label: "Status History",
     fields: {
       is_milestone_completed: {
         icon: "",
-        label: "",
+        label: "Is Milestone Completed",
         type: "bool",
       },
       added_by: {
         icon: "",
-        label: "",
+        label: "Added By",
         type: "int4",
       },
       date_status_changed: {
         icon: "",
-        label: "",
+        label: "Status Changed",
         type: "date",
       },
       date_added: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "timestamptz",
       },
       project_status_history_id: {
         icon: "",
-        label: "",
+        label: "History ID",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       is_current_milestone: {
         icon: "",
-        label: "",
+        label: "Is Current Milestone",
         type: "bool",
       },
       milestone_privacy: {
         icon: "",
-        label: "",
+        label: "Privacy",
         type: "bool",
       },
       milestone_length: {
         icon: "",
-        label: "",
+        label: "Length",
         type: "int4",
       },
       milestone_end: {
         icon: "",
-        label: "",
+        label: "Date End",
         type: "date",
       },
       milestone_start: {
         icon: "",
-        label: "",
+        label: "Date Added",
         type: "date",
       },
       milestone_order: {
         icon: "",
-        label: "",
+        label: "Order",
         type: "int4",
       },
       milestone_description: {
         icon: "",
-        label: "",
+        label: "Description",
         type: "text",
       },
       milestone_name: {
         icon: "",
-        label: "",
+        label: "Name",
         type: "text",
       },
       status_name: {
         icon: "",
-        label: "",
+        label: "Status Name",
         type: "text",
       },
     },
