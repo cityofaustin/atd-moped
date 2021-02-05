@@ -1098,29 +1098,29 @@ export const ProjectActivityLogTableMaps = {
     label: "Project Category",
     fields: {
       project_id: {
-        "icon":"",
-        "label": "Project ID",
-        "type":"int4"
+        icon: "",
+        label: "Project ID",
+        type: "int4",
       },
       category_name: {
-        "icon": "",
-        "label": "Name",
-        "type":"text"
+        icon: "",
+        label: "Name",
+        type: "text",
       },
       added_by: {
-        "icon": "",
-        "label": "Added By",
-        "type":"int4"
+        icon: "",
+        label: "Added By",
+        type: "int4",
       },
       date_added: {
-        "icon": "",
-        "label": "Date Added",
-        "type":"timestamptz"
+        icon: "",
+        label: "Date Added",
+        type: "timestamptz",
       },
       proj_category_id: {
-        "icon": "",
-        "label": "ID",
-        "type":"int4"
+        icon: "",
+        label: "ID",
+        type: "int4",
       },
     },
   },
