@@ -1124,6 +1124,63 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+
+  moped_proj_components: {
+    label: "Project Component",
+    fields: {
+      // This should be renamed to project_id
+      moped_project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "int4",
+      },
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "int4",
+      },
+      moped_component_id: {
+        icon: "",
+        label: "Component ID",
+        data_type: "int4",
+      },
+      component_length: {
+        icon: "",
+        label: "Length",
+        data_type: "numeric",
+      },
+      component_notes: {
+        icon: "",
+        label: "Note",
+        data_type: "text",
+      },
+      component_unique_id: {
+        icon: "",
+        label: "Unique ID",
+        data_type: "text",
+      },
+      component_unique_id_code: {
+        icon: "",
+        label: "Unique ID Code",
+        data_type: "text",
+      },
+      date_added: {
+        icon: "",
+        label: "Date Added",
+        data_type: "timestamptz",
+      },
+      moped_proj_component_id: {
+        icon: "",
+        label: "ID",
+        data_type: "int4",
+      },
+      added_by: {
+        icon: "",
+        label: "Added By",
+        data_type: "int4",
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
