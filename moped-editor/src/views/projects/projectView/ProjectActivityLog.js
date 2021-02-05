@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { ProjectActivityLogTableMaps } from "./ProjectActivityLogTableMaps";
+import { ProjectActivityLogOperationMaps } from "./ProjectActivityLogTableMaps"
 
 import {
   Avatar,
@@ -108,6 +109,15 @@ const ProjectActivityLog = () => {
     return ProjectActivityLogTableMaps[type.toLowerCase()]?.icon ?? "create";
   };
 
+  /**
+   * Translates the operation type value into friendly label
+   * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
+   * @return {string}
+   */
+  const getOperationName = operationName => {
+    return ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ?? "Unknown";
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
@@ -123,6 +133,9 @@ const ProjectActivityLog = () => {
                   <b>User</b>
                 </TableCell>
                 <TableCell align="left">
+                  <b>Action</b>
+                </TableCell>
+                <TableCell align="left">
                   <b>Change</b>
                 </TableCell>
               </TableRow>
@@ -134,14 +147,14 @@ const ProjectActivityLog = () => {
                     align="left"
                     component="th"
                     scope="row"
-                    width="15%"
+                    width="5%"
                     className={classes.tableCell}
                   >
                     {formatDate(change.created_at)}
                   </TableCell>
                   <TableCell
                     align="left"
-                    width="25%"
+                    width="15%"
                     className={classes.tableCell}
                   >
                     <Box display="flex" p={0}>
@@ -161,6 +174,13 @@ const ProjectActivityLog = () => {
                         {change.moped_user.last_name}
                       </Box>
                     </Box>
+                  </TableCell>
+                  <TableCell
+                      align="left"
+                      width="5%"
+                      className={classes.tableCell}
+                  >
+                    <b>{getOperationName(change.operation_type)}</b>
                   </TableCell>
                   <TableCell
                     align="left"
