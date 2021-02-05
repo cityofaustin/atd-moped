@@ -92,7 +92,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         data_type: "timestamp with time zone",
       },
-      added_by: { label: "Added by", icon: "", data_type: "integer" },
+      added_by: {
+        icon: "",
+        label: "Added by",
+        data_type: "integer",
+      },
       project_extent_ids: {
         icon: "",
         label: "Extent",
