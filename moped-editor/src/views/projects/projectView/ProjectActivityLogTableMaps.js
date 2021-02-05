@@ -1,54 +1,90 @@
 export const ProjectActivityLogTableMaps = {
   moped_project: {
-    label: "Project's",
+    label: "Project",
     fields: {
-      project_uuid: { label: "Unique ID", icon: "", data_type: "uuid" },
-      project_name: { label: "Name", icon: "", data_type: "text" },
-      project_description: {
-        label: "Description",
+      project_uuid: {
         icon: "",
+        label: "Unique ID",
+        data_type: "uuid",
+      },
+      project_name: {
+        icon: "",
+        label: "Name",
+        data_type: "text",
+      },
+      project_description: {
+        icon: "",
+        label: "Description",
         data_type: "text",
       },
       project_description_public: {
+        icon: "",
         label: "Public description",
+        data_type: "text",
+      },
+      ecapris_id: {
+        label: "eCapris ID",
         icon: "",
         data_type: "text",
       },
-      ecapris_id: { label: "eCapris ID", icon: "", data_type: "text" },
       project_importance: {
-        label: "Importance",
         icon: "",
+        label: "Importance",
         data_type: "integer",
       },
       project_order: {
-        label: "Order",
         icon: "",
+        label: "Order",
         data_type: "integer",
       },
       current_status: {
-        label: "Current Status",
         icon: "",
+        label: "Current Status",
         data_type: "text",
       },
-      project_id: { label: "ID", icon: "", data_type: "integer" },
-      timeline_id: { label: "Timeline", icon: "", data_type: "integer" },
-      current_phase: { label: "Phase", icon: "", data_type: "text" },
-      end_date: { label: "End Date", icon: "", data_type: "date" },
+      project_id: {
+        icon: "",
+        label: "ID",
+        data_type: "integer",
+      },
+      timeline_id: {
+        icon: "",
+        label: "Timeline",
+        data_type: "integer",
+      },
+      current_phase: {
+        icon: "",
+        label: "Phase",
+        data_type: "text",
+      },
+      end_date: {
+        icon: "",
+        label: "End Date",
+        data_type: "date",
+      },
       project_length: {
         label: "Project Length",
         icon: "",
         data_type: "integer",
       },
-      start_date: { label: "Start Date", icon: "", data_type: "date" },
-      fiscal_year: { label: "Fiscal Year", icon: "", data_type: "text" },
-      capitally_funded: {
-        label: "Capitally Funded",
+      start_date: {
         icon: "",
+        label: "Start Date",
+        data_type: "date",
+      },
+      fiscal_year: {
+        icon: "",
+        label: "Fiscal Year",
+        data_type: "text",
+      },
+      capitally_funded: {
+        icon: "",
+        label: "Capitally Funded",
         data_type: "boolean",
       },
       project_priority: {
-        label: "Priority",
         icon: "",
+        label: "Priority",
         data_type: "text",
       },
       date_added: {
@@ -58,13 +94,13 @@ export const ProjectActivityLogTableMaps = {
       },
       added_by: { label: "Added by", icon: "", data_type: "integer" },
       project_extent_ids: {
-        label: "Extent",
         icon: "",
+        label: "Extent",
         data_type: "jsonb",
       },
       project_extent_geojson: {
-        label: "Extent GeoJson Data",
         icon: "",
+        label: "Extent GeoJson Data",
         data_type: "jsonb",
       },
     },
