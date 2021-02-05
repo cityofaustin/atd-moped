@@ -887,66 +887,66 @@ export const ProjectActivityLogTableMaps = {
   },
 
   moped_proj_timeline: {
-    label: "",
+    label: "Project Timeline",
     fields: {
       active_milestone_start: {
         icon: "",
-        label: "",
+        label: "Start Date",
         type: "date",
       },
       active_milestone_end: {
         icon: "",
-        label: "",
+        label: "Milestone End",
         type: "date",
       },
       active_milestone_length: {
         icon: "",
-        label: "",
+        label: "Milestone Length",
         type: "int4",
       },
       capital_projects_explorer_id: {
         icon: "",
-        label: "",
+        label: "Explorer ID",
         type: "text",
       },
       current_status: {
         icon: "",
-        label: "",
+        label: "Status ID",
         type: "text",
       },
       project_id: {
         icon: "",
-        label: "",
+        label: "Project ID",
         type: "int4",
       },
       active_milestone: {
         icon: "",
-        label: "",
+        label: "Active Milestone",
         type: "text",
       },
       timeline_id: {
         icon: "",
-        label: "",
+        label: "ID",
         type: "int4",
       },
       active_phase: {
         icon: "",
-        label: "",
+        label: "Active Phase",
         type: "text",
       },
       active_phase_start: {
         icon: "",
-        label: "",
+        label: "Active Phase Start Date",
         type: "date",
       },
       active_phase_end: {
         icon: "",
-        label: "",
+        label: "Active Phase End Date",
         type: "date",
       },
       active_phase_length: {
         icon: "",
-        label: "",
+        label: "Active Phase Length",
         type: "int4",
       },
     },
