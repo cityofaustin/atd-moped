@@ -63,6 +63,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
       record_project_id
       record_type
       description
+      operation_type
       moped_user {
         first_name
         last_name
