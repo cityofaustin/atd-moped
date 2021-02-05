@@ -1300,7 +1300,7 @@ export const ProjectActivityLogOperationMaps = {
     icon: "create",
   },
   UPDATE: {
-    label: "Updated",
+    label: "Update",
     icon: "create",
   },
 };
