@@ -36,22 +36,24 @@ const ProjectTeam = () => {
 
   console.log(team, workgroups, users);
 
+  const getPersonnelName = id => {
+    const user = users.find(user => user.user_id === id);
+    return `${user.first_name} ${user.last_name}`;
+  };
+
   /**
    * Column configuration for <MaterialTable>
    */
-  // TODO: Need to store only user_id in personnel table
-  // TODO: Use that to get first_name, last_name, workgroup_id from the users table
   const columns = [
     // This can come from the user table
     {
       title: "Name",
-      render: team => `${team.first_name} ${team.last_name}`,
+      render: team => getPersonnelName(team.user_id),
     },
     // This can come come from the user table
     {
       title: "Workgroup",
-      field: "workgroup_id",
-      lookup: workgroups,
+      render: team => getPersonnelWorkgroup(team.user_id),
     },
     // This is saved in the personnel table
     {
