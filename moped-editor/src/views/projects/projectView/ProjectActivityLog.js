@@ -1,12 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { ProjectActivityLogTableMaps } from "./ProjectActivityLogTableMaps";
-import { ProjectActivityLogOperationMaps } from "./ProjectActivityLogTableMaps"
+import {
+  getOperationName,
+  getChangeIcon,
+  getRecordTypeLabel,
+  getHumanReadableField,
+} from "./ProjectActivityLogTableMaps";
+
+import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
 
 import {
   Avatar,
   Box,
+  Button,
   CardContent,
   CircularProgress,
   Grid,
@@ -50,6 +57,16 @@ const ProjectActivityLog = () => {
     variables: { projectId },
   });
 
+  const [activityId, setActivityId] = useState(null);
+
+  const handleDetailsClose = () => {
+    setActivityId(null);
+  };
+
+  const handleDetailsOpen = activityId => {
+    setActivityId(activityId);
+  };
+
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
@@ -61,62 +78,20 @@ const ProjectActivityLog = () => {
   const formatDate = date => new Date(date).toLocaleDateString();
 
   /**
-   * Returns a human-readable field name (translates the column into a readable label)
-   * @param {string} type - The table name
-   * @param {string} field - The column name
-   * @return {string}
-   */
-  const getHumanReadableField = (type, field) => {
-    return (
-      ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[
-        field.toLowerCase()
-      ]?.label ?? field
-    );
-  };
-
-  /**
-   * Returns the
-   * @param {string} type - The name of the table
-   * @return {string}
-   */
-  const getRecordTypeLabel = type => {
-    return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
-  };
-
-  /**
    * Safely returns the initials from a full name
    * @param {string} name - The full name of the user
    * @return {string}
    */
   const getInitials = name =>
-      name
-          .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
-          .replace(/ +/gi, " ")
-          .split(/ /)
-          .reduce((acc, item) => acc + item[0], "")
-          .concat(name.substr(1))
-          .concat(name)
-          .substr(0, 2)
-          .toUpperCase();
-
-  /**
-   * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
-   * @param {string} type
-   * @param {string} field
-   * @return {string}
-   */
-  const getChangeIcon = type => {
-    return ProjectActivityLogTableMaps[type.toLowerCase()]?.icon ?? "create";
-  };
-
-  /**
-   * Translates the operation type value into friendly label
-   * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
-   * @return {string}
-   */
-  const getOperationName = operationName => {
-    return ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ?? "Unknown";
-  };
+    name
+      .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
+      .replace(/ +/gi, " ")
+      .split(/ /)
+      .reduce((acc, item) => acc + item[0], "")
+      .concat(name.substr(1))
+      .concat(name)
+      .substr(0, 2)
+      .toUpperCase();
 
   return (
     <CardContent>
@@ -138,6 +113,7 @@ const ProjectActivityLog = () => {
                 <TableCell align="left">
                   <b>Change</b>
                 </TableCell>
+                <TableCell align="left"> </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -176,15 +152,15 @@ const ProjectActivityLog = () => {
                     </Box>
                   </TableCell>
                   <TableCell
-                      align="left"
-                      width="5%"
-                      className={classes.tableCell}
+                    align="left"
+                    width="5%"
+                    className={classes.tableCell}
                   >
                     <b>{getOperationName(change.operation_type)}</b>
                   </TableCell>
                   <TableCell
                     align="left"
-                    width="*"
+                    width="70%"
                     className={classes.tableCell}
                   >
                     <Box display="flex" p={0}>
@@ -212,11 +188,24 @@ const ProjectActivityLog = () => {
                       </Box>
                     </Box>
                   </TableCell>
+                  <TableCell width="5%">
+                    <Button
+                      onClick={() => handleDetailsOpen(change.activity_id)}
+                    >
+                      Details
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+      {!!activityId && (
+        <ProjectActivityLogDialog
+          activity_id={activityId}
+          handleClose={handleDetailsClose}
+        />
       )}
     </CardContent>
   );
