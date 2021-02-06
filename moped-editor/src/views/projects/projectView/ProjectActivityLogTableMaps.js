@@ -1304,3 +1304,50 @@ export const ProjectActivityLogOperationMaps = {
     icon: "create",
   },
 };
+
+/**
+ * Returns a human-readable field name (translates the column into a readable label)
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @return {string}
+ */
+export const getHumanReadableField = (type, field) => {
+  return (
+      ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[
+          field.toLowerCase()
+          ]?.label ?? field
+  );
+};
+
+/**
+ * Returns the
+ * @param {string} type - The name of the table
+ * @return {string}
+ */
+export const getRecordTypeLabel = type => {
+  return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
+};
+
+
+
+/**
+ * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
+ * @param {string} type
+ * @param {string} field
+ * @return {string}
+ */
+export const getChangeIcon = type => {
+  return ProjectActivityLogTableMaps[type.toLowerCase()]?.icon ?? "create";
+};
+
+/**
+ * Translates the operation type value into friendly label
+ * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
+ * @return {string}
+ */
+export const getOperationName = operationName => {
+  return (
+      ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
+      "Unknown"
+  );
+};
