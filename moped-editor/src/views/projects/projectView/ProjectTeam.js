@@ -41,6 +41,11 @@ const ProjectTeam = () => {
     return `${user.first_name} ${user.last_name}`;
   };
 
+  const getPersonnelWorkgroup = id => {
+    const user = users.find(user => user.user_id === id);
+    return workgroups[user.workgroup_id];
+  };
+
   /**
    * Column configuration for <MaterialTable>
    */
