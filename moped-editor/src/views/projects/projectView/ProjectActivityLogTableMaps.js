@@ -1293,11 +1293,11 @@ export const ProjectActivityLogTableMaps = {
 export const ProjectActivityLogOperationMaps = {
   DELETE: {
     label: "Deleted",
-    icon: "cross",
+    icon: "close",
   },
   INSERT: {
     label: "Created",
-    icon: "create",
+    icon: "beenhere",
   },
   UPDATE: {
     label: "Update",
@@ -1337,7 +1337,7 @@ export const getRecordTypeLabel = type => {
  * @return {string}
  */
 export const getChangeIcon = type => {
-  return ProjectActivityLogTableMaps[type.toLowerCase()]?.icon ?? "create";
+  return ProjectActivityLogOperationMaps[type]?.icon ?? "create";
 };
 
 /**
