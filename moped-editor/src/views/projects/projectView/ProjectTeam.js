@@ -24,7 +24,7 @@ const ProjectTeam = () => {
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const team = data.moped_proj_personnel;
+  const personnel = data.moped_proj_personnel;
   const workgroups = data.moped_workgroup.reduce(
     (acc, workgroup) => ({
       ...acc,
@@ -34,15 +34,17 @@ const ProjectTeam = () => {
   );
   const users = data.moped_users;
 
-  console.log(team, workgroups, users);
+  console.log(personnel, workgroups, users);
+
+  const getUserById = id => users.find(user => user.user_id === id);
 
   const getPersonnelName = id => {
-    const user = users.find(user => user.user_id === id);
+    const user = getUserById(id);
     return `${user.first_name} ${user.last_name}`;
   };
 
   const getPersonnelWorkgroup = id => {
-    const user = users.find(user => user.user_id === id);
+    const user = getUserById(id);
     return workgroups[user.workgroup_id];
   };
 
@@ -53,12 +55,12 @@ const ProjectTeam = () => {
     // This can come from the user table
     {
       title: "Name",
-      render: team => getPersonnelName(team.user_id),
+      render: personnel => getPersonnelName(personnel.user_id),
     },
     // This can come come from the user table
     {
       title: "Workgroup",
-      render: team => getPersonnelWorkgroup(team.user_id),
+      render: personnel => getPersonnelWorkgroup(personnel.user_id),
     },
     // This is saved in the personnel table
     {
@@ -91,7 +93,7 @@ const ProjectTeam = () => {
           {/* <div style={{ maxWidth: "100%" }}> */}
           <MaterialTable
             columns={columns}
-            data={team}
+            data={personnel}
             title="Project Team"
             options={{
               search: false,
