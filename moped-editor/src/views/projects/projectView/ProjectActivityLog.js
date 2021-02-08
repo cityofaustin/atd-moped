@@ -93,6 +93,25 @@ const ProjectActivityLog = () => {
       .substr(0, 2)
       .toUpperCase();
 
+  /**
+   * Based on an operation type, returns the name of the label if there are no differences,
+   * @param {string} operationType - The name of the operation ty[e
+   * @return {string}
+   */
+  const getLabelNoDiff = operationType => {
+    switch (operationType.toLowerCase()) {
+      case "insert": {
+        return "Record Created";
+      }
+      case "delete": {
+        return "Item Deleted";
+      }
+      default: {
+        return "No difference";
+      }
+    }
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
@@ -165,10 +184,16 @@ const ProjectActivityLog = () => {
                   >
                     <Box display="flex" p={0}>
                       <Box p={0}>
-                        <Icon>{getChangeIcon(change.record_type)}</Icon>
+                        <Icon>{getChangeIcon(change.operation_type)}</Icon>
                       </Box>
                       <Box p={0} flexGrow={1}>
                         <Grid continer>
+                          {Array.isArray(change.description) &&
+                            change.description.length === 0 && (
+                              <Grid item className={classes.tableChangeItem}>
+                                <b>{getLabelNoDiff(change.operation_type)}</b>
+                              </Grid>
+                            )}
                           {change.description.map(changeItem => {
                             return (
                               <Grid item className={classes.tableChangeItem}>
