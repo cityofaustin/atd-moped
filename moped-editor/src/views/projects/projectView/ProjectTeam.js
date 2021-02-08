@@ -19,7 +19,9 @@ const ProjectTeam = () => {
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
+  // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
+  const users = data.moped_users;
   const workgroups = data.moped_workgroup.reduce(
     (acc, workgroup) => ({
       ...acc,
@@ -34,15 +36,29 @@ const ProjectTeam = () => {
     }),
     {}
   );
-  const users = data.moped_users;
 
+  /**
+   * Get a user object from the users array
+   * @param {number} id - User id from the moped project personnel row
+   * @return {object} Object containing user data
+   */
   const getUserById = id => users.find(user => user.user_id === id);
 
+  /**
+   * Get personnel name from their user ID
+   * @param {number} id - User id from the moped project personnel row
+   * @return {string} Full name of user
+   */
   const getPersonnelName = id => {
     const user = getUserById(id);
     return `${user.first_name} ${user.last_name}`;
   };
 
+  /**
+   * Get personnel workgroup from their user ID
+   * @param {number} id - User id from the moped project personnel row
+   * @return {string} Workgroup name of the user
+   */
   const getPersonnelWorkgroup = id => {
     const user = getUserById(id);
     return workgroups[user.workgroup_id];
