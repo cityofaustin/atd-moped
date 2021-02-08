@@ -3,7 +3,12 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 // Material
-import { CardContent, CircularProgress, Grid } from "@material-ui/core";
+import {
+  CardContent,
+  CircularProgress,
+  Grid,
+  TextField,
+} from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
@@ -11,7 +16,7 @@ import { TEAM_QUERY } from "../../../queries/project";
 const ProjectTeam = () => {
   const { projectId } = useParams();
 
-  const { loading, error, data } = useQuery(TEAM_QUERY, {
+  const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -19,9 +24,7 @@ const ProjectTeam = () => {
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
-  const users = data.moped_users;
   const workgroups = data.moped_workgroup.reduce(
     (acc, workgroup) => ({
       ...acc,
@@ -36,29 +39,15 @@ const ProjectTeam = () => {
     }),
     {}
   );
+  const users = data.moped_users;
 
-  /**
-   * Get a user object from the users array
-   * @param {number} id - User id from the moped project personnel row
-   * @return {object} Object containing user data
-   */
   const getUserById = id => users.find(user => user.user_id === id);
 
-  /**
-   * Get personnel name from their user ID
-   * @param {number} id - User id from the moped project personnel row
-   * @return {string} Full name of user
-   */
   const getPersonnelName = id => {
     const user = getUserById(id);
     return `${user.first_name} ${user.last_name}`;
   };
 
-  /**
-   * Get personnel workgroup from their user ID
-   * @param {number} id - User id from the moped project personnel row
-   * @return {string} Workgroup name of the user
-   */
   const getPersonnelWorkgroup = id => {
     const user = getUserById(id);
     return workgroups[user.workgroup_id];
@@ -83,6 +72,18 @@ const ProjectTeam = () => {
     {
       title: "Notes",
       field: "notes",
+      editComponent: props => (
+        <TextField
+          name="Notes"
+          style={{ width: 250, paddingLeft: 10 }}
+          multiline
+          inputProps={{ maxLength: 125 }}
+          variant="outlined"
+          helperText="125 character max"
+          value={""}
+          // onChange={e => handleNoteChange(e.target.value, index)}
+        />
+      ),
     },
   ];
 
@@ -90,6 +91,7 @@ const ProjectTeam = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
+          {/* <div style={{ maxWidth: "100%" }}> */}
           <MaterialTable
             columns={columns}
             data={personnel}
@@ -97,7 +99,37 @@ const ProjectTeam = () => {
             options={{
               search: false,
             }}
+            editable={{
+              onRowAdd: newData =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // Add team member
+
+                    setTimeout(() => refetch(), 501);
+                    resolve();
+                  }, 500);
+                }),
+              onRowUpdate: (newData, oldData) =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // Update team member
+
+                    setTimeout(() => refetch(), 501);
+                    resolve();
+                  }, 500);
+                }),
+              // onRowDelete: oldData =>
+              //   new Promise((resolve, reject) => {
+              //     setTimeout(() => {
+              //       // Execute delete mutation
+
+              //       setTimeout(() => refetch(), 501);
+              //       resolve();
+              //     }, 500);
+              //   }),
+            }}
           />
+          {/* </div> */}
         </Grid>
       </Grid>
     </CardContent>
