@@ -8,6 +8,7 @@ from config import (
     HASURA_ENDPOINT,
     HASURA_EVENT_VALIDATION_SCHEMA,
     COGNITO_DYNAMO_TABLE_NAME,
+    API_ENVIRONMENT,
 )
 
 
@@ -24,18 +25,22 @@ class MopedEvent:
 
     MOPED_GRAPHQL_MUTATION = """
         mutation InsertMopedActivityLog (
+          $recordProjectId:Int = 0,
           $recordId:Int!,
           $recordType:String!,
           $recordData:jsonb!,
           $description:jsonb!,
-          $updatedBy:String,
+          $updatedBy:uuid!,
+          $operationType:String!
         ) {
           insert_moped_activity_log(objects: {
+            record_project_id: $recordProjectId,
             record_id: $recordId,
             record_type: $recordType,
             record_data: $recordData,
             description: $description,
-            updated_by: $updatedBy
+            updated_by: $updatedBy,
+            operation_type: $operationType
           }) {
             affected_rows
           }
@@ -137,7 +142,7 @@ class MopedEvent:
         :rtype: dict
         """
         s3 = boto3.Session().client('s3')
-        s3_object = s3.get_object(Bucket="atd-moped-data-events", Key="settings/moped_primary_keys_staging.json")
+        s3_object = s3.get_object(Bucket="atd-moped-data-events", Key=f"settings/moped_primary_keys_{API_ENVIRONMENT}.json")
         self.MOPED_PRIMARY_KEY_MAP = json.loads(s3_object['Body'].read())
 
     @staticmethod
@@ -266,6 +271,24 @@ class MopedEvent:
 
         return change_list
 
+    def get_project_id(self) -> int:
+        """
+        Retrieves the project_id if present in the record
+        :return: The project_id value of the record as an integer (from the new state).
+        :rtype: int
+        """
+        return self.get_state("new").get("project_id", 0)
+
+    def get_operation_type(self, default: str = None) -> str:
+        """
+        Returns the operation type from the hasura payload
+        :return str:
+        """
+        try:
+            return self.HASURA_EVENT_PAYLOAD["event"]["op"]
+        except (TypeError, KeyError):
+            return default
+
     def get_variables(self) -> dict:
         """
         Builds the variables needed for a Hasura HTTP request
@@ -274,11 +297,13 @@ class MopedEvent:
         """
         primary_key = self.get_primary_key(table=self.get_event_type())
         return {
+            "recordProjectId": self.get_project_id(),
             "recordId": self.get_state("new")[primary_key],
             "recordType": self.get_event_type(),
             "recordData": self.payload(),
             "description": self.get_diff(),
             "updatedBy": self.get_event_session_var(variable="x-hasura-user-id", default=None),
+            "operationType": self.get_operation_type(default=None),
         }
 
     def request(self, variables: dict, headers: dict = {}) -> dict:

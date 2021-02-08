@@ -4,16 +4,14 @@ case "${BRANCH_NAME}" in
 "production")
   export WORKING_STAGE="production"
   ;;
-"main")
-  export WORKING_STAGE="staging"
-  ;;
 *)
-  export WORKING_STAGE="development"
+  export WORKING_STAGE="staging"
   ;;
 esac
 
-echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
-echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
+echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}";
+echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}";
+echo "PR_NUMBER: '${PR_NUMBER}'";
 
 #
 # Creates a virtual environment instance and activates it
