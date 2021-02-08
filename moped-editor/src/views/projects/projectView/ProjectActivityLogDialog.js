@@ -48,6 +48,12 @@ const useStyles = makeStyles(theme => ({
     padding: "1rem 0",
     "font-size": "1.5rem",
   },
+  listItem: {
+    padding: ".5rem 1rem 1rem 1.5rem",
+  },
+  listColorRed: {
+    color: "red",
+  },
   listColorGray: {
     color: "gray",
   },
@@ -102,10 +108,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   };
 
   const generateValue = value => {
+
     return value === null || String(value).trim() === "" ? (
       <span className={classes.listColorGray}>Null</span>
     ) : (
-      <>{value}</>
+      <>{String(value)}</>
     );
   };
 
@@ -130,7 +137,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
           }
 
           return (
-            <ListItem key={field}>
+            <ListItem key={field} className={classes.listItem}>
               <ListItemAvatar>
                 <Avatar>
                   <Icon>info</Icon>
@@ -139,11 +146,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
               <ListItemText
                 primary={
                   <span
-                    style={{
-                      color: diffFieldList.includes(field.toLowerCase())
-                        ? "red"
-                        : "black",
-                    }}
+                    className={
+                      diffFieldList.includes(field.toLowerCase())
+                        ? classes.listColorRed
+                        : classes.listColorBlack
+                    }
                   >
                     {generateValue(recordState[field])}
                   </span>
