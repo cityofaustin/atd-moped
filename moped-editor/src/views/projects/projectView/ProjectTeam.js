@@ -3,12 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 // Material
-import {
-  CardContent,
-  CircularProgress,
-  Grid,
-  TextField,
-} from "@material-ui/core";
+import { CardContent, CircularProgress, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
@@ -16,7 +11,7 @@ import { TEAM_QUERY } from "../../../queries/project";
 const ProjectTeam = () => {
   const { projectId } = useParams();
 
-  const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
+  const { loading, error, data } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -72,18 +67,6 @@ const ProjectTeam = () => {
     {
       title: "Notes",
       field: "notes",
-      editComponent: props => (
-        <TextField
-          name="Notes"
-          style={{ width: 250, paddingLeft: 10 }}
-          multiline
-          inputProps={{ maxLength: 125 }}
-          variant="outlined"
-          helperText="125 character max"
-          value={""}
-          // onChange={e => handleNoteChange(e.target.value, index)}
-        />
-      ),
     },
   ];
 
