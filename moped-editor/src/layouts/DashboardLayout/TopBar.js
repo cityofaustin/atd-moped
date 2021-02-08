@@ -20,7 +20,6 @@ const useStyles = makeStyles(() => ({
   root: {},
   avatar: {
     marginRight: 8,
-    backgroundColor: "#e53935",
   },
 }));
 
@@ -31,13 +30,16 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const emailToInitials = email => {
     try {
       const subdomain = "austintexas.gov";
-      if(!email.endsWith(subdomain)) return null;
-      const [first, last] = email.replace("azure_ad", "").replace(subdomain, "").split(".")
+      if (!email.endsWith(subdomain)) return null;
+      const [first, last] = email
+        .replace("azure_ad", "")
+        .replace(subdomain, "")
+        .split(".");
       return first.charAt(0) + last.charAt(0);
     } catch {
       return null;
     }
-  }
+  };
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -53,6 +55,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               component={RouterLink}
               src={null}
               to="/moped/account"
+              style={{ "background-color": user ? user.userColor : null }}
             >
               {emailToInitials(user.attributes.email)}
             </Avatar>

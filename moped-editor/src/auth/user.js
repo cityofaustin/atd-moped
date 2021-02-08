@@ -95,11 +95,25 @@ export const UserProvider = ({ children }) => {
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
 
+export const getRandomColor = () => {
+  const key = "atd_moped_user_color";
+  if (localStorage.getItem(key) === null) {
+    const randomInt = Math.floor(Math.random() * Math.floor(3));
+    const colors = ["#43a047", "#3949ab", "#fb8c00", "#e53935"];
+    localStorage.setItem(key, colors[randomInt]);
+  }
+
+  return localStorage.getItem(key);
+};
+
 // We also create a simple custom hook to read these values from. We want our React components
 // to know as little as possible on how everything is handled, so we are not only abtracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = React.useContext(UserContext);
+  if (context && context.user) {
+    context.user.userColor = getRandomColor();
+  }
 
   if (context === undefined) {
     throw new Error(
