@@ -2179,12 +2179,12 @@
       - project_id
       - project_personnel_user_id
       - project_personnel_id
-      - role_name
       - role_order
       - date_added
       - added_by
       - notes
       - user_id
+      - role_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2196,10 +2196,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       backend_only: false
@@ -2213,10 +2213,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       filter: {}
@@ -2229,10 +2229,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       filter: {}
@@ -2245,10 +2245,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       filter: {}
@@ -2262,10 +2262,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       filter: {}
@@ -2279,10 +2279,10 @@
       - project_id
       - project_personnel_id
       - project_personnel_user_id
+      - role_id
       - role_order
       - user_id
       - notes
-      - role_name
       - status
       - date_added
       filter: {}

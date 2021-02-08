@@ -30,6 +30,7 @@ export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(where: { project_id: { _eq: $projectId } }) {
       user_id
+      role_id
       notes
     }
     moped_workgroup {
