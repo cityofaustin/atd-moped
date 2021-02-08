@@ -123,3 +123,40 @@ export const UPDATE_PROJECT_EXTENT = gql`
     }
   }
 `;
+
+export const PROJECT_ACTIVITY_LOG = gql`
+  query getMopedProjectChanges($projectId: Int!) {
+    moped_activity_log(where: {record_project_id: {_eq: $projectId}}) {
+      activity_id
+      created_at
+      record_project_id
+      record_type
+      description
+      operation_type
+      moped_user {
+        first_name
+        last_name
+        user_id
+      }
+    }
+  }
+`
+
+export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
+  query getMopedProjectChanges($activityId:uuid!) {
+    moped_activity_log(where: {activity_id: {_eq: $activityId}}) {
+      activity_id
+      created_at
+      record_project_id
+      record_type
+      record_data
+      description
+      operation_type
+      moped_user {
+        first_name
+        last_name
+        user_id
+      }
+    }
+  }
+`
