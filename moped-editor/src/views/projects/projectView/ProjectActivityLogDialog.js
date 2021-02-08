@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 
 import {
@@ -48,6 +48,12 @@ const useStyles = makeStyles(theme => ({
     padding: "1rem 0",
     "font-size": "1.5rem",
   },
+  listColorGray: {
+    color: "gray",
+  },
+  listColorBlack: {
+    color: "black",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -63,7 +69,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     },
   });
 
-  const [showDiffOnly, setShowDiffOnly] = useState(false);
+  const [showDiffOnly, setShowDiffOnly] = useState(true);
 
   const getEventData = (data, mode) => {
     return data["moped_activity_log"][0]["record_data"]["event"]["data"][mode];
@@ -97,7 +103,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
 
   const generateValue = value => {
     return value === null || String(value).trim() === "" ? (
-      <span style={{ color: "gray" }}>Null</span>
+      <span className={classes.listColorGray}>Null</span>
     ) : (
       <>{value}</>
     );
@@ -110,6 +116,10 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     });
     const recordType = getEventAttribute(data, "record_type");
     const recordTypeFriendly = getRecordTypeLabel(recordType);
+    if (recordState === null) {
+      return null;
+    }
+
     return (
       <List dense={false}>
         {Object.keys(recordState).map(field => {
@@ -139,7 +149,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
                   </span>
                 }
                 secondary={
-                  <span style={{ color: "gray" }}>
+                  <span className={classes.listColorGray}>
                     {recordTypeFriendly}{" "}
                     {getHumanReadableField(recordType, field)}
                   </span>
@@ -151,6 +161,15 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
       </List>
     );
   };
+
+  /**
+   * Switch off diff if the operation is not update
+   */
+  useEffect(() => {
+    if (data && data?.moped_activity_log[0]["operation_type"] !== "UPDATE") {
+      setShowDiffOnly(false);
+    }
+  }, [showDiffOnly, data]);
 
   return (
     <Dialog
@@ -188,20 +207,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
                 component="h2"
                 className={classes.diffTitle}
               >
-                Before Change
+                Before
               </Typography>
               <Paper elevation={3} className={classes.paper}>
                 {generateFieldList(data, "old")}
               </Paper>
-              <Button
-                style={{ "margin-top": "1rem" }}
-                variant="contained"
-                color="primary"
-                onClick={handleClose}
-                fullWidth
-              >
-                Revert to this "old" version
-              </Button>
             </Grid>
             <Grid item xs={4}>
               <Typography
@@ -209,20 +219,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
                 component="h2"
                 className={classes.diffTitle}
               >
-                After Change
+                After
               </Typography>
               <Paper elevation={3} className={classes.paper}>
                 {generateFieldList(data, "new")}
               </Paper>
-              <Button
-                style={{ "margin-top": "1rem" }}
-                variant="contained"
-                color="primary"
-                onClick={handleClose}
-                fullWidth
-              >
-                Revert to this "new" version
-              </Button>
             </Grid>
             <Grid elevation={3} item xs={4}>
               <Typography
@@ -249,26 +250,66 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
               >
                 Details
               </Typography>
-              <Typography variant="button" display="block" gutterBottom>
-                Record Type:{" "}
-                {getRecordTypeLabel(getEventAttribute(data, "record_type"))}
-              </Typography>
-              <Typography variant="button" display="block" gutterBottom>
-                User: {getUser(data)}
-              </Typography>
-              <Typography variant="button" display="block" gutterBottom>
-                Action: {getEventAttribute(data, "operation_type")}
-              </Typography>
-              <Typography variant="button" display="block" gutterBottom>
-                Timestamp: {getDateTime(data)}
-              </Typography>
+
+              <List dense={false}>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <span className={classes.listColorBlack}>
+                        {getRecordTypeLabel(
+                          getEventAttribute(data, "record_type")
+                        )}
+                      </span>
+                    }
+                    secondary={
+                      <span className={classes.listColorGray}>Record Type</span>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <span className={classes.listColorBlack}>
+                        {getUser(data)}
+                      </span>
+                    }
+                    secondary={
+                      <span className={classes.listColorGray}>User</span>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <span className={classes.listColorBlack}>
+                        {getEventAttribute(data, "operation_type")}
+                      </span>
+                    }
+                    secondary={
+                      <span className={classes.listColorGray}>Action</span>
+                    }
+                  />
+                </ListItem>
+                <ListItem>
+                  <ListItemText
+                    primary={
+                      <span className={classes.listColorBlack}>
+                        {getDateTime(data)}
+                      </span>
+                    }
+                    secondary={
+                      <span className={classes.listColorGray}>Timestamp</span>
+                    }
+                  />
+                </ListItem>
+              </List>
 
               <Button
                 style={{ "margin-top": "1rem" }}
                 onClick={handleClose}
                 fullWidth
               >
-                Cancel
+                Close
               </Button>
             </Grid>
           </Grid>
