@@ -32,6 +32,13 @@ const ProjectTeam = () => {
     }),
     {}
   );
+  const roles = data.moped_project_roles.reduce(
+    (acc, role) => ({
+      ...acc,
+      [role.project_role_id]: role.project_role_name,
+    }),
+    {}
+  );
   const users = data.moped_users;
 
   console.log(personnel, workgroups, users);
@@ -65,7 +72,7 @@ const ProjectTeam = () => {
     // This is saved in the personnel table
     {
       title: "Role",
-      field: "role_name",
+      render: personnel => roles[personnel.role_id],
     },
     // This is saved in the personnel table
     {
