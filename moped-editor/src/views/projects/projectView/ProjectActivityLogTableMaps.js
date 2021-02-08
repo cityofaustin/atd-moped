@@ -63,7 +63,7 @@ export const ProjectActivityLogTableMaps = {
         data_type: "date",
       },
       project_length: {
-        label: "Project Length",
+        label: "Length",
         icon: "",
         data_type: "integer",
       },
