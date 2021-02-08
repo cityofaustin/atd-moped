@@ -29,6 +29,7 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import {Alert} from "@material-ui/lab";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -59,10 +60,17 @@ const ProjectActivityLog = () => {
 
   const [activityId, setActivityId] = useState(null);
 
+  /**
+   * Closes the details dialog
+   */
   const handleDetailsClose = () => {
     setActivityId(null);
   };
 
+  /**
+   * Opens the details dialog
+   * @param {string} activityId - The activity uuid
+   */
   const handleDetailsOpen = activityId => {
     setActivityId(activityId);
   };
@@ -112,10 +120,20 @@ const ProjectActivityLog = () => {
     }
   };
 
+  /**
+   * Attempt to get the number of items we retrieved
+   * @return {number}
+   */
+  const getTotalItems = () => {
+    return data?.moped_activity_log?.length ?? 0;
+  };
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
-      {data && "moped_activity_log" in data && (
+      {getTotalItems() === 0 ? (
+          <Alert severity="info">There aren't any items for this project.</Alert>
+      ) : (
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
