@@ -34,10 +34,6 @@ HASURA_EVENT_VALIDATION_SCHEMA = {
                         "type": "string",
                         "required": True,
                     },
-                    "x-hasura-user-db-id": {
-                        "type": "number",
-                        "required": False,
-                    }
                 }
             },
             "op": {
@@ -122,9 +118,6 @@ HASURA_EVENT_VALIDATION_SCHEMA = {
             "name": {
                 "type": "string",
                 "required": True,
-                "allowed": [
-                    "moped_project"
-                ]
             }
         },
     },
