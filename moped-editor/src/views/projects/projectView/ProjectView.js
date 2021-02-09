@@ -115,14 +115,20 @@ const ProjectView = () => {
                   aria-label="Project Details Tabs"
                 >
                   {TABS.map((tab, i) => {
-                    return <Tab label={tab.label} {...a11yProps(i)} />;
+                    return (
+                      <Tab
+                        key={tab.label}
+                        label={tab.label}
+                        {...a11yProps(i)}
+                      />
+                    );
                   })}
                 </Tabs>
               </AppBar>
               {TABS.map((tab, i) => {
                 const TabComponent = tab.Component;
                 return (
-                  <TabPanel value={activeTab} index={i}>
+                  <TabPanel key={tab.label} value={activeTab} index={i}>
                     <TabComponent />
                   </TabPanel>
                 );
