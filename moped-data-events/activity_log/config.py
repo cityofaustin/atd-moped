@@ -12,6 +12,9 @@ HASURA_HTTP_HEADERS = {
     "X-Hasura-Admin-Secret": HASURA_ADMIN_SECRET,
 }
 
+#
+# Validation Schema for SQS
+#
 HASURA_EVENT_VALIDATION_SCHEMA = {
     "event": {
         "type": "dict",
