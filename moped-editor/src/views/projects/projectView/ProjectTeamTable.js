@@ -90,14 +90,14 @@ const ProjectTeamTable = ({
       field: "notes",
       editComponent: props => (
         <TextField
-          name="Notes"
+          name="notes"
           style={{ width: 250, paddingLeft: 10 }}
           multiline
           inputProps={{ maxLength: 125 }}
           variant="outlined"
           helperText="125 character max"
-          value={""}
-          onChange={e => handleNoteChange(e.target.value)}
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
         />
       ),
     },
@@ -125,7 +125,6 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               // Update team member
-
               setTimeout(() => refetch(), 501);
               resolve();
             }, 500);
