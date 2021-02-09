@@ -83,6 +83,7 @@ INSERT INTO public.moped_project_roles (project_role_id, project_role_name, acti
 INSERT INTO public.moped_project_roles (project_role_id, project_role_name, active_role, role_order, date_added) VALUES (11, 'Project Sponsor', true, 11, '2020-10-09 14:43:03.859547+00');
 INSERT INTO public.moped_project_roles (project_role_id, project_role_name, active_role, role_order, date_added) VALUES (12, 'Unknown Role', true, 100, '2020-10-09 14:43:03.859548+00');
 INSERT INTO public.moped_project_roles (project_role_id, project_role_name, active_role, role_order, date_added) VALUES (2, 'Street Designer', true, 2, '2020-10-09 14:44:51.2889+00');
+INSERT INTO public.moped_proj_personnel (project_id, user_id, role_id, join_date, notes) VALUES (1, 1, 1, '2020-12-04 16:53:02.752811+00', 'This is a note');
 SELECT pg_catalog.setval('public.moped_categories_category_id_seq', 8, true);
 SELECT pg_catalog.setval('public.moped_users_user_id_seq', 3, true);
 SELECT pg_catalog.setval('public.moped_components_component_id_seq', 1, false);
