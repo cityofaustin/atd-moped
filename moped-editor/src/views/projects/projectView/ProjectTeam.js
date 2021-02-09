@@ -6,11 +6,17 @@ import { CardContent, Grid } from "@material-ui/core";
 const ProjectTeam = () => {
   const { projectId } = useParams();
 
+  const [staffRows, setStaffRows] = useState([]);
+
   return (
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ProjectTeamTable projectId={projectId} />
+          <ProjectTeamTable
+            projectId={projectId}
+            staffRows={staffRows}
+            setStaffRows={setStaffRows}
+          />
         </Grid>
       </Grid>
     </CardContent>

@@ -1,14 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
 
 // Material
-import {
-  CardContent,
-  CircularProgress,
-  Grid,
-  TextField,
-} from "@material-ui/core";
+import { CircularProgress, TextField } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
