@@ -6,6 +6,7 @@ import {
   CircularProgress,
   Grid,
   TextField,
+  Switch,
 } from "@material-ui/core";
 import MaterialTable from "material-table";
 
@@ -39,6 +40,29 @@ const DateFieldEditComponent = (props, name, label) => (
       shrink: true,
     }}
   />
+);
+
+/**
+ * ToggleEditComponent - renders a toggle for True/False edit fields
+ * @param {object} props - Values passed through Material Table `editComponent`
+ * @param {string} name - Field name
+ * @return {JSX.Element}
+ * @constructor
+ */
+const ToggleEditComponent = (props, name) => (
+  <Grid component="label" container alignItems="center" spacing={1}>
+    <Grid item>No</Grid>
+    <Grid item>
+      <Switch
+        checked={props.value}
+        onChange={e => props.onChange(!props.value)}
+        color="primary"
+        name={name}
+        inputProps={{ "aria-label": "primary checkbox" }}
+      />
+    </Grid>
+    <Grid item>Yes</Grid>
+  </Grid>
 );
 
 /**
@@ -97,7 +121,10 @@ const ProjectTimeline = () => {
     {
       title: "Active?",
       field: "is_current_phase",
-      lookup: { true: "True", false: "False" },
+      lookup: { true: "Yes", false: "No" },
+      editComponent: props => (
+        <ToggleEditComponent {...props} name="is_current_phase" />
+      ),
     },
     {
       title: "Start Date",
