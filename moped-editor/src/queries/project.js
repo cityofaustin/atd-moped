@@ -32,6 +32,15 @@ export const TEAM_QUERY = gql`
       user_id
       role_id
       notes
+      join_date
+      allocation
+      status
+      project_id
+      project_personnel_user_id
+      project_personnel_id
+      role_order
+      date_added
+      added_by
     }
     moped_workgroup {
       workgroup_id
@@ -58,6 +67,43 @@ export const ADD_PROJECT_PERSONNEL = gql`
     $objects: [moped_proj_personnel_insert_input!]!
   ) {
     insert_moped_proj_personnel(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_PERSONNEL = gql`
+  mutation UpdateProjectPersonnel(
+    $user_id: Int
+    $notes: String
+    $project_id: Int
+    $join_date: date
+    $allocation: Int
+    $status: String
+    $project_personnel_user_id: Int
+    $project_personnel_id: Int
+    $role_order: Int
+    $date_added: timestamptz
+    $added_by: Int
+    $role_id: Int
+  ) {
+    update_moped_proj_personnel_by_pk(
+      pk_columns: { project_id: $project_id }
+      _set: {
+        user_id: $user_id
+        notes: $notes
+        project_id: $project_id
+        join_date: $join_date
+        allocation: $allocation
+        status: $status
+        project_personnel_user_id: $project_personnel_user_id
+        project_personnel_id: $project_personnel_id
+        role_order: $role_order
+        date_added: $date_added
+        added_by: $added_by
+        role_id: $role_id
+      }
+    ) {
       affected_rows
     }
   }

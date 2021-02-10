@@ -6,7 +6,11 @@ import { CircularProgress, TextField } from "@material-ui/core";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import { TEAM_QUERY, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
+import {
+  TEAM_QUERY,
+  ADD_PROJECT_PERSONNEL,
+  UPDATE_PROJECT_PERSONNEL,
+} from "../../../queries/project";
 
 const ProjectTeamTable = ({
   projectState,
@@ -20,6 +24,7 @@ const ProjectTeamTable = ({
     fetchPolicy: "no-cache",
   });
   const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
+  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
@@ -151,11 +156,11 @@ const ProjectTeamTable = ({
         onRowAdd: newData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              // Add team member
               if (isNewProject) {
-                console.log("New project workflow");
+                // Add team member to state
+                console.log("Add new project workflow");
               } else {
-                debugger;
+                // Insert personnel and associate with project
                 const personnelData = { ...newData, project_id: projectId };
 
                 addProjectPersonnel({
@@ -173,6 +178,31 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               // Update team member
               console.log(newData, oldData);
+              if (isNewProject) {
+                // Add team member to state
+                console.log("Add new project workflow");
+              } else {
+                // Insert personnel and associate with project
+                const updatedPersonnelData = {
+                  ...oldData,
+                  ...newData,
+                  project_id: projectId,
+                };
+                const filterKeys = ["__typename", "tableData"];
+                const cleanedPersonnelData = Object.keys(updatedPersonnelData)
+                  .filter(key => !filterKeys.includes(key))
+                  .reduce(
+                    (acc, key) => ({
+                      ...acc,
+                      [key]: updatedPersonnelData[key],
+                    }),
+                    {}
+                  );
+
+                updateProjectPersonnel({
+                  variables: cleanedPersonnelData,
+                });
+              }
 
               setTimeout(() => refetch(), 501);
               resolve();
