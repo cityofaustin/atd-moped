@@ -81,6 +81,23 @@ const ProjectTeamTable = ({
   };
 
   /**
+   * Filter k/v pairs from an object by the key names passed in an array
+   * @param {object} obj - The object with unwanted k/v pairs
+   * @param {array} keys - Keys of unwanted k/v pairs
+   * @return {object} New object without unneeded k/v pairs
+   */
+  const filterObjectByKeys = (obj, keys) =>
+    Object.keys(obj)
+      .filter(key => !keys.includes(key))
+      .reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: obj[key],
+        }),
+        {}
+      );
+
+  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
@@ -182,22 +199,16 @@ const ProjectTeamTable = ({
                 // Add team member to state
                 console.log("Add new project workflow");
               } else {
-                // Insert personnel and associate with project
+                // Update data with new value
                 const updatedPersonnelData = {
                   ...oldData,
                   ...newData,
-                  project_id: projectId,
                 };
-                const filterKeys = ["__typename", "tableData"];
-                const cleanedPersonnelData = Object.keys(updatedPersonnelData)
-                  .filter(key => !filterKeys.includes(key))
-                  .reduce(
-                    (acc, key) => ({
-                      ...acc,
-                      [key]: updatedPersonnelData[key],
-                    }),
-                    {}
-                  );
+
+                const cleanedPersonnelData = filterObjectByKeys(
+                  updatedPersonnelData,
+                  ["__typename", "tableData"]
+                );
 
                 updateProjectPersonnel({
                   variables: cleanedPersonnelData,
