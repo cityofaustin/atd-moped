@@ -271,7 +271,7 @@ const ProjectTimeline = () => {
               startIcon={<AddBoxIcon />}
               onClick={() => addActionRef.current.click()}
             >
-              Add Project Phase
+              Add phase
             </Button>
           </Box>
         </Grid>
