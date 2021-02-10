@@ -53,16 +53,12 @@ export const TEAM_QUERY = gql`
   }
 `;
 
-const ADD_PERSONNEL_MUTATION = gql`
+export const ADD_PROJECT_PERSONNEL = gql`
   mutation AddProjectPersonnel(
     $objects: [moped_proj_personnel_insert_input!]!
   ) {
     insert_moped_proj_personnel(objects: $objects) {
-      returning {
-        user_id
-        role_id
-        notes
-      }
+      affected_rows
     }
   }
 `;

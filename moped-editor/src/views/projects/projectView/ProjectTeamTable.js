@@ -1,24 +1,25 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import { CircularProgress, TextField } from "@material-ui/core";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
-import { TEAM_QUERY } from "../../../queries/project";
+import { TEAM_QUERY, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 
 const ProjectTeamTable = ({
   projectState,
   setProjectState,
   projectId = null,
 }) => {
-  const isNewProject = project === null;
+  const isNewProject = projectId === null;
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+  const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
@@ -151,7 +152,18 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               // Add team member
-              console.log("new data", newData);
+              if (isNewProject) {
+                console.log("New project workflow");
+              } else {
+                debugger;
+                const personnelData = { ...newData, project_id: projectId };
+
+                addProjectPersonnel({
+                  variables: {
+                    objects: [personnelData],
+                  },
+                });
+              }
               setTimeout(() => refetch(), 501);
               resolve();
             }, 500);
