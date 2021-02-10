@@ -12,13 +12,8 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
-
-export const defaultUser = {
-  avatar: `${process.env.PUBLIC_URL}/static/images/avatars/robSpillar.jpeg`,
-  name: "Rob Spillar",
-  jobTitle: "Director of Transportation",
-  city: "Austin, TX",
-};
+import { useUser } from "../../../auth/user";
+import emailToInitials from "../../../utils/emailToInitials";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -27,26 +22,38 @@ const useStyles = makeStyles(() => ({
     width: 100,
     marginBottom: 8,
   },
+  userInitials: {
+    fontSize: "2rem",
+  }
 }));
 
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
+  const { user } = useUser();
 
   return (
     <Card className={clsx(classes.root, className)} {...rest}>
       <CardContent>
         <Box alignItems="center" display="flex" flexDirection="column">
           <Box>
-            <Avatar className={classes.avatar} src={defaultUser.avatar} />
+            <Avatar
+              className={classes.avatar}
+              src={user?.userAvatar}
+              style={{ "background-color": user?.userColor }}
+            >
+              <Typography className={classes.userInitials}>
+                {emailToInitials(user?.attributes?.email)}
+              </Typography>
+            </Avatar>
           </Box>
           <Typography color="textPrimary" gutterBottom variant="h3">
-            {defaultUser.name}
+            {String(user?.userName ?? user?.attributes?.email).toLowerCase()}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {defaultUser.jobTitle}
+            {user?.userJobTitle ?? "Austin Transportation"}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {defaultUser.city}
+            {user?.userCity ?? "Austin, TX"}
           </Typography>
         </Box>
       </CardContent>

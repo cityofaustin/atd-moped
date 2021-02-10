@@ -6,7 +6,7 @@ name: "Build & Publish Activity Log SQS"
 on:
   push:
     branches:
-      - master
+      - main
       - production
 
     paths:

@@ -15,36 +15,42 @@
     permission:
       columns:
       - activity_id
-      - record_id
-      - record_type
-      - record_data
-      - description
       - created_at
+      - description
+      - operation_type
+      - record_data
+      - record_id
+      - record_project_id
+      - record_type
       - updated_by
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
+      - activity_id
       - created_at
       - description
-      - record_id
+      - operation_type
       - record_data
-      - updated_by
+      - record_id
+      - record_project_id
       - record_type
-      - activity_id
+      - updated_by
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
+      - activity_id
       - created_at
       - description
-      - record_id
+      - operation_type
       - record_data
-      - updated_by
+      - record_id
+      - record_project_id
       - record_type
-      - activity_id
+      - updated_by
       filter: {}
       allow_aggregations: true
 - table:
@@ -841,6 +847,31 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_categories
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - proj_category_id
+        - project_id
+        - category_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_communication
@@ -1063,6 +1094,35 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_components
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - moped_component_id
+        - moped_proj_component_id
+        - moped_project_id
+        - component_length
+        - component_notes
+        - component_unique_id
+        - component_unique_id_code
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_dates
@@ -1188,6 +1248,38 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_dates
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - active_date
+        - project_date
+        - added_by
+        - date_day
+        - date_id
+        - date_month
+        - date_year
+        - project_id
+        - project_milestone_id
+        - project_phase_id
+        - date_type
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_entities
@@ -1285,6 +1377,34 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_entities
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - project_groups
+        - entity_list_id
+        - project_id
+        - workgroups
+        - partners
+        - project_personnel
+        - project_sponsors
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_financials
@@ -1417,6 +1537,39 @@
       - last_updated
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_financials
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - budget_available
+        - budget_previous
+        - budget_total
+        - expenses_previous
+        - expenses_total
+        - expenses_ytd
+        - financials_id
+        - project_id
+        - eCapris_id
+        - primary_funding_source
+        - subproject_name
+        - subproject_status
+        - last_updated
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fiscal_years
@@ -1514,6 +1667,34 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_fiscal_years
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - fiscal_year_end
+        - fiscal_year_start
+        - budget_available_at_end
+        - budget_total
+        - expenses_total
+        - project_id
+        - fiscal_year_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fund_opp
@@ -1597,6 +1778,32 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_fund_opp
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - fund_opp_id
+        - project_id
+        - proj_fund_opp_id
+        - fund_opp_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_fund_source
@@ -1687,6 +1894,31 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_fund_source
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - funding_source_other
+        - added_by
+        - project_id
+        - proj_fund_source_id
+        - funding_source_category
+        - funding_source_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
 - table:
     schema: public
     name: moped_proj_groups
@@ -1770,6 +2002,32 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_groups
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - group_id
+        - project_id
+        - proj_group_id
+        - group_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_location
@@ -1853,6 +2111,30 @@
       - shape
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_location
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - location_id
+        - project_id
+        - feature_id
+        - location_name
+        - location_notes
+        - shape
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
 - table:
     schema: public
     name: moped_proj_milestones
@@ -1999,6 +2281,41 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_milestones
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - completed
+        - is_current_milestone
+        - milestone_privacy
+        - milestone_end
+        - milestone_start
+        - days_left
+        - milestone_length
+        - milestone_order
+        - milestone_owner_id
+        - project_id
+        - project_milestone_id
+        - project_timeline_id
+        - milestone_description
+        - milestone_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_notes
@@ -2082,6 +2399,32 @@
       - date_created
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_notes
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - comm_id
+        - project_id
+        - project_note_id
+        - project_note
+        - date_created
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_partners
@@ -2165,6 +2508,32 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_partners
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - entity_id
+        - project_id
+        - proj_partner_id
+        - partner_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_personnel
@@ -2287,6 +2656,38 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_personnel
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - join_date
+        - added_by
+        - allocation
+        - project_id
+        - project_personnel_id
+        - project_personnel_user_id
+        - role_id
+        - role_order
+        - user_id
+        - notes
+        - status
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_phases
@@ -2440,6 +2841,42 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_phases
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - completed
+        - is_current_phase
+        - phase_privacy
+        - phase_end
+        - phase_start
+        - completed_by_user_id
+        - completion_percentage
+        - phase_priority
+        - phase_rank
+        - project_id
+        - project_phase_id
+        - started_by_user_id
+        - phase_description
+        - phase_name
+        - phase_status
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_sponsors
@@ -2565,6 +3002,38 @@
       - project_sponsor_id
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_sponsors
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - is_external_sponsor
+        - sponsor_allocation
+        - added_by
+        - entity_id
+        - project_id
+        - sponsor_context
+        - sponsor_context_file
+        - sponsor_description
+        - sponsor_name
+        - sponsor_website
+        - date_added
+        - project_sponsor_id
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_status_history
@@ -2711,6 +3180,41 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_status_history
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - is_current_milestone
+        - is_milestone_completed
+        - milestone_privacy
+        - date_status_changed
+        - milestone_end
+        - milestone_start
+        - added_by
+        - milestone_length
+        - milestone_order
+        - project_id
+        - project_status_history_id
+        - milestone_description
+        - milestone_name
+        - status_name
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_status_notes
@@ -2808,6 +3312,34 @@
       - date_added
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_status_notes
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - date_written
+        - added_by
+        - project_id
+        - proj_status_id
+        - created_by_personnel
+        - status_name
+        - status_note
+        - date_added
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_timeline
@@ -2933,6 +3465,38 @@
       - current_status
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_proj_timeline
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - active_milestone_end
+        - active_milestone_start
+        - active_phase_end
+        - active_phase_start
+        - active_milestone_length
+        - active_phase_length
+        - project_id
+        - timeline_id
+        - active_milestone
+        - active_phase
+        - capital_projects_explorer_id
+        - current_status
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_project
@@ -3126,6 +3690,8 @@
     definition:
       enable_manual: false
       insert:
+        columns: '*'
+      delete:
         columns: '*'
       update:
         columns:
