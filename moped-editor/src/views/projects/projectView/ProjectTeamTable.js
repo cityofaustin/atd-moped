@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 // Material
 import { CircularProgress, TextField } from "@material-ui/core";
 import MaterialTable from "material-table";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import { TEAM_QUERY } from "../../../queries/project";
 
@@ -37,6 +38,9 @@ const ProjectTeamTable = ({
     }),
     {}
   );
+
+  // Options for Autocomplete form elements
+  const userIds = users.map(user => user.user_id);
 
   /**
    * Get a user object from the users array
@@ -75,7 +79,22 @@ const ProjectTeamTable = ({
   const columns = [
     {
       title: "Name",
+      field: "user_id",
       render: personnel => getPersonnelName(personnel.user_id),
+      editComponent: props => (
+        <Autocomplete
+          id="user_id"
+          name="user_id"
+          options={userIds}
+          getOptionLabel={option => getPersonnelName(option)}
+          getOptionSelected={(option, value) => option === value}
+          value={props.value}
+          onChange={(event, value) => props.onChange(value)}
+          renderInput={params => (
+            <TextField {...params} label="Select Staff" margin="normal" />
+          )}
+        />
+      ),
     },
     {
       title: "Workgroup",
@@ -83,6 +102,7 @@ const ProjectTeamTable = ({
     },
     {
       title: "Role",
+      field: "role",
       render: personnel => roles[personnel.role_id],
     },
     {
@@ -90,8 +110,8 @@ const ProjectTeamTable = ({
       field: "notes",
       editComponent: props => (
         <TextField
+          id="notes"
           name="notes"
-          style={{ width: 250, paddingLeft: 10 }}
           multiline
           inputProps={{ maxLength: 125 }}
           variant="outlined"
@@ -112,19 +132,20 @@ const ProjectTeamTable = ({
         search: false,
       }}
       editable={{
-        onRowAdd: newData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              // Add team member
-              console.log("new data", newData);
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
+        // onRowAdd: newData =>
+        //   new Promise((resolve, reject) => {
+        //     setTimeout(() => {
+        //       // Add team member
+        //       console.log("new data", newData);
+        //       setTimeout(() => refetch(), 501);
+        //       resolve();
+        //     }, 500);
+        //   }),
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
               // Update team member
+              console.log(newData, oldData);
               setTimeout(() => refetch(), 501);
               resolve();
             }, 500);
