@@ -15,36 +15,42 @@
     permission:
       columns:
       - activity_id
-      - record_id
-      - record_type
-      - record_data
-      - description
       - created_at
+      - description
+      - operation_type
+      - record_data
+      - record_id
+      - record_project_id
+      - record_type
       - updated_by
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
+      - activity_id
       - created_at
       - description
-      - record_id
+      - operation_type
       - record_data
-      - updated_by
+      - record_id
+      - record_project_id
       - record_type
-      - activity_id
+      - updated_by
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
+      - activity_id
       - created_at
       - description
-      - record_id
+      - operation_type
       - record_data
-      - updated_by
+      - record_id
+      - record_project_id
       - record_type
-      - activity_id
+      - updated_by
       filter: {}
       allow_aggregations: true
 - table:
