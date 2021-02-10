@@ -2,13 +2,16 @@ import React from "react";
 
 // Material
 import {
+  Box,
+  Button,
   CardContent,
   CircularProgress,
   Grid,
   TextField,
   Switch,
 } from "@material-ui/core";
-import MaterialTable from "material-table";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+import MaterialTable, { MTableAction } from "material-table";
 
 // Query
 import {
@@ -76,6 +79,12 @@ const ProjectTimeline = () => {
    * @type {integer} projectId
    * */
   const { projectId } = useParams();
+
+  /** addAction Ref - mutable ref object used to access add action button
+   * imperatively.
+   * @type {object} addActionRef
+   * */
+  const addActionRef = React.useRef();
 
   /**
    * Queries Hook
@@ -155,6 +164,23 @@ const ProjectTimeline = () => {
               columns={columns}
               data={data.moped_proj_phases}
               title="Project Phases"
+              // Action component customized as described in this gh-issue:
+              // https://github.com/mbrn/material-table/issues/2133
+              components={{
+                Action: props => {
+                  //If isn't the add action
+                  if (
+                    typeof props.action === typeof Function ||
+                    props.action.tooltip !== "Add"
+                  ) {
+                    return <MTableAction {...props} />;
+                  } else {
+                    return (
+                      <div ref={addActionRef} onClick={props.action.onClick} />
+                    );
+                  }
+                },
+              }}
               editable={{
                 onRowAdd: newData =>
                   new Promise((resolve, reject) => {
@@ -237,6 +263,17 @@ const ProjectTimeline = () => {
               }}
             />
           </div>
+          <Box pt={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<AddBoxIcon />}
+              onClick={() => addActionRef.current.click()}
+            >
+              Add Project Phase
+            </Button>
+          </Box>
         </Grid>
       </Grid>
     </CardContent>
