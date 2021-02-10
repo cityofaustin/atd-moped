@@ -1,7 +1,8 @@
-import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import React, { useState } from "react";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import ProjectSummaryMap from "./ProjectSummaryDetailsMap";
+import ProjectSummaryMap from "./ProjectSummaryMap";
+import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
 
@@ -30,7 +31,8 @@ const formatValue = value => {
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
-  const { loading, error, data } = useQuery(SUMMARY_QUERY, {
+  const [isEditing, setIsEditing] = useState(false);
+  const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
 
@@ -99,7 +101,7 @@ const ProjectSummary = () => {
         <Grid item xs={12} md={6}>
           <Grid container>
             {projectDetails.map(detail => (
-              <Grid item xs={6}>
+              <Grid key={detail.label} item xs={6}>
                 <Box mb={2}>
                   <h4>{detail.label}</h4>
                   <p>{formatValue(detail)}</p>
@@ -110,9 +112,22 @@ const ProjectSummary = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           {project_extent_geojson && project_extent_ids && (
-            <ProjectSummaryMap
+            <>
+              <ProjectSummaryMap
+                selectedLayerIds={project_extent_ids}
+                projectExtentGeoJSON={project_extent_geojson}
+                setIsEditing={setIsEditing}
+              />
+            </>
+          )}
+          {isEditing && (
+            <ProjectSummaryEditMap
+              projectId={projectId}
               selectedLayerIds={project_extent_ids}
               projectExtentGeoJSON={project_extent_geojson}
+              isEditing={isEditing}
+              setIsEditing={setIsEditing}
+              refetchProjectDetails={refetch}
             />
           )}
         </Grid>

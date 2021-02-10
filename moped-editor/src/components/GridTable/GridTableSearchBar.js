@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -8,10 +8,6 @@ import {
   SvgIcon,
   makeStyles,
   Icon,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
   Grid,
   DialogTitle,
   DialogContent,
@@ -32,11 +28,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
   filterButton: {
-    marginTop: theme.spacing(1),
     height: "3.4rem",
   },
   filterButtonFilters: {
@@ -56,11 +48,10 @@ const useStyles = makeStyles(theme => ({
  * Renders a search bar with optional filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
  * @param {Object} searchState - The current state/state-modifier bundle for search
- * @param {Object} showFilterState - The state/state-modifier bundle for filters
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
+const GridTableSearchBar = ({ query, searchState }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -77,18 +68,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
       return query.config.search.placeholder;
     } catch {
       return "Enter search value";
-    }
-  };
-
-  /**
-   * Attempts to retrieve the default search field
-   * @return {string}
-   */
-  const getSearchDefaultField = () => {
-    try {
-      return query.config.search.defaultField;
-    } catch {
-      return "";
     }
   };
 
@@ -123,30 +102,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
   );
 
   /**
-   * Stores the name of the column to search
-   * @type {boolean} fieldToSearch
-   * @function setFieldToSearch - Sets the state of the field
-   * @default {?searchState.searchParameters.column || getSearchDefaultField()}
-   */
-  const [fieldToSearch, setFieldToSearch] = useState(
-    (searchState.searchParameters && searchState.searchParameters.column) ||
-      getSearchDefaultField()
-  );
-
-  /**
-   * True if a field is selected
-   * @type {boolean} isFieldSelected - The state of the field being selected
-   * @function setIsFieldSelected - Sets the state of isFieldSelected
-   * @default false
-   */
-  const [isFieldSelected, setIsFieldSelected] = useState(
-    !!searchState.searchParameters || false
-  );
-
-  if (!searchState || !showFilterState)
-    return <span>No search or filter state provided</span>;
-
-  /**
    * Closes the dialog
    */
   const handleDialogClose = () => setDialogOpen(false);
@@ -163,11 +118,20 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
     </Button>
   );
 
+  const handleSearchValueChange = value => {
+    if(value === "" && searchFieldValue !== "") {
+      handleClearSearchResults();
+    } else {
+      setSearchFieldValue(value);
+    }
+ }
+
   /**
    * Handles the submission of our search form
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = event => {
+
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       setDialogSettings({
@@ -180,24 +144,11 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
       return;
     }
 
-    // Stop if we don't have a valid search field selected
-    if (!isFieldSelected || fieldToSearch === "") {
-      setDialogSettings({
-        title: "No Field Selected",
-        message: "You must select field to search.",
-        actions: closeDialogActions,
-      });
-
-      setDialogOpen(true);
-      return;
-    }
-
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
     // Update state if we are ready, triggers search.
     searchState.setSearchParameters({
-      column: fieldToSearch,
       value: searchFieldValue,
     });
   };
@@ -206,29 +157,8 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
    * Clears the search results
    */
   const handleClearSearchResults = () => {
-    // clearFilters();
     setSearchFieldValue("");
-    setFieldToSearch(getSearchDefaultField());
-    setIsFieldSelected(true);
     searchState.setSearchParameters({});
-  };
-
-  /**
-   * Handles the selection of our search mode in the dropdown
-   * @param {Object} e - the event object
-   */
-  const handleFieldSelect = e => {
-    setIsFieldSelected(true);
-    setFieldToSearch(e.target.value);
-  };
-
-  /**
-   * Returns a human-readable label for a specific column
-   * @param {string} fieldKey - the raw column name from the database
-   * @returns {string}
-   */
-  const getFieldName = fieldKey => {
-    return query.config.columns[fieldKey].search.label;
   };
 
   /**
@@ -257,59 +187,26 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} lg={5}>
-        <FormControl
+      <Grid item xs={12} sm={8} lg={10}>
+        <TextField
           fullWidth
+          onChange={e => handleSearchValueChange(e.target.value)}
+          onKeyDown={e => handleKeyDown(e.key)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SvgIcon fontSize="small" color="action">
+                  <SearchIcon />
+                </SvgIcon>
+              </InputAdornment>
+            ),
+          }}
+          placeholder={getSearchPlaceholder()}
           variant="outlined"
-          className={classes.formControl}
-        >
-          <TextField
-            onChange={e => setSearchFieldValue(e.target.value)}
-            onKeyDown={e => handleKeyDown(e.key)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SvgIcon fontSize="small" color="action">
-                    <SearchIcon />
-                  </SvgIcon>
-                </InputAdornment>
-              ),
-            }}
-            placeholder={getSearchPlaceholder()}
-            variant="outlined"
-            value={searchFieldValue}
-          />
-        </FormControl>
+          value={searchFieldValue}
+        />
       </Grid>
-      <Grid item xs={12} lg={3}>
-        <FormControl
-          fullWidth
-          variant="outlined"
-          className={classes.formControl}
-          id="fieldToSearch"
-        >
-          <InputLabel id="field-select-label">Field</InputLabel>
-          <Select
-            fullWidth
-            labelId="field-select-label"
-            id="field-select-menu"
-            value={
-              fieldToSearch !== "" ? fieldToSearch : getSearchDefaultField()
-            }
-            onChange={handleFieldSelect}
-            label="field"
-          >
-            {query.searchableFields.map((field, fieldIndex) => {
-              return (
-                <MenuItem value={field} key={fieldIndex}>
-                  {getFieldName(field)}
-                </MenuItem>
-              );
-            })}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={6} lg={2}>
+      <Grid item xs={12} sm={4} lg={2}>
         <Button
           className={classes.filterButton}
           fullWidth
@@ -319,18 +216,6 @@ const GridTableSearchBar = ({ query, searchState, showFilterState }) => {
           onClick={handleSearchSubmission}
         >
           Search
-        </Button>
-      </Grid>
-      <Grid item xs={6} lg={2}>
-        <Button
-          className={classes.filterButton}
-          fullWidth
-          variant="outlined"
-          color="secondary"
-          startIcon={<Icon>backspace</Icon>}
-          onClick={handleClearSearchResults}
-        >
-          Clear
         </Button>
       </Grid>
       <Dialog

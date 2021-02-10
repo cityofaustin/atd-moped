@@ -1,17 +1,19 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
-import { Box, Typography, makeStyles } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
+import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
-  getFeaturePolygonId,
   MAPBOX_TOKEN,
-  mapInit,
+  mapStyles,
   renderTooltip,
+  renderFeatureCount,
   sumFeaturesSelected,
-  toolTipStyles,
+  useHoverLayer,
+  useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -19,51 +21,48 @@ const useStyles = makeStyles({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
-  toolTip: toolTipStyles,
+  toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
     top: 0,
     left: 0,
     padding: "10px",
   },
+  editButton: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+  },
 });
 
-const ProjectSummaryDetailsMap = ({
+const ProjectSummaryMap = ({
   selectedLayerIds,
   projectExtentGeoJSON,
+  setIsEditing,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
+  const featureCount = sumFeaturesSelected(selectedLayerIds);
 
-  const [viewport, setViewport] = useState(mapInit);
-  const [hoveredFeature, setHoveredFeature] = useState(null);
-  const [hoveredCoords, setHoveredCoords] = useState(null);
+  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+    mapRef,
+    projectExtentGeoJSON
+  );
 
-  const handleLayerHover = e => {
-    const {
-      srcEvent: { offsetX, offsetY },
-    } = e;
-
-    const featurePolygonId = getFeaturePolygonId(e);
-
-    if (!!featurePolygonId) {
-      setHoveredFeature(featurePolygonId);
-      setHoveredCoords({ x: offsetX, y: offsetY });
-    } else {
-      setHoveredFeature(null);
-      setHoveredCoords(null);
-    }
-  };
-
+  /**
+   * Updates viewport on zoom, scroll, and other events
+   * @param {Object} viewport - Mapbox object that stores properties of the map view
+   */
   const handleViewportChange = viewport => setViewport(viewport);
 
   return (
-    <Box className={classes.mapBox}>
+    <Box>
       <ReactMapGL
         {...viewport}
         ref={mapRef}
         width="100%"
-        height={500}
+        height="60vh"
         interactiveLayerIds={["projectExtent"]}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -77,13 +76,20 @@ const ProjectSummaryDetailsMap = ({
             <Layer {...createProjectViewLayerConfig()} />
           </Source>
         )}
-        {renderTooltip(hoveredFeature, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setIsEditing(true)}
+          startIcon={<EditLocationIcon />}
+          className={classes.editButton}
+        >
+          Edit
+        </Button>
       </ReactMapGL>
-      <Typography className={classes.locationCountText}>
-        {sumFeaturesSelected(selectedLayerIds)} locations in this project
-      </Typography>
+      {renderFeatureCount(featureCount)}
     </Box>
   );
 };
 
-export default ProjectSummaryDetailsMap;
+export default ProjectSummaryMap;

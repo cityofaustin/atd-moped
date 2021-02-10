@@ -1,3 +1,4 @@
+import { newItemButton, editItemButton } from "./StaffListViewCustomComponents";
 import { StaffListViewFiltersConf } from "./StaffListViewFiltersConf";
 import { StaffListViewExportConf } from "./StaffListViewExportConf";
 
@@ -10,20 +11,17 @@ import { StaffListViewExportConf } from "./StaffListViewExportConf";
 export const StaffListViewQueryConf = {
   options: {
     useQuery: {
-      fetchPolicy: "no-cache", // Default ise "cache-first", or use "no-cache"
-      // Use no-cache as per issue https://github.com/cityofaustin/atd-data-tech/issues/4788
-      // More info: https://www.apollographql.com/docs/react/get-started/#graphql-config-options-fetchPolicy
+      fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
     },
   },
   table: "moped_users",
-  single_item: "/moped/staff/edit",
-  new_item: "/moped/staff/new",
-  new_item_label: "Add Staff",
+  customSingleItemButton: editItemButton,
   showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,
   showNewItemButton: true,
+  customNewItemButton: newItemButton,
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
@@ -116,7 +114,7 @@ export const StaffListViewQueryConf = {
       type: "String",
     },
     cognito_user_id: {
-      searchable: true,
+      searchable: false,
       sortable: false,
       label: "Cognito User ID",
       search: {
@@ -131,7 +129,7 @@ export const StaffListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "COA Staff",
-      filter: value => value === true ? "True" : "False",
+      filter: value => (value === true ? "True" : "False"),
       type: "Boolean",
     },
     status_id: {

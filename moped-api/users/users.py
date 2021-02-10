@@ -12,6 +12,7 @@ from users.helpers import (
     generate_user_profile,
     generate_cognito_attributes,
     get_user_email_from_attr,
+    get_user_database_ids,
     is_valid_user_password,
     is_users_password,
     is_valid_user_profile,
@@ -121,13 +122,6 @@ def user_create_user(claims: list) -> (Response, int):
             Permanent=True,
         )
 
-        # Encrypt and set Hasura metadata in DynamoDB
-        roles = json_data["roles"]
-        user_claims = format_claims(cognito_username, roles)
-        put_claims(
-            user_email=email, user_claims=user_claims, cognito_uuid=cognito_username
-        )
-
         # Generate the user profile for the database
         user_profile = generate_user_profile(
             cognito_id=cognito_username, json_data=request.json
@@ -147,6 +141,34 @@ def user_create_user(claims: list) -> (Response, int):
                 }
             }
             return jsonify(final_response), 500
+
+        # Encrypt and set Hasura metadata in DynamoDB
+        roles = json_data["roles"]
+
+        # Retrieve database id values as strings
+        database_id, workgroup_id = get_user_database_ids(response=db_response)
+
+        user_claims = format_claims(
+            user_id=cognito_username,
+            roles=roles,
+            database_id=database_id,
+            workgroup_id=workgroup_id
+        )
+        # Write database_id in django
+        put_claims(
+            user_email=email,
+            user_claims=user_claims,
+            cognito_uuid=cognito_username,
+            database_id=database_id,
+            workgroup_id=workgroup_id
+        )
+
+        try:
+            del db_response["data"]["insert_moped_users"]["returning"]
+        except (TypeError, KeyError):
+            db_response = {
+                "message": "Success, but returning data could not be deleted"
+            }
 
         final_response = {
             "success": {
@@ -212,11 +234,22 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            user_claims = format_claims(id, roles)
+            # Retrieve database id values as strings
+            database_id, workgroup_id = get_user_database_ids(response=db_response)
+
+            user_claims = format_claims(
+                user_id=id,
+                roles=roles,
+                database_id=database_id,
+                workgroup_id=workgroup_id
+            )
+
             put_claims(
                 user_email=user_profile["email"],
                 user_claims=user_claims,
                 cognito_uuid=id,
+                database_id=database_id,
+                workgroup_id=workgroup_id
             )
 
         response = {

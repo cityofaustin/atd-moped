@@ -5,11 +5,9 @@ import { Box, Drawer, Hidden, List, makeStyles } from "@material-ui/core";
 import { EmojiTransportation } from "@material-ui/icons";
 import {
   BarChart as BarChartIcon,
-  Lock as LockIcon,
-  Settings as SettingsIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   Users as UsersIcon,
+  LogOut as LogOutIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
 
@@ -35,25 +33,10 @@ const items = [
     title: "Account",
   },
   {
-    href: "/moped/settings",
-    icon: SettingsIcon,
-    title: "Settings",
+    href: "/moped/logout",
+    icon: LogOutIcon,
+    title: "Logout",
   },
-  {
-    href: "/login",
-    icon: LockIcon,
-    title: "Login",
-  },
-  {
-    href: "/register",
-    icon: UserPlusIcon,
-    title: "Register",
-  },
-  // {
-  //   href: '/404',
-  //   icon: AlertCircleIcon,
-  //   title: 'Error'
-  // }
 ];
 
 const useStyles = makeStyles(() => ({

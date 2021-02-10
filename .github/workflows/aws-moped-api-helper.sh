@@ -9,8 +9,9 @@ case "${BRANCH_NAME}" in
   ;;
 esac
 
-echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
-echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
+echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}";
+echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}";
+echo "PR_NUMBER: '${PR_NUMBER}'";
 
 #
 # Creates a virtual environment instance and activates it

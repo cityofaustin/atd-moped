@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
@@ -21,9 +21,11 @@ import {
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
+import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import TabPanel from "./TabPanel";
 import { PROJECT_NAME } from "../../../queries/project";
+import ProjectActivityLog from "./ProjectActivityLog";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,11 +59,11 @@ function useQueryParams() {
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Team", Component: ProjectTeam, param: "team" },
-  { label: "Timeline", Component: ProjectTabPlaceholder, param: "timeline" },
+  { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
   {
     label: "Activity Log",
-    Component: ProjectTabPlaceholder,
+    Component: ProjectActivityLog,
     param: "activity_log",
   },
 ];
@@ -94,7 +96,7 @@ const ProjectView = () => {
 
   return (
     <Page title="Project Summary Page">
-      <Container>
+      <Container maxWidth="xl">
         <Card className={classes.cardWrapper}>
           {loading ? (
             <CircularProgress />
@@ -113,14 +115,20 @@ const ProjectView = () => {
                   aria-label="Project Details Tabs"
                 >
                   {TABS.map((tab, i) => {
-                    return <Tab label={tab.label} {...a11yProps(i)} />;
+                    return (
+                      <Tab
+                        key={tab.label}
+                        label={tab.label}
+                        {...a11yProps(i)}
+                      />
+                    );
                   })}
                 </Tabs>
               </AppBar>
               {TABS.map((tab, i) => {
                 const TabComponent = tab.Component;
                 return (
-                  <TabPanel value={activeTab} index={i}>
+                  <TabPanel key={tab.label} value={activeTab} index={i}>
                     <TabComponent />
                   </TabPanel>
                 );
