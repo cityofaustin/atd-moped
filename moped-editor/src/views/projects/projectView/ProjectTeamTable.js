@@ -138,7 +138,7 @@ const ProjectTeamTable = ({
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
           renderInput={params => (
-            <TextField {...params} label="Select Staff" margin="normal" />
+            <TextField {...params} label="Select Role" margin="normal" />
           )}
         />
       ),
@@ -174,8 +174,8 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               if (isNewProject) {
-                // Add team member to state
-                console.log("Add new project workflow");
+                // Add personnel to state
+                console.log("Add to new project");
               } else {
                 // Insert personnel and associate with project
                 const personnelData = { ...newData, project_id: projectId };
@@ -186,6 +186,7 @@ const ProjectTeamTable = ({
                   },
                 });
               }
+
               setTimeout(() => refetch(), 501);
               resolve();
             }, 500);
@@ -193,13 +194,11 @@ const ProjectTeamTable = ({
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              // Update team member
-              console.log(newData, oldData);
               if (isNewProject) {
-                // Add team member to state
-                console.log("Add new project workflow");
+                // Add personnel to state
+                console.log("Update in new project");
               } else {
-                // Update data with new value
+                // Mutate personnel
                 const updatedPersonnelData = {
                   ...oldData,
                   ...newData,
@@ -214,15 +213,6 @@ const ProjectTeamTable = ({
                   variables: cleanedPersonnelData,
                 });
               }
-
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-        onRowDelete: oldData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              // Execute delete mutation
 
               setTimeout(() => refetch(), 501);
               resolve();
