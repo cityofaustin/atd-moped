@@ -81,14 +81,14 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
     $allocation: Int
     $status: String
     $project_personnel_user_id: Int
-    $project_personnel_id: Int
+    $project_personnel_id: Int!
     $role_order: Int
     $date_added: timestamptz
     $added_by: Int
     $role_id: Int
   ) {
     update_moped_proj_personnel_by_pk(
-      pk_columns: { project_id: $project_id }
+      pk_columns: { project_personnel_id: $project_personnel_id }
       _set: {
         user_id: $user_id
         notes: $notes
@@ -104,7 +104,9 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
         role_id: $role_id
       }
     ) {
-      affected_rows
+      user_id
+      role_id
+      notes
     }
   }
 `;
