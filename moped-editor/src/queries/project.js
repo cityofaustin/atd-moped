@@ -53,6 +53,20 @@ export const TEAM_QUERY = gql`
   }
 `;
 
+const ADD_PERSONNEL_MUTATION = gql`
+  mutation AddProjectPersonnel(
+    $objects: [moped_proj_personnel_insert_input!]!
+  ) {
+    insert_moped_proj_personnel(objects: $objects) {
+      returning {
+        user_id
+        role_id
+        notes
+      }
+    }
+  }
+`;
+
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
     moped_phases {
@@ -142,7 +156,7 @@ export const UPDATE_PROJECT_EXTENT = gql`
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
-    moped_activity_log(where: {record_project_id: {_eq: $projectId}}) {
+    moped_activity_log(where: { record_project_id: { _eq: $projectId } }) {
       activity_id
       created_at
       record_project_id
@@ -156,11 +170,11 @@ export const PROJECT_ACTIVITY_LOG = gql`
       }
     }
   }
-`
+`;
 
 export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
-  query getMopedProjectChanges($activityId:uuid!) {
-    moped_activity_log(where: {activity_id: {_eq: $activityId}}) {
+  query getMopedProjectChanges($activityId: uuid!) {
+    moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
       activity_id
       created_at
       record_project_id
@@ -175,4 +189,4 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
       }
     }
   }
-`
+`;

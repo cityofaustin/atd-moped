@@ -13,6 +13,8 @@ const ProjectTeamTable = ({
   setProjectState,
   projectId = null,
 }) => {
+  const isNewProject = project === null;
+
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
@@ -70,10 +72,6 @@ const ProjectTeamTable = ({
   const getPersonnelWorkgroup = id => {
     const user = getUserById(id);
     return workgroups[user.workgroup_id];
-  };
-
-  const handleNoteChange = value => {
-    console.log("handler", value);
   };
 
   /**
