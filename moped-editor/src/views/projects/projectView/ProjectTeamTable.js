@@ -24,6 +24,8 @@ const ProjectTeamTable = ({
   // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
   const users = data.moped_users;
+
+  // Create some objects for lookups
   const workgroups = data.moped_workgroup.reduce(
     (acc, workgroup) => ({
       ...acc,
@@ -147,33 +149,34 @@ const ProjectTeamTable = ({
         search: false,
       }}
       editable={{
-        // onRowAdd: newData =>
-        //   new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //       // Add team member
-        //       console.log("new data", newData);
-        //       setTimeout(() => refetch(), 501);
-        //       resolve();
-        //     }, 500);
-        //   }),
+        onRowAdd: newData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              // Add team member
+              console.log("new data", newData);
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
               // Update team member
               console.log(newData, oldData);
+
               setTimeout(() => refetch(), 501);
               resolve();
             }, 500);
           }),
-        // onRowDelete: oldData =>
-        //   new Promise((resolve, reject) => {
-        //     setTimeout(() => {
-        //       // Execute delete mutation
+        onRowDelete: oldData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              // Execute delete mutation
 
-        //       setTimeout(() => refetch(), 501);
-        //       resolve();
-        //     }, 500);
-        //   }),
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
       }}
     />
   );
