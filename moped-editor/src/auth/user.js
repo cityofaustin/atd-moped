@@ -1,6 +1,8 @@
 import React from "react";
 import Amplify, { Auth } from "aws-amplify";
 
+import { colors } from "@material-ui/core";
+
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
 export const UserContext = React.createContext(null);
@@ -80,6 +82,9 @@ export const UserProvider = ({ children }) => {
       return data;
     });
 
+  // Remove the current color
+  destroyProfileColor();
+
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimisation that is mostly needed in cases
   // where the parent of the current component re-renders and thus the current component is forced
@@ -95,11 +100,46 @@ export const UserProvider = ({ children }) => {
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
 
+/**
+ * This is a constant string key that holds the profile color for a user.
+ * @type {string}
+ * @variable
+ */
+export const atdColorKeyName = "atd_moped_user_color";
+
+/**
+ * Returns a random themes standard color as hexadecimal
+ * @return {string}
+ */
+export const getRandomColor = () => {
+  if (localStorage.getItem(atdColorKeyName) === null) {
+    const randomInt = Math.floor(Math.random() * Math.floor(3));
+    const colorList = [
+      colors.green[900],
+      colors.indigo[600],
+      colors.orange[600],
+      colors.red[600],
+    ];
+    localStorage.setItem(atdColorKeyName, colorList[randomInt]);
+  }
+  return localStorage.getItem(atdColorKeyName);
+};
+
+/**
+ * Removes the current user profile color
+ */
+export const destroyProfileColor = () => {
+  localStorage.removeItem(atdColorKeyName);
+};
+
 // We also create a simple custom hook to read these values from. We want our React components
 // to know as little as possible on how everything is handled, so we are not only abtracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = React.useContext(UserContext);
+  if (context && context.user) {
+    context.user.userColor = getRandomColor();
+  }
 
   if (context === undefined) {
     throw new Error(

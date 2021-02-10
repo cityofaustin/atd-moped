@@ -15,7 +15,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
-import { defaultUser } from "../../views/account/AccountView/Profile";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -26,7 +25,21 @@ const useStyles = makeStyles(() => ({
 
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
-  const { logout } = useUser();
+  const { user, logout } = useUser();
+
+  const emailToInitials = email => {
+    try {
+      const subdomain = "austintexas.gov";
+      if (!email.endsWith(subdomain)) return null;
+      const [first, last] = email
+        .replace("azure_ad", "")
+        .replace(subdomain, "")
+        .split(".");
+      return String(first.charAt(0) + last.charAt(0)).toUpperCase();
+    } catch {
+      return null;
+    }
+  };
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -36,12 +49,17 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         </RouterLink>
         <Box flexGrow={1} />
         <Box>
-          <Avatar
-            className={classes.avatar}
-            component={RouterLink}
-            src={defaultUser.avatar}
-            to="/moped/account"
-          />
+          <div className={classes.root}>
+            <Avatar
+              className={classes.avatar}
+              component={RouterLink}
+              src={null}
+              to="/moped/account"
+              style={{ "background-color": user ? user.userColor : null }}
+            >
+              {emailToInitials(user.attributes.email)}
+            </Avatar>
+          </div>
         </Box>
         <Hidden mdDown>
           <IconButton color="inherit" onClick={logout}>
