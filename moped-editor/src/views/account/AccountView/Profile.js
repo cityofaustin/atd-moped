@@ -13,6 +13,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { useUser } from "../../../auth/user";
+import emailToInitials from "../../../utils/emailToInitials";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -21,6 +22,9 @@ const useStyles = makeStyles(() => ({
     width: 100,
     marginBottom: 8,
   },
+  userInitials: {
+    fontSize: "2rem",
+  }
 }));
 
 const Profile = ({ className, ...rest }) => {
@@ -36,7 +40,11 @@ const Profile = ({ className, ...rest }) => {
               className={classes.avatar}
               src={user?.userAvatar}
               style={{ "background-color": user?.userColor }}
-            />
+            >
+              <Typography className={classes.userInitials}>
+                {emailToInitials(user?.attributes?.email)}
+              </Typography>
+            </Avatar>
           </Box>
           <Typography color="textPrimary" gutterBottom variant="h3">
             {String(user?.userName ?? user?.attributes?.email).toLowerCase()}
