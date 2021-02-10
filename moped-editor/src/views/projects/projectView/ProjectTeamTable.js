@@ -41,6 +41,7 @@ const ProjectTeamTable = ({
 
   // Options for Autocomplete form elements
   const userIds = users.map(user => user.user_id);
+  const roleIds = data.moped_project_roles.map(role => role.project_role_id);
 
   /**
    * Get a user object from the users array
@@ -102,8 +103,22 @@ const ProjectTeamTable = ({
     },
     {
       title: "Role",
-      field: "role",
+      field: "role_id",
       render: personnel => roles[personnel.role_id],
+      editComponent: props => (
+        <Autocomplete
+          id="role_id"
+          name="role_id"
+          options={roleIds}
+          getOptionLabel={option => roles[option]}
+          getOptionSelected={(option, value) => option === value}
+          value={props.value}
+          onChange={(event, value) => props.onChange(value)}
+          renderInput={params => (
+            <TextField {...params} label="Select Staff" margin="normal" />
+          )}
+        />
+      ),
     },
     {
       title: "Notes",
