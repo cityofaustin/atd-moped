@@ -15,6 +15,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
+import emailToInitials from "../../utils/emailToInitials";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -26,20 +27,6 @@ const useStyles = makeStyles(() => ({
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { user, logout } = useUser();
-
-  const emailToInitials = email => {
-    try {
-      const subdomain = "austintexas.gov";
-      if (!email.endsWith(subdomain)) return null;
-      const [first, last] = email
-        .replace("azure_ad", "")
-        .replace(subdomain, "")
-        .split(".");
-      return String(first.charAt(0) + last.charAt(0)).toUpperCase();
-    } catch {
-      return null;
-    }
-  };
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
