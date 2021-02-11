@@ -1,20 +1,8 @@
 import React from "react";
-import DeleteIcon from "@material-ui/icons/Delete";
-import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import ProjectTeamTable from "../projectView/ProjectTeamTable";
 import { useQuery, gql } from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableFooter,
-  TableRow,
-  TextField,
-  IconButton,
-  CircularProgress,
-} from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -50,7 +38,7 @@ const ROLES_QUERY = gql`
   }
 `;
 
-const ProjectTeamTable = props => {
+const NewProjectTeam = ({ personnel, setPersonnel }) => {
   const classes = useStyles();
 
   const {
@@ -130,7 +118,8 @@ const ProjectTeamTable = props => {
 
   return (
     <form style={{ padding: 25 }}>
-      <Table className={classes.table}>
+      <ProjectTeamTable personnel={personnel} setPersonnel={setPersonnel} />
+      {/* <Table className={classes.table}>
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -228,8 +217,8 @@ const ProjectTeamTable = props => {
             </IconButton>
           </TableRow>
         </TableFooter>
-      </Table>
+      </Table> */}
     </form>
   );
 };
-export default ProjectTeamTable;
+export default NewProjectTeam;

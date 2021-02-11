@@ -13,11 +13,7 @@ import {
   UPDATE_PROJECT_PERSONNEL,
 } from "../../../queries/project";
 
-const ProjectTeamTable = ({
-  projectState,
-  setProjectState,
-  projectId = null,
-}) => {
+const ProjectTeamTable = ({ personnel, setPersonnel, projectId = null }) => {
   const isNewProject = projectId === null;
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {

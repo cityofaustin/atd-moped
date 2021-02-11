@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import DefineProjectForm from "./DefineProjectForm";
-import ProjectTeamTable from "./ProjectTeamTable";
+import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation, gql } from "@apollo/client";
@@ -85,15 +85,7 @@ const NewProjectView = () => {
     eCapris_id: "",
   });
 
-  const [StaffRows, setStaffRows] = useState([
-    {
-      id: 1,
-      name: null,
-      workgroup: "",
-      role_name: null,
-      notes: "",
-    },
-  ]);
+  const [personnel, setPersonnel] = useState([]);
   const [selectedLayerIds, setSelectedLayerIds] = useState({});
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
@@ -115,7 +107,7 @@ const NewProjectView = () => {
         );
       case 1:
         return (
-          <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
+          <NewProjectTeam personnel={personnel} setPersonnel={setPersonnel} />
         );
       case 2:
         return (
@@ -275,7 +267,7 @@ const NewProjectView = () => {
       .then(response => {
         const project = response.data.insert_moped_project.returning[0];
 
-        StaffRows.forEach(row => {
+        personnel.forEach(row => {
           const [first_name, last_name] = row.name.split(" ");
           const { workgroup, notes, role_name } = row;
           const variables = {
