@@ -13,7 +13,11 @@ import {
   UPDATE_PROJECT_PERSONNEL,
 } from "../../../queries/project";
 
-const ProjectTeamTable = ({ personnel, setPersonnel, projectId = null }) => {
+const ProjectTeamTable = ({
+  personnelState,
+  setPersonnelState,
+  projectId = null,
+}) => {
   const isNewProject = projectId === null;
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
@@ -160,7 +164,7 @@ const ProjectTeamTable = ({ personnel, setPersonnel, projectId = null }) => {
   return (
     <MaterialTable
       columns={columns}
-      data={personnel}
+      data={isNewProject ? personnelState : personnel}
       title="Project Team"
       options={{
         search: false,
