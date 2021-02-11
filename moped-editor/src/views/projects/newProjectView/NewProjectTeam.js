@@ -12,4 +12,5 @@ const NewProjectTeam = ({ personnel, setPersonnel }) => {
     </Box>
   );
 };
+
 export default NewProjectTeam;

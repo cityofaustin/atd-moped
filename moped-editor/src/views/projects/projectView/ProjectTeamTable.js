@@ -176,7 +176,15 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Add personnel to state
-                console.log("Add to new project");
+                const personnelData = {
+                  ...newData,
+                  status_id: 1,
+                };
+
+                setPersonnelState(prevPersonnel => [
+                  ...prevPersonnel,
+                  personnelData,
+                ]);
               } else {
                 // Insert personnel and associate with project
                 const personnelData = {
