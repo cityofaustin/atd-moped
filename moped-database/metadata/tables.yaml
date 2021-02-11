@@ -2542,7 +2542,6 @@
     permission:
       check: {}
       columns:
-      - status
       - project_id
       - project_personnel_id
       - date_added
@@ -2550,6 +2549,7 @@
       - notes
       - user_id
       - role_id
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2559,9 +2559,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       backend_only: false
   select_permissions:
@@ -2572,9 +2572,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       filter: {}
   - role: moped-editor
@@ -2584,9 +2584,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       filter: {}
   - role: moped-viewer
@@ -2596,9 +2596,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       filter: {}
   update_permissions:
@@ -2609,9 +2609,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       filter: {}
       check: null
@@ -2622,9 +2622,9 @@
       - project_id
       - project_personnel_id
       - role_id
+      - status_id
       - user_id
       - notes
-      - status
       - date_added
       filter: {}
       check: null
