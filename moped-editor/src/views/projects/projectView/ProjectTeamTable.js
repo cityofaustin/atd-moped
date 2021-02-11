@@ -236,7 +236,10 @@ const ProjectTeamTable = ({
                   updatedPersonnelData,
                   ["__typename", "tableData"]
                 );
-                debugger;
+
+                updateProjectPersonnel({
+                  variables: cleanedPersonnelData,
+                });
               }
 
               setTimeout(() => refetch(), 501);

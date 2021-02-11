@@ -28,7 +28,9 @@ export const SUMMARY_QUERY = gql`
 
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
-    moped_proj_personnel(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_personnel(
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+    ) {
       user_id
       role_id
       notes
