@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -48,7 +48,8 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       editable: true,
       lookup: {
         table: "moped_status",
-        projectIdRelation: false,
+        relationship: `where: {project_id: {_eq: ${data.moped_project[0]
+          ?.project_id ?? null} }`,
         labelField: "status_name",
         valueField: "status_name",
       },
@@ -60,7 +61,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       editable: true,
       lookup: {
         table: "moped_phases",
-        projectIdRelation: true,
         labelField: "phase_name",
         valueField: "phase_id",
       },
@@ -99,22 +99,31 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
   };
 
-  const LOOKUP_TABLE_QUERY =
+  const LOOKUP_TABLE_QUERY = gql(
     "query RetrieveLookupValues {\n" +
-    Object.keys(fieldConfiguration)
-      .filter(field => (fieldConfiguration[field]?.lookup ?? null) !== null)
-      .map(field => {
-        const { table, labelField, valueField } = fieldConfiguration[
-          field
-        ]?.lookup;
-        return `
-        ${table} {
-          labelField: ${labelField}
-          valueField: ${valueField}
-        }
-        `;
-      }) +
-    "}\n";
+      Object.keys(fieldConfiguration)
+        .filter(field => (fieldConfiguration[field]?.lookup ?? null) !== null)
+        .map(field => {
+          const {
+            table,
+            labelField,
+            valueField,
+            relationship,
+          } = fieldConfiguration[field]?.lookup;
+
+          const relationshipFilter = !!relationship
+            ? `(${relationship})`
+            : null;
+
+          return `
+            ${table} ${relationshipFilter} {
+              labelField: ${labelField}
+              valueField: ${valueField}
+            }
+          `;
+        }) +
+      "}\n"
+  );
 
   console.log("LOOKUP_TABLE_QUERY", LOOKUP_TABLE_QUERY);
 
@@ -124,17 +133,11 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
-  // if (lookupTablesLoading) {
-  //   console.log("lookupTablesLoading!");
-  // }
-  //
-  // if (lookupTablesError) {
-  //   console.log("lookupTablesError: ", lookupTablesError);
-  // }
-  //
-  // if (lookupTablesData) {
-  //   console.log("lookupTablesData: ", lookupTablesData);
-  // }
+  if (lookupTablesData) {
+    console.log("Data: ", lookupTablesData);
+  }
+
+
 
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
