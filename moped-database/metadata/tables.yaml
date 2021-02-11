@@ -2542,13 +2542,9 @@
     permission:
       check: {}
       columns:
-      - join_date
-      - allocation
       - status
       - project_id
-      - project_personnel_user_id
       - project_personnel_id
-      - role_order
       - date_added
       - added_by
       - notes
@@ -2559,14 +2555,10 @@
     permission:
       check: {}
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
@@ -2576,14 +2568,10 @@
   - role: moped-admin
     permission:
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
@@ -2592,14 +2580,10 @@
   - role: moped-editor
     permission:
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
@@ -2608,14 +2592,10 @@
   - role: moped-viewer
     permission:
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
@@ -2625,14 +2605,10 @@
   - role: moped-admin
     permission:
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
@@ -2642,52 +2618,16 @@
   - role: moped-editor
     permission:
       columns:
-      - join_date
       - added_by
-      - allocation
       - project_id
       - project_personnel_id
-      - project_personnel_user_id
       - role_id
-      - role_order
       - user_id
       - notes
       - status
       - date_added
       filter: {}
       check: null
-  event_triggers:
-  - name: activity_log_moped_proj_personnel
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - join_date
-        - added_by
-        - allocation
-        - project_id
-        - project_personnel_id
-        - project_personnel_user_id
-        - role_id
-        - role_order
-        - user_id
-        - notes
-        - status
-        - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_phases
