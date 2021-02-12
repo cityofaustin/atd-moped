@@ -231,6 +231,10 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Remove personnel from state
+                const dataDelete = [...personnelState];
+                const index = oldData.tableData.id;
+                dataDelete.splice(index, 1);
+                setPersonnelState([...dataDelete]);
               } else {
                 // Update status to inactive (0) to soft delete
                 const updatedPersonnelData = { ...oldData, status_id: 0 };
