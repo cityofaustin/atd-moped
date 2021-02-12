@@ -89,17 +89,17 @@ const ProjectSummary = () => {
       type: "boolean",
     },
     {
-      field: <a
-      href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`}
-    >
-      {eCapris_id}
-    </a>,
+      field: (
+        <a
+          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`}
+        >
+          {eCapris_id}
+        </a>
+      ),
       label: "eCapris ID",
       type: "string",
     },
   ];
-
-  console.log(projectDetails);
 
   return (
     <CardContent>
