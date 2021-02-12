@@ -6,29 +6,13 @@ import { CircularProgress, TextField } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 import {
   TEAM_QUERY,
   ADD_PROJECT_PERSONNEL,
   UPDATE_PROJECT_PERSONNEL,
 } from "../../../queries/project";
-
-/**
- * Filter k/v pairs from an object by the key names passed in an array
- * @param {object} obj - The object with unwanted k/v pairs
- * @param {array} keys - Keys of unwanted k/v pairs
- * @return {object} New object without unneeded k/v pairs
- */
-export const filterObjectByKeys = (obj, keys) =>
-  Object.keys(obj)
-    .filter(key => !keys.includes(key))
-    .reduce(
-      (acc, key) => ({
-        ...acc,
-        [key]: obj[key],
-      }),
-      {}
-    );
 
 const ProjectTeamTable = ({
   personnelState,
@@ -162,18 +146,29 @@ const ProjectTeamTable = ({
     },
   ];
 
+  /**
+   * Data handlers for editable actions based on isNewProject boolean <MaterialTable>
+   */
   const isNewProjectActions = {
-    // New project data is managed in state
     true: {
       add: newData => {
         const activePersonnel = { ...newData, status_id: 1 };
 
         setPersonnelState([...personnelState, activePersonnel]);
       },
-      update: (newData, oldData) => {},
-      delete: oldData => {},
+      update: (newData, oldData) => {
+        const dataUpdate = [...personnelState];
+        const index = oldData.tableData.id;
+        dataUpdate[index] = newData;
+        setPersonnelState([...dataUpdate]);
+      },
+      delete: oldData => {
+        const dataDelete = [...personnelState];
+        const index = oldData.tableData.id;
+        dataDelete.splice(index, 1);
+        setPersonnelState([...dataDelete]);
+      },
     },
-    // Existing project data is managed with GQL mutations
     false: {
       add: newData => {
         const personnelData = {
@@ -188,8 +183,33 @@ const ProjectTeamTable = ({
           },
         });
       },
-      update: (newData, oldData) => {},
-      delete: oldData => {},
+      update: (newData, oldData) => {
+        const updatedPersonnelData = {
+          ...oldData,
+          ...newData,
+        };
+
+        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
+          "__typename",
+          "tableData",
+        ]);
+
+        updateProjectPersonnel({
+          variables: cleanedPersonnelData,
+        });
+      },
+      delete: oldData => {
+        const updatedPersonnelData = { ...oldData, status_id: 0 };
+
+        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
+          "__typename",
+          "tableData",
+        ]);
+
+        updateProjectPersonnel({
+          variables: cleanedPersonnelData,
+        });
+      },
     },
   };
 
@@ -215,27 +235,7 @@ const ProjectTeamTable = ({
         onRowUpdate: (newData, oldData) =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              if (isNewProject) {
-                const dataUpdate = [...personnelState];
-                const index = oldData.tableData.id;
-                dataUpdate[index] = newData;
-                setPersonnelState([...dataUpdate]);
-              } else {
-                // Mutate personnel
-                const updatedPersonnelData = {
-                  ...oldData,
-                  ...newData,
-                };
-
-                const cleanedPersonnelData = filterObjectByKeys(
-                  updatedPersonnelData,
-                  ["__typename", "tableData"]
-                );
-
-                updateProjectPersonnel({
-                  variables: cleanedPersonnelData,
-                });
-              }
+              isNewProjectActions[isNewProject].update(newData, oldData);
 
               setTimeout(() => refetch(), 501);
               resolve();
@@ -244,25 +244,7 @@ const ProjectTeamTable = ({
         onRowDelete: oldData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              if (isNewProject) {
-                // Remove personnel from state
-                const dataDelete = [...personnelState];
-                const index = oldData.tableData.id;
-                dataDelete.splice(index, 1);
-                setPersonnelState([...dataDelete]);
-              } else {
-                // Update status to inactive (0) to soft delete
-                const updatedPersonnelData = { ...oldData, status_id: 0 };
-
-                const cleanedPersonnelData = filterObjectByKeys(
-                  updatedPersonnelData,
-                  ["__typename", "tableData"]
-                );
-
-                updateProjectPersonnel({
-                  variables: cleanedPersonnelData,
-                });
-              }
+              isNewProjectActions[isNewProject].delete(oldData);
 
               setTimeout(() => refetch(), 501);
               resolve();

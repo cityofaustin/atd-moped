@@ -20,7 +20,7 @@ import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation, gql } from "@apollo/client";
 import { ADD_PROJECT_PERSONNEL } from "../../../queries/project";
-import { filterObjectByKeys } from "../projectView/ProjectTeamTable";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
