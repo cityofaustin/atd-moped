@@ -84,6 +84,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   return (
     <DataTable
       fieldConfiguration={fieldConfiguration}
+      tableName={"moped_project"}
       loading={loading}
       error={error}
       data={data}
