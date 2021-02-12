@@ -161,6 +161,19 @@ const ProjectTeamTable = ({
     },
   ];
 
+  const editableActions = {
+    newProject: {
+      add: newData => {},
+      update: (newData, oldData) => {},
+      delete: oldData => {},
+    },
+    existingProject: {
+      add: newData => {},
+      update: (newData, oldData) => {},
+      delete: oldData => {},
+    },
+  };
+
   return (
     <MaterialTable
       columns={columns}
