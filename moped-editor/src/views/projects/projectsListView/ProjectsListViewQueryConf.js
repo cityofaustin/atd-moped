@@ -117,7 +117,7 @@ export const ProjectsListViewQueryConf = {
       label: "eCapris Subp.",
       filter: value =>
         <a
-          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`} target="_blank"
         >
           {value}
         </a>

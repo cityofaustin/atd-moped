@@ -91,7 +91,7 @@ const ProjectSummary = () => {
     {
       field: (
         <a
-          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`}
+          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`} target="_blank"
         >
           {eCapris_id}
         </a>
