@@ -36,6 +36,7 @@ const ProjectTeamTable = ({
   projectId = null,
 }) => {
   const isNewProject = projectId === null;
+  console.log(isNewProject);
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
@@ -161,14 +162,32 @@ const ProjectTeamTable = ({
     },
   ];
 
-  const editableActions = {
-    newProject: {
-      add: newData => {},
+  const isNewProjectActions = {
+    // New project data is managed in state
+    true: {
+      add: newData => {
+        const activePersonnel = { ...newData, status_id: 1 };
+
+        setPersonnelState([...personnelState, activePersonnel]);
+      },
       update: (newData, oldData) => {},
       delete: oldData => {},
     },
-    existingProject: {
-      add: newData => {},
+    // Existing project data is managed with GQL mutations
+    false: {
+      add: newData => {
+        const personnelData = {
+          ...newData,
+          project_id: projectId,
+          status_id: 1,
+        };
+
+        addProjectPersonnel({
+          variables: {
+            objects: [personnelData],
+          },
+        });
+      },
       update: (newData, oldData) => {},
       delete: oldData => {},
     },
@@ -187,25 +206,7 @@ const ProjectTeamTable = ({
         onRowAdd: newData =>
           new Promise((resolve, reject) => {
             setTimeout(() => {
-              if (isNewProject) {
-                // Add personnel to state
-                const activePersonnel = { ...newData, status_id: 1 };
-
-                setPersonnelState([...personnelState, activePersonnel]);
-              } else {
-                // Insert personnel and associate with project
-                const personnelData = {
-                  ...newData,
-                  project_id: projectId,
-                  status_id: 1,
-                };
-
-                addProjectPersonnel({
-                  variables: {
-                    objects: [personnelData],
-                  },
-                });
-              }
+              isNewProjectActions[isNewProject].add(newData);
 
               setTimeout(() => refetch(), 501);
               resolve();
