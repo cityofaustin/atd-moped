@@ -2,11 +2,12 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { CircularProgress, TextField } from "@material-ui/core";
+import { CircularProgress, TextField, Typography } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import typography from "../../../theme/typography";
 
 import {
   TEAM_QUERY,
@@ -20,7 +21,6 @@ const ProjectTeamTable = ({
   projectId = null,
 }) => {
   const isNewProject = projectId === null;
-  console.log(isNewProject);
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
@@ -100,15 +100,15 @@ const ProjectTeamTable = ({
           getOptionSelected={(option, value) => option === value}
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
-          renderInput={params => (
-            <TextField {...params} label="Select Staff" margin="normal" />
-          )}
+          renderInput={params => <TextField {...params} />}
         />
       ),
     },
     {
       title: "Workgroup",
-      render: personnel => getPersonnelWorkgroup(personnel.user_id),
+      render: personnel => (
+        <Typography>{getPersonnelWorkgroup(personnel.user_id)}</Typography>
+      ),
     },
     {
       title: "Role",
@@ -123,9 +123,7 @@ const ProjectTeamTable = ({
           getOptionSelected={(option, value) => option === value}
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
-          renderInput={params => (
-            <TextField {...params} label="Select Role" margin="normal" />
-          )}
+          renderInput={params => <TextField {...params} />}
         />
       ),
     },
@@ -138,7 +136,6 @@ const ProjectTeamTable = ({
           name="notes"
           multiline
           inputProps={{ maxLength: 125 }}
-          helperText="125 character max"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
         />
@@ -220,6 +217,7 @@ const ProjectTeamTable = ({
       title="Project Team"
       options={{
         search: false,
+        rowStyle: { fontFamily: typography.fontFamily },
       }}
       icons={{ Delete: ClearIcon }}
       editable={{

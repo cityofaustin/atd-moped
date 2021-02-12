@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
 import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
@@ -81,7 +82,7 @@ const NewProjectView = () => {
     project_priority: "",
     project_description: "",
     project_name: "",
-    start_date: "2021-01-01",
+    start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
     eCapris_id: "",
