@@ -10,6 +10,7 @@ import {
   MenuItem,
   Paper,
   Select,
+  Snackbar,
   TextField,
 } from "@material-ui/core";
 
@@ -53,6 +54,12 @@ const useStyles = makeStyles(theme => ({
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const classes = useStyles();
 
+  const DEFAULT_SNACKBAR_STATE = {
+    open: false,
+    message: null,
+    severity: "success",
+  };
+
   const INITIAL_MUTATION = gql`
     mutation generic {
       __typedef
@@ -95,8 +102,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   const [updateField] = useMutation(updateMutation);
+
+  const handleSnackbarClose = () => {
+    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  };
 
   /**
    * Generates a mutation GraphQL query object ready to be executed.
@@ -138,7 +150,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
       }
     `;
 
-    console.log("mutation", mutation);
+    console.log("Update Mutation", mutation);
 
     return gql`
       ${mutation}
@@ -201,9 +213,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * Makes the update via GraphQL
    * @param {ChangeEvent} e - HTML Dom Event
    */
-  const handleAcceptClick = () => {
+  const handleAcceptClick = e => {
+    e.preventDefault();
     if (editValue !== null) {
-      console.log("Mutation updated!");
       setUpdateMutation(generateUpdateQuery(editField, editValue));
     }
   };
@@ -363,23 +375,49 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     if (!isEditing) setEditValue(null);
   }, [isEditing]);
 
-  useEffect(() => {
-    if (updateMutation === INITIAL_MUTATION) return;
-    if (editValue !== null) {
-      new Promise(() => {
+  useEffect(
+    () => {
+      if (updateMutation === INITIAL_MUTATION) return;
+      if (editValue !== null) {
         updateField()
           .then(response => {
-            console.log("response", response);
-            setTimeout(() => refetch(), 301);
+            setSnackbarState({
+              open: true,
+              message: (
+                <span>
+                  Success! the field <b>{getLabel(editField)}</b> has been
+                  updated!
+                </span>
+              ),
+              severity: "success",
+            });
+            refetch();
+          })
+          .catch(error => {
+            console.log(`Error Updating ${editField}`, error);
+            setSnackbarState({
+              open: true,
+              message: (
+                <span>
+                  There was a problem updating field{" "}
+                  <b>{getLabel(editField)}</b>.
+                </span>
+              ),
+              severity: "error",
+            });
+            refetch();
           })
           .finally(() => {
             setEditValue("");
             setEditField("");
             setUpdateMutation(INITIAL_MUTATION);
+            setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
           });
-      });
-    }
-  }, [updateMutation, refetch, updateField]);
+      }
+    },
+    // eslint-disable-next-line
+    [updateMutation]
+  );
 
   return (
     <Grid item xs={12} md={6}>
@@ -457,7 +495,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         </Grid>
                       </form>
                     ) : (
-                      <InputLabel id={"label-" + field}>
+                      <InputLabel
+                        id={"label-" + field}
+                        className={
+                          fieldConfiguration.fields[field]?.labelStyle ?? null
+                        }
+                      >
                         {formatValue(field)}
                         {fieldConfiguration.fields[field].editable &&
                           !isEditing && (
@@ -477,6 +520,16 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           </Grid>
         </Paper>
       )}
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarState.open}
+        onClose={handleSnackbarClose}
+        key={"datatable-snackbar"}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };
