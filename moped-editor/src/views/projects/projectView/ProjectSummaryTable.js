@@ -26,6 +26,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     fields: {
       current_status: {
         label: "Current Status",
+        labelStyle: classes.fieldSelectCapitalize,
         type: "select",
         placeholder: "Select Status",
         editable: true,
@@ -40,6 +41,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       },
       current_phase: {
         label: "Current Phase",
+        labelStyle: classes.fieldSelectCapitalize,
         placeholder: "Select phase",
         type: "select",
         editable: true,
@@ -83,7 +85,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         placeholder: "Select capitally funded",
         editable: true,
       },
-      ecapris_id: {
+      eCapris_id: {
         label: "eCapris ID",
         type: "string",
         placeholder: "Enter eCapris ID",
