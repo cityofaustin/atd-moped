@@ -177,17 +177,7 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Add personnel to state
-                const cleanedNewData = filterObjectByKeys(newData, [
-                  "__typename",
-                  "tableData",
-                ]);
-
-                const personnelData = {
-                  ...cleanedNewData,
-                  status_id: 1,
-                };
-                // TODO: Debug why tableData is still in personnelState after filtering
-                setPersonnelState([...personnelState, personnelData]);
+                setPersonnelState([...personnelState, newData]);
               } else {
                 // Insert personnel and associate with project
                 const personnelData = {
@@ -211,24 +201,10 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               if (isNewProject) {
-                const cleanedNewData = filterObjectByKeys(newData, [
-                  "__typename",
-                  "tableData",
-                ]);
-
-                const cleanedOldData = filterObjectByKeys(oldData, [
-                  "__typename",
-                  "tableData",
-                ]);
-
-                const updatedPersonnelState = [
-                  ...personnelState.filter(
-                    user => !isequal(user, cleanedOldData)
-                  ),
-                  cleanedNewData,
-                ];
-
-                setPersonnelState(updatedPersonnelState);
+                const dataUpdate = [...personnelState];
+                const index = oldData.tableData.id;
+                dataUpdate[index] = newData;
+                setPersonnelState([...dataUpdate]);
               } else {
                 // Mutate personnel
                 const updatedPersonnelData = {
