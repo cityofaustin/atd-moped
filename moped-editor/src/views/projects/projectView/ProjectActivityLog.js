@@ -6,6 +6,7 @@ import {
   getChangeIcon,
   getRecordTypeLabel,
   getHumanReadableField,
+  ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
@@ -29,7 +30,7 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Alert} from "@material-ui/lab";
+import { Alert } from "@material-ui/lab";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -128,11 +129,19 @@ const ProjectActivityLog = () => {
     return data?.moped_activity_log?.length ?? 0;
   };
 
+  /**
+   * Returns True if the field should be a generic type (i.e., maps, objects)
+   * @param {string} field - The field name (column name)
+   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
+   */
+  const isFieldGeneric = field =>
+    field in ProjectActivityLogGenericDescriptions;
+
   return (
     <CardContent>
       <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
       {getTotalItems() === 0 ? (
-          <Alert severity="info">There aren't any items for this project.</Alert>
+        <Alert severity="info">There aren't any items for this project.</Alert>
       ) : (
         <TableContainer component={Paper}>
           <Table className={classes.table} aria-label="simple table">
@@ -215,15 +224,29 @@ const ProjectActivityLog = () => {
                           {change.description.map(changeItem => {
                             return (
                               <Grid item className={classes.tableChangeItem}>
-                                <b>
-                                  {getRecordTypeLabel(change.record_type)}{" "}
-                                  {getHumanReadableField(
-                                    change.record_type,
-                                    changeItem.field
-                                  )}
-                                </b>{" "}
-                                from <b>&quot;{changeItem.old}&quot;</b> to{" "}
-                                <b>&quot;{changeItem.new}&quot;</b>
+                                {isFieldGeneric(changeItem.field) ? (
+                                  <b>
+                                    {
+                                      ProjectActivityLogGenericDescriptions[
+                                        changeItem.field
+                                      ]?.label
+                                    }
+                                  </b>
+                                ) : (
+                                  <>
+                                    <b>
+                                      {getRecordTypeLabel(change.record_type)}{" "}
+                                      {getHumanReadableField(
+                                        change.record_type,
+                                        changeItem.field
+                                      )}
+                                    </b>{" "}
+                                    from{" "}
+                                    <b>&quot;{String(changeItem.old)}&quot;</b>{" "}
+                                    to{" "}
+                                    <b>&quot;{String(changeItem.new)}&quot;</b>
+                                  </>
+                                )}
                               </Grid>
                             );
                           })}

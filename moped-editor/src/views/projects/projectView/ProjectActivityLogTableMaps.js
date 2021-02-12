@@ -1305,6 +1305,15 @@ export const ProjectActivityLogOperationMaps = {
   },
 };
 
+export const ProjectActivityLogGenericDescriptions = {
+  project_extent_ids: {
+    label: "Project extent updated",
+  },
+  project_extent_geojson: {
+    label: "Project GeoJSON updated",
+  }
+}
+
 /**
  * Returns a human-readable field name (translates the column into a readable label)
  * @param {string} type - The table name
