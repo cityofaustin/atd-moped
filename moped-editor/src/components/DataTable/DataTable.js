@@ -15,7 +15,7 @@ import {
 
 import { Alert } from "@material-ui/lab";
 
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +53,12 @@ const useStyles = makeStyles(theme => ({
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const classes = useStyles();
 
+  const INITIAL_MUTATION = gql`
+    mutation generic {
+      __typedef
+    }
+  `;
+
   const LOOKUP_TABLE_QUERY = gql(
     "query RetrieveLookupValues {\n" +
       Object.keys(fieldConfiguration.fields)
@@ -85,9 +91,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
+  const [updateMutation, setUpdateMutation] = useState(INITIAL_MUTATION);
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+
+  const [updateField] = useMutation(updateMutation);
 
   /**
    * Generates a mutation GraphQL query object ready to be executed.
@@ -193,11 +202,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param {ChangeEvent} e - HTML Dom Event
    */
   const handleAcceptClick = () => {
-    console.log("Committing: ");
-    console.log("Field: ", editField);
-    console.log("value: ", editValue);
-    const updateMutation = generateUpdateQuery(editField, editValue);
-    setEditField("");
+    if (editValue !== null) {
+      console.log("Mutation updated!");
+      setUpdateMutation(generateUpdateQuery(editField, editValue));
+    }
   };
 
   /**
@@ -210,27 +218,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Whenever the edit field is modified, it checks if it is empty.
-   * If so, we are not editing any more. This is not ideal, needs change.
-   */
-  useEffect(() => {
-    setIsEditing(editField !== "");
-  }, [editField]);
-
-  useEffect(() => {
-    if (!isEditing) setEditValue(null);
-  }, [isEditing]);
-
-  /**
    * Handles an update to the value of the field.
-   * @param field
    * @param value
    */
-  const handleFieldValueUpdate = (field, value) => {
-    const newValue = value.target.value;
-    console.log("Field: ", field);
-    console.log("value: ", newValue);
-    setEditValue(newValue);
+  const handleFieldValueUpdate = value => {
+    setEditValue(value.target.value);
   };
 
   /**
@@ -250,7 +242,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         defaultValue={editValue ?? initialValue}
         placeholder={fieldConfig?.placeholder}
         className={null}
-        onChange={e => handleFieldValueUpdate(field, e)}
+        onChange={e => handleFieldValueUpdate(e)}
         InputLabelProps={{
           shrink: true,
         }}
@@ -277,7 +269,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         className={null}
         multiline={fieldConfig?.multiline ?? false}
         rows={fieldConfig?.multilineRows ?? 1}
-        onChange={e => handleFieldValueUpdate(field, e)}
+        onChange={e => handleFieldValueUpdate(e)}
         InputLabelProps={{
           shrink: true,
         }}
@@ -312,7 +304,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           labelId={`select-${field}`}
           id={`select-field-${field}`}
           value={lookupFormat ? lookupFormat(currentValue) : currentValue}
-          onChange={e => handleFieldValueUpdate(field, e)}
+          onChange={e => handleFieldValueUpdate(e)}
           className={fieldConfig?.style ?? null}
         >
           {lookupValues.map(menuItem => {
@@ -346,7 +338,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           labelId={"select-" + field}
           id={field}
           value={editValue ?? initialValue}
-          onChange={e => handleFieldValueUpdate(field, e)}
+          onChange={e => handleFieldValueUpdate(e)}
         >
           <MenuItem value={true} selected={editValue === true}>
             Yes
@@ -358,6 +350,33 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
       </FormControl>
     );
   };
+
+  /**
+   * Whenever the edit field is modified, it checks if it is empty.
+   * If so, we are not editing any more. This is not ideal, needs change.
+   */
+  useEffect(() => {
+    setIsEditing(editField !== "");
+  }, [editField]);
+
+  useEffect(() => {
+    if (!isEditing) setEditValue(null);
+  }, [isEditing]);
+
+  useEffect(() => {
+    if(editValue !== null) {
+      new Promise(() => {
+        updateField()
+            .then(response => {
+              console.log("response", response);
+              setTimeout(() => refetch(), 501);
+            })
+            .finally(() => {
+              setEditField("");
+            });
+      });
+    }
+  }, [updateMutation, refetch, updateField]);
 
   return (
     <Grid item xs={12} md={6}>
