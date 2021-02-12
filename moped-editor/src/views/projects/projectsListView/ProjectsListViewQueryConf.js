@@ -1,3 +1,5 @@
+import React from "react";
+
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 
@@ -113,6 +115,13 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label: "eCapris Subp.",
+      filter: value =>
+        <a
+          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+        >
+          {value}
+        </a>
+      ,
       type: "string",
       search: {
         label: "Search by eCapris subproject id",

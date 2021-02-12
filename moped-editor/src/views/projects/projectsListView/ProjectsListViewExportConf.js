@@ -29,4 +29,8 @@ export const ProjectsListViewExportConf = {
         label: "capitally_funded",
         filter: value => value === true ? "True" : "False",
     },
+    // eCapris_id: {
+    //     label: "eCapris_id",
+    //     filter: value => `ID is ${value}`
+    // },
 }
