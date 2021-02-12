@@ -330,7 +330,7 @@ const GridTable = ({ title, query }) => {
     query.gql,
     query.config.options.useQuery
   );
- 
+
   return (
     <Container maxWidth={false} className={classes.root}>
       {/*Title*/}
@@ -373,7 +373,6 @@ const GridTable = ({ title, query }) => {
                   />
                   <TableBody>
                     {data[query.table].map((row, rowIndex) => {
-                      console.log(query);
                       return (
                         <TableRow hover key={rowIndex}>
                           {query.columns.map(
