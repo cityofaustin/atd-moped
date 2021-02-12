@@ -1,6 +1,5 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
-import isequal from "lodash.isequal";
 
 // Material
 import { CircularProgress, TextField } from "@material-ui/core";
@@ -13,6 +12,23 @@ import {
   ADD_PROJECT_PERSONNEL,
   UPDATE_PROJECT_PERSONNEL,
 } from "../../../queries/project";
+
+/**
+ * Filter k/v pairs from an object by the key names passed in an array
+ * @param {object} obj - The object with unwanted k/v pairs
+ * @param {array} keys - Keys of unwanted k/v pairs
+ * @return {object} New object without unneeded k/v pairs
+ */
+export const filterObjectByKeys = (obj, keys) =>
+  Object.keys(obj)
+    .filter(key => !keys.includes(key))
+    .reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: obj[key],
+      }),
+      {}
+    );
 
 const ProjectTeamTable = ({
   personnelState,
@@ -81,23 +97,6 @@ const ProjectTeamTable = ({
     const user = getUserById(id);
     return workgroups[user.workgroup_id];
   };
-
-  /**
-   * Filter k/v pairs from an object by the key names passed in an array
-   * @param {object} obj - The object with unwanted k/v pairs
-   * @param {array} keys - Keys of unwanted k/v pairs
-   * @return {object} New object without unneeded k/v pairs
-   */
-  const filterObjectByKeys = (obj, keys) =>
-    Object.keys(obj)
-      .filter(key => !keys.includes(key))
-      .reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: obj[key],
-        }),
-        {}
-      );
 
   /**
    * Column configuration for <MaterialTable>
@@ -177,7 +176,9 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Add personnel to state
-                setPersonnelState([...personnelState, newData]);
+                const activePersonnel = { ...newData, status_id: 1 };
+
+                setPersonnelState([...personnelState, activePersonnel]);
               } else {
                 // Insert personnel and associate with project
                 const personnelData = {
