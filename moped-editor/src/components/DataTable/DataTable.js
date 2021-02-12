@@ -364,16 +364,19 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   }, [isEditing]);
 
   useEffect(() => {
-    if(editValue !== null) {
+    if (updateMutation === INITIAL_MUTATION) return;
+    if (editValue !== null) {
       new Promise(() => {
         updateField()
-            .then(response => {
-              console.log("response", response);
-              setTimeout(() => refetch(), 501);
-            })
-            .finally(() => {
-              setEditField("");
-            });
+          .then(response => {
+            console.log("response", response);
+            setTimeout(() => refetch(), 301);
+          })
+          .finally(() => {
+            setEditValue("");
+            setEditField("");
+            setUpdateMutation(INITIAL_MUTATION);
+          });
       });
     }
   }, [updateMutation, refetch, updateField]);
