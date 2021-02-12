@@ -1,5 +1,6 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
+import isequal from "lodash.isequal";
 
 // Material
 import { CircularProgress, TextField } from "@material-ui/core";
@@ -176,15 +177,17 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Add personnel to state
+                const cleanedNewData = filterObjectByKeys(newData, [
+                  "__typename",
+                  "tableData",
+                ]);
+
                 const personnelData = {
-                  ...newData,
+                  ...cleanedNewData,
                   status_id: 1,
                 };
-
-                setPersonnelState(prevPersonnel => [
-                  ...prevPersonnel,
-                  personnelData,
-                ]);
+                // TODO: Debug why tableData is still in personnelState after filtering
+                setPersonnelState([...personnelState, personnelData]);
               } else {
                 // Insert personnel and associate with project
                 const personnelData = {
@@ -208,8 +211,24 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               if (isNewProject) {
-                // Update personnel in state
-                console.log("Update in new project");
+                const cleanedNewData = filterObjectByKeys(newData, [
+                  "__typename",
+                  "tableData",
+                ]);
+
+                const cleanedOldData = filterObjectByKeys(oldData, [
+                  "__typename",
+                  "tableData",
+                ]);
+
+                const updatedPersonnelState = [
+                  ...personnelState.filter(
+                    user => !isequal(user, cleanedOldData)
+                  ),
+                  cleanedNewData,
+                ];
+
+                setPersonnelState(updatedPersonnelState);
               } else {
                 // Mutate personnel
                 const updatedPersonnelData = {
@@ -236,7 +255,6 @@ const ProjectTeamTable = ({
             setTimeout(() => {
               if (isNewProject) {
                 // Remove personnel from state
-                console.log("Update in new project");
               } else {
                 // Update status to inactive (0) to soft delete
                 const updatedPersonnelData = { ...oldData, status_id: 0 };
