@@ -3,15 +3,12 @@ import React, { useEffect, useState } from "react";
 import {
   Box,
   FormControl,
-  FormControlLabel,
   Grid,
   Icon,
-  Input,
   InputLabel,
   MenuItem,
   Paper,
   Select,
-  Switch,
   TextField,
 } from "@material-ui/core";
 
@@ -35,6 +32,12 @@ const useStyles = makeStyles(theme => ({
   fieldGridItem: {
     padding: "1rem",
   },
+  fieldGridItemButtons: {
+    minWidth: "3rem",
+  },
+  fieldSelectCapitalize: {
+    textTransform: "capitalize",
+  },
 }));
 
 const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
@@ -43,27 +46,31 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const fieldConfiguration = {
     current_status: {
       label: "Current Status",
-      type: "string",
+      type: "select",
       placeholder: "Select Status",
       editable: true,
       lookup: {
         table: "moped_status",
-        relationship: `where: {project_id: {_eq: ${data.moped_project[0]
-          ?.project_id ?? null} }`,
-        labelField: "status_name",
-        valueField: "status_name",
+        fieldLabel: "status_name",
+        fieldValue: "status_name",
+        style: classes.fieldSelectCapitalize,
+        format: value => String(value).toLowerCase(),
       },
+      style: classes.fieldSelectCapitalize,
     },
     current_phase: {
       label: "Current Phase",
       placeholder: "Select phase",
-      type: "string",
+      type: "select",
       editable: true,
       lookup: {
         table: "moped_phases",
-        labelField: "phase_name",
-        valueField: "phase_id",
+        fieldLabel: "phase_name",
+        fieldValue: "phase_name",
+        style: classes.fieldSelectCapitalize,
+        format: value => String(value).toLowerCase(),
       },
+      style: classes.fieldSelectCapitalize,
     },
     project_description: {
       label: "Description",
@@ -81,8 +88,13 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
     fiscal_year: {
       label: "Fiscal Year",
-      type: "string",
-      placeholder: "Enter fiscal year",
+      type: "select",
+      placeholder: "Select fiscal year",
+      lookup: {
+        table: "moped_city_fiscal_years",
+        fieldLabel: "fiscal_year_value",
+        fieldValue: "fiscal_year_value",
+      },
       editable: true,
     },
     capitally_funded: {
@@ -95,6 +107,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       label: "eCapris ID",
       type: "string",
       placeholder: "Enter eCapris ID",
+      emptyValue: "None",
       editable: true,
     },
   };
@@ -106,38 +119,28 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         .map(field => {
           const {
             table,
-            labelField,
-            valueField,
+            fieldLabel,
+            fieldValue,
             relationship,
           } = fieldConfiguration[field]?.lookup;
 
-          const relationshipFilter = !!relationship
-            ? `(${relationship})`
-            : null;
+          const relationshipFilter = !!relationship ? `(${relationship})` : "";
 
           return `
             ${table} ${relationshipFilter} {
-              labelField: ${labelField}
-              valueField: ${valueField}
+              fieldLabel: ${fieldLabel}
+              fieldValue: ${fieldValue}
             }
           `;
         }) +
       "}\n"
   );
 
-  console.log("LOOKUP_TABLE_QUERY", LOOKUP_TABLE_QUERY);
-
   const {
     loading: lookupTablesLoading,
     error: lookupTablesError,
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
-
-  if (lookupTablesData) {
-    console.log("Data: ", lookupTablesData);
-  }
-
-
 
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
@@ -170,7 +173,10 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const formatValue = field => {
     let formattedValue = getValue(field);
 
-    const fieldType = fieldConfiguration[field]?.type ?? "string";
+    const fieldConfig = fieldConfiguration[field];
+
+    const fieldType = fieldConfig?.type ?? "string";
+    const emptyValue = fieldConfig?.emptyValue ?? "None";
 
     switch (fieldType) {
       case "date":
@@ -181,13 +187,9 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         break;
       case "string":
         formattedValue =
-          formattedValue === "" ? (
-            <Box color="text.disabled">
-              <p>No data</p>
-            </Box>
-          ) : (
-            formattedValue
-          );
+          formattedValue === null || formattedValue.trim() === ""
+            ? emptyValue
+            : formattedValue;
         break;
       default:
         break;
@@ -304,6 +306,52 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   };
 
   /**
+   * Render a select component
+   * @param {string} field
+   * @param {string} initialValue
+   */
+  const renderSelectEdit = (field, initialValue) => {
+    const fieldConfig = fieldConfiguration[field];
+
+    // It must have either a lookup, or specific options.
+    const lookupTable = fieldConfig?.lookup?.table ?? null;
+
+    const lookupFormat = fieldConfig?.lookup?.format ?? null;
+
+    const lookupValues = lookupTable
+      ? lookupTablesData[lookupTable] ?? []
+      : fieldConfig?.options ?? [];
+
+    const currentValue = editValue ?? initialValue;
+
+    return (
+      <FormControl fullWidth className={classes.formControl}>
+        <InputLabel id={`select-${field}`}>{fieldConfig.label}</InputLabel>
+        <Select
+          fullWidth
+          labelId={`select-${field}`}
+          id={`select-field-${field}`}
+          value={lookupFormat ? lookupFormat(currentValue) : currentValue}
+          onChange={e => handleFieldValueUpdate(field, e)}
+          className={fieldConfig?.style ?? null}
+        >
+          {lookupValues.map(menuItem => {
+            return (
+              <MenuItem
+                fullWidth
+                value={String(menuItem.fieldValue).toLowerCase()}
+                className={fieldConfig?.lookup?.style ?? null}
+              >
+                {menuItem.fieldLabel}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
+    );
+  };
+
+  /**
    * Render a date component
    * @param {string} field
    * @param {string} initialValue
@@ -355,7 +403,10 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
                   {isEditing && editField === field ? (
                     <form onSubmit={e => handleFieldUpdate(e)}>
                       <Grid container fullWidth>
-                        <Grid item xs={12} sm={10}>
+                        <Grid item xs={12} sm={9}>
+                          {fieldType === "select" && (
+                            <>{renderSelectEdit(field, getValue(field))}</>
+                          )}
                           {fieldType === "string" && (
                             <>{renderStringEdit(field, getValue(field))}</>
                           )}
@@ -372,7 +423,12 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
                             </>
                           )}
                         </Grid>
-                        <Grid item xs={12} sm={2}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={3}
+                          className={classes.fieldGridItemButtons}
+                        >
                           <Icon
                             className={classes.editIconConfirm}
                             onClick={handleAcceptClick}
