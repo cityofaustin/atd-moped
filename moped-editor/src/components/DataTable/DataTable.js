@@ -40,7 +40,25 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
+/**
+ * Shows data and makes fields editable.
+ * @param {object} fieldConfiguration - The configuration to be rendered
+ * @param {string} tableName - The name of the table being displayed
+ * @param {object} data - The data already gathered
+ * @param {boolean} loading - The Apollo loading variable
+ * @param {object} error - The Apollo error object
+ * @param {function} refetch - The Apollo refetch function
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const DataTable = ({
+  fieldConfiguration,
+  tableName,
+  data,
+  loading,
+  error,
+  refetch,
+}) => {
   const classes = useStyles();
 
   const LOOKUP_TABLE_QUERY = gql(
@@ -78,6 +96,33 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   /**
+   * Generates a mutation GraphQL query object ready to be executed.
+   * @param table - The name of the table to be updated
+   * @param field - The name of the field to be updated
+   * @param where - The where statement we need to use to update
+   * @param value - The value to update with
+   * @returns {gql}
+   */
+  const generateUpdateQuery = (table, field, value, where) => {
+    const gqlFormattedValue = value;
+
+    return gql`
+      mutation updateField {
+        update_${table}(
+          where: {
+            ${where},
+          },
+          _set: {
+            ${field}: ${gqlFormattedValue}
+          }
+        ) {
+          affected_rows
+        }
+      }
+    `;
+  };
+
+  /**
    * Retrieves the value for a field
    * @param {string} field - The value of the string
    * @returns {string}
@@ -87,12 +132,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Retrieves the value from the moped_project object in memory
+   * Retrieves the value from the table object in memory
    * @param {string} field - The name of the field (column)
    * @returns {*} - The value
    */
   const getValue = field => {
-    return data.moped_project[0][field] ?? null;
+    return data[tableName][0][field] ?? null;
   };
 
   /**
