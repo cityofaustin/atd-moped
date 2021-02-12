@@ -1310,7 +1310,7 @@ export const ProjectActivityLogGenericDescriptions = {
     label: "Project extent updated",
   },
   project_extent_geojson: {
-    label: "Project geo-json updated",
+    label: "Project GeoJSON updated",
   }
 }
 
