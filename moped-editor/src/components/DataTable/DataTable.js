@@ -43,7 +43,6 @@ const useStyles = makeStyles(theme => ({
 /**
  * Shows data and makes fields editable.
  * @param {object} fieldConfiguration - The configuration to be rendered
- * @param {string} tableName - The name of the table being displayed
  * @param {object} data - The data already gathered
  * @param {boolean} loading - The Apollo loading variable
  * @param {object} error - The Apollo error object
@@ -51,27 +50,22 @@ const useStyles = makeStyles(theme => ({
  * @returns {JSX.Element}
  * @constructor
  */
-const DataTable = ({
-  fieldConfiguration,
-  tableName,
-  data,
-  loading,
-  error,
-  refetch,
-}) => {
+const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const classes = useStyles();
 
   const LOOKUP_TABLE_QUERY = gql(
     "query RetrieveLookupValues {\n" +
-      Object.keys(fieldConfiguration)
-        .filter(field => (fieldConfiguration[field]?.lookup ?? null) !== null)
+      Object.keys(fieldConfiguration.fields)
+        .filter(
+          field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
+        )
         .map(field => {
           const {
             table,
             fieldLabel,
             fieldValue,
             relationship,
-          } = fieldConfiguration[field]?.lookup;
+          } = fieldConfiguration.fields[field]?.lookup;
 
           const relationshipFilter = !!relationship ? `(${relationship})` : "";
 
@@ -97,21 +91,35 @@ const DataTable = ({
 
   /**
    * Generates a mutation GraphQL query object ready to be executed.
-   * @param table - The name of the table to be updated
    * @param field - The name of the field to be updated
-   * @param where - The where statement we need to use to update
    * @param value - The value to update with
    * @returns {gql}
    */
-  const generateUpdateQuery = (table, field, value, where) => {
-    const gqlFormattedValue = value;
+  const generateUpdateQuery = (field, value) => {
+    const tableConfig = fieldConfiguration.table;
 
-    return gql`
-      mutation updateField {
-        update_${table}(
-          where: {
-            ${where},
-          },
+    const fieldConfig = fieldConfiguration.fields[field];
+
+    // Remove break characters
+    let gqlFormattedValue = String(value)
+      .trim()
+      .replace(/(\r\n|\n|\r)/gm, "");
+
+    switch (fieldConfig.type) {
+      case "number":
+      case "boolean":
+        gqlFormattedValue = `${gqlFormattedValue}`;
+        break;
+      default:
+        gqlFormattedValue = `"${gqlFormattedValue}"`;
+        break;
+    }
+
+    // Generate the mutation
+    const mutation = `
+      mutation ${tableConfig.update.mutationName} {
+        ${tableConfig.update.mutationTable}(
+          ${tableConfig.update.where},
           _set: {
             ${field}: ${gqlFormattedValue}
           }
@@ -119,6 +127,12 @@ const DataTable = ({
           affected_rows
         }
       }
+    `;
+
+    console.log("mutation", mutation);
+
+    return gql`
+      ${mutation}
     `;
   };
 
@@ -128,7 +142,7 @@ const DataTable = ({
    * @returns {string}
    */
   const getLabel = field => {
-    return fieldConfiguration[field]?.label ?? null;
+    return fieldConfiguration.fields[field]?.label ?? null;
   };
 
   /**
@@ -137,6 +151,7 @@ const DataTable = ({
    * @returns {*} - The value
    */
   const getValue = field => {
+    const tableName = fieldConfiguration.table.name;
     return data[tableName][0][field] ?? null;
   };
 
@@ -149,7 +164,7 @@ const DataTable = ({
   const formatValue = field => {
     let formattedValue = getValue(field);
 
-    const fieldConfig = fieldConfiguration[field];
+    const fieldConfig = fieldConfiguration.fields[field];
 
     const fieldType = fieldConfig?.type ?? "string";
     const emptyValue = fieldConfig?.emptyValue ?? "None";
@@ -181,6 +196,7 @@ const DataTable = ({
     console.log("Committing: ");
     console.log("Field: ", editField);
     console.log("value: ", editValue);
+    const updateMutation = generateUpdateQuery(editField, editValue);
     setEditField("");
   };
 
@@ -223,7 +239,7 @@ const DataTable = ({
    * @param {string} initialValue
    */
   const renderDateEdit = (field, initialValue) => {
-    const fieldConfig = fieldConfiguration[field];
+    const fieldConfig = fieldConfiguration.fields[field];
 
     return (
       <TextField
@@ -248,7 +264,7 @@ const DataTable = ({
    * @param {string} initialValue
    */
   const renderStringEdit = (field, initialValue) => {
-    const fieldConfig = fieldConfiguration[field];
+    const fieldConfig = fieldConfiguration.fields[field];
 
     return (
       <TextField
@@ -275,7 +291,7 @@ const DataTable = ({
    * @param {string} initialValue
    */
   const renderSelectEdit = (field, initialValue) => {
-    const fieldConfig = fieldConfiguration[field];
+    const fieldConfig = fieldConfiguration.fields[field];
 
     // It must have either a lookup, or specific options.
     const lookupTable = fieldConfig?.lookup?.table ?? null;
@@ -356,20 +372,23 @@ const DataTable = ({
       ) : (
         <Paper>
           <Grid container>
-            {Object.keys(fieldConfiguration).map(field => {
-              const fieldType = fieldConfiguration[field]?.type ?? "string";
+            {Object.keys(fieldConfiguration.fields).map(field => {
+              const fieldType =
+                fieldConfiguration.fields[field]?.type ?? "string";
 
               return (
                 <Grid
                   item
-                  key={fieldConfiguration[field]?.label}
+                  key={fieldConfiguration.fields[field]?.label}
                   className={classes.fieldGridItem}
                   xs={12}
                   sm={6}
                 >
                   <Box mb={2}>
                     {((isEditing && editField !== field) || !isEditing) && (
-                      <h4>{fieldConfiguration[field]?.label ?? "Unknown"}</h4>
+                      <h4>
+                        {fieldConfiguration.fields[field]?.label ?? "Unknown"}
+                      </h4>
                     )}
                     {isEditing && editField === field ? (
                       <form onSubmit={e => handleAcceptClick(e)}>
@@ -418,14 +437,15 @@ const DataTable = ({
                     ) : (
                       <InputLabel id={"label-" + field}>
                         {formatValue(field)}
-                        {fieldConfiguration[field].editable && !isEditing && (
-                          <Icon
-                            className={classes.editIcon}
-                            onClick={() => setEditField(field)}
-                          >
-                            create
-                          </Icon>
-                        )}
+                        {fieldConfiguration.fields[field].editable &&
+                          !isEditing && (
+                            <Icon
+                              className={classes.editIcon}
+                              onClick={() => setEditField(field)}
+                            >
+                              create
+                            </Icon>
+                          )}
                       </InputLabel>
                     )}
                   </Box>
