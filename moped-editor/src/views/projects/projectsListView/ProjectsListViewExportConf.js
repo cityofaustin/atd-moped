@@ -28,5 +28,5 @@ export const ProjectsListViewExportConf = {
     capitally_funded: {
         label: "capitally_funded",
         filter: value => value === true ? "True" : "False",
-    }
+    },
 }
