@@ -36,20 +36,24 @@ const useAuthentication = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const refreshState = useCallback(() => {
-
     setIsLoading(true);
     console.log("[AUTH] useAuthentication() refresh state");
 
-    Auth.currentAuthenticatedUser()
+    Auth.currentSession()
       .then(user => {
-        console.log("[AUTH] useAuthentication().currentAuthenticatedUser().then() setting user state");
+        console.log(
+          "[AUTH] useAuthentication().currentAuthenticatedUser().then() setting user state"
+        );
         setUser(user);
         setIsAuthenticated(_isAuthenticated(user));
         setError(null);
         setIsLoading(false);
       })
       .catch(err => {
-        console.log("[AUTH] useAuthentication().currentAuthenticatedUser().catch() error");
+        console.log(
+          "[AUTH] useAuthentication().currentAuthenticatedUser().catch() error",
+          err
+        );
         setUser(null);
         setIsAuthenticated(false);
         if (err === "not authenticated") {
@@ -94,12 +98,14 @@ const useAuthentication = () => {
   const signIn = useCallback(() => {
     console.log("[AUTH] signIn() signing in");
     setIsLoading(true);
-    Auth.federatedSignIn({ provider: "AzureAD" }).then(_ => {
-      console.log("[AUTH] Auth.federatedSignIn().signIn() signing in");
-    }).catch(err => {
-      console.log("[AUTH] Auth.federatedSignIn().signIn() error");
-      setError(err);
-    });
+    Auth.federatedSignIn({ provider: "AzureAD" })
+      .then(_ => {
+        console.log("[AUTH] Auth.federatedSignIn().signIn() signing in");
+      })
+      .catch(err => {
+        console.log("[AUTH] Auth.federatedSignIn().signIn() error");
+        setError(err);
+      });
   }, []);
 
   const signOut = useCallback(() => {
@@ -136,31 +142,27 @@ const useAuthentication = () => {
 };
 
 const _isAuthenticated = user => {
-
-  console.log("_isAuthenticated: debugging..."); debugger;
-
-
   if (
     !user ||
-    !user.signInUserSession ||
-    !user.signInUserSession.isValid ||
-    !user.signInUserSession.accessToken ||
-    !user.signInUserSession.accessToken.getExpiration
+    !user.idToken ||
+    !user.idToken.payload ||
+    !user.idToken.payload["https://hasura.io/jwt/claims"] ||
+    !user.accessToken ||
+    !user.refreshToken
   ) {
     console.log("[AUTH] _isAuthenticated() not signed in!");
     return false;
   }
 
   console.log("[AUTH] _isAuthenticated() checking things...");
-  const session = user.signInUserSession;
-  const isValid = session.isValid() || false;
+  const isValid = user?.isValid() ?? false;
 
-  const sessionExpiry = new Date(session.accessToken.getExpiration() * 1000);
-  const isExpired = new Date() > sessionExpiry;
-  const output = isValid && !isExpired;
-  console.log("[AUTH] _isAuthenticated() checking things: " + output);
-  return output;
+  const isExpired =
+    Math.round(new Date().getTime() / 1000) > user.idToken.getExpiration();
+
+  const isAuth = isValid && !isExpired;
+  console.log("[AUTH] _isAuthenticated() isAuth: " + isAuth);
+  return isAuth;
 };
-
 
 export default useAuthentication;
