@@ -29,7 +29,8 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Alert} from "@material-ui/lab";
+import { Alert } from "@material-ui/lab";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -76,7 +77,6 @@ const ProjectActivityLog = () => {
   };
 
   if (loading) return <CircularProgress />;
-  if (error) return `Error! ${error.message}`;
 
   /**
    * Formats the iso date into human-readable locale date.
@@ -129,128 +129,132 @@ const ProjectActivityLog = () => {
   };
 
   return (
-    <CardContent>
-      <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
-      {getTotalItems() === 0 ? (
-          <Alert severity="info">There aren't any items for this project.</Alert>
-      ) : (
-        <TableContainer component={Paper}>
-          <Table className={classes.table} aria-label="simple table">
-            <TableHead>
-              <TableRow>
-                <TableCell align="left">
-                  <b>Date</b>
-                </TableCell>
-                <TableCell align="left">
-                  <b>User</b>
-                </TableCell>
-                <TableCell align="left">
-                  <b>Action</b>
-                </TableCell>
-                <TableCell align="left">
-                  <b>Change</b>
-                </TableCell>
-                <TableCell align="left"> </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {data["moped_activity_log"].map(change => (
-                <TableRow key={change.activity_id}>
-                  <TableCell
-                    align="left"
-                    component="th"
-                    scope="row"
-                    width="5%"
-                    className={classes.tableCell}
-                  >
-                    {formatDate(change.created_at)}
+    <ApolloErrorHandler error={error}>
+      <CardContent>
+        <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
+        {getTotalItems() === 0 ? (
+          <Alert severity="info">
+            There aren't any items for this project.
+          </Alert>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left">
+                    <b>Date</b>
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    width="15%"
-                    className={classes.tableCell}
-                  >
-                    <Box display="flex" p={0}>
-                      <Box p={0}>
-                        <Avatar
-                          alt={`${change.moped_user.first_name} ${change.moped_user.last_name}`}
-                          src="/moped/static/images/avatars/userAvatar.jpg"
-                          className={classes.avatarSmall}
-                        >
-                          {getInitials(
-                            `${change.moped_user.first_name} ${change.moped_user.last_name}`
-                          )}
-                        </Avatar>
-                      </Box>
-                      <Box p={0} flexGrow={1} className={classes.avatarName}>
-                        {change.moped_user.first_name}{" "}
-                        {change.moped_user.last_name}
-                      </Box>
-                    </Box>
+                  <TableCell align="left">
+                    <b>User</b>
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    width="5%"
-                    className={classes.tableCell}
-                  >
-                    <b>{getOperationName(change.operation_type)}</b>
+                  <TableCell align="left">
+                    <b>Action</b>
                   </TableCell>
-                  <TableCell
-                    align="left"
-                    width="70%"
-                    className={classes.tableCell}
-                  >
-                    <Box display="flex" p={0}>
-                      <Box p={0}>
-                        <Icon>{getChangeIcon(change.operation_type)}</Icon>
-                      </Box>
-                      <Box p={0} flexGrow={1}>
-                        <Grid continer>
-                          {Array.isArray(change.description) &&
-                            change.description.length === 0 && (
-                              <Grid item className={classes.tableChangeItem}>
-                                <b>{getLabelNoDiff(change.operation_type)}</b>
-                              </Grid>
-                            )}
-                          {change.description.map(changeItem => {
-                            return (
-                              <Grid item className={classes.tableChangeItem}>
-                                <b>
-                                  {getRecordTypeLabel(change.record_type)}{" "}
-                                  {getHumanReadableField(
-                                    change.record_type,
-                                    changeItem.field
-                                  )}
-                                </b>{" "}
-                                from <b>&quot;{changeItem.old}&quot;</b> to{" "}
-                                <b>&quot;{changeItem.new}&quot;</b>
-                              </Grid>
-                            );
-                          })}
-                        </Grid>
-                      </Box>
-                    </Box>
+                  <TableCell align="left">
+                    <b>Change</b>
                   </TableCell>
-                  <TableCell width="5%">
-                    <Button
-                      onClick={() => handleDetailsOpen(change.activity_id)}
-                    >
-                      Details
-                    </Button>
-                  </TableCell>
+                  <TableCell align="left"> </TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      )}
-      {!!activityId && (
-        <ProjectActivityLogDialog
-          activity_id={activityId}
-          handleClose={handleDetailsClose}
-        />
-      )}
-    </CardContent>
+              </TableHead>
+              <TableBody>
+                {data["moped_activity_log"].map(change => (
+                  <TableRow key={change.activity_id}>
+                    <TableCell
+                      align="left"
+                      component="th"
+                      scope="row"
+                      width="5%"
+                      className={classes.tableCell}
+                    >
+                      {formatDate(change.created_at)}
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      width="15%"
+                      className={classes.tableCell}
+                    >
+                      <Box display="flex" p={0}>
+                        <Box p={0}>
+                          <Avatar
+                            alt={`${change.moped_user.first_name} ${change.moped_user.last_name}`}
+                            src="/moped/static/images/avatars/userAvatar.jpg"
+                            className={classes.avatarSmall}
+                          >
+                            {getInitials(
+                              `${change.moped_user.first_name} ${change.moped_user.last_name}`
+                            )}
+                          </Avatar>
+                        </Box>
+                        <Box p={0} flexGrow={1} className={classes.avatarName}>
+                          {change.moped_user.first_name}{" "}
+                          {change.moped_user.last_name}
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      width="5%"
+                      className={classes.tableCell}
+                    >
+                      <b>{getOperationName(change.operation_type)}</b>
+                    </TableCell>
+                    <TableCell
+                      align="left"
+                      width="70%"
+                      className={classes.tableCell}
+                    >
+                      <Box display="flex" p={0}>
+                        <Box p={0}>
+                          <Icon>{getChangeIcon(change.operation_type)}</Icon>
+                        </Box>
+                        <Box p={0} flexGrow={1}>
+                          <Grid continer>
+                            {Array.isArray(change.description) &&
+                              change.description.length === 0 && (
+                                <Grid item className={classes.tableChangeItem}>
+                                  <b>{getLabelNoDiff(change.operation_type)}</b>
+                                </Grid>
+                              )}
+                            {change.description.map(changeItem => {
+                              return (
+                                <Grid item className={classes.tableChangeItem}>
+                                  <b>
+                                    {getRecordTypeLabel(change.record_type)}{" "}
+                                    {getHumanReadableField(
+                                      change.record_type,
+                                      changeItem.field
+                                    )}
+                                  </b>{" "}
+                                  from <b>&quot;{changeItem.old}&quot;</b> to{" "}
+                                  <b>&quot;{changeItem.new}&quot;</b>
+                                </Grid>
+                              );
+                            })}
+                          </Grid>
+                        </Box>
+                      </Box>
+                    </TableCell>
+                    <TableCell width="5%">
+                      <Button
+                        onClick={() => handleDetailsOpen(change.activity_id)}
+                      >
+                        Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+        {!!activityId && (
+          <ProjectActivityLogDialog
+            activity_id={activityId}
+            handleClose={handleDetailsClose}
+          />
+        )}
+      </CardContent>
+    </ApolloErrorHandler>
   );
 };
 

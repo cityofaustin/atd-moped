@@ -5,6 +5,7 @@ import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 const formatValue = value => {
   let formattedValue = value.field;
@@ -96,43 +97,45 @@ const ProjectSummary = () => {
   ];
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
-        <Grid item xs={12} md={6}>
-          <Grid container>
-            {projectDetails.map(detail => (
-              <Grid key={detail.label} item xs={6}>
-                <Box mb={2}>
-                  <h4>{detail.label}</h4>
-                  <p>{formatValue(detail)}</p>
-                </Box>
-              </Grid>
-            ))}
+    <ApolloErrorHandler errors={error}>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <Grid container>
+              {projectDetails.map(detail => (
+                <Grid key={detail.label} item xs={6}>
+                  <Box mb={2}>
+                    <h4>{detail.label}</h4>
+                    <p>{formatValue(detail)}</p>
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          {project_extent_geojson && project_extent_ids && (
-            <>
-              <ProjectSummaryMap
+          <Grid item xs={12} md={6}>
+            {project_extent_geojson && project_extent_ids && (
+              <>
+                <ProjectSummaryMap
+                  selectedLayerIds={project_extent_ids}
+                  projectExtentGeoJSON={project_extent_geojson}
+                  setIsEditing={setIsEditing}
+                />
+              </>
+            )}
+            {isEditing && (
+              <ProjectSummaryEditMap
+                projectId={projectId}
                 selectedLayerIds={project_extent_ids}
                 projectExtentGeoJSON={project_extent_geojson}
+                isEditing={isEditing}
                 setIsEditing={setIsEditing}
+                refetchProjectDetails={refetch}
               />
-            </>
-          )}
-          {isEditing && (
-            <ProjectSummaryEditMap
-              projectId={projectId}
-              selectedLayerIds={project_extent_ids}
-              projectExtentGeoJSON={project_extent_geojson}
-              isEditing={isEditing}
-              setIsEditing={setIsEditing}
-              refetchProjectDetails={refetch}
-            />
-          )}
+            )}
+          </Grid>
         </Grid>
-      </Grid>
-    </CardContent>
+      </CardContent>
+    </ApolloErrorHandler>
   );
 };
 

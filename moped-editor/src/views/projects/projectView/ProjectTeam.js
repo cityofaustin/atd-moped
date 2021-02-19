@@ -7,6 +7,7 @@ import { CardContent, CircularProgress, Grid } from "@material-ui/core";
 import MaterialTable from "material-table";
 
 import { TEAM_QUERY } from "../../../queries/project";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 const ProjectTeam = () => {
   const { projectId } = useParams();
@@ -17,7 +18,6 @@ const ProjectTeam = () => {
   });
 
   if (loading || !data) return <CircularProgress />;
-  if (error) return `Error! ${error.message}`;
 
   // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
@@ -87,20 +87,22 @@ const ProjectTeam = () => {
   ];
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <MaterialTable
-            columns={columns}
-            data={personnel}
-            title="Project Team"
-            options={{
-              search: false,
-            }}
-          />
+    <ApolloErrorHandler error={error}>
+      <CardContent>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <MaterialTable
+              columns={columns}
+              data={personnel}
+              title="Project Team"
+              options={{
+                search: false,
+              }}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </CardContent>
+      </CardContent>
+    </ApolloErrorHandler>
   );
 };
 
