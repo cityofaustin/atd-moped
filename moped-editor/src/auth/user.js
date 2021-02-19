@@ -1,11 +1,18 @@
-import React from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+
 import Amplify, { Auth } from "aws-amplify";
 
 import { colors } from "@material-ui/core";
 
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
-export const UserContext = React.createContext(null);
+export const UserContext = createContext(null);
 
 /**
  * This is a constant string key that holds the profile color for a user.
@@ -53,10 +60,10 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
   };
 
-  const [user, setUser] = React.useState(getPersistedContext());
-  const [loginLoading, setLoginLoading] = React.useState(false);
+  const [user, setUser] = useState(getPersistedContext());
+  const [loginLoading, setLoginLoading] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Configure the keys needed for the Auth module. Essentially this is
     // like calling `Amplify.configure` but only for `Auth`.
     /**
@@ -119,7 +126,7 @@ export const UserProvider = ({ children }) => {
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = React.useMemo(() => ({ user, login, logout, loginLoading }), [
+  const values = useMemo(() => ({ user, login, logout, loginLoading }), [
     user,
     loginLoading,
   ]);
@@ -150,7 +157,7 @@ export const getRandomColor = () => {
 // to know as little as possible on how everything is handled, so we are not only abtracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
-  const context = React.useContext(UserContext);
+  const context = useContext(UserContext);
   if (context && context.user) {
     context.user.userColor = getRandomColor();
   }
