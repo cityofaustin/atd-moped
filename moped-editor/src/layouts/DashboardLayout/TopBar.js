@@ -44,7 +44,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               to="/moped/account"
               style={{ "background-color": user ? user.userColor : null }}
             >
-              {emailToInitials(user.attributes.email)}
+              {emailToInitials(user?.idToken?.payload?.email)}
             </Avatar>
           </div>
         </Box>
