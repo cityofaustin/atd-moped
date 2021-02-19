@@ -7,6 +7,32 @@ import { colors } from "@material-ui/core";
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
 export const UserContext = React.createContext(null);
 
+/**
+ * This is a constant string key that holds the profile color for a user.
+ * @type {string}
+ * @constant
+ */
+export const atdColorKeyName = "atd_moped_user_color";
+
+/**
+ * This is a constant string key that holds the profile for a user.
+ * @type {string}
+ * @constant
+ */
+export const atdSessionKeyName = "atd_moped_user_context";
+
+/**
+ * Removes the current user profile color
+ */
+export const destroyProfileColor = () =>
+  localStorage.removeItem(atdColorKeyName);
+
+/**
+ * Removes the current profile
+ */
+export const destroyLoggedInProfile = () =>
+  localStorage.removeItem(atdSessionKeyName);
+
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components bellow via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
@@ -16,7 +42,7 @@ export const UserProvider = ({ children }) => {
    * @return {object}
    */
   const getPersistedContext = () => {
-    return JSON.parse(localStorage.getItem("atd_moped_user_context")) || null;
+    return JSON.parse(localStorage.getItem(atdSessionKeyName)) || null;
   };
 
   /**
@@ -24,7 +50,7 @@ export const UserProvider = ({ children }) => {
    * @param {str} context - The user context object
    */
   const setPersistedContext = context => {
-    localStorage.setItem("atd_moped_user_context", JSON.stringify(context));
+    localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
   };
 
   const [user, setUser] = React.useState(getPersistedContext());
@@ -40,13 +66,13 @@ export const UserProvider = ({ children }) => {
 
     Amplify.Logger.LOG_LEVEL = "DEBUG";
 
-    // attempt to fetch the info of the user that was already logged in
-    Auth.currentAuthenticatedUser()
+    Auth.currentSession()
       .then(user => {
         setPersistedContext(user);
-        setUser(getPersistedContext());
+        setUser(user);
       })
-      .catch(() => {
+      .catch(error => {
+        alert("Error: " + String(error));
         setPersistedContext(null);
         setUser(null);
       });
@@ -59,10 +85,10 @@ export const UserProvider = ({ children }) => {
     setLoginLoading(true);
 
     return Auth.signIn(usernameOrEmail, password)
-      .then(cognitoUser => {
-        setUser(cognitoUser);
+      .then(user => {
+        setUser(user.signInUserSession);
         setLoginLoading(false);
-        return cognitoUser;
+        return user.signInUserSession;
       })
       .catch(err => {
         if (err.code === "UserNotFoundException") {
@@ -76,14 +102,16 @@ export const UserProvider = ({ children }) => {
   };
 
   // same thing here
-  const logout = () =>
-    Auth.signOut().then(data => {
+  const logout = () => {
+    alert("Logging you out?");
+    return Auth.signOut().then(data => {
+      // Remove the current color
+      destroyProfileColor();
+      destroyLoggedInProfile();
       setUser(null);
       return data;
     });
-
-  // Remove the current color
-  destroyProfileColor();
+  };
 
   // Make sure to not force a re-render on the components that are reading these values,
   // unless the `user` value has changed. This is an optimisation that is mostly needed in cases
@@ -99,13 +127,6 @@ export const UserProvider = ({ children }) => {
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
 };
-
-/**
- * This is a constant string key that holds the profile color for a user.
- * @type {string}
- * @variable
- */
-export const atdColorKeyName = "atd_moped_user_color";
 
 /**
  * Returns a random themes standard color as hexadecimal
@@ -125,13 +146,6 @@ export const getRandomColor = () => {
   return localStorage.getItem(atdColorKeyName);
 };
 
-/**
- * Removes the current user profile color
- */
-export const destroyProfileColor = () => {
-  localStorage.removeItem(atdColorKeyName);
-};
-
 // We also create a simple custom hook to read these values from. We want our React components
 // to know as little as possible on how everything is handled, so we are not only abtracting them from
 // the fact that we are using React's context, but we also skip some imports.
@@ -149,20 +163,15 @@ export const useUser = () => {
   return context;
 };
 
-export const getJwt = user => {
-  return user.signInUserSession.idToken.jwtToken;
-};
+export const getJwt = user => user.idToken.jwtToken;
 
 export const isUserSSO = user =>
-  user.signInUserSession.idToken.payload["cognito:username"].startsWith(
-    "azuread_"
-  );
+  user.idToken.payload["cognito:username"].startsWith("azuread_");
 
 // This function takes a CognitoUser Object and returns the role with the
 // highest permissions level within their allowed roles.
 export const getHighestRole = user => {
-  const claims =
-    user.signInUserSession.idToken.payload["https://hasura.io/jwt/claims"];
+  const claims = user.idToken.payload["https://hasura.io/jwt/claims"];
 
   const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];
 
