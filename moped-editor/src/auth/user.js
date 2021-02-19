@@ -158,11 +158,14 @@ export const getRandomColor = () => {
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = useContext(UserContext);
+  console.log("useUser() getting the context...");
+
   if (context && context.user) {
     context.user.userColor = getRandomColor();
   }
 
   if (context === undefined) {
+    console.log("useUser() we should probably redirect...");
     throw new Error(
       "`useUser` hook must be used within a `UserProvider` component"
     );
@@ -174,6 +177,18 @@ export const getJwt = user => user.idToken.jwtToken;
 
 export const isUserSSO = user =>
   user.idToken.payload["cognito:username"].startsWith("azuread_");
+
+export const availableSessionTime = user => {
+  try {
+    return (
+      user.idToken.getExpiration() - Math.round(new Date().getTime() / 1000)
+    );
+  } catch {
+    return 0;
+  }
+};
+
+export const isSessionExpired = user => availableSessionTime(user) > 0;
 
 // This function takes a CognitoUser Object and returns the role with the
 // highest permissions level within their allowed roles.
