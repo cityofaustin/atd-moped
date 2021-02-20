@@ -11,4 +11,9 @@ export default {
     REGION: process.env.REACT_APP_AWS_COGNITO_REGION,
     USER_POOL_ID: process.env.REACT_APP_AWS_COGNITO_USER_POOL_ID,
   },
+  cloudfront: {
+    DOMAIN: process.env.REACT_APP_AWS_CLOUDFRONT_DOMAIN,
+    SECURE: process.env.REACT_APP_AWS_CLOUDFRONT_SECURE,
+    EXPIRATION: process.env.REACT_APP_AWS_CLOUDFRONT_EXPIRATION,
+  }
 };
