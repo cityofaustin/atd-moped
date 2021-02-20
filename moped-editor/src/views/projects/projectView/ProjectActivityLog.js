@@ -129,6 +129,14 @@ const ProjectActivityLog = () => {
     return data?.moped_activity_log?.length ?? 0;
   };
 
+  /**
+   * Returns True if the field should be a generic type (i.e., maps, objects)
+   * @param {string} field - The field name (column name)
+   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
+   */
+  const isFieldGeneric = field =>
+    field in ProjectActivityLogGenericDescriptions;
+
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
@@ -219,15 +227,33 @@ const ProjectActivityLog = () => {
                             {change.description.map(changeItem => {
                               return (
                                 <Grid item className={classes.tableChangeItem}>
-                                  <b>
-                                    {getRecordTypeLabel(change.record_type)}{" "}
-                                    {getHumanReadableField(
-                                      change.record_type,
-                                      changeItem.field
-                                    )}
-                                  </b>{" "}
-                                  from <b>&quot;{changeItem.old}&quot;</b> to{" "}
-                                  <b>&quot;{changeItem.new}&quot;</b>
+                                  {isFieldGeneric(changeItem.field) ? (
+                                    <b>
+                                      {
+                                        ProjectActivityLogGenericDescriptions[
+                                          changeItem.field
+                                        ]?.label
+                                      }
+                                    </b>
+                                  ) : (
+                                    <>
+                                      <b>
+                                        {getRecordTypeLabel(change.record_type)}{" "}
+                                        {getHumanReadableField(
+                                          change.record_type,
+                                          changeItem.field
+                                        )}
+                                      </b>{" "}
+                                      from{" "}
+                                      <b>
+                                        &quot;{String(changeItem.old)}&quot;
+                                      </b>{" "}
+                                      to{" "}
+                                      <b>
+                                        &quot;{String(changeItem.new)}&quot;
+                                      </b>
+                                    </>
+                                  )}
                                 </Grid>
                               );
                             })}
