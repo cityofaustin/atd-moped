@@ -25,7 +25,7 @@ Amplify.configure({
     ...(config.application.ENVIRONMENT !== "local"
       ? {
           cookieStorage: {
-            path: "/moped",
+            path: "/",
             domain: config.cloudfront.DOMAIN,
             expires: Number(config.cloudfront.EXPIRATION),
             secure: config.cloudfront.SECURE,
