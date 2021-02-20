@@ -26,7 +26,7 @@ Amplify.configure({
       ? {
           path: "/moped",
           domain: config.cloudfront.DOMAIN,
-          expires: config.cloudfront.EXPIRATION,
+          expires: Number(config.cloudfront.EXPIRATION),
           secure: config.cloudfront.SECURE,
         }
       : null,
