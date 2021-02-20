@@ -8,13 +8,17 @@ const useStyles = makeStyles(theme => ({
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
   },
-  backdropMessage: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: "#fff",
-    marginLeft: "1rem",
-  },
 }));
 
+/**
+ * ApolloErrorHandler attempts to be a component that deals with the
+ * JWT Token Expired error in a sensible way. Initially, it only displays
+ * a spinner and forces the browser to refresh, allowing AWS Amplify
+ * to refresh the token.
+ * @param {Object} props - Props.error is the only prop needed at the moment
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ApolloErrorHandler = props => {
   const classes = useStyles();
 
@@ -34,7 +38,6 @@ const ApolloErrorHandler = props => {
       {jwtError ? (
         <Backdrop className={classes.backdrop} open={true} onClick={null}>
           <CircularProgress color="inherit" />
-          <p className={classes.backdropMessage}>Please Wait</p>
         </Backdrop>
       ) : error ? (
         <p>Error: {error.message}</p>

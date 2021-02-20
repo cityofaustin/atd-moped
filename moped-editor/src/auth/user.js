@@ -79,7 +79,6 @@ export const UserProvider = ({ children }) => {
         setUser(user);
       })
       .catch(error => {
-        alert("Error: " + String(error));
         setPersistedContext(null);
         setUser(null);
       });
@@ -110,7 +109,6 @@ export const UserProvider = ({ children }) => {
 
   // same thing here
   const logout = () => {
-    alert("Logging you out?");
     return Auth.signOut().then(data => {
       // Remove the current color
       destroyProfileColor();
@@ -158,14 +156,12 @@ export const getRandomColor = () => {
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = useContext(UserContext);
-  console.log("useUser() getting the context...");
 
   if (context && context.user) {
     context.user.userColor = getRandomColor();
   }
 
   if (context === undefined) {
-    console.log("useUser() we should probably redirect...");
     throw new Error(
       "`useUser` hook must be used within a `UserProvider` component"
     );

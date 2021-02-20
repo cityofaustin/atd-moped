@@ -29,7 +29,6 @@ import { signInButton, signInButtonContent } from "@aws-amplify/ui";
  * @see https://github.com/aws-amplify/amplify-js/blob/master/packages/amazon-cognito-identity-js/src/CognitoUser.js
  */
 const useAuthentication = () => {
-  console.log("[AUTH] useAuthentication() start");
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState(false);
@@ -37,23 +36,15 @@ const useAuthentication = () => {
 
   const refreshState = useCallback(() => {
     setIsLoading(true);
-    console.log("[AUTH] useAuthentication() refresh state");
 
     Auth.currentSession()
       .then(user => {
-        console.log(
-          "[AUTH] useAuthentication().currentAuthenticatedUser().then() setting user state"
-        );
         setUser(user);
         setIsAuthenticated(_isAuthenticated(user));
         setError(null);
         setIsLoading(false);
       })
       .catch(err => {
-        console.log(
-          "[AUTH] useAuthentication().currentAuthenticatedUser().catch() error",
-          err
-        );
         setUser(null);
         setIsAuthenticated(false);
         if (err === "not authenticated") {
@@ -67,13 +58,11 @@ const useAuthentication = () => {
 
   // Make sure our state is loaded before first render
   useLayoutEffect(() => {
-    console.log("[AUTH] useLayoutEffect() refreshing state");
     refreshState();
   }, [refreshState]);
 
   // Subscribe to auth events
   useEffect(() => {
-    console.log("[AUTH] useEffect() Subscribe to auth events");
     const handler = ({ payload }) => {
       switch (payload.event) {
         case "configured":
@@ -96,27 +85,18 @@ const useAuthentication = () => {
   }, [refreshState]);
 
   const signIn = useCallback(() => {
-    console.log("[AUTH] signIn() signing in");
     setIsLoading(true);
-    Auth.federatedSignIn({ provider: "AzureAD" })
-      .then(_ => {
-        console.log("[AUTH] Auth.federatedSignIn().signIn() signing in");
-      })
-      .catch(err => {
-        console.log("[AUTH] Auth.federatedSignIn().signIn() error");
-        setError(err);
-      });
+    Auth.federatedSignIn({ provider: "AzureAD" }).catch(err => {
+      setError(err);
+    });
   }, []);
 
   const signOut = useCallback(() => {
-    console.log("[AUTH] signIn() signing out");
     Auth.signOut()
       .then(_ => {
-        console.log("[AUTH] signOut().Auth.signOut() success...");
         refreshState();
       })
       .catch(err => {
-        console.log("[AUTH] signOut().Auth.signOut() error...");
         setError(err);
       });
   }, [refreshState]);
@@ -150,19 +130,14 @@ const _isAuthenticated = user => {
     !user.accessToken ||
     !user.refreshToken
   ) {
-    console.log("[AUTH] _isAuthenticated() not signed in!");
     return false;
   }
-
-  console.log("[AUTH] _isAuthenticated() checking things...");
   const isValid = user?.isValid() ?? false;
 
   const isExpired =
     Math.round(new Date().getTime() / 1000) > user.idToken.getExpiration();
 
-  const isAuth = isValid && !isExpired;
-  console.log("[AUTH] _isAuthenticated() isAuth: " + isAuth);
-  return isAuth;
+  return isValid && !isExpired;
 };
 
 export default useAuthentication;
