@@ -129,14 +129,6 @@ const ProjectActivityLog = () => {
     return data?.moped_activity_log?.length ?? 0;
   };
 
-  /**
-   * Returns True if the field should be a generic type (i.e., maps, objects)
-   * @param {string} field - The field name (column name)
-   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
-   */
-  const isFieldGeneric = field =>
-    field in ProjectActivityLogGenericDescriptions;
-
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
