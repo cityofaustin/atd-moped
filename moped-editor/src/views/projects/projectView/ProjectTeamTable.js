@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import { CircularProgress, TextField } from "@material-ui/core";
+import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
@@ -152,7 +153,6 @@ const ProjectTeamTable = ({
           name="notes"
           multiline
           inputProps={{ maxLength: 125 }}
-          variant="outlined"
           helperText="125 character max"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
@@ -169,6 +169,7 @@ const ProjectTeamTable = ({
       options={{
         search: false,
       }}
+      icons={{ Delete: ClearIcon }}
       editable={{
         onRowAdd: newData =>
           new Promise((resolve, reject) => {
@@ -178,7 +179,11 @@ const ProjectTeamTable = ({
                 console.log("Add to new project");
               } else {
                 // Insert personnel and associate with project
-                const personnelData = { ...newData, project_id: projectId };
+                const personnelData = {
+                  ...newData,
+                  project_id: projectId,
+                  status_id: 1,
+                };
 
                 addProjectPersonnel({
                   variables: {
@@ -195,7 +200,7 @@ const ProjectTeamTable = ({
           new Promise((resolve, reject) => {
             setTimeout(() => {
               if (isNewProject) {
-                // Add personnel to state
+                // Update personnel in state
                 console.log("Update in new project");
               } else {
                 // Mutate personnel
@@ -203,6 +208,30 @@ const ProjectTeamTable = ({
                   ...oldData,
                   ...newData,
                 };
+
+                const cleanedPersonnelData = filterObjectByKeys(
+                  updatedPersonnelData,
+                  ["__typename", "tableData"]
+                );
+
+                updateProjectPersonnel({
+                  variables: cleanedPersonnelData,
+                });
+              }
+
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+        onRowDelete: oldData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              if (isNewProject) {
+                // Remove personnel from state
+                console.log("Update in new project");
+              } else {
+                // Update status to inactive (0) to soft delete
+                const updatedPersonnelData = { ...oldData, status_id: 0 };
 
                 const cleanedPersonnelData = filterObjectByKeys(
                   updatedPersonnelData,

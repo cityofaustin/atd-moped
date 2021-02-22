@@ -28,17 +28,15 @@ export const SUMMARY_QUERY = gql`
 
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
-    moped_proj_personnel(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_personnel(
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+    ) {
       user_id
       role_id
       notes
-      join_date
-      allocation
-      status
+      status_id
       project_id
-      project_personnel_user_id
       project_personnel_id
-      role_order
       date_added
       added_by
     }
@@ -77,12 +75,8 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
     $user_id: Int
     $notes: String
     $project_id: Int
-    $join_date: date
-    $allocation: Int
-    $status: String
-    $project_personnel_user_id: Int
+    $status_id: Int
     $project_personnel_id: Int!
-    $role_order: Int
     $date_added: timestamptz
     $added_by: Int
     $role_id: Int
@@ -93,12 +87,8 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
         user_id: $user_id
         notes: $notes
         project_id: $project_id
-        join_date: $join_date
-        allocation: $allocation
-        status: $status
-        project_personnel_user_id: $project_personnel_user_id
+        status_id: $status_id
         project_personnel_id: $project_personnel_id
-        role_order: $role_order
         date_added: $date_added
         added_by: $added_by
         role_id: $role_id
