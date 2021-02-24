@@ -2628,16 +2628,16 @@
       - date_added
       filter: {}
       check: null
-  event_triggers:	
-  - name: activity_log_moped_proj_personnel	
-    definition:	
-      enable_manual: false	
-      insert:	
-        columns: '*'	
-      delete:	
-        columns: '*'	
-      update:	
-        columns:	
+  event_triggers:
+  - name: activity_log_moped_proj_personnel
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
         - added_by
         - project_id
         - project_personnel_id
@@ -2646,16 +2646,16 @@
         - user_id
         - notes
         - date_added
-    retry_conf:	
-      num_retries: 0	
-      interval_sec: 10	
-      timeout_sec: 60	
-    webhook_from_env: MOPED_API_EVENTS_URL	
-    headers:	
-    - name: MOPED_API_APIKEY	
-      value_from_env: MOPED_API_APIKEY	
-    - value: activity_log	
-      name: MOPED_API_EVENT_NAME      
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_proj_phases
