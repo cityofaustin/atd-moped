@@ -9,6 +9,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
+// Error Handler
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+
 import {
   TEAM_QUERY,
   ADD_PROJECT_PERSONNEL,
@@ -30,7 +33,6 @@ const ProjectTeamTable = ({
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
-  if (error) return `Error! ${error.message}`;
 
   // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
@@ -211,45 +213,47 @@ const ProjectTeamTable = ({
   };
 
   return (
-    <MaterialTable
-      columns={columns}
-      data={isNewProject ? personnelState : personnel}
-      title="Project Team"
-      options={{
-        search: false,
-        rowStyle: { fontFamily: typography.fontFamily },
-      }}
-      icons={{ Delete: ClearIcon }}
-      editable={{
-        onRowAdd: newData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              isNewProjectActions[isNewProject].add(newData);
+    <ApolloErrorHandler errors={error}>
+      <MaterialTable
+        columns={columns}
+        data={isNewProject ? personnelState : personnel}
+        title="Project Team"
+        options={{
+          search: false,
+          rowStyle: { fontFamily: typography.fontFamily },
+        }}
+        icons={{ Delete: ClearIcon }}
+        editable={{
+          onRowAdd: newData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                isNewProjectActions[isNewProject].add(newData);
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              isNewProjectActions[isNewProject].update(newData, oldData);
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                isNewProjectActions[isNewProject].update(newData, oldData);
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-        onRowDelete: oldData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              isNewProjectActions[isNewProject].delete(oldData);
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                isNewProjectActions[isNewProject].delete(oldData);
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-      }}
-    />
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+        }}
+      />
+    </ApolloErrorHandler>
   );
 };
 
