@@ -2,10 +2,12 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { CircularProgress, TextField } from "@material-ui/core";
+import { CircularProgress, TextField, Typography } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import typography from "../../../theme/typography";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -17,8 +19,8 @@ import {
 } from "../../../queries/project";
 
 const ProjectTeamTable = ({
-  projectState,
-  setProjectState,
+  personnelState,
+  setPersonnelState,
   projectId = null,
 }) => {
   const isNewProject = projectId === null;
@@ -84,23 +86,6 @@ const ProjectTeamTable = ({
   };
 
   /**
-   * Filter k/v pairs from an object by the key names passed in an array
-   * @param {object} obj - The object with unwanted k/v pairs
-   * @param {array} keys - Keys of unwanted k/v pairs
-   * @return {object} New object without unneeded k/v pairs
-   */
-  const filterObjectByKeys = (obj, keys) =>
-    Object.keys(obj)
-      .filter(key => !keys.includes(key))
-      .reduce(
-        (acc, key) => ({
-          ...acc,
-          [key]: obj[key],
-        }),
-        {}
-      );
-
-  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
@@ -117,15 +102,15 @@ const ProjectTeamTable = ({
           getOptionSelected={(option, value) => option === value}
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
-          renderInput={params => (
-            <TextField {...params} label="Select Staff" margin="normal" />
-          )}
+          renderInput={params => <TextField {...params} />}
         />
       ),
     },
     {
       title: "Workgroup",
-      render: personnel => getPersonnelWorkgroup(personnel.user_id),
+      render: personnel => (
+        <Typography>{getPersonnelWorkgroup(personnel.user_id)}</Typography>
+      ),
     },
     {
       title: "Role",
@@ -140,9 +125,7 @@ const ProjectTeamTable = ({
           getOptionSelected={(option, value) => option === value}
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
-          renderInput={params => (
-            <TextField {...params} label="Select Role" margin="normal" />
-          )}
+          renderInput={params => <TextField {...params} />}
         />
       ),
     },
@@ -155,7 +138,6 @@ const ProjectTeamTable = ({
           name="notes"
           multiline
           inputProps={{ maxLength: 125 }}
-          helperText="125 character max"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
         />
@@ -163,96 +145,113 @@ const ProjectTeamTable = ({
     },
   ];
 
+  /**
+   * Data handlers for editable actions based on isNewProject boolean <MaterialTable>
+   */
+  const isNewProjectActions = {
+    true: {
+      add: newData => {
+        const activePersonnel = { ...newData, status_id: 1 };
+
+        setPersonnelState([...personnelState, activePersonnel]);
+      },
+      update: (newData, oldData) => {
+        const dataUpdate = [...personnelState];
+        const index = oldData.tableData.id;
+        dataUpdate[index] = newData;
+        setPersonnelState([...dataUpdate]);
+      },
+      delete: oldData => {
+        const dataDelete = [...personnelState];
+        const index = oldData.tableData.id;
+        dataDelete.splice(index, 1);
+        setPersonnelState([...dataDelete]);
+      },
+    },
+    false: {
+      add: newData => {
+        const personnelData = {
+          ...newData,
+          project_id: projectId,
+          status_id: 1,
+        };
+
+        addProjectPersonnel({
+          variables: {
+            objects: [personnelData],
+          },
+        });
+      },
+      update: (newData, oldData) => {
+        const updatedPersonnelData = {
+          ...oldData,
+          ...newData,
+        };
+
+        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
+          "__typename",
+          "tableData",
+        ]);
+
+        updateProjectPersonnel({
+          variables: cleanedPersonnelData,
+        });
+      },
+      delete: oldData => {
+        const updatedPersonnelData = { ...oldData, status_id: 0 };
+
+        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
+          "__typename",
+          "tableData",
+        ]);
+
+        updateProjectPersonnel({
+          variables: cleanedPersonnelData,
+        });
+      },
+    },
+  };
+
   return (
-    <ApolloErrorHandler errors={error}>
-      <MaterialTable
-        columns={columns}
-        data={personnel}
-        title="Project Team"
-        options={{
-          search: false,
-        }}
-        icons={{ Delete: ClearIcon }}
-        editable={{
-          onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                if (isNewProject) {
-                  // Add personnel to state
-                  console.log("Add to new project");
-                } else {
-                  // Insert personnel and associate with project
-                  const personnelData = {
-                    ...newData,
-                    project_id: projectId,
-                    status_id: 1,
-                  };
+    <MaterialTable
+      columns={columns}
+      data={isNewProject ? personnelState : personnel}
+      title="Project Team"
+      options={{
+        search: false,
+        rowStyle: { fontFamily: typography.fontFamily },
+      }}
+      icons={{ Delete: ClearIcon }}
+      editable={{
+        onRowAdd: newData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].add(newData);
 
-                  addProjectPersonnel({
-                    variables: {
-                      objects: [personnelData],
-                    },
-                  });
-                }
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+        onRowUpdate: (newData, oldData) =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].update(newData, oldData);
 
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                if (isNewProject) {
-                  // Update personnel in state
-                  console.log("Update in new project");
-                } else {
-                  // Mutate personnel
-                  const updatedPersonnelData = {
-                    ...oldData,
-                    ...newData,
-                  };
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+        onRowDelete: oldData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].delete(oldData);
 
-                  const cleanedPersonnelData = filterObjectByKeys(
-                    updatedPersonnelData,
-                    ["__typename", "tableData"]
-                  );
-
-                  updateProjectPersonnel({
-                    variables: cleanedPersonnelData,
-                  });
-                }
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                if (isNewProject) {
-                  // Remove personnel from state
-                  console.log("Update in new project");
-                } else {
-                  // Update status to inactive (0) to soft delete
-                  const updatedPersonnelData = { ...oldData, status_id: 0 };
-
-                  const cleanedPersonnelData = filterObjectByKeys(
-                    updatedPersonnelData,
-                    ["__typename", "tableData"]
-                  );
-
-                  updateProjectPersonnel({
-                    variables: cleanedPersonnelData,
-                  });
-                }
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-        }}
-      />
-    </ApolloErrorHandler>
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+      }}
+    />
   );
 };
 
