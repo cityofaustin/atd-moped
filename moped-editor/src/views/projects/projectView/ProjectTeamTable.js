@@ -7,6 +7,9 @@ import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
+// Error Handler
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+
 import {
   TEAM_QUERY,
   ADD_PROJECT_PERSONNEL,
@@ -28,7 +31,6 @@ const ProjectTeamTable = ({
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
-  if (error) return `Error! ${error.message}`;
 
   // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
@@ -162,93 +164,95 @@ const ProjectTeamTable = ({
   ];
 
   return (
-    <MaterialTable
-      columns={columns}
-      data={personnel}
-      title="Project Team"
-      options={{
-        search: false,
-      }}
-      icons={{ Delete: ClearIcon }}
-      editable={{
-        onRowAdd: newData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (isNewProject) {
-                // Add personnel to state
-                console.log("Add to new project");
-              } else {
-                // Insert personnel and associate with project
-                const personnelData = {
-                  ...newData,
-                  project_id: projectId,
-                  status_id: 1,
-                };
+    <ApolloErrorHandler errors={error}>
+      <MaterialTable
+        columns={columns}
+        data={personnel}
+        title="Project Team"
+        options={{
+          search: false,
+        }}
+        icons={{ Delete: ClearIcon }}
+        editable={{
+          onRowAdd: newData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                if (isNewProject) {
+                  // Add personnel to state
+                  console.log("Add to new project");
+                } else {
+                  // Insert personnel and associate with project
+                  const personnelData = {
+                    ...newData,
+                    project_id: projectId,
+                    status_id: 1,
+                  };
 
-                addProjectPersonnel({
-                  variables: {
-                    objects: [personnelData],
-                  },
-                });
-              }
+                  addProjectPersonnel({
+                    variables: {
+                      objects: [personnelData],
+                    },
+                  });
+                }
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (isNewProject) {
-                // Update personnel in state
-                console.log("Update in new project");
-              } else {
-                // Mutate personnel
-                const updatedPersonnelData = {
-                  ...oldData,
-                  ...newData,
-                };
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                if (isNewProject) {
+                  // Update personnel in state
+                  console.log("Update in new project");
+                } else {
+                  // Mutate personnel
+                  const updatedPersonnelData = {
+                    ...oldData,
+                    ...newData,
+                  };
 
-                const cleanedPersonnelData = filterObjectByKeys(
-                  updatedPersonnelData,
-                  ["__typename", "tableData"]
-                );
+                  const cleanedPersonnelData = filterObjectByKeys(
+                    updatedPersonnelData,
+                    ["__typename", "tableData"]
+                  );
 
-                updateProjectPersonnel({
-                  variables: cleanedPersonnelData,
-                });
-              }
+                  updateProjectPersonnel({
+                    variables: cleanedPersonnelData,
+                  });
+                }
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-        onRowDelete: oldData =>
-          new Promise((resolve, reject) => {
-            setTimeout(() => {
-              if (isNewProject) {
-                // Remove personnel from state
-                console.log("Update in new project");
-              } else {
-                // Update status to inactive (0) to soft delete
-                const updatedPersonnelData = { ...oldData, status_id: 0 };
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                if (isNewProject) {
+                  // Remove personnel from state
+                  console.log("Update in new project");
+                } else {
+                  // Update status to inactive (0) to soft delete
+                  const updatedPersonnelData = { ...oldData, status_id: 0 };
 
-                const cleanedPersonnelData = filterObjectByKeys(
-                  updatedPersonnelData,
-                  ["__typename", "tableData"]
-                );
+                  const cleanedPersonnelData = filterObjectByKeys(
+                    updatedPersonnelData,
+                    ["__typename", "tableData"]
+                  );
 
-                updateProjectPersonnel({
-                  variables: cleanedPersonnelData,
-                });
-              }
+                  updateProjectPersonnel({
+                    variables: cleanedPersonnelData,
+                  });
+                }
 
-              setTimeout(() => refetch(), 501);
-              resolve();
-            }, 500);
-          }),
-      }}
-    />
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+        }}
+      />
+    </ApolloErrorHandler>
   );
 };
 
