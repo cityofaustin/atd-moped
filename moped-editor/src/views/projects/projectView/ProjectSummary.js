@@ -5,6 +5,7 @@ import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { Box, Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
+import ExternalLink from "../../../components/ExternalLink";
 
 const formatValue = value => {
   let formattedValue = value.field;
@@ -90,11 +91,10 @@ const ProjectSummary = () => {
     },
     {
       field: (
-        <a
-          href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`} target="_blank" rel="noopener noreferrer"
-        >
-          {eCapris_id}
-        </a>
+        <ExternalLink
+          text={eCapris_id}
+          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris_id}`}
+        />
       ),
       label: "eCapris ID",
       type: "string",
