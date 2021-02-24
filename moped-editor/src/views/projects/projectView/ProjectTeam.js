@@ -1,10 +1,8 @@
 import React from "react";
-import { useQuery } from "@apollo/client";
+import ProjectTeamTable from "./ProjectTeamTable";
 import { useParams } from "react-router-dom";
 
-// Material
-import { CardContent, CircularProgress, Grid } from "@material-ui/core";
-import MaterialTable from "material-table";
+import { CardContent, Grid } from "@material-ui/core";
 
 import { TEAM_QUERY } from "../../../queries/project";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
