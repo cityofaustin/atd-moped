@@ -205,12 +205,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             ? emptyValue
             : formattedValue;
         break;
-      case "extLink":
+      case "externalLink":
         formattedValue =
           <ExternalLink
             text={formattedValue}
             url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${formattedValue}`}
-          />
+          />;
+          break;
       default:
         break;
     }

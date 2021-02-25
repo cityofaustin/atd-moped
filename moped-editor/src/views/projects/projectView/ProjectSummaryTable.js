@@ -1,7 +1,6 @@
 import React from "react";
 
 import DataTable from "../../../components/DataTable/DataTable";
-import ExternalLink from "../../../components/ExternalLink";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
@@ -88,7 +87,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       },
       eCapris_id: {
         label: "eCapris ID",
-        type: "extLink",
+        type: "externalLink",
         placeholder: "Enter eCapris ID",
         emptyValue: "None",
         editable: true,
