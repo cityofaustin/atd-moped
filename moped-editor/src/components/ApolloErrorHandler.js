@@ -30,7 +30,7 @@ const ApolloErrorHandler = props => {
   if (jwtError) {
     setTimeout(() => {
       window.location.reload();
-    }, 1500);
+    }, 5000);
   }
 
   return (
