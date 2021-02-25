@@ -127,7 +127,7 @@ User profile dictionary example:
         "title": "",
         "workgroup": "ATD",
         "workgroup_id": 1,
-        "roles": ["viewer"]
+        "roles": ["moped-viewer"]
     }
 """
 
