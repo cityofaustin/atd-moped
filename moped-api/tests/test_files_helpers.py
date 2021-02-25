@@ -1,4 +1,6 @@
+import unittest
 import pdb
+
 
 from files.helpers import (
     get_file_extension,
@@ -13,7 +15,7 @@ from files.helpers import (
 )
 
 
-class TestFilesHelpers:
+class TestFilesHelpers(unittest.TestCase):
 
     def test_strip_non_alpha(self):
         assert strip_non_alpha(None) == ""
@@ -54,3 +56,11 @@ class TestFilesHelpers:
 
     def test_is_valid_unique_id(self):
         assert is_valid_unique_id(generate_random_hash())
+
+    def test_generate_clean_filename(self):
+        self.assertRaises(Exception, generate_clean_filename, None)
+        self.assertRaises(Exception, generate_clean_filename, "")
+        self.assertRaises(Exception, generate_clean_filename, ".png")
+        self.assertRaises(Exception, generate_clean_filename, "naathing")
+
+        assert generate_clean_filename("crazy6^filE!@#$%T^Y&U*I<>???.mov.tar.gz").endswith("crazy6filetyuimovtar.gz")
