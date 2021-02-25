@@ -37,6 +37,7 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
         "title": json_data.get("title", None),
         "workgroup": json_data.get("workgroup", None),
         "workgroup_id": json_data.get("workgroup_id", None),
+        "roles": json_data.get("roles", None),
     }
 
 
@@ -56,7 +57,9 @@ def generate_cognito_attributes(user_profile: dict) -> List[dict]:
     return updated_attributes
 
 
-def is_valid_user_profile(user_profile: dict, ignore_fields: List[str] = []) -> [bool, dict]:
+def is_valid_user_profile(
+    user_profile: dict, ignore_fields: List[str] = []
+) -> [bool, dict]:
     """
     Returns a tuple if the user profile is valid and any errors if available
     :param List[str] ignore_fields: A list of strings of fields to ignore, default empty.
@@ -124,6 +127,7 @@ User profile dictionary example:
         "title": "",
         "workgroup": "ATD",
         "workgroup_id": 1,
+        "roles": ["viewer"]
     }
 """
 
@@ -181,6 +185,7 @@ def get_user_email_from_attr(user_attr: object) -> str:
 
     return email.replace("azuread_", "")
 
+
 def get_user_database_ids(response: dict) -> tuple:
     """
     Returns the database_id and workgroup_id from a mutation response
@@ -189,12 +194,16 @@ def get_user_database_ids(response: dict) -> tuple:
     """
     # Put separately because if workgroup_id fails, database_id shouldn't default to zero...
     try:
-        database_id = str(response["data"]["insert_moped_users"]["returning"][0]["user_id"])
+        database_id = str(
+            response["data"]["insert_moped_users"]["returning"][0]["user_id"]
+        )
     except (TypeError, KeyError, IndexError):
         database_id = "0"
     # Put separately because if user_id fails, workgroup_id shouldn't default to zero..
     try:
-        workgroup_id = str(response["data"]["insert_moped_users"]["returning"][0]["workgroup_id"])
+        workgroup_id = str(
+            response["data"]["insert_moped_users"]["returning"][0]["workgroup_id"]
+        )
     except (TypeError, KeyError, IndexError):
         workgroup_id = "0"
 
