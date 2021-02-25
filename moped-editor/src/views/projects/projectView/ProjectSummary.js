@@ -13,7 +13,6 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
-
   const [isEditing, setIsEditing] = useState(false);
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
@@ -22,24 +21,31 @@ const ProjectSummary = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const {
-    project_extent_ids,
-    project_extent_geojson,
-  } = data.moped_project[0];
+  const { project_extent_ids, project_extent_geojson } = data.moped_project[0];
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
-        <ProjectSummaryTable
-          loading={loading}
-          data={data}
-          error={error}
-          refetch={refetch}
-        />
-        <Grid item xs={12} md={6}>
-          {project_extent_geojson && project_extent_ids && (
-            <>
-              <ProjectSummaryMap
+    <ApolloErrorHandler errors={error}>
+      <CardContent>
+        <Grid container spacing={2}>
+          <ProjectSummaryTable
+            loading={loading}
+            data={data}
+            error={error}
+            refetch={refetch}
+          />
+          <Grid item xs={12} md={6}>
+            {project_extent_geojson && project_extent_ids && (
+              <>
+                <ProjectSummaryMap
+                  selectedLayerIds={project_extent_ids}
+                  projectExtentGeoJSON={project_extent_geojson}
+                  setIsEditing={setIsEditing}
+                />
+              </>
+            )}
+            {isEditing && (
+              <ProjectSummaryEditMap
+                projectId={projectId}
                 selectedLayerIds={project_extent_ids}
                 projectExtentGeoJSON={project_extent_geojson}
                 isEditing={isEditing}
