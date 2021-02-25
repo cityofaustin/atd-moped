@@ -34,6 +34,7 @@ const GET_USER = gql`
       workgroup_id
       cognito_user_id
       email
+      roles
     }
   }
 `;
@@ -41,7 +42,7 @@ const GET_USER = gql`
 const fieldFormatters = {
   status_id: id => id.toString(),
   workgroup_id: id => id.toString(),
-  roles: role => role[0],
+  roles: role => (!!role && role[0]) || [],
 };
 
 const EditStaffView = () => {
@@ -62,8 +63,7 @@ const EditStaffView = () => {
 
       if (originalValue !== undefined) {
         const formattedValue = formatter(originalValue);
-
-        data[fieldName] = formattedValue;
+        data = { ...data, [fieldName]: formattedValue };
       }
     });
 
@@ -88,10 +88,12 @@ const EditStaffView = () => {
               {loading ? (
                 <CircularProgress />
               ) : (
-                <StaffForm
-                  editFormData={formatUserFormData(data.moped_users[0])}
-                  userCognitoId={data.moped_users[0].cognito_user_id}
-                />
+                data && (
+                  <StaffForm
+                    editFormData={formatUserFormData(data.moped_users[0])}
+                    userCognitoId={data.moped_users[0].cognito_user_id}
+                  />
+                )
               )}
             </CardContent>
           </Card>
