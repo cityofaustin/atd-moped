@@ -11,6 +11,7 @@ export const PROJECT_NAME = gql`
 export const SUMMARY_QUERY = gql`
   query ProjectSummary($projectId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
+      project_id
       project_name
       project_description
       start_date
