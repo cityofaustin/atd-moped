@@ -99,12 +99,15 @@ def generate_clean_filename(filename: str) -> str:
     :param str filename: Raw file name
     :return str:
     """
-    if isinstance(filename, str) is False:
-        raise Exception(f"Invalid file name: {filename}")
+    if isinstance(filename, str) is False or len(filename) == 0:
+        raise Exception(f"Invalid file name: '{filename}'")
 
     timestamp = filename_timestamp()
     file_extension = get_file_extension(filename)
     file_name = get_file_name(filename)
+
+    if timestamp is None or file_extension is None or filename is None:
+        raise Exception(f"Invalid file name: '{filename}'")
 
     clean_filename = "{0}.{1}".format(file_name, file_extension)
     unique_short_hash = generate_random_hash()[0:16]
@@ -117,6 +120,9 @@ def is_valid_unique_id(unique_id) -> bool:
     :param str unique_id: Unique ID string
     :return bool:
     """
+    if isinstance(unique_id, str) is False:
+        return False
+
     pattern = re.compile("^([a-z0-9]){64}$")
     return pattern.match(unique_id) is not None
 
@@ -144,7 +150,6 @@ def generate_random_hash() -> str:
     Generates a random hash
     :return str:
     """
-    if i
     rand_uuid_str = "{0}".format(uuid.uuid1()).encode()
     return str(hashlib.sha256(rand_uuid_str).hexdigest())
 
