@@ -88,20 +88,10 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       },
       eCapris_id: {
         label: "eCapris ID",
-        type: "string",
+        type: "extLink",
         placeholder: "Enter eCapris ID",
         emptyValue: "None",
         editable: true,
-        lookup: {
-          table: "moped_proj_financials",
-          fieldLabel: "eCapris_id",
-          fieldValue: "eCapris_id",
-          format: value =>
-            <ExternalLink
-              text={value}
-              url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
-            />
-        }
       },
     },
   };
