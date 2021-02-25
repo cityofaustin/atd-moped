@@ -37,7 +37,7 @@ const useAuthentication = () => {
   const refreshState = useCallback(() => {
     setIsLoading(true);
 
-    Auth.currentAuthenticatedUser()
+    Auth.currentSession()
       .then(user => {
         setUser(user);
         setIsAuthenticated(_isAuthenticated(user));
@@ -93,7 +93,9 @@ const useAuthentication = () => {
 
   const signOut = useCallback(() => {
     Auth.signOut()
-      .then(_ => refreshState())
+      .then(_ => {
+        refreshState();
+      })
       .catch(err => {
         setError(err);
       });
@@ -122,19 +124,18 @@ const useAuthentication = () => {
 const _isAuthenticated = user => {
   if (
     !user ||
-    !user.signInUserSession ||
-    !user.signInUserSession.isValid ||
-    !user.signInUserSession.accessToken ||
-    !user.signInUserSession.accessToken.getExpiration
+    !user.idToken ||
+    !user.idToken.payload ||
+    !user.idToken.payload["https://hasura.io/jwt/claims"] ||
+    !user.accessToken ||
+    !user.refreshToken
   ) {
     return false;
   }
+  const isValid = user?.isValid() ?? false;
 
-  const session = user.signInUserSession;
-  const isValid = session.isValid() || false;
-
-  const sessionExpiry = new Date(session.accessToken.getExpiration() * 1000);
-  const isExpired = new Date() > sessionExpiry;
+  const isExpired =
+    Math.round(new Date().getTime() / 1000) > user.idToken.getExpiration();
 
   return isValid && !isExpired;
 };

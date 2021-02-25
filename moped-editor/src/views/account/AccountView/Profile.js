@@ -24,7 +24,7 @@ const useStyles = makeStyles(() => ({
   },
   userInitials: {
     fontSize: "2rem",
-  }
+  },
 }));
 
 const Profile = ({ className, ...rest }) => {
@@ -42,12 +42,14 @@ const Profile = ({ className, ...rest }) => {
               style={{ "background-color": user?.userColor }}
             >
               <Typography className={classes.userInitials}>
-                {emailToInitials(user?.attributes?.email)}
+                {emailToInitials(user?.idToken?.payload?.email)}
               </Typography>
             </Avatar>
           </Box>
           <Typography color="textPrimary" gutterBottom variant="h3">
-            {String(user?.userName ?? user?.attributes?.email).toLowerCase()}
+            {String(
+              user?.userName ?? user?.idToken?.payload?.email
+            ).toLowerCase()}
           </Typography>
           <Typography color="textSecondary" variant="body1">
             {user?.userJobTitle ?? "Austin Transportation"}
