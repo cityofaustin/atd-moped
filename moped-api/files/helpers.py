@@ -140,25 +140,28 @@ def is_valid_unique_id(unique_id) -> bool:
     return pattern.match(unique_id) is not None
 
 
-def is_valid_project_id(project_id: str) -> bool:
+def is_valid_number(number: str) -> bool:
     """
-    Returns True if the project_id is a valid number
-    :param str project_id: The project number as a string
+    Returns True if the integer string is a valid number
+    :param str number: The integer number as a string
     :return str:
     """
     # If not an instance of a string, false
-    if not isinstance(project_id, str):
+    if not isinstance(number, str):
         return False
 
     # Clean it up
-    clean_project_id = strip_non_numeric(project_id)
+    clean_number = strip_non_numeric(number)
 
     # If zero length, False
-    if len(clean_project_id) == 0:
+    if len(clean_number) == 0:
         return False
 
-    # Seems a good number
-    return True
+    try:
+        int(clean_number)
+        return True
+    except (ValueError, TypeError):
+        return False
 
 
 #####
