@@ -12,10 +12,20 @@ from files.helpers import (
     generate_random_hash,
     strip_non_alpha,
     strip_non_common,
+    strip_non_numeric,
+    is_valid_project_id
 )
 
 
 class TestFilesHelpers(unittest.TestCase):
+
+    def test_strip_non_numeric(self):
+        assert strip_non_numeric(None) == ""
+        assert strip_non_numeric(1234) == ""
+        assert strip_non_numeric(False) == ""
+        assert strip_non_numeric("     ") == ""
+        assert strip_non_numeric("\n") == ""
+        assert strip_non_numeric("123456789") == "123456789"
 
     def test_strip_non_alpha(self):
         assert strip_non_alpha(None) == ""
@@ -64,3 +74,10 @@ class TestFilesHelpers(unittest.TestCase):
         self.assertRaises(Exception, generate_clean_filename, "naathing")
 
         assert generate_clean_filename("crazy6^filE!@#$%T^Y&U*I<>???.mov.tar.gz").endswith("crazy6filetyuimovtar.gz")
+
+    def test_is_valid_project_id(self):
+        assert is_valid_project_id(123) is False
+        assert is_valid_project_id(None) is False
+        assert is_valid_project_id("") is False
+        assert is_valid_project_id("ABC") is False
+        assert is_valid_project_id("123")
