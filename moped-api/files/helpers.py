@@ -194,3 +194,10 @@ def generate_random_hash() -> str:
 #
 # Retrieve user details
 #
+def get_user_id(claims: dict) -> str:
+    """
+    Retrieves the user id from the claims
+    :param dict claims: The claims dictionary
+    :return str: The users' database id as a string integer
+    """
+    return claims.get("https://hasura.io/jwt/claims", {}).get("x-hasura-user-db-id", None)
