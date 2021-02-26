@@ -13,7 +13,7 @@ from files.helpers import (
     strip_non_alpha,
     strip_non_common,
     strip_non_numeric,
-    is_valid_project_id
+    is_valid_number
 )
 
 
@@ -26,6 +26,7 @@ class TestFilesHelpers(unittest.TestCase):
         assert strip_non_numeric("     ") == ""
         assert strip_non_numeric("\n") == ""
         assert strip_non_numeric("123456789") == "123456789"
+        assert strip_non_numeric("0") == "0"
 
     def test_strip_non_alpha(self):
         assert strip_non_alpha(None) == ""
@@ -75,9 +76,9 @@ class TestFilesHelpers(unittest.TestCase):
 
         assert generate_clean_filename("crazy6^filE!@#$%T^Y&U*I<>???.mov.tar.gz").endswith("crazy6filetyuimovtar.gz")
 
-    def test_is_valid_project_id(self):
-        assert is_valid_project_id(123) is False
-        assert is_valid_project_id(None) is False
-        assert is_valid_project_id("") is False
-        assert is_valid_project_id("ABC") is False
-        assert is_valid_project_id("123")
+    def test_is_valid_number(self):
+        assert is_valid_number(123) is False
+        assert is_valid_number(None) is False
+        assert is_valid_number("") is False
+        assert is_valid_number("ABC") is False
+        assert is_valid_number("123")
