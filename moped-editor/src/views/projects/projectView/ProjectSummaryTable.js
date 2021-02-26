@@ -3,6 +3,9 @@ import React from "react";
 import DataTable from "../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
+import ExternalLink from "../../../components/ExternalLink";
+
+
 const useStyles = makeStyles(theme => ({
   fieldSelectCapitalize: {
     textTransform: "capitalize",
@@ -87,10 +90,15 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       },
       eCapris_id: {
         label: "eCapris ID",
-        type: "externalLink",
+        type: "string",
         placeholder: "Enter eCapris ID",
         emptyValue: "None",
         editable: true,
+        format: value =>
+          <ExternalLink
+            text={value}
+            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+          />
       },
     },
   };
