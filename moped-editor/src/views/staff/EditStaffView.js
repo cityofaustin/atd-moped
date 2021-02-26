@@ -89,12 +89,10 @@ const EditStaffView = () => {
               {loading ? (
                 <CircularProgress />
               ) : (
-                data && (
-                  <StaffForm
-                    editFormData={formatUserFormData(data.moped_users[0])}
-                    userCognitoId={data.moped_users[0].cognito_user_id}
-                  />
-                )
+                <StaffForm
+                  editFormData={formatUserFormData(data.moped_users[0])}
+                  userCognitoId={data.moped_users[0].cognito_user_id}
+                />
               )}
             </CardContent>
           </Card>
