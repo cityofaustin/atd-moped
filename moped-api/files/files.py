@@ -10,11 +10,14 @@ from files.helpers import (
     generate_random_hash,
     is_valid_filename,
     is_valid_number,
+    get_user_id,
 )
+
+MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
+MOPED_AWS_BUCKET_NAME = os.getenv("AWS_S3_UPLOADS_BUCKET", None)
 
 files_blueprint = Blueprint("files_blueprint", __name__)
 aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFALUT_REGION"))
-aws_bucket_name = os.getenv("S3_UPLOADS_BUCKET", None)
 
 
 @files_blueprint.route("/")
@@ -51,10 +54,11 @@ def files_request_signature(claims: list) -> dict:
         jsonify({"status": "error", "message": "Not authorized"}), 403
 
     # Load the user id from session
-    user_id = "123"
+    user_id = get_user_id(claims)
+
     # If not a valid user, then stop session...
     if not is_valid_number(user_id):
-        jsonify({"status": "error", "message": "Not authorized"}), 403
+        return jsonify({"status": "error", "message": "Not authorized"})
 
     # Retrieve parameters:
     filename = request.args.get("file")
@@ -62,15 +66,13 @@ def files_request_signature(claims: list) -> dict:
 
     # Check our parameters
     if not is_valid_number(project_id) or not is_valid_filename(filename):
-        jsonify({"status": "error", "message": "Invalid parameters"}), 403
+        return jsonify({"status": "error", "message": "Invalid parameters"}), 403
 
     #
     # We have the basic requirements...
     #
     print("User Claims: ")
     print(json.dumps(claims))
-    import pdb
-    pdb.set_trace()
 
     # Generate unique file name
     random_hash = generate_random_hash()
@@ -78,13 +80,14 @@ def files_request_signature(claims: list) -> dict:
 
     # Final Unique File Name:
     file_s3_key = f"uploads/{project_id}/{user_id}_{file_new_unique_name}"
+    import pdb
+
+    pdb.set_trace()
 
     # Generate upload credentials
     credentials = aws_s3_client.generate_presigned_post(
-        Bucket=aws_bucket_name, Key=file_s3_key
+        Bucket=MOPED_AWS_BUCKET_NAME, Key=file_s3_key
     )
-
-    pdb.set_trace()
 
     # Check for errors (not yet implemented)
 
@@ -116,7 +119,7 @@ def file_download(path, claims: list) -> redirect:
     url = aws_s3_client.generate_presigned_url(
         ExpiresIn=60,  # seconds
         ClientMethod="get_object",
-        Params={"Bucket": aws_bucket_name, "Key": path},
+        Params={"Bucket": MOPED_AWS_BUCKET_NAME, "Key": path},
     )
 
     return redirect(url, code=302)
