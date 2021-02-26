@@ -5,7 +5,6 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 
 import ExternalLink from "../../../components/ExternalLink";
 
-
 const useStyles = makeStyles(theme => ({
   fieldSelectCapitalize: {
     textTransform: "capitalize",
