@@ -4,13 +4,26 @@ import re
 import uuid
 
 
+def strip_non_numeric(text: str) -> str:
+    """
+    Removes any non-numeric characters
+    :param str text: The input text
+    :return str:
+    """
+    if not isinstance(text, str):
+        return ""
+
+    pattern = re.compile("[^0-9]")
+    return re.sub(pattern, '', text)
+
+
 def strip_non_alpha(text: str) -> str:
     """
     Removes non-alphabetic characters from a string
     :param str text: The string in question
     :return str:
     """
-    if isinstance(text, str) is False:
+    if not isinstance(text, str):
         return ""
 
     pattern = re.compile("[^a-zA-Z]")
@@ -23,7 +36,7 @@ def strip_non_common(text: str) -> str:
     :param str text: The string in question
     :return str:
     """
-    if isinstance(text, str) is False:
+    if not isinstance(text, str):
         return ""
 
     pattern = re.compile("[^0-9a-zA-Z_-]")
@@ -36,7 +49,7 @@ def get_file_name(filename: str) -> str:
     :param str filename: The raw file name
     :return str:
     """
-    if isinstance(filename, str) is False:
+    if not isinstance(filename, str):
         return None
 
     if filename is None or filename == "":
@@ -56,7 +69,7 @@ def is_valid_filename(filename: str) -> bool:
     :return:
     """
 
-    if isinstance(filename, str) is False:
+    if not isinstance(filename, str):
         return False
 
     if filename is None or filename == "":
@@ -82,7 +95,7 @@ def get_file_extension(filename) -> str:
     :param str filename: The file name
     :return str:
     """
-    if is_valid_filename(filename) is False:
+    if not is_valid_filename(filename):
         return None
 
     file_extension = strip_non_alpha(filename.rsplit('.', 1)[1].lower().strip())
@@ -99,7 +112,7 @@ def generate_clean_filename(filename: str) -> str:
     :param str filename: Raw file name
     :return str:
     """
-    if isinstance(filename, str) is False or len(filename) == 0:
+    if not isinstance(filename, str) or len(filename) == 0:
         raise Exception(f"Invalid file name: '{filename}'")
 
     timestamp = filename_timestamp()
@@ -120,11 +133,32 @@ def is_valid_unique_id(unique_id) -> bool:
     :param str unique_id: Unique ID string
     :return bool:
     """
-    if isinstance(unique_id, str) is False:
+    if not isinstance(unique_id, str):
         return False
 
     pattern = re.compile("^([a-z0-9]){64}$")
     return pattern.match(unique_id) is not None
+
+
+def is_valid_project_id(project_id: str) -> bool:
+    """
+    Returns True if the project_id is a valid number
+    :param str project_id: The project number as a string
+    :return str:
+    """
+    # If not an instance of a string, false
+    if not isinstance(project_id, str):
+        return False
+
+    # Clean it up
+    clean_project_id = strip_non_numeric(project_id)
+
+    # If zero length, False
+    if len(clean_project_id) == 0:
+        return False
+
+    # Seems a good number
+    return True
 
 
 #####
