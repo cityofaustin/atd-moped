@@ -39,7 +39,7 @@ const Profile = ({ className, ...rest }) => {
             <Avatar
               className={classes.avatar}
               src={user?.userAvatar}
-              style={{ "background-color": user?.userColor }}
+              style={{ backgroundColor: user?.userColor }}
             >
               <Typography className={classes.userInitials}>
                 {emailToInitials(user?.idToken?.payload?.email)}
