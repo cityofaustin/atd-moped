@@ -19,8 +19,6 @@ import { Alert } from "@material-ui/lab";
 import { gql, useMutation, useQuery } from "@apollo/client";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-import ExternalLink from "../../components/ExternalLink";
-
 const useStyles = makeStyles(theme => ({
   table: {
     minWidth: 650,
@@ -205,13 +203,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             ? emptyValue
             : formattedValue;
         break;
-      case "externalLink":
-        formattedValue =
-          <ExternalLink
-            text={formattedValue}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${formattedValue}`}
-          />;
-          break;
       default:
         break;
     }
