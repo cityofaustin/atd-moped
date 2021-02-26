@@ -14,6 +14,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
+import { findHighestRole } from "../../auth/user";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -42,7 +43,7 @@ const GET_USER = gql`
 const fieldFormatters = {
   status_id: id => id.toString(),
   workgroup_id: id => id.toString(),
-  roles: role => (!!role && role[0]) || [],
+  roles: roles => findHighestRole(roles),
 };
 
 const EditStaffView = () => {
