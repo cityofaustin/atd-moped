@@ -1316,3 +1316,35 @@ export const getOperationName = operationName => {
     "Unknown"
   );
 };
+
+/**
+ * Takes a lookup configuration object and builds a GraphQL query
+ * @param {object} fieldConfiguration - The operation type: INSERT, UPDATE, DELETE
+ * @return {query} A GraphQL query document parsed by gql.
+ */
+export const buildLookupQuery = fieldConfiguration =>
+  gql(
+    "query RetrieveLookupValues {\n" +
+      Object.keys(fieldConfiguration.fields)
+        .filter(
+          field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
+        )
+        .map(field => {
+          const {
+            table,
+            fieldLabel,
+            fieldValue,
+            relationship,
+          } = fieldConfiguration.fields[field]?.lookup;
+
+          const relationshipFilter = !!relationship ? `(${relationship})` : "";
+
+          return `
+          ${table} ${relationshipFilter} {
+            fieldLabel: ${fieldLabel}
+            fieldValue: ${fieldValue}
+          }
+        `;
+        }) +
+      "}\n"
+  );
