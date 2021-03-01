@@ -599,6 +599,16 @@ export const ProjectActivityLogTableMaps = {
         label: "Project ID",
         type: "int4",
       },
+      role_id: {
+        icon: "",
+        label: "Role ID",
+        type: "int4",
+        lookup: {
+          table: "moped_project_roles",
+          fieldLabel: "project_role_id",
+          fieldValue: "project_role_name",
+        },
+      },
       user_id: {
         icon: "",
         label: "User ID",
@@ -1322,7 +1332,7 @@ export const getOperationName = operationName => {
  * @param {object} fieldConfiguration - The operation type: INSERT, UPDATE, DELETE
  * @return {query} A GraphQL query document parsed by gql.
  */
-export const buildLookupQuery = fieldConfiguration =>
+export const buildLookupQuery = ({ fieldConfiguration, table }) =>
   gql(
     "query RetrieveLookupValues {\n" +
       Object.keys(fieldConfiguration.fields)
@@ -1331,7 +1341,6 @@ export const buildLookupQuery = fieldConfiguration =>
         )
         .map(field => {
           const {
-            table,
             fieldLabel,
             fieldValue,
             relationship,
