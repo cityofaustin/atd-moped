@@ -7,6 +7,7 @@ import {
   getRecordTypeLabel,
   getHumanReadableField,
   ProjectActivityLogGenericDescriptions,
+  buildLookupQuery,
 } from "./ProjectActivityLogTableMaps";
 
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
@@ -59,6 +60,11 @@ const ProjectActivityLog = () => {
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
   });
+
+  const recordTableName = getRecordTypeLabel(change.record_type);
+  const recordTableConfig = ProjectActivityLogTableMaps[recordTableName];
+  const GET_LOOKUPS = buildLookupQuery(recordTableConfig);
+  const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);
 
   const [activityId, setActivityId] = useState(null);
 
@@ -238,7 +244,7 @@ const ProjectActivityLog = () => {
                                   ) : (
                                     <>
                                       <b>
-                                        {getRecordTypeLabel(change.record_type)}{" "}
+                                        {recordTableName}{" "}
                                         {getHumanReadableField(
                                           change.record_type,
                                           changeItem.field
