@@ -1343,9 +1343,12 @@ export const PLACEHOLDER_QUERY = gql`
  * @return {query} A GraphQL query document parsed by gql.
  */
 export const buildLookupQuery = tableNames => {
-  debugger;
-  if (!tableNames || tableNames.length === 0)
-    return { areLookups: false, LOOKUPS_QUERY: PLACEHOLDER_QUERY };
+  const noLookupsObject = {
+    areLookups: false,
+    LOOKUPS_QUERY: PLACEHOLDER_QUERY,
+  };
+
+  if (!tableNames || tableNames.length === 0) return noLookupsObject;
 
   const lookupQueries = tableNames.map(tableName => {
     const fields = ProjectActivityLogTableMaps[tableName].fields;
@@ -1369,8 +1372,13 @@ export const buildLookupQuery = tableNames => {
   });
 
   const flatLookupQueries = lookupQueries.flat();
+
+  if (flatLookupQueries.length === 0) return noLookupsObject;
+
   const lookupQueriesString = flatLookupQueries.join(" ");
-  const LOOKUPS_QUERY = gql`query RetrieveLookupValues { ${lookupQueriesString} }`;
+  const LOOKUPS_QUERY = gql`
+    query RetrieveLookupValues { ${lookupQueriesString} }
+  `;
 
   return { areLookups: true, LOOKUPS_QUERY };
 };

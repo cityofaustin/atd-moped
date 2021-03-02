@@ -10,6 +10,7 @@ import {
   ProjectActivityLogGenericDescriptions,
   ProjectActivityLogTableMaps,
   buildLookupQuery,
+  PLACEHOLDER_QUERY,
 } from "./ProjectActivityLogTableMaps";
 
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
@@ -59,17 +60,34 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
+  const [lookupObject, setLookupObject] = useState({
+    query: PLACEHOLDER_QUERY,
+    areLookups: false,
+  });
+
+  const getLookup = () => {
+    const recordTableNames = getActivityLogTableNames(data);
+    const { GET_LOOKUPS, areLookups } = buildLookupQuery(recordTableNames);
+    setLookupObject(prevState => ({
+      ...prevState,
+      query: GET_LOOKUPS,
+      areLookups,
+    }));
+  };
+
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
+    onCompleted: getLookup,
   });
 
   // Wrap this in a function and use onCompleted callback to set lookup query in state
-  const recordTableNames = getActivityLogTableNames(data);
-  const { GET_LOOKUPS, areLookups } = buildLookupQuery(recordTableNames);
-  console.log(recordTableNames, GET_LOOKUPS, areLookups);
-  const { lookupLoading, lookupError, lookupData } = useQuery(GET_LOOKUPS, {
-    skip: !areLookups,
-  });
+
+  const { lookupLoading, lookupError, lookupData } = useQuery(
+    lookupObject.query,
+    {
+      skip: !lookupObject.areLookups,
+    }
+  );
   console.log(lookupData);
 
   const [activityId, setActivityId] = useState(null);
