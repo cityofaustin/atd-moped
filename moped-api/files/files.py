@@ -14,7 +14,7 @@ from files.helpers import (
 )
 
 MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAGING")
-MOPED_AWS_BUCKET_NAME = os.getenv("AWS_S3_UPLOADS_BUCKET", None)
+MOPED_API_UPLOADS_S3_BUCKET = os.getenv("MOPED_API_UPLOADS_S3_BUCKET", None)
 
 files_blueprint = Blueprint("files_blueprint", __name__)
 aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFALUT_REGION"))
@@ -62,7 +62,14 @@ def files_request_signature(claims: list) -> dict:
 
     # Retrieve parameters:
     filename = request.args.get("file")
+    upload_type = request.args.get("type")
     project_id = request.args.get("project_id")
+
+    if upload_type not in ["user", "project"]:
+        return jsonify({"status": "error", "message": "Invalid upload type"}), 403
+
+    if upload_type == "user":
+        project_id = "0"
 
     # Check our parameters
     if not is_valid_number(project_id) or not is_valid_filename(filename):
@@ -86,7 +93,7 @@ def files_request_signature(claims: list) -> dict:
 
     # Generate upload credentials
     credentials = aws_s3_client.generate_presigned_post(
-        Bucket=MOPED_AWS_BUCKET_NAME, Key=file_s3_key
+        Bucket=MOPED_API_UPLOADS_S3_BUCKET, Key=file_s3_key
     )
 
     # Check for errors (not yet implemented)
@@ -119,7 +126,7 @@ def file_download(path, claims: list) -> redirect:
     url = aws_s3_client.generate_presigned_url(
         ExpiresIn=60,  # seconds
         ClientMethod="get_object",
-        Params={"Bucket": MOPED_AWS_BUCKET_NAME, "Key": path},
+        Params={"Bucket": MOPED_API_UPLOADS_S3_BUCKET, "Key": path},
     )
 
     return redirect(url, code=302)
