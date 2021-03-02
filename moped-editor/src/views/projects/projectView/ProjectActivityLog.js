@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import {
+  getActivityLogTableNames,
   getOperationName,
   getChangeIcon,
   getRecordTypeLabel,
@@ -62,7 +63,7 @@ const ProjectActivityLog = () => {
     variables: { projectId },
   });
 
-  const recordTableNames = getActivityLogTablesFromResponse(data);
+  const recordTableNames = getActivityLogTableNames(data);
   const recordTableConfig = ProjectActivityLogTableMaps["moped_project_roles"];
   const GET_LOOKUPS = buildLookupQuery(recordTableConfig);
   // const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);

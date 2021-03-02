@@ -1340,7 +1340,7 @@ export const buildLookupQuery = fieldConfiguration => {
     field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
   );
 
-  // if (lookupFields.length === 0) return;
+  if (lookupFields.length === 0) return;
 
   const lookupQueries = lookupFields
     .map(field => {
@@ -1362,12 +1362,16 @@ export const buildLookupQuery = fieldConfiguration => {
     })
     .join(" ");
 
-  debugger;
-
   // return gql(`query RetrieveLookupValues { ${lookupQueries} }`);
 };
 
 // Collect only lookups for tables that are needed for a project's log
-const getActivityLogTablesFromResponse = response => {
-  return null;
+export const getActivityLogTableNames = response => {
+  const lookupTableData = response?.activity_log_lookup_tables;
+
+  if (!lookupTableData || lookupTableData.length === 0) return null;
+
+  const tableNames = lookupTableData.map(record => record.record_type);
+  debugger;
+  return tableNames;
 };
