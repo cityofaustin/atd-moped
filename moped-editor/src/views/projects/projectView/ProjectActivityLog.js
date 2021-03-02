@@ -64,8 +64,7 @@ const ProjectActivityLog = () => {
   });
 
   const recordTableNames = getActivityLogTableNames(data);
-  const recordTableConfig = ProjectActivityLogTableMaps["moped_project_roles"];
-  const GET_LOOKUPS = buildLookupQuery(recordTableConfig);
+  const GET_LOOKUPS = recordTableNames && buildLookupQuery(recordTableNames);
   // const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);
   // console.log(lookupsData);
 

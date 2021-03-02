@@ -1334,36 +1334,35 @@ export const getOperationName = operationName => {
  * @param {object} fieldConfiguration - The operation type: INSERT, UPDATE, DELETE
  * @return {query} A GraphQL query document parsed by gql.
  */
-export const buildLookupQuery = fieldConfiguration => {
-  const fields = Object.keys(fieldConfiguration.fields);
-  const lookupFields = fields.filter(
-    field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
-  );
+export const buildLookupQuery = tableNames => {
+  // We have table names
+  // For each table names, ProjectActivityLogTableMaps[tableName] => config
+  // Filter config.fields to those with lookups
+  const lookupQueries = tableNames.map(tableName => {
+    const fields = ProjectActivityLogTableMaps[tableName].fields;
 
-  if (lookupFields.length === 0) return;
+    const lookupFields = Object.values(fields).filter(value =>
+      value.hasOwnProperty("lookup")
+    );
 
-  const lookupQueries = lookupFields
-    .map(field => {
-      const {
-        table,
-        fieldLabel,
-        fieldValue,
-        relationship,
-      } = fieldConfiguration.fields[field]?.lookup;
-
-      const relationshipFilter = !!relationship ? `(${relationship})` : "";
+    const tableQueries = lookupFields.map(field => {
+      const { table, fieldLabel, fieldValue } = field.lookup;
 
       return `
-    ${table} ${relationshipFilter} {
-      ${fieldLabel}
-      ${fieldValue}
-    }
-  `;
-    })
-    .join(" ");
+      ${table} {
+        ${fieldLabel}
+        ${fieldValue}
+      }
+      `;
+    });
 
-  // return gql(`query RetrieveLookupValues { ${lookupQueries} }`);
-}; //
+    return tableQueries;
+  });
+
+  const lookupQueriesString = lookupQueries.flat().join(" ");
+
+  return gql(`query RetrieveLookupValues { ${lookupQueriesString} }`);
+};
 
 /**
  * Take activity log response and return unique table names for lookup in project's log
