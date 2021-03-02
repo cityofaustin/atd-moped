@@ -1363,15 +1363,18 @@ export const buildLookupQuery = fieldConfiguration => {
     .join(" ");
 
   // return gql(`query RetrieveLookupValues { ${lookupQueries} }`);
-};
+}; //
 
-// Collect only lookups for tables that are needed for a project's log
-export const getActivityLogTableNames = response => {
+/**
+ * Take activity log response and return unique table names for lookup in project's log
+ * @param {object} response - GraphQL response containing project record types (table names)
+ * @return {array} Array of unique table names for log data lookups
+ */ export const getActivityLogTableNames = response => {
   const lookupTableData = response?.activity_log_lookup_tables;
 
   if (!lookupTableData || lookupTableData.length === 0) return null;
 
   const tableNames = lookupTableData.map(record => record.record_type);
-  debugger;
+
   return tableNames;
 };
