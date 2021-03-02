@@ -1,3 +1,5 @@
+import { gql } from "@apollo/client";
+
 export const ProjectActivityLogTableMaps = {
   moped_project: {
     label: "Project",
@@ -1332,28 +1334,40 @@ export const getOperationName = operationName => {
  * @param {object} fieldConfiguration - The operation type: INSERT, UPDATE, DELETE
  * @return {query} A GraphQL query document parsed by gql.
  */
-export const buildLookupQuery = ({ fieldConfiguration, table }) =>
-  gql(
-    "query RetrieveLookupValues {\n" +
-      Object.keys(fieldConfiguration.fields)
-        .filter(
-          field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
-        )
-        .map(field => {
-          const {
-            fieldLabel,
-            fieldValue,
-            relationship,
-          } = fieldConfiguration.fields[field]?.lookup;
-
-          const relationshipFilter = !!relationship ? `(${relationship})` : "";
-
-          return `
-          ${table} ${relationshipFilter} {
-            fieldLabel: ${fieldLabel}
-            fieldValue: ${fieldValue}
-          }
-        `;
-        }) +
-      "}\n"
+export const buildLookupQuery = fieldConfiguration => {
+  const fields = Object.keys(fieldConfiguration.fields);
+  const lookupFields = fields.filter(
+    field => (fieldConfiguration.fields[field]?.lookup ?? null) !== null
   );
+
+  // if (lookupFields.length === 0) return;
+
+  const lookupQueries = lookupFields
+    .map(field => {
+      const {
+        table,
+        fieldLabel,
+        fieldValue,
+        relationship,
+      } = fieldConfiguration.fields[field]?.lookup;
+
+      const relationshipFilter = !!relationship ? `(${relationship})` : "";
+
+      return `
+    ${table} ${relationshipFilter} {
+      ${fieldLabel}
+      ${fieldValue}
+    }
+  `;
+    })
+    .join(" ");
+
+  debugger;
+
+  // return gql(`query RetrieveLookupValues { ${lookupQueries} }`);
+};
+
+// Collect only lookups for tables that are needed for a project's log
+const getActivityLogTablesFromResponse = response => {
+  return null;
+};

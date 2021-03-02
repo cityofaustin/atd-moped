@@ -7,6 +7,7 @@ import {
   getRecordTypeLabel,
   getHumanReadableField,
   ProjectActivityLogGenericDescriptions,
+  ProjectActivityLogTableMaps,
   buildLookupQuery,
 } from "./ProjectActivityLogTableMaps";
 
@@ -61,10 +62,11 @@ const ProjectActivityLog = () => {
     variables: { projectId },
   });
 
-  const recordTableName = getRecordTypeLabel(change.record_type);
-  const recordTableConfig = ProjectActivityLogTableMaps[recordTableName];
+  const recordTableNames = getActivityLogTablesFromResponse(data);
+  const recordTableConfig = ProjectActivityLogTableMaps["moped_project_roles"];
   const GET_LOOKUPS = buildLookupQuery(recordTableConfig);
-  const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);
+  // const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);
+  // console.log(lookupsData);
 
   const [activityId, setActivityId] = useState(null);
 
@@ -244,7 +246,7 @@ const ProjectActivityLog = () => {
                                   ) : (
                                     <>
                                       <b>
-                                        {recordTableName}{" "}
+                                        {getRecordTypeLabel(change.record_type)}{" "}
                                         {getHumanReadableField(
                                           change.record_type,
                                           changeItem.field
