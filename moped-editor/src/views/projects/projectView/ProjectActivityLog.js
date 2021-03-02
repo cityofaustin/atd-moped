@@ -63,10 +63,14 @@ const ProjectActivityLog = () => {
     variables: { projectId },
   });
 
+  // Wrap this in a function and use onCompleted callback to set lookup query in state
   const recordTableNames = getActivityLogTableNames(data);
-  const GET_LOOKUPS = recordTableNames && buildLookupQuery(recordTableNames);
-  // const { lookupsLoading, lookupsError, lookupsData } = useQuery(GET_LOOKUPS);
-  // console.log(lookupsData);
+  const { GET_LOOKUPS, areLookups } = buildLookupQuery(recordTableNames);
+  console.log(recordTableNames, GET_LOOKUPS, areLookups);
+  const { lookupLoading, lookupError, lookupData } = useQuery(GET_LOOKUPS, {
+    skip: !areLookups,
+  });
+  console.log(lookupData);
 
   const [activityId, setActivityId] = useState(null);
 
@@ -85,7 +89,7 @@ const ProjectActivityLog = () => {
     setActivityId(activityId);
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading || lookupLoading) return <CircularProgress />;
 
   /**
    * Formats the iso date into human-readable locale date.
@@ -146,7 +150,7 @@ const ProjectActivityLog = () => {
     field in ProjectActivityLogGenericDescriptions;
 
   return (
-    <ApolloErrorHandler error={error}>
+    <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
         <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
         {getTotalItems() === 0 ? (

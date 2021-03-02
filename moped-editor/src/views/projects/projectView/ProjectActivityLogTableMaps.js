@@ -1329,15 +1329,24 @@ export const getOperationName = operationName => {
   );
 };
 
+export const PLACEHOLDER_QUERY = gql`
+  query NotARealQuery {
+    just_a_placeholder {
+      affected_rows
+    }
+  }
+`;
+
 /**
- * Takes a lookup configuration object and builds a GraphQL query
- * @param {object} fieldConfiguration - The operation type: INSERT, UPDATE, DELETE
+ * Takes an array of table names and uses ProjectActivityLogTableMaps to create a query for lookup tables
+ * @param {array} tableNames - Names of table with field that requires a lookup
  * @return {query} A GraphQL query document parsed by gql.
  */
 export const buildLookupQuery = tableNames => {
-  // We have table names
-  // For each table names, ProjectActivityLogTableMaps[tableName] => config
-  // Filter config.fields to those with lookups
+  debugger;
+  if (!tableNames || tableNames.length === 0)
+    return { areLookups: false, LOOKUPS_QUERY: PLACEHOLDER_QUERY };
+
   const lookupQueries = tableNames.map(tableName => {
     const fields = ProjectActivityLogTableMaps[tableName].fields;
 
@@ -1359,9 +1368,11 @@ export const buildLookupQuery = tableNames => {
     return tableQueries;
   });
 
-  const lookupQueriesString = lookupQueries.flat().join(" ");
+  const flatLookupQueries = lookupQueries.flat();
+  const lookupQueriesString = flatLookupQueries.join(" ");
+  const LOOKUPS_QUERY = gql`query RetrieveLookupValues { ${lookupQueriesString} }`;
 
-  return gql(`query RetrieveLookupValues { ${lookupQueriesString} }`);
+  return { areLookups: true, LOOKUPS_QUERY };
 };
 
 /**
