@@ -119,6 +119,11 @@ const FileUpload = props => {
     }
   }
 
+  /**
+   * Retrieves a file signature from a list
+   * @param {string} file - The name of the file
+   * @return {string|null}
+   */
   const getFileSignatureFromList = (file) => {
     const uploadedFileName = file.name || '';
 
