@@ -8,8 +8,6 @@ import {
   getRecordTypeLabel,
   getHumanReadableField,
   ProjectActivityLogGenericDescriptions,
-  ProjectActivityLogTableMaps,
-  createLookupObject,
   buildLookupQuery,
   PLACEHOLDER_QUERY,
 } from "./ProjectActivityLogTableMaps";
@@ -84,14 +82,12 @@ const ProjectActivityLog = () => {
           fieldMap = { ...fieldMap, [record.key]: record.value };
 
           return { ...acc, [field]: fieldMap };
-          // Create object in this shape
-          // {"field": {key: value, key1:value1...}}
         });
         return { ...acc, [field]: fieldMap };
       },
       {}
     );
-
+    // TODO Maybe we should include table name to avoid intersection of field names
     setLookupMap(lookupMapFromResponse);
   };
 
@@ -100,14 +96,11 @@ const ProjectActivityLog = () => {
     onCompleted: getLookup,
   });
 
-  const { lookupLoading, lookupError, lookupData } = useQuery(
-    lookupObject.query,
-    {
-      skip: !lookupObject.areLookups,
-      onCompleted: lookupResponse => createLookupMap(lookupResponse),
-      fetchPolicy: "no-cache",
-    }
-  );
+  const { lookupLoading, lookupError } = useQuery(lookupObject.query, {
+    skip: !lookupObject.areLookups,
+    onCompleted: lookupResponse => createLookupMap(lookupResponse),
+    fetchPolicy: "no-cache",
+  });
 
   ////
 

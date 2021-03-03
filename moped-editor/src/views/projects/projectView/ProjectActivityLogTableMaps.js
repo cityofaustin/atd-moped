@@ -974,7 +974,7 @@ export const ProjectActivityLogTableMaps = {
       },
       project_role_id: {
         icon: "",
-        label: "",
+        label: "Role",
         type: "int4",
       },
       date_added: {
@@ -1353,16 +1353,22 @@ export const buildLookupQuery = tableNames => {
   const lookupQueries = tableNames.map(tableName => {
     const fields = ProjectActivityLogTableMaps[tableName].fields;
 
-    const lookupFields = Object.values(fields).filter(value =>
-      value.hasOwnProperty("lookup")
+    const lookupFields = Object.entries(fields).reduce(
+      (acc, [fieldName, fieldConfig]) => {
+        return fieldConfig.hasOwnProperty("lookup")
+          ? [...acc, { ...fieldConfig.lookup, originalFieldName: fieldName }]
+          : [...acc];
+      },
+      []
     );
 
+    // We need the field name from the original table here
     const tableQueries = lookupFields.map(field => {
-      const { table, fieldLabel, fieldValue } = field.lookup;
+      const { table, fieldLabel, fieldValue, originalFieldName } = field;
 
       // Alias table name as fieldLabel and return values as key and value to create lookup objects later
       return `
-      ${fieldLabel}: ${table} {
+      ${originalFieldName}: ${table} {
         key: ${fieldLabel}
         value: ${fieldValue}
       }
