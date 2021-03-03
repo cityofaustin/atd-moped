@@ -18,10 +18,10 @@ import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "../../auth/user";
 import useAuthentication from "../../auth/useAuthentication";
+import SimpleDialog from "../../components/SimpleDialog";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
     height: "100%",
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
@@ -37,9 +37,20 @@ const LoginView = () => {
 
   const { login, loginLoading } = useUser();
   const { signIn, isLoading } = useAuthentication();
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = event => {
+    event.preventDefault();
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
+    console.log("handle");
     try {
       // wait to see if login was successful (we don't care about the return
       // value here)
@@ -93,16 +104,25 @@ const LoginView = () => {
               values,
             }) => (
               <form onSubmit={handleSubmit}>
-                <Box mb={3}>
-                  <Typography color="textPrimary" variant="h2">
-                    Sign in
+                <Box mb={"4em"}>
+                  <Box display="flex" justifyContent="center" mb={2}>
+                    <img
+                      alt="Logo"
+                      src={`${process.env.PUBLIC_URL}/static/moped.svg`}
+                      width="160px"
+                      height="160px"
+                    />
+                  </Box>
+                  <Typography color="textPrimary" variant="h1" align="center">
+                    Moped
                   </Typography>
                   <Typography
                     color="textSecondary"
                     gutterBottom
-                    variant="body2"
+                    variant="body1"
+                    align="center"
                   >
-                    Sign in with Microsoft Office 365
+                    Austin's mobility project tracking platform
                   </Typography>
                 </Box>
                 <Grid container spacing={3}>
@@ -123,55 +143,62 @@ const LoginView = () => {
                   <Typography
                     align="center"
                     color="textSecondary"
-                    variant="body1"
+                    variant="body2"
                   >
-                    or login with email address
+                    External user? Sign in{" "}
+                    <Link href="#" onClick={handleOpen}>
+                      here
+                    </Link>
+                    .
                   </Typography>
+                  <SimpleDialog
+                    open={open}
+                    handleClose={handleClose}
+                    moreProps={"props!"}
+                    body={
+                      <div>
+                        <TextField
+                          error={Boolean(touched.email && errors.email)}
+                          fullWidth
+                          helperText={touched.email && errors.email}
+                          label="Email Address"
+                          margin="normal"
+                          name="email"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          type="email"
+                          value={values.email}
+                          variant="outlined"
+                        />
+                        <TextField
+                          error={Boolean(touched.password && errors.password)}
+                          fullWidth
+                          helperText={touched.password && errors.password}
+                          label="Password"
+                          margin="normal"
+                          name="password"
+                          onBlur={handleBlur}
+                          onChange={handleChange}
+                          type="password"
+                          value={values.password}
+                          variant="outlined"
+                        />
+                        <Box my={2}>
+                          <Button
+                            color="primary"
+                            disabled={isSubmitting}
+                            fullWidth
+                            size="large"
+                            type="submit"
+                            variant="contained"
+                          >
+                            Sign in now
+                          </Button>
+                        </Box>
+                      </div>
+                    }
+                  />
                 </Box>
-                <TextField
-                  error={Boolean(touched.email && errors.email)}
-                  fullWidth
-                  helperText={touched.email && errors.email}
-                  label="Email Address"
-                  margin="normal"
-                  name="email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="email"
-                  value={values.email}
-                  variant="outlined"
-                />
-                <TextField
-                  error={Boolean(touched.password && errors.password)}
-                  fullWidth
-                  helperText={touched.password && errors.password}
-                  label="Password"
-                  margin="normal"
-                  name="password"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  type="password"
-                  value={values.password}
-                  variant="outlined"
-                />
-                <Box my={2}>
-                  <Button
-                    color="primary"
-                    disabled={isSubmitting}
-                    fullWidth
-                    size="large"
-                    type="submit"
-                    variant="contained"
-                  >
-                    Sign in now
-                  </Button>
-                </Box>
-                <Typography color="textSecondary" variant="body1">
-                  Don&apos;t have an account?{" "}
-                  <Link component={RouterLink} to="/register" variant="h6">
-                    Sign up
-                  </Link>
-                </Typography>
               </form>
             )}
           </Formik>
