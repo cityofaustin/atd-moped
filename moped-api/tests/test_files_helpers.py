@@ -12,7 +12,8 @@ from files.helpers import (
     strip_non_alpha,
     strip_non_common,
     strip_non_numeric,
-    is_valid_number
+    is_valid_number,
+    is_valid_filename,
 )
 
 
@@ -53,9 +54,7 @@ class TestFilesHelpers(unittest.TestCase):
         assert get_file_extension(None) is None
         assert get_file_extension("") is None
         assert get_file_extension("noext") is None
-        assert get_file_extension("    .png") is None
         assert get_file_extension("           ") is None
-        assert get_file_extension(".png") is None
         assert get_file_extension("1.^^^") is None
         assert get_file_extension("1.   ") is None
         assert get_file_extension(".   ") is None
@@ -63,6 +62,10 @@ class TestFilesHelpers(unittest.TestCase):
         assert get_file_extension("a675ffad8f7df7d217e7028b342e0b38e2f2996ab0463645e24021ec366f873b2a.pdf") == "pdf"
         assert get_file_extension("crazy6^filE!@#$%T^Y&U*I<>???.mov.tar.gz") == "gz"
         assert get_file_extension("filename.png") == "png"
+        assert get_file_extension("    .png") == "png"
+        assert get_file_extension(".pdf") == "pdf"
+
+
 
     def test_is_valid_unique_id(self):
         assert is_valid_unique_id(generate_random_hash())
@@ -72,6 +75,7 @@ class TestFilesHelpers(unittest.TestCase):
         self.assertRaises(Exception, generate_clean_filename, "")
         self.assertRaises(Exception, generate_clean_filename, ".png")
         self.assertRaises(Exception, generate_clean_filename, "naathing")
+        self.assertRaises(Exception, generate_clean_filename, "naathing.")
 
         assert generate_clean_filename("crazy6^filE!@#$%T^Y&U*I<>???.mov.tar.gz").endswith("crazy6filetyuimovtar.gz")
 
@@ -81,3 +85,14 @@ class TestFilesHelpers(unittest.TestCase):
         assert is_valid_number("") is False
         assert is_valid_number("ABC") is False
         assert is_valid_number("123")
+
+    def test_is_valid_filename(self):
+        assert is_valid_filename(123) is False
+        assert is_valid_filename("123") is False
+        assert is_valid_filename(None) is False
+        assert is_valid_filename("None") is False
+        assert is_valid_filename({}) is False
+        assert is_valid_filename(".png") is False
+        assert is_valid_filename(".") is False
+        assert is_valid_filename("file.") is False
+
