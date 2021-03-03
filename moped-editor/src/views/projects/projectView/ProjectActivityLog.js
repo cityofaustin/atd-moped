@@ -67,12 +67,9 @@ const ProjectActivityLog = () => {
 
   const getLookup = () => {
     const recordTableNames = getActivityLogTableNames(data);
-    const { GET_LOOKUPS, areLookups } = buildLookupQuery(recordTableNames);
-    setLookupObject(prevState => ({
-      ...prevState,
-      query: GET_LOOKUPS,
-      areLookups,
-    }));
+    const { query, areLookups } = buildLookupQuery(recordTableNames);
+
+    setLookupObject({ query, areLookups });
   };
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
@@ -80,15 +77,12 @@ const ProjectActivityLog = () => {
     onCompleted: getLookup,
   });
 
-  // Wrap this in a function and use onCompleted callback to set lookup query in state
-
   const { lookupLoading, lookupError, lookupData } = useQuery(
     lookupObject.query,
     {
       skip: !lookupObject.areLookups,
     }
   );
-  console.log(lookupData);
 
   const [activityId, setActivityId] = useState(null);
 

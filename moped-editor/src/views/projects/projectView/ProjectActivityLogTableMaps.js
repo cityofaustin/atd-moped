@@ -1345,7 +1345,7 @@ export const PLACEHOLDER_QUERY = gql`
 export const buildLookupQuery = tableNames => {
   const noLookupsObject = {
     areLookups: false,
-    LOOKUPS_QUERY: PLACEHOLDER_QUERY,
+    query: PLACEHOLDER_QUERY,
   };
 
   if (!tableNames || tableNames.length === 0) return noLookupsObject;
@@ -1377,10 +1377,12 @@ export const buildLookupQuery = tableNames => {
 
   const lookupQueriesString = flatLookupQueries.join(" ");
   const LOOKUPS_QUERY = gql`
-    query RetrieveLookupValues { ${lookupQueriesString} }
+    query RetrieveLookupValues { 
+      ${lookupQueriesString} 
+    }
   `;
 
-  return { areLookups: true, LOOKUPS_QUERY };
+  return { areLookups: true, query: LOOKUPS_QUERY };
 };
 
 /**
