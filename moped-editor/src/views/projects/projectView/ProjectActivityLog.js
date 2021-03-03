@@ -77,7 +77,7 @@ const ProjectActivityLog = () => {
   };
 
   const createLookupMap = response => {
-    const lookupMap = Object.entries(response).reduce(
+    const lookupMapFromResponse = Object.entries(response).reduce(
       (acc, [field, mapArray]) => {
         let fieldMap = {};
         mapArray.forEach(record => {
@@ -91,6 +91,8 @@ const ProjectActivityLog = () => {
       },
       {}
     );
+
+    setLookupMap(lookupMapFromResponse);
   };
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
@@ -295,11 +297,19 @@ const ProjectActivityLog = () => {
                                       </b>{" "}
                                       from{" "}
                                       <b>
-                                        &quot;{String(changeItem.old)}&quot;
+                                        &quot;
+                                        {lookupMap?.[changeItem.field]?.[
+                                          changeItem.old
+                                        ] || String(changeItem.old)}
+                                        &quot;
                                       </b>{" "}
                                       to{" "}
                                       <b>
-                                        &quot;{String(changeItem.new)}&quot;
+                                        &quot;
+                                        {lookupMap?.[changeItem.field]?.[
+                                          changeItem.new
+                                        ] || String(changeItem.new)}
+                                        &quot;
                                       </b>
                                     </>
                                   )}
