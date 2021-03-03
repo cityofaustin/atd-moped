@@ -139,6 +139,10 @@ const FileUpload = props => {
     return null;
   }
 
+  /**
+   * Handles file update event
+   * @param {object} fileItems
+   */
   const filesUpdated = ({ fileItems }) => {
     // Set current file objects to this.state
     setFiles(fileItems.map(fileItem => fileItem.file));
