@@ -95,6 +95,21 @@ const FileUpload = props => {
     }
   }
 
+  const getFileSignatureFromList = (file) => {
+    const uploadedFileName = file.name || '';
+
+    for (const i in fileList) {
+      const currentFile = fileList[i];
+      if (currentFile.filename === uploadedFileName) {
+        // console.log(`getFileSignatureFromList() Item found at index: ${i}`);
+        const creds = fileList[i].creds;
+        return creds;
+      }
+    }
+    // If not found, return null
+    return null;
+  }
+
   return (
     <span>
       Hello World!
