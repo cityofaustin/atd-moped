@@ -20,6 +20,29 @@ files_blueprint = Blueprint("files_blueprint", __name__)
 aws_s3_client = boto3.client("s3", region_name=os.getenv("DEFALUT_REGION"))
 
 
+def is_user_authorized(session_token: dict, claims: dict) -> tuple:
+    """
+    Checks the user's has a valid token, and that the user db id is present,
+    and that the role is either and admin or an editor.
+    :param dict session_token: The token being validated
+    :param dict claims: The claims being validated
+    :return tuple:
+    """
+    # If not a valid user, then stop session...
+    if not is_valid_user(session_token):
+        return False, "Not Authorized"
+
+    # If not a valid user, then stop session...
+    if not is_valid_number(get_user_id(claims)):
+        return False, "Not Authorized: Invalid Database User ID"
+
+    # Make sure the user is either an editor or an admin
+    if not has_user_role("moped-admin", claims) and not has_user_role("moped-editor", claims):
+        return False, "Not authorized: Insufficient access"
+
+    return True, "Authorized"
+
+
 @files_blueprint.route("/")
 def auth_index() -> str:
     """
@@ -48,48 +71,49 @@ def files_request_signature(claims: list) -> dict:
     If the request is valid, the response includes a temporary token.
     :return:
     """
+    # Check the user is authorized
+    user_authorized, auth_message = is_user_authorized(
+        session_token=current_cognito_jwt,
+        claims=claims
+    )
 
-    # If not a valid user, then stop session...
-    if not is_valid_user(current_cognito_jwt):
-        jsonify({"status": "error", "message": "Not authorized"}), 403
+    # Stop the request if there is an issue with the user credentials
+    if not user_authorized:
+        return jsonify({"status": "error", "message": auth_message}), 403
 
     # Load the user id from session
     user_id = get_user_id(claims)
 
-    # If not a valid user, then stop session...
-    if not is_valid_number(user_id):
-        return jsonify({"status": "error", "message": "Not authorized"})
-
-    # Retrieve parameters:
+    #
+    # Retrieve Parameters:
+    #
     filename = request.args.get("file")
-    upload_type = request.args.get("type")
-    project_id = request.args.get("project_id")
-
-    if upload_type not in ["user", "project"]:
-        return jsonify({"status": "error", "message": "Invalid upload type"}), 403
-
-    if upload_type == "user":
-        project_id = "0"
+    project_id = request.args.get("project_id", "0")
+    upload_type = request.args.get("type", "private")
 
     # Check our parameters
-    if not is_valid_number(project_id) or not is_valid_filename(filename):
-        return jsonify({"status": "error", "message": "Invalid parameters"}), 403
+    if not is_valid_filename(filename):
+        return jsonify({"status": "error", "message": "Invalid file name"}), 403
 
-    #
-    # We have the basic requirements...
-    #
-    print("User Claims: ")
-    print(json.dumps(claims))
+    # Determine upload type
+    if upload_type not in ["private", "public"]:
+        upload_type = "private"
+
+    # Determine the principal: project or user
+    if is_valid_number(project_id) and project_id != "0":
+        upload_principal = "project"
+    else:
+        upload_principal = "user"
 
     # Generate unique file name
     random_hash = generate_random_hash()
     file_new_unique_name = generate_clean_filename(filename)
 
     # Final Unique File Name:
-    file_s3_key = f"uploads/{project_id}/{user_id}_{file_new_unique_name}"
-    import pdb
-
-    pdb.set_trace()
+    if upload_principal == "project":
+        file_s3_key = f"{upload_type}/{upload_principal}/{project_id}/{user_id}_{file_new_unique_name}"
+    else:
+        file_s3_key = f"{upload_type}/{upload_principal}/{user_id}/{file_new_unique_name}"
 
     # Generate upload credentials
     credentials = aws_s3_client.generate_presigned_post(
@@ -112,8 +136,7 @@ def files_request_signature(claims: list) -> dict:
 # Downloads a file from S3
 @files_blueprint.route("/download/<path:path>", methods=("GET",))
 @cognito_auth_required
-@normalize_claims
-def file_download(path, claims: list) -> redirect:
+def file_download(path) -> redirect:
     """
     Retrieves a download file url for the user
     :param str path: The file name
@@ -121,7 +144,7 @@ def file_download(path, claims: list) -> redirect:
     :return redirect:
     """
     if not is_valid_user(current_cognito_jwt):
-        jsonify({"status": "error", "message": "not authorized"}), 403
+        jsonify({"status": "error", "message": "Not authorized"}), 403
 
     url = aws_s3_client.generate_presigned_url(
         ExpiresIn=60,  # seconds
