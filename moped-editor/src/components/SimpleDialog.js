@@ -1,14 +1,32 @@
-import React from 'react';
-import Dialog from '@material-ui/core/Dialog';
+import React from "react";
+import { Dialog } from "@material-ui/core";
 
-const SimpleDialog = ({open, handleClose, body }) => {
+const SimpleDialog = ({
+  content: { link, body }
+}) => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = event => {
+    event.preventDefault();
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
-    <div>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+    <span>
+      <span onClick={handleOpen}>{link}</span>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
         {body}
       </Dialog>
-    </div>
+    </span>
   );
-}
+};
 
 export default SimpleDialog;

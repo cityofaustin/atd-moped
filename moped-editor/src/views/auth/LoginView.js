@@ -35,16 +35,6 @@ const LoginView = () => {
 
   const { login, loginLoading } = useUser();
   const { signIn, isLoading } = useAuthentication();
-  const [open, setOpen] = React.useState(false);
-
-  const handleOpen = event => {
-    event.preventDefault();
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
@@ -63,77 +53,84 @@ const LoginView = () => {
     }
   };
 
-  const dialogBody = (
-    <Formik
-      initialValues={{
-        email: "",
-        password: "",
-      }}
-      validationSchema={Yup.object().shape({
-        email: Yup.string()
-          .email("Must be a valid email")
-          .max(255)
-          .required("Email is required"),
-        password: Yup.string()
-          .max(255)
-          .required("Password is required"),
-      })}
-      onSubmit={handleSubmit}
-    >
-      {({
-        errors,
-        handleBlur,
-        handleChange,
-        handleSubmit,
-        isSubmitting,
-        touched,
-        values,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <Box m={2}>
-            <TextField
-              error={Boolean(touched.email && errors.email)}
-              fullWidth
-              helperText={touched.email && errors.email}
-              label="Email Address"
-              margin="normal"
-              name="email"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="email"
-              value={values.email}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(touched.password && errors.password)}
-              fullWidth
-              helperText={touched.password && errors.password}
-              label="Password"
-              margin="normal"
-              name="password"
-              onBlur={handleBlur}
-              onChange={handleChange}
-              type="password"
-              value={values.password}
-              variant="outlined"
-            />
-            <Box my={2}>
-              <Button
-                color="primary"
-                disabled={isSubmitting}
+  const dialogContent = {
+    link: (
+      <Typography display="inline" color="textSecondary" variant="body2">
+        <Link href="#">here</Link>.
+      </Typography>
+    ),
+    body: (
+      <Formik
+        initialValues={{
+          email: "",
+          password: "",
+        }}
+        validationSchema={Yup.object().shape({
+          email: Yup.string()
+            .email("Must be a valid email")
+            .max(255)
+            .required("Email is required"),
+          password: Yup.string()
+            .max(255)
+            .required("Password is required"),
+        })}
+        onSubmit={handleSubmit}
+      >
+        {({
+          errors,
+          handleBlur,
+          handleChange,
+          handleSubmit,
+          isSubmitting,
+          touched,
+          values,
+        }) => (
+          <form onSubmit={handleSubmit}>
+            <Box m={2}>
+              <TextField
+                error={Boolean(touched.email && errors.email)}
                 fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-              >
-                Sign in now
-              </Button>
+                helperText={touched.email && errors.email}
+                label="Email Address"
+                margin="normal"
+                name="email"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                type="email"
+                value={values.email}
+                variant="outlined"
+              />
+              <TextField
+                error={Boolean(touched.password && errors.password)}
+                fullWidth
+                helperText={touched.password && errors.password}
+                label="Password"
+                margin="normal"
+                name="password"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                type="password"
+                value={values.password}
+                variant="outlined"
+              />
+              <Box my={2}>
+                <Button
+                  color="primary"
+                  disabled={isSubmitting}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                >
+                  Sign in now
+                </Button>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      )}
-    </Formik>
-  );
+          </form>
+        )}
+      </Formik>
+    ),
+  };
 
   return (
     <Page className={classes.root} title="Login">
@@ -180,19 +177,11 @@ const LoginView = () => {
               City of Austin Sign-In
             </Button>
           </Box>
-          <Box>
-            <Typography align="center" color="textSecondary" variant="body2">
+          <Box align="center">
+            <Typography display="inline" color="textSecondary" variant="body2">
               External user? Sign in{" "}
-              <Link href="#" onClick={handleOpen}>
-                here
-              </Link>
-              .
             </Typography>
-            <SimpleDialog
-              open={open}
-              handleClose={handleClose}
-              body={dialogBody}
-            />
+            <SimpleDialog content={dialogContent} />
           </Box>
         </Container>
       </Box>
