@@ -70,6 +70,11 @@ const FileUpload = props => {
     return url;
   };
 
+  /**
+   * Retrieves a file signature request from API
+   * @param {string} key - The name of the file
+   * @param {string} uniqueIdentifier - A random unique identifier
+   */
   const retrieveFileSignature = (key, uniqueIdentifier) => {
     const formData = new FormData();
 
