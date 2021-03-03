@@ -1360,10 +1360,11 @@ export const buildLookupQuery = tableNames => {
     const tableQueries = lookupFields.map(field => {
       const { table, fieldLabel, fieldValue } = field.lookup;
 
+      // Alias table name as fieldLabel and return values as key and value to create lookup objects later
       return `
-      ${table} {
-        ${fieldLabel}
-        ${fieldValue}
+      ${fieldLabel}: ${table} {
+        key: ${fieldLabel}
+        value: ${fieldValue}
       }
       `;
     });

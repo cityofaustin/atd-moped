@@ -9,6 +9,7 @@ import {
   getHumanReadableField,
   ProjectActivityLogGenericDescriptions,
   ProjectActivityLogTableMaps,
+  createLookupObject,
   buildLookupQuery,
   PLACEHOLDER_QUERY,
 } from "./ProjectActivityLogTableMaps";
@@ -60,16 +61,27 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
+  // Lookup logic
+
   const [lookupObject, setLookupObject] = useState({
     query: PLACEHOLDER_QUERY,
     areLookups: false,
   });
+  const [lookupMap, setLookupMap] = useState(null);
 
   const getLookup = () => {
     const recordTableNames = getActivityLogTableNames(data);
     const { query, areLookups } = buildLookupQuery(recordTableNames);
 
     setLookupObject({ query, areLookups });
+  };
+
+  const createLookupMap = response => {
+    Object.entries(response).reduce((acc, [field, mapObject]) => {
+      debugger;
+      // Create object in this shape
+      // {"field": {key: value, key1:value1...}}
+    }, {});
   };
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
@@ -81,8 +93,11 @@ const ProjectActivityLog = () => {
     lookupObject.query,
     {
       skip: !lookupObject.areLookups,
+      onCompleted: lookupResponse => createLookupObject(lookupResponse),
     }
   );
+
+  ////
 
   const [activityId, setActivityId] = useState(null);
 
