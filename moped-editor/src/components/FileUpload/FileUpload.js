@@ -102,7 +102,11 @@ const FileUpload = props => {
   const handleFileAdded = (error, file) => {
     retrieveFileSignature(file.filename, uniqueIdentifier);
   }
-  
+
+  /**
+   * Handles file removal events
+   * @param {string} file - The name of the file
+   */
   const handleRemoveFile = (file) => {
     let newFileList = [...fileList];
     for (const i in newFileList) {
