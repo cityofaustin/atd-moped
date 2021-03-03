@@ -94,10 +94,15 @@ const FileUpload = props => {
         });
   };
 
+  /**
+   * Handles a file added event
+   * @param {Object} error - The error object
+   * @param {Object} file - The file object with attributes
+   */
   const handleFileAdded = (error, file) => {
     retrieveFileSignature(file.filename, uniqueIdentifier);
   }
-
+  
   const handleRemoveFile = (file) => {
     let newFileList = [...fileList];
     for (const i in newFileList) {
