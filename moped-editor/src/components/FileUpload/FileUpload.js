@@ -83,7 +83,17 @@ const FileUpload = props => {
     retrieveFileSignature(file.filename, uniqueIdentifier);
   }
 
-  
+  const handleRemoveFile = (file) => {
+    let newFileList = [...fileList];
+    for (const i in newFileList) {
+      const currentFile = newFileList[i];
+      if (currentFile.filename === file.filename) {
+        // console.log(`Removing: ${file.filename} at index: ${i}`);
+        newFileList.splice(i, 1);
+        setFileList(newFileList);
+      }
+    }
+  }
 
   return (
     <span>
