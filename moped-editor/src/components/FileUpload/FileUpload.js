@@ -55,6 +55,12 @@ const FileUpload = props => {
     setFileList(responseFileList);
   };
 
+  /**
+   * Generates a URL given a list of parameters. It URI-Encodes the parameters
+   * @param {string} url - The base URL
+   * @param {string[]} params - A list of parameters
+   * @return {string}
+   */
   const withQuery = (url, params) => {
     const query = Object.keys(params)
         .filter(k => params[k] !== undefined)
