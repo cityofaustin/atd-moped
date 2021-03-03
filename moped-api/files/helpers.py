@@ -14,7 +14,7 @@ def strip_non_numeric(text: str) -> str:
         return ""
 
     pattern = re.compile("[^0-9]")
-    return re.sub(pattern, '', text)
+    return re.sub(pattern, "", text)
 
 
 def strip_non_alpha(text: str) -> str:
@@ -27,7 +27,7 @@ def strip_non_alpha(text: str) -> str:
         return ""
 
     pattern = re.compile("[^a-zA-Z]")
-    return re.sub(pattern, '', text).lower()
+    return re.sub(pattern, "", text).lower()
 
 
 def strip_non_common(text: str) -> str:
@@ -40,7 +40,7 @@ def strip_non_common(text: str) -> str:
         return ""
 
     pattern = re.compile("[^0-9a-zA-Z_-]")
-    return re.sub(pattern, '', text).lower()
+    return re.sub(pattern, "", text).lower()
 
 
 def get_file_name(filename: str) -> str:
@@ -58,7 +58,7 @@ def get_file_name(filename: str) -> str:
     if "." not in filename:
         return None
 
-    filename_no_ext = filename.rsplit('.', 1)[0].lower()[:64]
+    filename_no_ext = filename.rsplit(".", 1)[0].lower()[:64]
     return strip_non_common(filename_no_ext)
 
 
@@ -80,6 +80,9 @@ def is_valid_filename(filename: str) -> bool:
 
     file_name_clean = get_file_name(filename)
 
+    if get_file_extension(filename) is None:
+        return False
+
     if len(filename) >= 130:
         return False
 
@@ -95,10 +98,16 @@ def get_file_extension(filename) -> str:
     :param str filename: The file name
     :return str:
     """
-    if not is_valid_filename(filename):
+    if not isinstance(filename, str):
         return None
 
-    file_extension = strip_non_alpha(filename.rsplit('.', 1)[1].lower().strip())
+    if filename is None or filename == "":
+        return None
+
+    if "." not in filename:
+        return None
+
+    file_extension = strip_non_alpha(filename.rsplit(".", 1)[1].lower().strip())
 
     if file_extension is None or file_extension == "":
         return None
@@ -116,10 +125,16 @@ def generate_clean_filename(filename: str) -> str:
         raise Exception(f"Invalid file name: '{filename}'")
 
     timestamp = filename_timestamp()
-    file_extension = get_file_extension(filename)
-    file_name = get_file_name(filename)
+    file_extension = get_file_extension(filename).strip()
+    file_name = get_file_name(filename).strip()
 
-    if timestamp is None or file_extension is None or filename is None:
+    if (
+        timestamp is None
+        or file_extension is None
+        or file_extension == ""
+        or file_name is None
+        or file_name == ""
+    ):
         raise Exception(f"Invalid file name: '{filename}'")
 
     clean_filename = "{0}.{1}".format(file_name, file_extension)
@@ -172,7 +187,7 @@ def get_current_datetime() -> str:
     Returns the current date time as a string
     :return str:
     """
-    return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def filename_timestamp():
@@ -200,4 +215,6 @@ def get_user_id(claims: dict) -> str:
     :param dict claims: The claims dictionary
     :return str: The users' database id as a string integer
     """
-    return claims.get("https://hasura.io/jwt/claims", {}).get("x-hasura-user-db-id", None)
+    return claims.get("https://hasura.io/jwt/claims", {}).get(
+        "x-hasura-user-db-id", None
+    )
