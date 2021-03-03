@@ -60,6 +60,25 @@ const FileUpload = props => {
     return url;
   };
 
+  const retrieveFileSignature = (key, uniqueIdentifier) => {
+    const formData = new FormData();
+
+    formData.append("key", key);
+    formData.append("uniqueid", uniqueIdentifier);
+
+    fetch(
+        withQuery(`${config.env.APP_API_ENDPOINT}/uploads/request-signature`, {
+          file: key,
+          uniqueid: uniqueIdentifier.toLowerCase(),
+        })
+    )
+        .then(res => res.json())
+        .catch(error => console.error("Error:", error))
+        .then(res => {
+          parseSignatureResponse(res);
+        });
+  };
+
   return (
     <span>
       Hello World!
