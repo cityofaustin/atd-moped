@@ -30,6 +30,10 @@ const FileUpload = props => {
     console.log("FilePond instance has initialised.");
   };
 
+  /**
+   * Parses a signature request response
+   * @param {Object} res - The response as provided by the API
+   */
   const parseSignatureResponse = res => {
     let responseFileList = [];
     responseFileList.push(res);
@@ -37,8 +41,8 @@ const FileUpload = props => {
     let value = false;
 
     try {
-      value = this.fileList.length
-          ? JSON.stringify(this.fileList.map(f => `${f.creds.fields.key}`))
+      value = fileList.length
+          ? JSON.stringify(fileList.map(f => `${f.creds.fields.key}`))
           : false;
     } catch (error) {
       console.error("parseSignatureResponse() Error: ");
