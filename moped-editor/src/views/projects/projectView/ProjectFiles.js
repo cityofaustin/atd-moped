@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
   },
   title: {
-    padding: "0rem 0 2rem 0"
+    padding: "0rem 0 2rem 0",
   },
   secondaryHeading: {
     fontSize: theme.typography.pxToRem(15),
@@ -28,9 +28,13 @@ const useStyles = makeStyles(theme => ({
     width: 20,
   },
   details: {
-    alignItems: "center",
+    padding: 0,
   },
-  column: {
+  list: {
+    flexBasis: "66.66%",
+    padding: 0,
+  },
+  uploads: {
     flexBasis: "33.33%",
   },
   helper: {
@@ -46,12 +50,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-class ExpandMoreIcon extends React.Component {
-  render() {
-    return null;
-  }
-}
-
 const ProjectFiles = props => {
   const classes = useStyles();
 
@@ -63,15 +61,15 @@ const ProjectFiles = props => {
             <h2 className={classes.title}>File Attachments</h2>
 
             <AccordionDetails className={classes.details}>
-              <div className={classes.column}>This is a list!</div>
-              <div className={classes.column} />
-              <div className={clsx(classes.column, classes.helper)}>
+              <div className={classes.list}>This is a list!</div>
+              <div className={clsx(classes.uploads, classes.helper)}>
+                <FileUpload />
                 <Typography variant="caption">
-                  To upload, drag and drop files or click browse.
-                  <br />
+                  To upload, drag and drop your files here or click browse.<br />
+                  Compatible with Chrome, Safari, Edge, FireFox and Brave.<br />
                   <a
-                    href="#secondary-heading-and-columns"
-                    className={classes.link}
+                      href="#secondary-heading-and-columns"
+                      className={classes.link}
                   >
                     Learn more
                   </a>

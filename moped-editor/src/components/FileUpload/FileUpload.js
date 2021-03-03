@@ -11,6 +11,10 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 
+// Import FilePond styles
+import "filepond/dist/filepond.min.css";
+import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+
 registerPlugin(
   FilePondPluginImageExifOrientation,
   FilePondPluginImagePreview,
@@ -18,9 +22,7 @@ registerPlugin(
 );
 
 const FileUpload = props => {
-  const uniqueId = crypto.createHmac("sha256", uuid()).digest("hex");
-
-  const [uniqueIdentifier, setUniqueIdentifier] = useState(uniqueId);
+  const uniqueIdentifier = crypto.createHmac("sha256", uuid()).digest("hex");
 
   const [files, setFiles] = useState([]);
 
@@ -237,7 +239,6 @@ const FileUpload = props => {
       <header>
         {/* // Then we need to pass FilePond properties as attributes */}
         <FilePond
-          ref={ref => (this.pond = ref)}
           allowMultiple
           allowFileSizeValidation
           labelIdle='Drag & drop your files or <span class="filepond--label-action"> browse </span>'
