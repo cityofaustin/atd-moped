@@ -77,11 +77,20 @@ const ProjectActivityLog = () => {
   };
 
   const createLookupMap = response => {
-    Object.entries(response).reduce((acc, [field, mapObject]) => {
-      debugger;
-      // Create object in this shape
-      // {"field": {key: value, key1:value1...}}
-    }, {});
+    const lookupMap = Object.entries(response).reduce(
+      (acc, [field, mapArray]) => {
+        let fieldMap = {};
+        mapArray.forEach(record => {
+          fieldMap = { ...fieldMap, [record.key]: record.value };
+
+          return { ...acc, [field]: fieldMap };
+          // Create object in this shape
+          // {"field": {key: value, key1:value1...}}
+        });
+        return { ...acc, [field]: fieldMap };
+      },
+      {}
+    );
   };
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
@@ -93,7 +102,8 @@ const ProjectActivityLog = () => {
     lookupObject.query,
     {
       skip: !lookupObject.areLookups,
-      onCompleted: lookupResponse => createLookupObject(lookupResponse),
+      onCompleted: lookupResponse => createLookupMap(lookupResponse),
+      fetchPolicy: "no-cache",
     }
   );
 
