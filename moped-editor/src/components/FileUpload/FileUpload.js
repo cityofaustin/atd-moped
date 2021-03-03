@@ -79,6 +79,12 @@ const FileUpload = props => {
         });
   };
 
+  const handleFileAdded = (error, file) => {
+    retrieveFileSignature(file.filename, uniqueIdentifier);
+  }
+
+  
+
   return (
     <span>
       Hello World!
