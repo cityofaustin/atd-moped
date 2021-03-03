@@ -23,6 +23,7 @@ import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
+import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import { PROJECT_NAME } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
@@ -59,6 +60,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
+  { label: "Files", Component: ProjectFiles, param: "team" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
