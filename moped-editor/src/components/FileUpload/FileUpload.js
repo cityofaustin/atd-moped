@@ -51,6 +51,14 @@ const FileUpload = props => {
     setFileList(responseFileList);
   };
 
+  const withQuery = (url, params) => {
+    const query = Object.keys(params)
+        .filter(k => params[k] !== undefined)
+        .map(k => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+        .join("&");
+    url += (url.indexOf("?") === -1 ? "?" : "&") + query;
+    return url;
+  };
 
   return (
     <span>
