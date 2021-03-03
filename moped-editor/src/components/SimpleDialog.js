@@ -1,9 +1,7 @@
 import React from "react";
 import { Dialog } from "@material-ui/core";
 
-const SimpleDialog = ({
-  content: { link, body }
-}) => {
+const SimpleDialog = ({ content: { link, body } }) => {
   const [open, setOpen] = React.useState(false);
 
   const handleOpen = event => {
