@@ -1,5 +1,4 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
@@ -8,7 +7,6 @@ import {
   Button,
   CircularProgress,
   Container,
-  Grid,
   Link,
   TextField,
   Typography,
@@ -50,7 +48,6 @@ const LoginView = () => {
 
   // a handler for when the user clicks the "login" button
   const handleSubmit = async (values, { setSubmitting, setErrors }) => {
-    console.log("handle");
     try {
       // wait to see if login was successful (we don't care about the return
       // value here)
@@ -66,6 +63,78 @@ const LoginView = () => {
     }
   };
 
+  const dialogBody = (
+    <Formik
+      initialValues={{
+        email: "",
+        password: "",
+      }}
+      validationSchema={Yup.object().shape({
+        email: Yup.string()
+          .email("Must be a valid email")
+          .max(255)
+          .required("Email is required"),
+        password: Yup.string()
+          .max(255)
+          .required("Password is required"),
+      })}
+      onSubmit={handleSubmit}
+    >
+      {({
+        errors,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        touched,
+        values,
+      }) => (
+        <form onSubmit={handleSubmit}>
+          <Box m={2}>
+            <TextField
+              error={Boolean(touched.email && errors.email)}
+              fullWidth
+              helperText={touched.email && errors.email}
+              label="Email Address"
+              margin="normal"
+              name="email"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="email"
+              value={values.email}
+              variant="outlined"
+            />
+            <TextField
+              error={Boolean(touched.password && errors.password)}
+              fullWidth
+              helperText={touched.password && errors.password}
+              label="Password"
+              margin="normal"
+              name="password"
+              onBlur={handleBlur}
+              onChange={handleChange}
+              type="password"
+              value={values.password}
+              variant="outlined"
+            />
+            <Box my={2}>
+              <Button
+                color="primary"
+                disabled={isSubmitting}
+                fullWidth
+                size="large"
+                type="submit"
+                variant="contained"
+              >
+                Sign in now
+              </Button>
+            </Box>
+          </Box>
+        </form>
+      )}
+    </Formik>
+  );
+
   return (
     <Page className={classes.root} title="Login">
       <Box
@@ -78,130 +147,53 @@ const LoginView = () => {
           <CircularProgress color="inherit" />
         </Backdrop>
         <Container maxWidth="sm">
-          <Formik
-            initialValues={{
-              email: "",
-              password: "",
-            }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email("Must be a valid email")
-                .max(255)
-                .required("Email is required"),
-              password: Yup.string()
-                .max(255)
-                .required("Password is required"),
-            })}
-            onSubmit={handleSubmit}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
-              touched,
-              values,
-            }) => (
-              <form onSubmit={handleSubmit}>
-                <Box mb={"4em"}>
-                  <Box display="flex" justifyContent="center" mb={2}>
-                    <img
-                      alt="Logo"
-                      src={`${process.env.PUBLIC_URL}/static/moped.svg`}
-                      width="160px"
-                      height="160px"
-                    />
-                  </Box>
-                  <Typography color="textPrimary" variant="h1" align="center">
-                    Moped
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body1"
-                    align="center"
-                  >
-                    Austin's mobility project tracking platform
-                  </Typography>
-                </Box>
-                <Grid container spacing={3}>
-                  <Grid item xs={12}>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<AccountCircleIcon />}
-                      onClick={() => signIn()}
-                      size="large"
-                      variant="contained"
-                    >
-                      City of Austin Sign-In
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box mt={3} mb={1}>
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body2"
-                  >
-                    External user? Sign in{" "}
-                    <Link href="#" onClick={handleOpen}>
-                      here
-                    </Link>
-                    .
-                  </Typography>
-                  <SimpleDialog
-                    open={open}
-                    handleClose={handleClose}
-                    moreProps={"props!"}
-                    body={
-                      <div>
-                        <TextField
-                          error={Boolean(touched.email && errors.email)}
-                          fullWidth
-                          helperText={touched.email && errors.email}
-                          label="Email Address"
-                          margin="normal"
-                          name="email"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          type="email"
-                          value={values.email}
-                          variant="outlined"
-                        />
-                        <TextField
-                          error={Boolean(touched.password && errors.password)}
-                          fullWidth
-                          helperText={touched.password && errors.password}
-                          label="Password"
-                          margin="normal"
-                          name="password"
-                          onBlur={handleBlur}
-                          onChange={handleChange}
-                          type="password"
-                          value={values.password}
-                          variant="outlined"
-                        />
-                        <Box my={2}>
-                          <Button
-                            color="primary"
-                            disabled={isSubmitting}
-                            fullWidth
-                            size="large"
-                            type="submit"
-                            variant="contained"
-                          >
-                            Sign in now
-                          </Button>
-                        </Box>
-                      </div>
-                    }
-                  />
-                </Box>
-              </form>
-            )}
-          </Formik>
+          <Box mb={"4em"}>
+            <Box display="flex" justifyContent="center" mb={2}>
+              <img
+                alt="Logo"
+                src={`${process.env.PUBLIC_URL}/static/moped.svg`}
+                width="160px"
+                height="160px"
+              />
+            </Box>
+            <Typography color="textPrimary" variant="h1" align="center">
+              Moped
+            </Typography>
+            <Typography
+              color="textSecondary"
+              gutterBottom
+              variant="body1"
+              align="center"
+            >
+              Austin's mobility project tracking platform
+            </Typography>
+          </Box>
+          <Box mb={3}>
+            <Button
+              color="primary"
+              fullWidth
+              startIcon={<AccountCircleIcon />}
+              onClick={() => signIn()}
+              size="large"
+              variant="contained"
+            >
+              City of Austin Sign-In
+            </Button>
+          </Box>
+          <Box>
+            <Typography align="center" color="textSecondary" variant="body2">
+              External user? Sign in{" "}
+              <Link href="#" onClick={handleOpen}>
+                here
+              </Link>
+              .
+            </Typography>
+            <SimpleDialog
+              open={open}
+              handleClose={handleClose}
+              body={dialogBody}
+            />
+          </Box>
         </Container>
       </Box>
     </Page>
