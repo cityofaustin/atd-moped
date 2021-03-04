@@ -69,10 +69,11 @@ export const buildLookupQuery = tableNames => {
 /**
  * Take activity log response and return unique table names for lookup in project's log
  * @param {object} response - GraphQL response containing project record types (table names)
+ * @param {string} lookupDataKey - The key in the response whose values is the lookup data
  * @return {array} Array of unique table names for log data lookups
  */
-export const getActivityLogTableNames = response => {
-  const lookupTableData = response?.activity_log_lookup_tables;
+export const getActivityLogTableNames = (response, lookupDataKey) => {
+  const lookupTableData = response?.[lookupDataKey];
 
   if (!lookupTableData || lookupTableData.length === 0) return null;
 
@@ -89,13 +90,21 @@ export function useActivityLogLookupTables() {
 
   const [lookupMap, setLookupMap] = useState(null);
 
-  const getLookup = data => {
-    const recordTableNames = getActivityLogTableNames(data);
+  /**
+   * Take activity log response and set whether lookups are needed and, if so, the built query
+   * @param {object} response - GraphQL response containing lookup table names
+   */
+  const getLookups = response => {
+    const recordTableNames = getActivityLogTableNames(response);
     const { query, areLookups } = buildLookupQuery(recordTableNames);
 
     setLookupObject({ query, areLookups });
   };
 
+  /**
+   * Take lookup query response and build and set map to convert foreign keys to lookup string values
+   * @param {object} response - GraphQL response containing lookup table data
+   */
   const createLookupMap = response => {
     const lookupMapFromResponse = Object.entries(response).reduce(
       (acc, [field, mapArray]) => {
@@ -121,5 +130,5 @@ export function useActivityLogLookupTables() {
 
   const lookupLoading = lookupQueryLoading;
 
-  return { lookupLoading, lookupError, lookupMap, getLookup };
+  return { lookupLoading, lookupError, lookupMap, getLookups };
 }

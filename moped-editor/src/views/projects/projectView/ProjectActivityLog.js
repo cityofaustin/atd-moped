@@ -58,7 +58,7 @@ const ProjectActivityLog = () => {
   const classes = useStyles();
 
   const {
-    getLookup,
+    getLookups,
     lookupLoading,
     lookupError,
     lookupMap,
@@ -66,7 +66,7 @@ const ProjectActivityLog = () => {
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    onCompleted: data => getLookup(data),
+    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
   const [activityId, setActivityId] = useState(null);
