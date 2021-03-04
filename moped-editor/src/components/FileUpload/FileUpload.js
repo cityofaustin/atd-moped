@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-import { v4 as uuid } from "uuid";
-import crypto from "crypto";
-
+// Internal functions
 import config from "../../config";
+import { useUser, getJwt } from "../../auth/user";
 
+// File Pond Library
 import { FilePond, File, registerPlugin } from "react-filepond";
-
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
@@ -14,6 +13,8 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { Alert } from "@material-ui/lab";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -21,40 +22,28 @@ registerPlugin(
   FilePondPluginFileValidateSize
 );
 
+const useStyles = makeStyles(theme => ({
+  errorMessage: {
+    margin: "1rem 0",
+  },
+}));
+
 const FileUpload = props => {
-  const uniqueIdentifier = crypto.createHmac("sha256", uuid()).digest("hex");
+  const classes = useStyles();
 
   const [files, setFiles] = useState([]);
 
-  const [fileList, setFileList] = useState([]);
+  const [fileSignatures, setFileSignatures] = useState({});
+
+  const [errors, setErrors] = useState([]);
+
+  const { user } = useUser();
+  const token = getJwt(user);
 
   const handleInit = () => {
-    console.log("FilePond instance has initialised.");
-  };
-
-  /**
-   * Parses a signature request response
-   * @param {Object} res - The response as provided by the API
-   */
-  const parseSignatureResponse = res => {
-    let responseFileList = [];
-    responseFileList.push(res);
-
-    let value = false;
-
-    try {
-      value = fileList.length
-        ? JSON.stringify(fileList.map(f => `${f.creds.fields.key}`))
-        : false;
-    } catch (error) {
-      console.error("parseSignatureResponse() Error: ");
-      console.error(error);
-      value = false;
-    }
-
-    props.onChange(value);
-
-    setFileList(responseFileList);
+    console.log(
+      "FilePond instance has initialised with projectId: " + props?.projectId
+    );
   };
 
   /**
@@ -73,81 +62,65 @@ const FileUpload = props => {
   };
 
   /**
-   * Retrieves a file signature request from API
-   * @param {string} key - The name of the file
-   * @param {string} uniqueIdentifier - A random unique identifier
+   * This function is triggered before a file is added and processed.
+   * It attempts to retrieve permission to upload a file to S3
+   * @param {Object} item - The file object as provided by FilePond
+   * @return {Promise<boolean>}
    */
-  const retrieveFileSignature = (key, uniqueIdentifier) => {
-    const formData = new FormData();
-
-    formData.append("key", key);
-    formData.append("uniqueid", uniqueIdentifier);
-
-    fetch(
-      withQuery(`${config.env.APP_API_ENDPOINT}/uploads/request-signature`, {
-        file: key,
-        uniqueid: uniqueIdentifier.toLowerCase(),
-      })
+  const handleBeforeAdd = item => {
+    return fetch(
+      withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
+        file: item.filename,
+        ...(props?.projectId ? { projectId: props.projectId } : {}),
+      }),
+      {
+        headers: {
+          "Content-Type": "text/plain;charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        },
+      }
     )
-      .then(res => res.json())
-      .catch(error => console.error("Error:", error))
-      .then(res => {
-        parseSignatureResponse(res);
+      .then(
+        response => {
+          if (response.status !== 200) {
+            setErrors([
+              `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback message: ${response.status} - ${response.statusText}`,
+            ]);
+            return false;
+          } else {
+            response
+              .json()
+              .then(data => {
+                setErrors([]);
+                if (data?.credentials) {
+                  console.log("Request Resolved for file: ", item.filename);
+                  const newFileSignatureState = { ...fileSignatures };
+                  newFileSignatureState[item.filename] = data.credentials;
+                  setFileSignatures(newFileSignatureState);
+                }
+              })
+              .catch(err => {
+                // eslint-disable-next-line
+                throw "Error: " + JSON.stringify(err);
+              });
+
+            return true;
+          }
+        },
+        rejection => {
+          setErrors([
+            `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department.`,
+          ]);
+          console.error("Request Rejected for file: ", item.filename, rejection);
+          return false;
+        }
+      )
+      .catch(error => {
+        setErrors([
+          `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback: ${error}`,
+        ]);
+        return false;
       });
-  };
-
-  /**
-   * Handles a file added event
-   * @param {Object} error - The error object
-   * @param {Object} file - The file object with attributes
-   */
-  const handleFileAdded = (error, file) => {
-    retrieveFileSignature(file.filename, uniqueIdentifier);
-  };
-
-  /**
-   * Handles file removal events
-   * @param {string} file - The name of the file
-   */
-  const handleRemoveFile = file => {
-    let newFileList = [...fileList];
-    for (const i in newFileList) {
-      const currentFile = newFileList[i];
-      if (currentFile.filename === file.filename) {
-        // console.log(`Removing: ${file.filename} at index: ${i}`);
-        newFileList.splice(i, 1);
-        setFileList(newFileList);
-      }
-    }
-  };
-
-  /**
-   * Retrieves a file signature from a list
-   * @param {string} file - The name of the file
-   * @return {string|null}
-   */
-  const getFileSignatureFromList = file => {
-    const uploadedFileName = file.name || "";
-
-    for (const i in fileList) {
-      const currentFile = fileList[i];
-      if (currentFile.filename === uploadedFileName) {
-        // console.log(`getFileSignatureFromList() Item found at index: ${i}`);
-        const creds = fileList[i].creds;
-        return creds;
-      }
-    }
-    // If not found, return null
-    return null;
-  };
-
-  /**
-   * Handles file update event
-   * @param {object} fileItems
-   */
-  const filesUpdated = ({ fileItems }) => {
-    // Set current file objects to this.state
-    setFiles(fileItems.map(fileItem => fileItem.file));
   };
 
   /**
@@ -174,9 +147,11 @@ const FileUpload = props => {
     // file is the actual file object to send
     const formData = new FormData();
 
-    // First, find the S3 signature data from this.state.fileList
+    // First, retrieve the signature from S3
+    const fileSignature = null; //retrieveFileSignature(file);
+    debugger;
 
-    const fileSignature = getFileSignatureFromList(file);
+    // const fileSignature = getFileSignatureFromList(file);
     let fields = [];
 
     if (fileSignature == null) {
@@ -236,24 +211,29 @@ const FileUpload = props => {
 
   return (
     <div>
+      {errors.length > 0 &&
+        errors.map(err => {
+          return (
+            <Alert className={classes.errorMessage} severity="error">
+              <b>Error:</b> {err}
+            </Alert>
+          );
+        })}
       <header>
         {/* // Then we need to pass FilePond properties as attributes */}
         <FilePond
-          allowMultiple
           allowFileSizeValidation
           labelIdle='Drag & drop your files or <span class="filepond--label-action"> browse </span>'
-          maxFiles={100}
-          maxFileSize="20000MB"
+          maxFiles={1}
+          maxFileSize="1024MB"
+          allowMultiple={false}
           /* FilePond allows a custom process to handle uploads */
           server={{
             process: handleProcessing,
           }}
           oninit={() => handleInit()}
-          /* OnAddFile we are going to request a token for that file, and update a dictionary with the tokens */
-          onaddfile={(error, file) => handleFileAdded(error, file)}
-          /* OnRemoveFile we are going to find the file in the list and splice it (remove it) */
-          onremovefile={file => handleRemoveFile(file)}
-          onupdatefiles={fileItems => filesUpdated({ fileItems })}
+          beforeAddFile={handleBeforeAdd}
+          onupdatefiles={setFiles}
         >
           {/* Update current files  */}
           {files.map(file => (
