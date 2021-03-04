@@ -29,16 +29,35 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const FileUpload = props => {
+  /**
+   * Constants
+   */
   const classes = useStyles();
-
-  const [files, setFiles] = useState([]);
-
-  const [fileSignatures, setFileSignatures] = useState({});
-
-  const [errors, setErrors] = useState([]);
-
   const { user } = useUser();
   const token = getJwt(user);
+  const maxFiles = props?.limit ?? 1;
+
+  /**
+   * For use of filepond component.
+   * @constant {Object[]} files - It holds a list of files and metadata.
+   * @function setFiles - For use of filepond only.
+   */
+  const [files, setFiles] = useState([]);
+
+  /**
+   * @constant {Object} - A key value dictionary, where the key
+   * is the name of the file, the value are the credentials as
+   * provided by S3.
+   * @function setFileSignatures
+   */
+  const [fileSignatures, setFileSignatures] = useState({});
+
+  /**
+   * @constant {string[]} - A list of errors as detected anywhere in this component
+   * @function setErrors
+   */
+  const [errors, setErrors] = useState([]);
+
 
   /**
    * Generates a URL given a list of parameters. It URI-Encodes the parameters
@@ -65,7 +84,7 @@ const FileUpload = props => {
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
         file: item.filename,
-        ...(props?.projectId ? { projectId: props.projectId } : {}),
+        ...(props?.projectId ? { project_id: props.projectId } : {}),
       }),
       {
         headers: {
@@ -87,7 +106,6 @@ const FileUpload = props => {
               .then(data => {
                 setErrors([]);
                 if (data?.credentials) {
-                  console.log("Request Resolved for file: ", item.filename);
                   const newFileSignatureState = { ...fileSignatures };
                   newFileSignatureState[item.filename] = data.credentials;
                   setFileSignatures(newFileSignatureState);
@@ -105,7 +123,11 @@ const FileUpload = props => {
           setErrors([
             `Cannot retrieve file signature for file '${item.filename}'. Please reload your page and try again or contact the Data & Technology Services department.`,
           ]);
-          console.error("Request Rejected for file: ", item.filename, rejection);
+          console.error(
+            "Request Rejected for file: ",
+            item.filename,
+            rejection
+          );
           return false;
         }
       )
@@ -115,6 +137,24 @@ const FileUpload = props => {
         ]);
         return false;
       });
+  };
+
+  /**
+   * Whenever a file is processed successfully, this function is executed.
+   * @param {str} error - String containing the error
+   * @param {Object} file - The file object, including metadata.
+   */
+  const handleFileAdded = (error, file) => {
+    if (error) {
+      setErrors([
+        `Error attempting to add file '${file.filename}'. Please reload your page and try again or contact the Data & Technology Services department. Feedback message: ${errors}`,
+      ]);
+      return;
+    }
+
+    if (props?.onFileAdded) {
+      props.onFileAdded(error, file);
+    }
   };
 
   /**
@@ -141,28 +181,31 @@ const FileUpload = props => {
     // file is the actual file object to send
     const formData = new FormData();
 
-    // First, retrieve the signature from S3
+    // First, retrieve the signature from state that we got from S3
     const fileSignature = fileSignatures[file.name];
 
-    // const fileSignature = getFileSignatureFromList(file);
-    let fields = [];
-
+    // If the signature is invalid, might as well stop it!
     if (fileSignature == null) {
+      // eslint-disable-next-line
       throw "The file signature for file could not be located.";
     }
 
+    // Fields will contain the credentials S3 needs, including the file signature.
+    let fields = [];
+
     try {
+      // Copy the name of each of those keys
       fields = Object.keys(fileSignature.fields);
     } catch (error) {
-      fields = [];
-      console.log("Error: ");
-      console.log(error);
+      // eslint-disable-next-line
+      throw "Error processing file: " + JSON.stringify(error);
     }
 
+    // For each field, append it to the virtual form data
     for (const key of fields) {
       formData.append(key, fileSignature.fields[key]);
     }
-
+    // Append the file name
     formData.append("file", file, fileSignature.fields.key);
 
     const request = new XMLHttpRequest();
@@ -217,7 +260,7 @@ const FileUpload = props => {
         <FilePond
           allowFileSizeValidation
           labelIdle='Drag & drop your files or <span class="filepond--label-action"> browse </span>'
-          maxFiles={1}
+          maxFiles={maxFiles}
           maxFileSize="1024MB"
           allowMultiple={false}
           /* FilePond allows a custom process to handle uploads */
@@ -225,6 +268,7 @@ const FileUpload = props => {
             process: handleProcessing,
           }}
           beforeAddFile={handleBeforeAdd}
+          onprocessfile={(error, file) => handleFileAdded(error, file)}
           onupdatefiles={setFiles}
         >
           {/* Update current files  */}
