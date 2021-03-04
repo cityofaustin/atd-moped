@@ -1,15 +1,13 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
-  getActivityLogTableNames,
   getOperationName,
   getChangeIcon,
   getRecordTypeLabel,
   getHumanReadableField,
   ProjectActivityLogGenericDescriptions,
-  buildLookupQuery,
-  PLACEHOLDER_QUERY,
 } from "./ProjectActivityLogTableMaps";
 
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
@@ -59,50 +57,17 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  // Lookup logic
-
-  const [lookupObject, setLookupObject] = useState({
-    query: PLACEHOLDER_QUERY,
-    areLookups: false,
-  });
-  const [lookupMap, setLookupMap] = useState(null);
-
-  const getLookup = () => {
-    const recordTableNames = getActivityLogTableNames(data);
-    const { query, areLookups } = buildLookupQuery(recordTableNames);
-
-    setLookupObject({ query, areLookups });
-  };
-
-  const createLookupMap = response => {
-    const lookupMapFromResponse = Object.entries(response).reduce(
-      (acc, [field, mapArray]) => {
-        let fieldMap = {};
-        mapArray.forEach(record => {
-          fieldMap = { ...fieldMap, [record.key]: record.value };
-
-          return { ...acc, [field]: fieldMap };
-        });
-        return { ...acc, [field]: fieldMap };
-      },
-      {}
-    );
-    // TODO Maybe we should include table name to avoid intersection of field names
-    setLookupMap(lookupMapFromResponse);
-  };
+  const {
+    getLookup,
+    lookupLoading,
+    lookupError,
+    lookupMap,
+  } = useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    onCompleted: getLookup,
+    onCompleted: data => getLookup(data),
   });
-
-  const { lookupLoading, lookupError } = useQuery(lookupObject.query, {
-    skip: !lookupObject.areLookups,
-    onCompleted: lookupResponse => createLookupMap(lookupResponse),
-    fetchPolicy: "no-cache",
-  });
-
-  ////
 
   const [activityId, setActivityId] = useState(null);
 
