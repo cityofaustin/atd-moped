@@ -1,16 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { useParams } from "react-router-dom";
 
 import {
   Button,
   CardContent,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
   Grid,
   Icon,
-  InputAdornment,
   Paper,
   Table,
   TableBody,
@@ -18,12 +13,10 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TextField,
 } from "@material-ui/core";
 
-import FileUpload from "../../../components/FileUpload/FileUpload";
-
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -32,27 +25,13 @@ const useStyles = makeStyles(theme => ({
   uploadFileButton: {
     float: "right",
   },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
-  textField: {
-    marginTop: "1rem",
-  },
-  textFieldAdornment: {
-    position: "relative",
-    top: "-1.6rem",
-  },
-  textFieldAdornmentColor: {
-    color: "grey",
-  },
 }));
 
 const ProjectFiles = props => {
   const classes = useStyles();
   const { projectId } = useParams();
 
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleClickUploadFile = () => {
     setDialogOpen(true);
@@ -61,6 +40,10 @@ const ProjectFiles = props => {
   const handleClickCloseUploadFile = () => {
     setDialogOpen(false);
   };
+
+  const handleClickSaveFile = () => {
+    setDialogOpen(false);
+  }
 
   function createData(name, calories, fat, carbs, protein) {
     return { name, calories, fat, carbs, protein };
@@ -122,87 +105,13 @@ const ProjectFiles = props => {
           </TableBody>
         </Table>
       </TableContainer>
-      <Dialog
-        open={dialogOpen}
-        onClose={handleClickCloseUploadFile}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Upload Media"}
-        </DialogTitle>
-        <DialogContent>
-          <Grid container>
-            <Grid md={12}>
-              <TextField
-                className={classes.textField}
-                id="standard-multiline-flexible"
-                placeholder={"File Title"}
-                multiline
-                rowsMax={4}
-                value={null}
-                onChange={null}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      className={classes.textFieldAdornmentColor}
-                    >
-                      <Icon>info</Icon>
-                    </InputAdornment>
-                  ),
-                }}
-                fullWidth
-              />
-              <TextField
-                className={classes.textField}
-                id="standard-multiline-static"
-                placeholder={"File Description"}
-                multiline
-                rows={4}
-                defaultValue={null}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment
-                      position="start"
-                      className={`${classes.textFieldAdornment} ${classes.textFieldAdornmentColor}`}
-                    >
-                      <Icon>textsms</Icon>
-                    </InputAdornment>
-                  ),
-                }}
-                fullWidth
-              />
-            </Grid>
-            <Grid md={12} className={classes.fileUpload}>
-              <FileUpload
-                limit={1}
-                sizeLimit={"1024MB"}
-                principal={"project"}
-                projectId={projectId}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleClickCloseUploadFile}
-            color="primary"
-            autoFocus
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleClickCloseUploadFile}
-            color="primary"
-            variant="contained"
-            startIcon={<Icon>save</Icon>}
-            disabled={true}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <FileUploadDialogSingle
+          title={"Upload Media"}
+          dialogOpen={dialogOpen}
+          handleClickCloseUploadFile={handleClickCloseUploadFile}
+          handleClickSaveFile={handleClickSaveFile}
+          projectId={projectId}
+        />
     </CardContent>
   );
 };
