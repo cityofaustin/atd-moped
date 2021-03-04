@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { useQuery, gql } from "@apollo/client";
 
-const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
+const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descriptionError }) => {
   const handleFieldChange = (value, name) => {
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
@@ -77,6 +77,9 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
             variant="standard"
             type="text"
             value={projectDetails.project_name}
+            error={nameError}
+            helperText="Required"
+            InputLabelProps={{ required: false }}
             onChange={e => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
@@ -90,6 +93,9 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
             variant="standard"
             type="text"
             value={projectDetails.project_description}
+            error={descriptionError}
+            helperText="Required"
+            InputLabelProps={{ required: false }}
             onChange={e => handleFieldChange(e.target.value, e.target.name)}            
           />
         </Grid>

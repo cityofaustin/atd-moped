@@ -87,6 +87,8 @@ const NewProjectView = () => {
     capitally_funded: false,
     eCapris_id: "",
   });
+  const [nameError, setNameError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
 
   const [personnel, setPersonnel] = useState([]);
   const [selectedLayerIds, setSelectedLayerIds] = useState({});
@@ -106,6 +108,8 @@ const NewProjectView = () => {
           <DefineProjectForm
             projectDetails={projectDetails}
             setProjectDetails={setProjectDetails}
+            nameError={nameError}
+            descriptionError={descriptionError}
           />
         );
       case 1:
@@ -128,23 +132,31 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let canContinue = true;
-    switch (activeStep) {
-      case 0:
-        canContinue = true;
-        break;
-      case 1:
-        canContinue = true;
-        break;
-      case 2:
-        canContinue = handleSubmit();
-        break;
-      default:
-        return "not a valid step";
+    let nameError = projectDetails.project_name.length === 0
+    let descriptionError = projectDetails.project_description.length === 0
+    let canContinue = false;
+    
+    if (!nameError && !descriptionError) {
+      switch (activeStep) {
+        case 0:
+          canContinue = true;
+          break;
+        case 1:
+          canContinue = true;
+          break;
+        case 2:
+          canContinue = handleSubmit();
+          break;
+        default:
+          return "not a valid step";
+      }
     }
     if (canContinue) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
+
+    setNameError(nameError);
+    setDescriptionError(descriptionError);
   };
 
   const handleBack = () => {
