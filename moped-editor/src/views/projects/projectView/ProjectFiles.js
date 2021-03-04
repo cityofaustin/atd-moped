@@ -1,4 +1,6 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+
 import {
   Button,
   CardContent,
@@ -48,6 +50,7 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectFiles = props => {
   const classes = useStyles();
+  const { projectId } = useParams();
 
   const [dialogOpen, setDialogOpen] = React.useState(false);
 
@@ -176,7 +179,7 @@ const ProjectFiles = props => {
                 limit={1}
                 sizeLimit={"1024MB"}
                 principal={"project"}
-                projectId={"123"}
+                projectId={projectId}
               />
             </Grid>
           </Grid>
