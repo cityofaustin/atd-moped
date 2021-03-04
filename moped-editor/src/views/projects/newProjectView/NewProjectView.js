@@ -79,7 +79,6 @@ const NewProjectView = () => {
   const [projectDetails, setProjectDetails] = useState({
     fiscal_year: "",
     current_phase: "",
-    project_priority: "",
     project_description: "",
     project_name: "",
     start_date: moment().format("YYYY-MM-DD"),
@@ -135,7 +134,7 @@ const NewProjectView = () => {
     let nameError = projectDetails.project_name.length === 0
     let descriptionError = projectDetails.project_description.length === 0
     let canContinue = false;
-    
+
     if (!nameError && !descriptionError) {
       switch (activeStep) {
         case 0:
@@ -187,7 +186,6 @@ const NewProjectView = () => {
       $fiscal_year: String! = ""
       $start_date: date = ""
       $capitally_funded: Boolean! = false
-      $project_priority: String! = ""
       $project_extent_ids: jsonb = {}
       $project_extent_geojson: jsonb = {}
     ) {
@@ -201,7 +199,6 @@ const NewProjectView = () => {
           fiscal_year: $fiscal_year
           start_date: $start_date
           capitally_funded: $capitally_funded
-          project_priority: $project_priority
           project_extent_ids: $project_extent_ids
           project_extent_geojson: $project_extent_geojson
         }
@@ -211,7 +208,6 @@ const NewProjectView = () => {
           project_id
           project_name
           project_description
-          project_priority
           current_phase
           current_status
           eCapris_id

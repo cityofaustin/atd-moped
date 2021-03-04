@@ -69,13 +69,14 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
   return (
     <form style={{ padding: 25 }}>
       <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             required
             label="Name"
             name="project_name"
             variant="standard"
             type="text"
+            fullWidth
             value={projectDetails.project_name}
             error={nameError}
             helperText="Required"
@@ -83,8 +84,10 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             onChange={e => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
-
-        <Grid item xs={4}>
+      </Grid>
+      
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={6}>
           <TextField
             required
             label="Description"
@@ -92,6 +95,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             multiline={true}
             variant="standard"
             type="text"
+            fullWidth
             value={projectDetails.project_description}
             error={descriptionError}
             helperText="Required"
@@ -99,8 +103,10 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             onChange={e => handleFieldChange(e.target.value, e.target.name)}            
           />
         </Grid>
+      </Grid>
 
-        <Grid item xs={4}>
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={3}>
           <TextField
             name="start_date"
             label="Start date"
@@ -113,12 +119,9 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             }}
           />
         </Grid>
-      </Grid>
 
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <InputLabel>Fiscal year</InputLabel>
-
           <Select
             name="fiscal_year"
             style={{ width: 150, paddingLeft: 10 }}
@@ -136,7 +139,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           </Select>
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <InputLabel>Current status</InputLabel>
           <Select
             name="current_status"
@@ -152,7 +155,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           </Select>
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <InputLabel>Current phase</InputLabel>
 
           <Select
@@ -171,7 +174,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <InputLabel>Capital funding?</InputLabel>
           <Switch
             type="checkbox"
@@ -182,7 +185,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
         {projectDetails.capitally_funded && (
-          <Grid item xs={4}>
+          <Grid item xs={6}>
             <TextField
               label="eCAPRIS subproject ID"
               name="eCapris_id"
