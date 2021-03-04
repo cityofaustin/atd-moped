@@ -96,7 +96,7 @@ const NewProjectView = () => {
   });
 
   const getSteps = () => {
-    return ["Define Project", "Assign Team", "Map Project"];
+    return ["Define project", "Assign team", "Map project"];
   };
 
   const getStepContent = step => {
@@ -270,11 +270,11 @@ const NewProjectView = () => {
   return (
     <>
       {
-        <Page title="New Project">
+        <Page title="New project">
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title="New Project" />
+                <CardHeader title="New project" />
               </Box>
               <Divider />
               <CardContent>
@@ -302,9 +302,9 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        <Button onClick={handleBack} className={classes.button}>
+                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
                           Back
-                        </Button>
+                        </Button>}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}

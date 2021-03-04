@@ -55,21 +55,6 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
     FISCAL_QUERY
   );
 
-  const priorities = [
-    {
-      priority_order: 1,
-      priority_name: "Low",
-    },
-    {
-      priority_order: 2,
-      priority_name: "Medium",
-    },
-    {
-      priority_order: 3,
-      priority_name: "High",
-    },
-  ];
-
   const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 
   if (phaseLoading) return <CircularProgress />;
@@ -86,7 +71,8 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={4}>
           <TextField
-            label="Project Name"
+            required
+            label="Name"
             name="project_name"
             variant="standard"
             type="text"
@@ -97,20 +83,21 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
 
         <Grid item xs={4}>
           <TextField
-            label="Project Description"
+            required
+            label="Description"
             name="project_description"
             multiline={true}
             variant="standard"
             type="text"
             value={projectDetails.project_description}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
+            onChange={e => handleFieldChange(e.target.value, e.target.name)}            
           />
         </Grid>
 
         <Grid item xs={4}>
           <TextField
             name="start_date"
-            label="Start Date"
+            label="Start date"
             type="date"
             variant="standard"
             value={projectDetails.start_date}
@@ -124,7 +111,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
 
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={4}>
-          <InputLabel>Fiscal Year</InputLabel>
+          <InputLabel>Fiscal year</InputLabel>
 
           <Select
             name="fiscal_year"
@@ -144,7 +131,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
         </Grid>
 
         <Grid item xs={4}>
-          <InputLabel>Current Status</InputLabel>
+          <InputLabel>Current status</InputLabel>
           <Select
             name="current_status"
             style={{ width: 150, paddingLeft: 10 }}
@@ -160,7 +147,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
         </Grid>
 
         <Grid item xs={4}>
-          <InputLabel>Current Phase</InputLabel>
+          <InputLabel>Current phase</InputLabel>
 
           <Select
             name="current_phase"
@@ -179,25 +166,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
 
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={4}>
-          <InputLabel>Priority</InputLabel>
-          <Select
-            name="project_priority"
-            style={{ width: 150, paddingLeft: 10 }}
-            value={projectDetails.project_priority}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
-          >
-            {priorities.map(priority => (
-              <MenuItem
-                key={priority.priority_order}
-                value={priority.priority_name}
-              >
-                {priority.priority_name}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-        <Grid item xs={4}>
-          <InputLabel>Capital Funding?</InputLabel>
+          <InputLabel>Capital funding?</InputLabel>
           <Switch
             type="checkbox"
             checked={projectDetails.capitally_funded}
@@ -209,7 +178,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails }) => {
         {projectDetails.capitally_funded && (
           <Grid item xs={4}>
             <TextField
-              label="eCapris Id"
+              label="eCAPRIS subproject ID"
               name="eCapris_id"
               variant="standard"
               type="text"
