@@ -174,7 +174,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
           <InputLabel>Capital funding?</InputLabel>
           <Switch
             type="checkbox"
@@ -185,7 +185,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
         {projectDetails.capitally_funded && (
-          <Grid item xs={6}>
+          <Grid item xs={3}>
             <TextField
               label="eCAPRIS subproject ID"
               name="eCapris_id"
