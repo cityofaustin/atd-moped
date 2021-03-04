@@ -256,17 +256,19 @@ const ProjectActivityLog = () => {
                                       from{" "}
                                       <b>
                                         &quot;
-                                        {lookupMap?.[changeItem.field]?.[
-                                          changeItem.old
-                                        ] || String(changeItem.old)}
+                                        {lookupMap?.[change.record_type]?.[
+                                          changeItem.field
+                                        ]?.[changeItem.old] ||
+                                          String(changeItem.old)}
                                         &quot;
                                       </b>{" "}
                                       to{" "}
                                       <b>
                                         &quot;
-                                        {lookupMap?.[changeItem.field]?.[
-                                          changeItem.new
-                                        ] || String(changeItem.new)}
+                                        {lookupMap?.[change.record_type]?.[
+                                          changeItem.field
+                                        ]?.[changeItem.new] ||
+                                          String(changeItem.new)}
                                         &quot;
                                       </b>
                                     </>

@@ -23,6 +23,8 @@ export const buildLookupQuery = tableNames => {
 
   if (!tableNames || tableNames.length === 0) return noLookupsObject;
 
+  const tablesMap = {};
+
   const lookupQueries = tableNames.map(tableName => {
     const fields = ProjectActivityLogTableMaps[tableName].fields;
 
@@ -42,6 +44,8 @@ export const buildLookupQuery = tableNames => {
       const fieldValuesAliasesAndFieldNames = fieldValues
         .map((fieldValue, i) => `value${i}: ${fieldValue}`)
         .join(" ");
+
+      tablesMap[table] = tableName;
 
       // Alias table name as primary table field name and return foreign key and value
       return `
@@ -67,7 +71,7 @@ export const buildLookupQuery = tableNames => {
     }
   `;
 
-  return { areLookups: true, query: LOOKUPS_QUERY };
+  return { areLookups: true, query: LOOKUPS_QUERY, tablesMap };
 };
 
 /**
@@ -101,9 +105,9 @@ export function useActivityLogLookupTables() {
    */
   const getLookups = (response, lookupDataKey) => {
     const recordTableNames = getActivityLogTableNames(response, lookupDataKey);
-    const { query, areLookups } = buildLookupQuery(recordTableNames);
-
-    setLookupObject({ query, areLookups });
+    const { query, areLookups, tablesMap } = buildLookupQuery(recordTableNames);
+    console.log(tablesMap);
+    setLookupObject({ query, areLookups, tablesMap });
   };
 
   /**
@@ -111,25 +115,37 @@ export function useActivityLogLookupTables() {
    * @param {object} response - GraphQL response containing lookup table data
    */
   const createLookupMap = response => {
+    let tableFieldMap = {};
     const lookupMapFromResponse = Object.entries(response).reduce(
       (acc, [field, mapArray]) => {
-        let fieldMap = {};
-
         mapArray.forEach(record => {
+          const recordTableName = lookupObject.tablesMap[record.__typename];
+
           const concatenatedValues = Object.keys(record)
             .filter(key => key.includes("value"))
             .map(key => record[key])
             .join(" ");
 
-          fieldMap = { ...fieldMap, [record.key]: concatenatedValues };
-
-          return { ...acc, [field]: fieldMap };
+          tableFieldMap[recordTableName] = tableFieldMap[recordTableName]
+            ? {
+                ...tableFieldMap[recordTableName],
+                [field]: {
+                  ...tableFieldMap[recordTableName][field],
+                  [record.key]: concatenatedValues,
+                },
+              }
+            : {
+                [field]: {
+                  [record.key]: concatenatedValues,
+                },
+              };
         });
-        return { ...acc, [field]: fieldMap };
+
+        return { ...acc, ...tableFieldMap };
       },
       {}
     );
-    // TODO Maybe we should include table name to avoid intersection of field names
+
     setLookupMap(lookupMapFromResponse);
   };
 
