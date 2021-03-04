@@ -3696,6 +3696,128 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_project_files
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - project_file_id
+      - project_id
+      - file_name
+      - file_description
+      - file_size
+      - file_permissions
+      - file_metadata
+      - api_response
+      - created_by
+      - create_date
+      - is_scanned
+      - is_retired
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - is_retired
+      - is_scanned
+      - created_by
+      - file_size
+      - project_file_id
+      - project_id
+      - api_response
+      - file_metadata
+      - file_permissions
+      - file_description
+      - file_name
+      - create_date
+      filter: {}
+      check: null
+- table:
+    schema: public
     name: moped_project_roles
   insert_permissions:
   - role: moped-admin
