@@ -40,12 +40,6 @@ const FileUpload = props => {
   const { user } = useUser();
   const token = getJwt(user);
 
-  const handleInit = () => {
-    console.log(
-      "FilePond instance has initialised with projectId: " + props?.projectId
-    );
-  };
-
   /**
    * Generates a URL given a list of parameters. It URI-Encodes the parameters
    * @param {string} url - The base URL
@@ -148,14 +142,13 @@ const FileUpload = props => {
     const formData = new FormData();
 
     // First, retrieve the signature from S3
-    const fileSignature = null; //retrieveFileSignature(file);
-    debugger;
+    const fileSignature = fileSignatures[file.name];
 
     // const fileSignature = getFileSignatureFromList(file);
     let fields = [];
 
     if (fileSignature == null) {
-      console.log("The file signature for file could not be located.");
+      throw "The file signature for file could not be located.";
     }
 
     try {
@@ -231,7 +224,6 @@ const FileUpload = props => {
           server={{
             process: handleProcessing,
           }}
-          oninit={() => handleInit()}
           beforeAddFile={handleBeforeAdd}
           onupdatefiles={setFiles}
         >
