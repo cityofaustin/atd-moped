@@ -37,13 +37,17 @@ export const buildLookupQuery = tableNames => {
 
     // We need the field name from the original table here
     const tableQueries = lookupFields.map(field => {
-      const { table, fieldLabel, fieldValue, primaryFieldName } = field;
+      const { table, fieldLabel, fieldValues, primaryFieldName } = field;
+
+      const fieldValuesAliasesAndFieldNames = fieldValues
+        .map((fieldValue, i) => `value${i}: ${fieldValue}`)
+        .join(" ");
 
       // Alias table name as primary table field name and return foreign key and value
       return `
       ${primaryFieldName}: ${table} {
         key: ${fieldLabel}
-        value: ${fieldValue}
+        ${fieldValuesAliasesAndFieldNames}
       }
       `;
     });
@@ -93,9 +97,10 @@ export function useActivityLogLookupTables() {
   /**
    * Take activity log response and set whether lookups are needed and, if so, the built query
    * @param {object} response - GraphQL response containing lookup table names
+   * @param {string} lookupDataKey - The key in the response whose values is the lookup data
    */
-  const getLookups = response => {
-    const recordTableNames = getActivityLogTableNames(response);
+  const getLookups = (response, lookupDataKey) => {
+    const recordTableNames = getActivityLogTableNames(response, lookupDataKey);
     const { query, areLookups } = buildLookupQuery(recordTableNames);
 
     setLookupObject({ query, areLookups });
@@ -109,8 +114,14 @@ export function useActivityLogLookupTables() {
     const lookupMapFromResponse = Object.entries(response).reduce(
       (acc, [field, mapArray]) => {
         let fieldMap = {};
+
         mapArray.forEach(record => {
-          fieldMap = { ...fieldMap, [record.key]: record.value };
+          const concatenatedValues = Object.keys(record)
+            .filter(key => key.includes("value"))
+            .map(key => record[key])
+            .join(" ");
+
+          fieldMap = { ...fieldMap, [record.key]: concatenatedValues };
 
           return { ...acc, [field]: fieldMap };
         });

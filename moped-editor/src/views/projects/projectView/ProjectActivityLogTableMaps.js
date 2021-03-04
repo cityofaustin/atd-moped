@@ -606,7 +606,7 @@ export const ProjectActivityLogTableMaps = {
         lookup: {
           table: "moped_project_roles",
           fieldLabel: "project_role_id",
-          fieldValue: "project_role_name",
+          fieldValues: ["project_role_name"],
         },
       },
       user_id: {
@@ -616,7 +616,7 @@ export const ProjectActivityLogTableMaps = {
         lookup: {
           table: "moped_users",
           fieldLabel: "user_id",
-          fieldValue: "first_name",
+          fieldValues: ["first_name", "last_name"],
         },
       },
     },
