@@ -45,7 +45,7 @@ const NewProjectMap = ({
   const featureCount = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const { handleLayerHover, featureId } = useHoverLayer();
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
