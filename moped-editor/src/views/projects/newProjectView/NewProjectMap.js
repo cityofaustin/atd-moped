@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -17,6 +17,7 @@ import {
   mapConfig,
   mapStyles,
   sumFeaturesSelected,
+  useFeatureCollectionToFitBounds,
   useHoverLayer,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
@@ -44,7 +45,11 @@ const NewProjectMap = ({
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
 
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
+  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+    mapRef,
+    featureCollection,
+    true
+  );
   const { handleLayerHover, featureId } = useHoverLayer();
 
   /**
