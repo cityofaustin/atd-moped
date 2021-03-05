@@ -98,7 +98,7 @@ const NewProjectView = () => {
 
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
 
-  // Reset areNoFeatures once a feature is selected
+  // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
     if (sumFeaturesSelected(selectedLayerIds) > 0) {
       setAreNoFeaturesSelected(false);
@@ -111,7 +111,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Please select a location",
+        error: "Select a location to save project",
         isError: areNoFeaturesSelected,
       },
     ];
