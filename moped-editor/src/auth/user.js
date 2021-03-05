@@ -174,20 +174,17 @@ export const getJwt = user => user.idToken.jwtToken;
 export const isUserSSO = user =>
   user.idToken.payload["cognito:username"].startsWith("azuread_");
 
-// This function takes a CognitoUser Object and returns the role with the
-// highest permissions level within their allowed roles.
-export const getHighestRole = user => {
-  const claims = user.idToken.payload["https://hasura.io/jwt/claims"];
+/**
+ * Find the highest role in user roles for UI permissions
+ * @param {array} roles - Array of user roles
+ * @return {string} Highest user role
+ */
+export const findHighestRole = roles => {
+  if (roles === null) return null;
 
-  const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];
+  const findRole = role => roles.includes(role) && roles;
 
-  const findRole = role => {
-    if (allowedRoles.includes(role)) {
-      return allowedRoles;
-    }
-  };
-
-  switch (allowedRoles) {
+  switch (roles) {
     case findRole("moped-admin"):
       return "moped-admin";
     case findRole("moped-editor"):
@@ -196,4 +193,17 @@ export const getHighestRole = user => {
       return "moped-viewer";
     default:
   }
+};
+
+/**
+ * Get the role with the highest permissions level from CognitoUser Object
+ * @param {object} user - Cognito User object containing roles in the token
+ * @return {string} Highest user role
+ */
+export const getHighestRole = user => {
+  const claims = user.idToken.payload["https://hasura.io/jwt/claims"];
+
+  const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];
+
+  return findHighestRole(allowedRoles);
 };
