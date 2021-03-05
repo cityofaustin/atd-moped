@@ -58,12 +58,7 @@ const ProjectFiles = props => {
     setDialogOpen(false);
   };
 
-  const {
-    loading,
-    error,
-    data,
-    //  refetch
-  } = useQuery(PROJECT_FILE_ATTACHMENTS, {
+  const { loading, error, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
@@ -103,17 +98,34 @@ const ProjectFiles = props => {
       render: record => <span>{record?.file_description}</span>,
     },
     {
-      title: "File Size",
-      field: "file_description",
+      title: "Created By",
+      field: "created_by",
       render: record => (
-        <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
+        <span>
+          {record?.created_by
+            ? record?.moped_user?.first_name +
+              " " +
+              record?.moped_user?.last_name
+            : "N/A"}
+        </span>
       ),
     },
     {
       title: "Created Date",
       field: "create_date",
       render: record => (
-          <span>{record?.create_date ? new Date(record?.create_date).toLocaleString() : "N/A"}</span>
+        <span>
+          {record?.create_date
+            ? new Date(record?.create_date).toLocaleString()
+            : "N/A"}
+        </span>
+      ),
+    },
+    {
+      title: "File Size",
+      field: "file_description",
+      render: record => (
+        <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
     },
   ];
@@ -149,6 +161,26 @@ const ProjectFiles = props => {
           options={{
             search: false,
             rowStyle: { fontFamily: typography.fontFamily },
+          }}
+          editable={{
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  // isNewProjectActions[isNewProject].update(newData, oldData);
+
+                  setTimeout(() => refetch(), 501);
+                  resolve();
+                }, 500);
+              }),
+            onRowDelete: oldData =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  // isNewProjectActions[isNewProject].delete(oldData);
+
+                  setTimeout(() => refetch(), 501);
+                  resolve();
+                }, 500);
+              }),
           }}
         />
       </ApolloErrorHandler>
