@@ -8,6 +8,54 @@ export const PROJECT_NAME = gql`
   }
 `;
 
+export const ADD_PROJECT = gql`
+  mutation MyMutation(
+    $project_name: String! = ""
+    $project_description: String! = ""
+    $current_phase: String! = ""
+    $current_status: String! = ""
+    $eCapris_id: String! = ""
+    $fiscal_year: String! = ""
+    $start_date: date = ""
+    $capitally_funded: Boolean! = false
+    $project_priority: String! = ""
+    $project_extent_ids: jsonb = {}
+    $project_extent_geojson: jsonb = {}
+  ) {
+    insert_moped_project(
+      objects: {
+        project_name: $project_name
+        project_description: $project_description
+        current_phase: $current_phase
+        current_status: $current_status
+        eCapris_id: $eCapris_id
+        fiscal_year: $fiscal_year
+        start_date: $start_date
+        capitally_funded: $capitally_funded
+        project_priority: $project_priority
+        project_extent_ids: $project_extent_ids
+        project_extent_geojson: $project_extent_geojson
+      }
+    ) {
+      affected_rows
+      returning {
+        project_id
+        project_name
+        project_description
+        project_priority
+        current_phase
+        current_status
+        eCapris_id
+        fiscal_year
+        capitally_funded
+        start_date
+        project_extent_ids
+        project_extent_geojson
+      }
+    }
+  }
+`;
+
 export const SUMMARY_QUERY = gql`
   query ProjectSummary($projectId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
