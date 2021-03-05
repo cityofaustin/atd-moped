@@ -3701,6 +3701,9 @@
   - name: moped_project
     using:
       foreign_key_constraint_on: project_id
+  - name: moped_user
+    using:
+      foreign_key_constraint_on: created_by
   insert_permissions:
   - role: moped-admin
     permission:
