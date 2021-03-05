@@ -223,6 +223,9 @@ const FileUpload = props => {
     // so your server knows which file to return without exposing that info to the client
     request.onload = function() {
       if (request.status >= 200 && request.status < 300) {
+        if(props?.onFileProcessed) {
+          props.onFileProcessed(fileSignature.fields.key);
+        }
         // the load method accepts either a string (id) or an object
         load(request.responseText);
       } else {
