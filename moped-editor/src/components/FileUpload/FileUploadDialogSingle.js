@@ -40,11 +40,17 @@ const useStyles = makeStyles(theme => ({
 const FileUploadDialogSingle = props => {
   const classes = useStyles();
 
+  /**
+   * @constant {string} fileName - Contains a human-readable file name
+   * @constant {string} fileDescription - Contains a human-readable file description
+   * @constant {string} fileKey - The location of the file in S3
+   * @constant {Object} fileObject - Contains the file object, including metadata.
+   * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
+   */
   const [fileName, setFileName] = useState(null);
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
-
   const [fileReady, setFileReady] = useState(false);
 
   /**
@@ -66,14 +72,25 @@ const FileUploadDialogSingle = props => {
     }
   };
 
+  /**
+   * Handles the file name changes
+   * @param {Object} e - The event object
+   */
   const handleFileNameChange = e => {
     setFileName(e.target.value);
   };
 
+  /**
+   * Handles the file description changes
+   * @param {Object} e - The event object
+   */
   const handleFileDescriptionChange = e => {
     setFileDescription(e.target.value);
   };
 
+  /**
+   * Handles the file save click
+   */
   const handleSaveFile = () => {
     const fileBundle = {
       name: fileName,
@@ -88,6 +105,11 @@ const FileUploadDialogSingle = props => {
     }
   };
 
+  /**
+   * Checks if the field is a string and returns it's length
+   * @param {any} value - The value in question
+   * @return {number}
+   */
   const fieldLength = value => {
     if (value !== null && typeof value === "string") {
       return value.length;
@@ -96,6 +118,12 @@ const FileUploadDialogSingle = props => {
     return 0;
   };
 
+  /**
+   * This side effect checks if the save button should be disabled.
+   * This is done by checking the state every time there is a
+   * change in the field name, description, file object, and
+   * file key state.
+   */
   useEffect(() => {
     // Determine if the file is ready to be saved to DB
     const saveDisabled =
@@ -114,6 +142,7 @@ const FileUploadDialogSingle = props => {
       setFileReady(false);
     }
   }, [fileName, fileDescription, fileKey, fileObject]);
+
 
   return (
     <Dialog
