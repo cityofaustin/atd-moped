@@ -1,22 +1,29 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import {
   Button,
   CardContent,
+  CircularProgress,
   Grid,
   Icon,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
+  Link,
+  TextField,
 } from "@material-ui/core";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import typography from "../../../theme/typography";
+import MaterialTable from "material-table";
+import { Clear as ClearIcon } from "@material-ui/icons";
+
+import { useQuery } from "@apollo/client";
+
+import humanReadableFileSize from "../../../utils/humanReadableFileSize";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
+import { PROJECT_FILE_ATTACHMENTS } from "../../../queries/project";
+import { getJwt, useUser } from "../../../auth/user";
+import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -25,11 +32,16 @@ const useStyles = makeStyles(theme => ({
   uploadFileButton: {
     float: "right",
   },
+  downloadLink: {
+    cursor: "pointer",
+  },
 }));
 
 const ProjectFiles = props => {
   const classes = useStyles();
   const { projectId } = useParams();
+  const { user } = useUser();
+  const token = getJwt(user);
 
   const [dialogOpen, setDialogOpen] = useState(false);
 
@@ -41,20 +53,62 @@ const ProjectFiles = props => {
     setDialogOpen(false);
   };
 
-  const handleClickSaveFile = () => {
+  const handleClickSaveFile = fileDataBundle => {
+    console.log("Data Bundle: ", fileDataBundle);
     setDialogOpen(false);
-  }
+  };
 
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
+  const {
+    loading,
+    error,
+    data,
+    //  refetch
+  } = useQuery(PROJECT_FILE_ATTACHMENTS, {
+    variables: { projectId },
+    fetchPolicy: "no-cache",
+  });
+  // const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
+  // const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
+  //
 
-  const rows = [
-    createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-    createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-    createData("Eclair", 262, 16.0, 24, 6.0),
-    createData("Cupcake", 305, 3.7, 67, 4.3),
-    createData("Gingerbread", 356, 16.0, 49, 3.9),
+  if (loading || !data) return <CircularProgress />;
+
+  /**
+   * Column configuration for <MaterialTable>
+   */
+  const columns = [
+    {
+      title: "Name",
+      field: "file_name",
+      render: record => (
+        <Link
+          className={classes.downloadLink}
+          onClick={() => downloadFileAttachment(record?.file_key, token)}
+        >
+          {record?.file_name}
+        </Link>
+      ),
+      editComponent: props => (
+        <TextField
+          id="file_name"
+          name="file_name"
+          value={props.value}
+          onChange={null}
+        />
+      ),
+    },
+    {
+      title: "File Description",
+      field: "file_description",
+      render: record => <span>{record?.file_description}</span>,
+    },
+    {
+      title: "File Size",
+      field: "file_description",
+      render: record => (
+        <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
+      ),
+    },
   ];
 
   return (
@@ -79,39 +133,25 @@ const ProjectFiles = props => {
           </Grid>
         </Grid>
       </Grid>
-      <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>File Name</TableCell>
-              <TableCell align="right">Description</TableCell>
-              <TableCell align="right">Uploaded by</TableCell>
-              <TableCell align="right">Upload Date</TableCell>
-              <TableCell align="right">File Size (mb)</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map(row => (
-              <TableRow key={row.name}>
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <FileUploadDialogSingle
-          title={"Upload Media"}
-          dialogOpen={dialogOpen}
-          handleClickCloseUploadFile={handleClickCloseUploadFile}
-          handleClickSaveFile={handleClickSaveFile}
-          projectId={projectId}
+      <ApolloErrorHandler errors={error}>
+        <MaterialTable
+          columns={columns}
+          data={data?.moped_project_files ?? null}
+          title="Project File Attachments"
+          icons={{ Delete: ClearIcon }}
+          options={{
+            search: false,
+            rowStyle: { fontFamily: typography.fontFamily },
+          }}
         />
+      </ApolloErrorHandler>
+      <FileUploadDialogSingle
+        title={"Upload Media"}
+        dialogOpen={dialogOpen}
+        handleClickCloseUploadFile={handleClickCloseUploadFile}
+        handleClickSaveFile={handleClickSaveFile}
+        projectId={projectId}
+      />
     </CardContent>
   );
 };
