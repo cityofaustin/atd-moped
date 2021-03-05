@@ -225,3 +225,23 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
     }
   }
 `;
+
+export const PROJECT_FILE_ATTACHMENTS = gql`
+  query MopedProjectFiles($projectId: Int!) {
+    moped_project_files(
+      where: {
+        project_id: {_eq: $projectId},
+        is_retired: {_eq: false}
+      }
+    ) {
+      project_file_id
+      project_id
+      file_key
+      file_name
+      file_description
+      file_size
+      file_metadata
+      file_description
+    }
+  }
+`;
