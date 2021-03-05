@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -48,7 +48,7 @@ const NewProjectMap = ({
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
     featureCollection,
-    true
+    false
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
@@ -106,14 +106,14 @@ const NewProjectMap = ({
    * Updates viewport on select of location from geocoder form
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
-  const handleGeocoderViewportChange = useCallback(newViewport => {
+  const handleGeocoderViewportChange = newViewport => {
     const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
     return handleViewportChange({
       ...newViewport,
       ...geocoderDefaultOverrides,
     });
-  }, []);
+  };
 
   return (
     <Box className={classes.mapBox}>

@@ -318,7 +318,7 @@ export function useHoverLayer() {
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {object} mapRef - Ref object whose current property exposes the map instance
  * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
- * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection changes
+ * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
  * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
  */
 /**
