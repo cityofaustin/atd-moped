@@ -138,10 +138,10 @@ const FileUploadDialogSingle = props => {
       setFileReady(true);
     }
 
-    if(saveDisabled) {
+    if(saveDisabled && fileReady) {
       setFileReady(false);
     }
-  }, [fileName, fileDescription, fileKey, fileObject]);
+  }, [fileName, fileDescription, fileKey, fileObject, fileReady]);
 
 
   return (
