@@ -88,6 +88,13 @@ export const mapConfig = {
         };
       },
     },
+    CTNPoints: {
+      layerIdName: "ctn-points",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerColor: theme.palette.primary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+    },
   },
 };
 
