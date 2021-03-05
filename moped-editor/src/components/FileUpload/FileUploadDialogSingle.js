@@ -45,16 +45,24 @@ const FileUploadDialogSingle = props => {
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
 
-  const handleOnFileProcessed = (fileKey, fileObject) => {
-    console.log("handleOnFileUploaded(): fileKey: ", fileKey);
-    console.log("handleOnFileUploaded(): fileObject: ", fileObject);
+  const [fileReady, setFileReady] = useState(false);
+
+  /**
+   * Logic that needs to be run after the file has been uploaded to S3
+   * @param {string} fileKey - The name of the file in S3
+   */
+  const handleOnFileProcessed = fileKey => {
     setFileKey(fileKey);
-    setFileObject(fileObject);
   };
 
+  /**
+   * Logic that needs to be run after a file has been added to the
+   * @param error
+   * @param file
+   */
   const handleOnFileAdded = (error, file) => {
-    if(error === null) {
-        setFileObject(file);
+    if (error === null) {
+      setFileObject(file);
     }
   };
 
@@ -74,43 +82,43 @@ const FileUploadDialogSingle = props => {
       file: fileObject,
     };
 
-    console.log("Saving: ", fileBundle);
-
+    // If there is a click save file handler, call it...
     if (props?.handleClickSaveFile) {
-      console.log("Calling handler");
       props.handleClickSaveFile(fileBundle);
-    } else {
-      console.error("There is no save file handler!");
     }
 
+    // If there is a close dialog handler, call it...
     if (props?.handleClickCloseUploadFile) {
       props.handleClickCloseUploadFile();
     }
   };
 
-  useEffect(() => {
-    if (fileName) {
-      console.log("fileName: ", fileName);
+  const fieldLength = value => {
+    if (value !== null && typeof value === "string") {
+      return value.length;
     }
-  }, [fileName]);
+
+    return 0;
+  };
 
   useEffect(() => {
-    if (fileDescription) {
-      console.log("fileDescription: ", fileDescription);
-    }
-  }, [fileDescription]);
+    // Determine if the file is ready to be saved to DB
+    const saveDisabled =
+      fieldLength(fileName) === 0 ||
+      fieldLength(fileDescription) === 0 ||
+      fieldLength(fileKey) === 0 ||
+      fileObject === null;
 
-  useEffect(() => {
-    if (fileKey) {
-      console.log("fileKey:", fileKey);
+    // If no longer disabled, but marked as not ready
+    if (saveDisabled === false && fileReady === false) {
+      // Mark it as ready
+      setFileReady(true);
     }
-  }, [fileKey]);
 
-  useEffect(() => {
-    if (fileObject) {
-      console.log("fileObject:", fileObject);
+    if(saveDisabled) {
+      setFileReady(false);
     }
-  }, [fileObject]);
+  }, [fileName, fileDescription, fileKey, fileObject]);
 
   return (
     <Dialog
@@ -129,8 +137,8 @@ const FileUploadDialogSingle = props => {
               className={classes.textField}
               id="standard-multiline-flexible"
               placeholder={"File Title"}
-              // multiline
-              // rowsMax={4}
+              multiline={false}
+              rowsMax={1}
               value={null}
               onChange={handleFileNameChange}
               InputProps={{
@@ -191,7 +199,7 @@ const FileUploadDialogSingle = props => {
           color="primary"
           variant="contained"
           startIcon={<Icon>save</Icon>}
-          disabled={props?.saveDisabled ?? true}
+          disabled={!fileReady}
         >
           Save
         </Button>
