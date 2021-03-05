@@ -96,7 +96,7 @@ const NewProjectView = () => {
   });
 
   const getSteps = () => {
-    return ["Define Project", "Assign Team", "Map Project"];
+    return ["Define Project", "Assign Team", "Map project"];
   };
 
   const getStepContent = step => {

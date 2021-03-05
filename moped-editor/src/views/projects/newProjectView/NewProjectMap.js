@@ -16,7 +16,6 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  renderTooltip,
   sumFeaturesSelected,
   useHoverLayer,
   renderFeatureCount,
@@ -151,7 +150,6 @@ const NewProjectMap = ({
             />
           </Source>
         ))}
-        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
