@@ -98,7 +98,15 @@ const NewProjectView = () => {
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
 
   const getSteps = () => {
-    return ["Define project", "Assign team", "Map project"];
+    return [
+      { label: "Define project" },
+      { label: "Assign team" },
+      {
+        label: "Map project",
+        error: "Please select a location",
+        isError: areNoFeaturesSelected,
+      },
+    ];
   };
 
   const getStepContent = step => {
@@ -233,6 +241,8 @@ const NewProjectView = () => {
     if (sumFeaturesSelected(selectedLayerIds) === 0) {
       setAreNoFeaturesSelected(true);
       return;
+    } else {
+      setAreNoFeaturesSelected(false);
     }
 
     // Change the initial state...
@@ -286,12 +296,16 @@ const NewProjectView = () => {
               <Divider />
               <CardContent>
                 <Stepper activeStep={activeStep}>
-                  {steps.map((label, index) => {
+                  {steps.map((step, index) => {
                     const stepProps = {};
                     const labelProps = {};
                     return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      <Step key={step.label} {...stepProps}>
+                        {step.isError ? (
+                          <StepLabel error={true}>{step.error}</StepLabel>
+                        ) : (
+                          <StepLabel {...labelProps}>{step.label}</StepLabel>
+                        )}
                       </Step>
                     );
                   })}
