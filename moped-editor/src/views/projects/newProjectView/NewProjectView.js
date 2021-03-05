@@ -22,6 +22,7 @@ import Page from "src/components/Page";
 import { useMutation, gql } from "@apollo/client";
 import { ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import { sumFeaturesSelected } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -94,9 +95,10 @@ const NewProjectView = () => {
     type: "FeatureCollection",
     features: [],
   });
+  const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
 
   const getSteps = () => {
-    return ["Define Project", "Assign Team", "Map project"];
+    return ["Define project", "Assign team", "Map project"];
   };
 
   const getStepContent = step => {
@@ -228,6 +230,11 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
+    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+      setAreNoFeaturesSelected(true);
+      return;
+    }
+
     // Change the initial state...
     setLoading(true);
 
