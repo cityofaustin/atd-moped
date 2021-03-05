@@ -86,11 +86,6 @@ const FileUploadDialogSingle = props => {
     if (props?.handleClickSaveFile) {
       props.handleClickSaveFile(fileBundle);
     }
-
-    // If there is a close dialog handler, call it...
-    if (props?.handleClickCloseUploadFile) {
-      props.handleClickCloseUploadFile();
-    }
   };
 
   const fieldLength = value => {
