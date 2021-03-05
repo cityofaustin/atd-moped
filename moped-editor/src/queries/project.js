@@ -242,6 +242,8 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       file_size
       file_metadata
       file_description
+      create_date
+      created_by
     }
   }
 `;

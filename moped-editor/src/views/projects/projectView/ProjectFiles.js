@@ -109,6 +109,13 @@ const ProjectFiles = props => {
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
     },
+    {
+      title: "Created Date",
+      field: "create_date",
+      render: record => (
+          <span>{record?.create_date ? new Date(record?.create_date).toLocaleString() : "N/A"}</span>
+      ),
+    },
   ];
 
   return (
