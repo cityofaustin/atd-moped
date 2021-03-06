@@ -16,12 +16,16 @@ import typography from "../../../theme/typography";
 import MaterialTable from "material-table";
 import { Clear as ClearIcon } from "@material-ui/icons";
 
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
-import { PROJECT_FILE_ATTACHMENTS } from "../../../queries/project";
+import {
+  PROJECT_FILE_ATTACHMENTS,
+  PROJECT_FILE_ATTACHMENTS_DELETE,
+  PROJECT_FILE_ATTACHMENTS_UPDATE,
+} from "../../../queries/project";
 import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 
@@ -62,9 +66,13 @@ const ProjectFiles = props => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
-  // const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
-  // const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
-  //
+
+  const [updateProjectFileAttachment] = useMutation(
+    PROJECT_FILE_ATTACHMENTS_UPDATE
+  );
+  const [deleteProjectFileAttachment] = useMutation(
+    PROJECT_FILE_ATTACHMENTS_DELETE
+  );
 
   if (loading || !data) return <CircularProgress />;
 
@@ -88,7 +96,7 @@ const ProjectFiles = props => {
           id="file_name"
           name="file_name"
           value={props.value}
-          onChange={null}
+          onChange={e => props.onChange(e.target.value)}
         />
       ),
     },
@@ -96,10 +104,17 @@ const ProjectFiles = props => {
       title: "File Description",
       field: "file_description",
       render: record => <span>{record?.file_description}</span>,
+      editComponent: props => (
+        <TextField
+          id="file_description"
+          name="file_description"
+          value={props?.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
     },
     {
       title: "Created By",
-      field: "created_by",
       render: record => (
         <span>
           {record?.created_by
@@ -112,7 +127,6 @@ const ProjectFiles = props => {
     },
     {
       title: "Created Date",
-      field: "create_date",
       render: record => (
         <span>
           {record?.create_date
@@ -123,7 +137,6 @@ const ProjectFiles = props => {
     },
     {
       title: "File Size",
-      field: "file_description",
       render: record => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
@@ -159,27 +172,27 @@ const ProjectFiles = props => {
           title="Project File Attachments"
           icons={{ Delete: ClearIcon }}
           options={{
-            search: false,
+            search: true,
             rowStyle: { fontFamily: typography.fontFamily },
           }}
           editable={{
             onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  // isNewProjectActions[isNewProject].update(newData, oldData);
-
-                  setTimeout(() => refetch(), 501);
-                  resolve();
-                }, 500);
+              updateProjectFileAttachment({
+                variables: {
+                  fileId: newData.project_file_id,
+                  fileName: newData.file_name,
+                  fileDescription: newData.file_description,
+                },
+              }).then(() => {
+                refetch();
               }),
             onRowDelete: oldData =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  // isNewProjectActions[isNewProject].delete(oldData);
-
-                  setTimeout(() => refetch(), 501);
-                  resolve();
-                }, 500);
+              deleteProjectFileAttachment({
+                variables: {
+                  fileId: oldData.project_file_id,
+                },
+              }).then(() => {
+                refetch();
               }),
           }}
         />
