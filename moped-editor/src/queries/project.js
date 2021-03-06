@@ -274,3 +274,22 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
     }
   }
 `;
+
+export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
+  mutation DeleteProjectFileAttachment(
+    $fileId: Int!,
+  ) {
+    update_moped_project_files(
+      where: {
+        project_file_id: {
+          _eq: $fileId
+        }
+      },
+      _set: {
+        is_retired: true,
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
