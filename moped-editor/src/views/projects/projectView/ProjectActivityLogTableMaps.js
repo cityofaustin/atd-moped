@@ -569,11 +569,6 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_personnel: {
     label: "Project Personnel",
     fields: {
-      role_order: {
-        icon: "",
-        label: "Role Order",
-        type: "int4",
-      },
       added_by: {
         icon: "",
         label: "Added By",
@@ -589,44 +584,14 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         type: "int4",
       },
-      workgroup_id: {
-        icon: "",
-        label: "Workgroup ID",
-        type: "int4",
-      },
-      project_personnel_user_id: {
-        icon: "",
-        label: "User ID",
-        type: "int4",
-      },
-      first_name: {
-        icon: "",
-        label: "First Name",
-        type: "text",
-      },
-      last_name: {
-        icon: "",
-        label: "Last Name",
-        type: "text",
-      },
       notes: {
         icon: "",
         label: "Notes",
         type: "text",
       },
-      join_date: {
-        icon: "",
-        label: "Join Date",
-        type: "date",
-      },
-      status: {
+      status_id: {
         icon: "",
         label: "Status",
-        type: "text",
-      },
-      allocation: {
-        icon: "",
-        label: "Allocation",
         type: "int4",
       },
       project_id: {
@@ -634,15 +599,10 @@ export const ProjectActivityLogTableMaps = {
         label: "Project ID",
         type: "int4",
       },
-      workgroup: {
+      user_id: {
         icon: "",
-        label: "workgroup",
-        type: "text",
-      },
-      role_name: {
-        icon: "",
-        label: "Role Name",
-        type: "text",
+        label: "User ID",
+        type: "int4",
       },
     },
   },
@@ -1222,7 +1182,6 @@ export const ProjectActivityLogTableMaps = {
     },
   },
 
-
   moped_proj_dates: {
     label: "Project Date",
     fields: {
@@ -1305,6 +1264,15 @@ export const ProjectActivityLogOperationMaps = {
   },
 };
 
+export const ProjectActivityLogGenericDescriptions = {
+  project_extent_ids: {
+    label: "Project extent updated",
+  },
+  project_extent_geojson: {
+    label: "Project GeoJSON updated",
+  },
+};
+
 /**
  * Returns a human-readable field name (translates the column into a readable label)
  * @param {string} type - The table name
@@ -1313,9 +1281,8 @@ export const ProjectActivityLogOperationMaps = {
  */
 export const getHumanReadableField = (type, field) => {
   return (
-      ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[
-          field.toLowerCase()
-          ]?.label ?? field
+    ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+      ?.label ?? field
   );
 };
 
@@ -1327,8 +1294,6 @@ export const getHumanReadableField = (type, field) => {
 export const getRecordTypeLabel = type => {
   return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
 };
-
-
 
 /**
  * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
@@ -1347,7 +1312,7 @@ export const getChangeIcon = type => {
  */
 export const getOperationName = operationName => {
   return (
-      ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
-      "Unknown"
+    ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
+    "Unknown"
   );
 };

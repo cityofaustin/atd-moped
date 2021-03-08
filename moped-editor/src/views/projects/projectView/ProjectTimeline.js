@@ -22,6 +22,7 @@ import {
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 /**
  * DateFieldEditComponent - renders a Date type Calendar select
@@ -104,7 +105,6 @@ const ProjectTimeline = () => {
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
-  if (error) return `Error! ${error.message}`;
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -273,8 +273,8 @@ const ProjectTimeline = () => {
             </Button>
           </Box>
         </Grid>
-      </Grid>
-    </CardContent>
+      </CardContent>
+    </ApolloErrorHandler>
   );
 };
 

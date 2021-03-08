@@ -26,6 +26,7 @@ import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import TabPanel from "./TabPanel";
 import { PROJECT_NAME } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
+import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -92,56 +93,62 @@ const ProjectView = () => {
     variables: { projectId },
   });
 
-  if (error) return `Error! ${error.message}`;
-
   return (
-    <Page title="Project Summary Page">
-      <Container maxWidth="xl">
-        <Card className={classes.cardWrapper}>
-          {loading ? (
-            <CircularProgress />
-          ) : (
-            <div className={classes.root}>
-              <Box p={4} pb={2}>
-                <Typography color="textPrimary" variant="h2">
-                  {data.moped_project[0].project_name}
-                </Typography>
-              </Box>
-              <Divider />
-              <AppBar position="static">
-                <Tabs
-                  value={activeTab}
-                  onChange={handleChange}
-                  aria-label="Project Details Tabs"
-                >
-                  {TABS.map((tab, i) => {
-                    return <Tab label={tab.label} {...a11yProps(i)} />;
-                  })}
-                </Tabs>
-              </AppBar>
-              {TABS.map((tab, i) => {
-                const TabComponent = tab.Component;
-                return (
-                  <TabPanel value={activeTab} index={i}>
-                    <TabComponent />
-                  </TabPanel>
-                );
-              })}
-            </div>
-          )}
-          <Divider />
-          <CardActions className={classes.cardActions}>
-            <Button
-              className={classes.button}
-              component={RouterLink}
-              to="/moped/projects"
-            >
-              All Projects
-            </Button>
-          </CardActions>
-        </Card>
-      </Container>
-    </Page>
+    <ApolloErrorHandler error={error}>
+      <Page title="Project Summary Page">
+        <Container maxWidth="xl">
+          <Card className={classes.cardWrapper}>
+            {loading ? (
+              <CircularProgress />
+            ) : (
+              <div className={classes.root}>
+                <Box p={4} pb={2}>
+                  <Typography color="textPrimary" variant="h2">
+                    {data.moped_project[0].project_name}
+                  </Typography>
+                </Box>
+                <Divider />
+                <AppBar position="static">
+                  <Tabs
+                    value={activeTab}
+                    onChange={handleChange}
+                    aria-label="Project Details Tabs"
+                  >
+                    {TABS.map((tab, i) => {
+                      return (
+                        <Tab
+                          key={tab.label}
+                          label={tab.label}
+                          {...a11yProps(i)}
+                        />
+                      );
+                    })}
+                  </Tabs>
+                </AppBar>
+                {TABS.map((tab, i) => {
+                  const TabComponent = tab.Component;
+                  return (
+                    <TabPanel key={tab.label} value={activeTab} index={i}>
+                      <TabComponent />
+                    </TabPanel>
+                  );
+                })}
+              </div>
+            )}
+            <Divider />
+            <CardActions className={classes.cardActions}>
+              <Button
+                className={classes.button}
+                component={RouterLink}
+                to="/moped/projects"
+              >
+                All Projects
+              </Button>
+            </CardActions>
+          </Card>
+        </Container>
+      </Page>
+    </ApolloErrorHandler>
   );
 };
 
