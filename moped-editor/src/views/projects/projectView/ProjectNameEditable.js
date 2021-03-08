@@ -42,6 +42,7 @@ const ProjectNameEditable = props => {
   const initialProjectName = props?.projectName;
   const [showEditIcon, setShowEditIcon] = useState(false);
   const [projectName, setProjectName] = useState(initialProjectName);
+  const [projectNameBeforeEdit, setProjectNameBeforeEdit] = useState(projectName);
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
@@ -82,6 +83,7 @@ const ProjectNameEditable = props => {
       },
     })
       .then(res => {
+        setProjectNameBeforeEdit(projectName);
         setSnackbarState({
           open: true,
           message: <span>Success! the project name has been updated!</span>,
@@ -89,6 +91,7 @@ const ProjectNameEditable = props => {
         });
       })
       .catch(err => {
+        setProjectName(projectNameBeforeEdit);
         setSnackbarState({
           open: true,
           message: <span>There was a problem updating the project name.</span>,
@@ -109,7 +112,7 @@ const ProjectNameEditable = props => {
   const handleCancelClick = e => {
     e.preventDefault();
     setIsEditing(false);
-    setProjectName(initialProjectName);
+    setProjectName(projectNameBeforeEdit);
   };
 
   const handleSnackbarClose = () => {
