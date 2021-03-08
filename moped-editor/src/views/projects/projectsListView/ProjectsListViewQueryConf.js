@@ -30,7 +30,8 @@ export const ProjectsListViewQueryConf = {
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
   search: {
-    placeholder: "Search by project name, project description, and eCAPRIS subproject ID.",
+    placeholder:
+      "Search by project name, project description, and eCAPRIS subproject ID.",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -84,14 +85,6 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
-    date_added: {
-      searchable: false,
-      sortable: true,
-      label: "Date Added",
-      width: "10%",
-      filter: value => new Date(value).toLocaleDateString(),
-      type: "date_iso",
-    },
     start_date: {
       searchable: false,
       sortable: true,
@@ -99,14 +92,6 @@ export const ProjectsListViewQueryConf = {
       width: "10%",
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
-    },
-    capitally_funded: {
-      searchable: false,
-      sortable: false,
-      label: "Capital Funding",
-      width: "5%",
-      filter: value => (value === true ? "True" : "False"),
-      type: "boolean",
     },
     eCapris_id: {
       hidden: false,
@@ -120,7 +105,7 @@ export const ProjectsListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-    }
+    },
   },
   order_by: {},
   where: {},

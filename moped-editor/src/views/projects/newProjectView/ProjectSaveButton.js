@@ -56,6 +56,7 @@ export default function ProjectSaveButton({
   loading,
   success,
   handleButtonClick,
+  disabled,
 }) {
   const classes = useStyles();
 
@@ -69,7 +70,7 @@ export default function ProjectSaveButton({
         variant="contained"
         color="primary"
         className={buttonClassname}
-        disabled={loading && !success}
+        disabled={(loading && !success) || disabled}
         onClick={success ? null : handleButtonClick}
       >
         {success ? <Icon>check</Icon> : label}

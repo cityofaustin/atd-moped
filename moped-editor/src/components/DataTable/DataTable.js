@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { INITIAL_MUTATION } from "../../queries/placeholder";
 
 import {
   Box,
@@ -59,12 +60,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     message: null,
     severity: "success",
   };
-
-  const INITIAL_MUTATION = gql`
-    mutation generic {
-      __typedef
-    }
-  `;
 
   const LOOKUP_TABLE_QUERY = gql(
     "query RetrieveLookupValues {\n" +

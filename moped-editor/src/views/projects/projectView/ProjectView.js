@@ -14,7 +14,6 @@ import {
   AppBar,
   Tab,
   Tabs,
-  Typography,
   CardActions,
 } from "@material-ui/core";
 
@@ -28,6 +27,7 @@ import TabPanel from "./TabPanel";
 import { PROJECT_NAME } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ProjectNameEditable from "./ProjectNameEditable";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -105,9 +105,11 @@ const ProjectView = () => {
             ) : (
               <div className={classes.root}>
                 <Box p={4} pb={2}>
-                  <Typography color="textPrimary" variant="h2">
-                    {data.moped_project[0].project_name}
-                  </Typography>
+                  <ProjectNameEditable
+                    projectName={data.moped_project[0].project_name}
+                    projectId={projectId}
+                    editable={true}
+                  />
                 </Box>
                 <Divider />
                 <AppBar position="static">
