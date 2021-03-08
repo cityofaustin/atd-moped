@@ -25,8 +25,9 @@ import {
   PROJECT_FILE_ATTACHMENTS,
   PROJECT_FILE_ATTACHMENTS_DELETE,
   PROJECT_FILE_ATTACHMENTS_UPDATE,
+  PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "../../../queries/project";
-import { getJwt, useUser } from "../../../auth/user";
+import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 
 const useStyles = makeStyles(theme => ({
@@ -58,8 +59,20 @@ const ProjectFiles = props => {
   };
 
   const handleClickSaveFile = fileDataBundle => {
-    console.log("Data Bundle: ", fileDataBundle);
-    setDialogOpen(false);
+    createProjectFileAttachment({
+      variables: {
+        object: {
+          project_id: projectId,
+          file_name: fileDataBundle?.name,
+          file_description: fileDataBundle.description,
+          file_key: fileDataBundle.key,
+          file_size: fileDataBundle?.file?.size ?? 0,
+          created_by: getDatabaseId(user),
+        },
+      },
+    }).then(() => {
+      setDialogOpen(false);
+    });
   };
 
   const { loading, error, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
@@ -70,8 +83,13 @@ const ProjectFiles = props => {
   const [updateProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_UPDATE
   );
+
   const [deleteProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_DELETE
+  );
+
+  const [createProjectFileAttachment] = useMutation(
+    PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
   if (loading || !data) return <CircularProgress />;
