@@ -171,6 +171,23 @@ export const useUser = () => {
 
 export const getJwt = user => user.idToken.jwtToken;
 
+export const getHasuraClaims = user => {
+  try {
+    JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"])
+  } catch {
+    return null;
+  }
+}
+
+export const getDatabaseId = user => {
+  debugger;
+  try {
+    return getHasuraClaims(user)["x-hasura-user-db-id"];
+  } catch {
+    return null;
+  }
+}
+
 export const isUserSSO = user =>
   user.idToken.payload["cognito:username"].startsWith("azuread_");
 
