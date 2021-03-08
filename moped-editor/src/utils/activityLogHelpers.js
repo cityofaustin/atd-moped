@@ -1,14 +1,7 @@
 import { useState } from "react";
 import { useQuery, gql } from "@apollo/client";
 import { ProjectActivityLogTableMaps } from "../views/projects/projectView/ProjectActivityLogTableMaps";
-
-export const PLACEHOLDER_QUERY = gql`
-  query NotARealQuery {
-    just_a_placeholder {
-      affected_rows
-    }
-  }
-`;
+import { INITIAL_QUERY } from "../queries/placeholder";
 
 /**
  * Takes an array of table names and uses ProjectActivityLogTableMaps to create a query for lookup tables
@@ -18,7 +11,7 @@ export const PLACEHOLDER_QUERY = gql`
 export const buildLookupQuery = tableNames => {
   const noLookupsObject = {
     areLookups: false,
-    query: PLACEHOLDER_QUERY,
+    query: INITIAL_QUERY,
   };
 
   if (!tableNames || tableNames.length === 0) return noLookupsObject;
@@ -92,7 +85,7 @@ export const getActivityLogTableNames = (response, lookupDataKey) => {
 
 export function useActivityLogLookupTables() {
   const [lookupObject, setLookupObject] = useState({
-    query: PLACEHOLDER_QUERY,
+    query: INITIAL_QUERY,
     areLookups: false,
   });
 
