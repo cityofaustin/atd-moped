@@ -88,6 +88,33 @@ export const mapConfig = {
         };
       },
     },
+    projectComponents: {
+      layerIdName: "projectComponents",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerColor: theme.palette.primary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      layerMaxLOD: 12,
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          return {
+            type: "point",
+            paint: {
+              "circle-color": this.layerColor,
+              // "circle-radius": mapStyles.circleRadiusStops,
+              "circle-opacity": [
+                "case",
+                ["==", ["get", this.layerIdField], hoveredId],
+                mapStyles.statusOpacities.hovered,
+                ["in", ["get", this.layerIdField], ["literal", layerIds]],
+                mapStyles.statusOpacities.selected,
+                mapStyles.statusOpacities.unselected,
+              ],
+            },
+          };
+        };
+      },
+    },
   },
 };
 
