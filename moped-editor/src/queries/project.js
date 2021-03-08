@@ -293,3 +293,12 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
     }
   }
 `;
+
+export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
+  mutation insert_single_article($object: moped_project_files_insert_input! ) {
+    insert_moped_project_files(objects: [$object]) {
+      affected_rows
+    }
+  }
+`;
+
