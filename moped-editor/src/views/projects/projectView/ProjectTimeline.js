@@ -54,7 +54,6 @@ const DateFieldEditComponent = (props, name, label) => (
  */
 const ToggleEditComponent = (props, name) => (
   <Grid component="label" container alignItems="center" spacing={1}>
-    <Grid item>No</Grid>
     <Grid item>
       <Switch
         checked={props.value}
@@ -64,7 +63,6 @@ const ToggleEditComponent = (props, name) => (
         inputProps={{ "aria-label": "primary checkbox" }}
       />
     </Grid>
-    <Grid item>Yes</Grid>
   </Grid>
 );
 
