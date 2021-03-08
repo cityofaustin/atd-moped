@@ -224,11 +224,6 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         # Check we received a database_id and workgroup_id from database
         database_id, workgroup_id = get_user_database_ids(response=db_response)
 
-        # if database_id == "0" or workgroup_id == "0":
-        #     user_roles_before_update = load_claims(user_email=user_email_before_update)
-        #     database_id = user_roles_before_update.get("x-hasura-user-db-id", "0")
-        #     workgroup_id = user_roles_before_update.get("x-hasura-user-db-id", "0")
-
         if database_id == "0" or workgroup_id == "0":
             response = {
                 "error": {
