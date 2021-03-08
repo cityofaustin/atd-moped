@@ -316,19 +316,27 @@ export function useHoverLayer() {
 
 /**
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
- * @param {Object} mapRef - Ref object whose current property exposes the map instance
- * @param {Object} featureCollection - A GeoJSON feature collection to fit the map bounds around
+ * @param {object} mapRef - Ref object whose current property exposes the map instance
+ * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
+ * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
  * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
  */
 /**
- * @typedef {Array} ViewportStateArray
- * @property {Object} StateArray[0] - A Mapbox viewport object
- * @property {Function} StateArray[1] - Setter for viewport state
+ * @typedef {array} ViewportStateArray
+ * @property {object} StateArray[0] - A Mapbox viewport object
+ * @property {function} StateArray[1] - Setter for viewport state
  */
-export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
+export function useFeatureCollectionToFitBounds(
+  mapRef,
+  featureCollection,
+  shouldFitOnFeatureUpdate = true
+) {
   const [viewport, setViewport] = useState(mapConfig.mapInit);
+  const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
   useEffect(() => {
+    if (!shouldFitOnFeatureUpdate && hasFitInitialized) return;
+
     const mapBounds = createZoomBbox(featureCollection);
     const currentMap = mapRef.current;
 
@@ -360,7 +368,8 @@ export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
     };
 
     setViewport(prevViewport => fitViewportToBounds(prevViewport));
-  }, [featureCollection, mapRef]);
+    setHasFitInitialized(true);
+  }, [hasFitInitialized, shouldFitOnFeatureUpdate, featureCollection, mapRef]);
 
   return [viewport, setViewport];
 }
