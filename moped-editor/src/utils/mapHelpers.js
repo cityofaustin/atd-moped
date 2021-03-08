@@ -90,7 +90,7 @@ export const mapConfig = {
     // },
     Project_Component_Points_prototype: {
       layerIdName: "Project_Component_Points_prototype",
-      // layerIdField: "PROJECT_EXTENT_ID",
+      layerIdField: "PT_PROJECT_ID",
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/Project_Component_Points_Prototype/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -102,14 +102,14 @@ export const mapConfig = {
             paint: {
               "circle-color": this.layerColor,
               "circle-radius": 7,
-              // "circle-opacity": [
-              //   "case",
-              //   ["==", ["get", this.layerIdField], hoveredId],
-              //   mapStyles.statusOpacities.hovered,
-              //   ["in", ["get", this.layerIdField], ["literal", layerIds]],
-              //   mapStyles.statusOpacities.selected,
-              //   mapStyles.statusOpacities.unselected,
-              // ],
+              "circle-opacity": [
+                "case",
+                ["==", ["get", this.layerIdField], hoveredId],
+                mapStyles.statusOpacities.hovered,
+                ["in", ["get", this.layerIdField], ["literal", layerIds]],
+                mapStyles.statusOpacities.selected,
+                mapStyles.statusOpacities.unselected,
+              ],
             },
           };
         };
