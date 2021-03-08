@@ -57,59 +57,59 @@ export const mapConfig = {
   mapboxDefaultMaxZoom: 18,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
-    CTN: {
-      layerIdName: "ctn-lines",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerColor: theme.palette.primary.main,
+    // CTN: {
+    //   layerIdName: "ctn-lines",
+    //   layerIdField: "PROJECT_EXTENT_ID",
+    //   layerColor: theme.palette.primary.main,
+    //   layerUrl:
+    //     "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+    //   layerMaxLOD: 14,
+    //   get layerStyleSpec() {
+    //     return function(hoveredId, layerIds) {
+    //       return {
+    //         type: "line",
+    //         layout: {
+    //           "line-join": "round",
+    //           "line-cap": "round",
+    //         },
+    //         paint: {
+    //           "line-color": this.layerColor,
+    //           "line-width": mapStyles.lineWidthStops,
+    //           "line-opacity": [
+    //             "case",
+    //             ["==", ["get", this.layerIdField], hoveredId],
+    //             mapStyles.statusOpacities.hovered,
+    //             ["in", ["get", this.layerIdField], ["literal", layerIds]],
+    //             mapStyles.statusOpacities.selected,
+    //             mapStyles.statusOpacities.unselected,
+    //           ],
+    //         },
+    //       };
+    //     };
+    //   },
+    // },
+    Project_Component_Points_prototype: {
+      layerIdName: "Project_Component_Points_prototype",
+      // layerIdField: "PROJECT_EXTENT_ID",
+      layerColor: theme.palette.secondary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-      layerMaxLOD: 14,
-      get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
-          return {
-            type: "line",
-            layout: {
-              "line-join": "round",
-              "line-cap": "round",
-            },
-            paint: {
-              "line-color": this.layerColor,
-              "line-width": mapStyles.lineWidthStops,
-              "line-opacity": [
-                "case",
-                ["==", ["get", this.layerIdField], hoveredId],
-                mapStyles.statusOpacities.hovered,
-                ["in", ["get", this.layerIdField], ["literal", layerIds]],
-                mapStyles.statusOpacities.selected,
-                mapStyles.statusOpacities.unselected,
-              ],
-            },
-          };
-        };
-      },
-    },
-    projectComponents: {
-      layerIdName: "projectComponents",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerColor: theme.palette.primary.main,
-      layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/Project_Component_Points_Prototype/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 12,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
           return {
-            type: "point",
+            type: "circle",
             paint: {
               "circle-color": this.layerColor,
-              // "circle-radius": mapStyles.circleRadiusStops,
-              "circle-opacity": [
-                "case",
-                ["==", ["get", this.layerIdField], hoveredId],
-                mapStyles.statusOpacities.hovered,
-                ["in", ["get", this.layerIdField], ["literal", layerIds]],
-                mapStyles.statusOpacities.selected,
-                mapStyles.statusOpacities.unselected,
-              ],
+              "circle-radius": 7,
+              // "circle-opacity": [
+              //   "case",
+              //   ["==", ["get", this.layerIdField], hoveredId],
+              //   mapStyles.statusOpacities.hovered,
+              //   ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              //   mapStyles.statusOpacities.selected,
+              //   mapStyles.statusOpacities.unselected,
+              // ],
             },
           };
         };
