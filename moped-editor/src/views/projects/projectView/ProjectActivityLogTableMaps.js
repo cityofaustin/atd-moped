@@ -599,10 +599,25 @@ export const ProjectActivityLogTableMaps = {
         label: "Project ID",
         type: "int4",
       },
+      role_id: {
+        icon: "",
+        label: "Role",
+        type: "int4",
+        lookup: {
+          table: "moped_project_roles",
+          fieldLabel: "project_role_id",
+          fieldValues: ["project_role_name"],
+        },
+      },
       user_id: {
         icon: "",
-        label: "User ID",
+        label: "User",
         type: "int4",
+        lookup: {
+          table: "moped_users",
+          fieldLabel: "user_id",
+          fieldValues: ["first_name", "last_name"],
+        },
       },
     },
   },
@@ -962,7 +977,7 @@ export const ProjectActivityLogTableMaps = {
       },
       project_role_id: {
         icon: "",
-        label: "",
+        label: "Role",
         type: "int4",
       },
       date_added: {

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
   getOperationName,
   getChangeIcon,
@@ -56,8 +57,16 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
+  const {
+    getLookups,
+    lookupLoading,
+    lookupError,
+    lookupMap,
+  } = useActivityLogLookupTables();
+
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
+    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
   const [activityId, setActivityId] = useState(null);
@@ -77,7 +86,7 @@ const ProjectActivityLog = () => {
     setActivityId(activityId);
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading || lookupLoading) return <CircularProgress />;
 
   /**
    * Formats the iso date into human-readable locale date.
@@ -138,7 +147,7 @@ const ProjectActivityLog = () => {
     field in ProjectActivityLogGenericDescriptions;
 
   return (
-    <ApolloErrorHandler error={error}>
+    <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
         <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
         {getTotalItems() === 0 ? (
@@ -246,11 +255,21 @@ const ProjectActivityLog = () => {
                                       </b>{" "}
                                       from{" "}
                                       <b>
-                                        &quot;{String(changeItem.old)}&quot;
+                                        &quot;
+                                        {lookupMap?.[change.record_type]?.[
+                                          changeItem.field
+                                        ]?.[changeItem.old] ||
+                                          String(changeItem.old)}
+                                        &quot;
                                       </b>{" "}
                                       to{" "}
                                       <b>
-                                        &quot;{String(changeItem.new)}&quot;
+                                        &quot;
+                                        {lookupMap?.[change.record_type]?.[
+                                          changeItem.field
+                                        ]?.[changeItem.new] ||
+                                          String(changeItem.new)}
+                                        &quot;
                                       </b>
                                     </>
                                   )}
