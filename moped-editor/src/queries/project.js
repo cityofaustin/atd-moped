@@ -108,7 +108,10 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
     }
-    moped_proj_phases(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_phases(
+      where: { project_id: { _eq: $projectId } }
+      order_by: { phase_start: desc }
+    ) {
       phase_name
       project_phase_id
       is_current_phase
