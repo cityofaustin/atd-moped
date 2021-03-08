@@ -601,7 +601,7 @@ export const ProjectActivityLogTableMaps = {
       },
       role_id: {
         icon: "",
-        label: "Roles",
+        label: "Role",
         type: "int4",
         lookup: {
           table: "moped_project_roles",
