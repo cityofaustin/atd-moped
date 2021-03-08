@@ -221,6 +221,23 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 500
 
+        # Check we received a database_id and workgroup_id from database
+        database_id, workgroup_id = get_user_database_ids(response=db_response)
+
+        # if database_id == "0" or workgroup_id == "0":
+        #     user_roles_before_update = load_claims(user_email=user_email_before_update)
+        #     database_id = user_roles_before_update.get("x-hasura-user-db-id", "0")
+        #     workgroup_id = user_roles_before_update.get("x-hasura-user-db-id", "0")
+
+        if database_id == "0" or workgroup_id == "0":
+            response = {
+                "error": {
+                    "message": f"Cannot update user, invalid database id or workgroup id.",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 500
+
         updated_attributes = generate_cognito_attributes(user_profile=json_data)
 
         cognito_response = cognito_client.admin_update_user_attributes(
@@ -234,9 +251,6 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            # Retrieve database id values as strings
-            database_id, workgroup_id = get_user_database_ids(response=db_response)
-
             user_claims = format_claims(
                 user_id=id,
                 roles=roles,
