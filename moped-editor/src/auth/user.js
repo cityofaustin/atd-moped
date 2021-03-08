@@ -180,7 +180,6 @@ export const getHasuraClaims = user => {
 };
 
 export const getDatabaseId = user => {
-  debugger;
   try {
     return getHasuraClaims(user)["x-hasura-user-db-id"];
   } catch {
