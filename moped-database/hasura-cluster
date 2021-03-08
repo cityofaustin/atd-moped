@@ -124,13 +124,20 @@ function run_migration() {
 # Starts the cluster and does NOT run migrations...
 #
 function start_only() {
-  docker-compose -f docker-compose.yml up -d;
+  START_MODE=$1;
+  if [[ "${START_MODE}" = "" ]]; then
+    docker-compose -f docker-compose.yml up -d;
+  else
+    docker-compose -f "${START_MODE}" up -d;
+  fi;
+
 }
 
 #
 # Starts the cluster, runs the migrations automatically
 #
 function start() {
+  START_MODE=$1;
   if [[ $(__get_status) == "OK" ]]; then
     status;
     echo "The Hasura Cluster is already running...";
@@ -138,7 +145,7 @@ function start() {
     echo -e " - To open the hasura console, try: './hasura-cluster console' \n";
     exit 0;
   else
-    start_only;
+    start_only $START_MODE;
     run_migration;
     status;
   fi;
@@ -164,7 +171,7 @@ function setenv() {
 # Stops the cluster and removes any created volumes
 #
 function stop() {
-  docker-compose -f docker-compose.yml down --volumes;
+  docker-compose -f docker-compose.yml down --volumes --remove-orphans;
 }
 
 #
@@ -239,8 +246,8 @@ HASURA_EOM
 }
 
 function show_banner() {
-  show_hasura_kit_banner
-  echo -e "Copyright © 1985 Data & Tech Services Corp. \t\t Hasura Cluster: \e[32m $1 \e[0m"
+  show_hasura_kit_banner;
+  echo -e " Hasura Cluster: \e[32m $1 \e[0m";
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 

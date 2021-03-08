@@ -14,12 +14,15 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import moment from "moment";
 import DefineProjectForm from "./DefineProjectForm";
-import ProjectTeamTable from "./ProjectTeamTable";
-import ProjectMap from "./ProjectMap";
+import NewProjectTeam from "./NewProjectTeam";
+import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { useMutation, gql } from "@apollo/client";
+import { ADD_PROJECT_PERSONNEL } from "../../../queries/project";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+
 import ProjectSaveButton from "./ProjectSaveButton";
 
 /**
@@ -79,22 +82,18 @@ const NewProjectView = () => {
     project_priority: "",
     project_description: "",
     project_name: "",
-    start_date: "2021-01-01",
+    start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
     eCapris_id: "",
   });
 
-  const [StaffRows, setStaffRows] = useState([
-    {
-      id: 1,
-      name: null,
-      workgroup: "",
-      role_name: null,
-      notes: "",
-    },
-  ]);
-  const [selectedIds, setSelectedIds] = useState([]);
+  const [personnel, setPersonnel] = useState([]);
+  const [selectedLayerIds, setSelectedLayerIds] = useState({});
+  const [featureCollection, setFeatureCollection] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
 
   const getSteps = () => {
     return ["Define Project", "Assign Team", "Map Project"];
@@ -111,13 +110,15 @@ const NewProjectView = () => {
         );
       case 1:
         return (
-          <ProjectTeamTable StaffRows={StaffRows} setStaffRows={setStaffRows} />
+          <NewProjectTeam personnel={personnel} setPersonnel={setPersonnel} />
         );
       case 2:
         return (
-          <ProjectMap
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
+          <NewProjectMap
+            selectedLayerIds={selectedLayerIds}
+            setSelectedLayerIds={setSelectedLayerIds}
+            featureCollection={featureCollection}
+            setFeatureCollection={setFeatureCollection}
           />
         );
       default:
@@ -175,6 +176,8 @@ const NewProjectView = () => {
       $start_date: date = ""
       $capitally_funded: Boolean! = false
       $project_priority: String! = ""
+      $project_extent_ids: jsonb = {}
+      $project_extent_geojson: jsonb = {}
     ) {
       insert_moped_project(
         objects: {
@@ -187,6 +190,8 @@ const NewProjectView = () => {
           start_date: $start_date
           capitally_funded: $capitally_funded
           project_priority: $project_priority
+          project_extent_ids: $project_extent_ids
+          project_extent_geojson: $project_extent_geojson
         }
       ) {
         affected_rows
@@ -201,6 +206,8 @@ const NewProjectView = () => {
           fiscal_year
           capitally_funded
           start_date
+          project_extent_ids
+          project_extent_geojson
         }
       }
     }
@@ -208,36 +215,7 @@ const NewProjectView = () => {
 
   const [addProject] = useMutation(addNewProject);
 
-  const TEAMS_MUTATION = gql`
-    mutation Teams(
-      $workgroup: String! = ""
-      $role_name: String! = ""
-      $first_name: String! = ""
-      $last_name: String! = ""
-      $notes: String! = ""
-    ) {
-      insert_moped_proj_personnel(
-        objects: {
-          workgroup: $workgroup
-          role_name: $role_name
-          first_name: $first_name
-          last_name: $last_name
-          notes: $notes
-        }
-      ) {
-        affected_rows
-        returning {
-          workgroup
-          role_name
-          first_name
-          last_name
-          notes
-        }
-      }
-    }
-  `;
-
-  const [addStaff] = useMutation(TEAMS_MUTATION);
+  const [addStaff] = useMutation(ADD_PROJECT_PERSONNEL);
 
   const timer = React.useRef();
 
@@ -254,34 +232,33 @@ const NewProjectView = () => {
     setLoading(true);
 
     addProject({
-      variables: projectDetails,
+      variables: {
+        ...projectDetails,
+        project_extent_ids: selectedLayerIds,
+        project_extent_geojson: featureCollection,
+      },
     })
       .then(response => {
-        const project = response.data.insert_moped_project.returning[0];
+        const { project_id } = response.data.insert_moped_project.returning[0];
 
-        StaffRows.forEach(row => {
-          const [first_name, last_name] = row.name.split(" ");
-          const { workgroup, notes, role_name } = row;
-          const variables = {
-            workgroup,
-            notes,
-            role_name,
-            first_name,
-            last_name,
-          };
+        const cleanedPersonnel = personnel.map(row => ({
+          ...filterObjectByKeys(row, ["tableData"]),
+          project_id,
+        }));
 
-          addStaff({
-            variables,
+        addStaff({
+          variables: {
+            objects: cleanedPersonnel,
+          },
+        })
+          .then(() => {
+            setNewProjectId(project_id);
           })
-            .then(() => {
-              setNewProjectId(project.project_id);
-            })
-            .catch(err => {
-              alert(err);
-              setLoading(false);
-              setSuccess(false);
-            });
-        });
+          .catch(err => {
+            alert(err);
+            setLoading(false);
+            setSuccess(false);
+          });
       })
       .catch(err => {
         alert(err);

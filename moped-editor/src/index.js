@@ -4,9 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./auth/user";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
-import Amplify from "aws-amplify";
 
-import { Hub } from "aws-amplify";
+import Amplify, { Hub } from "aws-amplify";
+
 import config from "./config";
 
 // https://aws-amplify.github.io/docs/js/hub

@@ -180,26 +180,32 @@ def load_claims(user_email: str) -> dict:
     return claims
 
 
-def format_claims(user_id: str, roles: list) -> dict:
+def format_claims(user_id: str, roles: list, database_id: int = 0, workgroup_id: int = 0) -> dict:
     """
     Formats claims to prepare for encrypting and putting in DynamoDB
     :param str user_id: The user id to retrieve the claims for
     :param list roles: The roles to set as Hasura allowed roles
+    :param int database_id: The internal database id of the user
+    :param int workgroup_id: The internal workgroup id of the user
     :return dict: The claims
     """
     return {
         "x-hasura-user-id": user_id,
         "x-hasura-default-role": "moped-viewer",
         "x-hasura-allowed-roles": roles,
+        "x-hasura-user-db-id": str(database_id),
+        "x-hasura-user-wg-id": str(workgroup_id)
     }
 
 
-def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None):
+def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, database_id: int = 0, workgroup_id: int = 0):
     """
     Sets claims in DynamoDB
     :param str user_email: The user email to set the claims for
     :param dict user_claims: The claims object to be persisted in DynamoDB
     :param str cognito_uuid: The Cognito UUID
+    :param int database_id: The internal database id of the user
+    :param int workgroup_id: The internal workgroup id of the user
     """
     claims_str = json.dumps(user_claims)
     encrypted_claims = encrypt(fernet_key=AWS_COGNITO_DYNAMO_SECRET_KEY, content=claims_str)
@@ -210,6 +216,8 @@ def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None):
             "user_id": {"S": user_email},
             "claims": {"S": encrypted_claims},
             "cognito_uuid": {"S": cognito_uuid},
+            "database_id": {"S": database_id},
+            "workgroup_id": {"S": workgroup_id}
         },
     )
 

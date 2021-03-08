@@ -5,7 +5,7 @@ import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import { gql, useQuery } from "@apollo/react-hooks";
+import { gql, useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,

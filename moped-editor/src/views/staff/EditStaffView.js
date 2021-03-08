@@ -1,7 +1,6 @@
 import React from "react";
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { gql } from "apollo-boost";
 import StaffForm, { initialFormValues } from "./StaffForm";
 
 import {
@@ -15,6 +14,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
+import { findHighestRole } from "../../auth/user";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -35,6 +35,7 @@ const GET_USER = gql`
       workgroup_id
       cognito_user_id
       email
+      roles
     }
   }
 `;
@@ -42,7 +43,7 @@ const GET_USER = gql`
 const fieldFormatters = {
   status_id: id => id.toString(),
   workgroup_id: id => id.toString(),
-  roles: role => role[0],
+  roles: roles => findHighestRole(roles),
 };
 
 const EditStaffView = () => {
@@ -63,8 +64,7 @@ const EditStaffView = () => {
 
       if (originalValue !== undefined) {
         const formattedValue = formatter(originalValue);
-
-        data[fieldName] = formattedValue;
+        data = { ...data, [fieldName]: formattedValue };
       }
     });
 

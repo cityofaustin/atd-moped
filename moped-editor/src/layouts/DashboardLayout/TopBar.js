@@ -12,10 +12,10 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import InputIcon from "@material-ui/icons/Input";
+import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
 import { useUser } from "../../auth/user";
-import { defaultUser } from "../../views/account/AccountView/Profile";
+import emailToInitials from "../../utils/emailToInitials";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -26,7 +26,7 @@ const useStyles = makeStyles(() => ({
 
 const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
-  const { logout } = useUser();
+  const { user, logout } = useUser();
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -36,16 +36,21 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         </RouterLink>
         <Box flexGrow={1} />
         <Box>
-          <Avatar
-            className={classes.avatar}
-            component={RouterLink}
-            src={defaultUser.avatar}
-            to="/moped/account"
-          />
+          <div className={classes.root}>
+            <Avatar
+              className={classes.avatar}
+              component={RouterLink}
+              src={null}
+              to="/moped/account"
+              style={{ backgroundColor: user ? user.userColor : null }}
+            >
+              {emailToInitials(user?.idToken?.payload?.email)}
+            </Avatar>
+          </div>
         </Box>
         <Hidden mdDown>
           <IconButton color="inherit" onClick={logout}>
-            <InputIcon />
+            <LogOutIcon />
           </IconButton>
         </Hidden>
         <Hidden lgUp>
