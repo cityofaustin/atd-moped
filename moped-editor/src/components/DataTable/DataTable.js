@@ -496,7 +496,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           fieldConfiguration.fields[field]?.labelStyle ?? null
                         }
                       >
-                        {formatValue(field)}
+                        {fieldConfiguration.fields[field].format
+                          ? fieldConfiguration.fields[field].format(
+                              getValue(field)
+                            )
+                          : formatValue(field)}
                         {fieldConfiguration.fields[field].editable &&
                           !isEditing && (
                             <Icon

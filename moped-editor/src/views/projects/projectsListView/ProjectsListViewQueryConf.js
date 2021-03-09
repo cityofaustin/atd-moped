@@ -1,5 +1,7 @@
+import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+import ExternalLink from "../../../components/ExternalLink";
 
 /**
  * The Query configuration (now also including filters)
@@ -98,6 +100,12 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       label: "eCapris Subp.",
+      filter: value =>
+        <ExternalLink
+          text={value}
+          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+        />
+      ,
       type: "string",
       search: {
         label: "Search by eCapris subproject id",
