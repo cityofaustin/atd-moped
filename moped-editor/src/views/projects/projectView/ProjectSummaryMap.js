@@ -6,8 +6,8 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectViewLayerConfig,
   createSummaryMapLayers,
+  getInteractiveIds,
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
@@ -64,7 +64,7 @@ const ProjectSummaryMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={["projectExtent"]}
+        interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}

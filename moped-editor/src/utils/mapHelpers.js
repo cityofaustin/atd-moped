@@ -75,6 +75,8 @@ export const mapConfig = {
       layerMaxLOD: 14,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
           const editMapPaintStyles = {
             "line-opacity": [
               "case",
@@ -87,6 +89,7 @@ export const mapConfig = {
           };
 
           return {
+            id: this.layerIdName,
             type: "line",
             layout: {
               "line-join": "round",
@@ -95,7 +98,7 @@ export const mapConfig = {
             paint: {
               "line-color": this.layerColor,
               "line-width": mapStyles.lineWidthStops,
-              ...(layerIds && editMapPaintStyles),
+              ...(isEditing && editMapPaintStyles),
             },
           };
         };
@@ -110,6 +113,8 @@ export const mapConfig = {
       layerMaxLOD: 12,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
           const editMapPaintStyles = {
             "circle-opacity": [
               "case",
@@ -122,11 +127,12 @@ export const mapConfig = {
           };
 
           return {
+            id: this.layerIdName,
             type: "circle",
             paint: {
               "circle-color": this.layerColor,
               "circle-radius": mapStyles.circleRadiusStops,
-              ...(layerIds && editMapPaintStyles),
+              ...(isEditing && editMapPaintStyles),
             },
           };
         };
@@ -223,7 +229,6 @@ export const createProjectSelectLayerConfig = (
 
   // Merge common layer attributes with those unique to each layer type
   return {
-    id: config.layerIdName,
     "source-layer": sourceName,
     ...config.layerStyleSpec(hoveredId, layerIds),
   };
