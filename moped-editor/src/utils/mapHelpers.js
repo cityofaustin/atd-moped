@@ -234,17 +234,6 @@ export const createProjectSelectLayerConfig = (
   };
 };
 
-// Builds cases to match GeoJSON features with corresponding colors set for their layer
-// https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
-  (acc, [sourceName, config]) => {
-    acc.push(["==", ["get", "sourceLayer"], sourceName]);
-    acc.push(config.layerColor);
-    return acc;
-  },
-  []
-);
-
 export const createSummaryMapLayers = (selectedIds, geoJSON) => (
   <Source type="geojson" data={geoJSON}>
     {Object.keys(selectedIds).map(id => (
