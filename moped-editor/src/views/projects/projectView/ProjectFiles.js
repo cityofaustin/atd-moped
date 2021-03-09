@@ -42,22 +42,42 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * Renders a list of file attachments for a project
+ * @param props
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectFiles = props => {
   const classes = useStyles();
   const { projectId } = useParams();
   const { user } = useUser();
   const token = getJwt(user);
 
+  /**
+   * @constant {boolean} dialogOpen - True to make the save dialog visible
+   * @function setDialogOpen - Changes the state of the dialogOpen constant
+   */
   const [dialogOpen, setDialogOpen] = useState(false);
 
+  /**
+   * Handles the upload file button onClick behavior
+   */
   const handleClickUploadFile = () => {
     setDialogOpen(true);
   };
 
+  /**
+   * Handles the cancel button onClick behavior
+   */
   const handleClickCloseUploadFile = () => {
     setDialogOpen(false);
   };
 
+  /**
+   * Persists the file data into the database
+   * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
+   */
   const handleClickSaveFile = fileDataBundle => {
     createProjectFileAttachment({
       variables: {
@@ -77,11 +97,17 @@ const ProjectFiles = props => {
     });
   };
 
+  /**
+   * List of files query
+   */
   const { loading, error, data, refetch } = useQuery(PROJECT_FILE_ATTACHMENTS, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
 
+  /**
+   * Mutations
+   */
   const [updateProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_UPDATE
   );
@@ -94,6 +120,7 @@ const ProjectFiles = props => {
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
+  // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
 
   /**
