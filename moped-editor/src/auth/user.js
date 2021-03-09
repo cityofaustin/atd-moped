@@ -10,6 +10,8 @@ import Amplify, { Auth } from "aws-amplify";
 
 import { colors } from "@material-ui/core";
 
+import config from "../config";
+
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
 export const UserContext = createContext(null);
@@ -173,16 +175,18 @@ export const getJwt = user => user.idToken.jwtToken;
 
 export const getHasuraClaims = user => {
   try {
-    JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
+    return JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
   } catch {
     return null;
   }
 };
 
 export const getDatabaseId = user => {
+  if(config.env.APP_ENVIRONMENT === "local") return "1";
   try {
-    return getHasuraClaims(user)["x-hasura-user-db-id"];
-  } catch {
+    const claims = getHasuraClaims(user);
+    return claims["x-hasura-user-db-id"];
+  } catch (e) {
     return null;
   }
 };
