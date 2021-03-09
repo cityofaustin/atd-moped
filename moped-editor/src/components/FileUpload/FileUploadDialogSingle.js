@@ -156,7 +156,7 @@ const FileUploadDialogSingle = props => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid md={12}>
+          <Grid xs={12} md={12}>
             <TextField
               className={classes.textField}
               id="standard-multiline-flexible"
@@ -198,7 +198,7 @@ const FileUploadDialogSingle = props => {
               fullWidth
             />
           </Grid>
-          <Grid md={12} className={classes.fileUpload}>
+          <Grid xs={12} md={12} className={classes.fileUpload}>
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
