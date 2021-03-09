@@ -75,6 +75,17 @@ export const mapConfig = {
       layerMaxLOD: 14,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
+          const editMapPaintStyles = {
+            "line-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
           return {
             type: "line",
             layout: {
@@ -84,14 +95,7 @@ export const mapConfig = {
             paint: {
               "line-color": this.layerColor,
               "line-width": mapStyles.lineWidthStops,
-              "line-opacity": [
-                "case",
-                ["==", ["get", this.layerIdField], hoveredId],
-                mapStyles.statusOpacities.hovered,
-                ["in", ["get", this.layerIdField], ["literal", layerIds]],
-                mapStyles.statusOpacities.selected,
-                mapStyles.statusOpacities.unselected,
-              ],
+              ...(layerIds && editMapPaintStyles),
             },
           };
         };
