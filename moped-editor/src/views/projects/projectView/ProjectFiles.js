@@ -66,12 +66,14 @@ const ProjectFiles = props => {
           file_name: fileDataBundle?.name,
           file_description: fileDataBundle.description,
           file_key: fileDataBundle.key,
-          file_size: fileDataBundle?.file?.size ?? 0,
+          file_size: fileDataBundle?.file?.fileSize ?? 0,
           created_by: getDatabaseId(user),
         },
       },
     }).then(() => {
       setDialogOpen(false);
+    }).finally(() => {
+      refetch();
     });
   };
 
