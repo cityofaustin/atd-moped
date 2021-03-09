@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { WebMercatorViewport } from "react-map-gl";
+import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Typography } from "@material-ui/core";
@@ -98,7 +98,7 @@ export const mapConfig = {
       },
     },
     Project_Component_Points_prototype: {
-      layerIdName: "Project_Component_Points_prototype",
+      layerIdName: "project-component-points",
       layerIdField: "PT_PROJECT_ID",
       layerColor: theme.palette.secondary.main,
       layerUrl:
@@ -106,19 +106,23 @@ export const mapConfig = {
       layerMaxLOD: 12,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
+          const editMapPaintStyles = {
+            "circle-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
           return {
             type: "circle",
             paint: {
               "circle-color": this.layerColor,
               "circle-radius": mapStyles.circleRadiusStops,
-              "circle-opacity": [
-                "case",
-                ["==", ["get", this.layerIdField], hoveredId],
-                mapStyles.statusOpacities.hovered,
-                ["in", ["get", this.layerIdField], ["literal", layerIds]],
-                mapStyles.statusOpacities.selected,
-                mapStyles.statusOpacities.unselected,
-              ],
+              ...(layerIds && editMapPaintStyles),
             },
           };
         };
@@ -232,6 +236,14 @@ const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
   []
 );
 
+export const createSummaryMapLayers = (selectedIds, geoJSON) => (
+  <Source type="geojson" data={geoJSON}>
+    {Object.keys(selectedIds).map(id => (
+      <Layer key={id} {...createProjectViewLayerConfig(id)} />
+    ))}
+  </Source>
+);
+
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
  * @summary The fill color key's value below is a Mapbox "case" expression whose cases are
@@ -239,19 +251,8 @@ const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
  * layerConfigs to set colors of features in the projectExtent feature collection layer on the map.
  * @return {Object} Mapbox layer style object
  */
-export const createProjectViewLayerConfig = () => ({
-  id: "projectExtent",
-  type: "line",
-  layout: {
-    "line-join": "round",
-    "line-cap": "round",
-  },
-  paint: {
-    "line-width": mapStyles.lineWidthStops,
-    "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "line-opacity": mapStyles.statusOpacities.selected,
-  },
-});
+export const createProjectViewLayerConfig = id =>
+  mapConfig.layerConfigs[id].layerStyleSpec();
 
 /**
  * Build the JSX of the hover tooltip on map

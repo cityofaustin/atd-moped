@@ -7,6 +7,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectViewLayerConfig,
+  createSummaryMapLayers,
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
@@ -71,11 +72,8 @@ const ProjectSummaryMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        {projectExtentGeoJSON && (
-          <Source type="geojson" data={projectExtentGeoJSON}>
-            <Layer {...createProjectViewLayerConfig()} />
-          </Source>
-        )}
+        {projectExtentGeoJSON &&
+          createSummaryMapLayers(selectedLayerIds, projectExtentGeoJSON)}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"
