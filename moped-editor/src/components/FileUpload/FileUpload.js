@@ -15,6 +15,7 @@ import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import { Alert } from "@material-ui/lab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Grid } from "@material-ui/core";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,
@@ -57,7 +58,6 @@ const FileUpload = props => {
    * @function setErrors
    */
   const [errors, setErrors] = useState([]);
-
 
   /**
    * Generates a URL given a list of parameters. It URI-Encodes the parameters
@@ -223,7 +223,7 @@ const FileUpload = props => {
     // so your server knows which file to return without exposing that info to the client
     request.onload = function() {
       if (request.status >= 200 && request.status < 300) {
-        if(props?.onFileProcessed) {
+        if (props?.onFileProcessed) {
           props.onFileProcessed(fileSignature.fields.key);
         }
         // the load method accepts either a string (id) or an object
@@ -249,7 +249,7 @@ const FileUpload = props => {
   };
 
   return (
-    <div>
+    <Grid fullWidth>
       {errors.length > 0 &&
         errors.map(err => {
           return (
@@ -258,29 +258,27 @@ const FileUpload = props => {
             </Alert>
           );
         })}
-      <header>
-        {/* // Then we need to pass FilePond properties as attributes */}
-        <FilePond
-          allowFileSizeValidation
-          labelIdle='Drag & drop your files or <span class="filepond--label-action"> browse </span>'
-          maxFiles={maxFiles}
-          maxFileSize="1024MB"
-          allowMultiple={false}
-          /* FilePond allows a custom process to handle uploads */
-          server={{
-            process: handleProcessing,
-          }}
-          beforeAddFile={handleBeforeAdd}
-          onprocessfile={(error, file) => handleFileAdded(error, file)}
-          onupdatefiles={setFiles}
-        >
-          {/* Update current files  */}
-          {files.map(file => (
-            <File key={file} src={file} origin="local" />
-          ))}
-        </FilePond>
-      </header>
-    </div>
+      {/* // Then we need to pass FilePond properties as attributes */}
+      <FilePond
+        allowFileSizeValidation
+        labelIdle='Drag & drop your files or <span class="filepond--label-action"> browse </span>'
+        maxFiles={maxFiles}
+        maxFileSize="1024MB"
+        allowMultiple={false}
+        /* FilePond allows a custom process to handle uploads */
+        server={{
+          process: handleProcessing,
+        }}
+        beforeAddFile={handleBeforeAdd}
+        onprocessfile={(error, file) => handleFileAdded(error, file)}
+        onupdatefiles={setFiles}
+      >
+        {/* Update current files  */}
+        {files.map(file => (
+          <File key={file} src={file} origin="local" />
+        ))}
+      </FilePond>
+    </Grid>
   );
 };
 
