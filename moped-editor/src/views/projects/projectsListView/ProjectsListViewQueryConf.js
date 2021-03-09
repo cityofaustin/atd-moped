@@ -1,5 +1,7 @@
+import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+import ExternalLink from "../../../components/ExternalLink";
 
 /**
  * The Query configuration (now also including filters)
@@ -30,7 +32,8 @@ export const ProjectsListViewQueryConf = {
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
   search: {
-    placeholder: "Search by project name, project description, and eCAPRIS subproject ID.",
+    placeholder:
+      "Search by project name, project description, and eCAPRIS subproject ID.",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -84,14 +87,6 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
-    date_added: {
-      searchable: false,
-      sortable: true,
-      label: "Date Added",
-      width: "10%",
-      filter: value => new Date(value).toLocaleDateString(),
-      type: "date_iso",
-    },
     start_date: {
       searchable: false,
       sortable: true,
@@ -100,19 +95,17 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
-    capitally_funded: {
-      searchable: false,
-      sortable: false,
-      label: "Capital Funding",
-      width: "5%",
-      filter: value => (value === true ? "True" : "False"),
-      type: "boolean",
-    },
     eCapris_id: {
       hidden: false,
       searchable: true,
       sortable: false,
       label: "eCapris Subp.",
+      filter: value =>
+        <ExternalLink
+          text={value}
+          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+        />
+      ,
       type: "string",
       search: {
         label: "Search by eCapris subproject id",
@@ -120,7 +113,7 @@ export const ProjectsListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-    }
+    },
   },
   order_by: {},
   where: {},

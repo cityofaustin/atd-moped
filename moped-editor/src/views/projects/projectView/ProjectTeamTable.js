@@ -217,7 +217,7 @@ const ProjectTeamTable = ({
       <MaterialTable
         columns={columns}
         data={isNewProject ? personnelState : personnel}
-        title="Project Team"
+        title="Project team"
         options={{
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },

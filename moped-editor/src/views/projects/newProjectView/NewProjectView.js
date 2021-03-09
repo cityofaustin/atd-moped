@@ -19,9 +19,10 @@ import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
-import { useMutation, gql } from "@apollo/client";
-import { ADD_PROJECT_PERSONNEL } from "../../../queries/project";
+import { useMutation } from "@apollo/client";
+import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import { sumFeaturesSelected } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -79,7 +80,6 @@ const NewProjectView = () => {
   const [projectDetails, setProjectDetails] = useState({
     fiscal_year: "",
     current_phase: "",
-    project_priority: "",
     project_description: "",
     project_name: "",
     start_date: moment().format("YYYY-MM-DD"),
@@ -87,6 +87,8 @@ const NewProjectView = () => {
     capitally_funded: false,
     eCapris_id: "",
   });
+  const [nameError, setNameError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
 
   const [personnel, setPersonnel] = useState([]);
   const [selectedLayerIds, setSelectedLayerIds] = useState({});
@@ -95,8 +97,25 @@ const NewProjectView = () => {
     features: [],
   });
 
+  const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+
+  // Reset areNoFeaturesSelected once a feature is selected to remove error message
+  useEffect(() => {
+    if (sumFeaturesSelected(selectedLayerIds) > 0) {
+      setAreNoFeaturesSelected(false);
+    }
+  }, [selectedLayerIds]);
+
   const getSteps = () => {
-    return ["Define Project", "Assign Team", "Map Project"];
+    return [
+      { label: "Define project" },
+      { label: "Assign team" },
+      {
+        label: "Map project",
+        error: "Select a location to save project",
+        isError: areNoFeaturesSelected,
+      },
+    ];
   };
 
   const getStepContent = step => {
@@ -106,6 +125,8 @@ const NewProjectView = () => {
           <DefineProjectForm
             projectDetails={projectDetails}
             setProjectDetails={setProjectDetails}
+            nameError={nameError}
+            descriptionError={descriptionError}
           />
         );
       case 1:
@@ -128,23 +149,31 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let canContinue = true;
-    switch (activeStep) {
-      case 0:
-        canContinue = true;
-        break;
-      case 1:
-        canContinue = true;
-        break;
-      case 2:
-        canContinue = handleSubmit();
-        break;
-      default:
-        return "not a valid step";
+    let nameError = projectDetails.project_name.length === 0
+    let descriptionError = projectDetails.project_description.length === 0
+    let canContinue = false;
+
+    if (!nameError && !descriptionError) {
+      switch (activeStep) {
+        case 0:
+          canContinue = true;
+          break;
+        case 1:
+          canContinue = true;
+          break;
+        case 2:
+          canContinue = handleSubmit();
+          break;
+        default:
+          return "not a valid step";
+      }
     }
     if (canContinue) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
+
+    setNameError(nameError);
+    setDescriptionError(descriptionError);
   };
 
   const handleBack = () => {
@@ -165,56 +194,7 @@ const NewProjectView = () => {
     setActiveStep(0);
   };
 
-  const addNewProject = gql`
-    mutation MyMutation(
-      $project_name: String! = ""
-      $project_description: String! = ""
-      $current_phase: String! = ""
-      $current_status: String! = ""
-      $eCapris_id: String! = ""
-      $fiscal_year: String! = ""
-      $start_date: date = ""
-      $capitally_funded: Boolean! = false
-      $project_priority: String! = ""
-      $project_extent_ids: jsonb = {}
-      $project_extent_geojson: jsonb = {}
-    ) {
-      insert_moped_project(
-        objects: {
-          project_name: $project_name
-          project_description: $project_description
-          current_phase: $current_phase
-          current_status: $current_status
-          eCapris_id: $eCapris_id
-          fiscal_year: $fiscal_year
-          start_date: $start_date
-          capitally_funded: $capitally_funded
-          project_priority: $project_priority
-          project_extent_ids: $project_extent_ids
-          project_extent_geojson: $project_extent_geojson
-        }
-      ) {
-        affected_rows
-        returning {
-          project_id
-          project_name
-          project_description
-          project_priority
-          current_phase
-          current_status
-          eCapris_id
-          fiscal_year
-          capitally_funded
-          start_date
-          project_extent_ids
-          project_extent_geojson
-        }
-      }
-    }
-  `;
-
-  const [addProject] = useMutation(addNewProject);
-
+  const [addProject] = useMutation(ADD_PROJECT);
   const [addStaff] = useMutation(ADD_PROJECT_PERSONNEL);
 
   const timer = React.useRef();
@@ -228,6 +208,13 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
+    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+      setAreNoFeaturesSelected(true);
+      return;
+    } else {
+      setAreNoFeaturesSelected(false);
+    }
+
     // Change the initial state...
     setLoading(true);
 
@@ -270,21 +257,25 @@ const NewProjectView = () => {
   return (
     <>
       {
-        <Page title="New Project">
+        <Page title="New project">
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title="New Project" />
+                <CardHeader title="New project" />
               </Box>
               <Divider />
               <CardContent>
                 <Stepper activeStep={activeStep}>
-                  {steps.map((label, index) => {
+                  {steps.map((step, index) => {
                     const stepProps = {};
                     const labelProps = {};
                     return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      <Step key={step.label} {...stepProps}>
+                        {step.isError ? (
+                          <StepLabel error={true}>{step.error}</StepLabel>
+                        ) : (
+                          <StepLabel {...labelProps}>{step.label}</StepLabel>
+                        )}
                       </Step>
                     );
                   })}
@@ -302,9 +293,9 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        <Button onClick={handleBack} className={classes.button}>
+                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
                           Back
-                        </Button>
+                        </Button>}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}
