@@ -153,14 +153,17 @@ const ProjectActivityLog = () => {
    */
   const reorderEventList = eventList => {
     let outputList = [];
-
+    // For each event
     eventList.forEach(event => {
+      // If this is the creation of a project
       if (
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
+        // Move it to the top of the list (make it first)
         outputList.unshift(event);
       } else {
+        // Else, just stack it to the bottom
         outputList.push(event);
       }
     });
