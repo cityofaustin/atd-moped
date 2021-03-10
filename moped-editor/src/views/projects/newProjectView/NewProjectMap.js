@@ -52,6 +52,10 @@ const NewProjectMap = ({
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
+  // Need to create state which holds are array of visible layer ids
+  // Create a toggle to add/remove which layers to display
+  // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
+
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
