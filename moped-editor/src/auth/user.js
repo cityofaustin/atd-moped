@@ -51,21 +51,42 @@ export const destroyProfileColor = () =>
 export const destroyLoggedInProfile = () =>
   localStorage.removeItem(atdSessionKeyName);
 
+/**
+ * Parses the user database data from localStorage
+ * @return {Object}
+ */
 export const getSessionDatabaseData = () =>
     JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
 
+
+/**
+ * Persists the user database data into localStorage
+ * @param userObject
+ */
 export const setSessionDatabaseData = userObject =>
     localStorage.setItem(
         atdSessionDatabaseDataKeyName,
         JSON.stringify(userObject)
     );
 
+/**
+ * Deletes the user database data from localStorage
+ */
 export const deleteSessionDatabaseData = () =>
     localStorage.removeItem(atdSessionDatabaseDataKeyName);
 
+/**
+ * Retrieves the user database data from Hasura
+ * @param {Object} userObject - The user object as provided by AWS
+ */
 export const initializeUserDBObject = userObject => {
+  // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
+
+  // If the user object is valid and there is no existing data...
   if (userObject && sessionData === null) {
+
+    // Fetch the data from Hasura
     fetch(config.env.APP_HASURA_ENDPOINT, {
       method: "POST",
       headers: {
@@ -82,8 +103,9 @@ export const initializeUserDBObject = userObject => {
         },
       }),
     }).then(res => {
+      // Then we parse the response
       res.json().then(resData => {
-        console.log("Success: ");
+        // If we have any user data,  use it
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
           window.location.reload();
