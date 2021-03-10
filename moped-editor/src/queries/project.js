@@ -244,9 +244,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
-      order_by: {
-        created_at: desc
-      }
+      order_by: { created_at: desc }
     ) {
       activity_id
       created_at
@@ -254,6 +252,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
       record_type
       description
       operation_type
+      record_data
       moped_user {
         first_name
         last_name
