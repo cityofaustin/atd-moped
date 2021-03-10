@@ -1,7 +1,8 @@
 import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box, Checkbox, makeStyles } from "@material-ui/core";
+import theme from "../../../theme/index";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -21,7 +22,6 @@ import {
   useHoverLayer,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
-import { render } from "nprogress";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -33,6 +33,14 @@ export const useStyles = makeStyles({
   },
   mapBox: {
     padding: 25,
+  },
+  layerSelect: {
+    position: "absolute",
+    top: 60,
+    left: 10,
+    padding: "10px",
+    background: theme.palette.background.mapControls,
+    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
 });
 
@@ -58,7 +66,7 @@ const NewProjectMap = ({
   // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
   const [visibleLayerIds, setVisibleLayerIds] = useState([]);
   const renderLayerSelect = () => (
-    <Box component="div">
+    <Box component="div" className={classes.layerSelect}>
       <Checkbox
         checked={true}
         // onChange={handleChange}
@@ -171,6 +179,7 @@ const NewProjectMap = ({
             />
           </Source>
         ))}
+        {renderLayerSelect()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
