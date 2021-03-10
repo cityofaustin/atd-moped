@@ -230,16 +230,29 @@ export const isFeaturePresent = (selectedFeature, features, idField) =>
 export const createProjectSelectLayerConfig = (
   hoveredId,
   sourceName,
-  selectedLayerIds
+  selectedLayerIds,
+  visibleLayerIds
 ) => {
   const layerIds = selectedLayerIds[sourceName] || [];
   const config = mapConfig.layerConfigs[sourceName];
 
   // Merge common layer attributes with those unique to each layer type
-  return {
+  let layerStyleSpec = {
     "source-layer": sourceName,
     ...config.layerStyleSpec(hoveredId, layerIds),
   };
+
+  if (!!visibleLayerIds) {
+    layerStyleSpec = {
+      ...layerStyleSpec,
+      layout: {
+        ...layerStyleSpec.layout,
+        visibility: visibleLayerIds.includes(sourceName) ? "visible" : "none",
+      },
+    };
+  }
+
+  return layerStyleSpec;
 };
 
 export const createSummaryMapLayers = (selectedIds, geoJSON) => (

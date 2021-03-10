@@ -199,7 +199,8 @@ const NewProjectMap = ({
               {...createProjectSelectLayerConfig(
                 featureId,
                 sourceName,
-                selectedLayerIds
+                selectedLayerIds,
+                visibleLayerIds
               )}
             />
           </Source>
