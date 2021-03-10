@@ -1320,6 +1320,20 @@ export const ProjectActivityLogGenericDescriptions = {
   },
 };
 
+export const ProjectActivityLogCreateDescriptions = {
+  moped_project: {
+    label: record => "Created Project",
+  },
+  moped_proj_personnel: {
+    label: record => {
+      return "Project Personnel user_id " + record.record_data.event.data.new.user_id;
+    },
+  },
+  generic: {
+    label: record => "Added",
+  },
+};
+
 /**
  * Returns a human-readable field name (translates the column into a readable label)
  * @param {string} type - The table name
@@ -1349,7 +1363,8 @@ export const getRecordTypeLabel = type => {
  * @return {string}
  */
 export const getChangeIcon = (event_type, record_type = "moped_project") => {
-  const recordType = record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
   return (
     ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
       ?.icon ?? "create"
@@ -1359,12 +1374,30 @@ export const getChangeIcon = (event_type, record_type = "moped_project") => {
 /**
  * Translates the operation type value into friendly label
  * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
 export const getOperationName = (event_type, record_type = "moped_project") => {
-  const recordType = record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
   return (
     ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
       ?.label ?? "Unknown"
   );
+};
+
+/**
+ * Translates the operation type value into friendly label when there is no specified difference
+ * @param {string} record - The event record
+ * @return {string}
+ */
+export const getCreationLabel = record => {
+  const recordType =
+    record.record_type in ProjectActivityLogCreateDescriptions
+      ? record.record_type
+      : "generic";
+
+  const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
+
+  return label ? label(record) : "Created";
 };
