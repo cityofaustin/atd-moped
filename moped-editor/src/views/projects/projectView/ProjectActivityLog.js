@@ -240,7 +240,7 @@ const ProjectActivityLog = () => {
                       width="5%"
                       className={classes.tableCell}
                     >
-                      <b>{getOperationName(change.operation_type)}</b>
+                      <b>{getOperationName(change.operation_type, change.record_type)}</b>
                     </TableCell>
                     <TableCell
                       align="left"
@@ -249,7 +249,7 @@ const ProjectActivityLog = () => {
                     >
                       <Box display="flex" p={0}>
                         <Box p={0}>
-                          <Icon>{getChangeIcon(change.operation_type)}</Icon>
+                          <Icon>{getChangeIcon(change.operation_type, change.record_type)}</Icon>
                         </Box>
                         <Box p={0} flexGrow={1}>
                           <Grid continer>
@@ -260,6 +260,7 @@ const ProjectActivityLog = () => {
                                   <b>{getLabelNoDiff(change.operation_type)}</b>
                                 </Grid>
                               )}
+
                             {change.description.map(changeItem => {
                               return (
                                 <Grid item className={classes.tableChangeItem}>

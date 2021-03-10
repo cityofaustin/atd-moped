@@ -1265,17 +1265,49 @@ export const ProjectActivityLogTableMaps = {
 };
 
 export const ProjectActivityLogOperationMaps = {
-  DELETE: {
-    label: "Deleted",
-    icon: "close",
+  moped_project: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "beenhere",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
-  INSERT: {
-    label: "Created",
-    icon: "beenhere",
+
+  moped_proj_personnel: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "personadd",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
   },
-  UPDATE: {
-    label: "Update",
-    icon: "create",
+
+  generic: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "addcircle",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
 };
 
@@ -1312,22 +1344,27 @@ export const getRecordTypeLabel = type => {
 
 /**
  * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
- * @param {string} type
- * @param {string} field
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
-export const getChangeIcon = type => {
-  return ProjectActivityLogOperationMaps[type]?.icon ?? "create";
+export const getChangeIcon = (event_type, record_type = "moped_project") => {
+  const recordType = record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
+  return (
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.icon ?? "create"
+  );
 };
 
 /**
  * Translates the operation type value into friendly label
- * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
  * @return {string}
  */
-export const getOperationName = operationName => {
+export const getOperationName = (event_type, record_type = "moped_project") => {
+  const recordType = record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
   return (
-    ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
-    "Unknown"
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.label ?? "Unknown"
   );
 };
