@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -21,6 +21,7 @@ import {
   useHoverLayer,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
+import { render } from "nprogress";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -55,6 +56,17 @@ const NewProjectMap = ({
   // Need to create state which holds are array of visible layer ids
   // Create a toggle to add/remove which layers to display
   // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
+  const [visibleLayerIds, setVisibleLayerIds] = useState([]);
+  const renderLayerSelect = () => (
+    <Box component="div">
+      <Checkbox
+        checked={true}
+        // onChange={handleChange}
+        name="firstBox"
+        color="primary"
+      />
+    </Box>
+  );
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
