@@ -36,11 +36,12 @@ export const useStyles = makeStyles({
   },
   layerSelect: {
     position: "absolute",
-    top: 60,
+    top: 78,
     left: 10,
-    padding: "10px",
+    padding: 10,
     background: theme.palette.background.mapControls,
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
+    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
+    borderRadius: 4,
   },
 });
 
