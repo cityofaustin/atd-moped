@@ -35,14 +35,20 @@ export const useStyles = makeStyles({
   mapBox: {
     padding: 25,
   },
-  layerSelect: {
+  layerSelectBox: {
     position: "absolute",
     top: 78,
     left: 10,
-    padding: 10,
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
+  },
+  layerSelectTitle: {
+    fontWeight: "bold",
+    padding: "10px 10px 0px 10px",
+  },
+  layerSelectText: {
+    paddingRight: 10,
   },
 });
 
@@ -67,17 +73,29 @@ const NewProjectMap = ({
   // Create a toggle to add/remove which layers to display
   // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
   const [visibleLayerIds, setVisibleLayerIds] = useState(["CTN"]);
+
+  const handleLayerCheckboxClick = e => {
+    const layerName = e.target.name;
+
+    setVisibleLayerIds(prevLayers => {
+      return prevLayers.includes(layerName)
+        ? [...prevLayers.filter(name => name !== layerName)]
+        : [...prevLayers, layerName];
+    });
+  };
+
   const renderLayerSelect = () => (
-    <Box component="div" className={classes.layerSelect}>
-      {getLayerNames().map(id => (
-        <Typography>
+    <Box component="div" className={classes.layerSelectBox}>
+      <Typography className={classes.layerSelectTitle}>Layers</Typography>
+      {getLayerNames().map(name => (
+        <Typography className={classes.layerSelectText}>
           <Checkbox
-            checked={visibleLayerIds.includes(id)}
-            // onChange={handleChange}
-            name={id}
+            checked={visibleLayerIds.includes(name)}
+            onChange={handleLayerCheckboxClick}
+            name={name}
             color="primary"
           />
-          {id}
+          {mapConfig.layerConfigs[name].layerLabel}
         </Typography>
       ))}
     </Box>

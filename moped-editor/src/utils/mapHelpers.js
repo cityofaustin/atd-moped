@@ -67,6 +67,7 @@ export const mapConfig = {
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
+      layerLabel: "CTN",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
@@ -105,6 +106,7 @@ export const mapConfig = {
       },
     },
     Project_Component_Points_prototype: {
+      layerLabel: "Components",
       layerIdName: "project-component-points",
       layerIdField: "PT_PROJECT_ID",
       layerColor: theme.palette.secondary.main,
