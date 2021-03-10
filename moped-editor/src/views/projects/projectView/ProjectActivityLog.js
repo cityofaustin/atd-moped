@@ -146,6 +146,28 @@ const ProjectActivityLog = () => {
   const isFieldGeneric = field =>
     field in ProjectActivityLogGenericDescriptions;
 
+  /**
+   * Makes sure the creation of the project always comes first
+   * @param {Array} eventList - The data object as provided by apollo
+   * @return {Array}
+   */
+  const reorderEventList = eventList => {
+    let outputList = [];
+
+    eventList.forEach(event => {
+      if (
+        event.record_type === "moped_project" &&
+        event.operation_type === "INSERT"
+      ) {
+        outputList.unshift(event);
+      } else {
+        outputList.push(event);
+      }
+    });
+
+    return outputList;
+  };
+
   return (
     <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
@@ -175,8 +197,9 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data["moped_activity_log"].map(change => (
+                {reorderEventList(data["moped_activity_log"]).map(change => (
                   <TableRow key={change.activity_id}>
+                    {console.log("Change: ", change)}
                     <TableCell
                       align="left"
                       component="th"
@@ -228,7 +251,8 @@ const ProjectActivityLog = () => {
                         <Box p={0} flexGrow={1}>
                           <Grid continer>
                             {Array.isArray(change.description) &&
-                              change.description.length === 0 && (
+                              change.description.length === 0 &&
+                              change.record_type === "moped_project" && (
                                 <Grid item className={classes.tableChangeItem}>
                                   <b>{getLabelNoDiff(change.operation_type)}</b>
                                 </Grid>
