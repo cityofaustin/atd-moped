@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
+  getCreationLabel,
   getOperationName,
   getChangeIcon,
   getRecordTypeLabel,
@@ -240,7 +241,12 @@ const ProjectActivityLog = () => {
                       width="5%"
                       className={classes.tableCell}
                     >
-                      <b>{getOperationName(change.operation_type, change.record_type)}</b>
+                      <b>
+                        {getOperationName(
+                          change.operation_type,
+                          change.record_type
+                        )}
+                      </b>
                     </TableCell>
                     <TableCell
                       align="left"
@@ -249,18 +255,23 @@ const ProjectActivityLog = () => {
                     >
                       <Box display="flex" p={0}>
                         <Box p={0}>
-                          <Icon>{getChangeIcon(change.operation_type, change.record_type)}</Icon>
+                          <Icon>
+                            {getChangeIcon(
+                              change.operation_type,
+                              change.record_type
+                            )}
+                          </Icon>
                         </Box>
                         <Box p={0} flexGrow={1}>
                           <Grid continer>
                             {Array.isArray(change.description) &&
-                              change.description.length === 0 &&
-                              change.record_type === "moped_project" && (
+                              change.description.length === 0 && (
                                 <Grid item className={classes.tableChangeItem}>
-                                  <b>{getLabelNoDiff(change.operation_type)}</b>
+                                  <b>
+                                    {getCreationLabel(change)}
+                                  </b>
                                 </Grid>
                               )}
-
                             {change.description.map(changeItem => {
                               return (
                                 <Grid item className={classes.tableChangeItem}>
