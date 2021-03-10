@@ -12,6 +12,8 @@ import { colors } from "@material-ui/core";
 
 import config from "../config";
 
+import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
+
 // Create a context that will hold the values that we are going to expose to our components.
 // Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
 export const UserContext = createContext(null);
@@ -31,6 +33,13 @@ export const atdColorKeyName = "atd_moped_user_color";
 export const atdSessionKeyName = "atd_moped_user_context";
 
 /**
+ * This is a constant string key that holds the profile for a user.
+ * @type {string}
+ * @constant
+ */
+export const atdSessionDatabaseDataKeyName = "atd_moped_user_db_data";
+
+/**
  * Removes the current user profile color
  */
 export const destroyProfileColor = () =>
@@ -41,6 +50,48 @@ export const destroyProfileColor = () =>
  */
 export const destroyLoggedInProfile = () =>
   localStorage.removeItem(atdSessionKeyName);
+
+export const getSessionDatabaseData = () =>
+    JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
+
+export const setSessionDatabaseData = userObject =>
+    localStorage.setItem(
+        atdSessionDatabaseDataKeyName,
+        JSON.stringify(userObject)
+    );
+
+export const deleteSessionDatabaseData = () =>
+    localStorage.removeItem(atdSessionDatabaseDataKeyName);
+
+export const initializeUserDBObject = userObject => {
+  const sessionData = getSessionDatabaseData();
+  if (userObject && sessionData === null) {
+    fetch(config.env.APP_HASURA_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getJwt(userObject)}`,
+      },
+      body: JSON.stringify({
+        query: ACCOUNT_USER_PROFILE_GET_PLAIN,
+        variables: {
+          userId:
+              config.env.APP_ENVIRONMENT === "local"
+                  ? 1
+                  : getDatabaseId(userObject),
+        },
+      }),
+    }).then(res => {
+      res.json().then(resData => {
+        console.log("Success: ");
+        if (resData?.data?.moped_users) {
+          setSessionDatabaseData(resData.data.moped_users[0]);
+          window.location.reload();
+        }
+      });
+    });
+  }
+};
 
 // Create a "controller" component that will calculate all the data that we need to give to our
 // components bellow via the `UserContext.Provider` component. This is where the Amplify will be
@@ -76,15 +127,19 @@ export const UserProvider = ({ children }) => {
     Amplify.Logger.LOG_LEVEL = "DEBUG";
 
     Auth.currentSession()
-      .then(user => {
-        setPersistedContext(user);
-        setUser(user);
-      })
-      .catch(error => {
-        setPersistedContext(null);
-        setUser(null);
-      });
+        .then(user => {
+          setPersistedContext(user);
+          setUser(user);
+        })
+        .catch(error => {
+          setPersistedContext(null);
+          setUser(null);
+        });
   }, []);
+
+  useEffect(() => {
+    initializeUserDBObject(user);
+  }, [user]);
 
   // We make sure to handle the user update here, but return the resolve value in order for our components to be
   // able to chain additional `.then()` logic. Additionally, we `.catch` the error and "enhance it" by providing
@@ -111,10 +166,11 @@ export const UserProvider = ({ children }) => {
 
   // same thing here
   const logout = () => {
+    destroyProfileColor();
+    destroyLoggedInProfile();
+    deleteSessionDatabaseData();
     return Auth.signOut().then(data => {
       // Remove the current color
-      destroyProfileColor();
-      destroyLoggedInProfile();
       setUser(null);
       return data;
     });
@@ -182,7 +238,7 @@ export const getHasuraClaims = user => {
 };
 
 export const getDatabaseId = user => {
-  if(config.env.APP_ENVIRONMENT === "local") return "1";
+  if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];
