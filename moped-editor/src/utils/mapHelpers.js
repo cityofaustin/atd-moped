@@ -163,6 +163,12 @@ export const getInteractiveIds = () =>
   Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
 
 /**
+ * Get the layer names from the layerConfigs object
+ * @return {Array} List of layer names set in mapConfig.layerConfigs
+ */
+export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
+
+/**
  * Get a feature's ID attribute from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
  * @param {String} idKey - Key that exposes the id of the polygon in the layer

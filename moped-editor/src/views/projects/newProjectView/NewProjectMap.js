@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Checkbox, makeStyles } from "@material-ui/core";
+import { Box, Checkbox, makeStyles, Typography } from "@material-ui/core";
 import theme from "../../../theme/index";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -11,6 +11,7 @@ import {
   createProjectSelectLayerConfig,
   getGeoJSON,
   getInteractiveIds,
+  getLayerNames,
   getLayerSource,
   getFeatureId,
   isFeaturePresent,
@@ -65,15 +66,20 @@ const NewProjectMap = ({
   // Need to create state which holds are array of visible layer ids
   // Create a toggle to add/remove which layers to display
   // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
-  const [visibleLayerIds, setVisibleLayerIds] = useState([]);
+  const [visibleLayerIds, setVisibleLayerIds] = useState(["CTN"]);
   const renderLayerSelect = () => (
     <Box component="div" className={classes.layerSelect}>
-      <Checkbox
-        checked={true}
-        // onChange={handleChange}
-        name="firstBox"
-        color="primary"
-      />
+      {getLayerNames().map(id => (
+        <Typography>
+          <Checkbox
+            checked={visibleLayerIds.includes(id)}
+            // onChange={handleChange}
+            name={id}
+            color="primary"
+          />
+          {id}
+        </Typography>
+      ))}
     </Box>
   );
 
