@@ -191,7 +191,6 @@ const ProjectActivityLog = () => {
               <TableBody>
                 {reorderEventList(data["moped_activity_log"]).map(change => (
                   <TableRow key={change.activity_id}>
-                    {console.log("Change: ", change)}
                     <TableCell
                       align="left"
                       component="th"
