@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
-import { Typography } from "@material-ui/core";
+import { Box, Checkbox, Typography } from "@material-ui/core";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -428,4 +428,39 @@ export function useFeatureCollectionToFitBounds(
   }, [hasFitInitialized, shouldFitOnFeatureUpdate, featureCollection, mapRef]);
 
   return [viewport, setViewport];
+}
+
+export function useLayerSelect(initialSelectedLayerNames, classes) {
+  const [visibleLayerIds, setVisibleLayerIds] = useState(
+    initialSelectedLayerNames
+  );
+
+  const handleLayerCheckboxClick = e => {
+    const layerName = e.target.name;
+
+    setVisibleLayerIds(prevLayers => {
+      return prevLayers.includes(layerName)
+        ? [...prevLayers.filter(name => name !== layerName)]
+        : [...prevLayers, layerName];
+    });
+  };
+
+  const renderLayerSelect = () => (
+    <Box component="div" className={classes.layerSelectBox}>
+      <Typography className={classes.layerSelectTitle}>Layers</Typography>
+      {getLayerNames().map(name => (
+        <Typography className={classes.layerSelectText}>
+          <Checkbox
+            checked={visibleLayerIds.includes(name)}
+            onChange={handleLayerCheckboxClick}
+            name={name}
+            color="primary"
+          />
+          {mapConfig.layerConfigs[name].layerLabel}
+        </Typography>
+      ))}
+    </Box>
+  );
+
+  return { visibleLayerIds, renderLayerSelect };
 }

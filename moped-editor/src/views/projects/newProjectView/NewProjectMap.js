@@ -1,7 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Checkbox, makeStyles, Typography } from "@material-ui/core";
+import { Box, makeStyles } from "@material-ui/core";
 import theme from "../../../theme/index";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -21,6 +21,7 @@ import {
   sumFeaturesSelected,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
+  useLayerSelect,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
@@ -69,36 +70,9 @@ const NewProjectMap = ({
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
-  // Need to create state which holds are array of visible layer ids
-  // Create a toggle to add/remove which layers to display
-  // Style each layer with visible: none https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/#layout-line-visibility
-  const [visibleLayerIds, setVisibleLayerIds] = useState(["CTN"]);
-
-  const handleLayerCheckboxClick = e => {
-    const layerName = e.target.name;
-
-    setVisibleLayerIds(prevLayers => {
-      return prevLayers.includes(layerName)
-        ? [...prevLayers.filter(name => name !== layerName)]
-        : [...prevLayers, layerName];
-    });
-  };
-
-  const renderLayerSelect = () => (
-    <Box component="div" className={classes.layerSelectBox}>
-      <Typography className={classes.layerSelectTitle}>Layers</Typography>
-      {getLayerNames().map(name => (
-        <Typography className={classes.layerSelectText}>
-          <Checkbox
-            checked={visibleLayerIds.includes(name)}
-            onChange={handleLayerCheckboxClick}
-            name={name}
-            color="primary"
-          />
-          {mapConfig.layerConfigs[name].layerLabel}
-        </Typography>
-      ))}
-    </Box>
+  const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
+    getLayerNames(),
+    classes
   );
 
   /**
