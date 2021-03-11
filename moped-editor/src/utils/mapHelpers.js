@@ -430,6 +430,17 @@ export function useFeatureCollectionToFitBounds(
   return [viewport, setViewport];
 }
 
+/**
+ * Custom hook that creates a layer toggle UI
+ * @param {array} initialSelectedLayerNames - Array of layer names to show initially
+ * @param {object} classes - Holds Material UI classnames
+ * @return {UseLayerObject} Object that exposes updated array of visible layers and map UI render function
+ */
+/**
+ * @typedef {object} UseLayerObject
+ * @property {array} visibleLayerIds - Updated list of visible map layers
+ * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
+ */
 export function useLayerSelect(initialSelectedLayerNames, classes) {
   const [visibleLayerIds, setVisibleLayerIds] = useState(
     initialSelectedLayerNames
@@ -464,3 +475,21 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
 
   return { visibleLayerIds, renderLayerSelect };
 }
+
+export const layerSelectStyles = {
+  layerSelectBox: {
+    position: "absolute",
+    top: 78,
+    left: 10,
+    background: theme.palette.background.mapControls,
+    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
+    borderRadius: 4,
+  },
+  layerSelectTitle: {
+    fontWeight: "bold",
+    padding: "10px 10px 0px 10px",
+  },
+  layerSelectText: {
+    paddingRight: 10,
+  },
+};

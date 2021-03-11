@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
-import theme from "../../../theme/index";
 import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -15,6 +14,7 @@ import {
   getLayerSource,
   getFeatureId,
   isFeaturePresent,
+  layerSelectStyles,
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
@@ -36,21 +36,7 @@ export const useStyles = makeStyles({
   mapBox: {
     padding: 25,
   },
-  layerSelectBox: {
-    position: "absolute",
-    top: 78,
-    left: 10,
-    background: theme.palette.background.mapControls,
-    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
-    borderRadius: 4,
-  },
-  layerSelectTitle: {
-    fontWeight: "bold",
-    padding: "10px 10px 0px 10px",
-  },
-  layerSelectText: {
-    paddingRight: 10,
-  },
+  ...layerSelectStyles,
 });
 
 const NewProjectMap = ({
