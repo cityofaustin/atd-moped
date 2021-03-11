@@ -1295,6 +1295,21 @@ export const ProjectActivityLogOperationMaps = {
     },
   },
 
+  moped_proj_phases: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "event",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
+  },
+
   generic: {
     DELETE: {
       label: "Deleted",
@@ -1322,15 +1337,25 @@ export const ProjectActivityLogGenericDescriptions = {
 
 export const ProjectActivityLogCreateDescriptions = {
   moped_project: {
-    label: record => "Created Project",
+    label: () => "Created Project",
   },
   moped_proj_personnel: {
+    label: (record, userList) =>
+      userList[`${record.record_data.event.data.new.user_id}`] +
+      " to Project Personnel",
+  },
+  moped_proj_phases: {
     label: record => {
-      return "Project Personnel user_id " + record.record_data.event.data.new.user_id;
+      const recordData = record.record_data.event.data.new;
+      const phaseName = recordData.phase_name
+        .trim()
+        .toLowerCase()
+        .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
+      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as ${recordData.phase_end}'`;
     },
   },
   generic: {
-    label: record => "Added",
+    label: () => "Added",
   },
 };
 
@@ -1391,7 +1416,7 @@ export const getOperationName = (event_type, record_type = "moped_project") => {
  * @param {string} record - The event record
  * @return {string}
  */
-export const getCreationLabel = record => {
+export const getCreationLabel = (record, userList) => {
   const recordType =
     record.record_type in ProjectActivityLogCreateDescriptions
       ? record.record_type
@@ -1399,5 +1424,5 @@ export const getCreationLabel = record => {
 
   const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
 
-  return label ? label(record) : "Created";
+  return label ? label(record, userList) : "Created";
 };
