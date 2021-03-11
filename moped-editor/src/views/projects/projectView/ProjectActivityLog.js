@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
+  const userList = {};
 
   const {
     getLookups,
@@ -113,25 +114,6 @@ const ProjectActivityLog = () => {
       .toUpperCase();
 
   /**
-   * Based on an operation type, returns the name of the label if there are no differences,
-   * @param {string} operationType - The name of the operation ty[e
-   * @return {string}
-   */
-  const getLabelNoDiff = operationType => {
-    switch (operationType.toLowerCase()) {
-      case "insert": {
-        return "Record Created";
-      }
-      case "delete": {
-        return "Item Deleted";
-      }
-      default: {
-        return "No difference";
-      }
-    }
-  };
-
-  /**
    * Attempt to get the number of items we retrieved
    * @return {number}
    */
@@ -171,6 +153,12 @@ const ProjectActivityLog = () => {
 
     return outputList;
   };
+
+  if (data) {
+    data["moped_users"].forEach(user => {
+      userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
+    });
+  }
 
   return (
     <ApolloErrorHandler error={error || lookupError}>
@@ -267,9 +255,7 @@ const ProjectActivityLog = () => {
                             {Array.isArray(change.description) &&
                               change.description.length === 0 && (
                                 <Grid item className={classes.tableChangeItem}>
-                                  <b>
-                                    {getCreationLabel(change)}
-                                  </b>
+                                  <b>{getCreationLabel(change, userList)}</b>
                                 </Grid>
                               )}
                             {change.description.map(changeItem => {
