@@ -255,6 +255,12 @@ export const createProjectSelectLayerConfig = (
   return layerStyleSpec;
 };
 
+/**
+ * Create sources and layers for each source layer in the project's GeoJSON FeatureCollection
+ * @param {object} selectedIds - Object containing selected ID array for each source layer
+ * @param {object} geoJSON - A GeoJSON feature collection with project features
+ * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
+ */
 export const createSummaryMapLayers = (selectedIds, geoJSON) => {
   const geoJSONBySource = Object.keys(selectedIds).reduce(
     (acc, sourceLayerName) => ({
