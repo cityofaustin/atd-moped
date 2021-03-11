@@ -255,13 +255,33 @@ export const createProjectSelectLayerConfig = (
   return layerStyleSpec;
 };
 
-export const createSummaryMapLayers = (selectedIds, geoJSON) => (
-  <Source type="geojson" data={geoJSON}>
-    {Object.keys(selectedIds).map(id => (
-      <Layer key={id} {...createProjectViewLayerConfig(id)} />
-    ))}
-  </Source>
-);
+export const createSummaryMapLayers = (selectedIds, geoJSON) => {
+  const geoJSONBySource = Object.keys(selectedIds).reduce(
+    (acc, sourceLayerName) => ({
+      ...acc,
+      [sourceLayerName]: {
+        ...geoJSON,
+        features: [
+          ...geoJSON.features.filter(
+            feature => feature.properties.sourceLayer === sourceLayerName
+          ),
+        ],
+      },
+    }),
+    {}
+  );
+
+  return Object.entries(geoJSONBySource).map(
+    ([sourceLayerName, sourceLayerGeoJSON]) => (
+      <Source id={sourceLayerName} type="geojson" data={sourceLayerGeoJSON}>
+        <Layer
+          key={sourceLayerName}
+          {...createProjectViewLayerConfig(sourceLayerName)}
+        />
+      </Source>
+    )
+  );
+};
 
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
