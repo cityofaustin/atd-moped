@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 // Material
 import { CircularProgress, TextField, Typography } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
-import MaterialTable from "material-table";
+import MaterialTable, { MTableEditRow } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
@@ -93,6 +93,7 @@ const ProjectTeamTable = ({
       title: "Name",
       field: "user_id",
       render: personnel => getPersonnelName(personnel.user_id),
+      validate: rowData => !!rowData.user_id,
       editComponent: props => (
         <Autocomplete
           id="user_id"
@@ -116,6 +117,7 @@ const ProjectTeamTable = ({
       title: "Role",
       field: "role_id",
       render: personnel => roles[personnel.role_id],
+      validate: rowData => !!rowData.role_id,
       editComponent: props => (
         <Autocomplete
           id="role_id"
@@ -216,6 +218,13 @@ const ProjectTeamTable = ({
     <ApolloErrorHandler errors={error}>
       <MaterialTable
         columns={columns}
+        components={{
+          EditRow: (props, rowData) => <MTableEditRow {...props} onKeyDown={(e) => {
+              if (e.keyCode === 13) {
+                // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+              }
+          }} />
+        }}
         data={isNewProject ? personnelState : personnel}
         title="Project team"
         options={{
