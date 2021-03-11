@@ -222,6 +222,7 @@ const ProjectTeamTable = ({
           EditRow: (props, rowData) => <MTableEditRow {...props} onKeyDown={(e) => {
               if (e.keyCode === 13) {
                 // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
               }
           }} />
         }}
@@ -230,7 +231,6 @@ const ProjectTeamTable = ({
         options={{
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
-          actionsColumnIndex: -1
         }}
         icons={{ Delete: ClearIcon }}
         editable={{
