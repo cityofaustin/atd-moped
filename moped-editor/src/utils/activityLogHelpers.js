@@ -97,6 +97,8 @@ export function useActivityLogLookupTables() {
    * @param {string} lookupDataKey - The key in the response whose values is the lookup data
    */
   const getLookups = (response, lookupDataKey) => {
+    debugger;
+
     const recordTableNames = getActivityLogTableNames(response, lookupDataKey);
     const { query, areLookups, tablesMap } = buildLookupQuery(recordTableNames);
 
