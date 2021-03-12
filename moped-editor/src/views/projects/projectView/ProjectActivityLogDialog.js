@@ -116,11 +116,15 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     }
   };
 
-  const generateLookupValue = (value, field, recordType) => {
-    const lookupValue = lookupMap?.[recordType]?.[field]?.[value];
-
-    return !!lookupValue ? <>{String(lookupValue)}</> : null;
-  };
+  /**
+   * Get lookup value by table name, field, and primary key value from lookup map or return null
+   * @param {string} value - The primary key id from the lookup table
+   * @param {string} field - The name from the lookup table
+   * @param {string} recordType - The table name of the lookup table
+   * @return {string|null} The value translated through the lookup table or null if not found
+   */
+  const generateLookupValue = (value, field, recordType) =>
+    lookupMap?.[recordType]?.[field]?.[value] || null;
 
   const generateValue = value => {
     return value === null || String(value).trim() === "" ? (
