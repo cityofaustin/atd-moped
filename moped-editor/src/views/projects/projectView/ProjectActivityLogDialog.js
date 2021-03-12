@@ -116,6 +116,12 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     }
   };
 
+  const generateLookupValue = (value, field, recordType) => {
+    const lookupValue = lookupMap?.[recordType]?.[field]?.[value];
+
+    return !!lookupValue ? <>{String(lookupValue)}</> : null;
+  };
+
   const generateValue = value => {
     return value === null || String(value).trim() === "" ? (
       <span className={classes.listColorGray}>Null</span>
@@ -160,7 +166,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
                         : classes.listColorBlack
                     }
                   >
-                    {generateValue(recordState[field])}
+                    {generateLookupValue(
+                      recordState[field],
+                      field,
+                      recordType
+                    ) || generateValue(recordState[field])}
                   </span>
                 }
                 secondary={
