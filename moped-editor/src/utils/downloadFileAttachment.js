@@ -38,7 +38,6 @@ export default (file_key, token) => {
         }
       })
       .catch(err => {
-        debugger;
         console.log("Error Downloading File: " + JSON.stringify(err));
       });
   }
