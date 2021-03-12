@@ -112,7 +112,7 @@ for process in process_list:
     for row in db_cursor.fetchall():
         db_rows.append(row)
     
-    # Transform (or Map) every individual record in data_dict using the transform lambda function
+    # Transform (or Map) every individual record from type tuple into dictionary
     data_records = list(map(process["transform"], db_rows))
 
     # For every individual record
