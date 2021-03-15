@@ -56,24 +56,23 @@ export const destroyLoggedInProfile = () =>
  * @return {Object}
  */
 export const getSessionDatabaseData = () =>
-    JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
-
+  JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
 
 /**
  * Persists the user database data into localStorage
  * @param userObject
  */
 export const setSessionDatabaseData = userObject =>
-    localStorage.setItem(
-        atdSessionDatabaseDataKeyName,
-        JSON.stringify(userObject)
-    );
+  localStorage.setItem(
+    atdSessionDatabaseDataKeyName,
+    JSON.stringify(userObject)
+  );
 
 /**
  * Deletes the user database data from localStorage
  */
 export const deleteSessionDatabaseData = () =>
-    localStorage.removeItem(atdSessionDatabaseDataKeyName);
+  localStorage.removeItem(atdSessionDatabaseDataKeyName);
 
 /**
  * Retrieves the user database data from Hasura
@@ -85,33 +84,34 @@ export const initializeUserDBObject = userObject => {
 
   // If the user object is valid and there is no existing data...
   if (userObject && sessionData === null) {
-
     // Fetch the data from Hasura
     fetch(config.env.APP_HASURA_ENDPOINT, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${getJwt(userObject)}`,
+        "X-Hasura-Role": `${getHighestRole(userObject)}`,
       },
       body: JSON.stringify({
         query: ACCOUNT_USER_PROFILE_GET_PLAIN,
         variables: {
-          userId:
-              config.env.APP_ENVIRONMENT === "local"
-                  ? 1
-                  : getDatabaseId(userObject),
+          userId: getDatabaseId(userObject),
         },
       }),
-    }).then(res => {
-      // Then we parse the response
-      res.json().then(resData => {
-        // If we have any user data,  use it
-        if (resData?.data?.moped_users) {
-          setSessionDatabaseData(resData.data.moped_users[0]);
-          window.location.reload();
-        }
+    })
+      .then(res => {
+        // Then we parse the response
+        res.json().then(resData => {
+          // If we have any user data,  use it
+          if (resData?.data?.moped_users) {
+            setSessionDatabaseData(resData.data.moped_users[0]);
+            window.location.reload();
+          }
+        });
+      })
+      .catch(err => {
+        alert("Unable to update picture: " + JSON.stringify(err));
       });
-    });
   }
 };
 
@@ -149,14 +149,14 @@ export const UserProvider = ({ children }) => {
     Amplify.Logger.LOG_LEVEL = "DEBUG";
 
     Auth.currentSession()
-        .then(user => {
-          setPersistedContext(user);
-          setUser(user);
-        })
-        .catch(error => {
-          setPersistedContext(null);
-          setUser(null);
-        });
+      .then(user => {
+        setPersistedContext(user);
+        setUser(user);
+      })
+      .catch(error => {
+        setPersistedContext(null);
+        setUser(null);
+      });
   }, []);
 
   useEffect(() => {
@@ -260,7 +260,7 @@ export const getHasuraClaims = user => {
 };
 
 export const getDatabaseId = user => {
-  if (config.env.APP_ENVIRONMENT === "local") return "1";
+  // if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];
