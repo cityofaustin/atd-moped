@@ -8,9 +8,58 @@ export const PROJECT_NAME = gql`
   }
 `;
 
+export const ADD_PROJECT = gql`
+  mutation MyMutation(
+    $project_name: String! = ""
+    $project_description: String! = ""
+    $current_phase: String! = ""
+    $current_status: String! = ""
+    $eCapris_id: String! = ""
+    $fiscal_year: String! = ""
+    $start_date: date = ""
+    $capitally_funded: Boolean! = false
+    $project_priority: String! = ""
+    $project_extent_ids: jsonb = {}
+    $project_extent_geojson: jsonb = {}
+  ) {
+    insert_moped_project(
+      objects: {
+        project_name: $project_name
+        project_description: $project_description
+        current_phase: $current_phase
+        current_status: $current_status
+        eCapris_id: $eCapris_id
+        fiscal_year: $fiscal_year
+        start_date: $start_date
+        capitally_funded: $capitally_funded
+        project_priority: $project_priority
+        project_extent_ids: $project_extent_ids
+        project_extent_geojson: $project_extent_geojson
+      }
+    ) {
+      affected_rows
+      returning {
+        project_id
+        project_name
+        project_description
+        project_priority
+        current_phase
+        current_status
+        eCapris_id
+        fiscal_year
+        capitally_funded
+        start_date
+        project_extent_ids
+        project_extent_geojson
+      }
+    }
+  }
+`;
+
 export const SUMMARY_QUERY = gql`
   query ProjectSummary($projectId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
+      project_id
       project_name
       project_description
       start_date
@@ -28,10 +77,17 @@ export const SUMMARY_QUERY = gql`
 
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
-    moped_proj_personnel(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_personnel(
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+    ) {
       user_id
       role_id
       notes
+      status_id
+      project_id
+      project_personnel_id
+      date_added
+      added_by
     }
     moped_workgroup {
       workgroup_id
@@ -53,13 +109,57 @@ export const TEAM_QUERY = gql`
   }
 `;
 
+export const ADD_PROJECT_PERSONNEL = gql`
+  mutation AddProjectPersonnel(
+    $objects: [moped_proj_personnel_insert_input!]!
+  ) {
+    insert_moped_proj_personnel(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_PERSONNEL = gql`
+  mutation UpdateProjectPersonnel(
+    $user_id: Int
+    $notes: String
+    $project_id: Int
+    $status_id: Int
+    $project_personnel_id: Int!
+    $date_added: timestamptz
+    $added_by: Int
+    $role_id: Int
+  ) {
+    update_moped_proj_personnel_by_pk(
+      pk_columns: { project_personnel_id: $project_personnel_id }
+      _set: {
+        user_id: $user_id
+        notes: $notes
+        project_id: $project_id
+        status_id: $status_id
+        project_personnel_id: $project_personnel_id
+        date_added: $date_added
+        added_by: $added_by
+        role_id: $role_id
+      }
+    ) {
+      user_id
+      role_id
+      notes
+    }
+  }
+`;
+
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
     moped_phases {
       phase_id
       phase_name
     }
-    moped_proj_phases(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_phases(
+      where: { project_id: { _eq: $projectId } }
+      order_by: { phase_start: desc }
+    ) {
       phase_name
       project_phase_id
       is_current_phase
@@ -142,7 +242,7 @@ export const UPDATE_PROJECT_EXTENT = gql`
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
-    moped_activity_log(where: {record_project_id: {_eq: $projectId}}) {
+    moped_activity_log(where: { record_project_id: { _eq: $projectId } }) {
       activity_id
       created_at
       record_project_id
@@ -155,12 +255,18 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
+    activity_log_lookup_tables: moped_activity_log(
+      where: { record_project_id: { _eq: $projectId } }
+      distinct_on: record_type
+    ) {
+      record_type
+    }
   }
-`
+`;
 
 export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
-  query getMopedProjectChanges($activityId:uuid!) {
-    moped_activity_log(where: {activity_id: {_eq: $activityId}}) {
+  query getMopedProjectChanges($activityId: uuid!) {
+    moped_activity_log(where: { activity_id: { _eq: $activityId } }) {
       activity_id
       created_at
       record_project_id
@@ -175,4 +281,4 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
       }
     }
   }
-`
+`;

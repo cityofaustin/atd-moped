@@ -42,9 +42,9 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
               component={RouterLink}
               src={null}
               to="/moped/account"
-              style={{ "background-color": user ? user.userColor : null }}
+              style={{ backgroundColor: user ? user.userColor : null }}
             >
-              {emailToInitials(user.attributes.email)}
+              {emailToInitials(user?.idToken?.payload?.email)}
             </Avatar>
           </div>
         </Box>

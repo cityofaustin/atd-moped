@@ -1,7 +1,6 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
-import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 
 const useStyles = makeStyles(theme => ({
@@ -16,7 +15,6 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flex: "1 1 auto",
     overflow: "hidden",
-    paddingTop: 64,
   },
   contentContainer: {
     display: "flex",
@@ -40,8 +38,9 @@ const MainLayout = () => {
   return user ? (
     <Navigate to="/moped" />
   ) : (
-    <div className={classes.root}>
-      <TopBar />
+    <div
+      className={classes.root}
+    >
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>

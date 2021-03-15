@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -16,8 +16,8 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  renderTooltip,
   sumFeaturesSelected,
+  useFeatureCollectionToFitBounds,
   useHoverLayer,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
@@ -45,8 +45,12 @@ const NewProjectMap = ({
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
 
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
-  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+    mapRef,
+    featureCollection,
+    false
+  );
+  const { handleLayerHover, featureId } = useHoverLayer();
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -102,14 +106,14 @@ const NewProjectMap = ({
    * Updates viewport on select of location from geocoder form
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
-  const handleGeocoderViewportChange = useCallback(newViewport => {
+  const handleGeocoderViewportChange = newViewport => {
     const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
     return handleViewportChange({
       ...newViewport,
       ...geocoderDefaultOverrides,
     });
-  }, []);
+  };
 
   return (
     <Box className={classes.mapBox}>
@@ -151,7 +155,6 @@ const NewProjectMap = ({
             />
           </Source>
         ))}
-        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>

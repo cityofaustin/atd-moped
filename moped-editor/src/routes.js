@@ -13,7 +13,6 @@ import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
 import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectSummary from "src/views/projects/projectView/ProjectView";
-import RegisterView from "src/views/auth/RegisterView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
@@ -24,7 +23,6 @@ export const routes = [
     element: <MainLayout />,
     children: [
       { path: "signin", element: <LoginView /> },
-      { path: "register", element: <RegisterView /> },
       { path: "*", element: <Navigate to="/signin" /> },
     ],
   },

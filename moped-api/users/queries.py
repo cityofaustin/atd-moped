@@ -13,7 +13,8 @@ GRAPHQL_CREATE_USER = """
             date_added,
             status_id,
             workgroup,
-            workgroup_id
+            workgroup_id,
+            roles
           ]
         }
       ) {
