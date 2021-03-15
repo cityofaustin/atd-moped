@@ -95,23 +95,22 @@ export const initializeUserDBObject = userObject => {
       body: JSON.stringify({
         query: ACCOUNT_USER_PROFILE_GET_PLAIN,
         variables: {
-          userId: getDatabaseId(userObject),
+          userId:
+            config.env.APP_ENVIRONMENT === "local"
+              ? 1
+              : getDatabaseId(userObject),
         },
       }),
-    })
-      .then(res => {
-        // Then we parse the response
-        res.json().then(resData => {
-          // If we have any user data,  use it
-          if (resData?.data?.moped_users) {
-            setSessionDatabaseData(resData.data.moped_users[0]);
-            window.location.reload();
-          }
-        });
-      })
-      .catch(err => {
-        alert("Unable to update picture: " + JSON.stringify(err));
+    }).then(res => {
+      // Then we parse the response
+      res.json().then(resData => {
+        // If we have any user data,  use it
+        if (resData?.data?.moped_users) {
+          setSessionDatabaseData(resData.data.moped_users[0]);
+          window.location.reload();
+        }
       });
+    });
   }
 };
 

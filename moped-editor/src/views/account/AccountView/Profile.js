@@ -33,6 +33,7 @@ import {
 import { useMutation, useQuery } from "@apollo/client";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { DeleteForever } from "@material-ui/icons";
+import config from "../../../config";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -49,6 +50,7 @@ const useStyles = makeStyles(() => ({
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
   const { user } = useUser();
+  const updateFailedPermissionMessage = `Error: Cannot update image, you are now allowed to update this account. Please contact the DTS team for further assistance.`;
 
   /**
    * @constant {boolean} dialogOpen - True to make the save dialog visible
@@ -58,7 +60,7 @@ const Profile = ({ className, ...rest }) => {
 
   const { loading, error, data, refetch } = useQuery(ACCOUNT_USER_PROFILE_GET, {
     variables: {
-      userId: getDatabaseId(user),
+      userId: config.env.APP_ENVIRONMENT === "local" ? 1 : getDatabaseId(user),
     },
   });
 
@@ -68,8 +70,10 @@ const Profile = ({ className, ...rest }) => {
 
   const resetUserPicture = fileKey => {
     const userData = getSessionDatabaseData();
-    userData["picture"] = fileKey;
+    if (userData) userData["picture"] = fileKey;
     setSessionDatabaseData(userData);
+    refetch();
+    window.location.reload();
   };
 
   /**
@@ -83,12 +87,41 @@ const Profile = ({ className, ...rest }) => {
         picture: fileDataBundle.key,
       },
     })
-      .then(() => {
-        resetUserPicture(fileDataBundle.key);
+      .then(resp => {
         setDialogOpen(false);
-        refetch();
+        const affected_rows = resp.data?.update_moped_users?.affected_rows ?? 0;
+
+        if (affected_rows === 0) {
+          alert(updateFailedPermissionMessage);
+        } else {
+          resetUserPicture(fileDataBundle.key);
+        }
+      })
+      .catch(err => {
+        if (Object.keys(err) > 0) alert(JSON.stringify(err));
+      });
+  };
+
+  const handleClickDeleteFile = () => {
+    deleteAccountPicture({
+      variables: {
+        userId: parseInt(getDatabaseId(user)),
+      },
+    })
+      .then(resp => {
+        const affected_rows = resp.data?.update_moped_users?.affected_rows ?? 0;
+
+        if (affected_rows === 0) {
+          alert(updateFailedPermissionMessage);
+        } else {
+          resetUserPicture(null);
+        }
+      })
+      .catch(err => {
+        if (Object.keys(err) > 0) alert(JSON.stringify(err));
       })
       .finally(() => {
+        refetch();
         window.location.reload();
       });
   };
@@ -105,21 +138,6 @@ const Profile = ({ className, ...rest }) => {
    */
   const handleClickCloseUploadFile = () => {
     setDialogOpen(false);
-  };
-
-  const handleClickDeleteFile = () => {
-    deleteAccountPicture({
-      variables: {
-        userId: parseInt(getDatabaseId(user)),
-      },
-    })
-      .then(() => {
-        resetUserPicture(null);
-        refetch();
-      })
-      .finally(() => {
-        window.location.reload();
-      });
   };
 
   const userProfile = data
@@ -197,6 +215,7 @@ const Profile = ({ className, ...rest }) => {
                   initials={
                     userProfile["first_name"][0] + userProfile["last_name"][0]
                   }
+                  largeInitials={true}
                 />
               </Box>
               <Typography color="textPrimary" gutterBottom variant="h3">
