@@ -70,6 +70,7 @@ export const mapConfig = {
       layerLabel: "CTN",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "e.features[0].properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -109,6 +110,7 @@ export const mapConfig = {
       layerLabel: "Components",
       layerIdName: "project-component-points",
       layerIdField: "PT_PROJECT_ID",
+      layerIdGetPath: "e.features[0].id",
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/Project_Component_Points_Prototype/VectorTileServer/tile/{z}/{y}/{x}.pbf",
