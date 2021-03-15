@@ -29,7 +29,7 @@ const CDNAvatar = props => {
       src={fileName ? src : null}
       style={{ backgroundColor: fileName ? "white" : user?.userColor }}
     >
-      <Typography className={classes.userInitials}>
+      <Typography className={props?.largeInitials ? classes.userInitials : null}>
         {props?.initials ? props.initials : <Icon>user</Icon>}
       </Typography>
     </Avatar>
