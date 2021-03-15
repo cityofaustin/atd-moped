@@ -32,8 +32,6 @@ services:
             - 8080
         ports:
             - 8080:8080
-        env_file:
-            - ./COGNITO.env
         environment:
             - HASURA_GRAPHQL_ENABLE_CONSOLE=false
             - HASURA_GRAPHQL_ENABLE_TELEMETRY=false
