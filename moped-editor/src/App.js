@@ -8,6 +8,7 @@ import theme from "src/theme";
 import { routes, restrictRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 import { setContext } from "@apollo/client/link/context";
+var pckg = require("../package.json");
 
 // Apollo GraphQL Client
 import {
@@ -47,6 +48,8 @@ const App = () => {
     link: authLink.concat(httpLink),
     cache: new InMemoryCache(),
   });
+
+  console.log(`🛵 ${pckg.name} ${pckg.version} 🛵`);
 
   return (
     <ApolloProvider client={client}>
