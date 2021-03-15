@@ -3981,9 +3981,7 @@
   insert_permissions:
   - role: moped-admin
     permission:
-      check:
-        user_id:
-          _eq: x-hasura-user-db-id
+      check: {}
       columns:
       - is_coa_staff
       - email
@@ -3999,29 +3997,6 @@
       - date_added
       - cognito_user_id
       - staff_uuid
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check:
-        user_id:
-          _eq: x-hasura-user-db-id
-      columns:
-      - first_name
-      - last_name
-      - picture
-      - roles
-      - title
-      backend_only: false
-  - role: moped-viewer
-    permission:
-      check:
-        user_id:
-          _eq: x-hasura-user-db-id
-      columns:
-      - first_name
-      - last_name
-      - picture
-      - title
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -4085,21 +4060,13 @@
   - role: moped-admin
     permission:
       columns:
-      - is_coa_staff
-      - email
-      - status_id
-      - user_id
-      - workgroup_id
-      - roles
       - first_name
       - last_name
       - picture
       - title
-      - workgroup
-      - date_added
-      - cognito_user_id
-      - staff_uuid
-      filter: {}
+      filter:
+        user_id:
+          _eq: x-hasura-user-db-id
       check: null
   - role: moped-editor
     permission:
