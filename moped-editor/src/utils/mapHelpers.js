@@ -110,7 +110,6 @@ export const mapConfig = {
     Project_Component_Points_prototype: {
       layerLabel: "Components",
       layerIdName: "project-component-points",
-      layerIdField: "PT_PROJECT_ID",
       layerIdGetPath: "features[0].id",
       layerColor: theme.palette.secondary.main,
       layerUrl:
@@ -123,9 +122,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "circle-opacity": [
               "case",
-              ["==", ["get", this.layerIdField], hoveredId],
+              ["==", ["id"], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              ["in", ["id"], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
@@ -176,7 +175,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
 /**
  * Get a feature's ID attribute from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
- * @param {String} idKey - Key that exposes the id of the polygon in the layer
+ * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (e, layerName) =>

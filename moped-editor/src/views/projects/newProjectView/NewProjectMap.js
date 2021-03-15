@@ -69,13 +69,8 @@ const NewProjectMap = ({
     const layerName = getLayerSource(e);
 
     if (!layerName) return;
-    // console.log({
-    //   componentFeatureId: e?.features[0]?.id,
-    //   ctnFeatureId: e?.features[0]?.properties?.PROJECT_EXTENT_ID,
-    // });
 
     const { layerIdField } = mapConfig.layerConfigs[layerName];
-    // const clickedFeatureId = getFeatureId(e, layerIdField);
     const clickedFeatureId = getFeatureId(e, layerName);
     const selectedFeature = getGeoJSON(e);
 
