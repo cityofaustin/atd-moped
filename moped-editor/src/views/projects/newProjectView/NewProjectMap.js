@@ -71,8 +71,8 @@ const NewProjectMap = ({
     if (!layerSource) return;
 
     console.log({
-      PT_PROJECT_ID: e.features[0]?.properties?.PT_PROJECT_ID,
-      pointFeaturesCount: e.features.length,
+      componentFeatureId: e?.features[0]?.id,
+      ctnFeatureId: e?.features[0]?.properties?.PROJECT_EXTENT_ID,
     });
 
     const { layerIdField } = mapConfig.layerConfigs[layerSource];
