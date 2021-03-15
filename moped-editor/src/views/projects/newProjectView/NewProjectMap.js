@@ -70,6 +70,11 @@ const NewProjectMap = ({
 
     if (!layerSource) return;
 
+    console.log({
+      PT_PROJECT_ID: e.features[0]?.properties?.PT_PROJECT_ID,
+      pointFeaturesCount: e.features.length,
+    });
+
     const { layerIdField } = mapConfig.layerConfigs[layerSource];
     const clickedFeatureId = getFeatureId(e, layerIdField);
     const selectedFeature = getGeoJSON(e);
