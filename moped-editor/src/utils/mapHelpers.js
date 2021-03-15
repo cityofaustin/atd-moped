@@ -3,6 +3,7 @@ import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Box, Checkbox, Typography } from "@material-ui/core";
+import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -70,7 +71,7 @@ export const mapConfig = {
       layerLabel: "CTN",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "e.features[0].properties.PROJECT_EXTENT_ID",
+      layerIdGetPath: "features[0].properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -110,7 +111,7 @@ export const mapConfig = {
       layerLabel: "Components",
       layerIdName: "project-component-points",
       layerIdField: "PT_PROJECT_ID",
-      layerIdGetPath: "e.features[0].id",
+      layerIdGetPath: "features[0].id",
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/Project_Component_Points_Prototype/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -178,8 +179,8 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @param {String} idKey - Key that exposes the id of the polygon in the layer
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (e, idKey) =>
-  e.features && e.features.length > 0 && e.features[0].properties[idKey];
+export const getFeatureId = (e, layerName) =>
+  get(e, mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -386,10 +387,7 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    const hoveredFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
+    const hoveredFeatureId = getFeatureId(e, layerSource);
 
     setFeature(hoveredFeatureId);
     setHoveredCoords({ x: offsetX, y: offsetY });

@@ -66,20 +66,20 @@ const NewProjectMap = ({
    * @param {Object} e - Event object for click
    */
   const handleLayerClick = e => {
-    const layerSource = getLayerSource(e);
+    const layerName = getLayerSource(e);
 
-    if (!layerSource) return;
+    if (!layerName) return;
+    // console.log({
+    //   componentFeatureId: e?.features[0]?.id,
+    //   ctnFeatureId: e?.features[0]?.properties?.PROJECT_EXTENT_ID,
+    // });
 
-    console.log({
-      componentFeatureId: e?.features[0]?.id,
-      ctnFeatureId: e?.features[0]?.properties?.PROJECT_EXTENT_ID,
-    });
-
-    const { layerIdField } = mapConfig.layerConfigs[layerSource];
-    const clickedFeatureId = getFeatureId(e, layerIdField);
+    const { layerIdField } = mapConfig.layerConfigs[layerName];
+    // const clickedFeatureId = getFeatureId(e, layerIdField);
+    const clickedFeatureId = getFeatureId(e, layerName);
     const selectedFeature = getGeoJSON(e);
 
-    const layerIds = selectedLayerIds[layerSource] || [];
+    const layerIds = selectedLayerIds[layerName] || [];
 
     const updatedLayerIds = !layerIds.includes(clickedFeatureId)
       ? [...layerIds, clickedFeatureId]
@@ -87,7 +87,7 @@ const NewProjectMap = ({
 
     const updatedSelectedIds = {
       ...selectedLayerIds,
-      [layerSource]: updatedLayerIds,
+      [layerName]: updatedLayerIds,
     };
 
     const updatedFeatureCollection = isFeaturePresent(
