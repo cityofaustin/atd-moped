@@ -173,13 +173,13 @@ export const getInteractiveIds = () =>
 export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
 
 /**
- * Get a feature's ID attribute from a Mapbox map click or hover event
- * @param {Object} e - Event object for click or hover on map
+ * Get a feature's ID attribute from a GeoJSON feature
+ * @param {Object} feature - GeoJSON feature taken from a Mapbox click or hover event
  * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (e, layerName) =>
-  get(e.features[0], mapConfig.layerConfigs[layerName].layerIdGetPath);
+export const getFeatureId = (feature, layerName) =>
+  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -387,7 +387,7 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    const hoveredFeatureId = getFeatureId(e, layerSource);
+    const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
 
     setFeature(hoveredFeatureId);
     setHoveredCoords({ x: offsetX, y: offsetY });
