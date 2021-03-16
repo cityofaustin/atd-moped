@@ -85,6 +85,7 @@ const FileUpload = props => {
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
         file: item.filename,
         ...(props?.projectId ? { project_id: props.projectId } : {}),
+        ...(props?.uploadType ? { type: props.uploadType } : {}),
       }),
       {
         headers: {

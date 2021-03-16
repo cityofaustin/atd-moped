@@ -1,5 +1,6 @@
 export default {
   env: {
+    APP_CLOUDFRONT: process.env.REACT_APP_AWS_CLOUDFRONT,
     APP_ENVIRONMENT: process.env.REACT_APP_HASURA_ENV,
     APP_HASURA_ENDPOINT: process.env.REACT_APP_HASURA_ENDPOINT,
     APP_API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT,

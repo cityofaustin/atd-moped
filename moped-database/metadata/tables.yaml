@@ -3983,93 +3983,120 @@
     permission:
       check: {}
       columns:
-      - cognito_user_id
-      - date_added
-      - email
-      - first_name
       - is_coa_staff
-      - last_name
-      - roles
-      - staff_uuid
+      - email
       - status_id
-      - title
       - user_id
-      - workgroup
       - workgroup_id
+      - roles
+      - first_name
+      - last_name
+      - picture
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - cognito_user_id
-      - date_added
-      - email
-      - first_name
       - is_coa_staff
-      - last_name
-      - roles
-      - staff_uuid
+      - email
       - status_id
-      - title
       - user_id
-      - workgroup
       - workgroup_id
+      - roles
+      - first_name
+      - last_name
+      - picture
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - cognito_user_id
-      - date_added
-      - email
-      - first_name
       - is_coa_staff
-      - last_name
-      - roles
-      - staff_uuid
+      - email
       - status_id
-      - title
       - user_id
-      - workgroup
       - workgroup_id
+      - roles
+      - first_name
+      - last_name
+      - picture
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - cognito_user_id
-      - date_added
-      - email
-      - first_name
       - is_coa_staff
-      - last_name
-      - roles
-      - staff_uuid
+      - email
       - status_id
-      - title
       - user_id
-      - workgroup
       - workgroup_id
+      - roles
+      - first_name
+      - last_name
+      - picture
+      - title
+      - workgroup
+      - date_added
+      - cognito_user_id
+      - staff_uuid
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
+      - staff_uuid
+      - first_name
+      - last_name
+      - title
+      - workgroup
+      - user_id
+      - workgroup_id
       - cognito_user_id
       - date_added
-      - email
-      - first_name
       - is_coa_staff
-      - last_name
-      - roles
-      - staff_uuid
       - status_id
-      - title
-      - user_id
-      - workgroup
-      - workgroup_id
+      - email
+      - roles
+      - picture
       filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - first_name
+      - last_name
+      - picture
+      - title
+      filter:
+        user_id:
+          _eq: x-hasura-user-db-id
+      check: null
+  - role: moped-viewer
+    permission:
+      columns:
+      - first_name
+      - last_name
+      - picture
+      - title
+      filter:
+        user_id:
+          _eq: x-hasura-user-db-id
       check: null
 - table:
     schema: public
