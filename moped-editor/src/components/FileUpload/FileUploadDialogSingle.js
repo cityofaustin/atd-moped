@@ -225,7 +225,7 @@ const FileUploadDialogSingle = props => {
           startIcon={<Icon>save</Icon>}
           disabled={!fileReady}
         >
-          Save
+          Upload
         </Button>
       </DialogActions>
     </Dialog>
