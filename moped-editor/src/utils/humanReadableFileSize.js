@@ -5,7 +5,7 @@
  * @param {boolean} si - True to use metric (SI) units, aka powers of 1000. False to use binary (IEC), aka powers of 1024.
  * @param {int} dp - Number of decimal places to display.
  *
- * @return Formatted string.
+ * @return {string} - Formatted string.
  */
 export default (bytes, si=false, dp=1) => {
     const thresh = si ? 1000 : 1024;
