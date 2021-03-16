@@ -8,6 +8,8 @@ import {
   getChangeIcon,
   getRecordTypeLabel,
   getHumanReadableField,
+  getMappedValue,
+  isFieldMapped,
   ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
@@ -280,19 +282,37 @@ const ProjectActivityLog = () => {
                                       from{" "}
                                       <b>
                                         &quot;
-                                        {lookupMap?.[change.record_type]?.[
+                                        {isFieldMapped(
+                                          change.record_type,
                                           changeItem.field
-                                        ]?.[changeItem.old] ||
-                                          String(changeItem.old)}
+                                        )
+                                          ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.old)
+                                            )
+                                          : lookupMap?.[change.record_type]?.[
+                                              changeItem.field
+                                            ]?.[changeItem.old] ||
+                                            String(changeItem.old)}
                                         &quot;
                                       </b>{" "}
                                       to{" "}
                                       <b>
                                         &quot;
-                                        {lookupMap?.[change.record_type]?.[
-                                          changeItem.field
-                                        ]?.[changeItem.new] ||
-                                          String(changeItem.new)}
+                                        {isFieldMapped(
+                                            change.record_type,
+                                            changeItem.field
+                                        )
+                                            ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.new)
+                                            )
+                                            : lookupMap?.[change.record_type]?.[
+                                                changeItem.field
+                                                ]?.[changeItem.new] ||
+                                            String(changeItem.new)}
                                         &quot;
                                       </b>
                                     </>
