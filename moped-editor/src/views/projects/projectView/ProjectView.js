@@ -60,7 +60,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
-  { label: "Files", Component: ProjectFiles, param: "team" },
+  { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
