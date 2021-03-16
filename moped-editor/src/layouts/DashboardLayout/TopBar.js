@@ -14,8 +14,9 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
-import { useUser } from "../../auth/user";
+import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
+import CDNAvatar from "../../components/CDN/Avatar";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -28,6 +29,8 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
   const classes = useStyles();
   const { user, logout } = useUser();
 
+  const userDbData = getSessionDatabaseData();
+
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
       <Toolbar>
@@ -37,15 +40,24 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         <Box flexGrow={1} />
         <Box>
           <div className={classes.root}>
-            <Avatar
-              className={classes.avatar}
-              component={RouterLink}
-              src={null}
-              to="/moped/account"
-              style={{ backgroundColor: user ? user.userColor : null }}
-            >
-              {emailToInitials(user?.idToken?.payload?.email)}
-            </Avatar>
+            {console.log(JSON.stringify(userDbData))}
+            {userDbData ? (
+              <CDNAvatar
+                className={classes.avatar}
+                src={userDbData.picture}
+                initials={userDbData.first_name[0] + userDbData.last_name[0]}
+              />
+            ) : (
+              <Avatar
+                className={classes.avatar}
+                component={RouterLink}
+                src={null}
+                to="/moped/account"
+                style={{ backgroundColor: user ? user.userColor : null }}
+              >
+                {emailToInitials(user?.idToken?.payload?.email)}
+              </Avatar>
+            )}
           </div>
         </Box>
         <Hidden mdDown>
