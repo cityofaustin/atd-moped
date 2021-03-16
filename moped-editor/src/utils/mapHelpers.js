@@ -213,15 +213,17 @@ export const getGeoJSON = e =>
  * Determine if a feature is present/absent from the feature collection state
  * @param {Object} selectedFeature - Feature selected
  * @param {Array} features - Array of GeoJSON features
- * @param {String} idField - Key for id field in feature properties
+ * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {Boolean} Is feature present in features of feature collection in state
  */
-export const isFeaturePresent = (selectedFeature, features, layerName) =>
-  features.some(
+export const isFeaturePresent = (selectedFeature, features, layerName) => {
+  const featureGetPath = mapConfig.layerConfigs[layerName].layerIdGetPath;
+
+  return features.some(
     feature =>
-      get(selectedFeature, mapConfig.layerConfigs[layerName].layerIdGetPath) ===
-      get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath)
+      get(selectedFeature, featureGetPath) === get(feature, featureGetPath)
   );
+};
 
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features
