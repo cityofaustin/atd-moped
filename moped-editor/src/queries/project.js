@@ -242,18 +242,30 @@ export const UPDATE_PROJECT_EXTENT = gql`
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
-    moped_activity_log(where: { record_project_id: { _eq: $projectId } }) {
+    moped_activity_log(
+      where: { record_project_id: { _eq: $projectId } }
+      order_by: { created_at: asc }
+    ) {
       activity_id
       created_at
       record_project_id
       record_type
       description
       operation_type
+      record_data
       moped_user {
         first_name
         last_name
         user_id
       }
+    }
+    moped_users(where:{
+      status_id:{_eq: 1}
+    }) {
+      first_name
+      last_name
+      user_id
+      email
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }

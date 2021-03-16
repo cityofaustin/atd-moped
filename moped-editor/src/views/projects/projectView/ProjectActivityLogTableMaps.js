@@ -593,6 +593,10 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Status",
         type: "int4",
+        map: {
+          0: "Inactive",
+          1: "Active",
+        },
       },
       project_id: {
         icon: "",
@@ -1265,17 +1269,64 @@ export const ProjectActivityLogTableMaps = {
 };
 
 export const ProjectActivityLogOperationMaps = {
-  DELETE: {
-    label: "Deleted",
-    icon: "close",
+  moped_project: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "beenhere",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
-  INSERT: {
-    label: "Created",
-    icon: "beenhere",
+
+  moped_proj_personnel: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "personadd",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
   },
-  UPDATE: {
-    label: "Update",
-    icon: "create",
+
+  moped_proj_phases: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "event",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
+  },
+
+  generic: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "addcircle",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
 };
 
@@ -1285,6 +1336,30 @@ export const ProjectActivityLogGenericDescriptions = {
   },
   project_extent_geojson: {
     label: "Project GeoJSON updated",
+  },
+};
+
+export const ProjectActivityLogCreateDescriptions = {
+  moped_project: {
+    label: () => "Created Project",
+  },
+  moped_proj_personnel: {
+    label: (record, userList) =>
+      userList[`${record.record_data.event.data.new.user_id}`] +
+      " to Project Personnel",
+  },
+  moped_proj_phases: {
+    label: record => {
+      const recordData = record.record_data.event.data.new;
+      const phaseName = recordData.phase_name
+        .trim()
+        .toLowerCase()
+        .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
+      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
+    },
+  },
+  generic: {
+    label: () => "Added",
   },
 };
 
@@ -1302,6 +1377,27 @@ export const getHumanReadableField = (type, field) => {
 };
 
 /**
+ * Returns true if a specific field is mapped
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @return {boolean}
+ */
+export const isFieldMapped = (type, field) =>
+  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map ?? null) !== null;
+
+/**
+ * Returns the mapped value within the configuration
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @param {*} value - Usually an integer but it can be a string
+ * @return {string}
+ */
+export const getMappedValue = (type, field, value) =>
+  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map[value];
+
+/**
  * Returns the
  * @param {string} type - The name of the table
  * @return {string}
@@ -1312,22 +1408,46 @@ export const getRecordTypeLabel = type => {
 
 /**
  * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
- * @param {string} type
- * @param {string} field
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
-export const getChangeIcon = type => {
-  return ProjectActivityLogOperationMaps[type]?.icon ?? "create";
+export const getChangeIcon = (event_type, record_type = "moped_project") => {
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
+  return (
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.icon ?? "create"
+  );
 };
 
 /**
  * Translates the operation type value into friendly label
- * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
-export const getOperationName = operationName => {
+export const getOperationName = (event_type, record_type = "moped_project") => {
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
   return (
-    ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
-    "Unknown"
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.label ?? "Unknown"
   );
+};
+
+/**
+ * Translates the operation type value into friendly label when there is no specified difference
+ * @param {string} record - The event record
+ * @return {string}
+ */
+export const getCreationLabel = (record, userList) => {
+  const recordType =
+    record.record_type in ProjectActivityLogCreateDescriptions
+      ? record.record_type
+      : "generic";
+
+  const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
+
+  return label ? label(record, userList) : "Created";
 };
