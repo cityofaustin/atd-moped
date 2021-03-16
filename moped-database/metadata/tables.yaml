@@ -3830,6 +3830,39 @@
       - project_id
       filter: {}
       check: null
+  event_triggers:
+  - name: activity_log_moped_project_files
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - is_retired
+        - is_scanned
+        - created_by
+        - file_size
+        - project_file_id
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - create_date
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
 - table:
     schema: public
     name: moped_project_roles
