@@ -160,7 +160,7 @@ const FileUploadDialogSingle = props => {
             <TextField
               className={classes.textField}
               id="standard-multiline-flexible"
-              placeholder={"File Title"}
+              placeholder={"File name"}
               multiline={false}
               rowsMax={1}
               value={null}
@@ -180,7 +180,7 @@ const FileUploadDialogSingle = props => {
             <TextField
               className={classes.textField}
               id="standard-multiline-static"
-              placeholder={"File Description"}
+              placeholder={"Description"}
               multiline
               rows={4}
               defaultValue={null}
