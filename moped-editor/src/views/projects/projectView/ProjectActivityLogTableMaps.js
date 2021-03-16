@@ -593,6 +593,10 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Status",
         type: "int4",
+        map: {
+          0: "Inactive",
+          1: "Active",
+        },
       },
       project_id: {
         icon: "",
@@ -1371,6 +1375,27 @@ export const getHumanReadableField = (type, field) => {
       ?.label ?? field
   );
 };
+
+/**
+ * Returns true if a specific field is mapped
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @return {boolean}
+ */
+export const isFieldMapped = (type, field) =>
+  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map ?? null) !== null;
+
+/**
+ * Returns the mapped value within the configuration
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @param {*} value - Usually an integer but it can be a string
+ * @return {string}
+ */
+export const getMappedValue = (type, field, value) =>
+  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map[value];
 
 /**
  * Returns the
