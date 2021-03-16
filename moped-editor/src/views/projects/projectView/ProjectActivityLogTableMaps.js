@@ -1266,6 +1266,76 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+  moped_project_files: {
+    label: "Project File",
+    fields: {
+      project_file_id: {
+        icon: "",
+        label: "ID",
+        data_type: "int4",
+      },
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "int4",
+      },
+      file_key: {
+        icon: "",
+        label: "Storage File Name",
+        data_type: "text",
+      },
+      file_name: {
+        icon: "",
+        label: "Title",
+        data_type: "text",
+      },
+      file_description: {
+        icon: "",
+        label: "Day",
+        data_type: "date",
+      },
+      file_size: {
+        icon: "",
+        label: "File Size",
+        data_type: "int4",
+      },
+      file_permissions: {
+        icon: "",
+        label: "File Permissions",
+        data_type: "jsonb",
+      },
+      file_metadata: {
+        icon: "",
+        label: "File Metadata",
+        data_type: "jsonb",
+      },
+      api_response: {
+        icon: "",
+        label: "API Response",
+        data_type: "jsonb",
+      },
+      created_by: {
+        icon: "",
+        label: "Created By",
+        data_type: "int4",
+      },
+      create_date: {
+        icon: "",
+        label: "Create Date",
+        data_type: "date",
+      },
+      is_scanned: {
+        icon: "",
+        label: "Marked Scanned",
+        data_type: "bool",
+      },
+      is_retired: {
+        icon: "",
+        label: "Marked Deleted",
+        data_type: "bool",
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
