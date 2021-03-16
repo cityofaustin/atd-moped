@@ -71,7 +71,7 @@ export const mapConfig = {
       layerLabel: "CTN",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "features[0].properties.PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -110,7 +110,7 @@ export const mapConfig = {
     Project_Component_Points_prototype: {
       layerLabel: "Components",
       layerIdName: "project-component-points",
-      layerIdGetPath: "features[0].id",
+      layerIdGetPath: "id",
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/Project_Component_Points_Prototype/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -179,7 +179,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (e, layerName) =>
-  get(e, mapConfig.layerConfigs[layerName].layerIdGetPath);
+  get(e.features[0], mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -216,10 +216,11 @@ export const getGeoJSON = e =>
  * @param {String} idField - Key for id field in feature properties
  * @return {Boolean} Is feature present in features of feature collection in state
  */
-export const isFeaturePresent = (selectedFeature, features, idField) =>
+export const isFeaturePresent = (selectedFeature, features, layerName) =>
   features.some(
     feature =>
-      selectedFeature.properties[idField] === feature.properties[idField]
+      get(selectedFeature, mapConfig.layerConfigs[layerName].layerIdGetPath) ===
+      get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath)
   );
 
 /**
