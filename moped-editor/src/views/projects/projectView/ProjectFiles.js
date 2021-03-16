@@ -148,7 +148,7 @@ const ProjectFiles = props => {
       ),
     },
     {
-      title: "File Description",
+      title: "Description",
       field: "file_description",
       render: record => <span>{record?.file_description}</span>,
       editComponent: props => (
@@ -161,7 +161,7 @@ const ProjectFiles = props => {
       ),
     },
     {
-      title: "Created By",
+      title: "Uploaded by",
       render: record => (
         <span>
           {record?.created_by
@@ -173,7 +173,7 @@ const ProjectFiles = props => {
       ),
     },
     {
-      title: "Created Date",
+      title: "Date uploaded",
       render: record => (
         <span>
           {record?.create_date
@@ -183,7 +183,7 @@ const ProjectFiles = props => {
       ),
     },
     {
-      title: "File Size",
+      title: "File size",
       render: record => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
@@ -196,7 +196,7 @@ const ProjectFiles = props => {
         <Grid item xs={12} md={12}>
           <Grid container>
             <Grid sm={12} md={6}>
-              <h2 className={classes.title}>File Attachments</h2>
+              <h2 className={classes.title}>Files</h2>
             </Grid>
             <Grid sm={12} md={6}>
               <Button
@@ -216,7 +216,7 @@ const ProjectFiles = props => {
         <MaterialTable
           columns={columns}
           data={data?.moped_project_files ?? null}
-          title="Project File Attachments"
+          title={null}
           icons={{ Delete: ClearIcon }}
           options={{
             search: true,
