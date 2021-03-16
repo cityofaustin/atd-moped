@@ -1355,7 +1355,7 @@ export const ProjectActivityLogCreateDescriptions = {
         .trim()
         .toLowerCase()
         .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
-      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as ${recordData.phase_end}'`;
+      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
   },
   generic: {
