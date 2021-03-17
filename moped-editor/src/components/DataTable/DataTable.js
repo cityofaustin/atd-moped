@@ -54,8 +54,6 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
-  {console.log(data)}
-  {console.log(fieldConfiguration)}
 
   const classes = useStyles();
 
