@@ -137,15 +137,17 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       delete data.password;
     }
 
-    // Navigate to user table on successful add/edit
-    const callback = () => navigate("/moped/staff");
+    console.log(data);
 
-    requestApi({
-      method,
-      path,
-      payload: data,
-      callback,
-    });
+    // Navigate to user table on successful add/edit
+    // const callback = () => navigate("/moped/staff");
+
+    // requestApi({
+    //   method,
+    //   path,
+    //   payload: data,
+    //   callback,
+    // });
   };
 
   const {
@@ -311,6 +313,13 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         <TextField
           id="workgroup-id"
           name="workgroup_id"
+          inputRef={register}
+          className={classes.hiddenTextField}
+        />
+        {/* This hidden field stores an existing value so the API doesn't reset date_added */}
+        <TextField
+          id="date-added"
+          name="date_added"
           inputRef={register}
           className={classes.hiddenTextField}
         />
