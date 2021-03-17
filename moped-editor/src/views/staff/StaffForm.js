@@ -139,17 +139,15 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       delete data.password;
     }
 
-    console.log(data);
-
     // Navigate to user table on successful add/edit
-    // const callback = () => navigate("/moped/staff");
+    const callback = () => navigate("/moped/staff");
 
-    // requestApi({
-    //   method,
-    //   path,
-    //   payload: data,
-    //   callback,
-    // });
+    requestApi({
+      method,
+      path,
+      payload: data,
+      callback,
+    });
   };
 
   const {
