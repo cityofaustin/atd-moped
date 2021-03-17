@@ -13,6 +13,7 @@ import {
   Select,
   Snackbar,
   TextField,
+  Typography,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
@@ -53,6 +54,9 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
+  {console.log(data)}
+  {console.log(fieldConfiguration)}
+
   const classes = useStyles();
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -490,11 +494,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         </Grid>
                       </form>
                     ) : (
-                      <InputLabel
+                      <Typography
                         id={"label-" + field}
                         className={
                           fieldConfiguration.fields[field]?.labelStyle ?? null
                         }
+                        variant="body1"
                       >
                         {fieldConfiguration.fields[field].format
                           ? fieldConfiguration.fields[field].format(
@@ -510,7 +515,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               create
                             </Icon>
                           )}
-                      </InputLabel>
+                      </Typography>
                     )}
                   </Box>
                 </Grid>
