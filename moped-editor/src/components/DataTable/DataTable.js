@@ -419,7 +419,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   );
 
   return (
-    <Grid item xs={12} md={6}>
+    <>
       {(error || lookupTablesError) && (
         <Alert severity="error">
           {error}
@@ -534,7 +534,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           {snackbarState.message}
         </Alert>
       </Snackbar>
-    </Grid>
+    </>
   );
 };
 

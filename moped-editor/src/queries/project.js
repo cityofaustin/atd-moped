@@ -242,18 +242,30 @@ export const UPDATE_PROJECT_EXTENT = gql`
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
-    moped_activity_log(where: { record_project_id: { _eq: $projectId } }) {
+    moped_activity_log(
+      where: { record_project_id: { _eq: $projectId } }
+      order_by: { created_at: asc }
+    ) {
       activity_id
       created_at
       record_project_id
       record_type
       description
       operation_type
+      record_data
       moped_user {
         first_name
         last_name
         user_id
       }
+    }
+    moped_users(where:{
+      status_id:{_eq: 1}
+    }) {
+      first_name
+      last_name
+      user_id
+      email
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
@@ -282,3 +294,80 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
     }
   }
 `;
+
+export const PROJECT_FILE_ATTACHMENTS = gql`
+  query MopedProjectFiles($projectId: Int!) {
+    moped_project_files(
+      where: {
+        project_id: {_eq: $projectId},
+        is_retired: {_eq: false}
+      }
+    ) {
+      project_file_id
+      project_id
+      file_key
+      file_name
+      file_description
+      file_size
+      file_metadata
+      file_description
+      create_date
+      created_by
+      moped_user {
+        user_id
+        first_name
+        last_name
+      }
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
+  mutation UpdateProjectFileAttachment(
+    $fileId: Int!,
+    $fileName: String!,
+    $fileDescription: String!
+  ) {
+    update_moped_project_files(
+      where: {
+        project_file_id: {
+          _eq: $fileId
+        }
+      },
+      _set: {
+        file_name: $fileName,
+        file_description: $fileDescription
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
+  mutation DeleteProjectFileAttachment(
+    $fileId: Int!,
+  ) {
+    update_moped_project_files(
+      where: {
+        project_file_id: {
+          _eq: $fileId
+        }
+      },
+      _set: {
+        is_retired: true,
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
+  mutation insert_single_article($object: moped_project_files_insert_input! ) {
+    insert_moped_project_files(objects: [$object]) {
+      affected_rows
+    }
+  }
+`;
+
