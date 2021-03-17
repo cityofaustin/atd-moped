@@ -4,8 +4,9 @@ import { formatApiErrors, useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { WORKGROUPS_QUERY } from "../../queries/workgroups";
 
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
@@ -27,15 +28,6 @@ import {
   RadioGroup,
   Select,
 } from "@material-ui/core";
-
-const WORKGROUPS_QUERY = gql`
-  query GetWorkgroups {
-    moped_workgroup {
-      workgroup_id
-      workgroup_name
-    }
-  }
-`;
 
 const useStyles = makeStyles(theme => ({
   formSelect: {
