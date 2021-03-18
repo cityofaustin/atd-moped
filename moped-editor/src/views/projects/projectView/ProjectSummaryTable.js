@@ -17,8 +17,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const projectId = data?.moped_project[0].project_id ?? null;
   const capitallyFunded = data?.moped_project[0].capitally_funded ?? null;
 
-  console.log(capitallyFunded);
-
   const fieldConfiguration = {
     table: {
       name: "moped_project",
@@ -107,7 +105,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       }),
     },
   };
-  console.log(fieldConfiguration);
 
   return (
     <DataTable
