@@ -1,5 +1,5 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
+import React, {useState} from "react";
+import {useMutation, useQuery} from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
@@ -24,7 +24,7 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import { PROJECT_NAME } from "../../../queries/project";
+import { PROJECT_NAME, PROJECT_ARCHIVE} from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
@@ -84,7 +84,7 @@ const ProjectView = () => {
     ? TABS.findIndex(tab => tab.param === query.get("tab"))
     : 0;
 
-  const [activeTab, setActiveTab] = React.useState(activeTabIndex);
+  const [activeTab, setActiveTab] = useState(activeTabIndex);
 
   const handleChange = (event, newTab) => {
     setActiveTab(newTab);
@@ -92,6 +92,10 @@ const ProjectView = () => {
   };
 
   const { loading, error, data } = useQuery(PROJECT_NAME, {
+    variables: { projectId },
+  });
+
+  const [archiveProject] = useMutation(PROJECT_ARCHIVE, {
     variables: { projectId },
   });
 
@@ -151,6 +155,7 @@ const ProjectView = () => {
             </CardActions>
           </Card>
         </Container>
+
       </Page>
     </ApolloErrorHandler>
   );
