@@ -1292,7 +1292,7 @@ export const ProjectActivityLogTableMaps = {
       file_description: {
         icon: "",
         label: "Description",
-        data_type: "date",
+        data_type: "text",
       },
       file_size: {
         icon: "",
