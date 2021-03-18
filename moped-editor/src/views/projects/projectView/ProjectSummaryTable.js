@@ -15,6 +15,9 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const classes = useStyles();
 
   const projectId = data?.moped_project[0].project_id ?? null;
+  const capitallyFunded = data?.moped_project[0].capitally_funded ?? null;
+
+  console.log(capitallyFunded);
 
   const fieldConfiguration = {
     table: {
@@ -87,20 +90,24 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         placeholder: "Select capitally funded",
         editable: true,
       },
-      eCapris_id: {
-        label: "eCapris ID",
-        type: "string",
-        placeholder: "Enter eCapris ID",
-        emptyValue: "None",
-        editable: true,
-        format: value =>
-          <ExternalLink
-            text={value}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
-          />
-      },
+      ...(capitallyFunded && {
+        eCapris_id: {
+          label: "eCapris ID",
+          type: "string",
+          placeholder: "Enter eCapris ID",
+          emptyValue: "None",
+          editable: true,
+          format: value => (
+            <ExternalLink
+              text={value}
+              url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+            />
+          ),
+        },
+      }),
     },
   };
+  console.log(fieldConfiguration);
 
   return (
     <DataTable
