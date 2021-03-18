@@ -78,6 +78,8 @@ const ProjectView = () => {
   let query = useQueryParams();
   const classes = useStyles();
 
+  const [dialogOpen, setDialogOpen] = useState(false);
+
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
   let activeTabIndex = !!query.get("tab")
