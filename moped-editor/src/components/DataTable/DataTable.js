@@ -230,7 +230,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param value
    */
   const handleFieldValueUpdate = value => {
-    console.log(value.target.checked);
     setEditValue(value.target.checked);
   };
 
