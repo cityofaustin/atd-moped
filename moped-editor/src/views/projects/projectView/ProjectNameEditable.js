@@ -106,8 +106,8 @@ const ProjectNameEditable = props => {
         setProjectName(initialProjectName);
       })
       .finally(() => {
-        setIsEditing(false);
         if (props?.setIsEditing) props.setIsEditing(false);
+        setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
       });
   };
@@ -118,8 +118,8 @@ const ProjectNameEditable = props => {
    */
   const handleCancelClick = e => {
     e.preventDefault();
-    setIsEditing(false);
     if (props?.setIsEditing) props.setIsEditing(false);
+    setIsEditing(false);
     setProjectName(projectNameBeforeEdit);
   };
 
