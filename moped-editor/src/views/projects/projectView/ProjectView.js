@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
+import {
+  Link as RouterLink,
+  useParams,
+  useLocation,
+} from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -140,14 +144,6 @@ const ProjectView = () => {
     variables: { projectId },
   });
 
-  const handleDialogOpen = () => {
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
   const clearDialogContent = () => {
     setDialogState(null);
   };
@@ -158,6 +154,15 @@ const ProjectView = () => {
       body: body,
       actions: actions,
     });
+  };
+
+  const handleDialogOpen = () => {
+    setDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+    clearDialogContent();
   };
 
   const handleMenuOpen = event => {
@@ -173,7 +178,41 @@ const ProjectView = () => {
     handleMenuClose();
   };
 
+  const handleDelete = () => {
+    setDialogContent("Please wait", <CircularProgress />, null);
+
+    archiveProject()
+      .then(() => {
+        window.location = "/moped/projects";
+      })
+      .catch(err => {
+        setDialogContent(
+          "Error",
+          "It appears there was an error while deleting, please contact the Data & Technology Services department. Reference: " +
+            String(err),
+          <Button onClick={handleDialogClose}>Close</Button>
+        );
+      });
+  };
+
   const handleDeleteClick = () => {
+    setDialogContent(
+      "Are you sure?",
+      <span>
+        Deleting this project will make it inaccessible to Moped users and only
+        available to administrators. Users may request a deleted project be
+        restored by{" "}
+        <a href={"https://atd.knack.com/dts#new-service-request/"} target="new">
+          opening a support ticket
+        </a>
+        .
+      </span>,
+      <>
+        <Button onClick={handleDelete}>Delete</Button>
+        <Button onClick={handleDialogClose}>Cancel</Button>
+      </>
+    );
+    handleDialogOpen();
     handleMenuClose();
   };
 
@@ -312,7 +351,7 @@ const ProjectView = () => {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {dialogState?.title}
+              <h2>{dialogState?.title}</h2>
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
