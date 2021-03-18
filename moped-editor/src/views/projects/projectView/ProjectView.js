@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import {
-  Link as RouterLink,
-  useParams,
-  useLocation,
-} from "react-router-dom";
+import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -112,16 +108,15 @@ const TABS = [
 
 const history = createBrowserHistory();
 
+/**
+ * The project summary view
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectView = () => {
   const { projectId } = useParams();
   let query = useQueryParams();
   const classes = useStyles();
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [dialogState, setDialogState] = useState(null);
-  const [anchorElement, setAnchorElement] = useState(null);
-  const menuOpen = anchorElement ?? false;
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
@@ -129,25 +124,58 @@ const ProjectView = () => {
     ? TABS.findIndex(tab => tab.param === query.get("tab"))
     : 0;
 
+  /**
+   * @constant {int} activeTab - The number of the active tab
+   * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
+   * @constant {boolean} dialogOpen - When true, the dialog shows
+   * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
+   * @constant {JSX} anchorElement - The element our 'MoreHorizontal' menu anchors to.
+   * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
+   */
   const [activeTab, setActiveTab] = useState(activeTabIndex);
+  const [isEditing, setIsEditing] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogState, setDialogState] = useState(null);
+  const [anchorElement, setAnchorElement] = useState(null);
+  const menuOpen = anchorElement ?? false;
 
+  /**
+   * Handles the click on a tab, which should trigger a change.
+   * @param {Object} event - The click event
+   * @param {int} newTab - The number of the tab
+   */
   const handleChange = (event, newTab) => {
     setActiveTab(newTab);
     history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
   };
 
+  /**
+   * The query to gather the project name
+   */
   const { loading, error, data } = useQuery(PROJECT_NAME, {
     variables: { projectId },
   });
 
+  /**
+   * The mutation to soft-delete the project
+   */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE, {
     variables: { projectId },
   });
 
+  /**
+   * Clears the dialog contents
+   */
   const clearDialogContent = () => {
     setDialogState(null);
   };
 
+  /**
+   * Changes the dialog contents
+   * @param {string|JSX} title - The title of the dialog
+   * @param {string|JSX} body - The body of the dialog
+   * @param {string|JSX} actions - The buttons area for the dialog at the bottom
+   */
   const setDialogContent = (title, body, actions) => {
     setDialogState({
       title: title,
@@ -156,45 +184,47 @@ const ProjectView = () => {
     });
   };
 
+  /**
+   * Opens the dialog
+   */
   const handleDialogOpen = () => {
     setDialogOpen(true);
   };
 
+  /**
+   * Closes the dialog, and clears its contents
+   */
   const handleDialogClose = () => {
     setDialogOpen(false);
     clearDialogContent();
   };
 
+  /**
+   * Handles mouse event to open the menu
+   * @param {Object} event - The mouse click event
+   */
   const handleMenuOpen = event => {
     setAnchorElement(event.currentTarget);
   };
 
+  /**
+   * Closes the menu by clearing the anchor element state
+   */
   const handleMenuClose = () => {
     setAnchorElement(null);
   };
 
+  /**
+   * Handles the rename menu option click
+   */
   const handleRenameClick = () => {
     setIsEditing(true);
     handleMenuClose();
   };
 
-  const handleDelete = () => {
-    setDialogContent("Please wait", <CircularProgress />, null);
-
-    archiveProject()
-      .then(() => {
-        window.location = "/moped/projects";
-      })
-      .catch(err => {
-        setDialogContent(
-          "Error",
-          "It appears there was an error while deleting, please contact the Data & Technology Services department. Reference: " +
-            String(err),
-          <Button onClick={handleDialogClose}>Close</Button>
-        );
-      });
-  };
-
+  /**
+   * Handles the delete menu option click
+   */
   const handleDeleteClick = () => {
     setDialogContent(
       "Are you sure?",
@@ -214,6 +244,30 @@ const ProjectView = () => {
     );
     handleDialogOpen();
     handleMenuClose();
+  };
+
+  /**
+   * Makes actual soft-deletion by running the mutation
+   */
+  const handleDelete = () => {
+    // Change the contents of the dialog
+    setDialogContent("Please wait", <CircularProgress />, null);
+
+    // run the mutation
+    archiveProject()
+      .then(() => {
+        // Do not close the dialog, redirect will take care
+        window.location = "/moped/projects";
+      })
+      .catch(err => {
+        // If there is an error, show it in the dialog
+        setDialogContent(
+          "Error",
+          "It appears there was an error while deleting, please contact the Data & Technology Services department. Reference: " +
+            String(err),
+          <Button onClick={handleDialogClose}>Close</Button>
+        );
+      });
   };
 
   return (
