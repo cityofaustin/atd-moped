@@ -12,6 +12,7 @@ import {
   Paper,
   Select,
   Snackbar,
+  Switch,
   TextField,
 } from "@material-ui/core";
 
@@ -229,7 +230,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param value
    */
   const handleFieldValueUpdate = value => {
-    setEditValue(value.target.value);
+    console.log(value.target.checked);
+    setEditValue(value.target.checked);
   };
 
   /**
@@ -340,20 +342,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return (
       <FormControl fullWidth className={classes.formControl}>
         <InputLabel id={"select-" + field}>{label}</InputLabel>
-        <Select
+        <Switch
           fullWidth
           labelId={"select-" + field}
           id={field}
-          value={editValue ?? initialValue}
+          checked={editValue ?? initialValue}
           onChange={e => handleFieldValueUpdate(e)}
-        >
-          <MenuItem value={true} selected={editValue === true}>
-            Yes
-          </MenuItem>
-          <MenuItem value={false} selected={editValue === false}>
-            No
-          </MenuItem>
-        </Select>
+        ></Switch>
       </FormControl>
     );
   };
