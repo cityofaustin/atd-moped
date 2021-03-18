@@ -3481,6 +3481,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3507,6 +3508,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3533,6 +3535,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3559,6 +3562,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3585,6 +3589,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3612,6 +3617,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
@@ -3638,6 +3644,7 @@
       - eCapris_id
       - end_date
       - fiscal_year
+      - is_retired
       - project_description
       - project_description_public
       - project_extent_geojson
