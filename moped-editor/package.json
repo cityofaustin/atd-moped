@@ -58,6 +58,7 @@
     "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "lodash.toarray": "^4.4.0",
+    "luxon": "^1.26.0",
     "material-table": "^1.69.2",
     "moment": "^2.29.1",
     "nprogress": "^0.2.0",
