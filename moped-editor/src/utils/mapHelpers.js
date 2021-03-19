@@ -110,7 +110,8 @@ export const mapConfig = {
     Project_Component_Points_prototype: {
       layerLabel: "Points",
       layerIdName: "project-component-points",
-      layerIdGetPath: "id",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_Intersection_Points_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -122,9 +123,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "circle-opacity": [
               "case",
-              ["==", ["id"], hoveredId],
+              ["==", ["get", this.layerIdField], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["id"], ["literal", layerIds]],
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
