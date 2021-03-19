@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
+import adjustedTimezoneDateTime from "../../../utils/adjustedTimezoneDateTime";
+import { DateTime } from "luxon";
 
 import {
   AppBar,
@@ -98,10 +100,10 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   };
 
   const getDateTime = data => {
-    const date = data?.moped_activity_log[0]?.created_at;
+    const date = adjustedTimezoneDateTime(data?.moped_activity_log[0]?.created_at); // adjustedTimezoneDateTime(data?.moped_activity_log[0]?.created_at);
 
     try {
-      return new Date(date).toLocaleString();
+      return date.toLocaleString(DateTime.DATETIME_SHORT);
     } catch {
       return null;
     }
