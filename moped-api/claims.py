@@ -121,18 +121,12 @@ def is_coa_staff(email: str) -> bool:
     return email.endswith("@austintexas.gov")
 
 
-def generate_iso_timestamp(time: str = None) -> str:
+def generate_iso_timestamp() -> str:
     """
     Generates a timestamp for insertion to postgres
-    :param str time: Optional Postgres timestamp
     :return str:
     """
-    if time == None:
-        timestamp = datetime.datetime.now()
-    else:
-        timestamp = datetime.datetime.strptime(time, "%Y-%m-%dT%H:%M:%S.%f%z")
-
-    return timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    return datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
 def has_user_role(role, claims) -> bool:
