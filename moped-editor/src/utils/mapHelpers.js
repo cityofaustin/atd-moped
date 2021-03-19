@@ -285,7 +285,12 @@ export const createSummaryMapLayers = (selectedIds, geoJSON) => {
 
   return Object.entries(geoJSONBySource).map(
     ([sourceLayerName, sourceLayerGeoJSON]) => (
-      <Source id={sourceLayerName} type="geojson" data={sourceLayerGeoJSON}>
+      <Source
+        key={sourceLayerName}
+        id={sourceLayerName}
+        type="geojson"
+        data={sourceLayerGeoJSON}
+      >
         <Layer
           key={sourceLayerName}
           {...createProjectViewLayerConfig(sourceLayerName)}
@@ -489,7 +494,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     <Box component="div" className={classes.layerSelectBox}>
       <Typography className={classes.layerSelectTitle}>Layers</Typography>
       {getLayerNames().map(name => (
-        <Typography className={classes.layerSelectText}>
+        <Typography key={name} className={classes.layerSelectText}>
           <Checkbox
             checked={visibleLayerIds.includes(name)}
             onChange={handleLayerCheckboxClick}
