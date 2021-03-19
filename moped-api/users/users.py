@@ -195,7 +195,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
-            ignore_fields=["password"]
+            ignore_fields=["password", "date_added"]
         )
 
         if not profile_valid:
