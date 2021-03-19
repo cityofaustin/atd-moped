@@ -292,6 +292,12 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
         user_id
       }
     }
+    activity_log_lookup_tables: moped_activity_log(
+      where: { activity_id: { _eq: $activityId } }
+      distinct_on: record_type
+    ) {
+      record_type
+    }
   }
 `;
 
