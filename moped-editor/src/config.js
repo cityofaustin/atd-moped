@@ -1,4 +1,7 @@
 export default {
+  user: {
+    timezoneOffset: new Date().getTimezoneOffset(),
+  },
   env: {
     APP_CLOUDFRONT: process.env.REACT_APP_AWS_CLOUDFRONT,
     APP_ENVIRONMENT: process.env.REACT_APP_HASURA_ENV,
