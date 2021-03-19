@@ -130,6 +130,7 @@ def is_coa_staff(email: str) -> bool:
 def generate_iso_timestamp(time: str = None) -> str:
     """
     Generates a timestamp for insertion to postgres
+    :param str time: Optional Postgres timestamp
     :return str:
     """
     if time == None:
