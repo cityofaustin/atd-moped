@@ -316,15 +316,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           inputRef={register}
           className={classes.hiddenTextField}
         />
-        {/* This hidden field stores an existing value so the API doesn't reset date_added on edit */}
-        {!isNewUser && (
-          <TextField
-            id="date-added"
-            name="date_added"
-            inputRef={register}
-            className={classes.hiddenTextField}
-          />
-        )}
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>

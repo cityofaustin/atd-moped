@@ -28,7 +28,6 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
     """
     return {
         "cognito_user_id": cognito_id,
-        "date_added": json_data.get("date_added", generate_iso_timestamp()),
         "email": json_data.get("email", None),
         "first_name": json_data.get("first_name", None),
         "last_name": json_data.get("last_name", None),
