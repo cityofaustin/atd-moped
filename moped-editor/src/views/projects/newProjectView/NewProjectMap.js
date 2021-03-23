@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
+import { Editor, DrawPointMode } from "react-map-gl-draw";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -23,6 +24,10 @@ import {
   useLayerSelect,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
+
+const MODES = [
+  { id: "drawPolyline", text: "Draw Polyline", handler: DrawPointMode },
+];
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -122,6 +127,18 @@ const NewProjectMap = ({
     });
   };
 
+  const [modeId, setModeId] = useState(null);
+  const [modeHandler, setModeHandler] = useState(null);
+
+  const switchMode = e => {
+    const modeId = e.target.value === modeId ? null : e.target.value;
+    const mode = MODES.find(m => m.id === modeId);
+    const modeHandler = mode ? new mode.handler() : null;
+
+    setModeId(modeId);
+    setModeHandler(modeHandler);
+  };
+
   return (
     <Box className={classes.mapBox}>
       <ReactMapGL
@@ -164,6 +181,11 @@ const NewProjectMap = ({
           </Source>
         ))}
         {renderLayerSelect()}
+        <Editor
+          // to make the lines/vertices easier to interact with
+          clickRadius={12}
+          mode={modeHandler}
+        />
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
