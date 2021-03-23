@@ -144,7 +144,7 @@ const GridTable = ({ title, query }) => {
   // Set limit, offset and clear any 'Where' filters
   query.limit = pagination.limit;
   query.offset = pagination.offset;
-  query.cleanWhere(); // We need the latest version of this line btw
+  query.cleanWhere();
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {

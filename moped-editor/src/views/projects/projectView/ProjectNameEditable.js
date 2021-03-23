@@ -48,7 +48,7 @@ const ProjectNameEditable = props => {
   const [isEditing, setIsEditing] = useState(props?.isEditing ?? false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
-  if (props?.isEditing === true && isEditing === false) {
+  if (props?.isEditing && !isEditing) {
     setIsEditing(true);
   }
 
