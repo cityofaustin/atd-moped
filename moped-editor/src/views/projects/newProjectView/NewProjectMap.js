@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Editor, DrawPointMode } from "react-map-gl-draw";
@@ -25,9 +25,7 @@ import {
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
-const MODES = [
-  { id: "drawPolyline", text: "Draw Polyline", handler: DrawPointMode },
-];
+const MODES = [{ id: "drawPoint", text: "Draw Point", handler: DrawPointMode }];
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -131,12 +129,29 @@ const NewProjectMap = ({
   const [modeHandler, setModeHandler] = useState(null);
 
   const switchMode = e => {
-    const modeId = e.target.value === modeId ? null : e.target.value;
-    const mode = MODES.find(m => m.id === modeId);
+    const switchModeId = e.target.value === modeId ? null : e.target.value;
+    const mode = MODES.find(m => m.id === switchModeId);
     const modeHandler = mode ? new mode.handler() : null;
 
     setModeId(modeId);
     setModeHandler(modeHandler);
+  };
+
+  const renderDrawToolbar = () => {
+    return (
+      <div
+        style={{ position: "absolute", top: 60, right: 10, maxWidth: "320px" }}
+      >
+        <select onChange={switchMode}>
+          <option value="">--Please choose a draw mode--</option>
+          {MODES.map(mode => (
+            <option key={mode.id} value={mode.id}>
+              {mode.text}
+            </option>
+          ))}
+        </select>
+      </div>
+    );
   };
 
   return (
@@ -186,6 +201,7 @@ const NewProjectMap = ({
           clickRadius={12}
           mode={modeHandler}
         />
+        {renderDrawToolbar()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
