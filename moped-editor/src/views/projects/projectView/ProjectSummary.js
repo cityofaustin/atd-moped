@@ -29,10 +29,10 @@ const ProjectSummary = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <ProjectSummaryTable
-                loading={loading}
-                data={data}
-                error={error}
-                refetch={refetch}
+              loading={loading}
+              data={data}
+              error={error}
+              refetch={refetch}
             />
           </Grid>
           <Grid item xs={12} md={6}>

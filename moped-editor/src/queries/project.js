@@ -377,3 +377,11 @@ export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
   }
 `;
 
+export const PROJECT_ARCHIVE= gql`
+  mutation ArchiveMopedProject($projectId: Int!) {
+    update_moped_project(where: {project_id: {_eq: $projectId}}, _set: {is_retired: true}) {
+      affected_rows
+    }
+  }
+`
+
