@@ -304,6 +304,7 @@ const ProjectView = () => {
                         open={menuOpen}
                         onClose={handleMenuClose}
                         TransitionComponent={Fade}
+                        getContentAnchorEl={null}
                         anchorOrigin={{
                           vertical: "bottom",
                           horizontal: "center",
