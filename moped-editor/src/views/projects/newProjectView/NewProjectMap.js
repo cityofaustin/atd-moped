@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Editor, DrawPointMode } from "react-map-gl-draw";
@@ -125,8 +125,10 @@ const NewProjectMap = ({
     });
   };
 
+  const mapEditor = useRef();
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
+  const [editFeatures, setEditFeatures] = useState([]);
 
   const switchMode = e => {
     const switchModeId = e.target.value === modeId ? null : e.target.value;
@@ -135,6 +137,10 @@ const NewProjectMap = ({
 
     setModeId(modeId);
     setModeHandler(modeHandler);
+  };
+
+  const handleFeatureDraw = drawObject => {
+    console.log(drawObject);
   };
 
   const renderDrawToolbar = () => {
@@ -197,6 +203,9 @@ const NewProjectMap = ({
         ))}
         {renderLayerSelect()}
         <Editor
+          ref={mapEditor}
+          features={editFeatures}
+          onSelect={handleFeatureDraw}
           // to make the lines/vertices easier to interact with
           clickRadius={12}
           mode={modeHandler}
