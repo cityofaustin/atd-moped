@@ -1291,8 +1291,8 @@ export const ProjectActivityLogTableMaps = {
       },
       file_description: {
         icon: "",
-        label: "Day",
-        data_type: "date",
+        label: "Description",
+        data_type: "text",
       },
       file_size: {
         icon: "",
@@ -1384,6 +1384,21 @@ export const ProjectActivityLogOperationMaps = {
     },
   },
 
+  moped_project_files: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "description",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
+  },
+
   generic: {
     DELETE: {
       label: "Deleted",
@@ -1427,6 +1442,9 @@ export const ProjectActivityLogCreateDescriptions = {
         .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
       return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
+  },
+  moped_project_files: {
+    label: record => `New file '${record.record_data.event.data.new.file_name}'`,
   },
   generic: {
     label: () => "Added",
