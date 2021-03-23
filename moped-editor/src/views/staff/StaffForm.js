@@ -4,8 +4,9 @@ import { formatApiErrors, useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { WORKGROUPS_QUERY } from "../../queries/workgroups";
 
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
@@ -27,15 +28,6 @@ import {
   RadioGroup,
   Select,
 } from "@material-ui/core";
-
-const WORKGROUPS_QUERY = gql`
-  query GetWorkgroups {
-    moped_workgroup {
-      workgroup_id
-      workgroup_name
-    }
-  }
-`;
 
 const useStyles = makeStyles(theme => ({
   formSelect: {
@@ -78,7 +70,7 @@ const statuses = [
 ];
 
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = editFormData =>
+const staffValidationSchema = isNewUser =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
@@ -88,7 +80,7 @@ const staffValidationSchema = editFormData =>
     email: yup.string().required(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
-      is: () => editFormData === null,
+      is: () => isNewUser,
       then: yup.string().required(),
       otherwise: yup.string(),
     }),
@@ -105,6 +97,8 @@ const fieldParsers = {
 const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
+  const isNewUser = editFormData === null;
+
   const {
     loading: userApiLoading,
     requestApi,
@@ -122,7 +116,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     reset,
   } = useForm({
     defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema(editFormData)),
+    resolver: yupResolver(staffValidationSchema(isNewUser)),
   });
 
   const { isSubmitting, dirtyFields } = formState;
@@ -137,8 +131,8 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     });
 
     // POST or PUT request to User Management API
-    const method = editFormData === null ? "post" : "put";
-    const path = editFormData === null ? "/users/" : "/users/" + userCognitoId;
+    const method = isNewUser ? "post" : "put";
+    const path = isNewUser ? "/users/" : "/users/" + userCognitoId;
 
     // If editing and password is not updated, remove it
     if (!dirtyFields?.password) {
