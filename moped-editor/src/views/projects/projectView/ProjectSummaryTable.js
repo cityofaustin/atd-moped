@@ -27,10 +27,10 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
     fields: {
       current_status: {
-        label: "Current Status",
+        label: "Current status",
         labelStyle: classes.fieldSelectCapitalize,
         type: "select",
-        placeholder: "Select Status",
+        placeholder: "Select status",
         editable: true,
         lookup: {
           table: "moped_status",
@@ -42,7 +42,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         style: classes.fieldSelectCapitalize,
       },
       current_phase: {
-        label: "Current Phase",
+        label: "Current phase",
         labelStyle: classes.fieldSelectCapitalize,
         placeholder: "Select phase",
         type: "select",
@@ -65,13 +65,13 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         multilineRows: 4,
       },
       start_date: {
-        label: "Start Date",
+        label: "Start date",
         type: "date",
         placeholder: "Select date",
         editable: true,
       },
       fiscal_year: {
-        label: "Fiscal Year",
+        label: "Fiscal year",
         type: "select",
         placeholder: "Select fiscal year",
         lookup: {
@@ -82,15 +82,15 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
       },
       capitally_funded: {
-        label: "Capital Funding",
+        label: "Capital funding",
         type: "boolean",
         placeholder: "Select capitally funded",
         editable: true,
       },
       eCapris_id: {
-        label: "eCapris ID",
+        label: "eCapris subproject ID",
         type: "string",
-        placeholder: "Enter eCapris ID",
+        placeholder: "Enter eCapris subproject ID",
         emptyValue: "None",
         editable: true,
         format: value =>
