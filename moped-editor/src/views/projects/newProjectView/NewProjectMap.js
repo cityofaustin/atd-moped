@@ -179,7 +179,6 @@ const NewProjectMap = ({
     });
   };
 
-  // TODO: Why is onSelect being called twice on every point select?
   // TODO: Disable hover layer behavior when drawing points
   // TODO: Add drawn points to GeoJSON
   // TODO: Update cursor when drawing
@@ -279,7 +278,7 @@ const NewProjectMap = ({
         {renderLayerSelect()}
         <Editor
           ref={mapEditorRef}
-          onSelect={handleFeatureDraw}
+          onUpdate={handleFeatureDraw}
           featureStyle={getFeatureStyle}
           // to make the lines/vertices easier to interact with
           clickRadius={12}
