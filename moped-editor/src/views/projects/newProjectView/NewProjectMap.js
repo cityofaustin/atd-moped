@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Editor, DrawPointMode } from "react-map-gl-draw";
@@ -125,10 +125,14 @@ const NewProjectMap = ({
     });
   };
 
-  const mapEditor = useRef();
+  // TODO: Why is onSelect being called twice on every point select?
+  // TODO: Disable hover layer behavior when drawing points
+  // TODO: Add drawn points to GeoJSON
+  // TODO: Update cursor when drawing
+
+  const mapEditorRef = useRef();
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
-  const [editFeatures, setEditFeatures] = useState([]);
 
   const switchMode = e => {
     const switchModeId = e.target.value === modeId ? null : e.target.value;
@@ -140,7 +144,23 @@ const NewProjectMap = ({
   };
 
   const handleFeatureDraw = drawObject => {
-    console.log(drawObject);
+    const features = mapEditorRef.current.getFeatures();
+    console.log(features);
+
+    // const pointFeature = {
+    //   id, // an unique identified generated inside react-map-gl-draw library
+    //   geometry: {
+    //     coordinates, // latitude longitude pairs of the geometry points
+    //     type // geojson type, one of `Point`, `LineString`, or `Polygon`
+    //   },
+    //   properties: {
+    //     renderType, // Mainly used for styling, one of `Point`, `LineString`, `Polygon`, or `Rectangle`. Different from `geometry.type`. i.e. a rectangle's renderType is `Rectangle`, and `geometry.type` is `Polygon`. An incomplete (not closed) Polygon's renderType is `Polygon`, `geometry.type` is `LineString`
+    //     ...otherProps // other properties user passed in
+    //   }
+    // }
+
+    // pointCoords &&
+    //   setEditFeatures(prevFeatures => [...prevFeatures, pointCoords]);
   };
 
   const renderDrawToolbar = () => {
@@ -203,8 +223,7 @@ const NewProjectMap = ({
         ))}
         {renderLayerSelect()}
         <Editor
-          ref={mapEditor}
-          features={editFeatures}
+          ref={mapEditorRef}
           onSelect={handleFeatureDraw}
           // to make the lines/vertices easier to interact with
           clickRadius={12}
