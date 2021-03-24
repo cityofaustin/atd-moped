@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Editor, DrawPointMode } from "react-map-gl-draw";
+import { Editor, DrawPointMode, RENDER_STATE, SHAPE } from "react-map-gl-draw";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -26,6 +26,60 @@ import {
 } from "../../../utils/mapHelpers";
 
 const MODES = [{ id: "drawPoint", text: "Draw Point", handler: DrawPointMode }];
+
+const STROKE_COLOR = "rgb(38, 181, 242)";
+const FILL_COLOR = "rgb(189,189,189)";
+const CIRCLE_RADIUS = 8;
+
+const SELECTED_STYLE = {
+  stroke: STROKE_COLOR,
+  strokeWidth: 2,
+  fill: FILL_COLOR,
+  fillOpacity: 0.3,
+};
+
+const HOVERED_STYLE = {
+  stroke: STROKE_COLOR,
+  strokeWidth: 2,
+  fill: FILL_COLOR,
+  fillOpacity: 0.3,
+};
+
+const DEFAULT_STYLE = {
+  stroke: "#000",
+  strokeWidth: 2,
+  fill: FILL_COLOR,
+  fillOpacity: 0.1,
+};
+
+// https://github.com/uber/nebula.gl/blob/17aa19903bda8e5caaf14b6d25da624a1d317919/examples/react-map-gl-draw/style.js#L100
+export function getFeatureStyle({ feature, state }) {
+  const type = feature.properties.shape || feature.geometry.type;
+  let style = null;
+
+  switch (state) {
+    case RENDER_STATE.SELECTED:
+      style = { ...SELECTED_STYLE };
+      break;
+
+    case RENDER_STATE.HOVERED:
+      style = { ...HOVERED_STYLE };
+      break;
+
+    default:
+      style = { ...DEFAULT_STYLE };
+  }
+
+  switch (type) {
+    case SHAPE.POINT:
+      style.r = CIRCLE_RADIUS;
+      break;
+
+    default:
+  }
+
+  return style;
+}
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -129,6 +183,7 @@ const NewProjectMap = ({
   // TODO: Disable hover layer behavior when drawing points
   // TODO: Add drawn points to GeoJSON
   // TODO: Update cursor when drawing
+  // TODO: Style the points
 
   const mapEditorRef = useRef();
   const [modeId, setModeId] = useState(null);
@@ -225,6 +280,7 @@ const NewProjectMap = ({
         <Editor
           ref={mapEditorRef}
           onSelect={handleFeatureDraw}
+          featureStyle={getFeatureStyle}
           // to make the lines/vertices easier to interact with
           clickRadius={12}
           mode={modeHandler}
