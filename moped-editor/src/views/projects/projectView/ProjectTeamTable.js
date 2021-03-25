@@ -9,9 +9,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
-// Error Handler
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-
 import {
   TEAM_QUERY,
   ADD_PROJECT_PERSONNEL,
@@ -33,6 +30,7 @@ const ProjectTeamTable = ({
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
+  if (error) return `Error! ${error.message}`;
 
   // Get data from the team query payload
   const personnel = data.moped_proj_personnel;
@@ -215,55 +213,58 @@ const ProjectTeamTable = ({
   };
 
   return (
-    <ApolloErrorHandler errors={error}>
-      <MaterialTable
-        columns={columns}
-        components={{
-          EditRow: (props, rowData) => <MTableEditRow {...props} onKeyDown={(e) => {
+    <MaterialTable
+      columns={columns}
+      components={{
+        EditRow: (props, rowData) => (
+          <MTableEditRow
+            {...props}
+            onKeyDown={e => {
               if (e.keyCode === 13) {
                 // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                 // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
               }
-          }} />
-        }}
-        data={isNewProject ? personnelState : personnel}
-        title="Project team"
-        options={{
-          search: false,
-          rowStyle: { fontFamily: typography.fontFamily },
-        }}
-        icons={{ Delete: ClearIcon }}
-        editable={{
-          onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].add(newData);
+            }}
+          />
+        ),
+      }}
+      data={isNewProject ? personnelState : personnel}
+      title="Project team"
+      options={{
+        search: false,
+        rowStyle: { fontFamily: typography.fontFamily },
+      }}
+      icons={{ Delete: ClearIcon }}
+      editable={{
+        onRowAdd: newData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].add(newData);
 
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].update(newData, oldData);
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+        onRowUpdate: (newData, oldData) =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].update(newData, oldData);
 
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-          onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].delete(oldData);
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+        onRowDelete: oldData =>
+          new Promise((resolve, reject) => {
+            setTimeout(() => {
+              isNewProjectActions[isNewProject].delete(oldData);
 
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-        }}
-      />
-    </ApolloErrorHandler>
+              setTimeout(() => refetch(), 501);
+              resolve();
+            }, 500);
+          }),
+      }}
+    />
   );
 };
 

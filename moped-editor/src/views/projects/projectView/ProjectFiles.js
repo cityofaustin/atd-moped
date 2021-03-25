@@ -19,7 +19,7 @@ import { Clear as ClearIcon } from "@material-ui/icons";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+
 import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
@@ -90,11 +90,13 @@ const ProjectFiles = props => {
           created_by: getDatabaseId(user),
         },
       },
-    }).then(() => {
-      setDialogOpen(false);
-    }).finally(() => {
-      refetch();
-    });
+    })
+      .then(() => {
+        setDialogOpen(false);
+      })
+      .finally(() => {
+        refetch();
+      });
   };
 
   /**
@@ -122,6 +124,7 @@ const ProjectFiles = props => {
 
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
+  if (error) return `Error! ${error.message}`;
 
   /**
    * Column configuration for <MaterialTable>
@@ -212,38 +215,37 @@ const ProjectFiles = props => {
           </Grid>
         </Grid>
       </Grid>
-      <ApolloErrorHandler errors={error}>
-        <MaterialTable
-          columns={columns}
-          data={data?.moped_project_files ?? null}
-          title={null}
-          icons={{ Delete: ClearIcon }}
-          options={{
-            search: true,
-            rowStyle: { fontFamily: typography.fontFamily },
-          }}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
-              updateProjectFileAttachment({
-                variables: {
-                  fileId: newData.project_file_id,
-                  fileName: newData.file_name,
-                  fileDescription: newData.file_description,
-                },
-              }).then(() => {
-                refetch();
-              }),
-            onRowDelete: oldData =>
-              deleteProjectFileAttachment({
-                variables: {
-                  fileId: oldData.project_file_id,
-                },
-              }).then(() => {
-                refetch();
-              }),
-          }}
-        />
-      </ApolloErrorHandler>
+
+      <MaterialTable
+        columns={columns}
+        data={data?.moped_project_files ?? null}
+        title={null}
+        icons={{ Delete: ClearIcon }}
+        options={{
+          search: true,
+          rowStyle: { fontFamily: typography.fontFamily },
+        }}
+        editable={{
+          onRowUpdate: (newData, oldData) =>
+            updateProjectFileAttachment({
+              variables: {
+                fileId: newData.project_file_id,
+                fileName: newData.file_name,
+                fileDescription: newData.file_description,
+              },
+            }).then(() => {
+              refetch();
+            }),
+          onRowDelete: oldData =>
+            deleteProjectFileAttachment({
+              variables: {
+                fileId: oldData.project_file_id,
+              },
+            }).then(() => {
+              refetch();
+            }),
+        }}
+      />
       <FileUploadDialogSingle
         title={"Upload Media"}
         dialogOpen={dialogOpen}

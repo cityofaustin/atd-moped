@@ -29,7 +29,6 @@ import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
-import ApolloErrorHandler from "../ApolloErrorHandler";
 
 /**
  * GridTable Style
@@ -330,137 +329,135 @@ const GridTable = ({ title, query }) => {
   );
 
   return (
-    <ApolloErrorHandler error={error}>
-      <Container maxWidth={false} className={classes.root}>
-        {/*Title*/}
-        <Typography
-          variant="h1"
-          component="h2"
-          align="left"
-          className={classes.title}
-        >
-          {title}
-        </Typography>
-        {/*Toolbar Space*/}
-        <GridTableToolbar>
-          <GridTableSearch
-            query={query}
-            searchState={{
-              searchParameters: search,
-              setSearchParameters: setSearch,
-            }}
-            filterState={{
-              filterParameters: filters,
-              setFilterParameters: setFilter,
-            }}
-          />
-        </GridTableToolbar>
-        {/*Main Table Body*/}
-        <Paper className={classes.paper}>
-          <Box mt={3}>
-            {loading ? (
-              <CircularProgress />
-            ) : data ? (
-              <Card className={classes.root}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <GridTableListHeader
-                      query={query}
-                      sortOrder={sort.order}
-                      sortColumn={sort.column}
-                      handleTableHeaderClick={handleTableHeaderClick}
-                    />
-                    <TableBody>
-                      {data[query.table].map((row, rowIndex) => {
-                        return (
-                          <TableRow hover key={rowIndex}>
-                            {query.columns.map(
-                              (column, columnIndex) =>
-                                // If column is hidden, don't render <td>
-                                !query.isHidden(column) && (
-                                  <TableCell
-                                    key={columnIndex}
-                                    width={
-                                      query.config.columns[
-                                        column
-                                      ].hasOwnProperty("width")
-                                        ? query.config.columns[column].width
-                                        : 0
-                                    }
-                                  >
-                                    {query.isPK(column) ? (
-                                      // If there is custom JSX for the PK single item button, render it
-                                      (query.config.customSingleItemButton &&
-                                        query.config.customSingleItemButton(
-                                          row[column]
-                                        )) || (
-                                        <RouterLink
-                                          to={`/${query.singleItem}/${row[column]}`}
-                                        >
-                                          {query.config.columns[
-                                            column
-                                          ].hasOwnProperty("icon") ? (
-                                            <Icon
-                                              color={
-                                                query.config.columns[column]
-                                                  .icon.color
-                                              }
-                                            >
-                                              {
-                                                query.config.columns[column]
-                                                  .icon.name
-                                              }
-                                            </Icon>
-                                          ) : (
-                                            row[column]
-                                          )}
-                                        </RouterLink>
-                                      )
-                                    ) : isAlphanumeric(column) ? (
-                                      <>
+    <Container maxWidth={false} className={classes.root}>
+      {/*Title*/}
+      <Typography
+        variant="h1"
+        component="h2"
+        align="left"
+        className={classes.title}
+      >
+        {title}
+      </Typography>
+      {/*Toolbar Space*/}
+      <GridTableToolbar>
+        <GridTableSearch
+          query={query}
+          searchState={{
+            searchParameters: search,
+            setSearchParameters: setSearch,
+          }}
+          filterState={{
+            filterParameters: filters,
+            setFilterParameters: setFilter,
+          }}
+        />
+      </GridTableToolbar>
+      {/*Main Table Body*/}
+      <Paper className={classes.paper}>
+        <Box mt={3}>
+          {loading ? (
+            <CircularProgress />
+          ) : data ? (
+            <Card className={classes.root}>
+              <TableContainer className={classes.container}>
+                <Table stickyHeader aria-label="sticky table">
+                  <GridTableListHeader
+                    query={query}
+                    sortOrder={sort.order}
+                    sortColumn={sort.column}
+                    handleTableHeaderClick={handleTableHeaderClick}
+                  />
+                  <TableBody>
+                    {data[query.table].map((row, rowIndex) => {
+                      return (
+                        <TableRow hover key={rowIndex}>
+                          {query.columns.map(
+                            (column, columnIndex) =>
+                              // If column is hidden, don't render <td>
+                              !query.isHidden(column) && (
+                                <TableCell
+                                  key={columnIndex}
+                                  width={
+                                    query.config.columns[column].hasOwnProperty(
+                                      "width"
+                                    )
+                                      ? query.config.columns[column].width
+                                      : 0
+                                  }
+                                >
+                                  {query.isPK(column) ? (
+                                    // If there is custom JSX for the PK single item button, render it
+                                    (query.config.customSingleItemButton &&
+                                      query.config.customSingleItemButton(
+                                        row[column]
+                                      )) || (
+                                      <RouterLink
+                                        to={`/${query.singleItem}/${row[column]}`}
+                                      >
                                         {query.config.columns[
                                           column
-                                        ].hasOwnProperty("chip")
-                                          ? buildChip(
-                                              row[column],
-                                              query.config.columns[column].chip
-                                            )
-                                          : query.getFormattedValue(
-                                              column,
-                                              row[column]
-                                            )}
-                                      </>
-                                    ) : (
-                                      query.getFormattedValue(
-                                        column,
-                                        getSummary(row, column.trim())
-                                      )
-                                    )}
-                                  </TableCell>
-                                )
-                            )}
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                                        ].hasOwnProperty("icon") ? (
+                                          <Icon
+                                            color={
+                                              query.config.columns[column].icon
+                                                .color
+                                            }
+                                          >
+                                            {
+                                              query.config.columns[column].icon
+                                                .name
+                                            }
+                                          </Icon>
+                                        ) : (
+                                          row[column]
+                                        )}
+                                      </RouterLink>
+                                    )
+                                  ) : isAlphanumeric(column) ? (
+                                    <>
+                                      {query.config.columns[
+                                        column
+                                      ].hasOwnProperty("chip")
+                                        ? buildChip(
+                                            row[column],
+                                            query.config.columns[column].chip
+                                          )
+                                        : query.getFormattedValue(
+                                            column,
+                                            row[column]
+                                          )}
+                                    </>
+                                  ) : (
+                                    query.getFormattedValue(
+                                      column,
+                                      getSummary(row, column.trim())
+                                    )
+                                  )}
+                                </TableCell>
+                              )
+                          )}
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
 
-                {/*Pagination Management*/}
-                <GridTablePagination
-                  query={query}
-                  data={data}
-                  pagination={pagination}
-                  setPagination={setPagination}
-                />
-              </Card>
-            ) : (
-              <span>{error ? error : "Could not fetch data"}</span>
-            )}
-          </Box>
-        </Paper>
-      </Container>
-    </ApolloErrorHandler>
+              {/*Pagination Management*/}
+              <GridTablePagination
+                query={query}
+                data={data}
+                pagination={pagination}
+                setPagination={setPagination}
+              />
+            </Card>
+          ) : (
+            <span>{error ? error : "Could not fetch data"}</span>
+          )}
+        </Box>
+      </Paper>
+    </Container>
   );
 };
 
