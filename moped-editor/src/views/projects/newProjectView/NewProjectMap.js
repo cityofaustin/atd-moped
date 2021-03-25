@@ -110,6 +110,7 @@ const NewProjectMap = ({
     featureCollection,
     false
   );
+
   const { handleLayerHover, featureId } = useHoverLayer();
 
   const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
@@ -179,12 +180,12 @@ const NewProjectMap = ({
     });
   };
 
-  // TODO: Disable hover layer behavior when drawing points
   // TODO: Add drawn points to GeoJSON
   // TODO: Update cursor when drawing
   // TODO: Style the points
 
   const mapEditorRef = useRef();
+  const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
 
@@ -195,6 +196,7 @@ const NewProjectMap = ({
 
     setModeId(modeId);
     setModeHandler(modeHandler);
+    setIsDrawing(true);
   };
 
   const handleFeatureDraw = drawObject => {
@@ -241,9 +243,9 @@ const NewProjectMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={getInteractiveIds()}
-        onHover={handleLayerHover}
-        onClick={handleLayerClick}
+        interactiveLayerIds={!isDrawing && getInteractiveIds()}
+        onHover={!isDrawing && handleLayerHover}
+        onClick={!isDrawing && handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
       >
