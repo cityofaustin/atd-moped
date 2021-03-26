@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
+import MapDrawToolbar from "./MapDrawToolbar";
 import {
   Editor,
   DrawPointMode,
@@ -31,9 +32,19 @@ import {
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
-const MODES = [
-  { id: "drawPoint", text: "Draw Point", handler: DrawPointMode },
-  { id: "edit", text: "Edit Point", handler: EditingMode },
+export const MODES = [
+  {
+    id: "drawPoint",
+    text: "Draw Point",
+    handler: DrawPointMode,
+    icon: "icon-point.svg",
+  },
+  {
+    id: "edit",
+    text: "Edit Point",
+    handler: EditingMode,
+    icon: "icon-select.svg",
+  },
 ];
 
 const STROKE_COLOR = "rgb(38, 181, 242)";
@@ -197,6 +208,10 @@ const NewProjectMap = ({
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
+  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
+  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
+    []
+  );
 
   const switchMode = e => {
     const switchModeId = e.target.value === modeId ? null : e.target.value;
@@ -228,21 +243,56 @@ const NewProjectMap = ({
     //   setEditFeatures(prevFeatures => [...prevFeatures, pointCoords]);
   };
 
+  const onSelect = selected => {
+    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
+    setSelectedEditHandleIndexes(
+      selected && selected.selectedEditHandleIndexes
+    );
+  };
+
+  const onDelete = () => {
+    if (selectedEditHandleIndexes.length) {
+      try {
+        mapEditorRef.current.deleteHandles(
+          selectedFeatureIndex,
+          selectedEditHandleIndexes
+        );
+      } catch (error) {
+        // eslint-disable-next-line no-undef, no-console
+        console.error(error.message);
+      }
+      return;
+    }
+
+    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
+      return;
+    }
+
+    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+  };
+
   const renderDrawToolbar = () => {
     return (
-      <div
-        style={{ position: "absolute", top: 60, right: 10, maxWidth: "320px" }}
-      >
-        <select onChange={switchMode}>
-          <option value="">--Please choose a draw mode--</option>
-          {MODES.map(mode => (
-            <option key={mode.id} value={mode.id}>
-              {mode.text}
-            </option>
-          ))}
-        </select>
-      </div>
+      <MapDrawToolbar
+        selectedMode={modeId}
+        onSwitchMode={switchMode}
+        onDelete={onDelete}
+      />
     );
+    // return (
+    //   <div
+    //     style={{ position: "absolute", top: 60, right: 10, maxWidth: "320px" }}
+    //   >
+    //     <select onChange={switchMode}>
+    //       <option value="">--Please choose a draw mode--</option>
+    //       {MODES.map(mode => (
+    //         <option key={mode.id} value={mode.id}>
+    //           {mode.text}
+    //         </option>
+    //       ))}
+    //     </select>
+    //   </div>
+    // );
   };
 
   return (
@@ -291,6 +341,7 @@ const NewProjectMap = ({
           ref={mapEditorRef}
           onUpdate={handleFeatureDraw}
           featureStyle={getFeatureStyle}
+          onSelect={onSelect}
           // to make the lines/vertices easier to interact with
           clickRadius={12}
           mode={modeHandler}

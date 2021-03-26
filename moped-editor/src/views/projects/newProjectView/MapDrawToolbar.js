@@ -1,22 +1,17 @@
-import React from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core";
 
-import { MODES } from "./constants";
+import { MODES } from "./NewProjectMap";
 
-const ICON_MAP = [
-  { id: MODES.EDITING, text: "Edit Feature", icon: "icon-select.svg" },
-  { id: MODES.DRAW_POINT, text: "Draw Point", icon: "icon-point.svg" },
-];
-
-export const useStyles = makeStyles({
+export const useStyles = makeStyles(theme => ({
   controlContainer: {
     position: "absolute",
     width: 48,
-    left: 24,
-    top: 24,
+    right: 10,
+    top: 56,
     background: "#fff",
-    boxShadow: "0 0 4px rgba(0, 0, 0, 0.15)",
+    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
+    borderRadius: 4,
     outline: "none",
     display: "flex",
     justifyContent: "center",
@@ -33,8 +28,8 @@ export const useStyles = makeStyles({
     height: "inherit",
   },
   controlTooltip: {
-    position: absolute,
-    left: 52,
+    position: "absolute",
+    right: 52,
     padding: 4,
     background: "rgba(0, 0, 0, 0.8)",
     color: "#fff",
@@ -48,26 +43,22 @@ export const useStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
   },
-  controlDelete: {},
-});
+  controlDelete: {
+    height: 34,
+    padding: 7,
+    display: "flex",
+    justifyContent: "left",
+    "&:hover": {
+      background: ({ selected }) => (selected ? "#0071bc" : "#e6e6e6"),
+    },
+    "&:active": {
+      background: ({ selected }) => (selected ? "#0071bc" : "inherit"),
+    },
+  },
+}));
 
-const Row = styled.div`
-  color: ${props => (props.selected ? "#ffffff" : "inherit")};
-  background: ${props =>
-    props.selected ? "#0071bc" : props.hovered ? "#e6e6e6" : "inherit"};
-`;
-
-const Delete = styled(Row)`
-  &:hover {
-    background: ${props => (props.selected ? "#0071bc" : "#e6e6e6")};
-  }
-  &:active: {
-    background: ${props => (props.selected ? "#0071bc" : "inherit")};
-  }
-`;
-
-const DrawToolbar = selectedMode => {
-  const classes = useStyles();
+const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
+  const classes = useStyles({ selected: selectedMode });
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
@@ -76,19 +67,19 @@ const DrawToolbar = selectedMode => {
     setHoveredId(evt && evt.target.id);
   };
 
-  const onDelete = evt => {
-    props.onDelete(evt);
+  const onDeleteClick = evt => {
+    onDelete(evt);
     setIsDeleting(true);
     setTimeout(() => setIsDeleting(false), 500);
   };
 
   return (
     <div className={classes.controlContainer}>
-      {ICON_MAP.map(m => {
+      {MODES.map(m => {
         return (
           <div
             className={classes.controlRow}
-            onClick={props.onSwitchMode}
+            onClick={onSwitchMode}
             onMouseOver={onHover}
             onMouseOut={() => onHover(null)}
             selected={m.id === selectedMode}
@@ -100,26 +91,31 @@ const DrawToolbar = selectedMode => {
               className={classes.controlImg}
               id={m.id}
               onMouseOver={onHover}
-              src={m.icon}
+              src={`./${m.icon}`}
             />
-            {hoveredId === m.id && <Tooltip>{m.text}</Tooltip>}
+            {hoveredId === m.id && (
+              <div className={classes.controlTooltip}>{m.text}</div>
+            )}
           </div>
         );
       })}
-      <Delete
+      <div
+        className={classes.controlDelete}
         selected={isDeleting}
-        onClick={onDelete}
+        onClick={onDeleteClick}
         onMouseOver={onHover}
         onMouseOut={() => onHover(null)}
       >
-        <Img
+        <img
           id={"delete"}
           onMouseOver={onHover}
           onClick={onDelete}
-          src={"icon-delete.svg"}
+          src={"./icon-delete.svg"}
         />
-        {hoveredId === "delete" && <Tooltip>{"Delete"}</Tooltip>}
-      </Delete>
+        {hoveredId === "delete" && (
+          <div className={classes.controlTooltip}>{"Delete"}</div>
+        )}
+      </div>
     </div>
   );
 };
