@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { makeStyles } from "@material-ui/core";
 
 import { MODES } from "./constants";
 
@@ -15,49 +16,52 @@ const ICON_MAP = [
   },
 ];
 
-const Container = styled.div`
-  position: absolute;
-  width: 48px;
-  left: 24px;
-  top: 24px;
-  background: #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
-  outline: none;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-`;
+export const useStyles = makeStyles({
+  controlContainer: {
+    position: "absolute",
+    width: 48,
+    left: 24,
+    top: 24,
+    background: "#fff",
+    boxShadow: "0 0 4px rgba(0, 0, 0, 0.15)",
+    outline: "none",
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  controlRow: {
+    height: 34,
+    padding: 7,
+    display: "flex",
+    justifyContent: "left",
+  },
+  controlImg: {
+    width: "inherit",
+    height: "inherit",
+  },
+  controlTooltip: {
+    position: absolute,
+    left: 52,
+    padding: 4,
+    background: "rgba(0, 0, 0, 0.8)",
+    color: "#fff",
+    minWidth: 100,
+    maxWidth: 300,
+    height: 24,
+    fontSize: 12,
+    zIndex: 9,
+    pointerEvents: "none",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  controlDelete: {},
+});
 
 const Row = styled.div`
-  height: 34px;
-  padding: 7px;
-  display: flex;
-  justify-content: left;
   color: ${props => (props.selected ? "#ffffff" : "inherit")};
   background: ${props =>
     props.selected ? "#0071bc" : props.hovered ? "#e6e6e6" : "inherit"};
-`;
-
-const Img = styled.img`
-  width: inherit;
-  height: inherit;
-`;
-
-const Tooltip = styled.div`
-  position: absolute;
-  left: 52px;
-  padding: 4px;
-  background: rgba(0, 0, 0, 0.8);
-  color: #fff;
-  min-width: 100px;
-  max-width: 300px;
-  height: 24px;
-  font-size: 12px;
-  z-index: 9;
-  pointer-events: none;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;
 
 const Delete = styled(Row)`
@@ -70,6 +74,8 @@ const Delete = styled(Row)`
 `;
 
 const DrawToolbar = selectedMode => {
+  const classes = useStyles();
+
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
 
@@ -78,44 +84,50 @@ const DrawToolbar = selectedMode => {
   };
 
   const onDelete = evt => {
-    this.props.onDelete(evt);
-    this.setState({ deleting: true });
-    setTimeout(() => this.setState({ deleting: false }), 500);
+    props.onDelete(evt);
+    setIsDeleting(true);
+    setTimeout(() => setIsDeleting(false), 500);
   };
 
   return (
-    <Container>
+    <div className={classes.controlContainer}>
       {ICON_MAP.map(m => {
         return (
-          <Row
-            onClick={this.props.onSwitchMode}
-            onMouseOver={this._onHover}
-            onMouseOut={_ => this._onHover(null)}
+          <div
+            className={classes.controlRow}
+            onClick={props.onSwitchMode}
+            onMouseOver={onHover}
+            onMouseOut={() => onHover(null)}
             selected={m.id === selectedMode}
             hovered={m.id === hoveredId}
             key={m.id}
             id={m.id}
           >
-            <Img id={m.id} onMouseOver={this._onHover} src={m.icon} />
+            <img
+              className={classes.controlImg}
+              id={m.id}
+              onMouseOver={onHover}
+              src={m.icon}
+            />
             {hoveredId === m.id && <Tooltip>{m.text}</Tooltip>}
-          </Row>
+          </div>
         );
       })}
       <Delete
-        selected={this.state.deleting}
-        onClick={this._onDelete}
-        onMouseOver={this._onHover}
-        onMouseOut={_ => this._onHover(null)}
+        selected={isDeleting}
+        onClick={onDelete}
+        onMouseOver={onHover}
+        onMouseOut={() => onHover(null)}
       >
         <Img
           id={"delete"}
-          onMouseOver={this._onHover}
-          onClick={this._onDelete}
+          onMouseOver={onHover}
+          onClick={onDelete}
           src={"icon-delete.svg"}
         />
         {hoveredId === "delete" && <Tooltip>{"Delete"}</Tooltip>}
       </Delete>
-    </Container>
+    </div>
   );
 };
 
