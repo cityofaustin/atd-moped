@@ -1,7 +1,13 @@
 import React, { useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Editor, DrawPointMode, RENDER_STATE, SHAPE } from "react-map-gl-draw";
+import {
+  Editor,
+  DrawPointMode,
+  EditingMode,
+  RENDER_STATE,
+  SHAPE,
+} from "react-map-gl-draw";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -25,7 +31,10 @@ import {
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
-const MODES = [{ id: "drawPoint", text: "Draw Point", handler: DrawPointMode }];
+const MODES = [
+  { id: "drawPoint", text: "Draw Point", handler: DrawPointMode },
+  { id: "edit", text: "Edit Point", handler: EditingMode },
+];
 
 const STROKE_COLOR = "rgb(38, 181, 242)";
 const FILL_COLOR = "rgb(189,189,189)";
