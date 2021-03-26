@@ -7,13 +7,6 @@ import { MODES } from "./constants";
 const ICON_MAP = [
   { id: MODES.EDITING, text: "Edit Feature", icon: "icon-select.svg" },
   { id: MODES.DRAW_POINT, text: "Draw Point", icon: "icon-point.svg" },
-  { id: MODES.DRAW_PATH, text: "Draw Polyline", icon: "icon-path.svg" },
-  { id: MODES.DRAW_POLYGON, text: "Draw Polygon", icon: "icon-polygon.svg" },
-  {
-    id: MODES.DRAW_RECTANGLE,
-    text: "Draw Rectangle",
-    icon: "icon-rectangle.svg",
-  },
 ];
 
 export const useStyles = makeStyles({
