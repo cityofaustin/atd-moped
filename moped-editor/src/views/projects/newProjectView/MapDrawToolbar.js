@@ -3,10 +3,10 @@ import { makeStyles } from "@material-ui/core";
 
 import { MODES } from "./NewProjectMap";
 
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles(() => ({
   controlContainer: {
     position: "absolute",
-    width: 48,
+    width: 34,
     right: 10,
     top: 56,
     background: "#fff",
@@ -22,10 +22,12 @@ export const useStyles = makeStyles(theme => ({
     padding: 7,
     display: "flex",
     justifyContent: "left",
-  },
-  controlImg: {
-    width: "inherit",
-    height: "inherit",
+    "&:hover": {
+      background: ({ selected }) => (selected ? "#0071bc" : "#e6e6e6"),
+    },
+    "&:active": {
+      background: ({ selected }) => (selected ? "#0071bc" : "inherit"),
+    },
   },
   controlTooltip: {
     position: "absolute",
@@ -88,10 +90,10 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
             id={m.id}
           >
             <img
-              className={classes.controlImg}
               id={m.id}
               onMouseOver={onHover}
-              src={`./${m.icon}`}
+              alt={m.text}
+              src={`${process.env.PUBLIC_URL}/static/${m.icon}`}
             />
             {hoveredId === m.id && (
               <div className={classes.controlTooltip}>{m.text}</div>
@@ -108,9 +110,10 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
       >
         <img
           id={"delete"}
+          alt={"Delete"}
           onMouseOver={onHover}
           onClick={onDelete}
-          src={"./icon-delete.svg"}
+          src={`${process.env.PUBLIC_URL}/static/icon-delete.svg`}
         />
         {hoveredId === "delete" && (
           <div className={classes.controlTooltip}>{"Delete"}</div>

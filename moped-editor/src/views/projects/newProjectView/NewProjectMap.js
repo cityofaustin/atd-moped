@@ -214,33 +214,13 @@ const NewProjectMap = ({
   );
 
   const switchMode = e => {
-    const switchModeId = e.target.value === modeId ? null : e.target.value;
+    const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
     const modeHandler = mode ? new mode.handler() : null;
 
     setModeId(modeId);
     setModeHandler(modeHandler);
     setIsDrawing(true);
-  };
-
-  const handleFeatureDraw = drawObject => {
-    const features = mapEditorRef.current.getFeatures();
-    console.log(features);
-
-    // const pointFeature = {
-    //   id, // an unique identified generated inside react-map-gl-draw library
-    //   geometry: {
-    //     coordinates, // latitude longitude pairs of the geometry points
-    //     type // geojson type, one of `Point`, `LineString`, or `Polygon`
-    //   },
-    //   properties: {
-    //     renderType, // Mainly used for styling, one of `Point`, `LineString`, `Polygon`, or `Rectangle`. Different from `geometry.type`. i.e. a rectangle's renderType is `Rectangle`, and `geometry.type` is `Polygon`. An incomplete (not closed) Polygon's renderType is `Polygon`, `geometry.type` is `LineString`
-    //     ...otherProps // other properties user passed in
-    //   }
-    // }
-
-    // pointCoords &&
-    //   setEditFeatures(prevFeatures => [...prevFeatures, pointCoords]);
   };
 
   const onSelect = selected => {
@@ -279,20 +259,6 @@ const NewProjectMap = ({
         onDelete={onDelete}
       />
     );
-    // return (
-    //   <div
-    //     style={{ position: "absolute", top: 60, right: 10, maxWidth: "320px" }}
-    //   >
-    //     <select onChange={switchMode}>
-    //       <option value="">--Please choose a draw mode--</option>
-    //       {MODES.map(mode => (
-    //         <option key={mode.id} value={mode.id}>
-    //           {mode.text}
-    //         </option>
-    //       ))}
-    //     </select>
-    //   </div>
-    // );
   };
 
   return (
@@ -339,7 +305,6 @@ const NewProjectMap = ({
         {renderLayerSelect()}
         <Editor
           ref={mapEditorRef}
-          onUpdate={handleFeatureDraw}
           featureStyle={getFeatureStyle}
           onSelect={onSelect}
           // to make the lines/vertices easier to interact with
