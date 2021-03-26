@@ -193,6 +193,9 @@ def user_update_user(id: str, claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
+        # Remove date_added, if provided, so we don't reset this field
+        request.json.pop('date_added', None)
+
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
             ignore_fields=["password"]
