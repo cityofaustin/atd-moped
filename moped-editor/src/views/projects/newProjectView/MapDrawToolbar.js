@@ -32,12 +32,14 @@ export const useButtonStyles = makeStyles({
 
 const DrawToolbarButton = ({
   selected,
+  hovered,
   onSwitchMode,
   selectedMode,
   m,
   hoveredId,
+  setHoveredId,
 }) => {
-  const classes = useToolbarStyles({ selected, hovered });
+  const classes = useButtonStyles({ selected, hovered });
 
   const onHover = evt => {
     setHoveredId(evt && evt.target.id);
@@ -105,7 +107,7 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
 
-  const classes = useStyles({ selected: selectedMode });
+  const classes = useToolbarStyles({ selected: selectedMode });
 
   const onDeleteClick = evt => {
     onDelete(evt);
@@ -143,12 +145,13 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
             hovered={m.id === hoveredId} // This determines if each button is hovered
             onSwitchMode={onSwitchMode}
             hoveredId={hoveredId}
+            setHoveredId={setHoveredId}
             key={m.id}
             m={m}
           />
         );
       })}
-      <div
+      {/* <div
         className={classes.controlDelete}
         selected={isDeleting}
         onClick={onDeleteClick}
@@ -165,7 +168,7 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
         {hoveredId === "delete" && (
           <div className={classes.controlTooltip}>{"Delete"}</div>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };
