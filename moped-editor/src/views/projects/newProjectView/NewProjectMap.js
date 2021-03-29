@@ -218,7 +218,7 @@ const NewProjectMap = ({
     const mode = MODES.find(m => m.id === switchModeId);
     const modeHandler = mode ? new mode.handler() : null;
 
-    setModeId(modeId);
+    setModeId(switchModeId);
     setModeHandler(modeHandler);
     setIsDrawing(true);
   };

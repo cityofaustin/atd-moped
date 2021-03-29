@@ -3,7 +3,71 @@ import { makeStyles } from "@material-ui/core";
 
 import { MODES } from "./NewProjectMap";
 
-export const useStyles = makeStyles(() => ({
+export const useButtonStyles = makeStyles({
+  controlRow: ({ selected }) => ({
+    height: 34,
+    padding: 7,
+    display: "flex",
+    justifyContent: "left",
+    "&:hover": {
+      background: selected ? "#0071bc" : "#e6e6e6",
+    },
+    "&:active": {
+      background: selected ? "#0071bc" : "inherit",
+    },
+  }),
+  controlDelete: ({ selected }) => ({
+    height: 34,
+    padding: 7,
+    display: "flex",
+    justifyContent: "left",
+    "&:hover": {
+      background: selected ? "#0071bc" : "#e6e6e6",
+    },
+    "&:active": {
+      background: selected ? "#0071bc" : "inherit",
+    },
+  }),
+});
+
+const DrawToolbarButton = ({
+  selected,
+  onSwitchMode,
+  selectedMode,
+  m,
+  hoveredId,
+}) => {
+  const classes = useToolbarStyles({ selected, hovered });
+
+  const onHover = evt => {
+    setHoveredId(evt && evt.target.id);
+  };
+
+  return (
+    <div
+      className={classes.controlRow}
+      onClick={onSwitchMode}
+      onMouseOver={onHover}
+      onMouseOut={() => onHover(null)}
+      selected={m.id === selectedMode}
+      hovered={m.id === hoveredId}
+      key={m.id}
+      id={m.id}
+    >
+      <img
+        id={m.id}
+        onMouseOver={onHover}
+        alt={m.text}
+        src={`${process.env.PUBLIC_URL}/static/${m.icon}`}
+      />
+      {hoveredId === m.id && (
+        <div className={classes.controlTooltip}>{m.text}</div>
+      )}
+    </div>
+  );
+};
+
+export const useToolbarStyles = makeStyles({
   controlContainer: {
     position: "absolute",
     width: 34,
@@ -16,18 +80,6 @@ export const useStyles = makeStyles(() => ({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-  },
-  controlRow: {
-    height: 34,
-    padding: 7,
-    display: "flex",
-    justifyContent: "left",
-    "&:hover": {
-      background: ({ selected }) => (selected ? "#0071bc" : "#e6e6e6"),
-    },
-    "&:active": {
-      background: ({ selected }) => (selected ? "#0071bc" : "inherit"),
-    },
   },
   controlTooltip: {
     position: "absolute",
@@ -45,29 +97,15 @@ export const useStyles = makeStyles(() => ({
     justifyContent: "center",
     alignItems: "center",
   },
-  controlDelete: {
-    height: 34,
-    padding: 7,
-    display: "flex",
-    justifyContent: "left",
-    "&:hover": {
-      background: ({ selected }) => (selected ? "#0071bc" : "#e6e6e6"),
-    },
-    "&:active": {
-      background: ({ selected }) => (selected ? "#0071bc" : "inherit"),
-    },
-  },
-}));
+});
 
 const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
-  const classes = useStyles({ selected: selectedMode });
+  console.log("selected in component is", selectedMode);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [hoveredId, setHoveredId] = useState(null);
 
-  const onHover = evt => {
-    setHoveredId(evt && evt.target.id);
-  };
+  const classes = useStyles({ selected: selectedMode });
 
   const onDeleteClick = evt => {
     onDelete(evt);
@@ -79,26 +117,35 @@ const DrawToolbar = ({ selectedMode, onSwitchMode, onDelete }) => {
     <div className={classes.controlContainer}>
       {MODES.map(m => {
         return (
-          <div
-            className={classes.controlRow}
-            onClick={onSwitchMode}
-            onMouseOver={onHover}
-            onMouseOut={() => onHover(null)}
-            selected={m.id === selectedMode}
-            hovered={m.id === hoveredId}
+          //   <div
+          //     className={classes.controlRow}
+          //     onClick={onSwitchMode}
+          //     onMouseOver={onHover}
+          //     onMouseOut={() => onHover(null)}
+          //     selected={m.id === selectedMode}
+          //     hovered={m.id === hoveredId}
+          //     key={m.id}
+          //     id={m.id}
+          //   >
+          //     <img
+          //       id={m.id}
+          //       onMouseOver={onHover}
+          //       alt={m.text}
+          //       src={`${process.env.PUBLIC_URL}/static/${m.icon}`}
+          //     />
+          //     {hoveredId === m.id && (
+          //       <div className={classes.controlTooltip}>{m.text}</div>
+          //     )}
+          //   </div>
+
+          <DrawToolbarButton
+            selected={m.id === selectedMode} // This determines if each button is active
+            hovered={m.id === hoveredId} // This determines if each button is hovered
+            onSwitchMode={onSwitchMode}
+            hoveredId={hoveredId}
             key={m.id}
-            id={m.id}
-          >
-            <img
-              id={m.id}
-              onMouseOver={onHover}
-              alt={m.text}
-              src={`${process.env.PUBLIC_URL}/static/${m.icon}`}
-            />
-            {hoveredId === m.id && (
-              <div className={classes.controlTooltip}>{m.text}</div>
-            )}
-          </div>
+            m={m}
+          />
         );
       })}
       <div
