@@ -4,6 +4,7 @@ import {
   RENDER_STATE,
   SHAPE,
 } from "react-map-gl-draw";
+import theme from "../theme/index";
 
 export const MODES = [
   {
@@ -25,8 +26,8 @@ export const MODES = [
   },
 ];
 
-const STROKE_COLOR = "rgb(38, 181, 242)";
-const FILL_COLOR = "rgb(189,189,189)";
+const STROKE_COLOR = theme.palette.primary.main;
+const FILL_COLOR = theme.palette.primary.main;
 const CIRCLE_RADIUS = 8;
 
 const SELECTED_STYLE = {

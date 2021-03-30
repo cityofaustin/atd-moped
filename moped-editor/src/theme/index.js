@@ -9,6 +9,7 @@ const theme = createMuiTheme({
       default: colors.common.white,
       paper: colors.common.white,
       mapControls: "#FFFFFF",
+      mapControlsHover: "#e6e6e6",
     },
     primary: {
       main: "#1e88e5",

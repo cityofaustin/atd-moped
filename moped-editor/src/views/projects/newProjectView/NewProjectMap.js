@@ -178,8 +178,9 @@ const NewProjectMap = ({
     mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
 
     // Update modeId to momentarily change the background color of the delete icon on click
+    const previousMode = modeId;
     setModeId("delete");
-    setTimeout(() => setModeId(null), 500);
+    setTimeout(() => setModeId(previousMode), 500);
   };
 
   const renderDrawToolbar = () => {

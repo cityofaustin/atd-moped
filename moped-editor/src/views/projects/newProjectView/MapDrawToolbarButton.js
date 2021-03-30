@@ -1,13 +1,14 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import theme from "../../../theme/index";
 
 export const useButtonStyles = makeStyles({
   controlTooltip: {
     position: "absolute",
     right: 44,
     padding: 4,
-    background: "rgba(0, 0, 0, 0.8)",
-    color: "#fff",
+    background: theme.palette.text.primary,
+    color: theme.palette.background.mapControls,
     borderRadius: 4,
     minWidth: 100,
     maxWidth: 300,
@@ -24,9 +25,11 @@ export const useButtonStyles = makeStyles({
     padding: 7,
     display: "flex",
     justifyContent: "left",
-    background: selected ? "#0071bc" : "inherit",
+    background: selected ? theme.palette.primary.main : "inherit",
     "&:hover": {
-      background: selected ? "#0071bc" : "#e6e6e6",
+      background: selected
+        ? theme.palette.primary.main
+        : theme.palette.background.mapControlsHover,
     },
   }),
 });
@@ -38,7 +41,6 @@ const MapDrawToolbarButton = ({
   hoveredId,
   onHover,
 }) => {
-  console.log(selectedModeId);
   const selected = mode.id === selectedModeId;
   const hovered = mode.id === hoveredId;
 

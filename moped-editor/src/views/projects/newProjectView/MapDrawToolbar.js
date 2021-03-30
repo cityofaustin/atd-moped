@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
 import { makeStyles } from "@material-ui/core";
+import theme from "../../../theme/index";
 
 import { MODES } from "../../../utils/mapDrawHelpers";
 
@@ -10,7 +11,7 @@ export const useToolbarStyles = makeStyles({
     width: 34,
     right: 10,
     top: 56,
-    background: "#fff",
+    background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
     outline: "none",
@@ -19,16 +20,6 @@ export const useToolbarStyles = makeStyles({
     flexDirection: "column",
     cursor: "pointer",
   },
-  controlDelete: ({ selected }) => ({
-    height: 34,
-    padding: 7,
-    display: "flex",
-    justifyContent: "left",
-    background: selected ? "#0071bc" : "inherit",
-    "&:hover": {
-      background: selected ? "#0071bc" : "#e6e6e6",
-    },
-  }),
 });
 
 const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
