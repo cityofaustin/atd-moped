@@ -45,6 +45,11 @@ export const MODES = [
     handler: EditingMode,
     icon: "icon-select.svg",
   },
+  {
+    id: "delete",
+    text: "Delete",
+    icon: "icon-delete.svg",
+  },
 ];
 
 const STROKE_COLOR = "rgb(38, 181, 242)";
@@ -216,7 +221,7 @@ const NewProjectMap = ({
   const switchMode = e => {
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
-    const modeHandler = mode ? new mode.handler() : null;
+    const modeHandler = mode && mode.handler ? new mode.handler() : null;
 
     setModeId(switchModeId);
     setModeHandler(modeHandler);
@@ -249,12 +254,16 @@ const NewProjectMap = ({
     }
 
     mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+
+    // Update modeId to momentarily change the background color of the delete icon on click
+    setModeId("delete");
+    setTimeout(() => setModeId(null), 500);
   };
 
   const renderDrawToolbar = () => {
     return (
       <MapDrawToolbar
-        selectedMode={modeId}
+        selectedModeId={modeId}
         onSwitchMode={switchMode}
         onDelete={onDelete}
       />
