@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box, makeStyles, Switch, Typography } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -127,7 +127,6 @@ const NewProjectMap = ({
 
   // TODO: Add drawn points to GeoJSON
   // TODO: Update cursor when drawing
-  // TODO: Style the points
 
   const { isDrawing, setIsDrawing, renderMapDrawTools } = useMapDrawTools();
 
@@ -173,9 +172,17 @@ const NewProjectMap = ({
           </Source>
         ))}
         {renderLayerSelect()}
-        {renderMapDrawTools()}
+        {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
+      <Switch
+        checked={isDrawing}
+        onChange={() => setIsDrawing(!isDrawing)}
+        color="primary"
+        name="mapDrawSwitch"
+        inputProps={{ "aria-label": "primary checkbox" }}
+      />
+      <Typography>Edit Mode</Typography>
     </Box>
   );
 };
