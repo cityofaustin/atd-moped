@@ -25,7 +25,7 @@ export const useButtonStyles = makeStyles({
     padding: 7,
     display: "flex",
     justifyContent: "left",
-    background: selected ? theme.palette.primary.main : "inherit",
+    background: selected && theme.palette.primary.main,
     "&:hover": {
       background: selected
         ? theme.palette.primary.main
@@ -42,9 +42,8 @@ const MapDrawToolbarButton = ({
   onHover,
 }) => {
   const selected = mode.id === selectedModeId;
-  const hovered = mode.id === hoveredId;
 
-  const classes = useButtonStyles({ selected, hovered });
+  const classes = useButtonStyles({ selected });
 
   return (
     <div

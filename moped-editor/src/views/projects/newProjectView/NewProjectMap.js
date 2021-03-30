@@ -1,8 +1,6 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import MapDrawToolbar from "./MapDrawToolbar";
-import { Editor } from "react-map-gl-draw";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
@@ -26,7 +24,7 @@ import {
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
-import { getFeatureStyle, MODES } from "../../../utils/mapDrawHelpers";
+import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -131,67 +129,7 @@ const NewProjectMap = ({
   // TODO: Update cursor when drawing
   // TODO: Style the points
 
-  const mapEditorRef = useRef();
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [modeId, setModeId] = useState(null);
-  const [modeHandler, setModeHandler] = useState(null);
-  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
-  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
-    []
-  );
-
-  const switchMode = e => {
-    const switchModeId = e.target.id === modeId ? null : e.target.id;
-    const mode = MODES.find(m => m.id === switchModeId);
-    const modeHandler = mode && mode.handler ? new mode.handler() : null;
-
-    setModeId(switchModeId);
-    setModeHandler(modeHandler);
-    setIsDrawing(true);
-  };
-
-  const onSelect = selected => {
-    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
-    setSelectedEditHandleIndexes(
-      selected && selected.selectedEditHandleIndexes
-    );
-  };
-
-  const onDelete = () => {
-    if (selectedEditHandleIndexes.length) {
-      try {
-        mapEditorRef.current.deleteHandles(
-          selectedFeatureIndex,
-          selectedEditHandleIndexes
-        );
-      } catch (error) {
-        // eslint-disable-next-line no-undef, no-console
-        console.error(error.message);
-      }
-      return;
-    }
-
-    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
-      return;
-    }
-
-    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
-
-    // Update modeId to momentarily change the background color of the delete icon on click
-    const previousMode = modeId;
-    setModeId("delete");
-    setTimeout(() => setModeId(previousMode), 500);
-  };
-
-  const renderDrawToolbar = () => {
-    return (
-      <MapDrawToolbar
-        selectedModeId={modeId}
-        onSwitchMode={switchMode}
-        onDelete={onDelete}
-      />
-    );
-  };
+  const { isDrawing, setIsDrawing, renderMapDrawTools } = useMapDrawTools();
 
   return (
     <Box className={classes.mapBox}>
@@ -235,15 +173,7 @@ const NewProjectMap = ({
           </Source>
         ))}
         {renderLayerSelect()}
-        <Editor
-          ref={mapEditorRef}
-          featureStyle={getFeatureStyle}
-          onSelect={onSelect}
-          // to make the lines/vertices easier to interact with
-          clickRadius={12}
-          mode={modeHandler}
-        />
-        {renderDrawToolbar()}
+        {renderMapDrawTools()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>

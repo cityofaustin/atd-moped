@@ -14,6 +14,7 @@ export const useToolbarStyles = makeStyles({
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
+    overflow: "hidden", // Keep the child button elements from poking outside the border radius
     outline: "none",
     display: "flex",
     justifyContent: "center",

@@ -1,3 +1,6 @@
+import React, { useState, useRef } from "react";
+import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
+import { Editor } from "react-map-gl-draw";
 import {
   DrawPointMode,
   EditingMode,
@@ -5,6 +8,7 @@ import {
   SHAPE,
 } from "react-map-gl-draw";
 import theme from "../theme/index";
+import { mapStyles } from "../utils/mapHelpers";
 
 export const MODES = [
   {
@@ -28,27 +32,27 @@ export const MODES = [
 
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
-const CIRCLE_RADIUS = 8;
+const CIRCLE_RADIUS = 20;
 
 const SELECTED_STYLE = {
   stroke: STROKE_COLOR,
   strokeWidth: 2,
   fill: FILL_COLOR,
-  fillOpacity: 0.3,
+  fillOpacity: mapStyles.statusOpacities.selected,
 };
 
 const HOVERED_STYLE = {
   stroke: STROKE_COLOR,
   strokeWidth: 2,
   fill: FILL_COLOR,
-  fillOpacity: 0.3,
+  fillOpacity: mapStyles.statusOpacities.hovered,
 };
 
 const DEFAULT_STYLE = {
-  stroke: "#000",
+  stroke: theme.palette.primary.main,
   strokeWidth: 2,
   fill: FILL_COLOR,
-  fillOpacity: 0.1,
+  fillOpacity: mapStyles.statusOpacities.unselected,
 };
 
 // https://github.com/uber/nebula.gl/blob/17aa19903bda8e5caaf14b6d25da624a1d317919/examples/react-map-gl-draw/style.js#L100
@@ -78,4 +82,83 @@ export function getFeatureStyle({ feature, state }) {
   }
 
   return style;
+}
+
+export function useMapDrawTools() {
+  const mapEditorRef = useRef();
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [modeId, setModeId] = useState(null);
+  const [modeHandler, setModeHandler] = useState(null);
+  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
+  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
+    []
+  );
+
+  const switchMode = e => {
+    const switchModeId = e.target.id === modeId ? null : e.target.id;
+    const mode = MODES.find(m => m.id === switchModeId);
+    const modeHandler = mode && mode.handler ? new mode.handler() : null;
+
+    setModeId(switchModeId);
+    setModeHandler(modeHandler);
+    setIsDrawing(true);
+  };
+
+  const onSelect = selected => {
+    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
+    setSelectedEditHandleIndexes(
+      selected && selected.selectedEditHandleIndexes
+    );
+  };
+
+  const onDelete = () => {
+    if (selectedEditHandleIndexes.length) {
+      try {
+        mapEditorRef.current.deleteHandles(
+          selectedFeatureIndex,
+          selectedEditHandleIndexes
+        );
+      } catch (error) {
+        // eslint-disable-next-line no-undef, no-console
+        console.error(error.message);
+      }
+      return;
+    }
+
+    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
+      return;
+    }
+
+    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+
+    // Update modeId to momentarily change the background color of the delete icon on click
+    const previousMode = modeId;
+    setModeId("delete");
+    setTimeout(() => setModeId(previousMode), 500);
+  };
+
+  const renderDrawToolbar = () => {
+    return (
+      <MapDrawToolbar
+        selectedModeId={modeId}
+        onSwitchMode={switchMode}
+        onDelete={onDelete}
+      />
+    );
+  };
+
+  const renderMapDrawTools = () => (
+    <>
+      <Editor
+        ref={mapEditorRef}
+        featureStyle={getFeatureStyle}
+        onSelect={onSelect}
+        clickRadius={12}
+        mode={modeHandler}
+      />
+      {renderDrawToolbar()}
+    </>
+  );
+
+  return { isDrawing, setIsDrawing, renderMapDrawTools };
 }
