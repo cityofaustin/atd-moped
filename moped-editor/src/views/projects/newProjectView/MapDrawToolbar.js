@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
 import { makeStyles } from "@material-ui/core";
 
-import { MODES } from "./NewProjectMap";
+import { MODES } from "../../../utils/mapDrawHelpers";
 
 export const useToolbarStyles = makeStyles({
   controlContainer: {
