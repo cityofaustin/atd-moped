@@ -212,8 +212,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const executeMutation = (field, value = null) => {
     console.log(typeof(value));
     console.log(value);
-    // If editValue is null, do not update mutation (prevents user from saving preexisting value)
-    if (editValue !== null) {
+    // If editValue is null, do not update mutation (prevents user from saving preexisting)
+    if (editValue !== null || value !== null) {
       updateField({mutation: generateUpdateQuery(field || editField, value !== null ? value : editValue)})
         .then(response => {
           setSnackbarState({
@@ -418,11 +418,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     setIsEditing(editField !== "");
   }, [editField]);
 
-  useEffect(() => {
-    console.log("isEditing changed");
-    console.log(isEditing);
-    if (!isEditing) setEditValue(null);
-  }, [isEditing]);
+  // useEffect(() => {
+  //   console.log("isEditing changed");
+  //   console.log(isEditing);
+  //   if (!isEditing) setEditValue(null);
+  // }, [isEditing]);
 
   // useEffect(() => {
   //   if (isToggling && editValue !== null && editValue !== "") {
