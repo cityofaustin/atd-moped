@@ -438,7 +438,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         {fieldConfiguration.fields[field]?.label ?? "Unknown"}
                       </h4>
                     )}
-                    {(isEditing && editField === field) || (fieldType === "boolean") ? (
+                    {(isEditing && editField === field) ||
+                    fieldType === "boolean" ? (
                       <form onSubmit={e => handleAcceptClick(e)}>
                         <Grid container fullWidth>
                           <Grid item xs={12} sm={9}>
@@ -455,31 +456,33 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               <>
                                 {renderBooleanEdit(
                                   field,
-                                  getValue(field),
+                                  getValue(field)
                                   // getLabel(field)
                                 )}
                               </>
                             )}
                           </Grid>
-                          {(fieldType !== "boolean") && <Grid
-                            item
-                            xs={12}
-                            sm={3}
-                            className={classes.fieldGridItemButtons}
-                          >
-                            <Icon
-                              className={classes.editIconConfirm}
-                              onClick={handleAcceptClick}
+                          {fieldType !== "boolean" && (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={3}
+                              className={classes.fieldGridItemButtons}
                             >
-                              check
-                            </Icon>
-                            <Icon
-                              className={classes.editIconConfirm}
-                              onClick={e => handleCancelClick(e)}
-                            >
-                              close
-                            </Icon>
-                          </Grid>}
+                              <Icon
+                                className={classes.editIconConfirm}
+                                onClick={handleAcceptClick}
+                              >
+                                check
+                              </Icon>
+                              <Icon
+                                className={classes.editIconConfirm}
+                                onClick={e => handleCancelClick(e)}
+                              >
+                                close
+                              </Icon>
+                            </Grid>
+                          )}
                         </Grid>
                       </form>
                     ) : (
@@ -495,14 +498,15 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             )
                           : formatValue(field)}
                         {fieldConfiguration.fields[field].editable &&
-                          !isEditing && fieldType !== "boolean" && (
+                          !isEditing &&
+                          fieldType !== "boolean" && (
                             <div>
-                            <Icon
-                              className={classes.editIcon}
-                              onClick={() => handleFieldEdit(field)}
-                            >
-                              create
-                            </Icon>
+                              <Icon
+                                className={classes.editIcon}
+                                onClick={() => handleFieldEdit(field)}
+                              >
+                                create
+                              </Icon>
                             </div>
                           )}
                       </InputLabel>
