@@ -220,7 +220,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             open: true,
             message: (
               <span>
-                Success! the field <b>{getLabel(editField)}</b> has been
+                Success! the field <b>{getLabel(field || editField)}</b> has been
                 updated!
               </span>
             ),
@@ -235,7 +235,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             message: (
               <span>
                 There was a problem updating field{" "}
-                <b>{getLabel(editField)}</b>.
+                <b>{getLabel(field || editField)}</b>.
               </span>
             ),
             severity: "error",
@@ -243,9 +243,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           refetch();
         })
         .finally(() => {
-          setEditValue("");
+          setEditValue(null);
           setEditField("");
-          // setIsToggling(false);
+          setIsEditing(false);
           setUpdateMutation(INITIAL_MUTATION);
           setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         });
@@ -268,6 +268,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const handleCancelClick = e => {
     e.preventDefault();
     setEditField("");
+    setIsEditing(false);
   };
 
   /**
@@ -280,11 +281,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
   const handleSwitchValueUpdate = (value, field) => {
     // setSnackbarState(DEFAULT_SNACKBAR_STATE);
-    console.log(typeof(value.target.checked));
-    console.log(value.target.checked);
-    setEditField(field);
-    setSwitchValue(value.target.checked);
-    executeMutation(field, value.target.checked);
+    // console.log(typeof(value.target.checked));
+    // console.log(value.target.checked);
+    if (!isEditing) {
+      setEditField(field);
+      setSwitchValue(value.target.checked);
+      executeMutation(field, value.target.checked);
+    }
     // setIsToggling(true);
     // setUpdateMutation(generateUpdateQuery(field, value.target.checked))
   };
@@ -408,28 +411,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     );
   };
 
-  /**
-   * Whenever the edit field is modified, it checks if it is empty.
-   * If so, we are not editing any more. This is not ideal, needs change.
-   */
-  useEffect(() => {
-    console.log(editField);
-    console.log("editField changed")
-    setIsEditing(editField !== "");
-  }, [editField]);
-
-  // useEffect(() => {
-  //   console.log("isEditing changed");
-  //   console.log(isEditing);
-  //   if (!isEditing) setEditValue(null);
-  // }, [isEditing]);
-
-  // useEffect(() => {
-  //   if (isToggling && editValue !== null && editValue !== "") {
-  //     console.log("updating mutation");
-  //     setUpdateMutation(generateUpdateQuery(editField, editValue))
-  //   }
-  // }, [editValue, editField, isToggling]);
+  const handleFieldEdit = field => {
+    setIsEditing(true);
+    setEditField(field);
+  }
 
   return (
     <>
@@ -523,7 +508,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             <div>
                             <Icon
                               className={classes.editIcon}
-                              onClick={() => setEditField(field)}
+                              onClick={() => handleFieldEdit(field)}
                             >
                               create
                             </Icon>
