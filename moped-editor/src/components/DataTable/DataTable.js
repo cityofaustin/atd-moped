@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { INITIAL_MUTATION } from "../../queries/placeholder";
 
 import {
@@ -94,15 +94,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
-  const [updateMutation, setUpdateMutation] = useState(INITIAL_MUTATION);
   const [editValue, setEditValue] = useState(null);
-  const [switchValue, setSwitchValue] = useState(null);
   const [editField, setEditField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  // const [isToggling, setIsToggling] = useState(false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
-  const [updateField] = useMutation(updateMutation);
+  const [updateField] = useMutation(INITIAL_MUTATION);
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
@@ -191,8 +188,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     switch (fieldType) {
       case "date":
         formattedValue = new Date(formattedValue).toLocaleDateString();
-        console.log(new Date(formattedValue));
-        console.log(formattedValue);
         break;
       case "boolean":
         formattedValue = formattedValue === true;
@@ -209,18 +204,21 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return formattedValue;
   };
 
-  const executeMutation = (field, value = null) => {
-    console.log(typeof(value));
-    console.log(value);
-    // If editValue is null, do not update mutation (prevents user from saving preexisting)
-    if (editValue !== null || value !== null) {
-      updateField({mutation: generateUpdateQuery(field || editField, value !== null ? value : editValue)})
+  const executeMutation = (field = null, value = null) => {
+    const mutationField = field || editField;
+    const mutationValue = value !== null ? value : editValue;
+    // Execute mutation only if there is a value,
+    // prevents user from saving initial value
+    if (mutationValue !== null) {
+      updateField({
+        mutation: generateUpdateQuery(mutationField, mutationValue),
+      })
         .then(response => {
           setSnackbarState({
             open: true,
             message: (
               <span>
-                Success! the field <b>{getLabel(field || editField)}</b> has been
+                Success! the field <b>{getLabel(mutationField)}</b> has been
                 updated!
               </span>
             ),
@@ -229,13 +227,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           refetch();
         })
         .catch(error => {
-          console.log(`Error Updating ${editField}`, error);
+          console.log(`Error Updating ${mutationField}`, error);
           setSnackbarState({
             open: true,
             message: (
               <span>
                 There was a problem updating field{" "}
-                <b>{getLabel(field || editField)}</b>.
+                <b>{getLabel(mutationField)}</b>.
               </span>
             ),
             severity: "error",
@@ -246,11 +244,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           setEditValue(null);
           setEditField("");
           setIsEditing(false);
-          setUpdateMutation(INITIAL_MUTATION);
           setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         });
     }
-  }
+  };
 
   /**
    * Makes the update via GraphQL
@@ -267,6 +264,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const handleCancelClick = e => {
     e.preventDefault();
+    setEditValue(null);
     setEditField("");
     setIsEditing(false);
   };
@@ -279,17 +277,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     setEditValue(value.target.value);
   };
 
-  const handleSwitchValueUpdate = (value, field) => {
-    // setSnackbarState(DEFAULT_SNACKBAR_STATE);
-    // console.log(typeof(value.target.checked));
-    // console.log(value.target.checked);
+  const handleBooleanValueUpdate = (event, field) => {
     if (!isEditing) {
-      setEditField(field);
-      setSwitchValue(value.target.checked);
-      executeMutation(field, value.target.checked);
+      executeMutation(field, event.target.checked);
     }
-    // setIsToggling(true);
-    // setUpdateMutation(generateUpdateQuery(field, value.target.checked))
   };
 
   /**
@@ -396,16 +387,16 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param {string} initialValue
    * @param {string} label
    */
-  const renderBooleanEdit = (field, initialValue, label) => {
+  const renderBooleanEdit = (field, initialValue) => {
     return (
       <FormControl fullWidth className={classes.formControl}>
-        {/* <InputLabel id={"select-" + field}>{label}</InputLabel> */}
         <Switch
           fullWidth
-          labelId={"select-" + field}
+          labelId={"boolean-" + field}
           id={field}
-          checked={switchValue ?? initialValue}
-          onChange={e => handleSwitchValueUpdate(e, field)}
+          checked={editValue ?? initialValue}
+          color="primary"
+          onChange={event => handleBooleanValueUpdate(event, field)}
         ></Switch>
       </FormControl>
     );
@@ -414,7 +405,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const handleFieldEdit = field => {
     setIsEditing(true);
     setEditField(field);
-  }
+  };
 
   return (
     <>
@@ -465,7 +456,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                                 {renderBooleanEdit(
                                   field,
                                   getValue(field),
-                                  getLabel(field)
+                                  // getLabel(field)
                                 )}
                               </>
                             )}
