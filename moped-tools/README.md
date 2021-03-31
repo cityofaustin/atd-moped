@@ -15,10 +15,7 @@ $ docker build -f Dockerfile -t atd-moped-migration .
 
 4. Run the container:
 ```
-$ docker run -it \ 
-    --network=host \
-    -v ${PWD}:/app \
-    atd-moped-migration python main.py
+docker run -it --network=host -v ${PWD}:/app atd-moped-migration python main.py
 ```
 
 At the moment, the output is very verbose for debugging.
