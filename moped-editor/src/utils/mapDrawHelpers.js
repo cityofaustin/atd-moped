@@ -55,7 +55,14 @@ const DEFAULT_STYLE = {
   fillOpacity: mapStyles.statusOpacities.unselected,
 };
 
-// https://github.com/uber/nebula.gl/blob/17aa19903bda8e5caaf14b6d25da624a1d317919/examples/react-map-gl-draw/style.js#L100
+// https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#styling-related-options
+/**
+ * Style a feature based on feature type and draw render state
+ * @param {object} featureStyle - Contains data about feature render state and type (shape)
+ * @param {object} featureStyle.feature - A GeoJSON feature
+ * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
+ * @return {object} React style object applied to a feature
+ */
 export function getFeatureStyle({ feature, state }) {
   const type = feature.properties.shape || feature.geometry.type;
   let style = null;

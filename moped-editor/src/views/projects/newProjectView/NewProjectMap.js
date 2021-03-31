@@ -63,6 +63,8 @@ const NewProjectMap = ({
     classes
   );
 
+  const { isDrawing, setIsDrawing, renderMapDrawTools } = useMapDrawTools();
+
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
@@ -124,11 +126,6 @@ const NewProjectMap = ({
       ...geocoderDefaultOverrides,
     });
   };
-
-  // TODO: Add drawn points to GeoJSON
-  // TODO: Update cursor when drawing
-
-  const { isDrawing, setIsDrawing, renderMapDrawTools } = useMapDrawTools();
 
   return (
     <Box className={classes.mapBox}>
