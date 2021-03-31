@@ -91,6 +91,16 @@ export function getFeatureStyle({ feature, state }) {
   return style;
 }
 
+/**
+ * Custom hook that builds draw tools and is used to enable or disable them
+ * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
+ */
+/**
+ * @typedef {object} UseLayerObject
+ * @property {boolean} isDrawing - Are draw tools enabled or disabled
+ * @property {function} setIsDrawing - Toggle draw tools
+ * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
+ */
 export function useMapDrawTools() {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -101,6 +111,10 @@ export function useMapDrawTools() {
     []
   );
 
+  /**
+   * Takes the click event and sets the draw mode handler and selected mode ID
+   * @param {object} e - A click event from a draw toolbar button
+   */
   const switchMode = e => {
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
@@ -108,9 +122,12 @@ export function useMapDrawTools() {
 
     setModeId(switchModeId);
     setModeHandler(modeHandler);
-    setIsDrawing(true);
   };
 
+  /**
+   * Takes a selected object and sets data about it in state https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#options
+   * @param {object} selected - Holds data about the selected feature
+   */
   const onSelect = selected => {
     setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
     setSelectedEditHandleIndexes(
@@ -118,6 +135,9 @@ export function useMapDrawTools() {
     );
   };
 
+  /**
+   * Finds the currently selected feature and removes it from the drawn features array
+   */
   const onDelete = () => {
     if (selectedEditHandleIndexes.length) {
       try {
@@ -144,6 +164,10 @@ export function useMapDrawTools() {
     setTimeout(() => setModeId(previousMode), 500);
   };
 
+  /**
+   * Renders the toolbar and buttons that control the map draw UI
+   * @return {JSX} The toolbar for the map draw UI
+   */
   const renderDrawToolbar = () => {
     return (
       <MapDrawToolbar
@@ -154,6 +178,10 @@ export function useMapDrawTools() {
     );
   };
 
+  /**
+   * Renders the map editor and its toolbar
+   * @return {JSX} The whole map draw UI
+   */
   const renderMapDrawTools = () => (
     <>
       <Editor
