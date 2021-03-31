@@ -96,9 +96,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
   const [updateMutation, setUpdateMutation] = useState(INITIAL_MUTATION);
   const [editValue, setEditValue] = useState(null);
+  const [switchValue, setSwitchValue] = useState(null);
   const [editField, setEditField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [isToggling, setIsToggling] = useState(false);
+  // const [isToggling, setIsToggling] = useState(false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   const [updateField] = useMutation(updateMutation);
@@ -190,11 +191,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     switch (fieldType) {
       case "date":
         formattedValue = new Date(formattedValue).toLocaleDateString();
+        console.log(new Date(formattedValue));
+        console.log(formattedValue);
         break;
       case "boolean":
-        formattedValue = (
-          <>{renderBooleanEdit(field, getValue(field))}</>
-        );
+        formattedValue = formattedValue === true;
         break;
       case "string":
         formattedValue =
@@ -208,15 +209,56 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return formattedValue;
   };
 
+  const executeMutation = (field, value = null) => {
+    console.log(typeof(value));
+    console.log(value);
+    // If editValue is null, do not update mutation (prevents user from saving preexisting value)
+    if (editValue !== null) {
+      updateField({mutation: generateUpdateQuery(field || editField, value !== null ? value : editValue)})
+        .then(response => {
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                Success! the field <b>{getLabel(editField)}</b> has been
+                updated!
+              </span>
+            ),
+            severity: "success",
+          });
+          refetch();
+        })
+        .catch(error => {
+          console.log(`Error Updating ${editField}`, error);
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                There was a problem updating field{" "}
+                <b>{getLabel(editField)}</b>.
+              </span>
+            ),
+            severity: "error",
+          });
+          refetch();
+        })
+        .finally(() => {
+          setEditValue("");
+          setEditField("");
+          // setIsToggling(false);
+          setUpdateMutation(INITIAL_MUTATION);
+          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+        });
+    }
+  }
+
   /**
    * Makes the update via GraphQL
    * @param {ChangeEvent} e - HTML Dom Event
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (editValue !== null) {
-      setUpdateMutation(generateUpdateQuery(editField, editValue));
-    }
+    executeMutation();
   };
 
   /**
@@ -237,10 +279,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   const handleSwitchValueUpdate = (value, field) => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+    // setSnackbarState(DEFAULT_SNACKBAR_STATE);
+    console.log(typeof(value.target.checked));
+    console.log(value.target.checked);
     setEditField(field);
-    setEditValue(value.target.checked);
-    setIsToggling(true);
+    setSwitchValue(value.target.checked);
+    executeMutation(field, value.target.checked);
+    // setIsToggling(true);
     // setUpdateMutation(generateUpdateQuery(field, value.target.checked))
   };
 
@@ -356,7 +401,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           fullWidth
           labelId={"select-" + field}
           id={field}
-          checked={editValue ?? initialValue}
+          checked={switchValue ?? initialValue}
           onChange={e => handleSwitchValueUpdate(e, field)}
         ></Switch>
       </FormControl>
@@ -379,57 +424,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     if (!isEditing) setEditValue(null);
   }, [isEditing]);
 
-  useEffect(() => {
-    if (isToggling && editValue !== null && editValue !== "") {
-      console.log("updating mutation");
-      setUpdateMutation(generateUpdateQuery(editField, editValue))
-    }
-  }, [editValue, editField, isToggling]);
-
-  useEffect(
-    () => {
-      if (updateMutation === INITIAL_MUTATION) return;
-      if (editValue !== null) {
-        updateField()
-          .then(response => {
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  Success! the field <b>{getLabel(editField)}</b> has been
-                  updated!
-                </span>
-              ),
-              severity: "success",
-            });
-            refetch();
-          })
-          .catch(error => {
-            console.log(`Error Updating ${editField}`, error);
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  There was a problem updating field{" "}
-                  <b>{getLabel(editField)}</b>.
-                </span>
-              ),
-              severity: "error",
-            });
-            refetch();
-          })
-          .finally(() => {
-            setEditValue("");
-            setEditField("");
-            setIsToggling(false);
-            setUpdateMutation(INITIAL_MUTATION);
-            setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-          });
-      }
-    },
-    // eslint-disable-next-line
-    [updateMutation]
-  );
+  // useEffect(() => {
+  //   if (isToggling && editValue !== null && editValue !== "") {
+  //     console.log("updating mutation");
+  //     setUpdateMutation(generateUpdateQuery(editField, editValue))
+  //   }
+  // }, [editValue, editField, isToggling]);
 
   return (
     <>
@@ -462,7 +462,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         {fieldConfiguration.fields[field]?.label ?? "Unknown"}
                       </h4>
                     )}
-                    {isEditing && !isToggling && editField === field ? (
+                    {(isEditing && editField === field) || (fieldType === "boolean") ? (
                       <form onSubmit={e => handleAcceptClick(e)}>
                         <Grid container fullWidth>
                           <Grid item xs={12} sm={9}>
@@ -475,7 +475,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             {fieldType === "date" && (
                               <>{renderDateEdit(field, getValue(field))}</>
                             )}
-                            {/* {fieldType === "boolean" && (
+                            {fieldType === "boolean" && (
                               <>
                                 {renderBooleanEdit(
                                   field,
@@ -483,9 +483,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                                   getLabel(field)
                                 )}
                               </>
-                            )} */}
+                            )}
                           </Grid>
-                          <Grid
+                          {(fieldType !== "boolean") && <Grid
                             item
                             xs={12}
                             sm={3}
@@ -503,7 +503,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             >
                               close
                             </Icon>
-                          </Grid>
+                          </Grid>}
                         </Grid>
                       </form>
                     ) : (
