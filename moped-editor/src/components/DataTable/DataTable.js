@@ -207,8 +207,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
     const mutationValue = value !== null ? value : editValue;
-    // Execute mutation only if there is a value,
-    // prevents user from saving initial value
+    // Execute mutation only if there is a new value selected, prevents user
+    // from attempting to save initial value, which would be null
     if (mutationValue !== null) {
       updateField({
         mutation: generateUpdateQuery(mutationField, mutationValue),
@@ -457,7 +457,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                                 {renderBooleanEdit(
                                   field,
                                   getValue(field)
-                                  // getLabel(field)
                                 )}
                               </>
                             )}
@@ -471,7 +470,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             >
                               <Icon
                                 className={classes.editIconConfirm}
-                                onClick={handleAcceptClick}
+                                onClick={e => handleAcceptClick(e)}
                               >
                                 check
                               </Icon>
@@ -503,7 +502,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             <div>
                               <Icon
                                 className={classes.editIcon}
-                                onClick={() => handleFieldEdit(field)}
+                                onClick={(field) => handleFieldEdit(field)}
                               >
                                 create
                               </Icon>
