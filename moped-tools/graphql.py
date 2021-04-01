@@ -1,13 +1,15 @@
 import requests
 from requests import Response
 
-def run_query(query: str, object: dict) -> Response:
+def run_query(query: str, object: dict = None, variables: dict = None) -> Response:
     """
     Makes a request to the Hasura GraphQL endpoint
     :param str query: The GraphQL query to be executed
+    :param dict object: The array of objects to be provided to the query
     :param dict variables: A dictionary with the variables to be provided to Hasura
     :return dict: The response from Hasura as a dictionary
     """
+
     response = requests.post(
         url="http://localhost:8080/v1/graphql",
         headers={
@@ -18,7 +20,8 @@ def run_query(query: str, object: dict) -> Response:
         json={
             "query": query,
             "variables": {
-                "object":  object
+                **({} if variables is None else variables),
+                **({} if object is None else {"object":  object}),
             }
         }
     )
