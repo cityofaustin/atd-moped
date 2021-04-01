@@ -278,6 +278,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   const handleBooleanValueUpdate = (event, field) => {
+    // Prevent user from switching boolean while editing another field
     if (!isEditing) {
       executeMutation(field, event.target.checked);
     }
