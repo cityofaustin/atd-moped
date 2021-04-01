@@ -321,7 +321,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return (
       <TextField
         fullWidth
-        id="date"
+        id="text"
         label={fieldConfig.label}
         type="text"
         defaultValue={editValue ?? initialValue}
