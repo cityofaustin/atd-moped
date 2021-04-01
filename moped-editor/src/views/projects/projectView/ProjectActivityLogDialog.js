@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
+import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 
 import {
   AppBar,
@@ -69,10 +70,18 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   const classes = useStyles();
 
+  const {
+    getLookups,
+    lookupLoading,
+    lookupError,
+    lookupMap,
+  } = useActivityLogLookupTables();
+
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG_DETAILS, {
     variables: {
       activityId: activity_id,
     },
+    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
   const [showDiffOnly, setShowDiffOnly] = useState(true);
@@ -107,8 +116,17 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     }
   };
 
-  const generateValue = value => {
+  /**
+   * Get lookup value by table name, field, and primary key value from lookup map or return null
+   * @param {string} value - The primary key id from the lookup table
+   * @param {string} field - The name from the lookup table
+   * @param {string} recordType - The table name of the lookup table
+   * @return {string|null} The value translated through the lookup table or null if not found
+   */
+  const generateLookupValue = (value, field, recordType) =>
+    lookupMap?.[recordType]?.[field]?.[value] || null;
 
+  const generateValue = value => {
     return value === null || String(value).trim() === "" ? (
       <span className={classes.listColorGray}>Null</span>
     ) : (
@@ -152,7 +170,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
                         : classes.listColorBlack
                     }
                   >
-                    {generateValue(recordState[field])}
+                    {generateLookupValue(
+                      recordState[field],
+                      field,
+                      recordType
+                    ) || generateValue(recordState[field])}
                   </span>
                 }
                 secondary={
@@ -204,7 +226,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
         </Toolbar>
       </AppBar>
       <div style={{ padding: "1rem" }}>
-        {loading ? (
+        {loading || lookupLoading ? (
           <CircularProgress />
         ) : (
           <Grid container spacing={3}>
@@ -322,6 +344,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
           </Grid>
         )}
         {error && <div>{error}</div>}
+        {lookupError && <div>{lookupError}</div>}
       </div>
     </Dialog>
   );

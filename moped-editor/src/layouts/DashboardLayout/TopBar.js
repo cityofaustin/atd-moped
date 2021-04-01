@@ -40,7 +40,6 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
         <Box flexGrow={1} />
         <Box>
           <div className={classes.root}>
-            {console.log(JSON.stringify(userDbData))}
             {userDbData ? (
               <CDNAvatar
                 className={classes.avatar}

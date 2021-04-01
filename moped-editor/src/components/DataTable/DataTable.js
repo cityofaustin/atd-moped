@@ -14,6 +14,7 @@ import {
   Snackbar,
   Switch,
   TextField,
+  Typography,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
@@ -486,11 +487,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         </Grid>
                       </form>
                     ) : (
-                      <InputLabel
+                      <Typography
                         id={"label-" + field}
                         className={
                           fieldConfiguration.fields[field]?.labelStyle ?? null
                         }
+                        variant="body1"
                       >
                         {fieldConfiguration.fields[field].format
                           ? fieldConfiguration.fields[field].format(
@@ -509,7 +511,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               </Icon>
                             </div>
                           )}
-                      </InputLabel>
+                      </Typography>
                     )}
                   </Box>
                 </Grid>
