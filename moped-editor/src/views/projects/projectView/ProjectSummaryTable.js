@@ -90,9 +90,9 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       },
       ...(capitallyFunded && {
         eCapris_id: {
-          label: "eCapris ID",
+          label: "eCapris subproject ID",
           type: "string",
-          placeholder: "Enter eCapris ID",
+          placeholder: "Enter eCapris subproject ID",
           emptyValue: "None",
           editable: true,
           format: value => (
