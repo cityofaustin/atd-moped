@@ -188,7 +188,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     switch (fieldType) {
       case "date":
-        formattedValue = new Date(formattedValue).toLocaleDateString();
+        formattedValue = new Date(formattedValue).toLocaleDateString('en-US', {timeZone: 'UTC'});
         break;
       case "boolean":
         formattedValue = formattedValue === true;
@@ -321,7 +321,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return (
       <TextField
         fullWidth
-        id="date"
+        id="text"
         label={fieldConfig.label}
         type="text"
         defaultValue={editValue ?? initialValue}
