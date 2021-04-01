@@ -27,12 +27,12 @@ moped_project_process = {
     "transform": lambda row: {
         "project_id": row[0],
         "project_name": row[1],
-        "project_description": row[2],
+        "project_description": str(row[2]),
         "current_status": row[3],
         "start_date": row[4],
         "eCapris_id": row[5],
         # We need it to be false if ecapris is empty
-        "capitally_funded": False if row[5] == "" else True
+        "capitally_funded": False if row[5] == "" or row[5] is None else True
     },
 
     # Special rules that cannot be put here
