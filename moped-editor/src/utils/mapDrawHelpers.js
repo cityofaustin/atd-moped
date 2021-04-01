@@ -114,13 +114,18 @@ export function useMapDrawTools() {
 
   const onSave = () => {
     const drawnFeatures =
-      mapEditorRef.current &&
-      mapEditorRef.current.getFeatures().map(feature => ({
-        ...feature,
-        properties: { ...feature.properties, PROJECT_EXTENT_ID: uuidv4() },
-      }));
+      mapEditorRef.current && mapEditorRef.current.getFeatures();
 
-    console.log(drawnFeatures);
+    const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => ({
+      ...feature,
+      properties: {
+        ...feature.properties,
+        PROJECT_EXTENT_ID: uuidv4(),
+        sourceLayer: "drawnByUser",
+      },
+    }));
+
+    console.log(drawnFeaturesWithIdAndLayer);
   };
 
   /**
