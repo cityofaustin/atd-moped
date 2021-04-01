@@ -388,13 +388,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param {string} label
    */
   const renderBooleanEdit = (field, initialValue) => {
-    return (
+     return (
       <FormControl fullWidth className={classes.formControl}>
         <Switch
           fullWidth
           labelId={"boolean-" + field}
           id={field}
-          checked={editValue ?? initialValue}
+          checked={!isEditing && editValue ? editValue : initialValue}
           color="primary"
           onChange={event => handleBooleanValueUpdate(event, field)}
         ></Switch>
@@ -502,7 +502,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             <div>
                               <Icon
                                 className={classes.editIcon}
-                                onClick={(field) => handleFieldEdit(field)}
+                                onClick={() => handleFieldEdit(field)}
                               >
                                 create
                               </Icon>
