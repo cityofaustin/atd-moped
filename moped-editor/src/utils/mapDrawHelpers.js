@@ -111,12 +111,12 @@ export function useMapDrawTools() {
     []
   );
 
-  useEffect(() => {
+  const onSave = () => {
     const drawnFeatures =
       mapEditorRef.current && mapEditorRef.current.getFeatures();
 
     console.log(drawnFeatures);
-  }, [isDrawing]);
+  };
 
   /**
    * Takes the click event and sets the draw mode handler and selected mode ID
@@ -181,6 +181,7 @@ export function useMapDrawTools() {
         selectedModeId={modeId}
         onSwitchMode={switchMode}
         onDelete={onDelete}
+        onSave={onSave}
       />
     );
   };

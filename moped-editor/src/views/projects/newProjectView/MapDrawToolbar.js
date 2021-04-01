@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
-import { makeStyles } from "@material-ui/core";
+import { Button, makeStyles } from "@material-ui/core";
 import theme from "../../../theme/index";
 
 import { MODES } from "../../../utils/mapDrawHelpers";
@@ -23,7 +23,7 @@ export const useToolbarStyles = makeStyles({
   },
 });
 
-const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
+const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete, onSave }) => {
   const [hoveredId, setHoveredId] = useState(null);
 
   const classes = useToolbarStyles({ selected: selectedModeId });
@@ -50,6 +50,9 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
           />
         );
       })}
+      <Button variant="contained" color="primary" onClick={onSave}>
+        Save
+      </Button>
     </div>
   );
 };
