@@ -114,7 +114,7 @@ export const mapConfig = {
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.secondary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_Intersection_Points_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 12,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
