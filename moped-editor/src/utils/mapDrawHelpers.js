@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -7,6 +7,7 @@ import {
   RENDER_STATE,
   SHAPE,
 } from "react-map-gl-draw";
+import { v4 as uuidv4 } from "uuid";
 import theme from "../theme/index";
 import { mapStyles } from "../utils/mapHelpers";
 
@@ -113,7 +114,11 @@ export function useMapDrawTools() {
 
   const onSave = () => {
     const drawnFeatures =
-      mapEditorRef.current && mapEditorRef.current.getFeatures();
+      mapEditorRef.current &&
+      mapEditorRef.current.getFeatures().map(feature => ({
+        ...feature,
+        properties: { ...feature.properties, PROJECT_EXTENT_ID: uuidv4() },
+      }));
 
     console.log(drawnFeatures);
   };
