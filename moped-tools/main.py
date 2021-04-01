@@ -8,6 +8,7 @@ from graphql import run_query
 # Import cleanup functions
 from moped_project import moped_project_process
 from moped_users import moped_user_process
+from moped_project_personnel import moped_project_personnel_process
 
 
 # Maybe change this to be dynamic by accepting a command line parameter?
@@ -40,8 +41,15 @@ print("Database connection established")
 # can get very long, maybe it's best to use python
 # comprehensions to distribute these settings.
 process_list = [
-    # moped_project_process,
+    # 1. Insert Projects
+    moped_project_process,
+    # 2. Users : Employees, this in preparation to insert personnel.
     moped_user_process,
+    # 3. Personnel: In Access, the association between the users (employees) table and personnel
+    # table is done with the name of the employee where Moped uses integers. To make the association
+    # in Moped, we need to locate the user by the name we receive from Access and retrieve
+    # the user_id from Moped, assuming the user already exists in the Moped user table.
+    moped_project_personnel_process,
 ]
 
 # Processes a single record
@@ -65,17 +73,28 @@ for process in process_list:
     print(f"Working on: {process['table']}")
 
     # Establish new cursor
+    print("Establishing new database cursor")
     db_cursor = db_connection.cursor()
+
     # Execute SQL on cursor
+    print("Executing SQL query against Access")
     db_cursor.execute(process["sql"])
+
     # Iterate through the cursor
+    print("Fetching data to array")
     for row in db_cursor.fetchall():
         db_rows.append(row)
+
+    # Pre-Filter (i.e., remove empty records)
+    if "prefilter" in process:
+        print("Running filter")
+        db_rows = list(filter(process["prefilter"], db_rows))
 
     # Transform (or Map) every individual record from type tuple into dictionary
     data_records = list(map(process["transform"], db_rows))
 
     # For every individual record
+    print("Processing Records")
     for record in data_records:
         # Go ahead and process it
         process_record(
@@ -83,6 +102,14 @@ for process in process_list:
         )
         print("--------------------------------")
 
+    if "postcleanup" in process:
+        print("Running post-process cleanup")
+        process["postcleanup"]()
+
+    print("Closing database cursor")
     db_cursor.close()
 
+print("Closing database connection")
 db_connection.close()
+
+print("Done")
