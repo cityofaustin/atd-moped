@@ -384,13 +384,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Render a date component
+   * Render a boolean component
    * @param {string} field
    * @param {string} initialValue
-   * @param {string} label
    */
   const renderBooleanEdit = (field, initialValue) => {
-     return (
+    return (
       <FormControl fullWidth className={classes.formControl}>
         <Switch
           fullWidth
@@ -455,12 +454,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               <>{renderDateEdit(field, getValue(field))}</>
                             )}
                             {fieldType === "boolean" && (
-                              <>
-                                {renderBooleanEdit(
-                                  field,
-                                  getValue(field)
-                                )}
-                              </>
+                              <>{renderBooleanEdit(field, getValue(field))}</>
                             )}
                           </Grid>
                           {fieldType !== "boolean" && (
