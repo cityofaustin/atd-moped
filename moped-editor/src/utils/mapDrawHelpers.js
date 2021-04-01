@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -110,6 +110,13 @@ export function useMapDrawTools() {
   const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
     []
   );
+
+  useEffect(() => {
+    const drawnFeatures =
+      mapEditorRef.current && mapEditorRef.current.getFeatures();
+
+    console.log(drawnFeatures);
+  }, [isDrawing]);
 
   /**
    * Takes the click event and sets the draw mode handler and selected mode ID
