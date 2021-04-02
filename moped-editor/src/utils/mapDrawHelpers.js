@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -92,6 +92,11 @@ export function getFeatureStyle({ feature, state }) {
   return style;
 }
 
+const getDrawnFeaturesFromFeatureCollection = featureCollection =>
+  featureCollection.features.filter(
+    feature => feature.properties.sourceLayer === "drawnByUser"
+  );
+
 /**
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
@@ -106,6 +111,7 @@ export function getFeatureStyle({ feature, state }) {
 export function useMapDrawTools(featureCollection) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
+  const [areDrawnFeaturesAdded, setAreDrawnFeaturesAdded] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
@@ -113,23 +119,40 @@ export function useMapDrawTools(featureCollection) {
     []
   );
 
+  useEffect(() => {
+    if (!mapEditorRef.current) return;
+
+    const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
+      featureCollection
+    );
+    mapEditorRef.current.addFeatures(drawnFeatures);
+
+    setAreDrawnFeaturesAdded(true);
+  }, [featureCollection]);
+
   const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
     ...featureCollection,
     features: [...featureCollection.features, ...drawnFeatures],
   });
 
   const saveDrawnPoints = () => {
-    const drawnFeatures =
-      mapEditorRef.current && mapEditorRef.current.getFeatures();
+    const drawnFeatures = mapEditorRef.current
+      ? mapEditorRef.current.getFeatures()
+      : [];
 
-    const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => ({
-      ...feature,
-      properties: {
-        ...feature.properties,
-        PROJECT_EXTENT_ID: uuidv4(),
-        sourceLayer: "drawnByUser",
-      },
-    }));
+    const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => {
+      const featureUUID = uuidv4();
+
+      return {
+        ...feature,
+        id: featureUUID,
+        properties: {
+          ...feature.properties,
+          PROJECT_EXTENT_ID: featureUUID,
+          sourceLayer: "drawnByUser",
+        },
+      };
+    });
 
     const updatedFeatureCollection = addDrawnFeaturesToCollection(
       featureCollection,
@@ -137,7 +160,7 @@ export function useMapDrawTools(featureCollection) {
       "drawnByUser"
     );
 
-    console.log(updatedFeatureCollection);
+    console.log(drawnFeatures, updatedFeatureCollection);
     // Mutate project GeoJSON
   };
 
@@ -214,16 +237,29 @@ export function useMapDrawTools(featureCollection) {
    */
   const renderMapDrawTools = () => (
     <>
-      <Editor
-        ref={mapEditorRef}
-        featureStyle={getFeatureStyle}
-        onSelect={onSelect}
-        clickRadius={12}
-        mode={modeHandler}
-      />
+      {areDrawnFeaturesAdded && (
+        <Editor
+          ref={mapEditorRef}
+          featureStyle={getFeatureStyle}
+          onSelect={onSelect}
+          clickRadius={12}
+          mode={modeHandler}
+        />
+      )}
       {renderDrawToolbar()}
     </>
   );
 
   return { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints };
 }
+
+// [
+//   {
+//     type: "Feature",
+//     properties: {},
+//     geometry: {
+//       type: "Point",
+//       coordinates: [-97.74696086029196, 30.271981523956125],
+//     },
+//   },
+// ]

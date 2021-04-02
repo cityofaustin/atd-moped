@@ -26,7 +26,7 @@ export const useToolbarStyles = makeStyles({
 const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
   const [hoveredId, setHoveredId] = useState(null);
 
-  const classes = useToolbarStyles({ selected: selectedModeId });
+  const classes = useToolbarStyles();
 
   const onHover = e => {
     setHoveredId(e && e.target.id);
