@@ -113,11 +113,10 @@ export function useMapDrawTools(featureCollection) {
     []
   );
 
-  const addFeaturesToCollectionBySource = (featureCollection, sourceLayer) => {
-    // Add features here
-
-    return featureCollection;
-  };
+  const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
+    ...featureCollection,
+    features: [...featureCollection.features, ...drawnFeatures],
+  });
 
   const saveDrawnPoints = () => {
     const drawnFeatures =
@@ -132,12 +131,14 @@ export function useMapDrawTools(featureCollection) {
       },
     }));
 
-    const updatedFeatureCollection = addFeaturesToCollectionBySource(
+    const updatedFeatureCollection = addDrawnFeaturesToCollection(
       featureCollection,
+      drawnFeaturesWithIdAndLayer,
       "drawnByUser"
     );
 
     console.log(updatedFeatureCollection);
+    // Mutate project GeoJSON
   };
 
   /**
