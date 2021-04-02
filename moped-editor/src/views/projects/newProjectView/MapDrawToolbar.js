@@ -23,7 +23,7 @@ export const useToolbarStyles = makeStyles({
   },
 });
 
-const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete, onSave }) => {
+const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
   const [hoveredId, setHoveredId] = useState(null);
 
   const classes = useToolbarStyles({ selected: selectedModeId });
@@ -50,9 +50,6 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete, onSave }) => {
           />
         );
       })}
-      <Button variant="contained" color="primary" onClick={onSave}>
-        Save
-      </Button>
     </div>
   );
 };

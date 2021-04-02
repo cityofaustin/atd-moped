@@ -63,7 +63,12 @@ const NewProjectMap = ({
     classes
   );
 
-  const { isDrawing, setIsDrawing, renderMapDrawTools } = useMapDrawTools();
+  const {
+    isDrawing,
+    setIsDrawing,
+    renderMapDrawTools,
+    saveDrawnPoints,
+  } = useMapDrawTools();
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -179,7 +184,12 @@ const NewProjectMap = ({
         name="mapDrawSwitch"
         inputProps={{ "aria-label": "primary checkbox" }}
       />
-      <Typography>Edit Mode</Typography>
+      <Typography>Draw Mode</Typography>
+      {isDrawing && (
+        <Button variant="contained" color="primary" onClick={saveDrawnPoints}>
+          Save Drawn Points
+        </Button>
+      )}
     </Box>
   );
 };

@@ -112,7 +112,7 @@ export function useMapDrawTools() {
     []
   );
 
-  const onSave = () => {
+  const saveDrawnPoints = () => {
     const drawnFeatures =
       mapEditorRef.current && mapEditorRef.current.getFeatures();
 
@@ -213,5 +213,5 @@ export function useMapDrawTools() {
     </>
   );
 
-  return { isDrawing, setIsDrawing, renderMapDrawTools };
+  return { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints };
 }
