@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -119,16 +119,14 @@ export function useMapDrawTools(featureCollection) {
     []
   );
 
-  useEffect(() => {
-    if (!mapEditorRef.current) return;
-
+  const addExistingFeatures = () => {
     const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
       featureCollection
     );
     mapEditorRef.current.addFeatures(drawnFeatures);
 
     setAreDrawnFeaturesAdded(true);
-  }, [featureCollection]);
+  };
 
   const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
     ...featureCollection,
@@ -169,6 +167,8 @@ export function useMapDrawTools(featureCollection) {
    * @param {object} e - A click event from a draw toolbar button
    */
   const switchMode = e => {
+    !areDrawnFeaturesAdded && addExistingFeatures();
+
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
     const modeHandler = mode && mode.handler ? new mode.handler() : null;
@@ -237,15 +237,13 @@ export function useMapDrawTools(featureCollection) {
    */
   const renderMapDrawTools = () => (
     <>
-      {areDrawnFeaturesAdded && (
-        <Editor
-          ref={mapEditorRef}
-          featureStyle={getFeatureStyle}
-          onSelect={onSelect}
-          clickRadius={12}
-          mode={modeHandler}
-        />
-      )}
+      <Editor
+        ref={mapEditorRef}
+        featureStyle={getFeatureStyle}
+        onSelect={onSelect}
+        clickRadius={12}
+        mode={modeHandler}
+      />
       {renderDrawToolbar()}
     </>
   );
