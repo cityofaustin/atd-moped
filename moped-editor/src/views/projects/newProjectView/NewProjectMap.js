@@ -45,6 +45,7 @@ const NewProjectMap = ({
   setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
+  projectId = null,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -68,7 +69,7 @@ const NewProjectMap = ({
     setIsDrawing,
     renderMapDrawTools,
     saveDrawnPoints,
-  } = useMapDrawTools(featureCollection);
+  } = useMapDrawTools(featureCollection, projectId, selectedLayerIds);
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array

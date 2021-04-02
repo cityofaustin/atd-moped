@@ -106,6 +106,7 @@ const ProjectSummaryMap = ({
         setSelectedLayerIds={setEditLayerIds}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
+        projectId={projectId}
       />
       {error && (
         <Container>

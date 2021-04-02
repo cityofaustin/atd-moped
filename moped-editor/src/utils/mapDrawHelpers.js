@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useCallback } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -10,6 +10,8 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import theme from "../theme/index";
 import { mapStyles } from "../utils/mapHelpers";
+import { UPDATE_PROJECT_EXTENT } from "../queries/project";
+import { useMutation } from "@apollo/client";
 
 export const MODES = [
   {
@@ -108,10 +110,25 @@ const getDrawnFeaturesFromFeatureCollection = featureCollection =>
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  */
-export function useMapDrawTools(featureCollection) {
-  const mapEditorRef = useRef();
+export function useMapDrawTools(
+  featureCollection,
+  projectId,
+  selectedLayerIds
+) {
+  const mapEditorRef = useCallback(
+    ref => {
+      if (ref) {
+        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
+          featureCollection
+        );
+
+        ref.addFeatures(drawnFeatures);
+      }
+    },
+    [featureCollection]
+  );
+
   const [isDrawing, setIsDrawing] = useState(false);
-  const [areDrawnFeaturesAdded, setAreDrawnFeaturesAdded] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
   const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
@@ -119,14 +136,7 @@ export function useMapDrawTools(featureCollection) {
     []
   );
 
-  const addExistingFeatures = () => {
-    const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
-      featureCollection
-    );
-    mapEditorRef.current.addFeatures(drawnFeatures);
-
-    setAreDrawnFeaturesAdded(true);
-  };
+  const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
 
   const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
     ...featureCollection,
@@ -135,7 +145,7 @@ export function useMapDrawTools(featureCollection) {
 
   const saveDrawnPoints = () => {
     const drawnFeatures = mapEditorRef.current
-      ? mapEditorRef.current.getFeatures()
+      ? mapEditorRef.getFeatures()
       : [];
 
     const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => {
@@ -146,6 +156,7 @@ export function useMapDrawTools(featureCollection) {
         id: featureUUID,
         properties: {
           ...feature.properties,
+          renderType: "Point",
           PROJECT_EXTENT_ID: featureUUID,
           sourceLayer: "drawnByUser",
         },
@@ -158,8 +169,13 @@ export function useMapDrawTools(featureCollection) {
       "drawnByUser"
     );
 
-    console.log(drawnFeatures, updatedFeatureCollection);
-    // Mutate project GeoJSON
+    updateProjectExtent({
+      variables: {
+        projectId,
+        editLayerIds: selectedLayerIds,
+        editFeatureCollection: updatedFeatureCollection,
+      },
+    });
   };
 
   /**
@@ -167,8 +183,6 @@ export function useMapDrawTools(featureCollection) {
    * @param {object} e - A click event from a draw toolbar button
    */
   const switchMode = e => {
-    !areDrawnFeaturesAdded && addExistingFeatures();
-
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
     const modeHandler = mode && mode.handler ? new mode.handler() : null;
@@ -194,7 +208,7 @@ export function useMapDrawTools(featureCollection) {
   const onDelete = () => {
     if (selectedEditHandleIndexes.length) {
       try {
-        mapEditorRef.current.deleteHandles(
+        mapEditorRef.deleteHandles(
           selectedFeatureIndex,
           selectedEditHandleIndexes
         );
@@ -209,7 +223,7 @@ export function useMapDrawTools(featureCollection) {
       return;
     }
 
-    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+    mapEditorRef.deleteFeatures(selectedFeatureIndex);
 
     // Update modeId to momentarily change the background color of the delete icon on click
     const previousMode = modeId;
@@ -250,14 +264,3 @@ export function useMapDrawTools(featureCollection) {
 
   return { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints };
 }
-
-// [
-//   {
-//     type: "Feature",
-//     properties: {},
-//     geometry: {
-//       type: "Point",
-//       coordinates: [-97.74696086029196, 30.271981523956125],
-//     },
-//   },
-// ]
