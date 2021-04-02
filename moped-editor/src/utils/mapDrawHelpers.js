@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -115,18 +115,21 @@ export function useMapDrawTools(
   projectId,
   selectedLayerIds
 ) {
-  const mapEditorRef = useCallback(
+  const [areDrawnFeaturesAdded, setAreDrawnFeaturesAdded] = useState(false);
+  const initializeExistingDrawFeatures = useCallback(
     ref => {
-      if (ref) {
+      if (ref && !areDrawnFeaturesAdded) {
         const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
 
         ref.addFeatures(drawnFeatures);
+        setAreDrawnFeaturesAdded(true);
       }
     },
-    [featureCollection]
+    [featureCollection, areDrawnFeaturesAdded]
   );
+  const mapEditorRef = useRef();
 
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
@@ -145,9 +148,10 @@ export function useMapDrawTools(
 
   const saveDrawnPoints = () => {
     const drawnFeatures = mapEditorRef.current
-      ? mapEditorRef.getFeatures()
+      ? mapEditorRef.current.getFeatures()
       : [];
 
+    // TODO: Existing drawn features added to the draw UI are saved again - creating duplicates
     const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => {
       const featureUUID = uuidv4();
 
@@ -176,6 +180,7 @@ export function useMapDrawTools(
         editFeatureCollection: updatedFeatureCollection,
       },
     });
+    // TODO: Refetch data so that the UI updates
   };
 
   /**
@@ -208,7 +213,7 @@ export function useMapDrawTools(
   const onDelete = () => {
     if (selectedEditHandleIndexes.length) {
       try {
-        mapEditorRef.deleteHandles(
+        mapEditorRef.current.deleteHandles(
           selectedFeatureIndex,
           selectedEditHandleIndexes
         );
@@ -223,7 +228,7 @@ export function useMapDrawTools(
       return;
     }
 
-    mapEditorRef.deleteFeatures(selectedFeatureIndex);
+    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
 
     // Update modeId to momentarily change the background color of the delete icon on click
     const previousMode = modeId;
@@ -252,7 +257,10 @@ export function useMapDrawTools(
   const renderMapDrawTools = () => (
     <>
       <Editor
-        ref={mapEditorRef}
+        ref={ref => {
+          initializeExistingDrawFeatures(ref);
+          mapEditorRef.current = ref;
+        }}
         featureStyle={getFeatureStyle}
         onSelect={onSelect}
         clickRadius={12}
