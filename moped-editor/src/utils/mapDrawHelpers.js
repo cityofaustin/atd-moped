@@ -94,6 +94,7 @@ export function getFeatureStyle({ feature, state }) {
 
 /**
  * Custom hook that builds draw tools and is used to enable or disable them
+ * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -102,7 +103,7 @@ export function getFeatureStyle({ feature, state }) {
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  */
-export function useMapDrawTools() {
+export function useMapDrawTools(featureCollection) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
@@ -111,6 +112,12 @@ export function useMapDrawTools() {
   const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
     []
   );
+
+  const addFeaturesToCollectionBySource = (featureCollection, sourceLayer) => {
+    // Add features here
+
+    return featureCollection;
+  };
 
   const saveDrawnPoints = () => {
     const drawnFeatures =
@@ -125,7 +132,12 @@ export function useMapDrawTools() {
       },
     }));
 
-    console.log(drawnFeaturesWithIdAndLayer);
+    const updatedFeatureCollection = addFeaturesToCollectionBySource(
+      featureCollection,
+      "drawnByUser"
+    );
+
+    console.log(updatedFeatureCollection);
   };
 
   /**
@@ -191,7 +203,6 @@ export function useMapDrawTools() {
         selectedModeId={modeId}
         onSwitchMode={switchMode}
         onDelete={onDelete}
-        onSave={onSave}
       />
     );
   };

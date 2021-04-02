@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
-import { Button, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import theme from "../../../theme/index";
 
 import { MODES } from "../../../utils/mapDrawHelpers";

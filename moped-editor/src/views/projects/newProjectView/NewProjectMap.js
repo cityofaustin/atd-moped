@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, makeStyles, Switch, Typography } from "@material-ui/core";
+import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -68,7 +68,7 @@ const NewProjectMap = ({
     setIsDrawing,
     renderMapDrawTools,
     saveDrawnPoints,
-  } = useMapDrawTools();
+  } = useMapDrawTools(featureCollection);
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
