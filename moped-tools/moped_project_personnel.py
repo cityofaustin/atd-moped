@@ -1,5 +1,5 @@
 #
-# Moped Users Migration Configuration
+# Moped Project Personnel Mapping Configuration
 #
 from helpers import *
 from graphql import run_query
