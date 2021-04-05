@@ -99,6 +99,16 @@ const getDrawnFeaturesFromFeatureCollection = featureCollection =>
     feature => feature.properties.sourceLayer === "drawnByUser"
   );
 
+const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
+  arrayOne.filter(
+    arrayOneFeature =>
+      !arrayTwo.some(
+        arrayTwoFeature =>
+          arrayOneFeature.properties[featureProperty] ===
+          arrayTwoFeature.properties[featureProperty]
+      )
+  );
+
 /**
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
@@ -130,8 +140,16 @@ export function useMapDrawTools(
         const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
+        const featuresAlreadyInDrawMap = ref.getFeatures();
 
-        ref.addFeatures(drawnFeatures);
+        const featuresToAdd = findDifferenceByFeatureProperty(
+          "PROJECT_EXTENT_ID",
+          drawnFeatures,
+          featuresAlreadyInDrawMap
+        );
+        console.log(featuresToAdd);
+
+        ref.addFeatures(featuresToAdd);
       }
     },
     [featureCollection]
