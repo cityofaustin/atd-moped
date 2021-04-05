@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -126,6 +126,7 @@ export function useMapDrawTools(
   selectedLayerIds,
   refetchProjectDetails
 ) {
+  const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
@@ -142,20 +143,20 @@ export function useMapDrawTools(
         );
         const featuresAlreadyInDrawMap = ref.getFeatures();
 
+        // featuresAlreadyInDrawMap.forEach((feature, i) => ref.deleteFeatures(i))
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
           drawnFeatures,
           featuresAlreadyInDrawMap
         );
-        console.log(featuresToAdd);
+
+        console.log({ drawnFeatures, featuresAlreadyInDrawMap, featuresToAdd });
 
         ref.addFeatures(featuresToAdd);
       }
     },
     [featureCollection]
   );
-
-  const mapEditorRef = useRef();
 
   const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
 
@@ -240,8 +241,7 @@ export function useMapDrawTools(
           selectedEditHandleIndexes
         );
       } catch (error) {
-        // eslint-disable-next-line no-undef, no-console
-        console.error(error.message);
+        console.log(error.message);
       }
       return;
     }
@@ -280,8 +280,8 @@ export function useMapDrawTools(
     <>
       <Editor
         ref={ref => {
-          initializeExistingDrawFeatures(ref);
           mapEditorRef.current = ref;
+          initializeExistingDrawFeatures(ref);
         }}
         featureStyle={getFeatureStyle}
         onSelect={onSelect}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import {
@@ -47,6 +47,10 @@ const ProjectSummaryMap = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
+
+  useEffect(() => {
+    setEditFeatureCollection(projectExtentGeoJSON);
+  }, [projectExtentGeoJSON]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
