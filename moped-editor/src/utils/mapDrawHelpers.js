@@ -116,22 +116,6 @@ export function useMapDrawTools(
   selectedLayerIds,
   refetchProjectDetails
 ) {
-  const [areDrawnFeaturesAdded, setAreDrawnFeaturesAdded] = useState(false);
-  const initializeExistingDrawFeatures = useCallback(
-    ref => {
-      if (ref && !areDrawnFeaturesAdded) {
-        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
-          featureCollection
-        );
-
-        ref.addFeatures(drawnFeatures);
-        setAreDrawnFeaturesAdded(true);
-      }
-    },
-    [featureCollection, areDrawnFeaturesAdded]
-  );
-  const mapEditorRef = useRef();
-
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
@@ -139,6 +123,21 @@ export function useMapDrawTools(
   const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
     []
   );
+
+  const initializeExistingDrawFeatures = useCallback(
+    ref => {
+      if (ref) {
+        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
+          featureCollection
+        );
+
+        ref.addFeatures(drawnFeatures);
+      }
+    },
+    [featureCollection]
+  );
+
+  const mapEditorRef = useRef();
 
   const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
 
