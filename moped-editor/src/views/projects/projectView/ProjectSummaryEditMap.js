@@ -56,7 +56,7 @@ const ProjectSummaryMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data and handles dialog close on success
+   * Calls update project mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
     updateProjectExtent({
@@ -107,6 +107,7 @@ const ProjectSummaryMap = ({
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
         projectId={projectId}
+        refetchProjectDetails={refetchProjectDetails}
       />
       {error && (
         <Container>

@@ -113,7 +113,8 @@ const getDrawnFeaturesFromFeatureCollection = featureCollection =>
 export function useMapDrawTools(
   featureCollection,
   projectId,
-  selectedLayerIds
+  selectedLayerIds,
+  refetchProjectDetails
 ) {
   const [areDrawnFeaturesAdded, setAreDrawnFeaturesAdded] = useState(false);
   const initializeExistingDrawFeatures = useCallback(
@@ -151,8 +152,12 @@ export function useMapDrawTools(
       ? mapEditorRef.current.getFeatures()
       : [];
 
-    // TODO: Existing drawn features added to the draw UI are saved again - creating duplicates
-    const drawnFeaturesWithIdAndLayer = drawnFeatures.map(feature => {
+    // Track existing drawn features so that we don't duplicate them on each save
+    const newDrawnFeatures = drawnFeatures.filter(
+      feature => feature.properties.sourceLayer !== "drawnByUser"
+    );
+
+    const drawnFeaturesWithIdAndLayer = newDrawnFeatures.map(feature => {
       const featureUUID = uuidv4();
 
       return {
@@ -169,8 +174,7 @@ export function useMapDrawTools(
 
     const updatedFeatureCollection = addDrawnFeaturesToCollection(
       featureCollection,
-      drawnFeaturesWithIdAndLayer,
-      "drawnByUser"
+      drawnFeaturesWithIdAndLayer
     );
 
     updateProjectExtent({
@@ -179,8 +183,9 @@ export function useMapDrawTools(
         editLayerIds: selectedLayerIds,
         editFeatureCollection: updatedFeatureCollection,
       },
+    }).then(() => {
+      refetchProjectDetails();
     });
-    // TODO: Refetch data so that the UI updates
   };
 
   /**
