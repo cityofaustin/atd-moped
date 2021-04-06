@@ -203,6 +203,7 @@ export function useMapDrawTools(
       },
     }).then(() => {
       refetchProjectDetails();
+      setIsDrawing(false);
     });
   };
 
@@ -280,8 +281,8 @@ export function useMapDrawTools(
     <>
       <Editor
         ref={ref => {
-          mapEditorRef.current = ref;
           initializeExistingDrawFeatures(ref);
+          mapEditorRef.current = ref;
         }}
         featureStyle={getFeatureStyle}
         onSelect={onSelect}
