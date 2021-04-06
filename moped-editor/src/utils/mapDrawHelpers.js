@@ -165,7 +165,7 @@ export function useMapDrawTools(
   );
 
   /**
-   * Add existing drawn points in the project extent feature collection to the Editor so they are editable
+   * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
     ref => {

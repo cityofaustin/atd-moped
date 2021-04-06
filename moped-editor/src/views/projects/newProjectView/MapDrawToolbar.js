@@ -28,10 +28,18 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
 
   const classes = useToolbarStyles();
 
+  /**
+   * Sets the hovered button ID in state to style and show tooltip label
+   * @param {Object} e - Event object for hover
+   */
   const onHover = e => {
     setHoveredId(e && e.target.id);
   };
 
+  /**
+   * Calls onDelete function to delete a point feature from the draw UI
+   * @param {Object} e - Event object for click
+   */
   const onDeleteClick = e => {
     onDelete(e);
   };
