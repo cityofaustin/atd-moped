@@ -16,7 +16,7 @@ export const ADD_PROJECT = gql`
     $current_status: String! = ""
     $eCapris_id: String! = ""
     $fiscal_year: String! = ""
-    $start_date: date = ""
+    $start_date: timestamptz
     $capitally_funded: Boolean! = false
     $project_priority: String! = ""
     $project_extent_ids: jsonb = {}
