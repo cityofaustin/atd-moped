@@ -8,6 +8,7 @@ import {
   SHAPE,
 } from "react-map-gl-draw";
 import { v4 as uuidv4 } from "uuid";
+import { get } from "lodash";
 import theme from "../theme/index";
 import { mapStyles } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
@@ -122,6 +123,17 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   );
 
 /**
+ * Add points drawn using the UI exposed from useMapDrawTools
+ * @param {object} featureCollection - GeoJSON feature collection containing project extent
+ * @param {array} drawnFeatures - List of GeoJSON features generated from the draw UI
+ * @return {object} The updated feature collection
+ */
+const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
+  ...featureCollection,
+  features: [...featureCollection.features, ...drawnFeatures],
+});
+
+/**
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
@@ -174,11 +186,6 @@ export function useMapDrawTools(
 
   const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
 
-  const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
-    ...featureCollection,
-    features: [...featureCollection.features, ...drawnFeatures],
-  });
-
   const saveDrawnPoints = () => {
     const drawnFeatures = mapEditorRef.current
       ? mapEditorRef.current.getFeatures()
@@ -209,6 +216,7 @@ export function useMapDrawTools(
       drawnFeaturesWithIdAndLayer
     );
 
+    // Update project extent in DB, refetch data, and then close UI for user
     updateProjectExtent({
       variables: {
         projectId,
@@ -249,6 +257,7 @@ export function useMapDrawTools(
    * Finds the currently selected feature and removes it from the drawn features array
    */
   const onDelete = () => {
+    // Remove the feature from the draw UI feature list
     if (selectedEditHandleIndexes.length) {
       try {
         mapEditorRef.current.deleteHandles(
@@ -267,13 +276,21 @@ export function useMapDrawTools(
 
     mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
 
-    const updatedFeatures = mapEditorRef.current
-      .getFeatures()
-      .filter((feature, i) => i !== selectedFeatureIndex);
+    // Then, remove the feature from the feature collection of the project extent
+    const updatedFeatures = mapEditorRef.current.getFeatures();
+
+    const featureToDelete = updatedFeatures[selectedFeatureIndex];
+    const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
+    const featureIdToDelete = get(featureToDelete, featureIdGetPath);
 
     const updatedFeatureCollection = {
       ...featureCollection,
-      features: updatedFeatures,
+      features: [
+        ...featureCollection.features,
+        ...featureCollection.features.filter(
+          feature => get(feature, featureIdGetPath) === featureIdToDelete
+        ),
+      ],
     };
     setFeatureCollection(updatedFeatureCollection);
 
