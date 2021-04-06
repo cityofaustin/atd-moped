@@ -40,10 +40,15 @@ const MenuProps = {
   },
 };
 
-const ProjectTeamRoleMultiselect = ({ roles, initialValue, value, onChange }) => {
+const ProjectTeamRoleMultiselect = ({
+  roles,
+  initialValue,
+  value,
+  onChange,
+}) => {
   const classes = useStyles();
   const [userRoles, setUserRoles] = useState(
-      initialValue ? initialValue.map(v => Number.parseInt(v)) : []
+    initialValue ? initialValue.map(v => Number.parseInt(v)) : []
   );
 
   const handleChange = event => {
@@ -52,6 +57,8 @@ const ProjectTeamRoleMultiselect = ({ roles, initialValue, value, onChange }) =>
 
   useEffect(() => {
     onChange(userRoles);
+    // Unfortunately, adding onChange breaks useEffect
+    // eslint-disable-next-line
   }, [userRoles, value]);
 
   return (
