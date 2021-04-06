@@ -11,18 +11,13 @@ import {
 import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+
 import typography from "../../../theme/typography";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import {
-  TEAM_QUERY,
-  ADD_PROJECT_PERSONNEL,
-  UPDATE_PROJECT_PERSONNEL,
-  UPSERT_PROJECT_PERSONNEL,
-} from "../../../queries/project";
+import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -45,8 +40,7 @@ const ProjectTeamTable = ({
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
-  const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
-  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
+
   const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
@@ -62,11 +56,11 @@ const ProjectTeamTable = ({
       // instantiate a new object & populate
       personnel[`${item.user_id}`] = {};
       personnel[`${item.user_id}`].user_id = item.user_id;
-      personnel[`${item.user_id}`].roles_id = [item.role_id];
+      personnel[`${item.user_id}`].role_id = [item.role_id];
       personnel[`${item.user_id}`].notes = item.notes;
     } else {
       // Aggregate role_ids, and notes.
-      personnel[`${item.user_id}`].roles_id.push(item.role_id);
+      personnel[`${item.user_id}`].role_id.push(item.role_id);
       personnel[`${item.user_id}`].notes = (
         (personnel[`${item.user_id}`].notes ?? "") +
         " " +
@@ -154,20 +148,21 @@ const ProjectTeamTable = ({
     {
       title: "Role",
       field: "role_id",
-      render: personnel =>
-        personnel.roles_id.map(chipRoleId => (
+      render: personnel => {
+        return personnel.role_id.map(chipRoleId => (
           <Chip
             className={classes.roleChip}
             variant="outlined"
             label={roles[chipRoleId]}
           />
-        )),
+        ));
+      },
       // validate: rowData => Array.isArray(rowData) && rowData.length() > 0,
       editComponent: props => (
         <ProjectTeamRoleMultiselect
           id="role_id"
           name="role_id"
-          initialValue={props.rowData.roles_id}
+          initialValue={props.rowData.role_id}
           value={props.value}
           onChange={props.onChange}
           roles={roles}
@@ -196,21 +191,38 @@ const ProjectTeamTable = ({
   const isNewProjectActions = {
     true: {
       add: newData => {
-        const activePersonnel = { ...newData, status_id: 1 };
+        let newDataCopy = {...newData};
+        // Aggregate into a unique set if there is stuff already there
+        const newPersonnelState = personnelState.map(item => {
+          if (item.user_id === newData.user_id) {
+            const output = {
+              user_id: item.user_id,
+              role_id: [...new Set([...item.role_id, ...newData.role_id])],
+              notes: (item?.notes ?? "") + " " + (newData?.notes ?? ""),
+            };
+            newDataCopy = null;
+            return output;
+          } else {
+            return item;
+          }
+        });
 
-        setPersonnelState([...personnelState, activePersonnel]);
+        setPersonnelState(
+          [...newPersonnelState, newDataCopy].filter(item => item !== null)
+        );
       },
       update: (newData, oldData) => {
-        const dataUpdate = [...personnelState];
-        const index = oldData.tableData.id;
-        dataUpdate[index] = newData;
-        setPersonnelState([...dataUpdate]);
+        // Remove the existing user and overwrite
+        const newState = personnelState.filter(
+          item => item.user_id !== newData.user_id
+        );
+        setPersonnelState([...newState, newData]);
       },
       delete: oldData => {
-        const dataDelete = [...personnelState];
-        const index = oldData.tableData.id;
-        dataDelete.splice(index, 1);
-        setPersonnelState([...dataDelete]);
+        const newState = personnelState.filter(
+          item => item.user_id !== oldData.user_id
+        );
+        setPersonnelState([...newState]);
       },
     },
     false: {
@@ -236,7 +248,7 @@ const ProjectTeamTable = ({
       },
       update: (newData, oldData) => {
         // Gather a list of ids to be "removed"
-        const removedIds = oldData.roles_id.filter(
+        const removedIds = oldData.role_id.filter(
           n => !newData.role_id.includes(n)
         );
 
@@ -264,7 +276,7 @@ const ProjectTeamTable = ({
       },
       delete: oldData => {
         // We will soft delete by marking as "status_id"
-        const updatedPersonnelData = oldData.roles_id.map((roleId, index) => {
+        const updatedPersonnelData = oldData.role_id.map((roleId, index) => {
           return {
             project_id: Number.parseInt(projectId),
             user_id: oldData.user_id,
