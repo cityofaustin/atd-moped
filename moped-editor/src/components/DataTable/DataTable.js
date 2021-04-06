@@ -55,6 +55,7 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
+  console.log(data)
   const classes = useStyles();
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -134,6 +135,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     console.log(tableConfig);
     console.log(fieldConfig);
+    console.log(typeof(gqlFormattedValue));
+    console.log(gqlFormattedValue);
     // Generate the mutation
     let mutation;
     if (!!fieldConfig.childField) {
