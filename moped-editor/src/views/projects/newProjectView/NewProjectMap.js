@@ -72,6 +72,7 @@ const NewProjectMap = ({
     saveDrawnPoints,
   } = useMapDrawTools(
     featureCollection,
+    setFeatureCollection,
     projectId,
     selectedLayerIds,
     refetchProjectDetails

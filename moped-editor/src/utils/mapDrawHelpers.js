@@ -122,6 +122,7 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  */
 export function useMapDrawTools(
   featureCollection,
+  setFeatureCollection,
   projectId,
   selectedLayerIds,
   refetchProjectDetails
@@ -143,7 +144,6 @@ export function useMapDrawTools(
         );
         const featuresAlreadyInDrawMap = ref.getFeatures();
 
-        // featuresAlreadyInDrawMap.forEach((feature, i) => ref.deleteFeatures(i))
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
           drawnFeatures,
@@ -252,6 +252,16 @@ export function useMapDrawTools(
     }
 
     mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+
+    const updatedFeatures = mapEditorRef.current
+      .getFeatures()
+      .filter((feature, i) => i !== selectedFeatureIndex);
+
+    const updatedFeatureCollection = {
+      ...featureCollection,
+      features: updatedFeatures,
+    };
+    setFeatureCollection(updatedFeatureCollection);
 
     // Update modeId to momentarily change the background color of the delete icon on click
     const previousMode = modeId;
