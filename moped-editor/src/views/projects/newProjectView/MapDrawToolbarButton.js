@@ -4,8 +4,8 @@ import theme from "../../../theme/index";
 
 export const useButtonStyles = makeStyles({
   controlTooltip: {
-    position: "absolute",
-    right: 44,
+    position: "fixed",
+    right: 74,
     padding: 4,
     background: theme.palette.text.primary,
     color: theme.palette.background.mapControls,
