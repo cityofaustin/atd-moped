@@ -94,11 +94,23 @@ export function getFeatureStyle({ feature, state }) {
   return style;
 }
 
+/**
+ * Retrieve a list of features that were drawn using the UI exposed from useMapDrawTools
+ * @param {object} featureCollection - GeoJSON feature collection containing project extent
+ * @return {array} List of features that originated from the draw UI
+ */
 const getDrawnFeaturesFromFeatureCollection = featureCollection =>
   featureCollection.features.filter(
     feature => feature.properties.sourceLayer === "drawnByUser"
   );
 
+/**
+ * Return the difference between two arrays of GeoJSON objects
+ * @param {string} featureProperty- GeoJSON property key used to compare arrays of GeoJSON features
+ * @param {array}  arrayOne - The first array of GeoJSON features
+ * @param {array}  arrayTwo - The second array of GeoJSON features
+ * @return {array} List of features that are different
+ */
 const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   arrayOne.filter(
     arrayOneFeature =>
@@ -136,9 +148,13 @@ export function useMapDrawTools(
     []
   );
 
+  /**
+   * Add existing drawn points in the project extent feature collection to the Editor so they are editable
+   */
   const initializeExistingDrawFeatures = useCallback(
     ref => {
       if (ref) {
+        // Only add features that are not already present in the draw UI to avoid duplicates
         const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
@@ -149,8 +165,6 @@ export function useMapDrawTools(
           drawnFeatures,
           featuresAlreadyInDrawMap
         );
-
-        console.log({ drawnFeatures, featuresAlreadyInDrawMap, featuresToAdd });
 
         ref.addFeatures(featuresToAdd);
       }
