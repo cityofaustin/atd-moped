@@ -119,7 +119,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: mapErrors.atLeastOneLocation,
+        error: mapErrors.minimumLocations,
         isError: areNoFeaturesSelected,
       },
     ];

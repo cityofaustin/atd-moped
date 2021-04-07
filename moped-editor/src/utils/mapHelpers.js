@@ -93,7 +93,7 @@ export const mapConfig = {
 };
 
 export const mapErrors = {
-  atLeastOneLocation: "Select a location to save project",
+  minimumLocations: "Select a location to save project",
   failedToSave: "The map edit failed to save. Please try again.",
 };
 

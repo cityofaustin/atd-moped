@@ -124,7 +124,7 @@ const ProjectSummaryMap = ({
       )}
       {!areMinimumFeaturesSet && (
         <Alert className={classes.mapAlert} severity="error">
-          {mapErrors.atLeastOneLocation}
+          {mapErrors.minimumLocations}
         </Alert>
       )}
     </Dialog>
