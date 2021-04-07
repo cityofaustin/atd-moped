@@ -5,7 +5,6 @@ import { sumFeaturesSelected } from "../../../utils/mapHelpers";
 import {
   AppBar,
   Button,
-  Container,
   IconButton,
   Dialog,
   makeStyles,
@@ -25,6 +24,9 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  mapAlert: {
+    margin: "0px 24px 24px 24px",
   },
 }));
 
@@ -111,11 +113,14 @@ const ProjectSummaryMap = ({
         setFeatureCollection={setEditFeatureCollection}
       />
       {error && (
-        <Container>
-          <Alert severity="error">
-            The map edit failed to save. Please try again.
-          </Alert>
-        </Container>
+        <Alert className={classes.mapAlert} severity="error">
+          The map edit failed to save. Please try again.
+        </Alert>
+      )}
+      {!isOneFeatureSet && (
+        <Alert className={classes.mapAlert} severity="error">
+          Select a location to save project
+        </Alert>
       )}
     </Dialog>
   );
