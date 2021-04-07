@@ -22,7 +22,7 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { sumFeaturesSelected } from "../../../utils/mapHelpers";
+import { sumFeaturesSelected, mapErrors } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -112,7 +112,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Select a location to save project",
+        error: mapErrors.atLeastOneLocation,
         isError: areNoFeaturesSelected,
       },
     ];
@@ -149,8 +149,8 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let nameError = projectDetails.project_name.length === 0
-    let descriptionError = projectDetails.project_description.length === 0
+    let nameError = projectDetails.project_name.length === 0;
+    let descriptionError = projectDetails.project_description.length === 0;
     let canContinue = false;
 
     if (!nameError && !descriptionError) {
@@ -293,9 +293,14 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>}
+                        {activeStep > 0 && (
+                          <Button
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        )}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}

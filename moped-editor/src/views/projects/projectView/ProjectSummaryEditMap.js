@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
-import { sumFeaturesSelected } from "../../../utils/mapHelpers";
+import { sumFeaturesSelected, mapErrors } from "../../../utils/mapHelpers";
 import {
   AppBar,
   Button,
@@ -114,12 +114,12 @@ const ProjectSummaryMap = ({
       />
       {error && (
         <Alert className={classes.mapAlert} severity="error">
-          The map edit failed to save. Please try again.
+          {mapErrors.failedToSave}
         </Alert>
       )}
       {!isOneFeatureSet && (
         <Alert className={classes.mapAlert} severity="error">
-          Select a location to save project
+          {mapErrors.atLeastOneLocation}
         </Alert>
       )}
     </Dialog>

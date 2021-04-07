@@ -91,6 +91,11 @@ export const mapConfig = {
   },
 };
 
+export const mapErrors = {
+  atLeastOneLocation: "Select a location to save project",
+  failedToSave: "The map edit failed to save. Please try again.",
+};
+
 /**
  * Create a Mapbox LngLatBounds object from a bbox generated from a feature collection
  * @param {Object} featureCollection - A GeoJSON feature collection
