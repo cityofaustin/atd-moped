@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
+import { sumFeaturesSelected } from "../../../utils/mapHelpers";
 import {
   AppBar,
   Button,
@@ -47,6 +48,7 @@ const ProjectSummaryMap = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
+  const isOneFeatureSet = sumFeaturesSelected(editLayerIds) > 0;
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -92,6 +94,7 @@ const ProjectSummaryMap = ({
               autoFocus
               color="inherit"
               onClick={handleSave}
+              disabled={!isOneFeatureSet}
               startIcon={<SaveIcon />}
             >
               save
