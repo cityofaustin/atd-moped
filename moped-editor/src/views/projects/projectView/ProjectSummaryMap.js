@@ -1,12 +1,13 @@
 import React, { useRef } from "react";
-import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectViewLayerConfig,
+  createSummaryMapLayers,
+  getInteractiveIds,
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
@@ -63,7 +64,7 @@ const ProjectSummaryMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={["projectExtent"]}
+        interactiveLayerIds={getInteractiveIds()}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -71,11 +72,8 @@ const ProjectSummaryMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        {projectExtentGeoJSON && (
-          <Source type="geojson" data={projectExtentGeoJSON}>
-            <Layer {...createProjectViewLayerConfig()} />
-          </Source>
-        )}
+        {projectExtentGeoJSON &&
+          createSummaryMapLayers(selectedLayerIds, projectExtentGeoJSON)}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { WebMercatorViewport } from "react-map-gl";
+import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
-import { Typography } from "@material-ui/core";
+import { Box, Checkbox, Typography } from "@material-ui/core";
+import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
@@ -28,7 +29,16 @@ export const mapStyles = {
   lineWidthStops: {
     base: 1,
     stops: [
-      [10, 1],
+      [10, 1], // [zoom, width in px]
+      [13, 2],
+      [16, 10],
+      [18, 25],
+    ],
+  },
+  circleRadiusStops: {
+    base: 1,
+    stops: [
+      [10, 1], // [zoom, radius in px]
       [13, 2],
       [16, 10],
       [18, 25],
@@ -58,15 +68,31 @@ export const mapConfig = {
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
+      layerLabel: "Streets",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 14,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
+          const editMapPaintStyles = {
+            "line-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
           return {
+            id: this.layerIdName,
             type: "line",
             layout: {
               "line-join": "round",
@@ -75,14 +101,43 @@ export const mapConfig = {
             paint: {
               "line-color": this.layerColor,
               "line-width": mapStyles.lineWidthStops,
-              "line-opacity": [
-                "case",
-                ["==", ["get", this.layerIdField], hoveredId],
-                mapStyles.statusOpacities.hovered,
-                ["in", ["get", this.layerIdField], ["literal", layerIds]],
-                mapStyles.statusOpacities.selected,
-                mapStyles.statusOpacities.unselected,
-              ],
+              ...(isEditing && editMapPaintStyles),
+            },
+          };
+        };
+      },
+    },
+    Project_Component_Points_prototype: {
+      layerLabel: "Points",
+      layerIdName: "project-component-points",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerColor: theme.palette.secondary.main,
+      layerUrl:
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      layerMaxLOD: 12,
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
+          const editMapPaintStyles = {
+            "circle-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
+          return {
+            id: this.layerIdName,
+            type: "circle",
+            paint: {
+              "circle-color": this.layerColor,
+              "circle-radius": mapStyles.circleRadiusStops,
+              ...(isEditing && editMapPaintStyles),
             },
           };
         };
@@ -113,13 +168,19 @@ export const getInteractiveIds = () =>
   Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
 
 /**
- * Get a feature's ID attribute from a Mapbox map click or hover event
- * @param {Object} e - Event object for click or hover on map
- * @param {String} idKey - Key that exposes the id of the polygon in the layer
+ * Get the layer names from the layerConfigs object
+ * @return {Array} List of layer names set in mapConfig.layerConfigs
+ */
+export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
+
+/**
+ * Get a feature's ID attribute from a GeoJSON feature
+ * @param {Object} feature - GeoJSON feature taken from a Mapbox click or hover event
+ * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (e, idKey) =>
-  e.features && e.features.length > 0 && e.features[0].properties[idKey];
+export const getFeatureId = (feature, layerName) =>
+  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -153,14 +214,17 @@ export const getGeoJSON = e =>
  * Determine if a feature is present/absent from the feature collection state
  * @param {Object} selectedFeature - Feature selected
  * @param {Array} features - Array of GeoJSON features
- * @param {String} idField - Key for id field in feature properties
+ * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {Boolean} Is feature present in features of feature collection in state
  */
-export const isFeaturePresent = (selectedFeature, features, idField) =>
-  features.some(
+export const isFeaturePresent = (selectedFeature, features, layerName) => {
+  const featureGetPath = mapConfig.layerConfigs[layerName].layerIdGetPath;
+
+  return features.some(
     feature =>
-      selectedFeature.properties[idField] === feature.properties[idField]
+      get(selectedFeature, featureGetPath) === get(feature, featureGetPath)
   );
+};
 
 /**
  * Create a configuration to set the Mapbox spec styles for selected/unselected/hovered layer features
@@ -172,29 +236,69 @@ export const isFeaturePresent = (selectedFeature, features, idField) =>
 export const createProjectSelectLayerConfig = (
   hoveredId,
   sourceName,
-  selectedLayerIds
+  selectedLayerIds,
+  visibleLayerIds
 ) => {
   const layerIds = selectedLayerIds[sourceName] || [];
   const config = mapConfig.layerConfigs[sourceName];
 
   // Merge common layer attributes with those unique to each layer type
-  return {
-    id: config.layerIdName,
+  let layerStyleSpec = {
     "source-layer": sourceName,
     ...config.layerStyleSpec(hoveredId, layerIds),
   };
+
+  if (!!visibleLayerIds) {
+    layerStyleSpec = {
+      ...layerStyleSpec,
+      layout: {
+        ...layerStyleSpec.layout,
+        visibility: visibleLayerIds.includes(sourceName) ? "visible" : "none",
+      },
+    };
+  }
+
+  return layerStyleSpec;
 };
 
-// Builds cases to match GeoJSON features with corresponding colors set for their layer
-// https://docs.mapbox.com/mapbox-gl-js/style-spec/expressions/#case
-const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
-  (acc, [sourceName, config]) => {
-    acc.push(["==", ["get", "sourceLayer"], sourceName]);
-    acc.push(config.layerColor);
-    return acc;
-  },
-  []
-);
+/**
+ * Create sources and layers for each source layer in the project's GeoJSON FeatureCollection
+ * @param {object} selectedIds - Object containing selected ID array for each source layer
+ * @param {object} geoJSON - A GeoJSON feature collection with project features
+ * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
+ */
+export const createSummaryMapLayers = (selectedIds, geoJSON) => {
+  const geoJSONBySource = Object.keys(selectedIds).reduce(
+    (acc, sourceLayerName) => ({
+      ...acc,
+      [sourceLayerName]: {
+        ...geoJSON,
+        features: [
+          ...geoJSON.features.filter(
+            feature => feature.properties.sourceLayer === sourceLayerName
+          ),
+        ],
+      },
+    }),
+    {}
+  );
+
+  return Object.entries(geoJSONBySource).map(
+    ([sourceLayerName, sourceLayerGeoJSON]) => (
+      <Source
+        key={sourceLayerName}
+        id={sourceLayerName}
+        type="geojson"
+        data={sourceLayerGeoJSON}
+      >
+        <Layer
+          key={sourceLayerName}
+          {...createProjectViewLayerConfig(sourceLayerName)}
+        />
+      </Source>
+    )
+  );
+};
 
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
@@ -203,19 +307,8 @@ const fillColorCases = Object.entries(mapConfig.layerConfigs).reduce(
  * layerConfigs to set colors of features in the projectExtent feature collection layer on the map.
  * @return {Object} Mapbox layer style object
  */
-export const createProjectViewLayerConfig = () => ({
-  id: "projectExtent",
-  type: "line",
-  layout: {
-    "line-join": "round",
-    "line-cap": "round",
-  },
-  paint: {
-    "line-width": mapStyles.lineWidthStops,
-    "line-color": ["case", ...fillColorCases, theme.palette.map.transparent],
-    "line-opacity": mapStyles.statusOpacities.selected,
-  },
-});
+export const createProjectViewLayerConfig = id =>
+  mapConfig.layerConfigs[id].layerStyleSpec();
 
 /**
  * Build the JSX of the hover tooltip on map
@@ -302,10 +395,7 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    const hoveredFeatureId = getFeatureId(
-      e,
-      mapConfig.layerConfigs[layerSource].layerIdField
-    );
+    const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
 
     setFeature(hoveredFeatureId);
     setHoveredCoords({ x: offsetX, y: offsetY });
@@ -373,3 +463,67 @@ export function useFeatureCollectionToFitBounds(
 
   return [viewport, setViewport];
 }
+
+/**
+ * Custom hook that creates a layer toggle UI
+ * @param {array} initialSelectedLayerNames - Array of layer names to show initially
+ * @param {object} classes - Holds Material UI classnames
+ * @return {UseLayerObject} Object that exposes updated array of visible layers and map UI render function
+ */
+/**
+ * @typedef {object} UseLayerObject
+ * @property {array} visibleLayerIds - Updated list of visible map layers
+ * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
+ */
+export function useLayerSelect(initialSelectedLayerNames, classes) {
+  const [visibleLayerIds, setVisibleLayerIds] = useState(
+    initialSelectedLayerNames
+  );
+
+  const handleLayerCheckboxClick = e => {
+    const layerName = e.target.name;
+
+    setVisibleLayerIds(prevLayers => {
+      return prevLayers.includes(layerName)
+        ? [...prevLayers.filter(name => name !== layerName)]
+        : [...prevLayers, layerName];
+    });
+  };
+
+  const renderLayerSelect = () => (
+    <Box component="div" className={classes.layerSelectBox}>
+      <Typography className={classes.layerSelectTitle}>Layers</Typography>
+      {getLayerNames().map(name => (
+        <Typography key={name} className={classes.layerSelectText}>
+          <Checkbox
+            checked={visibleLayerIds.includes(name)}
+            onChange={handleLayerCheckboxClick}
+            name={name}
+            color="primary"
+          />
+          {mapConfig.layerConfigs[name].layerLabel}
+        </Typography>
+      ))}
+    </Box>
+  );
+
+  return { visibleLayerIds, renderLayerSelect };
+}
+
+export const layerSelectStyles = {
+  layerSelectBox: {
+    position: "absolute",
+    top: 78,
+    left: 10,
+    background: theme.palette.background.mapControls,
+    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
+    borderRadius: 4,
+  },
+  layerSelectTitle: {
+    fontWeight: "bold",
+    padding: "10px 10px 0px 10px",
+  },
+  layerSelectText: {
+    paddingRight: 10,
+  },
+};
