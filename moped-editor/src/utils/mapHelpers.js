@@ -55,6 +55,7 @@ export const mapConfig = {
     zoom: 12,
   },
   mapboxDefaultMaxZoom: 18,
+  minimumFeaturesInProject: 1,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
