@@ -48,6 +48,7 @@ const ProjectSummaryMap = ({
     projectExtentGeoJSON
   );
 
+  // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
   useEffect(() => {
     setEditFeatureCollection(projectExtentGeoJSON);
   }, [projectExtentGeoJSON]);

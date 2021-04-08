@@ -148,6 +148,7 @@ const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
  * @property {boolean} isDrawing - Are draw tools enabled or disabled
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
+ * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
  */
 export function useMapDrawTools(
   featureCollection,
@@ -204,6 +205,7 @@ export function useMapDrawTools(
       feature => feature.properties.sourceLayer !== drawnLayerName
     );
 
+    // Add a unique ID and layer name to the feature for future retrieval and styling
     const drawnFeaturesWithIdAndLayer = newDrawnFeatures.map(feature => {
       const featureUUID = uuidv4();
 
