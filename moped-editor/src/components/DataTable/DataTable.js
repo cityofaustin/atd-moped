@@ -55,7 +55,6 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
-  console.log(data)
   const classes = useStyles();
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -133,24 +132,25 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         break;
     }
 
+    // Generate the mutation
+    // If you are setting a boolean with a dependent field to false, clear that dependent field
     const mutation = `
-    mutation ${tableConfig.update.mutationName} {
-      ${tableConfig.update.mutationTable}(
-        ${tableConfig.update.where},
-        _set: {
-          ${field}: ${gqlFormattedValue},
-          ${
-            !!fieldConfig.childField && value === false
-              ? `${fieldConfig.childField}: null`
-              : ""
+      mutation ${tableConfig.update.mutationName} {
+        ${tableConfig.update.mutationTable}(
+          ${tableConfig.update.where},
+          _set: {
+            ${field}: ${gqlFormattedValue},
+            ${
+              !!fieldConfig.dependentField && value === false
+                ? `${fieldConfig.dependentField}: null`
+                : ""
+            }
           }
+        ) {
+          affected_rows
         }
-      ) {
-        affected_rows
       }
-    }
-  `;
-
+    `;
 
     console.log("Update Mutation", mutation);
 

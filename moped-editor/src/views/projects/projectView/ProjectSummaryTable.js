@@ -87,7 +87,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         type: "boolean",
         placeholder: "Select capitally funded",
         editable: true,
-        childField: "eCapris_id"
+        dependentField: "eCapris_id"
       },
       ...(capitallyFunded && {
         eCapris_id: {
