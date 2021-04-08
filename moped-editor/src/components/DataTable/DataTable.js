@@ -133,40 +133,23 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         break;
     }
 
-    console.log(tableConfig);
-    console.log(fieldConfig);
-    console.log(typeof(gqlFormattedValue));
-    console.log(gqlFormattedValue);
-    // Generate the mutation
-    let mutation;
-    if (!!fieldConfig.childField) {
-      mutation = `
-      mutation ${tableConfig.update.mutationName} {
-        ${tableConfig.update.mutationTable}(
-          ${tableConfig.update.where},
-          _set: {
-            ${field}: ${gqlFormattedValue},
-            ${fieldConfig.childField}: ""
+    const mutation = `
+    mutation ${tableConfig.update.mutationName} {
+      ${tableConfig.update.mutationTable}(
+        ${tableConfig.update.where},
+        _set: {
+          ${field}: ${gqlFormattedValue},
+          ${
+            !!fieldConfig.childField && value === false
+              ? `${fieldConfig.childField}: null`
+              : ""
           }
-        ) {
-          affected_rows
         }
+      ) {
+        affected_rows
       }
-    `;
-    } else {
-      mutation = `
-      mutation ${tableConfig.update.mutationName} {
-        ${tableConfig.update.mutationTable}(
-          ${tableConfig.update.where},
-          _set: {
-            ${field}: ${gqlFormattedValue}
-          }
-        ) {
-          affected_rows
-        }
-      }
-    `;
     }
+  `;
 
 
     console.log("Update Mutation", mutation);
