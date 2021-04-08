@@ -145,11 +145,11 @@ const ProjectActivityLog = () => {
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
-        // Move it to the top of the list (make it first)
-        outputList.unshift(event);
-      } else {
-        // Else, just stack it to the bottom
+        // Append it to the end of the list (make it last)
         outputList.push(event);
+      } else {
+        // Else, prepend it to the beginning of the list (so it appears in descending chronological order)
+        outputList.unshift(event);
       }
     });
 
