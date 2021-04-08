@@ -231,6 +231,7 @@ const ProjectTeamTable = ({
         options={{
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
+          actionsColumnIndex: -1
         }}
         icons={{ Delete: ClearIcon }}
         editable={{
