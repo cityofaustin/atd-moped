@@ -97,7 +97,7 @@ const ProjectActivityLog = () => {
    * @param {string} date - The ISO date as a string
    * @return {string}
    */
-  const formatDate = date => new Date(date).toLocaleDateString();
+  const formatDate = date => new Date(date).toLocaleDateString('en-US', {timeZone: 'UTC'});
 
   /**
    * Safely returns the initials from a full name
