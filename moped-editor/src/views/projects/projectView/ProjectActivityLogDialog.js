@@ -110,7 +110,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     const date = data?.moped_activity_log[0]?.created_at;
 
     try {
-      return new Date(date).toLocaleString();
+      return new Date(date).toLocaleString('en-US', {timeZone: 'UTC'});
     } catch {
       return null;
     }
