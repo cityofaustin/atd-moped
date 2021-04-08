@@ -14,6 +14,7 @@ import { mapStyles } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
+export const drawnLayerName = "drawnByUser";
 export const MODES = [
   {
     id: "drawPoint",
@@ -102,7 +103,7 @@ export function getFeatureStyle({ feature, state }) {
  */
 const getDrawnFeaturesFromFeatureCollection = featureCollection =>
   featureCollection.features.filter(
-    feature => feature.properties.sourceLayer === "drawnByUser"
+    feature => feature.properties.sourceLayer === drawnLayerName
   );
 
 /**
@@ -200,7 +201,7 @@ export function useMapDrawTools(
 
     // Track existing drawn features so that we don't duplicate them on each save
     const newDrawnFeatures = drawnFeatures.filter(
-      feature => feature.properties.sourceLayer !== "drawnByUser"
+      feature => feature.properties.sourceLayer !== drawnLayerName
     );
 
     const drawnFeaturesWithIdAndLayer = newDrawnFeatures.map(feature => {
@@ -213,7 +214,7 @@ export function useMapDrawTools(
           ...feature.properties,
           renderType: "Point",
           PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer: "drawnByUser",
+          sourceLayer: drawnLayerName,
         },
       };
     });
