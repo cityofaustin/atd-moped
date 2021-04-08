@@ -285,8 +285,8 @@ export const createSummaryMapLayers = (selectedIds, geoJSON) => {
     {}
   );
 
-  return Object.entries(geoJSONBySource).map(
-    ([sourceLayerName, sourceLayerGeoJSON]) => (
+  return Object.entries(geoJSONBySource)
+    .map(([sourceLayerName, sourceLayerGeoJSON]) => (
       <Source
         key={sourceLayerName}
         id={sourceLayerName}
@@ -298,8 +298,10 @@ export const createSummaryMapLayers = (selectedIds, geoJSON) => {
           {...createProjectViewLayerConfig(sourceLayerName)}
         />
       </Source>
-    )
-  );
+    ))
+    .sort((a, b) => {
+      debugger;
+    });
 };
 
 /**
