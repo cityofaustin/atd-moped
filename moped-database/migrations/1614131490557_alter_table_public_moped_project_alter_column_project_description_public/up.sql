@@ -1,1 +1,15 @@
 COMMENT ON COLUMN "public"."moped_project"."project_description_public" IS E'unused but keep; column for presenting a succinct, non-technical project description to the general public';
+COMMENT ON COLUMN "public"."moped_project"."eCapris_id" IS E'equivalent to subproject_id in eCapris project tracking; dependency for link between Moped and eCapris';
+COMMENT ON COLUMN "public"."moped_project"."project_importance" IS E'remove';
+COMMENT ON COLUMN "public"."moped_project"."project_order" IS E'remove';
+COMMENT ON COLUMN "public"."moped_project"."project_description" IS E'longer description for project to be shared between moped users';
+COMMENT ON COLUMN "public"."moped_project"."current_status" IS E'current indicator of a project; maps to moped_status';
+COMMENT ON COLUMN "public"."moped_project"."current_phase" IS E'current time-boxed portion of a project; maps to moped_phases';
+COMMENT ON COLUMN "public"."moped_project"."end_date" IS E'the tentative or permanent end date of a project (depending on its completion)';
+COMMENT ON COLUMN "public"."moped_project"."start_date" IS E'the initialization of the project';
+COMMENT ON COLUMN "public"."moped_project"."project_length" IS E'duration of the project in days; end date minus start date';
+COMMENT ON COLUMN "public"."moped_project"."date_added" IS E'timestamp of user adding the project to the database';
+COMMENT ON COLUMN "public"."moped_project"."capitally_funded" IS E'determines whether an eCapris_subproject_id can be added to the project';
+COMMENT ON COLUMN "public"."moped_project"."project_priority" IS E'remove';
+COMMENT ON COLUMN "public"."moped_project"."added_by" IS E'user id for the user who added the project to the database';
+COMMENT ON COLUMN "public"."moped_project"."fiscal_year" IS E'the most recent fiscal year for the project';

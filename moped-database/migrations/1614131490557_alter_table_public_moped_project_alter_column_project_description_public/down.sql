@@ -1,1 +1,15 @@
 COMMENT ON COLUMN "public"."moped_project"."project_description_public" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."eCapris_id" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."project_importance" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."project_order" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."project_description" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."current_status" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."current_phase" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."end_date" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."start_date" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."project_length" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."date_added" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."capitally_funded" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."project_priority" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."added_by" IS E'';
+COMMENT ON COLUMN "public"."moped_project"."fiscal_year" IS E'';
