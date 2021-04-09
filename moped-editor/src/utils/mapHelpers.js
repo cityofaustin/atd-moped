@@ -300,7 +300,12 @@ export const createSummaryMapLayers = (selectedIds, geoJSON) => {
       </Source>
     ))
     .sort((a, b) => {
-      debugger;
+      const idA = a.props.id;
+      const idB = b.props.id;
+      const orderA = mapConfig.layerConfigs[idA].layerOrder;
+      const orderB = mapConfig.layerConfigs[idB].layerOrder;
+
+      return orderA > orderB ? 1 : -1;
     });
 };
 
