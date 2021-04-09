@@ -119,6 +119,28 @@ export const ADD_PROJECT_PERSONNEL = gql`
   }
 `;
 
+export const UPSERT_PROJECT_PERSONNEL = gql`
+  mutation UpsertProjectPersonnel(
+    $objects: [moped_proj_personnel_insert_input!]!
+  ) {
+    insert_moped_proj_personnel(
+      objects: $objects,
+      on_conflict: {
+        constraint: moped_proj_personnel_project_id_user_id_role_id_key,
+        update_columns: [
+          project_id,
+          user_id,
+          role_id
+          status_id,
+          notes,
+        ]
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export const UPDATE_PROJECT_PERSONNEL = gql`
   mutation UpdateProjectPersonnel(
     $user_id: Int
