@@ -157,7 +157,7 @@ const ProjectTeamTable = ({
           />
         ));
       },
-      // validate: rowData => Array.isArray(rowData) && rowData.length() > 0,
+      validate: rowData => Array.isArray(rowData) && rowData.length() > 0,
       editComponent: props => (
         <ProjectTeamRoleMultiselect
           id="role_id"
