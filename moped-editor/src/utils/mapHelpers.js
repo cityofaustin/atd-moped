@@ -300,6 +300,7 @@ export const createSummaryMapLayers = (selectedIds, geoJSON) => {
       </Source>
     ))
     .sort((a, b) => {
+      // The id of the Source component maps to the source layer names in mapConfig, each layer config has a set order
       const idA = a.props.id;
       const idB = b.props.id;
       const orderA = mapConfig.layerConfigs[idA].layerOrder;
