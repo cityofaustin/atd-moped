@@ -1,0 +1,15 @@
+COMMENT ON TABLE "public"."moped_proj_communication" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_entities" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_financials" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_fiscal_years" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_fund_opp" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_groups" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_location" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_milestones" IS NULL;
+alter table "public"."moped_proj_comments" rename to "moped_proj_notes";
+COMMENT ON TABLE "public"."moped_proj_comments" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_partners" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_phases" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_sponsors" IS NULL;
+COMMENT ON TABLE "public"."moped_proj_timeline" IS NULL;
+COMMENT ON TABLE "public"."moped_workgroup" IS NULL;

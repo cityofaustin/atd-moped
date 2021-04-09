@@ -874,6 +874,115 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_comments
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_note_id
+      - project_note
+      - added_by
+      - date_created
+      - comm_id
+      - project_id
+      filter: {}
+      allow_aggregations: true
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - added_by
+      - comm_id
+      - project_id
+      - project_note_id
+      - project_note
+      - date_created
+      filter: {}
+      check: null
+  event_triggers:
+  - name: activity_log_moped_proj_notes
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - added_by
+        - comm_id
+        - project_id
+        - project_note_id
+        - project_note
+        - date_created
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - value: activity_log
+      name: MOPED_API_EVENT_NAME
+- table:
+    schema: public
     name: moped_proj_communication
   insert_permissions:
   - role: moped-admin
@@ -2306,115 +2415,6 @@
         - milestone_description
         - milestone_name
         - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
-- table:
-    schema: public
-    name: moped_proj_notes
-  insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_note_id
-      - project_note
-      - added_by
-      - date_created
-      - comm_id
-      - project_id
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_notes
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - added_by
-        - comm_id
-        - project_id
-        - project_note_id
-        - project_note
-        - date_created
     retry_conf:
       num_retries: 0
       interval_sec: 10

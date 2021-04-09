@@ -1,0 +1,15 @@
+COMMENT ON TABLE "public"."moped_proj_communication" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_entities" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_financials" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_fiscal_years" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_fund_opp" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_groups" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_location" IS E'Geometries could be stored for a project in this table';
+COMMENT ON TABLE "public"."moped_proj_milestones" IS E'List of project-related milestones';
+alter table "public"."moped_proj_notes" rename to "moped_proj_comments";
+COMMENT ON TABLE "public"."moped_proj_comments" IS E'Comments by project';
+COMMENT ON TABLE "public"."moped_proj_partners" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_phases" IS E'List of project phase history';
+COMMENT ON TABLE "public"."moped_proj_sponsors" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_proj_timeline" IS E'DELETE';
+COMMENT ON TABLE "public"."moped_workgroup" IS E'Associated with users and some project fields TBD';
