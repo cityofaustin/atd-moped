@@ -1,5 +1,10 @@
 /**
-  ROLL BACK MIGRATION PROCEDURE -- DO NOT DELETE DATA
+  ROLL BACK MIGRATION PROCEDURE
+
+  Note: Deleting data is not a good idea, especially since there is
+    existing data that relies on existing values. I suppose it's ok
+    if deleting in local, and constraints will probably prevent you
+    from deleting FK-protected records, migrations will likely fail.
  */
 DO $$
 DECLARE
@@ -24,13 +29,15 @@ BEGIN
     IF (currentDatabase = 'local') THEN
         -- Simply drop the values, since they did not exist before this migration.
         DELETE FROM moped_phases WHERE phase_id IN (1,2,3,4,5,6,7,8,9,11);
+        -- It's ok in local
     ELSE
 
         /*
             Unfortunately we have a constraint `moped_phase_history_phase_name_fkey` that gets in the way
             when updating these values, so this is not as clever as you might think.
         */
-        DELETE FROM moped_phases WHERE phase_id IN (4, 8, 9, 11);
+        -- DELETE FROM moped_phases WHERE phase_id IN (4, 8, 9, 11);
+        -- Not needed in staging or prod, leaving it commented in case it's needed.
 
         /*
             In order to skip the moped_phases_phase_name_key constraint, we are just going to prefix all with temp
