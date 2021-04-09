@@ -214,7 +214,7 @@
       check: null
 - table:
     schema: public
-    name: moped_components
+    name: moped_component_types
   insert_permissions:
   - role: moped-admin
     permission:
