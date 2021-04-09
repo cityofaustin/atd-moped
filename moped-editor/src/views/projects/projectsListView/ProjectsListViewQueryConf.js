@@ -95,7 +95,7 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
-    eCapris_id: {
+    ecapris_subproject_id: {
       hidden: false,
       searchable: true,
       sortable: false,
@@ -109,7 +109,7 @@ export const ProjectsListViewQueryConf = {
       type: "string",
       search: {
         label: "Search by eCapris subproject id",
-        operator: "_ilike",
+        operator: "_eq",
         quoted: true,
         envelope: "%{VALUE}%",
       },

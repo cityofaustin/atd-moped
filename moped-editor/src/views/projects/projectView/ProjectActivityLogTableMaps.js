@@ -22,8 +22,8 @@ export const ProjectActivityLogTableMaps = {
         label: "Public description",
         data_type: "text",
       },
-      ecapris_id: {
-        label: "eCapris ID",
+      ecapris_subproject_id: {
+        label: "eCapris Subproject ID",
         icon: "",
         data_type: "text",
       },
@@ -217,7 +217,7 @@ export const ProjectActivityLogTableMaps = {
         label: "Subproject Name",
         type: "text",
       },
-      eCapris_id: {
+      ecapris_subproject_id: {
         icon: "",
         label: "eCapris ID",
         type: "text",

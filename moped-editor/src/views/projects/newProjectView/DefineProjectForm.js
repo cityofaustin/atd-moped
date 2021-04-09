@@ -85,7 +85,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
       </Grid>
-      
+
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
           <TextField
@@ -100,7 +100,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             error={descriptionError}
             helperText="Required"
             InputLabelProps={{ required: false }}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}            
+            onChange={e => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
       </Grid>
@@ -188,10 +188,10 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           <Grid item xs={3}>
             <TextField
               label="eCAPRIS subproject ID"
-              name="eCapris_id"
+              name="ecapris_subproject_id"
               variant="standard"
               type="text"
-              value={projectDetails.eCapris_id}
+              value={projectDetails.ecapris_subproject_id}
               onChange={e => handleFieldChange(e.target.value, e.target.name)}
             />
           </Grid>
