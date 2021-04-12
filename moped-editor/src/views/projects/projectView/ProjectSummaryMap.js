@@ -43,7 +43,7 @@ const ProjectSummaryMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = sumFeaturesSelected(projectExtentGeoJSON);
 
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(

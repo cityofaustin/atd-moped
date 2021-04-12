@@ -351,11 +351,8 @@ export const renderFeatureCount = featureCount => (
  * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
  * @return {Number} Total number of string IDs
  */
-export const sumFeaturesSelected = selectedLayerIds =>
-  Object.values(selectedLayerIds).reduce(
-    (acc, selectedIds) => (acc += selectedIds.length),
-    0
-  );
+export const sumFeaturesSelected = featureCollection =>
+  featureCollection.features.length;
 
 /**
  * Custom hook that returns a vector tile layer hover event handler and the details to place and populate a tooltip

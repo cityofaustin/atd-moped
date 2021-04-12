@@ -50,7 +50,7 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = sumFeaturesSelected(featureCollection);
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,

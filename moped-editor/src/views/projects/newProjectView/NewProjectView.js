@@ -101,7 +101,7 @@ const NewProjectView = () => {
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
-    if (sumFeaturesSelected(selectedLayerIds) > 0) {
+    if (sumFeaturesSelected(featureCollection) > 0) {
       setAreNoFeaturesSelected(false);
     }
   }, [selectedLayerIds]);
@@ -149,8 +149,8 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let nameError = projectDetails.project_name.length === 0
-    let descriptionError = projectDetails.project_description.length === 0
+    let nameError = projectDetails.project_name.length === 0;
+    let descriptionError = projectDetails.project_description.length === 0;
     let canContinue = false;
 
     if (!nameError && !descriptionError) {
@@ -208,7 +208,7 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+    if (sumFeaturesSelected(featureCollection) === 0) {
       setAreNoFeaturesSelected(true);
       return;
     } else {
@@ -293,9 +293,14 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>}
+                        {activeStep > 0 && (
+                          <Button
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        )}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}
