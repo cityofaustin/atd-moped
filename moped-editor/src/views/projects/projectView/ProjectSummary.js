@@ -7,7 +7,7 @@ import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
-import { SUMMARY_QUERY, TIMELINE_QUERY } from "../../../queries/project";
+import { SUMMARY_QUERY } from "../../../queries/project";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 const ProjectSummary = () => {
@@ -17,15 +17,9 @@ const ProjectSummary = () => {
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
-  const { timelineLoading, timelineError, timelineData, timelineRefetch } = useQuery(TIMELINE_QUERY, {
-    variables: { projectId },
-    fetchPolicy: "no-cache",
-  });
 
-  if (loading || timelineLoading) return <CircularProgress />;
+  if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
-  if (timelineError) return `Error! ${timelineError.message}`;
-
 
   const { project_extent_ids, project_extent_geojson } = data.moped_project[0];
 
@@ -39,7 +33,6 @@ const ProjectSummary = () => {
               data={data}
               error={error}
               refetch={refetch}
-              timelineData={timelineData}
             />
           </Grid>
           <Grid item xs={12} md={6}>
