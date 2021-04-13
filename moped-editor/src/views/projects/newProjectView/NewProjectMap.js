@@ -8,7 +8,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
-  getClickableLayerNames,
+  getClickEditableLayerNames,
   getGeoJSON,
   getInteractiveIds,
   getLayerNames,
@@ -87,7 +87,7 @@ const NewProjectMap = ({
   const handleLayerClick = e => {
     const layerName = getLayerSource(e);
 
-    if (!layerName || !getClickableLayerNames().includes(layerName)) return;
+    if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
