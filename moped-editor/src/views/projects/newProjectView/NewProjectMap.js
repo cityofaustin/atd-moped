@@ -142,6 +142,20 @@ const NewProjectMap = ({
     });
   };
 
+  /**
+   * Customize cursor depending on user actions
+   * @param {object} pointerStates - Object containing pointer state keys and boolean values
+   * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
+   * @param {boolean} pointerStates.isDragging - Is user dragging map
+   */
+  const getCursor = ({ isHovering, isDragging }) => {
+    return isDragging
+      ? "grabbing"
+      : isHovering || isDrawing // Show pointer when user is drawing as well
+      ? "pointer"
+      : "default";
+  };
+
   return (
     <Box className={classes.mapBox}>
       <ReactMapGL
@@ -150,8 +164,9 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={!isDrawing && getInteractiveIds()}
-        onHover={!isDrawing && handleLayerHover}
-        onClick={!isDrawing && handleLayerClick}
+        onHover={!isDrawing ? handleLayerHover : null}
+        onClick={!isDrawing ? handleLayerClick : null}
+        getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
       >
