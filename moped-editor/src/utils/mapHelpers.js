@@ -152,27 +152,13 @@ export const mapConfig = {
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
-          const isEditing = !!layerIds;
-
-          const editMapPaintStyles = {
-            "circle-opacity": [
-              "case",
-              ["==", ["get", this.layerIdField], hoveredId],
-              mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
-              mapStyles.statusOpacities.selected,
-              mapStyles.statusOpacities.unselected,
-            ],
-          };
-
+        return function() {
           return {
             id: this.layerIdName,
             type: "circle",
             paint: {
               "circle-color": this.layerColor,
               "circle-radius": mapStyles.circleRadiusStops,
-              ...(isEditing && editMapPaintStyles),
             },
           };
         };

@@ -7,6 +7,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectSelectLayerConfig,
+  createProjectViewLayerConfig,
   getGeoJSON,
   getInteractiveIds,
   getLayerNames,
@@ -163,9 +164,8 @@ const NewProjectMap = ({
           bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {Object.entries(mapConfig.layerConfigs)
-          .filter(([, config]) => config.layerUrl)
-          .map(([sourceName, config]) => (
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
+          config.layerUrl ? (
             <Source
               key={config.layerIdName}
               type="vector"
@@ -182,7 +182,27 @@ const NewProjectMap = ({
                 )}
               />
             </Source>
-          ))}
+          ) : (
+            <Source
+              key={config.layerIdName}
+              id={config.layerIdName}
+              type="geojson"
+              data={{
+                ...featureCollection,
+                features: [
+                  ...featureCollection.features.filter(
+                    feature => feature.properties.sourceLayer === sourceName
+                  ),
+                ],
+              }}
+            >
+              <Layer
+                key={config.layerIdName}
+                {...createProjectViewLayerConfig(config.layerIdName)}
+              />
+            </Source>
+          )
+        )}
         {renderLayerSelect()}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
