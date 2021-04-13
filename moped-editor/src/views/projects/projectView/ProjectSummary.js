@@ -37,7 +37,6 @@ const ProjectSummary = () => {
             {project_extent_geojson && project_extent_ids && (
               <>
                 <ProjectSummaryMap
-                  selectedLayerIds={project_extent_ids}
                   projectExtentGeoJSON={project_extent_geojson}
                   setIsEditing={setIsEditing}
                 />

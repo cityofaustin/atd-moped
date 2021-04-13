@@ -36,11 +36,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  selectedLayerIds,
-  projectExtentGeoJSON,
-  setIsEditing,
-}) => {
+const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(projectExtentGeoJSON);

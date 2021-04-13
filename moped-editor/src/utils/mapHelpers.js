@@ -77,6 +77,7 @@ export const mapConfig = {
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 14,
+      isClickable: true,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
           const isEditing = !!layerIds;
@@ -117,6 +118,7 @@ export const mapConfig = {
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 12,
+      isClickable: true,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
           const isEditing = !!layerIds;
@@ -151,6 +153,7 @@ export const mapConfig = {
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
+      isClickable: false,
       get layerStyleSpec() {
         return function() {
           return {
@@ -180,6 +183,17 @@ export const createZoomBbox = featureCollection => {
     [maxLng, maxLat],
   ];
 };
+
+/**
+ * Get the layer names from the layerConfigs object for which isClickable is true
+ * @return {Array} List of source layer names that have features that can be added or removed by clicking
+ */
+export const getClickableLayerNames = () =>
+  Object.entries(mapConfig.layerConfigs).reduce(
+    (acc, [sourceLayerName, config]) =>
+      config.isClickable ? [...acc, sourceLayerName] : acc,
+    []
+  );
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the map components
