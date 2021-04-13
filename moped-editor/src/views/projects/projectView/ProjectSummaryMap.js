@@ -72,8 +72,7 @@ const ProjectSummaryMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        {projectExtentGeoJSON &&
-          createSummaryMapLayers(selectedLayerIds, projectExtentGeoJSON)}
+        {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
         {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"

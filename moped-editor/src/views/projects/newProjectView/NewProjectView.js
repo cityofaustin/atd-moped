@@ -104,7 +104,7 @@ const NewProjectView = () => {
     if (sumFeaturesSelected(featureCollection) > 0) {
       setAreNoFeaturesSelected(false);
     }
-  }, [selectedLayerIds]);
+  }, [featureCollection]);
 
   const getSteps = () => {
     return [

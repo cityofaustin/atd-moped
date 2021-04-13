@@ -6,6 +6,7 @@ import { Box, Checkbox, Typography } from "@material-ui/core";
 import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+export const drawnLayerName = "drawnByUser";
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
@@ -115,6 +116,40 @@ export const mapConfig = {
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+      layerMaxLOD: 12,
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
+          const editMapPaintStyles = {
+            "circle-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
+          return {
+            id: this.layerIdName,
+            type: "circle",
+            paint: {
+              "circle-color": this.layerColor,
+              "circle-radius": mapStyles.circleRadiusStops,
+              ...(isEditing && editMapPaintStyles),
+            },
+          };
+        };
+      },
+    },
+    drawnByUser: {
+      layerLabel: "Drawn",
+      layerIdName: drawnLayerName,
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
       get layerStyleSpec() {
         return function(hoveredId, layerIds) {
@@ -263,25 +298,23 @@ export const createProjectSelectLayerConfig = (
 
 /**
  * Create sources and layers for each source layer in the project's GeoJSON FeatureCollection
- * @param {object} selectedIds - Object containing selected ID array for each source layer
  * @param {object} geoJSON - A GeoJSON feature collection with project features
  * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
  */
-export const createSummaryMapLayers = (selectedIds, geoJSON) => {
-  const geoJSONBySource = Object.keys(selectedIds).reduce(
-    (acc, sourceLayerName) => ({
-      ...acc,
-      [sourceLayerName]: {
-        ...geoJSON,
-        features: [
-          ...geoJSON.features.filter(
-            feature => feature.properties.sourceLayer === sourceLayerName
-          ),
-        ],
-      },
-    }),
-    {}
-  );
+export const createSummaryMapLayers = geoJSON => {
+  const geoJSONBySource = geoJSON.features.reduce((acc, feature) => {
+    const sourceLayerName = feature.properties.sourceLayer;
+
+    return acc[sourceLayerName]
+      ? {
+          ...acc,
+          [sourceLayerName]: {
+            ...geoJSON,
+            features: [...acc[sourceLayerName].features, feature],
+          },
+        }
+      : { ...acc, [sourceLayerName]: { ...geoJSON, features: [feature] } };
+  }, {});
 
   return Object.entries(geoJSONBySource).map(
     ([sourceLayerName, sourceLayerGeoJSON]) => (

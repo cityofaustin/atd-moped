@@ -163,24 +163,26 @@ const NewProjectMap = ({
           bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
-          <Source
-            key={config.layerIdName}
-            type="vector"
-            tiles={[config.layerUrl]}
-            maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
-          >
-            <Layer
+        {Object.entries(mapConfig.layerConfigs)
+          .filter(([, config]) => config.layerUrl)
+          .map(([sourceName, config]) => (
+            <Source
               key={config.layerIdName}
-              {...createProjectSelectLayerConfig(
-                featureId,
-                sourceName,
-                selectedLayerIds,
-                visibleLayerIds
-              )}
-            />
-          </Source>
-        ))}
+              type="vector"
+              tiles={[config.layerUrl]}
+              maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+            >
+              <Layer
+                key={config.layerIdName}
+                {...createProjectSelectLayerConfig(
+                  featureId,
+                  sourceName,
+                  selectedLayerIds,
+                  visibleLayerIds
+                )}
+              />
+            </Source>
+          ))}
         {renderLayerSelect()}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>

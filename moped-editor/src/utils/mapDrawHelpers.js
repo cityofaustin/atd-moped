@@ -10,11 +10,10 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
-import { mapStyles } from "../utils/mapHelpers";
+import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
-export const drawnLayerName = "drawnByUser";
 export const MODES = [
   {
     id: "drawPoint",
