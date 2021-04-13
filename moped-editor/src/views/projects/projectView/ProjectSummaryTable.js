@@ -11,7 +11,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
+const ProjectSummaryTable = ({ data, loading, error, refetch, timelineData }) => {
+  console.log(timelineData);
   const classes = useStyles();
 
   const projectId = data?.moped_project[0].project_id ?? null;
@@ -46,7 +47,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         labelStyle: classes.fieldSelectCapitalize,
         placeholder: "Select phase",
         type: "select",
-        editable: true,
+        editable: false,
         lookup: {
           table: "moped_phases",
           fieldLabel: "phase_name",

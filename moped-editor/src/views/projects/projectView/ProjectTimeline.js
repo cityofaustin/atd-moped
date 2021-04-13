@@ -78,6 +78,7 @@ const ProjectTimeline = () => {
    * @type {integer} projectId
    * */
   const { projectId } = useParams();
+  console.log(projectId);
 
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
@@ -96,6 +97,8 @@ const ProjectTimeline = () => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+
+  console.log(data);
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
