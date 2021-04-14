@@ -41,21 +41,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         },
         style: classes.fieldSelectCapitalize,
       },
-      // current_phase: {
-      //   label: "Current phase",
-      //   labelStyle: classes.fieldSelectCapitalize,
-      //   placeholder: "Select phase",
-      //   type: "select",
-      //   editable: false,
-      //   lookup: {
-      //     table: "moped_phases",
-      //     fieldLabel: "phase_name",
-      //     fieldValue: "phase_name",
-      //     style: classes.fieldSelectCapitalize,
-      //     format: value => String(value).toLowerCase(),
-      //   },
-      //   style: classes.fieldSelectCapitalize,
-      // },
       project_description: {
         label: "Description",
         type: "string",
@@ -107,21 +92,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
       name: "moped_proj_phases",
     },
     fields: {
-      // current_status: {
-      //   label: "Current status",
-      //   labelStyle: classes.fieldSelectCapitalize,
-      //   type: "select",
-      //   placeholder: "Select status",
-      //   editable: true,
-      //   lookup: {
-      //     table: "moped_status",
-      //     fieldLabel: "status_name",
-      //     fieldValue: "status_name",
-      //     style: classes.fieldSelectCapitalize,
-      //     format: value => String(value).toLowerCase(),
-      //   },
-      //   style: classes.fieldSelectCapitalize,
-      // },
       phase_name: {
         label: "Current phase",
         labelStyle: classes.fieldSelectCapitalize,
