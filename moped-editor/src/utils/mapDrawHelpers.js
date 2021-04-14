@@ -95,6 +95,16 @@ const getCircleRadiusByZoom = currentZoom => {
       console.log("top");
       return topPixelWidth;
     }
+
+    if (currentZoom >= minZoom && currentZoom < maxZoom) {
+      console.log(
+        minZoom,
+        currentZoom,
+        maxZoom,
+        exponentialInterpolation(currentZoom, base, minZoom, maxZoom) *
+          minPixelWidth
+      );
+    }
   }
 };
 
