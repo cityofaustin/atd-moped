@@ -13,7 +13,6 @@ import theme from "../theme/index";
 import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
-import { max } from "moment";
 
 export const MODES = [
   {
@@ -37,7 +36,6 @@ export const MODES = [
 
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
-const CIRCLE_RADIUS = 20;
 
 const SELECTED_STYLE = {
   stroke: STROKE_COLOR,
@@ -60,32 +58,45 @@ const DEFAULT_STYLE = {
   fillOpacity: mapStyles.statusOpacities.unselected,
 };
 
-// https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
+/**
+ * Interpolate a feature width based on the zoom level of map
+ * Adapted from Mapbox GL JS linear interpolation using a formula linked below
+ * https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
+ * https://matthew-brett.github.io/teaching/linear_interpolation.html
+ * @param {number} currentZoom - Current zoom level from the map
+ * @param {number} minZoom - Minimum zoom level from the current bracket
+ * @param {number} maxZoom - Maximum zoom level from the current bracket
+ * @param {number} minPixelWidth - Minimum pixel width from the current bracket
+ * @param {number} maxPixelWidth - Maximum pixel width from the current bracket
+ * @return {number} Interpolated pixel width
+ */
 function linearInterpolation(
-  input,
-  lowerValue,
-  upperValue,
+  currentZoom,
+  minZoom,
+  maxZoom,
   minPixelWidth,
   maxPixelWidth
 ) {
   return (
-    ((input - lowerValue) * (maxPixelWidth - minPixelWidth)) /
-      (upperValue - lowerValue) +
+    ((currentZoom - minZoom) * (maxPixelWidth - minPixelWidth)) /
+      (maxZoom - minZoom) +
     minPixelWidth
   );
 }
 
+/**
+ * Calculate the circle radius using the circle radius steps in mapStyles and the map zoom level
+ * @param {number} currentZoom - Current zoom level from the map
+ * @return {number} Circle radius in pixels
+ */
 const getCircleRadiusByZoom = currentZoom => {
-  const { stops, base } = mapStyles.circleRadiusStops;
-
-  let minArr = null;
-  let maxArr = null;
+  const { stops } = mapStyles.circleRadiusStops;
+  const [bottomZoom, bottomPixelWidth] = stops[0];
+  const [topZoom, topPixelWidth] = stops[stops.length - 1];
 
   for (let i = 0; i < stops.length - 1; i++) {
     const [minZoom, minPixelWidth] = stops[i];
     const [maxZoom, maxPixelWidth] = stops[i + 1];
-    const [bottomZoom, bottomPixelWidth] = stops[0];
-    const [topZoom, topPixelWidth] = stops[stops.length - 1];
 
     if (currentZoom < bottomZoom) {
       return bottomPixelWidth;
