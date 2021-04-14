@@ -61,17 +61,18 @@ const DEFAULT_STYLE = {
 };
 
 // https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
-function exponentialInterpolation(input, base, lowerValue, upperValue) {
-  const difference = upperValue - lowerValue;
-  const progress = input - lowerValue;
-
-  if (difference === 0) {
-    return 0;
-  } else if (base === 1) {
-    return progress / difference;
-  } else {
-    return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
-  }
+function linearInterpolation(
+  input,
+  lowerValue,
+  upperValue,
+  minPixelWidth,
+  maxPixelWidth
+) {
+  return (
+    ((input - lowerValue) * (maxPixelWidth - minPixelWidth)) /
+      (upperValue - lowerValue) +
+    minPixelWidth
+  );
 }
 
 const getCircleRadiusByZoom = currentZoom => {
@@ -87,22 +88,20 @@ const getCircleRadiusByZoom = currentZoom => {
     const [topZoom, topPixelWidth] = stops[stops.length - 1];
 
     if (currentZoom < bottomZoom) {
-      console.log("bottom");
       return bottomPixelWidth;
     }
 
     if (currentZoom >= topZoom) {
-      console.log("top");
       return topPixelWidth;
     }
 
     if (currentZoom >= minZoom && currentZoom < maxZoom) {
-      console.log(
-        minZoom,
+      return linearInterpolation(
         currentZoom,
+        minZoom,
         maxZoom,
-        exponentialInterpolation(currentZoom, base, minZoom, maxZoom) *
-          minPixelWidth
+        minPixelWidth,
+        maxPixelWidth
       );
     }
   }
