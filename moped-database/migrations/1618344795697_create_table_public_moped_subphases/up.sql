@@ -54,14 +54,14 @@ CREATE TABLE moped_proj_subphases
 comment on table moped_subphases is 'Standardized list of project sub-phases';
 
 
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (1, 'Post-inst. study', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (2, 'Procurement', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (3, 'Permitting', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (4, 'Study in progress', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (5, 'Active development review', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (6, 'Below ground construction', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (7, 'Above ground construction', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (8, 'Design by others', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (9, 'Environmental study in progress', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (10, 'Minor modifications in progress', null, null, null, null, 1);
-INSERT INTO public.moped_subphases (subphase_id, subphase_name, subphase_description, subphase_rank, subphase_average_length, required_subphase, related_phase_id) VALUES (11, 'Feasibility study', null, null, null, null, 1);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (1, 'Post-inst. study', 10);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (2, 'Procurement', 7);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (3, 'Permitting', 7);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (4, 'Study in progress', 2);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (5, 'Active development review', 1);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (6, 'Below ground construction', 9);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (7, 'Above ground construction', 9);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (8, 'Design by others', 6);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (9, 'Environmental study in progress', 2);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (10, 'Minor modifications in progress', 11);
+INSERT INTO public.moped_subphases (subphase_id, subphase_name, related_phase_id) VALUES (11, 'Feasibility study', 1);
