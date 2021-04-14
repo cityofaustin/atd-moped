@@ -174,6 +174,7 @@ const ProjectFiles = props => {
     },
     {
       title: "Date uploaded",
+      customSort: (a, b) =>  new Date(a?.create_date) - new Date(b?.create_date),
       render: record => (
         <span>
           {record?.create_date
@@ -184,6 +185,7 @@ const ProjectFiles = props => {
     },
     {
       title: "File size",
+      customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
       render: record => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
