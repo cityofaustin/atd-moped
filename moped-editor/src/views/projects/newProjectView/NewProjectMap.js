@@ -8,6 +8,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
+  drawnLayerName,
   getClickEditableLayerNames,
   getGeoJSON,
   getEditMapInteractiveIds,
@@ -27,6 +28,7 @@ import {
 } from "../../../utils/mapHelpers";
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
+import { DrawPolygonByDraggingMode } from "@nebula.gl/edit-modes";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
@@ -87,6 +89,11 @@ const NewProjectMap = ({
    */
   const handleLayerClick = e => {
     const layerName = getLayerSource(e);
+
+    // If a user clicks a drawn point in the map, open draw UI
+    if (layerName === drawnLayerName) {
+      setIsDrawing(true);
+    }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 

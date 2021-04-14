@@ -39,23 +39,23 @@ const FILL_COLOR = theme.palette.primary.main;
 
 const SELECTED_STYLE = {
   stroke: STROKE_COLOR,
-  strokeWidth: 2,
+  strokeWidth: 8,
   fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.selected,
+  fillOpacity: 0,
 };
 
 const HOVERED_STYLE = {
   stroke: STROKE_COLOR,
-  strokeWidth: 2,
+  strokeWidth: 8,
   fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.hovered,
+  fillOpacity: 0,
 };
 
 const DEFAULT_STYLE = {
   stroke: theme.palette.primary.main,
-  strokeWidth: 2,
-  fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.unselected,
+  strokeWidth: 4,
+  fill: theme.palette.secondary.main,
+  fillOpacity: 1,
 };
 
 /**
