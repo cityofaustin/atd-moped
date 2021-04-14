@@ -4017,6 +4017,9 @@
       check: null
 - table:
     schema: public
+    name: moped_subphases
+- table:
+    schema: public
     name: moped_users
   insert_permissions:
   - role: moped-admin
