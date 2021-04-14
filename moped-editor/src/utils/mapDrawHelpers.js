@@ -13,6 +13,7 @@ import theme from "../theme/index";
 import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
+import { max } from "moment";
 
 export const MODES = [
   {
@@ -59,6 +60,44 @@ const DEFAULT_STYLE = {
   fillOpacity: mapStyles.statusOpacities.unselected,
 };
 
+// https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
+function exponentialInterpolation(input, base, lowerValue, upperValue) {
+  const difference = upperValue - lowerValue;
+  const progress = input - lowerValue;
+
+  if (difference === 0) {
+    return 0;
+  } else if (base === 1) {
+    return progress / difference;
+  } else {
+    return (Math.pow(base, progress) - 1) / (Math.pow(base, difference) - 1);
+  }
+}
+
+const getCircleRadiusByZoom = currentZoom => {
+  const { stops, base } = mapStyles.circleRadiusStops;
+
+  let minArr = null;
+  let maxArr = null;
+
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [minZoom, minPixelWidth] = stops[i];
+    const [maxZoom, maxPixelWidth] = stops[i + 1];
+    const [bottomZoom, bottomPixelWidth] = stops[0];
+    const [topZoom, topPixelWidth] = stops[stops.length - 1];
+
+    if (currentZoom < bottomZoom) {
+      console.log("bottom");
+      return bottomPixelWidth;
+    }
+
+    if (currentZoom >= topZoom) {
+      console.log("top");
+      return topPixelWidth;
+    }
+  }
+};
+
 // https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#styling-related-options
 /**
  * Style a feature based on feature type and draw render state
@@ -67,9 +106,11 @@ const DEFAULT_STYLE = {
  * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
  * @return {object} React style object applied to a feature
  */
-export function getFeatureStyle({ feature, state }) {
+export function getFeatureStyle({ feature, state, viewport }) {
   const type = feature.properties.shape || feature.geometry.type;
   let style = null;
+
+  const CIRCLE_RADIUS = getCircleRadiusByZoom(viewport.zoom);
 
   switch (state) {
     case RENDER_STATE.SELECTED:
@@ -154,7 +195,8 @@ export function useMapDrawTools(
   setFeatureCollection,
   projectId,
   selectedLayerIds,
-  refetchProjectDetails
+  refetchProjectDetails,
+  viewport
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -334,7 +376,9 @@ export function useMapDrawTools(
           initializeExistingDrawFeatures(ref);
           mapEditorRef.current = ref;
         }}
-        featureStyle={getFeatureStyle}
+        featureStyle={featureStyleObj =>
+          getFeatureStyle({ ...featureStyleObj, viewport })
+        }
         onSelect={onSelect}
         clickRadius={12}
         mode={modeHandler}

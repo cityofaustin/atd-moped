@@ -77,7 +77,8 @@ const NewProjectMap = ({
     setFeatureCollection,
     projectId,
     selectedLayerIds,
-    refetchProjectDetails
+    refetchProjectDetails,
+    viewport
   );
 
   /**

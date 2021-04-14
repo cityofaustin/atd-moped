@@ -188,7 +188,7 @@ export const createZoomBbox = featureCollection => {
  * Get the layer names from the layerConfigs object for which isClickEditable is true
  * @return {Array} List of source layer names that have features that can be added or removed by clicking
  */
-export const getClickableLayerNames = () =>
+export const getClickEditableLayerNames = () =>
   Object.entries(mapConfig.layerConfigs).reduce(
     (acc, [sourceLayerName, config]) =>
       config.isClickEditable ? [...acc, sourceLayerName] : acc,
