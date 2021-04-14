@@ -28,7 +28,6 @@ import {
 } from "../../../utils/mapHelpers";
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
-import { DrawPolygonByDraggingMode } from "@nebula.gl/edit-modes";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
