@@ -3328,6 +3328,7 @@
       - subphase_end
       - subphase_priority
       - subphase_date_type
+      - subphase_related_phase_id
       - is_current_subphase
       - completed
       - started_by_user_id
@@ -3350,6 +3351,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -3372,6 +3374,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -3393,6 +3396,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -3414,6 +3418,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -3436,6 +3441,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -3458,6 +3464,7 @@
       - started_by_user_id
       - subphase_priority
       - subphase_rank
+      - subphase_related_phase_id
       - subphase_date_type
       - subphase_description
       - subphase_name
@@ -4180,29 +4187,32 @@
     permission:
       check: {}
       columns:
+      - related_phase_id
+      - required_subphase
+      - subphase_average_length
+      - subphase_description
       - subphase_id
       - subphase_name
-      - subphase_description
       - subphase_rank
-      - subphase_average_length
-      - required_subphase
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
+      - related_phase_id
       - required_subphase
       - subphase_average_length
-      - subphase_id
-      - subphase_rank
       - subphase_description
+      - subphase_id
       - subphase_name
+      - subphase_rank
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - required_subphase
+      - related_phase_id
       - subphase_average_length
       - subphase_id
       - subphase_rank
@@ -4213,6 +4223,7 @@
     permission:
       columns:
       - required_subphase
+      - related_phase_id
       - subphase_average_length
       - subphase_id
       - subphase_rank
@@ -4223,6 +4234,7 @@
     permission:
       columns:
       - required_subphase
+      - related_phase_id
       - subphase_average_length
       - subphase_id
       - subphase_rank
@@ -4234,6 +4246,7 @@
     permission:
       columns:
       - required_subphase
+      - related_phase_id
       - subphase_average_length
       - subphase_id
       - subphase_rank
@@ -4245,6 +4258,7 @@
     permission:
       columns:
       - required_subphase
+      - related_phase_id
       - subphase_average_length
       - subphase_id
       - subphase_rank
