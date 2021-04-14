@@ -196,11 +196,26 @@ export const getClickEditableLayerNames = () =>
   );
 
 /**
- * Get the IDs from the layerConfigs object to set as interactive in the map components
+ * Get the IDs from the layerConfigs object to set as interactive in the edit map
+ * Edit map needs all layers to be interactive to let users select features
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getInteractiveIds = () =>
+export const getEditMapInteractiveIds = () =>
   Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
+
+/**
+ * Get the IDs from the layerConfigs object to set as interactive in the summary map
+ * Summary map only needs layers in the project extent to be interactive
+ * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
+ */
+export const getSummaryMapInteractiveIds = featureCollection => [
+  ...new Set(
+    featureCollection.features.map(
+      feature =>
+        mapConfig.layerConfigs[feature.properties.sourceLayer].layerIdName
+    )
+  ),
+];
 
 /**
  * Get the layer names from the layerConfigs object

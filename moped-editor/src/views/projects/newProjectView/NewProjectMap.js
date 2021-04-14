@@ -10,7 +10,7 @@ import {
   createProjectViewLayerConfig,
   getClickEditableLayerNames,
   getGeoJSON,
-  getInteractiveIds,
+  getEditMapInteractiveIds,
   getLayerNames,
   getLayerSource,
   getFeatureId,
@@ -164,7 +164,9 @@ const NewProjectMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={!isDrawing && getInteractiveIds()}
+        interactiveLayerIds={
+          !isDrawing && getEditMapInteractiveIds(featureCollection)
+        }
         onHover={!isDrawing ? handleLayerHover : null}
         onClick={!isDrawing ? handleLayerClick : null}
         getCursor={getCursor}
