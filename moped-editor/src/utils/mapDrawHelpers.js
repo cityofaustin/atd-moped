@@ -94,18 +94,23 @@ const getCircleRadiusByZoom = currentZoom => {
   const [bottomZoom, bottomPixelWidth] = stops[0];
   const [topZoom, topPixelWidth] = stops[stops.length - 1];
 
+  // Loop through the [zoom, radius in pixel] nested arrays in mapStyles.circleRadiusStops
+  // to find which two elements the current zoom level falls between
   for (let i = 0; i < stops.length - 1; i++) {
     const [minZoom, minPixelWidth] = stops[i];
     const [maxZoom, maxPixelWidth] = stops[i + 1];
 
+    // If current zoom is less than zoom in the first element
     if (currentZoom < bottomZoom) {
       return bottomPixelWidth;
     }
 
+    // If current zoom is greater than zoom in the last element
     if (currentZoom >= topZoom) {
       return topPixelWidth;
     }
 
+    // If the current zoom falls somewhere between
     if (currentZoom >= minZoom && currentZoom < maxZoom) {
       return linearInterpolation(
         currentZoom,
