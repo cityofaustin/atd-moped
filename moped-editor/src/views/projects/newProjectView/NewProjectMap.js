@@ -170,9 +170,7 @@ const NewProjectMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={
-          !isDrawing && getEditMapInteractiveIds(featureCollection)
-        }
+        interactiveLayerIds={!isDrawing && getEditMapInteractiveIds()}
         onHover={!isDrawing ? handleLayerHover : null}
         onClick={!isDrawing ? handleLayerClick : null}
         getCursor={getCursor}
@@ -190,6 +188,7 @@ const NewProjectMap = ({
           position="top-right"
         />
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
+          // If a config has a url, it is needs state to update selected/unselected layers
           config.layerUrl ? (
             <Source
               key={config.layerIdName}
