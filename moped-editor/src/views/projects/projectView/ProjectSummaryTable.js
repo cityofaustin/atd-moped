@@ -41,21 +41,21 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         },
         style: classes.fieldSelectCapitalize,
       },
-      current_phase: {
-        label: "Current phase",
-        labelStyle: classes.fieldSelectCapitalize,
-        placeholder: "Select phase",
-        type: "select",
-        editable: false,
-        lookup: {
-          table: "moped_phases",
-          fieldLabel: "phase_name",
-          fieldValue: "phase_name",
-          style: classes.fieldSelectCapitalize,
-          format: value => String(value).toLowerCase(),
-        },
-        style: classes.fieldSelectCapitalize,
-      },
+      // current_phase: {
+      //   label: "Current phase",
+      //   labelStyle: classes.fieldSelectCapitalize,
+      //   placeholder: "Select phase",
+      //   type: "select",
+      //   editable: false,
+      //   lookup: {
+      //     table: "moped_phases",
+      //     fieldLabel: "phase_name",
+      //     fieldValue: "phase_name",
+      //     style: classes.fieldSelectCapitalize,
+      //     format: value => String(value).toLowerCase(),
+      //   },
+      //   style: classes.fieldSelectCapitalize,
+      // },
       project_description: {
         label: "Description",
         type: "string",
@@ -126,6 +126,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         label: "Current phase",
         labelStyle: classes.fieldSelectCapitalize,
         type: "string",
+        emptyValue: "None",
         editable: false,
         lookup: {
           table: "moped_phases",
@@ -142,16 +143,16 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   return (
     <div>
       <DataTable
-        fieldConfiguration={fieldConfiguration}
-        tableName={"moped_project"}
+        fieldConfiguration={fieldConfigurationPhases}
+        tableName={"moped_proj_phases"}
         loading={loading}
         error={error}
         data={data}
         refetch={refetch}
       />
       <DataTable
-        fieldConfiguration={fieldConfigurationPhases}
-        tableName={"moped_proj_phases"}
+        fieldConfiguration={fieldConfiguration}
+        tableName={"moped_project"}
         loading={loading}
         error={error}
         data={data}

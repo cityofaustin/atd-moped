@@ -54,7 +54,6 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
-  console.log(fieldConfiguration);
   console.log("tk", data);
   const classes = useStyles();
 
@@ -171,7 +170,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const getValue = field => {
     const tableName = fieldConfiguration.table.name;
-    return data[tableName][0][field] ?? null;
+    return data[tableName].length > 0 && data[tableName][0][field]
+      ? data[tableName][0][field]
+      : null;
   };
 
   /**
