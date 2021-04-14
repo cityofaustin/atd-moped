@@ -72,8 +72,27 @@ export const SUMMARY_QUERY = gql`
       project_extent_ids
       project_extent_geojson
     }
+    moped_phases {
+      phase_id
+      phase_name
+    }
+    moped_proj_phases(
+      where: {
+        project_id: { _eq: $projectId }
+        is_current_phase: { _eq: true }
+      }
+    ) {
+      phase_name
+      project_phase_id
+      is_current_phase
+      project_id
+      phase_start
+      phase_end
+    }
   }
 `;
+
+
 
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {

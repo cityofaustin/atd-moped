@@ -245,6 +245,8 @@ const ProjectTimeline = () => {
                           variables: updatedPhaseObject,
                         });
 
+                        console.log(updatedPhaseObject.is_current_phase);
+
                         setTimeout(() => refetch(), 501);
                         resolve();
                       }, 500);

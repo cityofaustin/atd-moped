@@ -54,6 +54,8 @@ const useStyles = makeStyles(theme => ({
  * @constructor
  */
 const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
+  console.log(fieldConfiguration);
+  console.log("tk", data);
   const classes = useStyles();
 
   const DEFAULT_SNACKBAR_STATE = {

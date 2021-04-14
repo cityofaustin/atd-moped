@@ -46,7 +46,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         labelStyle: classes.fieldSelectCapitalize,
         placeholder: "Select phase",
         type: "select",
-        editable: true,
+        editable: false,
         lookup: {
           table: "moped_phases",
           fieldLabel: "phase_name",
@@ -102,15 +102,62 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
   };
 
+  const fieldConfigurationPhases = {
+    table: {
+      name: "moped_proj_phases",
+    },
+    fields: {
+      // current_status: {
+      //   label: "Current status",
+      //   labelStyle: classes.fieldSelectCapitalize,
+      //   type: "select",
+      //   placeholder: "Select status",
+      //   editable: true,
+      //   lookup: {
+      //     table: "moped_status",
+      //     fieldLabel: "status_name",
+      //     fieldValue: "status_name",
+      //     style: classes.fieldSelectCapitalize,
+      //     format: value => String(value).toLowerCase(),
+      //   },
+      //   style: classes.fieldSelectCapitalize,
+      // },
+      phase_name: {
+        label: "Current phase",
+        labelStyle: classes.fieldSelectCapitalize,
+        type: "string",
+        editable: false,
+        lookup: {
+          table: "moped_phases",
+          fieldLabel: "phase_name",
+          fieldValue: "phase_name",
+          style: classes.fieldSelectCapitalize,
+          format: value => String(value).toLowerCase(),
+        },
+        style: classes.fieldSelectCapitalize,
+      },
+    },
+  };
+
   return (
-    <DataTable
-      fieldConfiguration={fieldConfiguration}
-      tableName={"moped_project"}
-      loading={loading}
-      error={error}
-      data={data}
-      refetch={refetch}
-    />
+    <div>
+      <DataTable
+        fieldConfiguration={fieldConfiguration}
+        tableName={"moped_project"}
+        loading={loading}
+        error={error}
+        data={data}
+        refetch={refetch}
+      />
+      <DataTable
+        fieldConfiguration={fieldConfigurationPhases}
+        tableName={"moped_proj_phases"}
+        loading={loading}
+        error={error}
+        data={data}
+        refetch={refetch}
+      />
+    </div>
   );
 };
 
