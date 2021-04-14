@@ -131,11 +131,11 @@ const getCircleRadiusByZoom = currentZoom => {
  * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
  * @return {object} React style object applied to a feature
  */
-export function getFeatureStyle({ feature, state, viewport }) {
+export function getFeatureStyle({ feature, state, currentZoom }) {
   const type = feature.properties.shape || feature.geometry.type;
   let style = null;
 
-  const CIRCLE_RADIUS = getCircleRadiusByZoom(viewport.zoom);
+  const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
 
   switch (state) {
     case RENDER_STATE.SELECTED:
@@ -206,6 +206,7 @@ const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
  * @param {string} projectId - ID of the project associated with the extent being edited
  * @param {array} selectedLayerIds - List of selected layers IDs to pass with mutations
  * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
+ * @param {number} currentZoom - Current zoom level of the map
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -221,7 +222,7 @@ export function useMapDrawTools(
   projectId,
   selectedLayerIds,
   refetchProjectDetails,
-  viewport
+  currentZoom
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -402,7 +403,7 @@ export function useMapDrawTools(
           mapEditorRef.current = ref;
         }}
         featureStyle={featureStyleObj =>
-          getFeatureStyle({ ...featureStyleObj, viewport })
+          getFeatureStyle({ ...featureStyleObj, currentZoom })
         }
         onSelect={onSelect}
         clickRadius={12}

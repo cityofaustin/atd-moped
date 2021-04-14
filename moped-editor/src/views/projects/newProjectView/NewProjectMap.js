@@ -79,7 +79,7 @@ const NewProjectMap = ({
     projectId,
     selectedLayerIds,
     refetchProjectDetails,
-    viewport
+    viewport.zoom
   );
 
   /**
