@@ -6,9 +6,9 @@ import jaydebeapi
 from graphql import run_query
 
 # Import cleanup functions
-from moped_project import moped_project_process
-from moped_users import moped_user_process
-from moped_project_personnel import moped_project_personnel_process
+from migration.moped_project import moped_project_process
+from migration.moped_users import moped_user_process
+from migration.moped_project_personnel import moped_project_personnel_process
 
 
 # Maybe change this to be dynamic by accepting a command line parameter?
