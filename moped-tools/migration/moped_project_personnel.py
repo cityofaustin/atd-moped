@@ -1,6 +1,7 @@
 #
 # Moped Project Personnel Mapping Configuration
 #
+
 from helpers import *
 from graphql import run_query
 
@@ -120,7 +121,6 @@ moped_project_personnel_process = {
                         status_id
                     ]
                 }
-                
             ) {
                 affected_rows
             }
