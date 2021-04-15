@@ -57,7 +57,7 @@ const ToggleEditComponent = (props, name) => (
   <Grid component="label" container alignItems="center" spacing={1}>
     <Grid item>
       <Switch
-        checked={props.value}
+        checked={props.value ?? false}
         onChange={e => props.onChange(!props.value)}
         color="primary"
         name={name}
@@ -196,13 +196,36 @@ const ProjectTimeline = () => {
                           },
                           newData
                         );
-                          console.log(newPhaseObject);
+
+                        // If user didn't select is_current_phase,
+                        // set is_current_phase to false
+                        if (!newPhaseObject.is_current_phase) {
+                          newPhaseObject.is_current_phase = false
+                        };
+
                         // Execute insert mutation
                         addProjectPhase({
                           variables: {
                             objects: [newPhaseObject],
                           },
                         });
+
+                        // If new phase has a current phase of true,
+                        // set current phase of all other phases to false 
+                        if (newPhaseObject.is_current_phase) {
+                          data.moped_proj_phases.forEach(phase => {
+                            if (
+                              phase.project_phase_id !==
+                              newPhaseObject.project_phase_id
+                            ) {
+                              phase.is_current_phase = false;
+                              updateProjectPhase({
+                                variables: phase,
+                              });
+                            }
+                          });
+                        }
+
                         setTimeout(() => refetch(), 501);
                         resolve();
                       }, 500);
@@ -245,7 +268,7 @@ const ProjectTimeline = () => {
                           variables: updatedPhaseObject,
                         });
 
-                        // If user is switching current phase to true,
+                        // If updates involves switching current phase to true,
                         // set current phase of all other phases to false 
                         if (updatedPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
