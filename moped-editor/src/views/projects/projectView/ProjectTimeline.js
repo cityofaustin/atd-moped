@@ -196,7 +196,7 @@ const ProjectTimeline = () => {
                           },
                           newData
                         );
-
+                          console.log(newPhaseObject);
                         // Execute insert mutation
                         addProjectPhase({
                           variables: {
@@ -245,7 +245,21 @@ const ProjectTimeline = () => {
                           variables: updatedPhaseObject,
                         });
 
-                        console.log(updatedPhaseObject.is_current_phase);
+                        // If user is switching current phase to true,
+                        // set current phase of all other phases to false 
+                        if (updatedPhaseObject.is_current_phase) {
+                          data.moped_proj_phases.forEach(phase => {
+                            if (
+                              phase.project_phase_id !==
+                              updatedPhaseObject.project_phase_id
+                            ) {
+                              phase.is_current_phase = false;
+                              updateProjectPhase({
+                                variables: phase,
+                              });
+                            }
+                          });
+                        }
 
                         setTimeout(() => refetch(), 501);
                         resolve();
