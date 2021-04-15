@@ -23,7 +23,7 @@ export const ProjectActivityLogTableMaps = {
         data_type: "text",
       },
       ecapris_subproject_id: {
-        label: "eCapris Subproject ID",
+        label: "eCAPRIS subproject ID",
         icon: "",
         data_type: "text",
       },
