@@ -243,7 +243,7 @@ const FileUploadDialogSingle = props => {
           color="primary"
           variant="contained"
           startIcon={<Icon>save</Icon>}
-          disabled={!!fileReady}
+          disabled={!fileReady}
         >
           Upload
         </Button>
