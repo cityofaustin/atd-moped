@@ -1414,7 +1414,7 @@
       check: {}
       columns:
       - subproject_name
-      - eCapris_id
+      - ecapris_subproject_id
       - subproject_status
       - budget_total
       - expenses_total
@@ -1432,7 +1432,7 @@
       check: {}
       columns:
       - subproject_name
-      - eCapris_id
+      - ecapris_subproject_id
       - subproject_status
       - budget_total
       - expenses_total
@@ -1457,7 +1457,7 @@
       - expenses_ytd
       - financials_id
       - project_id
-      - eCapris_id
+      - ecapris_subproject_id
       - primary_funding_source
       - subproject_name
       - subproject_status
@@ -1475,7 +1475,7 @@
       - expenses_ytd
       - financials_id
       - project_id
-      - eCapris_id
+      - ecapris_subproject_id
       - primary_funding_source
       - subproject_name
       - subproject_status
@@ -1486,7 +1486,7 @@
     permission:
       columns:
       - subproject_name
-      - eCapris_id
+      - ecapris_subproject_id
       - subproject_status
       - budget_total
       - expenses_total
@@ -1512,7 +1512,7 @@
       - expenses_ytd
       - financials_id
       - project_id
-      - eCapris_id
+      - ecapris_subproject_id
       - primary_funding_source
       - subproject_name
       - subproject_status
@@ -1530,7 +1530,7 @@
       - expenses_ytd
       - financials_id
       - project_id
-      - eCapris_id
+      - ecapris_subproject_id
       - primary_funding_source
       - subproject_name
       - subproject_status
@@ -1555,7 +1555,7 @@
         - expenses_ytd
         - financials_id
         - project_id
-        - eCapris_id
+        - ecapris_subproject_id
         - primary_funding_source
         - subproject_name
         - subproject_status
@@ -3478,7 +3478,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3505,7 +3505,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3532,7 +3532,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3559,7 +3559,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3586,7 +3586,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3614,7 +3614,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3641,7 +3641,7 @@
       - current_phase
       - current_status
       - date_added
-      - eCapris_id
+      - ecapris_subproject_id
       - end_date
       - fiscal_year
       - is_retired
@@ -3683,7 +3683,7 @@
         - project_extent_ids
         - current_phase
         - current_status
-        - eCapris_id
+        - ecapris_subproject_id
         - fiscal_year
         - project_description
         - project_description_public

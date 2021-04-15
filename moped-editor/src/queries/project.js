@@ -14,7 +14,7 @@ export const ADD_PROJECT = gql`
     $project_description: String! = ""
     $current_phase: String! = ""
     $current_status: String! = ""
-    $eCapris_id: String! = ""
+    $ecapris_subproject_id: numeric! = ""
     $fiscal_year: String! = ""
     $start_date: date = ""
     $capitally_funded: Boolean! = false
@@ -28,7 +28,7 @@ export const ADD_PROJECT = gql`
         project_description: $project_description
         current_phase: $current_phase
         current_status: $current_status
-        eCapris_id: $eCapris_id
+        ecapris_subproject_id: $ecapris_subproject_id
         fiscal_year: $fiscal_year
         start_date: $start_date
         capitally_funded: $capitally_funded
@@ -45,7 +45,7 @@ export const ADD_PROJECT = gql`
         project_priority
         current_phase
         current_status
-        eCapris_id
+        ecapris_subproject_id
         fiscal_year
         capitally_funded
         start_date
@@ -66,7 +66,7 @@ export const SUMMARY_QUERY = gql`
       current_phase
       current_status
       capitally_funded
-      eCapris_id
+      ecapris_subproject_id
       fiscal_year
       project_priority
       project_extent_ids
