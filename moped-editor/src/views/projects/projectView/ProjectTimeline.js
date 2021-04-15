@@ -57,7 +57,7 @@ const ToggleEditComponent = (props, name) => (
   <Grid component="label" container alignItems="center" spacing={1}>
     <Grid item>
       <Switch
-        checked={props.value ?? false}
+        checked={props.value}
         onChange={e => props.onChange(!props.value)}
         color="primary"
         name={name}
