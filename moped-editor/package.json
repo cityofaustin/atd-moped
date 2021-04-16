@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "licence": "CC0 1.0 Universal",
-  "version": "1.0.0",
+  "version": "0.4.0",
   "homepage": "/moped",
   "private": false,
   "scripts": {

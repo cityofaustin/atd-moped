@@ -87,7 +87,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         placeholder: "Select capitally funded",
         editable: true,
       },
-      eCapris_id: {
+      ecapris_subproject_id: {
         label: "eCapris subproject ID",
         type: "string",
         placeholder: "Enter eCapris subproject ID",
