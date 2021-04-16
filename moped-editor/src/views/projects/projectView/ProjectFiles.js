@@ -174,11 +174,11 @@ const ProjectFiles = props => {
     },
     {
       title: "Date uploaded",
-      customSort: (a, b) =>  new Date(a?.create_date) - new Date(b?.create_date),
+      customSort: (a, b) =>  new Date(a?.create_date ?? 0) - new Date(b?.create_date ?? 0),
       render: record => (
         <span>
           {record?.create_date
-            ? new Date(record?.create_date).toLocaleString()
+            ? new Date(record.create_date).toLocaleString()
             : "N/A"}
         </span>
       ),
