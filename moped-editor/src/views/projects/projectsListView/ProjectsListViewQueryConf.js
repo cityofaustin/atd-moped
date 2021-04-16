@@ -95,28 +95,30 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
-    eCapris_id: {
+    ecapris_subproject_id: {
       hidden: false,
       searchable: true,
       sortable: false,
       label: "eCapris Subp.",
-      filter: value =>
+      filter: value => (
         <ExternalLink
           text={value}
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
         />
-      ,
+      ),
       type: "string",
       search: {
         label: "Search by eCapris subproject id",
-        operator: "_ilike",
+        operator: "_eq",
         quoted: true,
         envelope: "%{VALUE}%",
       },
     },
   },
   order_by: {},
-  where: {},
+  where: {
+    is_retired: "_eq: false"
+  },
   limit: 25,
   offset: 0,
 };

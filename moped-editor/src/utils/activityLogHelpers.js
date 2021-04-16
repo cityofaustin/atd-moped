@@ -99,7 +99,7 @@ export function useActivityLogLookupTables() {
   const getLookups = (response, lookupDataKey) => {
     const recordTableNames = getActivityLogTableNames(response, lookupDataKey);
     const { query, areLookups, tablesMap } = buildLookupQuery(recordTableNames);
-    console.log(tablesMap);
+
     setLookupObject({ query, areLookups, tablesMap });
   };
 

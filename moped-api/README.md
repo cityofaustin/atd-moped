@@ -39,7 +39,7 @@ $ source venv/bin/activate
 3.Now you are ready to install the requirements
 
 ```
-$ pip install -r requirements/dev.txt
+$ pip install -r requirements/development.txt
 ```
 
 This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.

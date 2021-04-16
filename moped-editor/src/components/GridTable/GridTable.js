@@ -148,11 +148,6 @@ const GridTable = ({ title, query }) => {
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
-    query.setOrSimple = (key, value) => {
-      if (!query.config.or) query.config.or = {};
-      query.config.or[key] = value;
-    };
-
     /**
      * Iterate through all column keys, if they are searchable
      * add the to the Or list.
@@ -166,7 +161,7 @@ const GridTable = ({ title, query }) => {
         const value = quoted
           ? `"${envelope.replace("{VALUE}", search.value)}"`
           : search.value;
-        query.setOrSimple(column, `${operator}: ${value}`);
+        query.setOr(column, `${operator}: ${value}`);
       });
   }
 
