@@ -6,6 +6,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
+  addCircleImage,
   createSummaryMapLayers,
   getSummaryMapInteractiveIds,
   MAPBOX_TOKEN,
@@ -57,7 +58,10 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
     <Box>
       <ReactMapGL
         {...viewport}
-        ref={mapRef}
+        ref={ref => {
+          mapRef.current = ref;
+          addCircleImage(ref);
+        }}
         width="100%"
         height="60vh"
         interactiveLayerIds={getSummaryMapInteractiveIds(projectExtentGeoJSON)}
