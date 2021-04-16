@@ -7,6 +7,7 @@ import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const drawnLayerName = "drawnByUser";
+const TRAIL_LINE_TYPE = "Off-Street";
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
@@ -103,6 +104,12 @@ export const mapConfig = {
             paint: {
               "line-color": this.layerColor,
               "line-width": mapStyles.lineWidthStops,
+              "line-pattern": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                "circle-15",
+                null,
+              ],
               ...(isEditing && editMapPaintStyles),
             },
           };
