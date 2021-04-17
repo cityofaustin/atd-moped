@@ -30,7 +30,7 @@ moped_project_process = {
         "project_description": str(row[2]),
         "current_status": row[3],
         "start_date": row[4],
-        "eCapris_id": row[5],
+        "ecapris_subproject_id": row[5],
         # We need it to be false if ecapris is empty
         "capitally_funded": False if row[5] == "" or row[5] is None else True
     },
@@ -50,7 +50,7 @@ moped_project_process = {
                         project_description,
                         current_status,
                         start_date,
-                        eCapris_id,
+                        ecapris_subproject_id,
                         capitally_funded,
                     ]
                 }
