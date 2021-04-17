@@ -156,16 +156,15 @@ const GridTable = ({ title, query }) => {
    */
   const getSearchValue = (column, value) => {
     // Retrieve the type of field (string, float, int, etc)
-    const type = query.config.columns[column].type;
+    const type = query.config.columns[column].type.toLowerCase();
     // Get the invalidValueDefault in the search config object
     const invalidValueDefault = query.config.columns[column].search?.invalidValueDefault ?? null;
-
     // If the type is number of float, attempt to parse as such
-    if(type === "number" || type === "float" || type === "double") {
+    if(["number", "float", "double"].includes(type)) {
       value = Number.parseFloat(value) || invalidValueDefault;
     }
     // If integer, attempt to parse as integer
-    if(type === "int" || type === "integer") {
+    if(["int", "integer"].includes(type)) {
       value = Number.parseInt(value)  || invalidValueDefault;
     }
     // Any other value types are pass-through for now
