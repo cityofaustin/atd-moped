@@ -3,127 +3,134 @@
 #
 
 from helpers import *
-from graphql import run_query
 
-ACCESS_PHASES_TO_MOPED_PHASES = {
-    "atd project sponsor": 11,
-    "design support": 6,
-    "designer": 7,
-    "field engineer": 10,
-    "implementation support": 9,
-    "lead designer - pe": 7,
-    "program manager": 0,
-    "project coordinator": 5,
-    "project manager": 1,
-    "project sponsor": 11,
-    "project support": 8,
-    "public engagement": 8,
+MOPED_PHASES = {
+    "potential": 1,
+    "planned": 2,
+    "preliminary engineering": 3,
+    "scoping": 4,
+    "preliminary design":  5,
+    "design": 6,
+    "pre-construction": 7,
+    "construction-ready": 8,
+    "construction":	9,
+    "post-construction": 10,
+    "complete":	11,
 }
 
-USER_CACHE = {}
+
+ACCESS_PHASES_TO_MOPED_PHASES = {
+    # These must be ignored (value: 0), they will be taken by another process
+    "canceled": 0,
+    "corridorplan - corridor funding available": 0,
+    "corridorplan - environmental study in progress": 0,
+    "corridorplan - environmentally cleared": 0,
+    "corridorplan - planning process - complete": 0,
+    "corridorplan - planning process - in progress": 0,
+    "hold": 0,
+    "removed": 0,
+
+    # These have mappings:
+    "100% design": 6,
+    "30% design": 6,
+    "60% design": 6,
+    "90% design": 6,
+    "complete": 11,
+    "complete - minor modifications in progress": 11,
+    "construction": 9,
+    "construction ready": 8,
+    "design": 6,
+    "design - initial field visit": 6,
+    "design - preliminary schematic complete": 6,
+    "design by others": 6,
+    "planned": 2,
+    "planned - coordination needed": 2,
+    "planned - resurfacing not required": 2,
+    "planned - resurfacing scheduled": 2,
+    "post construction": 10,
+    "post-inst. study": 10,
+    "potential": 1,
+    "potential - active development review": 1,
+    "potential - feasibility study": 1,
+    "potential - need to request resurfacing": 1,
+    "potential - reconstruction priority": 1,
+    "potential - resurfacing deferred": 1,
+    "potential - resurfacing not required": 1,
+    "potential - resurfacing requested": 1,
+    "potential - resurfacing scheduled": 1,
+    "preliminary design": 5,
+    "preliminary engineering": 3,
+    "procurement": 7,
+    "resurfaced - on hold": 1,
+    "scheduled for construction": 8,
+    "scoping": 4,
+    "substantially complete": 11,
+    "tbd": 1,
+    "unlikely": 1,
+    "work order submitted": 8,
+}
 
 
-def clear_cache():
-    USER_CACHE.clear()
-
-
-def get_user_id(user_full_name: str) -> int:
+def get_phase_id(access_phase_name: str) -> int:
     """
-    Retrieves via GraphQL the user_id from Moped's user table
-    :param str user_full_name: The first and last name of the user
-    :return int: The moped user_id
+    Using the access phase name, retrieves the moped phase id
+    :param str access_phase_name: The access phase name
+    :return int:
     """
-    user_email = generate_email(user_full_name).lower()
+    return ACCESS_PHASES_TO_MOPED_PHASES.get(access_phase_name, 0)
 
-    if user_email in USER_CACHE:
-        return USER_CACHE[user_email]
 
-    query = """
-        query GetMopedUserId($email:citext!) {
-          moped_users(where: {email: {_eq: $email}}) {
-            user_id
-          }
-        }
+def get_moped_phase_name(access_phase_name: str) -> str:
     """
-
-    response = run_query(
-        query=query,
-        variables={
-            "email": user_email
-        }
-    )
-
-    if "data" in response and len(response["data"]["moped_users"]) > 0:
-        try:
-            user_id = response["data"]["moped_users"][0]["user_id"]
-            USER_CACHE[user_email] = user_id
-            return user_id
-        except (KeyError, IndexError, TypeError) as e:
-            print(f"Failed to retrieve user '{user_full_name}': " + str(e))
-
-    raise KeyError(f"Cannot find user_id for '{user_full_name}' : {user_email}")
-
-
-def get_project_role_id(proj_role: str) -> int:
+    Using the access phase name, retrieves the moped phase name
+    :param str access_phase_name: The access phase name
+    :return str:
     """
-    Turns the access database name for a project role and turns it
-    into a valid moped project role id number.
-    :param str proj_role: The full name of the role
-    :return int: The moped project role id number
-    """
-    proj_role = str(proj_role).lower()
-    moped_role_id = ACCESS_ROLES_TO_MOPED_ROLES.get(
-        # Try to find the key, and return it's value
-        proj_role,
-        # Or return id for "Other-Unknown"
-        12
-    )
-    print(f"Access role {proj_role} = moped_role_id {moped_role_id}")
-    return moped_role_id
-
+    moped_phase_id = get_phase_id(access_phase_name)
+    # Loop through each phase and if the ID is the same, return the name
+    for moped_phase in MOPED_PHASES:
+        if MOPED_PHASES[moped_phase] == moped_phase_id:
+            return moped_phase
 
 #
 # Main Configuration
 #
-moped_project_personnel_process = {
+moped_project_phases_process = {
     # Lave it here for now...
     "table": "moped_proj_personnel",
 
     # SQL Query (the order of the columns affects the lambda function below)
-    "sql": "SELECT * FROM `Project_Personnel`",
+    "sql": "SELECT `ProjectID`, LOWER(`ProjectPhase`) FROM `Projects`",
 
     # Basically, this lambda function will rename the keys
     # so that it's compatible with Hasura by creating/replacing
     # the current object with a new one.
     "transform": lambda row: {
-        "project_id": row[1],
-        "status_id": 1 if str(row[4]).lower() == "active" else 0,
-        "user_id": get_user_id(row[2]),
-        "role_id": get_project_role_id(row[3]),
+        "project_id": row[0],
+        "project_phase_id": get_phase_id(row[1]),
+        "phase_name": get_moped_phase_name(row[1]),
+        "completion_percentage": 100,
+        "completed": True
     },
 
-    "prefilter": lambda row: False if row[2] is None else True,
+    "prefilter": None,
 
     # Special rules that cannot be put here
     "cleanup": None,
 
-    "postcleanup": clear_cache,
-
     # Mutation Template
     "graphql": """
-        mutation MigrateMopedProjectPersonnel($object: moped_proj_personnel_insert_input!) {
-            insert_moped_proj_personnel(
+        mutation MigrateMopedProjectPhases($object: moped_proj_phases_insert_input!) {
+            insert_moped_proj_phases(
                 objects: [$object],
                 on_conflict: {
-                    constraint: moped_proj_personnel_project_id_user_id_role_id_key,
+                    constraint: moped_phase_history_pkey,
                     update_columns: [
                         project_id
-                        user_id
-                        role_id
-                        status_id
+                        phase_name
+                        project_phase_id
                     ]
                 }
-
             ) {
                 affected_rows
             }
