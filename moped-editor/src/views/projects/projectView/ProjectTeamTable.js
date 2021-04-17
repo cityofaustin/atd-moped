@@ -46,7 +46,6 @@ const ProjectTeamTable = ({
   if (loading || !data) return <CircularProgress />;
 
   // Get data from the team query payload
-  const users = data.moped_users;
   const personnel = {};
 
   // For each personnel entry...
@@ -88,14 +87,14 @@ const ProjectTeamTable = ({
   );
 
   // Options for Autocomplete form elements
-  const userIds = users.map(user => user.user_id);
+  const userIds = data.moped_proj_personnel.map(user => user.moped_user.user_id);
 
   /**
    * Get a user object from the users array
    * @param {number} id - User id from the moped project personnel row
    * @return {object} Object containing user data
    */
-  const getUserById = id => users.find(user => user.user_id === id);
+  const getUserById = id => data.moped_proj_personnel.find(user => user.moped_user.user_id === id)?.moped_user;
 
   /**
    * Get personnel name from their user ID
