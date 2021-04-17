@@ -9,6 +9,7 @@ from graphql import run_query
 from migration.moped_project import moped_project_process
 from migration.moped_users import moped_user_process
 from migration.moped_project_personnel import moped_project_personnel_process
+from migration.moped_project_phases import moped_project_phases_process
 
 
 # Maybe change this to be dynamic by accepting a command line parameter?
@@ -43,13 +44,15 @@ print("Database connection established")
 process_list = [
     # 1. Insert Projects
     moped_project_process,
-    # 2. Users : Employees, this in preparation to insert personnel.
+    # # 2. Users : Employees, this in preparation to insert personnel.
     moped_user_process,
     # 3. Personnel: In Access, the association between the users (employees) table and personnel
     # table is done with the name of the employee where Moped uses integers. To make the association
     # in Moped, we need to locate the user by the name we receive from Access and retrieve
     # the user_id from Moped, assuming the user already exists in the Moped user table.
     moped_project_personnel_process,
+    # # 4. Phases
+    moped_project_phases_process,
 ]
 
 # Processes a single record
