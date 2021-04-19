@@ -73,6 +73,7 @@ export const mapConfig = {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
+      tooltipTextProperty: "FULL_STREET_NAME",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerColor: theme.palette.primary.main,
       layerUrl:
@@ -366,13 +367,13 @@ export const createProjectViewLayerConfig = id =>
 
 /**
  * Build the JSX of the hover tooltip on map
- * @param {String} hoveredFeature - The ID of the feature hovered
+ * @param {String} tooltipText - Text to show in the tooltip
  * @param {Object} hoveredCoords - Object with keys x and y that describe position of cursor
  * @param {Object} className - Styles from the classes object
  * @return {JSX} The populated tooltip JSX
  */
-export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
-  hoveredFeature && (
+export const renderTooltip = (tooltipText, hoveredCoords, className) =>
+  tooltipText && (
     <div
       className={className}
       style={{
@@ -380,7 +381,7 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
         top: hoveredCoords?.y,
       }}
     >
-      <div>Polygon ID: {hoveredFeature}</div>
+      <div>{tooltipText}</div>
     </div>
   );
 
@@ -446,9 +447,13 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
+    // const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
+    const hoveredFeatureText =
+      e?.features[0]?.properties[
+        mapConfig.layerConfigs[layerSource].tooltipTextProperty
+      ];
 
-    setFeature(hoveredFeatureId);
+    setFeature(hoveredFeatureText);
     setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
