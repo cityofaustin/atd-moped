@@ -98,7 +98,7 @@ const NewProjectMap = ({
 
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
-    console.log(selectedFeature);
+
     const layerIds = selectedLayerIds[layerName] || [];
 
     const updatedLayerIds = !layerIds.includes(clickedFeatureId)
