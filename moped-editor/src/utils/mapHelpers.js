@@ -436,6 +436,7 @@ export const sumFeaturesSelected = featureCollection =>
  */
 export function useHoverLayer() {
   const [featureText, setFeatureText] = useState(null);
+  const [featureId, setFeatureId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   /**
@@ -449,6 +450,7 @@ export function useHoverLayer() {
     if (!layerSource) {
       setHoveredCoords(null);
       setFeatureText(null);
+      setFeatureId(null);
       return;
     }
 
@@ -456,13 +458,15 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
+    const featureId = getFeatureId(e.features[0], layerSource);
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
     setFeatureText(hoveredFeatureText);
+    setFeatureId(featureId);
     setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
-  return { handleLayerHover, featureText, hoveredCoords };
+  return { handleLayerHover, featureId, featureText, hoveredCoords };
 }
 
 /**
