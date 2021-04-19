@@ -427,6 +427,7 @@ export const sumFeaturesSelected = featureCollection =>
  * @typedef {Object} HoverObject
  * @property {Function} handleLayerHover - Function that get and sets featureId and Point for tooltip
  * @property {String} featuredId - The ID of the hovered feature
+ * @property {String} featuredText - Text from feature property to show in tooltip
  * @property {Point} hoveredCoords - The coordinates used to place the tooltip
  */
 /**
