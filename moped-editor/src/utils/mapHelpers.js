@@ -102,14 +102,13 @@ export const mapConfig = {
               "line-cap": "round",
             },
             paint: {
-              "line-color": this.layerColor,
-              "line-width": mapStyles.lineWidthStops,
-              "line-pattern": [
+              "line-color": [
                 "case",
                 ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
-                "circle-15",
-                "circle-15",
+                theme.palette.map.trail,
+                this.layerColor,
               ],
+              "line-width": mapStyles.lineWidthStops,
               ...(isEditing && editMapPaintStyles),
             },
           };
