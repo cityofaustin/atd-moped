@@ -240,6 +240,15 @@ export const getFeatureId = (feature, layerName) =>
   get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
+ * Get a feature's property that contains text to show in a tooltip
+ * @param {object} feature - GeoJSON feature taken from a Mapbox click or hover event
+ * @param {string} layerName - Name of layer to find lodash get path from layer config
+ * @return {string} The text to show in the tooltip
+ */
+export const getFeatureHoverText = (feature, layerName) =>
+  feature.properties[mapConfig.layerConfigs[layerName].tooltipTextProperty];
+
+/**
  * Get a feature's layer source from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
  * @return {String} The name of the source layer
@@ -426,7 +435,7 @@ export const sumFeaturesSelected = featureCollection =>
  * @property {Number} y - The y coordinate to the place the tooltip
  */
 export function useHoverLayer() {
-  const [featureId, setFeature] = useState(null);
+  const [featureText, setFeatureText] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   /**
@@ -439,7 +448,7 @@ export function useHoverLayer() {
     // If a layer isn't hovered, reset state and don't proceed
     if (!layerSource) {
       setHoveredCoords(null);
-      setFeature(null);
+      setFeatureText(null);
       return;
     }
 
@@ -447,17 +456,13 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    // const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
-    const hoveredFeatureText =
-      e?.features[0]?.properties[
-        mapConfig.layerConfigs[layerSource].tooltipTextProperty
-      ];
+    const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
-    setFeature(hoveredFeatureText);
+    setFeatureText(hoveredFeatureText);
     setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
-  return { handleLayerHover, featureId, hoveredCoords };
+  return { handleLayerHover, featureText, hoveredCoords };
 }
 
 /**
