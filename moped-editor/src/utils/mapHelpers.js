@@ -104,12 +104,12 @@ export const mapConfig = {
             paint: {
               "line-color": this.layerColor,
               "line-width": mapStyles.lineWidthStops,
-              // "line-pattern": [
-              //   "case",
-              //   ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
-              //   "circle-15",
-              //   "circle-15",
-              // ],
+              "line-pattern": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                "circle-15",
+                "circle-15",
+              ],
               ...(isEditing && editMapPaintStyles),
             },
           };
@@ -223,16 +223,6 @@ export const getSummaryMapInteractiveIds = featureCollection => [
     )
   ),
 ];
-
-export const addCircleImage = ref => {
-  const map = ref?.current?.getMap();
-  !!map &&
-    map.loadImage(`${process.env.PUBLIC_URL}/circle-15.svg`, (error, image) => {
-      if (error) throw error;
-      if (!map.hasImage("circle-15"))
-        map.addImage("circle-15", image, { sdf: true });
-    });
-};
 
 /**
  * Get the layer names from the layerConfigs object
