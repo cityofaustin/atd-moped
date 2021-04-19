@@ -1,3 +1,7 @@
+
+from .moped_project_phases_mappings import *
+
+
 #
 # Any kind of massaging before insertion to Hasura
 #
@@ -19,7 +23,7 @@ moped_project_process = {
     "table": "projects",
 
     # SQL Query (the order of the columns affects the lambda function below)
-    "sql": "SELECT ProjectID,ProjectName,Description,PhaseSimple,ProjectInitiationDate,ECapris_ProjectID FROM PROJECTS",
+    "sql": "SELECT ProjectID,ProjectName,Description,ProjectPhase,ProjectInitiationDate,ECapris_ProjectID FROM PROJECTS",
 
     # Basically, this lambda function will rename the keys
     # so that it's compatible with Hasura by creating/replacing
@@ -28,7 +32,8 @@ moped_project_process = {
         "project_id": row[0],
         "project_name": row[1],
         "project_description": str(row[2]),
-        "current_status": row[3],
+        "current_status": get_moped_status_name(row[3]),
+        "subphase_id": get_moped_subphase_id(row[3]),
         "start_date": row[4],
         "ecapris_subproject_id": row[5],
         # We need it to be false if ecapris is empty
@@ -49,6 +54,7 @@ moped_project_process = {
                         project_name,
                         project_description,
                         current_status,
+                        subphase_id
                         start_date,
                         ecapris_subproject_id,
                         capitally_funded,
