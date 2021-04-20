@@ -131,31 +131,6 @@ const ProjectActivityLog = () => {
   const isFieldGeneric = field =>
     field in ProjectActivityLogGenericDescriptions;
 
-  /**
-   * Makes sure the creation of the project always comes first
-   * @param {Array} eventList - The data object as provided by apollo
-   * @return {Array}
-   */
-  const reorderEventList = eventList => {
-    let outputList = [];
-    // For each event
-    eventList.forEach(event => {
-      // If this is the creation of a project
-      if (
-        event.record_type === "moped_project" &&
-        event.operation_type === "INSERT"
-      ) {
-        // Append it to the end of the list (make it last)
-        outputList.push(event);
-      } else {
-        // Else, prepend it to the beginning of the list (so it appears in descending chronological order)
-        outputList.unshift(event);
-      }
-    });
-
-    return outputList;
-  };
-
   if (data) {
     data["moped_users"].forEach(user => {
       userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
@@ -191,7 +166,7 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderEventList(data["moped_activity_log"]).map(change => (
+                {data["moped_activity_log"].map(change => (
                   <TableRow key={change.activity_id}>
                     <TableCell
                       align="left"
