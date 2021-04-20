@@ -88,6 +88,12 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      moped_user {
+        first_name
+        last_name
+        workgroup_id
+        user_id
+      }
     }
     moped_workgroup {
       workgroup_id
@@ -96,15 +102,6 @@ export const TEAM_QUERY = gql`
     moped_project_roles {
       project_role_id
       project_role_name
-    }
-    moped_users(
-      order_by: { last_name: asc }
-      where: { status_id: { _eq: 1 } }
-    ) {
-      first_name
-      last_name
-      workgroup_id
-      user_id
     }
   }
 `;
