@@ -1,7 +1,9 @@
 export default {
-  apiGateway: {
-    REGION: "us-east-1",
-    URL: "https://tm4r2xqz3c.execute-api.us-east-1.amazonaws.com/dev/hello",
+  env: {
+    APP_CLOUDFRONT: process.env.REACT_APP_AWS_CLOUDFRONT,
+    APP_ENVIRONMENT: process.env.REACT_APP_HASURA_ENV,
+    APP_HASURA_ENDPOINT: process.env.REACT_APP_HASURA_ENDPOINT,
+    APP_API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT,
   },
   cognito: {
     APP_CLIENT_ID: process.env.REACT_APP_AWS_COGNITO_APP_CLIENT_ID,
