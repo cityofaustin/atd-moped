@@ -133,12 +133,18 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     }
 
     // Generate the mutation
+    // If you are setting a boolean with a dependent field to false, clear that dependent field
     const mutation = `
       mutation ${tableConfig.update.mutationName} {
         ${tableConfig.update.mutationTable}(
           ${tableConfig.update.where},
           _set: {
-            ${field}: ${gqlFormattedValue}
+            ${field}: ${gqlFormattedValue},
+            ${
+              !!fieldConfig.dependentField && value === false
+                ? `${fieldConfig.dependentField}: null`
+                : ""
+            }
           }
         ) {
           affected_rows
