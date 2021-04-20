@@ -42,9 +42,15 @@ const ProjectNameEditable = props => {
   const initialProjectName = props?.projectName;
   const [showEditIcon, setShowEditIcon] = useState(false);
   const [projectName, setProjectName] = useState(initialProjectName);
-  const [projectNameBeforeEdit, setProjectNameBeforeEdit] = useState(projectName);
-  const [isEditing, setIsEditing] = useState(false);
+  const [projectNameBeforeEdit, setProjectNameBeforeEdit] = useState(
+    projectName
+  );
+  const [isEditing, setIsEditing] = useState(props?.isEditing ?? false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+
+  if (props?.isEditing && !isEditing) {
+    setIsEditing(true);
+  }
 
   const updateProjectNameQuery = gql`
     mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
@@ -100,6 +106,7 @@ const ProjectNameEditable = props => {
         setProjectName(initialProjectName);
       })
       .finally(() => {
+        if (props?.setIsEditing) props.setIsEditing(false);
         setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
       });
@@ -111,6 +118,7 @@ const ProjectNameEditable = props => {
    */
   const handleCancelClick = e => {
     e.preventDefault();
+    if (props?.setIsEditing) props.setIsEditing(false);
     setIsEditing(false);
     setProjectName(projectNameBeforeEdit);
   };

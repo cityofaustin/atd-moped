@@ -13,6 +13,7 @@ import {
   Select,
   Snackbar,
   TextField,
+  Typography,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
@@ -187,7 +188,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     switch (fieldType) {
       case "date":
-        formattedValue = new Date(formattedValue).toLocaleDateString();
+        formattedValue = new Date(formattedValue).toLocaleDateString('en-US', {timeZone: 'UTC'});
         break;
       case "boolean":
         formattedValue = formattedValue === true ? "Yes" : "No";
@@ -415,7 +416,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   );
 
   return (
-    <Grid item xs={12} md={6}>
+    <>
       {(error || lookupTablesError) && (
         <Alert severity="error">
           {error}
@@ -490,11 +491,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         </Grid>
                       </form>
                     ) : (
-                      <InputLabel
+                      <Typography
                         id={"label-" + field}
                         className={
                           fieldConfiguration.fields[field]?.labelStyle ?? null
                         }
+                        variant="body1"
                       >
                         {fieldConfiguration.fields[field].format
                           ? fieldConfiguration.fields[field].format(
@@ -510,7 +512,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               create
                             </Icon>
                           )}
-                      </InputLabel>
+                      </Typography>
                     )}
                   </Box>
                 </Grid>
@@ -529,7 +531,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           {snackbarState.message}
         </Alert>
       </Snackbar>
-    </Grid>
+    </>
   );
 };
 
