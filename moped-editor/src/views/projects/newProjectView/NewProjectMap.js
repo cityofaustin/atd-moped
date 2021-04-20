@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
-import { isEqual } from "lodash";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -10,15 +9,18 @@ import {
   createProjectSelectLayerConfig,
   getGeoJSON,
   getInteractiveIds,
+  getLayerNames,
   getLayerSource,
   getFeatureId,
   isFeaturePresent,
+  layerSelectStyles,
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
   sumFeaturesSelected,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
+  useLayerSelect,
   renderFeatureCount,
 } from "../../../utils/mapHelpers";
 
@@ -33,6 +35,7 @@ export const useStyles = makeStyles({
   mapBox: {
     padding: 25,
   },
+  ...layerSelectStyles,
 });
 
 const NewProjectMap = ({
@@ -52,20 +55,24 @@ const NewProjectMap = ({
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
+  const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
+    getLayerNames(),
+    classes
+  );
+
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
    */
   const handleLayerClick = e => {
-    const layerSource = getLayerSource(e);
+    const layerName = getLayerSource(e);
 
-    if (!layerSource) return;
+    if (!layerName) return;
 
-    const { layerIdField } = mapConfig.layerConfigs[layerSource];
-    const clickedFeatureId = getFeatureId(e, layerIdField);
+    const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
 
-    const layerIds = selectedLayerIds[layerSource] || [];
+    const layerIds = selectedLayerIds[layerName] || [];
 
     const updatedLayerIds = !layerIds.includes(clickedFeatureId)
       ? [...layerIds, clickedFeatureId]
@@ -73,18 +80,18 @@ const NewProjectMap = ({
 
     const updatedSelectedIds = {
       ...selectedLayerIds,
-      [layerSource]: updatedLayerIds,
+      [layerName]: updatedLayerIds,
     };
 
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
       featureCollection.features,
-      layerIdField
+      layerName
     )
       ? {
           ...featureCollection,
           features: featureCollection.features.filter(
-            feature => !isEqual(feature, selectedFeature)
+            feature => getFeatureId(feature, layerName) !== clickedFeatureId
           ),
         }
       : {
@@ -150,11 +157,13 @@ const NewProjectMap = ({
               {...createProjectSelectLayerConfig(
                 featureId,
                 sourceName,
-                selectedLayerIds
+                selectedLayerIds,
+                visibleLayerIds
               )}
             />
           </Source>
         ))}
+        {renderLayerSelect()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>

@@ -90,7 +90,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         dependentField: "eCapris_id"
       },
       ...(capitallyFunded && {
-        eCapris_id: {
+        ecapris_subproject_id: {
           label: "eCapris subproject ID",
           type: "string",
           placeholder: "Enter eCapris subproject ID",
