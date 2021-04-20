@@ -89,7 +89,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
       },
       ...(capitallyFunded && {
-        eCapris_id: {
+        ecapris_subproject_id: {
           label: "eCapris subproject ID",
           type: "string",
           placeholder: "Enter eCapris subproject ID",

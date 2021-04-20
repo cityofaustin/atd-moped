@@ -188,7 +188,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     switch (fieldType) {
       case "date":
-        formattedValue = new Date(formattedValue).toLocaleDateString();
+        formattedValue = new Date(formattedValue).toLocaleDateString('en-US', {timeZone: 'UTC'});
         break;
       case "boolean":
         formattedValue = formattedValue === true;
