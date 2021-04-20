@@ -3,6 +3,7 @@
 #
 import json
 import time
+import logging
 
 
 from cerberus import Validator
@@ -12,6 +13,10 @@ from config import (
 )
 
 from MopedEvent import MopedEvent
+
+# Initialize our logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 def raise_critical_error(
         message: str,
@@ -104,6 +109,20 @@ def handler(event, context):
     :param dict event: One or many SQS messages
     :param dict context: Event context
     """
+
+    logger.info(f"Function: {context.function_name}")
+    logger.info(f"Request ID: {context.aws_request_id}")
+    logger.info(f"Event: {json.dumps(event)}")
+
+    #
+    # Check if the event is a cloudwatch event
+    #
+    event_source = event.get("source", "none")
+    event_type = event.get("detail-type", "none")
+    if event_source == "aws.events" \
+            and event_type == "Scheduled Event":
+        # Return the event so it shows as a successful transaction
+        return event
 
     if "Records" in event:
         for record in event["Records"]:
