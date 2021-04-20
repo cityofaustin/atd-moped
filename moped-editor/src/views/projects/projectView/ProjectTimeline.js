@@ -263,6 +263,9 @@ const ProjectTimeline = () => {
                       }, 500);
                     }),
                 }}
+                options={{
+                  actionsColumnIndex: -1
+                }}
               />
             </div>
             <Box pt={2}>

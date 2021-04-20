@@ -14,7 +14,7 @@ export const ADD_PROJECT = gql`
     $project_description: String! = ""
     $current_phase: String! = ""
     $current_status: String! = ""
-    $eCapris_id: String! = ""
+    $ecapris_subproject_id: numeric! = ""
     $fiscal_year: String! = ""
     $start_date: date = ""
     $capitally_funded: Boolean! = false
@@ -28,7 +28,7 @@ export const ADD_PROJECT = gql`
         project_description: $project_description
         current_phase: $current_phase
         current_status: $current_status
-        eCapris_id: $eCapris_id
+        ecapris_subproject_id: $ecapris_subproject_id
         fiscal_year: $fiscal_year
         start_date: $start_date
         capitally_funded: $capitally_funded
@@ -45,7 +45,7 @@ export const ADD_PROJECT = gql`
         project_priority
         current_phase
         current_status
-        eCapris_id
+        ecapris_subproject_id
         fiscal_year
         capitally_funded
         start_date
@@ -66,7 +66,7 @@ export const SUMMARY_QUERY = gql`
       current_phase
       current_status
       capitally_funded
-      eCapris_id
+      ecapris_subproject_id
       fiscal_year
       project_priority
       project_extent_ids
@@ -88,6 +88,12 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      moped_user {
+        first_name
+        last_name
+        workgroup_id
+        user_id
+      }
     }
     moped_workgroup {
       workgroup_id
@@ -97,15 +103,6 @@ export const TEAM_QUERY = gql`
       project_role_id
       project_role_name
     }
-    moped_users(
-      order_by: { last_name: asc }
-      where: { status_id: { _eq: 1 } }
-    ) {
-      first_name
-      last_name
-      workgroup_id
-      user_id
-    }
   }
 `;
 
@@ -114,6 +111,28 @@ export const ADD_PROJECT_PERSONNEL = gql`
     $objects: [moped_proj_personnel_insert_input!]!
   ) {
     insert_moped_proj_personnel(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPSERT_PROJECT_PERSONNEL = gql`
+  mutation UpsertProjectPersonnel(
+    $objects: [moped_proj_personnel_insert_input!]!
+  ) {
+    insert_moped_proj_personnel(
+      objects: $objects,
+      on_conflict: {
+        constraint: moped_proj_personnel_project_id_user_id_role_id_key,
+        update_columns: [
+          project_id,
+          user_id,
+          role_id
+          status_id,
+          notes,
+        ]
+      }
+    ) {
       affected_rows
     }
   }
@@ -242,18 +261,30 @@ export const UPDATE_PROJECT_EXTENT = gql`
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
-    moped_activity_log(where: { record_project_id: { _eq: $projectId } }) {
+    moped_activity_log(
+      where: { record_project_id: { _eq: $projectId } }
+      order_by: { created_at: asc }
+    ) {
       activity_id
       created_at
       record_project_id
       record_type
       description
       operation_type
+      record_data
       moped_user {
         first_name
         last_name
         user_id
       }
+    }
+    moped_users(where:{
+      status_id:{_eq: 1}
+    }) {
+      first_name
+      last_name
+      user_id
+      email
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
@@ -280,5 +311,96 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
         user_id
       }
     }
+    activity_log_lookup_tables: moped_activity_log(
+      where: { activity_id: { _eq: $activityId } }
+      distinct_on: record_type
+    ) {
+      record_type
+    }
   }
 `;
+
+export const PROJECT_FILE_ATTACHMENTS = gql`
+  query MopedProjectFiles($projectId: Int!) {
+    moped_project_files(
+      where: {
+        project_id: {_eq: $projectId},
+        is_retired: {_eq: false}
+      }
+    ) {
+      project_file_id
+      project_id
+      file_key
+      file_name
+      file_description
+      file_size
+      file_metadata
+      file_description
+      create_date
+      created_by
+      moped_user {
+        user_id
+        first_name
+        last_name
+      }
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
+  mutation UpdateProjectFileAttachment(
+    $fileId: Int!,
+    $fileName: String!,
+    $fileDescription: String!
+  ) {
+    update_moped_project_files(
+      where: {
+        project_file_id: {
+          _eq: $fileId
+        }
+      },
+      _set: {
+        file_name: $fileName,
+        file_description: $fileDescription
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
+  mutation DeleteProjectFileAttachment(
+    $fileId: Int!,
+  ) {
+    update_moped_project_files(
+      where: {
+        project_file_id: {
+          _eq: $fileId
+        }
+      },
+      _set: {
+        is_retired: true,
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
+  mutation insert_single_article($object: moped_project_files_insert_input! ) {
+    insert_moped_project_files(objects: [$object]) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_ARCHIVE= gql`
+  mutation ArchiveMopedProject($projectId: Int!) {
+    update_moped_project(where: {project_id: {_eq: $projectId}}, _set: {is_retired: true}) {
+      affected_rows
+    }
+  }
+`
+

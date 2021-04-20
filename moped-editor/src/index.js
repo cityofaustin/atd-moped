@@ -35,16 +35,7 @@ Amplify.configure({
       redirectSignOut: config.cognito.REDIRECT_SIGN_OUT,
       responseType: "code",
     },
-  },
-  API: {
-    endpoints: [
-      {
-        name: "testApi",
-        endpoint: config.apiGateway.URL,
-        region: config.apiGateway.REGION,
-      },
-    ],
-  },
+  }
 });
 
 ReactDOM.render(

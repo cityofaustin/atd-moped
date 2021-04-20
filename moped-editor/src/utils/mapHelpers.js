@@ -356,7 +356,7 @@ export const createSummaryMapLayers = geoJSON => {
  * @return {Object} Mapbox layer style object
  */
 export const createProjectViewLayerConfig = id =>
-  mapConfig.layerConfigs[id].layerStyleSpec();
+  mapConfig.layerConfigs[id]?.layerStyleSpec() ?? null;
 
 /**
  * Build the JSX of the hover tooltip on map

@@ -27,12 +27,14 @@ const ProjectSummary = () => {
     <ApolloErrorHandler errors={error}>
       <CardContent>
         <Grid container spacing={2}>
-          <ProjectSummaryTable
-            loading={loading}
-            data={data}
-            error={error}
-            refetch={refetch}
-          />
+          <Grid item xs={12} md={6}>
+            <ProjectSummaryTable
+              loading={loading}
+              data={data}
+              error={error}
+              refetch={refetch}
+            />
+          </Grid>
           <Grid item xs={12} md={6}>
             {project_extent_geojson && project_extent_ids && (
               <>
