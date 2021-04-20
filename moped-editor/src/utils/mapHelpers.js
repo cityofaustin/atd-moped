@@ -242,7 +242,7 @@ export const getFeatureId = (feature, layerName) =>
 /**
  * Get a feature's property that contains text to show in a tooltip
  * @param {object} feature - GeoJSON feature taken from a Mapbox click or hover event
- * @param {string} layerName - Name of layer to find lodash get path from layer config
+ * @param {string} layerName - Name of layer to find tooltip text property from layer config
  * @return {string} The text to show in the tooltip
  */
 export const getFeatureHoverText = (feature, layerName) =>
