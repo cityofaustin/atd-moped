@@ -259,9 +259,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where:{
-      status_id:{_eq: 1}
-    }) {
+    moped_users(where: { status_id: { _eq: 1 } }) {
       first_name
       last_name
       user_id
@@ -304,10 +302,7 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
 export const PROJECT_FILE_ATTACHMENTS = gql`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
-      where: {
-        project_id: {_eq: $projectId},
-        is_retired: {_eq: false}
-      }
+      where: { project_id: { _eq: $projectId }, is_retired: { _eq: false } }
     ) {
       project_file_id
       project_id
@@ -330,20 +325,13 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
 
 export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
   mutation UpdateProjectFileAttachment(
-    $fileId: Int!,
-    $fileName: String!,
+    $fileId: Int!
+    $fileName: String!
     $fileDescription: String!
   ) {
     update_moped_project_files(
-      where: {
-        project_file_id: {
-          _eq: $fileId
-        }
-      },
-      _set: {
-        file_name: $fileName,
-        file_description: $fileDescription
-      }
+      where: { project_file_id: { _eq: $fileId } }
+      _set: { file_name: $fileName, file_description: $fileDescription }
     ) {
       affected_rows
     }
@@ -351,18 +339,10 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
 `;
 
 export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
-  mutation DeleteProjectFileAttachment(
-    $fileId: Int!,
-  ) {
+  mutation DeleteProjectFileAttachment($fileId: Int!) {
     update_moped_project_files(
-      where: {
-        project_file_id: {
-          _eq: $fileId
-        }
-      },
-      _set: {
-        is_retired: true,
-      }
+      where: { project_file_id: { _eq: $fileId } }
+      _set: { is_retired: true }
     ) {
       affected_rows
     }
@@ -370,18 +350,20 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
 `;
 
 export const PROJECT_FILE_ATTACHMENTS_CREATE = gql`
-  mutation insert_single_article($object: moped_project_files_insert_input! ) {
+  mutation insert_single_article($object: moped_project_files_insert_input!) {
     insert_moped_project_files(objects: [$object]) {
       affected_rows
     }
   }
 `;
 
-export const PROJECT_ARCHIVE= gql`
+export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
-    update_moped_project(where: {project_id: {_eq: $projectId}}, _set: {is_retired: true}) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { is_retired: true }
+    ) {
       affected_rows
     }
   }
-`
-
+`;
