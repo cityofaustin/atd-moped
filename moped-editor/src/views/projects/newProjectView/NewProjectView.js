@@ -85,7 +85,7 @@ const NewProjectView = () => {
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    ecapris_subproject_id: "",
+    ecapris_subproject_id: 0,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
