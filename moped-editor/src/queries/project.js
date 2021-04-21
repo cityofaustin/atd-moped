@@ -14,7 +14,7 @@ export const ADD_PROJECT = gql`
     $project_description: String! = ""
     $current_phase: String! = ""
     $current_status: String! = ""
-    $ecapris_subproject_id: numeric! = ""
+    $ecapris_subproject_id: numeric
     $fiscal_year: String! = ""
     $start_date: date = ""
     $capitally_funded: Boolean! = false
