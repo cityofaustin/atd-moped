@@ -1,10 +1,5 @@
 import React, { useRef } from "react";
-import ReactMapGL, {
-  Layer,
-  MapController,
-  NavigationControl,
-  Source,
-} from "react-map-gl";
+import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -43,46 +38,6 @@ export const useStyles = makeStyles({
   ...layerSelectStyles,
 });
 
-class CustomMapController extends MapController {
-  handleEvent(event) {
-    console.log(event);
-    super.handleEvent(event);
-  }
-
-  _onPan(event) {
-    // ignore pan on map control input
-    if (this._isMapControlInputNode(event.target)) {
-      return;
-    }
-
-    super._onPan(event);
-  }
-
-  _onDoubleTap(event) {
-    // ignore double taps on map control input
-    if (this._isMapControlInputNode(event.target)) {
-      return;
-    }
-
-    super._onDoubleTap(event);
-  }
-
-  _onHover(event) {
-    // ignore double taps on map control input
-    if (this._isMapControlInputNode(event.target)) {
-      return;
-    }
-
-    super._onHover(event);
-  }
-
-  _isMapControlInputNode(node) {
-    return node.classList.contains("mapboxgl-ctrl-geocoder--input");
-  }
-}
-
-const customMapController = new CustomMapController();
-
 const NewProjectMap = ({
   selectedLayerIds,
   setSelectedLayerIds,
@@ -91,6 +46,7 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
+  const mapControlContainerRef = useRef();
   const featureCount = sumFeaturesSelected(selectedLayerIds);
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
@@ -169,10 +125,20 @@ const NewProjectMap = ({
 
   return (
     <Box className={classes.mapBox}>
+      <div
+        ref={mapControlContainerRef}
+        style={{
+          display: "flex",
+          height: 50,
+          position: "absolute",
+          alignItems: "center",
+          right: 32,
+        }}
+      />
+      {renderLayerSelect()}
       <ReactMapGL
         {...viewport}
         ref={mapRef}
-        controller={customMapController}
         width="100%"
         height="60vh"
         interactiveLayerIds={getInteractiveIds()}
@@ -182,13 +148,14 @@ const NewProjectMap = ({
         onViewportChange={handleViewportChange}
       >
         <div className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
+          <NavigationControl showCompass={false} captureClick={false} />
         </div>
         <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
           bbox={mapConfig.geocoderBbox}
+          containerRef={mapControlContainerRef}
           position="top-right"
         />
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
@@ -209,7 +176,6 @@ const NewProjectMap = ({
             />
           </Source>
         ))}
-        {renderLayerSelect()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
