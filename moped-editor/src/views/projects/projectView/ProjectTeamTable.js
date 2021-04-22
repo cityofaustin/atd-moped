@@ -45,18 +45,34 @@ const ProjectTeamTable = ({
 
   if (loading || !data) return <CircularProgress />;
 
+  /**
+   * Returns True if it finds tupleItem in tupleList, false otherwise.
+   * @param tupleList - The list of tuples
+   * @param tupleItem - The tuple to search for
+   * @return {boolean}
+   */
+  const tuplesContain = (tupleList, tupleItem) =>
+    !!tupleList.find(
+      currentTuple =>
+        currentTuple[0] === tupleItem[0] && currentTuple[1] === tupleItem[1]
+    );
+
+  const availableUsers = data.moped_users;
+
   // Get data from the team query payload
-  const personnel = {};
+  let personnel = {};
 
   // For each personnel entry...
   data.moped_proj_personnel.map(item => {
     // If the item does not exist in the aggregated object
     if (!personnel.hasOwnProperty(item.user_id)) {
       // instantiate a new object & populate
-      personnel[`${item.user_id}`] = {};
-      personnel[`${item.user_id}`].user_id = item.user_id;
-      personnel[`${item.user_id}`].role_id = [item.role_id];
-      personnel[`${item.user_id}`].notes = item.notes;
+      personnel[`${item.user_id}`] = {
+        user_id: item.user_id,
+        role_id: [item.role_id],
+        notes: item.notes,
+        project_personnel_id: item.project_personnel_id,
+      };
     } else {
       // Aggregate role_ids, and notes.
       personnel[`${item.user_id}`].role_id.push(item.role_id);
@@ -65,6 +81,8 @@ const ProjectTeamTable = ({
         " " +
         item.notes
       ).trim();
+      personnel[`${item.user_id}`].project_personnel_id =
+        item.project_personnel_id;
     }
 
     return null; // No need to return anything...
@@ -87,14 +105,14 @@ const ProjectTeamTable = ({
   );
 
   // Options for Autocomplete form elements
-  const userIds = data.moped_proj_personnel.map(user => user.moped_user.user_id);
+  const userIds = availableUsers.map(user => user.user_id);
 
   /**
    * Get a user object from the users array
    * @param {number} id - User id from the moped project personnel row
    * @return {object} Object containing user data
    */
-  const getUserById = id => data.moped_proj_personnel.find(user => user.moped_user.user_id === id)?.moped_user;
+  const getUserById = id => availableUsers.find(user => user.user_id === id);
 
   /**
    * Get personnel name from their user ID
@@ -156,7 +174,8 @@ const ProjectTeamTable = ({
           />
         ));
       },
-      validate: rowData => Array.isArray(rowData) && rowData.length() > 0,
+      validate: rowData =>
+        Array.isArray(rowData.role_id) && rowData.role_id.length > 0,
       editComponent: props => (
         <ProjectTeamRoleMultiselect
           id="role_id"
@@ -190,7 +209,7 @@ const ProjectTeamTable = ({
   const isNewProjectActions = {
     true: {
       add: newData => {
-        let newDataCopy = {...newData};
+        let newDataCopy = { ...newData };
         // Aggregate into a unique set if there is stuff already there
         const newPersonnelState = personnelState.map(item => {
           if (item.user_id === newData.user_id) {
@@ -246,27 +265,51 @@ const ProjectTeamTable = ({
         });
       },
       update: (newData, oldData) => {
-        // Gather a list of ids to be "removed"
-        const removedIds = oldData.role_id.filter(
-          n => !newData.role_id.includes(n)
+        // Creates a set of tuples that contain the user id and the role comprised by the new state
+        const newStateTuples = newData.role_id.map(role_id => [
+          newData.user_id,
+          role_id,
+        ]);
+
+        // Creates a set of tuples that contain the user id and role comprised by the old state
+        const oldStateTuples = oldData.role_id.map(role_id => [
+          oldData.user_id,
+          role_id,
+        ]);
+
+        /**
+         * From the old state, we need to remove the tuples that are not present
+         * in the new state, these tuples are 'orphans' and need to be archived.
+         */
+        const orphanData = oldStateTuples.filter(
+          oldTuple => !tuplesContain(newStateTuples, oldTuple)
+        );
+
+        /**
+         * We must build a unique set of tuples so that there are no repeated
+         * operations run against the database
+         */
+        const uniqueSetOfTuples = [...newStateTuples, ...oldStateTuples].reduce(
+          (accumulator, item) => {
+            if (!tuplesContain(accumulator, item)) accumulator.push(item);
+            return accumulator;
+          },
+          []
         );
 
         // Removed ids means they are not present in new data,
-        // So it can be safely combined in a single list with new data
-        // If the role has been removed, we will mark it as status_id: 0
-        const updatedPersonnelData = [...newData.role_id, ...removedIds].map(
-          (roleId, index) => {
+        const updatedPersonnelData = uniqueSetOfTuples.map(
+          (currentTuple, index) => {
             return {
               project_id: Number.parseInt(projectId),
-              user_id: newData.user_id,
-              role_id: roleId,
-              status_id: removedIds.includes(roleId) ? 0 : 1,
+              user_id: currentTuple[0],
+              role_id: currentTuple[1],
+              status_id: tuplesContain(orphanData, currentTuple) ? 0 : 1,
               notes: index === 0 ? newData.notes : "",
             };
           }
         );
 
-        // Upsert as usual
         upsertProjectPersonnel({
           variables: {
             objects: updatedPersonnelData,
@@ -323,7 +366,7 @@ const ProjectTeamTable = ({
         options={{
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
-          actionsColumnIndex: -1
+          actionsColumnIndex: -1,
         }}
         icons={{ Delete: ClearIcon }}
         editable={{
