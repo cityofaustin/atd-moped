@@ -103,6 +103,15 @@ export const TEAM_QUERY = gql`
       project_role_id
       project_role_name
     }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
+      first_name
+      last_name
+      workgroup_id
+      user_id
+    }
   }
 `;
 
