@@ -1,5 +1,10 @@
 import React, { useRef } from "react";
-import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import ReactMapGL, {
+  Layer,
+  MapController,
+  NavigationControl,
+  Source,
+} from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -37,6 +42,46 @@ export const useStyles = makeStyles({
   },
   ...layerSelectStyles,
 });
+
+class CustomMapController extends MapController {
+  handleEvent(event) {
+    console.log(event);
+    super.handleEvent(event);
+  }
+
+  _onPan(event) {
+    // ignore pan on map control input
+    if (this._isMapControlInputNode(event.target)) {
+      return;
+    }
+
+    super._onPan(event);
+  }
+
+  _onDoubleTap(event) {
+    // ignore double taps on map control input
+    if (this._isMapControlInputNode(event.target)) {
+      return;
+    }
+
+    super._onDoubleTap(event);
+  }
+
+  _onHover(event) {
+    // ignore double taps on map control input
+    if (this._isMapControlInputNode(event.target)) {
+      return;
+    }
+
+    super._onHover(event);
+  }
+
+  _isMapControlInputNode(node) {
+    return node.classList.contains("mapboxgl-ctrl-geocoder--input");
+  }
+}
+
+const customMapController = new CustomMapController();
 
 const NewProjectMap = ({
   selectedLayerIds,
@@ -127,6 +172,7 @@ const NewProjectMap = ({
       <ReactMapGL
         {...viewport}
         ref={mapRef}
+        controller={customMapController}
         width="100%"
         height="60vh"
         interactiveLayerIds={getInteractiveIds()}
