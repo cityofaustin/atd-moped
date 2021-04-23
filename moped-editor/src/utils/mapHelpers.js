@@ -4,7 +4,6 @@ import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import { Box, Checkbox, Typography } from "@material-ui/core";
 import { get } from "lodash";
-import { MapController } from "react-map-gl";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 

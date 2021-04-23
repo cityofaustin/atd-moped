@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -108,23 +108,30 @@ const NewProjectMap = ({
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = viewport => setViewport(viewport);
+  const handleViewportChange = useCallback(
+    viewport => setViewport(prevViewport => ({ ...prevViewport, ...viewport })),
+    [setViewport]
+  );
 
   /**
    * Updates viewport on select of location from geocoder form
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
-  const handleGeocoderViewportChange = newViewport => {
-    const geocoderDefaultOverrides = { transitionDuration: 1000 };
+  const handleGeocoderViewportChange = useCallback(
+    newViewport => {
+      const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
-    return handleViewportChange({
-      ...newViewport,
-      ...geocoderDefaultOverrides,
-    });
-  };
+      return handleViewportChange({
+        ...newViewport,
+        ...geocoderDefaultOverrides,
+      });
+    },
+    [handleViewportChange]
+  );
 
   return (
     <Box className={classes.mapBox}>
+      {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
       <div
         ref={mapControlContainerRef}
         style={{
