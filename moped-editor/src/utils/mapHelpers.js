@@ -359,7 +359,7 @@ export const createProjectViewLayerConfig = (sourceName, visibleLayerIds) => {
   let layerStyleSpec =
     mapConfig.layerConfigs[sourceName]?.layerStyleSpec() ?? null;
 
-  if (!!visibleLayerIds) {
+  if (layerStyleSpec !== null && !!visibleLayerIds) {
     layerStyleSpec = {
       ...layerStyleSpec,
       layout: {
