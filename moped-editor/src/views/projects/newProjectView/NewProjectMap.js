@@ -163,6 +163,7 @@ const NewProjectMap = ({
           mapboxApiAccessToken={MAPBOX_TOKEN}
           bbox={mapConfig.geocoderBbox}
           containerRef={mapControlContainerRef}
+          marker={false}
           position="top-right"
         />
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
