@@ -355,8 +355,22 @@ export const createSummaryMapLayers = geoJSON => {
  * layerConfigs to set colors of features in the projectExtent feature collection layer on the map.
  * @return {Object} Mapbox layer style object
  */
-export const createProjectViewLayerConfig = id =>
-  mapConfig.layerConfigs[id]?.layerStyleSpec() ?? null;
+export const createProjectViewLayerConfig = (sourceName, visibleLayerIds) => {
+  let layerStyleSpec =
+    mapConfig.layerConfigs[sourceName]?.layerStyleSpec() ?? null;
+
+  if (!!visibleLayerIds) {
+    layerStyleSpec = {
+      ...layerStyleSpec,
+      layout: {
+        ...layerStyleSpec.layout,
+        visibility: visibleLayerIds.includes(sourceName) ? "visible" : "none",
+      },
+    };
+  }
+
+  return layerStyleSpec;
+};
 
 /**
  * Build the JSX of the hover tooltip on map
