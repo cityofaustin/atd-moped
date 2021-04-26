@@ -88,6 +88,12 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      moped_user {
+        first_name
+        last_name
+        workgroup_id
+        user_id
+      }
     }
     moped_workgroup {
       workgroup_id

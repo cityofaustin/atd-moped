@@ -89,6 +89,25 @@ const FileUploadDialogSingle = props => {
   };
 
   /**
+   * Resets all the values in the file upload component
+   */
+  const clearState = () => {
+    setFileName(null);
+    setFileDescription(null);
+    setFileKey(null);
+    setFileObject(null);
+    setFileReady(false);
+  }
+
+  /**
+   * Handles the cancel button behavior
+   */
+  const handleCancel = () => {
+    props.handleClickCloseUploadFile();
+    clearState();
+  }
+
+  /**
    * Handles the file save click
    */
   const handleSaveFile = () => {
@@ -102,6 +121,7 @@ const FileUploadDialogSingle = props => {
     // If there is a click save file handler, call it...
     if (props?.handleClickSaveFile) {
       props.handleClickSaveFile(fileBundle);
+      clearState();
     }
   };
 
@@ -212,7 +232,7 @@ const FileUploadDialogSingle = props => {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={props.handleClickCloseUploadFile}
+          onClick={handleCancel}
           color="primary"
           autoFocus
         >
