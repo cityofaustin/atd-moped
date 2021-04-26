@@ -246,7 +246,20 @@ export const getLayerSource = e =>
 export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
-      debugger;
+      const featureSourceLayerName = feature.properties.sourceLayer;
+      const featureId = getFeatureId(feature, featureSourceLayerName);
+
+      return acc[featureSourceLayerName]
+        ? {
+            ...acc,
+            ...{
+              [featureSourceLayerName]: [
+                ...acc[featureSourceLayerName],
+                featureId,
+              ],
+            },
+          }
+        : { ...acc, [featureSourceLayerName]: [featureId] };
     },
     {}
   );

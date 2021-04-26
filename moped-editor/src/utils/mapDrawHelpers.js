@@ -313,10 +313,10 @@ export function useMapDrawTools(
   const switchMode = e => {
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
-    const modeHandler = mode && mode.handler ? new mode.handler() : null;
+    const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
 
     setModeId(switchModeId);
-    setModeHandler(modeHandler);
+    setModeHandler(currentModeHandler);
   };
 
   /**
