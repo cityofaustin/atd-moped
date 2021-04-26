@@ -211,7 +211,10 @@ const NewProjectMap = ({
             >
               <Layer
                 key={config.layerIdName}
-                {...createProjectViewLayerConfig(config.layerIdName)}
+                {...createProjectViewLayerConfig(
+                  config.layerIdName,
+                  visibleLayerIds
+                )}
               />
             </Source>
           )
