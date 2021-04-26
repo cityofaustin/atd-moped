@@ -45,7 +45,6 @@ export const useStyles = makeStyles({
 });
 
 const NewProjectMap = ({
-  selectedLayerIds,
   setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
@@ -55,10 +54,8 @@ const NewProjectMap = ({
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(featureCollection);
-  console.log(
-    selectedLayerIds,
-    featureCollection,
-    createSelectedIdsObjectFromFeatureCollection(featureCollection)
+  const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
+    featureCollection
   );
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
@@ -105,16 +102,16 @@ const NewProjectMap = ({
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
 
-    const layerIds = selectedLayerIds[layerName] || [];
+    // const layerIds = selectedLayerIds[layerName] || [];
 
-    const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-      ? [...layerIds, clickedFeatureId]
-      : layerIds.filter(id => id !== clickedFeatureId);
+    // const updatedLayerIds = !layerIds.includes(clickedFeatureId)
+    //   ? [...layerIds, clickedFeatureId]
+    //   : layerIds.filter(id => id !== clickedFeatureId);
 
-    const updatedSelectedIds = {
-      ...selectedLayerIds,
-      [layerName]: updatedLayerIds,
-    };
+    // const updatedSelectedIds = {
+    //   ...selectedLayerIds,
+    //   [layerName]: updatedLayerIds,
+    // };
 
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
@@ -132,7 +129,7 @@ const NewProjectMap = ({
           features: [...featureCollection.features, selectedFeature],
         };
 
-    setSelectedLayerIds(updatedSelectedIds);
+    // setSelectedLayerIds(updatedSelectedIds);
     setFeatureCollection(updatedFeatureCollection);
   };
 
