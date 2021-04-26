@@ -244,7 +244,7 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
- * Create object with layer name keys and array values containing feature IDs to style in map
+ * Create object with layer name keys and array values containing feature IDs for map styling
  * @param {object} featureCollection - A GeoJSON feature collection
  * @return {object} Object with layer name keys and values that are a array of feature ID strings
  */
