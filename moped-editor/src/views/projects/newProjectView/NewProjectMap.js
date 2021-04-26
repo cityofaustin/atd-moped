@@ -56,7 +56,6 @@ const NewProjectMap = ({
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
-  console.log(featureCollection, selectedLayerIds);
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
