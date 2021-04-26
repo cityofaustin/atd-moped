@@ -204,7 +204,6 @@ const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
  * @param {string} projectId - ID of the project associated with the extent being edited
- * @param {array} selectedLayerIds - List of selected layers IDs to pass with mutations
  * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
  * @param {number} currentZoom - Current zoom level of the map
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
@@ -220,7 +219,6 @@ export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
   projectId,
-  selectedLayerIds,
   refetchProjectDetails,
   currentZoom
 ) {
@@ -297,7 +295,6 @@ export function useMapDrawTools(
     updateProjectExtent({
       variables: {
         projectId,
-        editLayerIds: selectedLayerIds,
         editFeatureCollection: updatedFeatureCollection,
       },
     }).then(() => {

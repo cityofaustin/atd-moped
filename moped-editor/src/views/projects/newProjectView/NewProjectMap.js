@@ -79,7 +79,6 @@ const NewProjectMap = ({
     featureCollection,
     setFeatureCollection,
     projectId,
-    selectedLayerIds,
     refetchProjectDetails,
     viewport.zoom
   );
