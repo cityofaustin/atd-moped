@@ -243,6 +243,11 @@ export const getLayerSource = e =>
   (e.features[0].layer["source-layer"] ||
     e.features[0].properties["sourceLayer"]);
 
+/**
+ * Create object with layer name keys and array values containing feature IDs to style in map
+ * @param {object} featureCollection - A GeoJSON feature collection
+ * @return {object} Object with layer name keys and values that are a array of feature ID strings
+ */
 export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
