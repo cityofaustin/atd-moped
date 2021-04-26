@@ -8,6 +8,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
+  createSelectedIdsObjectFromFeatureCollection,
   drawnLayerName,
   getClickEditableLayerNames,
   getGeoJSON,
@@ -54,6 +55,11 @@ const NewProjectMap = ({
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = sumFeaturesSelected(featureCollection);
+  console.log(
+    selectedLayerIds,
+    featureCollection,
+    createSelectedIdsObjectFromFeatureCollection(featureCollection)
+  );
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,

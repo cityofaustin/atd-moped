@@ -243,6 +243,17 @@ export const getLayerSource = e =>
   (e.features[0].layer["source-layer"] ||
     e.features[0].properties["sourceLayer"]);
 
+export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
+  const selectedIdsByLayer = featureCollection.features.reduce(
+    (acc, feature) => {
+      debugger;
+    },
+    {}
+  );
+
+  return selectedIdsByLayer;
+};
+
 /**
  * Get a feature's GeoJSON from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
