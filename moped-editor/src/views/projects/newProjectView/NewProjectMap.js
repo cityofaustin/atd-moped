@@ -21,7 +21,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  sumFeaturesSelected,
+  countFeatures,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
@@ -52,7 +52,7 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(featureCollection);
+  const featureCount = countFeatures(featureCollection);
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );

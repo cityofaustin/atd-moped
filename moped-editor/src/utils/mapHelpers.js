@@ -419,11 +419,11 @@ export const renderFeatureCount = featureCount => (
 );
 
 /**
- * Count the number of IDs in all arrays nested in the selectLayerIds object
- * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
+ * Count the number of features in the project extent feature collection
+ * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Number} Total number of string IDs
  */
-export const sumFeaturesSelected = featureCollection =>
+export const countFeatures = featureCollection =>
   featureCollection.features.length;
 
 /**

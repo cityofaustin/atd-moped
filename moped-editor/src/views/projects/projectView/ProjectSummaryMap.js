@@ -12,7 +12,7 @@ import {
   mapStyles,
   renderTooltip,
   renderFeatureCount,
-  sumFeaturesSelected,
+  countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(projectExtentGeoJSON);
+  const featureCount = countFeatures(projectExtentGeoJSON);
 
   const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
