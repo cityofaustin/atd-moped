@@ -45,7 +45,6 @@ export const useStyles = makeStyles({
 });
 
 const NewProjectMap = ({
-  setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
   projectId = null,
@@ -102,17 +101,6 @@ const NewProjectMap = ({
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
 
-    // const layerIds = selectedLayerIds[layerName] || [];
-
-    // const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-    //   ? [...layerIds, clickedFeatureId]
-    //   : layerIds.filter(id => id !== clickedFeatureId);
-
-    // const updatedSelectedIds = {
-    //   ...selectedLayerIds,
-    //   [layerName]: updatedLayerIds,
-    // };
-
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
       featureCollection.features,
@@ -129,7 +117,6 @@ const NewProjectMap = ({
           features: [...featureCollection.features, selectedFeature],
         };
 
-    // setSelectedLayerIds(updatedSelectedIds);
     setFeatureCollection(updatedFeatureCollection);
   };
 

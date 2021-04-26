@@ -33,7 +33,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ProjectSummaryMap = ({
   projectId,
-  selectedLayerIds,
   projectExtentGeoJSON,
   isEditing,
   setIsEditing,
@@ -43,7 +42,6 @@ const ProjectSummaryMap = ({
   const [updateProjectExtent, { loading, error }] = useMutation(
     UPDATE_PROJECT_EXTENT
   );
-  const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
@@ -65,7 +63,7 @@ const ProjectSummaryMap = ({
    */
   const handleSave = () => {
     updateProjectExtent({
-      variables: { projectId, editLayerIds, editFeatureCollection },
+      variables: { projectId, editFeatureCollection },
     }).then(() => {
       refetchProjectDetails();
       handleClose();
@@ -107,8 +105,6 @@ const ProjectSummaryMap = ({
         </Toolbar>
       </AppBar>
       <NewProjectMap
-        selectedLayerIds={editLayerIds}
-        setSelectedLayerIds={setEditLayerIds}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
         projectId={projectId}
