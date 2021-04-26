@@ -66,7 +66,6 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      project_extent_ids
       project_extent_geojson
     }
   }
