@@ -61,6 +61,23 @@ const FileUploadDialogSimple = props => {
     };
 
     /**
+     * Resets all the values in the file upload component
+     */
+    const clearState = () => {
+        setFileKey(null);
+        setFileObject(null);
+        setFileReady(false);
+    }
+
+    /**
+     * Handles the cancel button behavior
+     */
+    const handleCancel = () => {
+        props.handleClickCloseUploadFile();
+        clearState();
+    }
+
+    /**
      * Logic that needs to be run after a file has been added to the
      * @param error
      * @param file
@@ -83,6 +100,7 @@ const FileUploadDialogSimple = props => {
         // If there is a click save file handler, call it...
         if (props?.handleClickSaveFile) {
             props.handleClickSaveFile(fileBundle);
+            clearState();
         }
     };
 
@@ -151,7 +169,7 @@ const FileUploadDialogSimple = props => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={props.handleClickCloseUploadFile}
+            onClick={handleCancel}
             color="primary"
             autoFocus
           >

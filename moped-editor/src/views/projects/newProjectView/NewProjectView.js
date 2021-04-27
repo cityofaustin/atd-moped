@@ -85,7 +85,7 @@ const NewProjectView = () => {
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    eCapris_id: "",
+    ecapris_subproject_id: null,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -149,8 +149,8 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let nameError = projectDetails.project_name.length === 0
-    let descriptionError = projectDetails.project_description.length === 0
+    let nameError = projectDetails.project_name.length === 0;
+    let descriptionError = projectDetails.project_description.length === 0;
     let canContinue = false;
 
     if (!nameError && !descriptionError) {
@@ -228,10 +228,27 @@ const NewProjectView = () => {
       .then(response => {
         const { project_id } = response.data.insert_moped_project.returning[0];
 
-        const cleanedPersonnel = personnel.map(row => ({
-          ...filterObjectByKeys(row, ["tableData"]),
-          project_id,
-        }));
+        // If personnel are added to the project, handle roles and remove unneeded data
+        const cleanedPersonnel =
+          personnel.length > 0
+            ? personnel
+                // We need to flatten (reverse the nesting) for role_ids
+                .map(item => {
+                  // For every personnel, iterate through role_ids
+                  return item.role_id.map(role_id => {
+                    // build a new object with specific values
+                    return {
+                      role_id: role_id,
+                      user_id: item.user_id,
+                    };
+                  });
+                })[0] // The array should be single
+                // Now we proceed as normal...
+                .map(row => ({
+                  ...filterObjectByKeys(row, ["tableData"]),
+                  project_id,
+                }))
+            : [];
 
         addStaff({
           variables: {
@@ -293,9 +310,14 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>}
+                        {activeStep > 0 && (
+                          <Button
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        )}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}
