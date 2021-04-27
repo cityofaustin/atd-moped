@@ -73,6 +73,7 @@ export const mapConfig = {
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -114,6 +115,7 @@ export const mapConfig = {
       layerIdName: "project-component-points",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -331,8 +333,8 @@ export const createSummaryMapLayers = geoJSON => {
       : { ...acc, [sourceLayerName]: { ...geoJSON, features: [feature] } };
   }, {});
 
-  return Object.entries(geoJSONBySource).map(
-    ([sourceLayerName, sourceLayerGeoJSON]) => (
+  return Object.entries(geoJSONBySource)
+    .map(([sourceLayerName, sourceLayerGeoJSON]) => (
       <Source
         key={sourceLayerName}
         id={sourceLayerName}
@@ -344,8 +346,16 @@ export const createSummaryMapLayers = geoJSON => {
           {...createProjectViewLayerConfig(sourceLayerName)}
         />
       </Source>
-    )
-  );
+    ))
+    .sort((a, b) => {
+      // The id of the Source component maps to the source layer names in mapConfig, each layer config has a set order
+      const idA = a.props.id;
+      const idB = b.props.id;
+      const orderA = mapConfig.layerConfigs[idA].layerOrder;
+      const orderB = mapConfig.layerConfigs[idB].layerOrder;
+
+      return orderA > orderB ? 1 : -1;
+    });
 };
 
 /**
