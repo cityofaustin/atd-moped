@@ -223,7 +223,6 @@ const NewProjectView = () => {
     addProject({
       variables: {
         ...projectDetails,
-        project_extent_geojson: featureCollection,
       },
     })
       .then(response => {
@@ -264,6 +263,19 @@ const NewProjectView = () => {
             setLoading(false);
             setSuccess(false);
           });
+
+        const projectFeatures = featureCollection.features.map(feature => ({
+          location: feature,
+          project_id,
+        }));
+
+        addFeatures({
+          variables: { objects: projectFeatures },
+        }).catch(err => {
+          alert(err);
+          setLoading(false);
+          setSuccess(false);
+        });
       })
       .catch(err => {
         alert(err);
