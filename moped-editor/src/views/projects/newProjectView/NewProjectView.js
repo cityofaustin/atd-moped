@@ -252,10 +252,16 @@ const NewProjectView = () => {
           moped_proj_personnel: { data: cleanedPersonnel },
         },
       },
-    }).then(response => 
-      const { project_id } = response.data.insert_moped_project_one;
-      setNewProjectId(project_id);
-    });
+    })
+      .then(response => {
+        const { project_id } = response.data.insert_moped_project_one;
+        setNewProjectId(project_id);
+      })
+      .catch(err => {
+        alert(err);
+        setLoading(false);
+        setSuccess(false);
+      });
   };
 
   return (
