@@ -146,7 +146,7 @@ const ProjectActivityLog = () => {
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
-      // Remove that object from the array and add it back on at the end
+        // Remove that object from the array and add it back on at the end
         eventListCopy.splice(eventListCopy.indexOf(event), 1);
         eventListCopy.push(event);
       }
