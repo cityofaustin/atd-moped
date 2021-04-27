@@ -85,7 +85,7 @@ const NewProjectView = () => {
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    ecapris_subproject_id: "",
+    ecapris_subproject_id: null,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -228,23 +228,27 @@ const NewProjectView = () => {
       .then(response => {
         const { project_id } = response.data.insert_moped_project.returning[0];
 
-        const cleanedPersonnel = personnel
-          // We need to flatten (reverse the nesting) for role_ids
-          .map(item => {
-            // For every personnel, iterate through role_ids
-            return item.role_id.map(role_id => {
-              // build a new object with specific values
-              return {
-                role_id: role_id,
-                user_id: item.user_id,
-              };
-            });
-          })[0] // The array should be single
-          // Now we proceed as normal...
-          .map(row => ({
-            ...filterObjectByKeys(row, ["tableData"]),
-            project_id,
-          }));
+        // If personnel are added to the project, handle roles and remove unneeded data
+        const cleanedPersonnel =
+          personnel.length > 0
+            ? personnel
+                // We need to flatten (reverse the nesting) for role_ids
+                .map(item => {
+                  // For every personnel, iterate through role_ids
+                  return item.role_id.map(role_id => {
+                    // build a new object with specific values
+                    return {
+                      role_id: role_id,
+                      user_id: item.user_id,
+                    };
+                  });
+                })[0] // The array should be single
+                // Now we proceed as normal...
+                .map(row => ({
+                  ...filterObjectByKeys(row, ["tableData"]),
+                  project_id,
+                }))
+            : [];
 
         addStaff({
           variables: {
