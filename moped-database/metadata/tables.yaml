@@ -1408,6 +1408,10 @@
 - table:
     schema: public
     name: moped_proj_features
+  object_relationships:
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
