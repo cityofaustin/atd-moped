@@ -9,31 +9,11 @@ export const PROJECT_NAME = gql`
 `;
 
 export const ADD_PROJECT = gql`
-  mutation MyMutation(
-    $project_name: String! = ""
-    $project_description: String! = ""
-    $current_phase: String! = ""
-    $current_status: String! = ""
-    $ecapris_subproject_id: numeric
-    $fiscal_year: String! = ""
-    $start_date: date = ""
-    $capitally_funded: Boolean! = false
-    $project_priority: String! = ""
-    $project_extent_geojson: jsonb = {}
+  mutation AddProject(
+    $objects: [moped_project_insert_input!]!
   ) {
     insert_moped_project(
-      objects: {
-        project_name: $project_name
-        project_description: $project_description
-        current_phase: $current_phase
-        current_status: $current_status
-        ecapris_subproject_id: $ecapris_subproject_id
-        fiscal_year: $fiscal_year
-        start_date: $start_date
-        capitally_funded: $capitally_funded
-        project_priority: $project_priority
-        project_extent_geojson: $project_extent_geojson
-      }
+      objects: $objects
     ) {
       affected_rows
       returning {
@@ -116,7 +96,7 @@ export const ADD_PROJECT_PERSONNEL_AND_FEATURES = gql`
     insert_moped_proj_personnel(objects: $personnel) {
       affected_rows
     }
-    
+
     insert_moped_proj_features(objects: $features) {
       affected_rows
     }

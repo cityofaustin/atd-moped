@@ -222,7 +222,7 @@ const NewProjectView = () => {
 
     addProject({
       variables: {
-        ...projectDetails,
+        objects: [projectDetails],
       },
     })
       .then(response => {
