@@ -10,25 +10,22 @@ export const PROJECT_NAME = gql`
 
 export const ADD_PROJECT = gql`
   mutation AddProject(
-    $objects: [moped_project_insert_input!]!
+    $object: moped_project_insert_input!
   ) {
-    insert_moped_project(
-      objects: $objects
+    insert_moped_project_one(
+      object: $object
     ) {
-      affected_rows
-      returning {
-        project_id
-        project_name
-        project_description
-        project_priority
-        current_phase
-        current_status
-        ecapris_subproject_id
-        fiscal_year
-        capitally_funded
-        start_date
-        project_extent_geojson
-      }
+      project_id
+      project_name
+      project_description
+      project_priority
+      current_phase
+      current_status
+      ecapris_subproject_id
+      fiscal_year
+      capitally_funded
+      start_date
+      project_extent_geojson
     }
   }
 `;

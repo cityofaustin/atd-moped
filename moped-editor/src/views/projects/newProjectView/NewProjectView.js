@@ -220,61 +220,42 @@ const NewProjectView = () => {
     // Change the initial state...
     setLoading(true);
 
+    const cleanedPersonnel =
+      personnel.length > 0
+        ? personnel
+            // We need to flatten (reverse the nesting) for role_ids
+            .map(item => {
+              // For every personnel, iterate through role_ids
+              return item.role_id.map(role_id => {
+                // build a new object with specific values
+                return {
+                  role_id: role_id,
+                  user_id: item.user_id,
+                };
+              });
+            })[0] // The array should be single
+            // Now we proceed as normal...
+            .map(row => ({
+              ...filterObjectByKeys(row, ["tableData"]),
+            }))
+        : [];
+
+    const projectFeatures = featureCollection.features.map(feature => ({
+      location: feature,
+    }));
+
     addProject({
       variables: {
-        objects: [projectDetails],
+        object: {
+          ...projectDetails,
+          moped_proj_features: { data: projectFeatures },
+          moped_proj_personnel: { data: cleanedPersonnel },
+        },
       },
-    })
-      .then(response => {
-        const { project_id } = response.data.insert_moped_project.returning[0];
-
-        // If personnel are added to the project, handle roles and remove unneeded data
-        const cleanedPersonnel =
-          personnel.length > 0
-            ? personnel
-                // We need to flatten (reverse the nesting) for role_ids
-                .map(item => {
-                  // For every personnel, iterate through role_ids
-                  return item.role_id.map(role_id => {
-                    // build a new object with specific values
-                    return {
-                      role_id: role_id,
-                      user_id: item.user_id,
-                    };
-                  });
-                })[0] // The array should be single
-                // Now we proceed as normal...
-                .map(row => ({
-                  ...filterObjectByKeys(row, ["tableData"]),
-                  project_id,
-                }))
-            : [];
-
-        const projectFeatures = featureCollection.features.map(feature => ({
-          location: feature,
-          project_id,
-        }));
-
-        addPersonnelAndFeatures({
-          variables: {
-            personnel: cleanedPersonnel,
-            features: projectFeatures,
-          },
-        })
-          .then(() => {
-            setNewProjectId(project_id);
-          })
-          .catch(err => {
-            alert(err);
-            setLoading(false);
-            setSuccess(false);
-          });
-      })
-      .catch(err => {
-        alert(err);
-        setLoading(false);
-        setSuccess(false);
-      });
+    }).then(response => 
+      const { project_id } = response.data.insert_moped_project_one;
+      setNewProjectId(project_id);
+    });
   };
 
   return (
