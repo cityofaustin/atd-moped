@@ -23,18 +23,31 @@ BEGIN
     alter table moped_proj_phases
         drop constraint moped_phase_history_project_milestone_id_key;
 
-    -- Insert Unknown Phase
-    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
-        VALUES ('unknown', null, null, null, null, 0);
+    alter table moped_proj_phases
+        drop constraint moped_phase_history_pkey;
+
+    alter table moped_proj_phases
+        add constraint moped_proj_phases_pkey
+            primary key ( "project_phase_id" );
 
     -- Create a new column for phases
     alter table moped_proj_phases
-        add phase_id int default 0 not null;
+        add column phase_id int default 0 not null,
+        add column status_id int default 0 not null;
 
     -- Create Phase_ID foreign key
     alter table moped_proj_phases
         add constraint moped_proj_phases_moped_phases_phase_id_fk
             foreign key (phase_id) references moped_phases;
+
+    -- Update any moped_proj_phases that may appear as deleted
+    UPDATE moped_proj_phases
+        SET status_id = 1
+        WHERE status_id = 0;
+
+    -- Insert Unknown Phase
+    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
+        VALUES ('unknown', null, null, null, null, 0);
 
     -- Insert Unknown Phase
     INSERT INTO moped_phases (phase_id, phase_rank, phase_name, phase_description, phase_average_length, required_phase)
