@@ -283,6 +283,7 @@ export const isFeaturePresent = (selectedFeature, features, layerName) => {
  * @param {String} hoveredId - The ID of the feature hovered
  * @param {String} sourceName - Source name to get config properties for layer styles
  * @param {Array} selectedLayerIds - Array of string IDs that a user has selected
+ * @param {Array} visibleLayerIds - Array of layer names that are visible and have checked boxes in the useLayerSelect UI
  * @return {Object} Mapbox layer style object
  */
 export const createProjectSelectLayerConfig = (
@@ -363,10 +364,29 @@ export const createSummaryMapLayers = geoJSON => {
  * @summary The fill color key's value below is a Mapbox "case" expression whose cases are
  * built in fillColorCases above. These cases use the sourceLayer and color values set in
  * layerConfigs to set colors of features in the projectExtent feature collection layer on the map.
- * @return {Object} Mapbox layer style object
+ * @param {string} sourceName - Source name to get config properties for layer styles
+ * @param {Array} visibleLayerIds - Array of layer names that are visible and have checked boxes in the useLayerSelect UI
+ * @return {object} Mapbox layer style object
  */
-export const createProjectViewLayerConfig = id =>
-  mapConfig.layerConfigs[id]?.layerStyleSpec() ?? null;
+export const createProjectViewLayerConfig = (
+  sourceName,
+  visibleLayerIds = null
+) => {
+  let layerStyleSpec =
+    mapConfig.layerConfigs[sourceName]?.layerStyleSpec() ?? null;
+
+  if (!!layerStyleSpec && !!visibleLayerIds) {
+    layerStyleSpec = {
+      ...layerStyleSpec,
+      layout: {
+        ...layerStyleSpec.layout,
+        visibility: visibleLayerIds.includes(sourceName) ? "visible" : "none",
+      },
+    };
+  }
+
+  return layerStyleSpec;
+};
 
 /**
  * Build the JSX of the hover tooltip on map
