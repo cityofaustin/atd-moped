@@ -136,24 +136,23 @@ const ProjectActivityLog = () => {
    * @param {Array} eventList - The data object as provided by apollo
    * @return {Array}
    */
-  const reorderEventList = eventList => {
-    let outputList = [];
-    // For each event
-    eventList.forEach(event => {
+  const reorderCreationEvent = eventList => {
+    // Clone eventList array so it can be mutated
+    let eventListCopy = [...eventList];
+
+    eventListCopy.forEach(event => {
       // If this is the creation of a project
       if (
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
-        // Append it to the end of the list (make it last)
-        outputList.push(event);
-      } else {
-        // Else, prepend it to the beginning of the list (so it appears in descending chronological order)
-        outputList.unshift(event);
+      // Remove that object from the array and add it back on at the end
+        eventListCopy.splice(eventListCopy.indexOf(event), 1);
+        eventListCopy.push(event);
       }
     });
 
-    return outputList;
+    return eventListCopy;
   };
 
   if (data) {
@@ -191,7 +190,7 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderEventList(data["moped_activity_log"]).map(change => (
+                {reorderCreationEvent(data["moped_activity_log"]).map(change => (
                   <TableRow key={change.activity_id}>
                     <TableCell
                       align="left"
