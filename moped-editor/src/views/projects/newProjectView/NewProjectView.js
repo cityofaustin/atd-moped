@@ -22,8 +22,7 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import {
   ADD_PROJECT,
-  ADD_PROJECT_FEATURES,
-  ADD_PROJECT_PERSONNEL,
+  ADD_PROJECT_PERSONNEL_AND_FEATURES,
 } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { countFeatures } from "../../../utils/mapHelpers";
@@ -196,8 +195,9 @@ const NewProjectView = () => {
   };
 
   const [addProject] = useMutation(ADD_PROJECT);
-  const [addStaff] = useMutation(ADD_PROJECT_PERSONNEL);
-  const [addFeatures] = useMutation(ADD_PROJECT_FEATURES);
+  const [addPersonnelAndFeatures] = useMutation(
+    ADD_PROJECT_PERSONNEL_AND_FEATURES
+  );
 
   const timer = React.useRef();
 
@@ -250,9 +250,15 @@ const NewProjectView = () => {
                 }))
             : [];
 
-        addStaff({
+        const projectFeatures = featureCollection.features.map(feature => ({
+          location: feature,
+          project_id,
+        }));
+
+        addPersonnelAndFeatures({
           variables: {
-            objects: cleanedPersonnel,
+            personnel: cleanedPersonnel,
+            features: projectFeatures,
           },
         })
           .then(() => {
@@ -263,19 +269,6 @@ const NewProjectView = () => {
             setLoading(false);
             setSuccess(false);
           });
-
-        const projectFeatures = featureCollection.features.map(feature => ({
-          location: feature,
-          project_id,
-        }));
-
-        addFeatures({
-          variables: { objects: projectFeatures },
-        }).catch(err => {
-          alert(err);
-          setLoading(false);
-          setSuccess(false);
-        });
       })
       .catch(err => {
         alert(err);
