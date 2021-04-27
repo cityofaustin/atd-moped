@@ -88,18 +88,6 @@ export const TEAM_QUERY = gql`
   }
 `;
 
-export const ADD_PROJECT_PERSONNEL_AND_FEATURES = gql`
-  mutation AddProjectPersonnelAndFeatures($personnel: [moped_proj_personnel_insert_input!]!, $features: [moped_proj_features_insert_input!]!) {
-    insert_moped_proj_personnel(objects: $personnel) {
-      affected_rows
-    }
-
-    insert_moped_proj_features(objects: $features) {
-      affected_rows
-    }
-  } 
-`;
-
 export const UPSERT_PROJECT_PERSONNEL = gql`
   mutation UpsertProjectPersonnel(
     $objects: [moped_proj_personnel_insert_input!]!

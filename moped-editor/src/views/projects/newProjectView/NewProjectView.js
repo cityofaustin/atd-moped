@@ -20,10 +20,7 @@ import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
-import {
-  ADD_PROJECT,
-  ADD_PROJECT_PERSONNEL_AND_FEATURES,
-} from "../../../queries/project";
+import { ADD_PROJECT } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { countFeatures } from "../../../utils/mapHelpers";
 
@@ -195,9 +192,6 @@ const NewProjectView = () => {
   };
 
   const [addProject] = useMutation(ADD_PROJECT);
-  const [addPersonnelAndFeatures] = useMutation(
-    ADD_PROJECT_PERSONNEL_AND_FEATURES
-  );
 
   const timer = React.useRef();
 
