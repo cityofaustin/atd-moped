@@ -138,21 +138,21 @@ const ProjectActivityLog = () => {
    */
   const reorderCreationEvent = eventList => {
     // Clone eventList array so it can be mutated
-    let eventListCopy = [...eventList];
+    let outputList = [...eventList];
 
-    eventListCopy.forEach(event => {
+    outputList.forEach(event => {
       // If this is the creation of a project
       if (
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
         // Remove that object from the array and add it back on at the end
-        eventListCopy.splice(eventListCopy.indexOf(event), 1);
-        eventListCopy.push(event);
+        outputList.splice(outputList.indexOf(event), 1);
+        outputList.push(event);
       }
     });
 
-    return eventListCopy;
+    return outputList;
   };
 
   if (data) {
