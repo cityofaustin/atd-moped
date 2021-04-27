@@ -1407,6 +1407,65 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_features
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - project_id
+      - location
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - project_id
+      - location
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - project_id
+      - location
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - project_id
+      - location
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - feature_id
+      - project_id
+      - location
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - project_id
+      - location
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - project_id
+      - location
+      filter: {}
+      check: null
+- table:
+    schema: public
     name: moped_proj_financials
   insert_permissions:
   - role: moped-admin
