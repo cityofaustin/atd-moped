@@ -121,6 +121,16 @@ export const ADD_PROJECT_PERSONNEL = gql`
   }
 `;
 
+export const ADD_PROJECT_FEATURES = gql`
+  mutation AddProjectFeatures(
+    $objects: [moped_proj_features_insert_input!]!
+  ) {
+    insert_moped_proj_features(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
 export const UPSERT_PROJECT_PERSONNEL = gql`
   mutation UpsertProjectPersonnel(
     $objects: [moped_proj_personnel_insert_input!]!
