@@ -14,7 +14,7 @@ export const ADD_PROJECT = gql`
     $project_description: String! = ""
     $current_phase: String! = ""
     $current_status: String! = ""
-    $ecapris_subproject_id: numeric! = ""
+    $ecapris_subproject_id: numeric
     $fiscal_year: String! = ""
     $start_date: date = ""
     $capitally_funded: Boolean! = false
@@ -98,6 +98,15 @@ export const TEAM_QUERY = gql`
     moped_project_roles {
       project_role_id
       project_role_name
+    }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
+      first_name
+      last_name
+      workgroup_id
+      user_id
     }
   }
 `;
