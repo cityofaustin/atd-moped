@@ -2668,106 +2668,111 @@
     permission:
       check: {}
       columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
       - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
       - completed_by_user_id
+      - completion_percentage
       - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
+      - phase_priority
+      - phase_privacy
+      - phase_rank
+      - phase_start
+      - phase_status
+      - project_id
+      - project_phase_id
+      - started_by_user_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
       - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
       - completed_by_user_id
+      - completion_percentage
       - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
+      - phase_priority
+      - phase_privacy
+      - phase_rank
+      - phase_start
+      - phase_status
+      - project_id
+      - project_phase_id
+      - started_by_user_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
       - completed_by_user_id
       - completion_percentage
+      - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
       - phase_priority
+      - phase_privacy
       - phase_rank
+      - phase_start
+      - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
       - completed_by_user_id
       - completion_percentage
+      - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
       - phase_priority
+      - phase_privacy
       - phase_rank
+      - phase_start
+      - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - phase_name
-      - phase_description
-      - phase_rank
-      - completion_percentage
-      - phase_status
-      - phase_privacy
-      - phase_start
-      - phase_end
-      - phase_priority
-      - is_current_phase
       - completed
-      - project_phase_id
-      - project_id
-      - started_by_user_id
       - completed_by_user_id
+      - completion_percentage
       - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
+      - phase_priority
+      - phase_privacy
+      - phase_rank
+      - phase_start
+      - phase_status
+      - project_id
+      - project_phase_id
+      - started_by_user_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -2775,42 +2780,44 @@
     permission:
       columns:
       - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
       - completed_by_user_id
       - completion_percentage
+      - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
       - phase_priority
+      - phase_privacy
       - phase_rank
+      - phase_start
+      - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
       - completed
-      - is_current_phase
-      - phase_privacy
-      - phase_end
-      - phase_start
       - completed_by_user_id
       - completion_percentage
+      - date_added
+      - is_current_phase
+      - phase_description
+      - phase_end
+      - phase_id
+      - phase_name
       - phase_priority
+      - phase_privacy
       - phase_rank
+      - phase_start
+      - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
-      - phase_description
-      - phase_name
-      - phase_status
-      - date_added
       filter: {}
       check: null
   event_triggers:
