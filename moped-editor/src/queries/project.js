@@ -99,9 +99,10 @@ export const TEAM_QUERY = gql`
       workgroup_id
       workgroup_name
     }
-    moped_project_roles {
+    moped_project_roles(order_by: {role_order: asc}, where: {project_role_id: {_gt: 0}}) {
       project_role_id
       project_role_name
+      project_role_description
     }
     moped_users(
       order_by: { last_name: asc }
