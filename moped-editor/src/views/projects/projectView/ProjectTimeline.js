@@ -73,7 +73,8 @@ const ToggleEditComponent = (props, name) => (
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = () => {
+const ProjectTimeline = ({ loading: loadingSummary, error: errorSummary, data: dataSummary, refetch: refetchSummary }) => {
+  console.log(dataSummary);
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -226,7 +227,7 @@ const ProjectTimeline = () => {
                           });
                         }
 
-                        setTimeout(() => refetch(), 501);
+                        setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
@@ -284,7 +285,7 @@ const ProjectTimeline = () => {
                           });
                         }
 
-                        setTimeout(() => refetch(), 501);
+                        setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
@@ -297,7 +298,8 @@ const ProjectTimeline = () => {
                             project_phase_id: oldData.project_phase_id,
                           },
                         });
-                        setTimeout(() => refetch(), 501);
+                        // TODO: Ensure deleting a phase sets current phase to none on summary table
+                        setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
