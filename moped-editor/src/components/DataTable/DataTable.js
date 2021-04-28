@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { INITIAL_MUTATION } from "../../queries/placeholder";
 
 import {
@@ -12,6 +12,7 @@ import {
   Paper,
   Select,
   Snackbar,
+  Switch,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -94,13 +95,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
-  const [updateMutation, setUpdateMutation] = useState(INITIAL_MUTATION);
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
-  const [updateField] = useMutation(updateMutation);
+  const [updateField] = useMutation(INITIAL_MUTATION);
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
@@ -133,12 +133,18 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     }
 
     // Generate the mutation
+    // If you are setting a boolean with a dependent field to false, clear that dependent field
     const mutation = `
       mutation ${tableConfig.update.mutationName} {
         ${tableConfig.update.mutationTable}(
           ${tableConfig.update.where},
           _set: {
-            ${field}: ${gqlFormattedValue}
+            ${field}: ${gqlFormattedValue},
+            ${
+              !!fieldConfig.dependentField && value === false
+                ? `${fieldConfig.dependentField}: null`
+                : ""
+            }
           }
         ) {
           affected_rows
@@ -193,7 +199,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         formattedValue = new Date(formattedValue).toLocaleDateString('en-US', {timeZone: 'UTC'});
         break;
       case "boolean":
-        formattedValue = formattedValue === true ? "Yes" : "No";
+        formattedValue = formattedValue === true;
         break;
       case "string":
         formattedValue =
@@ -207,15 +213,58 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return formattedValue;
   };
 
+  const executeMutation = (field = null, value = null) => {
+    const mutationField = field || editField;
+    const mutationValue = value !== null ? value : editValue;
+    // Execute mutation only if there is a new value selected, prevents user
+    // from attempting to save initial value, which would be null
+    if (mutationValue !== null) {
+      updateField({
+        mutation: generateUpdateQuery(mutationField, mutationValue),
+      })
+        .then(response => {
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                Success! the field <b>{getLabel(mutationField)}</b> has been
+                updated!
+              </span>
+            ),
+            severity: "success",
+          });
+          refetch();
+        })
+        .catch(error => {
+          console.log(`Error Updating ${mutationField}`, error);
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                There was a problem updating field{" "}
+                <b>{getLabel(mutationField)}</b>.
+              </span>
+            ),
+            severity: "error",
+          });
+          refetch();
+        })
+        .finally(() => {
+          setEditValue(null);
+          setEditField("");
+          setIsEditing(false);
+          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+        });
+    }
+  };
+
   /**
    * Makes the update via GraphQL
    * @param {ChangeEvent} e - HTML Dom Event
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (editValue !== null) {
-      setUpdateMutation(generateUpdateQuery(editField, editValue));
-    }
+    executeMutation();
   };
 
   /**
@@ -224,7 +273,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const handleCancelClick = e => {
     e.preventDefault();
+    setEditValue(null);
     setEditField("");
+    setIsEditing(false);
   };
 
   /**
@@ -233,6 +284,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const handleFieldValueUpdate = value => {
     setEditValue(value.target.value);
+  };
+
+  const handleBooleanValueUpdate = (event, field) => {
+    // Prevent user from switching boolean while editing another field
+    if (!isEditing) {
+      executeMutation(field, event.target.checked);
+    }
   };
 
   /**
@@ -271,7 +329,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return (
       <TextField
         fullWidth
-        id="date"
+        id="text"
         label={fieldConfig.label}
         type="text"
         defaultValue={editValue ?? initialValue}
@@ -334,88 +392,29 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Render a date component
+   * Render a boolean component
    * @param {string} field
    * @param {string} initialValue
-   * @param {string} label
    */
-  const renderBooleanEdit = (field, initialValue, label) => {
+  const renderBooleanEdit = (field, initialValue) => {
     return (
       <FormControl fullWidth className={classes.formControl}>
-        <InputLabel id={"select-" + field}>{label}</InputLabel>
-        <Select
+        <Switch
           fullWidth
-          labelId={"select-" + field}
+          labelId={"boolean-" + field}
           id={field}
-          value={editValue ?? initialValue}
-          onChange={e => handleFieldValueUpdate(e)}
-        >
-          <MenuItem value={true} selected={editValue === true}>
-            Yes
-          </MenuItem>
-          <MenuItem value={false} selected={editValue === false}>
-            No
-          </MenuItem>
-        </Select>
+          checked={!isEditing && editValue ? editValue : initialValue}
+          color="primary"
+          onChange={event => handleBooleanValueUpdate(event, field)}
+        ></Switch>
       </FormControl>
     );
   };
 
-  /**
-   * Whenever the edit field is modified, it checks if it is empty.
-   * If so, we are not editing any more. This is not ideal, needs change.
-   */
-  useEffect(() => {
-    setIsEditing(editField !== "");
-  }, [editField]);
-
-  useEffect(() => {
-    if (!isEditing) setEditValue(null);
-  }, [isEditing]);
-
-  useEffect(
-    () => {
-      if (updateMutation === INITIAL_MUTATION) return;
-      if (editValue !== null) {
-        updateField()
-          .then(response => {
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  Success! the field <b>{getLabel(editField)}</b> has been
-                  updated!
-                </span>
-              ),
-              severity: "success",
-            });
-            refetch();
-          })
-          .catch(error => {
-            console.log(`Error Updating ${editField}`, error);
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  There was a problem updating field{" "}
-                  <b>{getLabel(editField)}</b>.
-                </span>
-              ),
-              severity: "error",
-            });
-            refetch();
-          })
-          .finally(() => {
-            setEditValue("");
-            setEditField("");
-            setUpdateMutation(INITIAL_MUTATION);
-            setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-          });
-      }
-    },
-    // eslint-disable-next-line
-    [updateMutation]
-  );
+  const handleFieldEdit = field => {
+    setIsEditing(true);
+    setEditField(field);
+  };
 
   return (
     <>
@@ -448,7 +447,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                         {fieldConfiguration.fields[field]?.label ?? "Unknown"}
                       </h4>
                     )}
-                    {isEditing && editField === field ? (
+                    {(isEditing && editField === field) ||
+                    fieldType === "boolean" ? (
                       <form onSubmit={e => handleAcceptClick(e)}>
                         <Grid container fullWidth>
                           <Grid item xs={12} sm={9}>
@@ -462,34 +462,30 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                               <>{renderDateEdit(field, getValue(field))}</>
                             )}
                             {fieldType === "boolean" && (
-                              <>
-                                {renderBooleanEdit(
-                                  field,
-                                  getValue(field),
-                                  getLabel(field)
-                                )}
-                              </>
+                              <>{renderBooleanEdit(field, getValue(field))}</>
                             )}
                           </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={3}
-                            className={classes.fieldGridItemButtons}
-                          >
-                            <Icon
-                              className={classes.editIconConfirm}
-                              onClick={handleAcceptClick}
+                          {fieldType !== "boolean" && (
+                            <Grid
+                              item
+                              xs={12}
+                              sm={3}
+                              className={classes.fieldGridItemButtons}
                             >
-                              check
-                            </Icon>
-                            <Icon
-                              className={classes.editIconConfirm}
-                              onClick={e => handleCancelClick(e)}
-                            >
-                              close
-                            </Icon>
-                          </Grid>
+                              <Icon
+                                className={classes.editIconConfirm}
+                                onClick={e => handleAcceptClick(e)}
+                              >
+                                check
+                              </Icon>
+                              <Icon
+                                className={classes.editIconConfirm}
+                                onClick={e => handleCancelClick(e)}
+                              >
+                                close
+                              </Icon>
+                            </Grid>
+                          )}
                         </Grid>
                       </form>
                     ) : (
@@ -506,13 +502,16 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             )
                           : formatValue(field)}
                         {fieldConfiguration.fields[field].editable &&
-                          !isEditing && (
-                            <Icon
-                              className={classes.editIcon}
-                              onClick={() => setEditField(field)}
-                            >
-                              create
-                            </Icon>
+                          !isEditing &&
+                          fieldType !== "boolean" && (
+                            <div>
+                              <Icon
+                                className={classes.editIcon}
+                                onClick={() => handleFieldEdit(field)}
+                              >
+                                create
+                              </Icon>
+                            </div>
                           )}
                       </Typography>
                     )}
