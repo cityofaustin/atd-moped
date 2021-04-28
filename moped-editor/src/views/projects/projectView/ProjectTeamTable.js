@@ -6,6 +6,7 @@ import {
   Chip,
   CircularProgress,
   TextField,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
@@ -104,6 +105,14 @@ const ProjectTeamTable = ({
     {}
   );
 
+  const roleDescriptions = data.moped_project_roles.reduce(
+    (acc, role) => ({
+      ...acc,
+      [role.project_role_id]: role.project_role_description,
+    }),
+    {}
+  );
+
   // Options for Autocomplete form elements
   const userIds = availableUsers.map(user => user.user_id);
 
@@ -167,11 +176,13 @@ const ProjectTeamTable = ({
       field: "role_id",
       render: personnel => {
         return personnel.role_id.map(chipRoleId => (
-          <Chip
-            className={classes.roleChip}
-            variant="outlined"
-            label={roles[chipRoleId]}
-          />
+          <Tooltip title={roleDescriptions[chipRoleId]} placement="right">
+            <Chip
+              className={classes.roleChip}
+              variant="outlined"
+              label={roles[chipRoleId]}
+            />
+          </Tooltip>
         ));
       },
       validate: rowData =>
@@ -184,6 +195,7 @@ const ProjectTeamTable = ({
           value={props.value}
           onChange={props.onChange}
           roles={roles}
+          roleDescriptions={roleDescriptions}
         />
       ),
     },
