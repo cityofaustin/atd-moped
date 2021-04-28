@@ -73,7 +73,7 @@ const ToggleEditComponent = (props, name) => (
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = ({ loading: loadingSummary, error: errorSummary, data: dataSummary, refetch: refetchSummary }) => {
+const ProjectTimeline = ({ refetch: refetchSummary }) => {
   /** Params Hook
    * @type {integer} projectId
    * */
