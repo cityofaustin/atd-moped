@@ -25,7 +25,6 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       start_date
-      project_extent_geojson
     }
   }
 `;
@@ -43,7 +42,11 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      project_extent_geojson
+      moped_proj_features {
+        feature_id
+        project_id
+        location
+      }
     }
   }
 `;

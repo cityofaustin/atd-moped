@@ -21,7 +21,13 @@ const ProjectSummary = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const { project_extent_geojson } = data.moped_project[0];
+  const { moped_proj_features } = data?.moped_project[0];
+  const projectFeatures =
+    moped_proj_features && moped_proj_features.map(feature => feature.location);
+  const projectFeatureCollection = {
+    type: "FeatureCollection",
+    features: projectFeatures,
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -36,10 +42,10 @@ const ProjectSummary = () => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            {project_extent_geojson && (
+            {projectFeatureCollection && (
               <>
                 <ProjectSummaryMap
-                  projectExtentGeoJSON={project_extent_geojson}
+                  projectExtentGeoJSON={projectFeatureCollection}
                   setIsEditing={setIsEditing}
                 />
               </>
@@ -47,7 +53,7 @@ const ProjectSummary = () => {
             {isEditing && (
               <ProjectSummaryEditMap
                 projectId={projectId}
-                projectExtentGeoJSON={project_extent_geojson}
+                projectExtentGeoJSON={projectFeatureCollection}
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 refetchProjectDetails={refetch}
