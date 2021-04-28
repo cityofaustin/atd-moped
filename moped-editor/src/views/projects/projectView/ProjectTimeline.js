@@ -74,7 +74,6 @@ const ToggleEditComponent = (props, name) => (
  * @constructor
  */
 const ProjectTimeline = ({ loading: loadingSummary, error: errorSummary, data: dataSummary, refetch: refetchSummary }) => {
-  console.log(dataSummary);
   /** Params Hook
    * @type {integer} projectId
    * */
