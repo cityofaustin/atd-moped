@@ -169,9 +169,15 @@ ALTER TABLE ONLY public.moped_proj_milestones
         FOREIGN KEY (project_id) REFERENCES public.moped_project(project_id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 
 
+-- Restore the values in moped_milestones for initial seed
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('actual construction start date', '', 7, true, 3);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('actual end date', '', 1, true, 4);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('actual resurfacing date', '', 8, true, 5);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('resurfacing date', '', 8, false, 9);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('check in on project status', '', 20, true, 10);
 INSERT INTO public.moped_milestones (milestone_name, milestone_description, milestone_order, required_milestone, milestone_id) VALUES ('public meeting', '', 21, true, 11);
+
+-- Restore the values in moped_proj_milestones for initial seed
+INSERT INTO public.moped_proj_milestones (milestone_name, milestone_description, milestone_order, milestone_start, milestone_end, milestone_length, milestone_privacy, days_left, is_current_milestone, completed, project_milestone_id, project_id, project_timeline_id, milestone_owner_id, date_added) VALUES ('check in on project status', '', 7, '2020-05-20', '2020-06-20', 30, true, 0, false, false, 1, 1, 1, NULL, '2020-10-09 14:35:56.695504+00');
+INSERT INTO public.moped_proj_milestones (milestone_name, milestone_description, milestone_order, milestone_start, milestone_end, milestone_length, milestone_privacy, days_left, is_current_milestone, completed, project_milestone_id, project_id, project_timeline_id, milestone_owner_id, date_added) VALUES ('actual resurfacing date', NULL, 8, '2020-04-04', '2020-10-10', NULL, NULL, 65, true, false, 2, 2, NULL, NULL, '2020-10-09 14:35:56.695654+00');
+INSERT INTO public.moped_proj_milestones (milestone_name, milestone_description, milestone_order, milestone_start, milestone_end, milestone_length, milestone_privacy, days_left, is_current_milestone, completed, project_milestone_id, project_id, project_timeline_id, milestone_owner_id, date_added) VALUES ('public meeting', NULL, 15, '2020-04-05', '2020-10-11', NULL, NULL, 66, true, false, 3, 3, NULL, NULL, '2020-10-09 14:35:56.695658+00');
