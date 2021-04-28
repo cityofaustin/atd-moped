@@ -4,10 +4,12 @@ import {
   Checkbox,
   Chip,
   FormControl,
+  Icon,
   Input,
   ListItemText,
   MenuItem,
   Select,
+  Tooltip,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -27,6 +29,9 @@ const useStyles = makeStyles(theme => ({
   noLabel: {
     marginTop: theme.spacing(3),
   },
+  infoIcon: {
+    color: theme.palette.action.disabled,
+  },
 }));
 
 const ITEM_HEIGHT = 48;
@@ -42,6 +47,7 @@ const MenuProps = {
 
 const ProjectTeamRoleMultiselect = ({
   roles,
+  roleDescriptions,
   initialValue,
   value,
   onChange,
@@ -83,6 +89,9 @@ const ProjectTeamRoleMultiselect = ({
           <MenuItem key={roleId} value={Number.parseInt(roleId)}>
             <Checkbox checked={userRoles.includes(Number.parseInt(roleId))} />
             <ListItemText primary={roles[roleId]} />
+            <Tooltip title={roleDescriptions[roleId]} placement="right">
+              <Icon className={classes.infoIcon}>info</Icon>
+            </Tooltip>
           </MenuItem>
         ))}
       </Select>
