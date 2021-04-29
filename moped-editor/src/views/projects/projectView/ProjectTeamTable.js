@@ -6,7 +6,6 @@ import {
   Chip,
   CircularProgress,
   TextField,
-  Tooltip,
   Typography,
 } from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
@@ -176,13 +175,11 @@ const ProjectTeamTable = ({
       field: "role_id",
       render: personnel => {
         return personnel.role_id.map(chipRoleId => (
-          <Tooltip title={roleDescriptions[chipRoleId]} placement="right">
-            <Chip
-              className={classes.roleChip}
-              variant="outlined"
-              label={roles[chipRoleId]}
-            />
-          </Tooltip>
+          <Chip
+            className={classes.roleChip}
+            variant="outlined"
+            label={roles[chipRoleId]}
+          />
         ));
       },
       validate: rowData =>
