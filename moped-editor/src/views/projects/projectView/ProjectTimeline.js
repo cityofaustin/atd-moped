@@ -225,8 +225,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-                        refetchSummary()
-                        setTimeout(() => refetch(), refetchSummary(), 501);
+                        // refetchSummary()
+                        setTimeout(() => refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
@@ -283,8 +283,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-                        refetchSummary()
-                        setTimeout(() => refetch(), refetchSummary(), 501);
+                        // refetchSummary()
+                        setTimeout(() => refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
@@ -298,7 +298,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           },
                         });
                         // TODO: Ensure deleting a phase sets current phase to none on summary table
-                        setTimeout(() => refetch(), refetchSummary(), 501);
+                        setTimeout(() => refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
