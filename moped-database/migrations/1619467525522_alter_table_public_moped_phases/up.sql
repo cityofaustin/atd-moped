@@ -15,6 +15,10 @@ DECLARE
         )
     );
 BEGIN
+    -- Insert Unknown Phase
+    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
+        VALUES ('unknown', null, null, null, null, 0);
+
     -- First drop the foreign key to phase_name
     alter table moped_proj_phases
         drop constraint moped_phase_history_phase_name_fkey;
@@ -46,10 +50,6 @@ BEGIN
         WHERE status_id = 0;
 
     -- Insert Unknown Phase
-    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
-        VALUES ('unknown', null, null, null, null, 0);
-
-    -- Insert Unknown Phase
     INSERT INTO moped_phases (phase_id, phase_rank, phase_name, phase_description, phase_average_length, required_phase)
         VALUES
             (1, 1, 'Potential', 'Project has not been funded or prioritized; often part of needs assessment', null, null),
@@ -71,6 +71,13 @@ BEGIN
                 phase_name = EXCLUDED.phase_name,
                 phase_description = EXCLUDED.phase_description
         ;
+
+    -- Rename the phase column back from rank to order
+    ALTER TABLE moped_phases
+        RENAME COLUMN "phase_rank" TO "phase_order";
+
+    ALTER TABLE moped_proj_phases
+        RENAME COLUMN "phase_rank" TO "phase_order";
 END $$;
 
 

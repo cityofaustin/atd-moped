@@ -1,3 +1,10 @@
+-- Rename the phase column back from order to rank
+ALTER TABLE moped_phases
+    RENAME COLUMN "phase_order" TO "phase_rank";
+
+ALTER TABLE moped_proj_phases
+    RENAME COLUMN "phase_order" TO "phase_rank";
+
 -- Drop the current primary key for
 alter table moped_proj_phases
     drop constraint moped_proj_phases_pkey;
