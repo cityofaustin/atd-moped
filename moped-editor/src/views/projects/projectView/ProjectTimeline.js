@@ -297,7 +297,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             project_phase_id: oldData.project_phase_id,
                           },
                         });
-                        // TODO: Ensure deleting a phase sets current phase to none on summary table
+                        // TODO: Ensure deleting a phase sets current phase to none on summary table 
                         setTimeout(() => refetchSummary(), 501);
                         resolve();
                       }, 500);
