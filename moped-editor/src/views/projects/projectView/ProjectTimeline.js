@@ -215,6 +215,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         if (newPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
                             if (
+                              phase.is_current_phase &&
                               phase.project_phase_id !==
                               newPhaseObject.project_phase_id
                             ) {
@@ -273,6 +274,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         if (updatedPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
                             if (
+                              phase.is_current_phase &&
                               phase.project_phase_id !==
                               updatedPhaseObject.project_phase_id
                             ) {
