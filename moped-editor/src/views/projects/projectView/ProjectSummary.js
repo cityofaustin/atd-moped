@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
+import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
@@ -21,13 +22,10 @@ const ProjectSummary = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const { moped_proj_features } = data?.moped_project[0];
-  const projectFeatures =
-    moped_proj_features && moped_proj_features.map(feature => feature.location);
-  const projectFeatureCollection = {
-    type: "FeatureCollection",
-    features: projectFeatures,
-  };
+  const projectFeatureRecords = data?.moped_project[0]?.moped_proj_features;
+  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
+    projectFeatureRecords
+  );
 
   return (
     <ApolloErrorHandler errors={error}>
