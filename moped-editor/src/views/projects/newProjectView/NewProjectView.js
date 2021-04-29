@@ -236,6 +236,7 @@ const NewProjectView = () => {
 
     const projectFeatures = featureCollection.features.map(feature => ({
       location: feature,
+      status_id: 1,
     }));
 
     addProject({
