@@ -4,12 +4,10 @@ import {
   Checkbox,
   Chip,
   FormControl,
-  Icon,
   Input,
   ListItemText,
   MenuItem,
   Select,
-  Tooltip,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -89,9 +87,6 @@ const ProjectTeamRoleMultiselect = ({
           <MenuItem key={roleId} value={Number.parseInt(roleId)}>
             <Checkbox checked={userRoles.includes(Number.parseInt(roleId))} />
             <ListItemText primary={roles[roleId]} />
-            <Tooltip title={roleDescriptions[roleId]} placement="right">
-              <Icon className={classes.infoIcon}>info</Icon>
-            </Tooltip>
           </MenuItem>
         ))}
       </Select>
