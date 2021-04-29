@@ -225,7 +225,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-
+                        refetchSummary()
                         setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
@@ -283,7 +283,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-
+                        refetchSummary()
                         setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
