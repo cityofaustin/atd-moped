@@ -51,7 +51,8 @@ const ProjectSummary = () => {
             {isEditing && (
               <ProjectSummaryEditMap
                 projectId={projectId}
-                projectExtentGeoJSON={projectFeatureCollection}
+                projectFeatureRecords={projectFeatureRecords}
+                projectFeatureCollection={projectFeatureCollection}
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 refetchProjectDetails={refetch}

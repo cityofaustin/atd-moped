@@ -16,6 +16,7 @@ import {
 import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
+import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -33,7 +34,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ProjectSummaryEditMap = ({
   projectId,
-  projectExtentGeoJSON,
+  projectFeatureCollection,
+  projectFeatureRecords,
   isEditing,
   setIsEditing,
   refetchProjectDetails,
@@ -43,13 +45,13 @@ const ProjectSummaryEditMap = ({
     UPDATE_PROJECT_EXTENT
   );
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    projectExtentGeoJSON
+    projectFeatureCollection
   );
 
   // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
   useEffect(() => {
-    setEditFeatureCollection(projectExtentGeoJSON);
-  }, [projectExtentGeoJSON]);
+    setEditFeatureCollection(projectFeatureCollection);
+  }, [projectFeatureCollection]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -62,6 +64,15 @@ const ProjectSummaryEditMap = ({
    * Calls update project mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
+    // When a user clicks, the feature is either
+    // 1. Already in the feature collection so find it and update to status_id of 0 to soft delete
+    // 2. Is a new feature so insert a new record so it comes back on refetch
+    // We need to separate records that
+    // 1. Need to be inserted (are NEW)
+    // 2. Need to be updated to status_id of 0 (are EXISTING)
+    const records = projectFeatureRecords;
+    debugger;
+
     updateProjectExtent({
       variables: { projectId, editFeatureCollection },
     }).then(() => {
