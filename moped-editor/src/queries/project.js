@@ -181,7 +181,7 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases {
+    moped_phases(where: { phase_id: {_gt: 0} }) {
       phase_id
       phase_name
     }
