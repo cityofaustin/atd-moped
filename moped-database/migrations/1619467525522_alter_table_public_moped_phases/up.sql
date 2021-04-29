@@ -71,6 +71,13 @@ BEGIN
                 phase_name = EXCLUDED.phase_name,
                 phase_description = EXCLUDED.phase_description
         ;
+
+    -- Rename the phase column back from rank to order
+    ALTER TABLE moped_phases
+        RENAME COLUMN "phase_rank" TO "phase_order";
+
+    ALTER TABLE moped_proj_phases
+        RENAME COLUMN "phase_rank" TO "phase_order";
 END $$;
 
 
