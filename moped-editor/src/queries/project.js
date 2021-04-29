@@ -216,17 +216,27 @@ export const ADD_PROJECT_PHASE = gql`
   }
 `;
 
+// export const UPDATE_PROJECT_EXTENT = gql`
+//   mutation UpdateProjectExtent(
+//     $projectId: Int
+//     $editFeatureCollection: jsonb
+//   ) {
+//     update_moped_project(
+//       where: { project_id: { _eq: $projectId } }
+//       _set: {
+//         project_extent_geojson: $editFeatureCollection
+//       }
+//     ) {
+//       affected_rows
+//     }
+//   }
+// `;
+
 export const UPDATE_PROJECT_EXTENT = gql`
   mutation UpdateProjectExtent(
-    $projectId: Int
-    $editFeatureCollection: jsonb
+    $inserts: [moped_proj_features_insert_input!]!
   ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: {
-        project_extent_geojson: $editFeatureCollection
-      }
-    ) {
+    insert_moped_proj_features(objects: $inserts){
       affected_rows
     }
   }

@@ -104,14 +104,12 @@ const ProjectSummaryEditMap = ({
         });
     });
 
-    debugger;
-
-    // updateProjectExtent({
-    //   variables: { projectId, editFeatureCollection },
-    // }).then(() => {
-    //   refetchProjectDetails();
-    //   handleClose();
-    // });
+    updateProjectExtent({
+      variables: { inserts: recordsToInsert },
+    }).then(() => {
+      refetchProjectDetails();
+      handleClose();
+    });
   };
 
   return (
