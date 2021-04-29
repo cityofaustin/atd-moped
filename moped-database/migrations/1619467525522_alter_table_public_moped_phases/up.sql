@@ -15,6 +15,10 @@ DECLARE
         )
     );
 BEGIN
+    -- Insert Unknown Phase
+    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
+        VALUES ('unknown', null, null, null, null, 0);
+
     -- First drop the foreign key to phase_name
     alter table moped_proj_phases
         drop constraint moped_phase_history_phase_name_fkey;
@@ -44,10 +48,6 @@ BEGIN
     UPDATE moped_proj_phases
         SET status_id = 1
         WHERE status_id = 0;
-
-    -- Insert Unknown Phase
-    INSERT INTO moped_phases (phase_name, phase_description, phase_rank, phase_average_length, required_phase, phase_id)
-        VALUES ('unknown', null, null, null, null, 0);
 
     -- Insert Unknown Phase
     INSERT INTO moped_phases (phase_id, phase_rank, phase_name, phase_description, phase_average_length, required_phase)
