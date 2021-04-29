@@ -2,6 +2,7 @@ import React from "react";
 
 import DataTable from "../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Box, Grid } from '@material-ui/core';
 
 import ExternalLink from "../../../components/ExternalLink";
 
@@ -116,24 +117,28 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   };
 
   return (
-    <div>
-      <DataTable
-        fieldConfiguration={fieldConfigurationPhases}
-        tableName={"moped_proj_phases"}
-        loading={loading}
-        error={error}
-        data={data}
-        refetch={refetch}
-      />
-      <DataTable
-        fieldConfiguration={fieldConfiguration}
-        tableName={"moped_project"}
-        loading={loading}
-        error={error}
-        data={data}
-        refetch={refetch}
-      />
-    </div>
+    <Grid>
+      <Box mb={2}>
+        <DataTable
+          fieldConfiguration={fieldConfigurationPhases}
+          tableName={"moped_proj_phases"}
+          loading={loading}
+          error={error}
+          data={data}
+          refetch={refetch}
+        />
+      </Box>
+      <Box>
+        <DataTable
+          fieldConfiguration={fieldConfiguration}
+          tableName={"moped_project"}
+          loading={loading}
+          error={error}
+          data={data}
+          refetch={refetch}
+        />
+      </Box>
+    </Grid>
   );
 };
 

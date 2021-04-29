@@ -268,7 +268,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           variables: updatedPhaseObject,
                         });
 
-                        // If updates involves switching current phase to true,
+                        // If update involves switching current phase to true,
                         // set current phase of all other phases to false 
                         if (updatedPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
