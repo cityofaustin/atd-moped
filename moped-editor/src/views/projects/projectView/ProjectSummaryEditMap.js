@@ -64,21 +64,54 @@ const ProjectSummaryEditMap = ({
    * Calls update project mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
-    // When a user clicks, the feature is either
-    // 1. Already in the feature collection so find it and update to status_id of 0 to soft delete
-    // 2. Is a new feature so insert a new record so it comes back on refetch
-    // We need to separate records that
-    // 1. Need to be inserted (are NEW)
-    // 2. Need to be updated to status_id of 0 (are EXISTING)
-    const records = projectFeatureRecords;
+    const recordsToUpdate = [];
+    const recordsToInsert = [];
+
+    const editedFeatures = editFeatureCollection.features;
+
+    // Find records that need to be soft deleted
+    projectFeatureRecords.forEach(record => {
+      // If there is a match, nothing needs to happen
+      const editedFeaturesMatch = editedFeatures.find(
+        feature =>
+          feature.properties.PROJECT_EXTENT_ID ===
+          record.location.properties.PROJECT_EXTENT_ID
+      );
+
+      // If there isn't a match, we need to insert
+      !editedFeaturesMatch &&
+        recordsToUpdate.push({
+          ...record,
+          status_id: 0,
+        });
+    });
+
+    // Find records that need to be inserted
+    editedFeatures.forEach(feature => {
+      // If there is a match, nothing needs to happen
+      const match = projectFeatureRecords.find(
+        record =>
+          feature.properties.PROJECT_EXTENT_ID ===
+          record.location.properties.PROJECT_EXTENT_ID
+      );
+
+      // If there isn't we need to insert
+      !match &&
+        recordsToInsert.push({
+          location: feature,
+          project_id: projectId,
+          status_id: 1,
+        });
+    });
+
     debugger;
 
-    updateProjectExtent({
-      variables: { projectId, editFeatureCollection },
-    }).then(() => {
-      refetchProjectDetails();
-      handleClose();
-    });
+    // updateProjectExtent({
+    //   variables: { projectId, editFeatureCollection },
+    // }).then(() => {
+    //   refetchProjectDetails();
+    //   handleClose();
+    // });
   };
 
   return (
