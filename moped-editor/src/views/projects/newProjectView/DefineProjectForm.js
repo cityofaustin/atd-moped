@@ -19,7 +19,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
 
   const PHASES_QUERY = gql`
     query Phases {
-      moped_phases(order_by: {phase_rank: asc}, where: {phase_id: {_gte: 1}}) {
+      moped_phases(order_by: {phase_order: asc}, where: {phase_id: {_gte: 1}}) {
         phase_name
       }
     }
