@@ -81,7 +81,7 @@ const NewProjectMap = ({
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
-  const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
+  const { visibleLayerIds, renderLayerSelect, mapStyle } = useLayerSelect(
     getLayerNames(),
     classes
   );
@@ -153,8 +153,6 @@ const NewProjectMap = ({
     },
     [handleViewportChange]
   );
-
-  const [mapStyle, setMapStyle] = useState("mapbox://styles/mapbox/light-v8");
 
   return (
     <Box className={classes.mapBox}>

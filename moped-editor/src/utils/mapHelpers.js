@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
-import { Box, Checkbox, Typography } from "@material-ui/core";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Typography,
+} from "@material-ui/core";
 import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -515,6 +522,23 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
           {mapConfig.layerConfigs[name].layerLabel}
         </Typography>
       ))}
+      <Typography className={classes.layerSelectTitle}>Basemap</Typography>
+      <RadioGroup
+        aria-label="basemap"
+        name="basemap"
+        className={classes.layerRadioGroup}
+      >
+        <FormControlLabel
+          value="streets"
+          control={<Radio color="primary" />}
+          label="Streets"
+        />
+        <FormControlLabel
+          value="aerial"
+          control={<Radio color="primary" />}
+          label="Aerial"
+        />
+      </RadioGroup>
     </Box>
   );
 
@@ -537,5 +561,8 @@ export const layerSelectStyles = {
   },
   layerSelectText: {
     paddingRight: 10,
+  },
+  layerRadioGroup: {
+    paddingLeft: 10,
   },
 };
