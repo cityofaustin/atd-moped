@@ -99,9 +99,10 @@ export const TEAM_QUERY = gql`
       workgroup_id
       workgroup_name
     }
-    moped_project_roles {
+    moped_project_roles(order_by: {role_order: asc}, where: {project_role_id: {_gt: 0}}) {
       project_role_id
       project_role_name
+      project_role_description
     }
     moped_users(
       order_by: { last_name: asc }
@@ -180,7 +181,7 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases {
+    moped_phases(where: { phase_id: {_gt: 0} }) {
       phase_id
       phase_name
     }

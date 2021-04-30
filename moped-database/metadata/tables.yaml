@@ -4054,74 +4054,78 @@
     permission:
       check: {}
       columns:
+      - active_role
+      - date_added
+      - project_role_description
       - project_role_id
       - project_role_name
-      - active_role
       - role_order
-      - date_added
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
+      - active_role
+      - date_added
+      - project_role_description
       - project_role_id
       - project_role_name
-      - active_role
       - role_order
-      - date_added
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
       - date_added
+      - project_role_description
+      - project_role_id
+      - project_role_name
+      - role_order
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
       - date_added
+      - project_role_description
+      - project_role_id
+      - project_role_name
+      - role_order
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
+      - active_role
+      - date_added
+      - project_role_description
       - project_role_id
       - project_role_name
-      - active_role
       - role_order
-      - date_added
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
       - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
       - date_added
+      - project_role_description
+      - project_role_id
+      - project_role_name
+      - role_order
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
       - active_role
-      - project_role_id
-      - role_order
-      - project_role_name
       - date_added
+      - project_role_description
+      - project_role_id
+      - project_role_name
+      - role_order
       filter: {}
-      check: null
+      check: {}
 - table:
     schema: public
     name: moped_status
@@ -4130,67 +4134,78 @@
     permission:
       check: {}
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      check: null
+      check: {}
 - table:
     schema: public
     name: moped_subphases
