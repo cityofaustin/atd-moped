@@ -65,27 +65,24 @@ const ProjectSummaryEditMap = ({
    */
   const handleSave = () => {
     const recordsToUpdate = [];
-    const recordsToInsert = [];
 
     const editedFeatures = editFeatureCollection.features;
 
     // Find new records that need to be inserted
-    editedFeatures.forEach(feature => {
-      // If there is a match, nothing needs to happen
-      const match = projectFeatureRecords.find(
-        record =>
-          feature.properties.PROJECT_EXTENT_ID ===
-          record.location.properties.PROJECT_EXTENT_ID
-      );
-
-      // If there isn't we need to insert
-      !match &&
-        recordsToInsert.push({
-          location: feature,
-          project_id: projectId,
-          status_id: 1,
-        });
-    });
+    const recordsToInsert = editedFeatures
+      .filter(
+        feature =>
+          !projectFeatureRecords.find(
+            record =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(feature => ({
+        location: feature,
+        project_id: projectId,
+        status_id: 1,
+      }));
 
     // Find existing records that need to be soft deleted
     projectFeatureRecords
