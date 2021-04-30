@@ -189,17 +189,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   );
 
 /**
- * Add points drawn using the UI exposed from useMapDrawTools
- * @param {object} featureCollection - GeoJSON feature collection containing project extent
- * @param {array} drawnFeatures - List of GeoJSON features generated from the draw UI
- * @return {object} The updated feature collection
- */
-const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
-  ...featureCollection,
-  features: [...featureCollection.features, ...drawnFeatures],
-});
-
-/**
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
@@ -270,33 +259,32 @@ export function useMapDrawTools(
       feature => feature.properties.sourceLayer !== drawnLayerName
     );
 
-    // Add a unique ID and layer name to the feature for future retrieval and styling
-    const drawnFeaturesWithIdAndLayer = newDrawnFeatures.map(feature => {
-      const featureUUID = uuidv4();
+    // Add a UUID and layer name to the features for retrieval and styling and create feature records
+    const drawnFeatureRecords = newDrawnFeatures
+      .map(feature => {
+        const featureUUID = uuidv4();
 
-      return {
-        ...feature,
-        id: featureUUID,
-        properties: {
-          ...feature.properties,
-          renderType: "Point",
-          PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer: drawnLayerName,
-        },
-      };
-    });
+        return {
+          ...feature,
+          id: featureUUID,
+          properties: {
+            ...feature.properties,
+            renderType: "Point",
+            PROJECT_EXTENT_ID: featureUUID,
+            sourceLayer: drawnLayerName,
+          },
+        };
+      })
+      .map(feature => ({
+        location: feature,
+        project_id: projectId,
+        status_id: 1,
+      }));
 
-    const updatedFeatureCollection = addDrawnFeaturesToCollection(
-      featureCollection,
-      drawnFeaturesWithIdAndLayer
-    );
-
-    // TODO: Update this mutation to the new upsert
-    // Update project extent in DB, refetch data, and then close UI for user
+    // Upsert project feature records, refetch data, and then close UI for user
     updateProjectExtent({
       variables: {
-        projectId,
-        editFeatureCollection: updatedFeatureCollection,
+        upserts: drawnFeatureRecords,
       },
     }).then(() => {
       refetchProjectDetails();
