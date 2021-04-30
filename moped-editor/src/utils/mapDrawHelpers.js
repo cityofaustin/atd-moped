@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
 import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
-import { UPDATE_PROJECT_EXTENT } from "../queries/project";
+import { UPSERT_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
 export const MODES = [
@@ -255,7 +255,7 @@ export function useMapDrawTools(
     [featureCollection]
   );
 
-  const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
+  const [updateProjectExtent] = useMutation(UPSERT_PROJECT_EXTENT);
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
@@ -291,6 +291,7 @@ export function useMapDrawTools(
       drawnFeaturesWithIdAndLayer
     );
 
+    // TODO: Update this mutation to the new upsert
     // Update project extent in DB, refetch data, and then close UI for user
     updateProjectExtent({
       variables: {

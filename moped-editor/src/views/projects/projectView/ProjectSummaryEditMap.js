@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
-import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
+import { UPSERT_PROJECT_EXTENT } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 const useStyles = makeStyles(theme => ({
@@ -42,7 +42,7 @@ const ProjectSummaryEditMap = ({
 }) => {
   const classes = useStyles();
   const [updateProjectExtent, { loading, error }] = useMutation(
-    UPDATE_PROJECT_EXTENT
+    UPSERT_PROJECT_EXTENT
   );
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectFeatureCollection
@@ -61,7 +61,7 @@ const ProjectSummaryEditMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data, and handles dialog close on success
+   * Calls upsert project features mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
     const recordsToUpdate = [];
@@ -69,26 +69,7 @@ const ProjectSummaryEditMap = ({
 
     const editedFeatures = editFeatureCollection.features;
 
-    // Find records that need to be soft deleted
-    projectFeatureRecords
-      .map(record => filterObjectByKeys(record, ["__typename"]))
-      .forEach(record => {
-        // If there is a match, nothing needs to happen
-        const editedFeaturesMatch = editedFeatures.find(
-          feature =>
-            feature.properties.PROJECT_EXTENT_ID ===
-            record.location.properties.PROJECT_EXTENT_ID
-        );
-
-        // If there isn't a match, we need to insert
-        !editedFeaturesMatch &&
-          recordsToUpdate.push({
-            ...record,
-            status_id: 0,
-          });
-      });
-
-    // Find records that need to be inserted
+    // Find new records that need to be inserted
     editedFeatures.forEach(feature => {
       // If there is a match, nothing needs to happen
       const match = projectFeatureRecords.find(
@@ -106,8 +87,29 @@ const ProjectSummaryEditMap = ({
         });
     });
 
+    // Find existing records that need to be soft deleted
+    projectFeatureRecords
+      .map(record => filterObjectByKeys(record, ["__typename"]))
+      .forEach(record => {
+        // If there is a match, nothing needs to happen
+        const editedFeaturesMatch = editedFeatures.find(
+          feature =>
+            feature.properties.PROJECT_EXTENT_ID ===
+            record.location.properties.PROJECT_EXTENT_ID
+        );
+
+        // If there isn't a match, we need to update
+        !editedFeaturesMatch &&
+          recordsToUpdate.push({
+            ...record,
+            status_id: 0,
+          });
+      });
+
+    const upserts = [...recordsToInsert, ...recordsToUpdate];
+
     updateProjectExtent({
-      variables: { inserts: recordsToInsert, upserts: recordsToUpdate },
+      variables: { upserts },
     }).then(() => {
       refetchProjectDetails();
       handleClose();
