@@ -527,6 +527,10 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
 
+  /**
+   * Takes a click event and adds/removes a layer name from the visible layers array
+   * @param {Object} e - Mouse click event that supplies layer name
+   */
   const handleLayerCheckboxClick = e => {
     const layerName = e.target.name;
 
@@ -537,6 +541,10 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     });
   };
 
+  /**
+   * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
+   * @param {Object} e - Mouse click event that supplies basemaps object key from the radio button
+   */
   const handleBasemapChange = e => {
     const basemapKey = e.target.value;
 
