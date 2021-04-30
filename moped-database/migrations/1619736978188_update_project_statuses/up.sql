@@ -1,9 +1,5 @@
-
-
-
-
 /*
-  Migration to update moped phases locally and at the cloud.
+  Migration to update the moped status table
  */
 DO $$
 DECLARE
