@@ -4134,67 +4134,78 @@
     permission:
       check: {}
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - status_name
+      - status_description
       - status_flag
-      - status_priority
       - status_id
+      - status_name
+      - status_order
+      - status_priority
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
+      - status_description
       - status_flag
       - status_id
-      - status_priority
       - status_name
+      - status_order
+      - status_priority
       filter: {}
-      check: null
+      check: {}
 - table:
     schema: public
     name: moped_subphases
