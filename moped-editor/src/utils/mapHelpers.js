@@ -6,6 +6,7 @@ import { Box, Checkbox, Typography } from "@material-ui/core";
 import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
