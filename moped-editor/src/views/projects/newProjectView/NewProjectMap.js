@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -17,7 +17,6 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  NEARMAP_KEY,
   sumFeaturesSelected,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
@@ -39,30 +38,6 @@ export const useStyles = makeStyles({
   ...layerSelectStyles,
 });
 
-// Provide style parameters to render Nearmap tiles in react-map-gl
-// https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
-const rasterStyle = {
-  version: 8,
-  sources: {
-    "raster-tiles": {
-      type: "raster",
-      tiles: [
-        `https://api.nearmap.com/tiles/v3/Vert/{z}/{x}/{y}.jpg?apikey=${NEARMAP_KEY}`,
-      ],
-      tileSize: 256,
-    },
-  },
-  layers: [
-    {
-      id: "simple-tiles",
-      type: "raster",
-      source: "raster-tiles",
-      minzoom: 0,
-      maxzoom: 22,
-    },
-  ],
-};
-
 const NewProjectMap = ({
   selectedLayerIds,
   setSelectedLayerIds,
@@ -81,7 +56,7 @@ const NewProjectMap = ({
   );
   const { handleLayerHover, featureId } = useHoverLayer();
 
-  const { visibleLayerIds, renderLayerSelect, mapStyle } = useLayerSelect(
+  const { visibleLayerIds, renderLayerSelect, mapStyleConfig } = useLayerSelect(
     getLayerNames(),
     classes
   );
@@ -178,7 +153,7 @@ const NewProjectMap = ({
         onClick={handleLayerClick}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
-        mapStyle={mapStyle}
+        mapStyle={mapStyleConfig}
       >
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} captureClick={false} />

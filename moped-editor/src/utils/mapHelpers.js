@@ -28,6 +28,33 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   features: [],
 };
 
+const basemaps = {
+  streets: "mapbox://styles/mapbox/light-v8",
+  // Provide style parameters to render Nearmap tiles in react-map-gl
+  // https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
+  aerial: {
+    version: 8,
+    sources: {
+      "raster-tiles": {
+        type: "raster",
+        tiles: [
+          `https://api.nearmap.com/tiles/v3/Vert/{z}/{x}/{y}.jpg?apikey=${NEARMAP_KEY}`,
+        ],
+        tileSize: 256,
+      },
+    },
+    layers: [
+      {
+        id: "simple-tiles",
+        type: "raster",
+        source: "raster-tiles",
+        minzoom: 0,
+        maxzoom: 22,
+      },
+    ],
+  },
+};
+
 export const mapStyles = {
   statusOpacities: {
     selected: 0.75,
@@ -497,6 +524,8 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   const [visibleLayerIds, setVisibleLayerIds] = useState(
     initialSelectedLayerNames
   );
+  const [mapStyle, setMapStyle] = useState("streets");
+  const mapStyleConfig = basemaps[mapStyle];
 
   const handleLayerCheckboxClick = e => {
     const layerName = e.target.name;
@@ -506,6 +535,12 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         ? [...prevLayers.filter(name => name !== layerName)]
         : [...prevLayers, layerName];
     });
+  };
+
+  const handleBasemapChange = e => {
+    const basemapKey = e.target.value;
+
+    setMapStyle(basemapKey);
   };
 
   const renderLayerSelect = () => (
@@ -527,6 +562,8 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         aria-label="basemap"
         name="basemap"
         className={classes.layerRadioGroup}
+        value={mapStyle}
+        onChange={handleBasemapChange}
       >
         <FormControlLabel
           value="streets"
@@ -542,7 +579,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     </Box>
   );
 
-  return { visibleLayerIds, renderLayerSelect };
+  return { visibleLayerIds, renderLayerSelect, mapStyleConfig };
 }
 
 export const layerSelectStyles = {
