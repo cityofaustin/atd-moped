@@ -27,7 +27,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
 
   const STATUS_QUERY = gql`
     query Status {
-      moped_status(order_by: { status_name: asc }) {
+      moped_status(order_by: { status_order: asc }, where: {status_id: {_gt: 0}}) {
         status_name
       }
     }
