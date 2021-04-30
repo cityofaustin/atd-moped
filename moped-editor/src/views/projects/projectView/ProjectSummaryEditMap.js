@@ -64,12 +64,10 @@ const ProjectSummaryEditMap = ({
    * Calls upsert project features mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
-    const recordsToUpdate = [];
-
     const editedFeatures = editFeatureCollection.features;
 
-    // Find new records that need to be inserted
-    const recordsToInsert = editedFeatures
+    // Find new records that need to be inserted and create a feature record from them
+    const newRecordsToInsert = editedFeatures
       .filter(
         feature =>
           !projectFeatureRecords.find(
@@ -84,26 +82,23 @@ const ProjectSummaryEditMap = ({
         status_id: 1,
       }));
 
-    // Find existing records that need to be soft deleted
-    projectFeatureRecords
+    // Find existing records that need to be soft deleted, clean them, and set status to inactive
+    const existingRecordsToUpdate = projectFeatureRecords
       .map(record => filterObjectByKeys(record, ["__typename"]))
-      .forEach(record => {
-        // If there is a match, nothing needs to happen
-        const editedFeaturesMatch = editedFeatures.find(
-          feature =>
-            feature.properties.PROJECT_EXTENT_ID ===
-            record.location.properties.PROJECT_EXTENT_ID
-        );
+      .filter(
+        record =>
+          !editedFeatures.find(
+            feature =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(record => ({
+        ...record,
+        status_id: 0,
+      }));
 
-        // If there isn't a match, we need to update
-        !editedFeaturesMatch &&
-          recordsToUpdate.push({
-            ...record,
-            status_id: 0,
-          });
-      });
-
-    const upserts = [...recordsToInsert, ...recordsToUpdate];
+    const upserts = [...newRecordsToInsert, ...existingRecordsToUpdate];
 
     updateProjectExtent({
       variables: { upserts },
