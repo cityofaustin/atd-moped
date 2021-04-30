@@ -16,7 +16,7 @@ import {
 import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
 import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
-import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -70,21 +70,23 @@ const ProjectSummaryEditMap = ({
     const editedFeatures = editFeatureCollection.features;
 
     // Find records that need to be soft deleted
-    projectFeatureRecords.forEach(record => {
-      // If there is a match, nothing needs to happen
-      const editedFeaturesMatch = editedFeatures.find(
-        feature =>
-          feature.properties.PROJECT_EXTENT_ID ===
-          record.location.properties.PROJECT_EXTENT_ID
-      );
+    projectFeatureRecords
+      .map(record => filterObjectByKeys(record, ["__typename"]))
+      .forEach(record => {
+        // If there is a match, nothing needs to happen
+        const editedFeaturesMatch = editedFeatures.find(
+          feature =>
+            feature.properties.PROJECT_EXTENT_ID ===
+            record.location.properties.PROJECT_EXTENT_ID
+        );
 
-      // If there isn't a match, we need to insert
-      !editedFeaturesMatch &&
-        recordsToUpdate.push({
-          ...record,
-          status_id: 0,
-        });
-    });
+        // If there isn't a match, we need to insert
+        !editedFeaturesMatch &&
+          recordsToUpdate.push({
+            ...record,
+            status_id: 0,
+          });
+      });
 
     // Find records that need to be inserted
     editedFeatures.forEach(feature => {
@@ -105,7 +107,7 @@ const ProjectSummaryEditMap = ({
     });
 
     updateProjectExtent({
-      variables: { inserts: recordsToInsert },
+      variables: { inserts: recordsToInsert, upserts: recordsToUpdate },
     }).then(() => {
       refetchProjectDetails();
       handleClose();

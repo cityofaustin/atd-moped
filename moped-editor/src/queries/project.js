@@ -235,8 +235,18 @@ export const ADD_PROJECT_PHASE = gql`
 export const UPDATE_PROJECT_EXTENT = gql`
   mutation UpdateProjectExtent(
     $inserts: [moped_proj_features_insert_input!]!
+    $upserts: [moped_proj_features_insert_input!]!
   ) {
-    insert_moped_proj_features(objects: $inserts){
+    insert_moped_proj_features(objects: $inserts) {
+      affected_rows
+    }
+    insert_moped_proj_features(
+      objects: $upserts
+      on_conflict: {
+        constraint: moped_proj_features_pkey
+        update_columns: status_id
+      }
+    ) {
       affected_rows
     }
   }
