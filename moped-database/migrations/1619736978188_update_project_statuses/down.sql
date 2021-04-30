@@ -4,7 +4,11 @@ alter table moped_project drop column status_id;
 
 -- Now alter the status
 ALTER TABLE public.moped_status
-    DROP COLUMN status_description;
+    DROP COLUMN status_description,
+    DROP COLUMN status_order;
+
+create unique index moped_status_status_name_uindex
+    on moped_status (status_name);
 
 -- Add a column
 INSERT INTO public.moped_status (
@@ -27,8 +31,8 @@ ON CONFLICT ON CONSTRAINT moped_status_pkey
 ;
 
 -- Delete any other roles
-DELETE FROM public.moped_project_roles
-WHERE project_role_id > 5 OR project_role_id = 0;
+DELETE FROM public.moped_status
+    WHERE status_id > 5 OR status_id = 0;
 
 
 -- Restore the status history foreign key
