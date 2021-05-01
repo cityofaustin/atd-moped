@@ -193,6 +193,7 @@ const ProjectTimeline = () => {
                             project_id: projectId,
                             completion_percentage: 0,
                             completed: false,
+                            status_id: 1,
                           },
                           newData
                         );
@@ -262,6 +263,9 @@ const ProjectTimeline = () => {
                         resolve();
                       }, 500);
                     }),
+                }}
+                options={{
+                  actionsColumnIndex: -1
                 }}
               />
             </div>

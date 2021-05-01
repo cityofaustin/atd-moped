@@ -22,8 +22,8 @@ export const ProjectActivityLogTableMaps = {
         label: "Public description",
         data_type: "text",
       },
-      ecapris_id: {
-        label: "eCapris ID",
+      ecapris_subproject_id: {
+        label: "eCAPRIS subproject ID",
         icon: "",
         data_type: "text",
       },
@@ -217,7 +217,7 @@ export const ProjectActivityLogTableMaps = {
         label: "Subproject Name",
         type: "text",
       },
-      eCapris_id: {
+      ecapris_subproject_id: {
         icon: "",
         label: "eCapris ID",
         type: "text",
@@ -629,9 +629,9 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_phases: {
     label: "Project Phases",
     fields: {
-      phase_rank: {
+      phase_order: {
         icon: "",
-        label: "Rank",
+        label: "Order",
         type: "int4",
       },
       phase_name: {

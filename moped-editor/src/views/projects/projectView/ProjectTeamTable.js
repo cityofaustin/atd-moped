@@ -2,21 +2,31 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
-import { CircularProgress, TextField, Typography } from "@material-ui/core";
+import {
+  Chip,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+
 import typography from "../../../theme/typography";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import {
-  TEAM_QUERY,
-  ADD_PROJECT_PERSONNEL,
-  UPDATE_PROJECT_PERSONNEL,
-} from "../../../queries/project";
+import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
+
+import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles(() => ({
+  roleChip: {
+    margin: ".25rem",
+  },
+}));
 
 const ProjectTeamTable = ({
   personnelState,
@@ -24,19 +34,59 @@ const ProjectTeamTable = ({
   projectId = null,
 }) => {
   const isNewProject = projectId === null;
+  const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
-  const [addProjectPersonnel] = useMutation(ADD_PROJECT_PERSONNEL);
-  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
+
+  const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
 
   if (loading || !data) return <CircularProgress />;
 
+  /**
+   * Returns True if it finds tupleItem in tupleList, false otherwise.
+   * @param tupleList - The list of tuples
+   * @param tupleItem - The tuple to search for
+   * @return {boolean}
+   */
+  const tuplesContain = (tupleList, tupleItem) =>
+    !!tupleList.find(
+      currentTuple =>
+        currentTuple[0] === tupleItem[0] && currentTuple[1] === tupleItem[1]
+    );
+
+  const availableUsers = data.moped_users;
+
   // Get data from the team query payload
-  const personnel = data.moped_proj_personnel;
-  const users = data.moped_users;
+  let personnel = {};
+
+  // For each personnel entry...
+  data.moped_proj_personnel.map(item => {
+    // If the item does not exist in the aggregated object
+    if (!personnel.hasOwnProperty(item.user_id)) {
+      // instantiate a new object & populate
+      personnel[`${item.user_id}`] = {
+        user_id: item.user_id,
+        role_id: [item.role_id],
+        notes: item.notes,
+        project_personnel_id: item.project_personnel_id,
+      };
+    } else {
+      // Aggregate role_ids, and notes.
+      personnel[`${item.user_id}`].role_id.push(item.role_id);
+      personnel[`${item.user_id}`].notes = (
+        (personnel[`${item.user_id}`].notes ?? "") +
+        " " +
+        item.notes
+      ).trim();
+      personnel[`${item.user_id}`].project_personnel_id =
+        item.project_personnel_id;
+    }
+
+    return null; // No need to return anything...
+  });
 
   // Create some objects for lookups
   const workgroups = data.moped_workgroup.reduce(
@@ -54,16 +104,23 @@ const ProjectTeamTable = ({
     {}
   );
 
+  const roleDescriptions = data.moped_project_roles.reduce(
+    (acc, role) => ({
+      ...acc,
+      [role.project_role_id]: role.project_role_description,
+    }),
+    {}
+  );
+
   // Options for Autocomplete form elements
-  const userIds = users.map(user => user.user_id);
-  const roleIds = data.moped_project_roles.map(role => role.project_role_id);
+  const userIds = availableUsers.map(user => user.user_id);
 
   /**
    * Get a user object from the users array
    * @param {number} id - User id from the moped project personnel row
    * @return {object} Object containing user data
    */
-  const getUserById = id => users.find(user => user.user_id === id);
+  const getUserById = id => availableUsers.find(user => user.user_id === id);
 
   /**
    * Get personnel name from their user ID
@@ -116,18 +173,26 @@ const ProjectTeamTable = ({
     {
       title: "Role",
       field: "role_id",
-      render: personnel => roles[personnel.role_id],
-      validate: rowData => !!rowData.role_id,
+      render: personnel => {
+        return personnel.role_id.map(chipRoleId => (
+          <Chip
+            className={classes.roleChip}
+            variant="outlined"
+            label={roles[chipRoleId]}
+          />
+        ));
+      },
+      validate: rowData =>
+        Array.isArray(rowData.role_id) && rowData.role_id.length > 0,
       editComponent: props => (
-        <Autocomplete
+        <ProjectTeamRoleMultiselect
           id="role_id"
           name="role_id"
-          options={roleIds}
-          getOptionLabel={option => roles[option]}
-          getOptionSelected={(option, value) => option === value}
+          initialValue={props.rowData.role_id}
           value={props.value}
-          onChange={(event, value) => props.onChange(value)}
-          renderInput={params => <TextField {...params} />}
+          onChange={props.onChange}
+          roles={roles}
+          roleDescriptions={roleDescriptions}
         />
       ),
     },
@@ -153,62 +218,130 @@ const ProjectTeamTable = ({
   const isNewProjectActions = {
     true: {
       add: newData => {
-        const activePersonnel = { ...newData, status_id: 1 };
+        let activePersonnel = { ...newData, status_id: 1 };
+        // Aggregate into a unique set if there is stuff already there
+        const newPersonnelState = personnelState.map(item => {
+          if (item.user_id === newData.user_id) {
+            const output = {
+              user_id: item.user_id,
+              role_id: [...new Set([...item.role_id, ...newData.role_id])],
+              notes: (item?.notes ?? "") + " " + (newData?.notes ?? ""),
+            };
+            activePersonnel = null;
+            return output;
+          } else {
+            return item;
+          }
+        });
 
-        setPersonnelState([...personnelState, activePersonnel]);
+        setPersonnelState(
+          [...newPersonnelState, activePersonnel].filter(item => item !== null)
+        );
       },
       update: (newData, oldData) => {
-        const dataUpdate = [...personnelState];
-        const index = oldData.tableData.id;
-        dataUpdate[index] = newData;
-        setPersonnelState([...dataUpdate]);
+        // Remove the existing user and overwrite
+        const newState = personnelState.filter(
+          item => item.user_id !== newData.user_id
+        );
+        setPersonnelState([...newState, newData]);
       },
       delete: oldData => {
-        const dataDelete = [...personnelState];
-        const index = oldData.tableData.id;
-        dataDelete.splice(index, 1);
-        setPersonnelState([...dataDelete]);
+        const newState = personnelState.filter(
+          item => item.user_id !== oldData.user_id
+        );
+        setPersonnelState([...newState]);
       },
     },
     false: {
       add: newData => {
-        const personnelData = {
-          ...newData,
-          project_id: projectId,
-          status_id: 1,
-        };
+        // Our new data is unique, we will attempt upsert since
+        // we may have existing data in our table
+        const personnelData = newData.role_id.map((roleId, index) => {
+          return {
+            project_id: Number.parseInt(projectId),
+            user_id: newData.user_id,
+            role_id: roleId,
+            status_id: 1,
+            notes: index === 0 ? newData.notes : "",
+          };
+        });
 
-        addProjectPersonnel({
+        // Upsert as usual
+        upsertProjectPersonnel({
           variables: {
-            objects: [personnelData],
+            objects: personnelData,
           },
         });
       },
       update: (newData, oldData) => {
-        const updatedPersonnelData = {
-          ...oldData,
-          ...newData,
-        };
-
-        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
-          "__typename",
-          "tableData",
+        // Creates a set of tuples that contain the user id and the role comprised by the new state
+        const newStateTuples = newData.role_id.map(role_id => [
+          newData.user_id,
+          role_id,
         ]);
 
-        updateProjectPersonnel({
-          variables: cleanedPersonnelData,
+        // Creates a set of tuples that contain the user id and role comprised by the old state
+        const oldStateTuples = oldData.role_id.map(role_id => [
+          oldData.user_id,
+          role_id,
+        ]);
+
+        /**
+         * From the old state, we need to remove the tuples that are not present
+         * in the new state, these tuples are 'orphans' and need to be archived.
+         */
+        const orphanData = oldStateTuples.filter(
+          oldTuple => !tuplesContain(newStateTuples, oldTuple)
+        );
+
+        /**
+         * We must build a unique set of tuples so that there are no repeated
+         * operations run against the database
+         */
+        const uniqueSetOfTuples = [...newStateTuples, ...oldStateTuples].reduce(
+          (accumulator, item) => {
+            if (!tuplesContain(accumulator, item)) accumulator.push(item);
+            return accumulator;
+          },
+          []
+        );
+
+        // Removed ids means they are not present in new data,
+        const updatedPersonnelData = uniqueSetOfTuples.map(
+          (currentTuple, index) => {
+            return {
+              project_id: Number.parseInt(projectId),
+              user_id: currentTuple[0],
+              role_id: currentTuple[1],
+              status_id: tuplesContain(orphanData, currentTuple) ? 0 : 1,
+              notes: index === 0 ? newData.notes : "",
+            };
+          }
+        );
+
+        upsertProjectPersonnel({
+          variables: {
+            objects: updatedPersonnelData,
+          },
         });
       },
       delete: oldData => {
-        const updatedPersonnelData = { ...oldData, status_id: 0 };
+        // We will soft delete by marking as "status_id"
+        const updatedPersonnelData = oldData.role_id.map((roleId, index) => {
+          return {
+            project_id: Number.parseInt(projectId),
+            user_id: oldData.user_id,
+            role_id: roleId,
+            status_id: 0,
+            notes: index === 0 ? oldData.notes : "",
+          };
+        });
 
-        const cleanedPersonnelData = filterObjectByKeys(updatedPersonnelData, [
-          "__typename",
-          "tableData",
-        ]);
-
-        updateProjectPersonnel({
-          variables: cleanedPersonnelData,
+        // Upsert as usual
+        upsertProjectPersonnel({
+          variables: {
+            objects: updatedPersonnelData,
+          },
         });
       },
     },
@@ -219,18 +352,30 @@ const ProjectTeamTable = ({
       <MaterialTable
         columns={columns}
         components={{
-          EditRow: (props, rowData) => <MTableEditRow {...props} onKeyDown={(e) => {
-              if (e.keyCode === 13) {
-                // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-              }
-          }} />
+          EditRow: (props, rowData) => (
+            <MTableEditRow
+              {...props}
+              onKeyDown={e => {
+                if (e.keyCode === 13) {
+                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                }
+              }}
+            />
+          ),
         }}
-        data={isNewProject ? personnelState : personnel}
+        data={
+          isNewProject
+            ? personnelState
+            : Object.keys(personnel).map(item => {
+                return personnel[item];
+              })
+        }
         title="Project team"
         options={{
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
+          actionsColumnIndex: -1,
         }}
         icons={{ Delete: ClearIcon }}
         editable={{

@@ -19,7 +19,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
 
   const PHASES_QUERY = gql`
     query Phases {
-      moped_phases(order_by: { phase_name: asc }) {
+      moped_phases(order_by: {phase_order: asc}, where: {phase_id: {_gt: 0}}) {
         phase_name
       }
     }
@@ -27,7 +27,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
 
   const STATUS_QUERY = gql`
     query Status {
-      moped_status(order_by: { status_name: asc }) {
+      moped_status(order_by: { status_order: asc }, where: {status_id: {_gt: 0}}) {
         status_name
       }
     }
@@ -85,7 +85,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
       </Grid>
-      
+
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
           <TextField
@@ -100,7 +100,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             error={descriptionError}
             helperText="Required"
             InputLabelProps={{ required: false }}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}            
+            onChange={e => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
       </Grid>
@@ -188,10 +188,10 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           <Grid item xs={3}>
             <TextField
               label="eCAPRIS subproject ID"
-              name="eCapris_id"
+              name="ecapris_subproject_id"
               variant="standard"
               type="text"
-              value={projectDetails.eCapris_id}
+              value={projectDetails.ecapris_subproject_id}
               onChange={e => handleFieldChange(e.target.value, e.target.name)}
             />
           </Grid>

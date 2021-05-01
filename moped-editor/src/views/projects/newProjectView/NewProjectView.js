@@ -85,7 +85,7 @@ const NewProjectView = () => {
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    eCapris_id: "",
+    ecapris_subproject_id: null,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -149,8 +149,8 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let nameError = projectDetails.project_name.length === 0
-    let descriptionError = projectDetails.project_description.length === 0
+    let nameError = projectDetails.project_name.length === 0;
+    let descriptionError = projectDetails.project_description.length === 0;
     let canContinue = false;
 
     if (!nameError && !descriptionError) {
@@ -228,7 +228,25 @@ const NewProjectView = () => {
       .then(response => {
         const { project_id } = response.data.insert_moped_project.returning[0];
 
-        const cleanedPersonnel = personnel.map(row => ({
+        // A variable array of objects
+        let cleanedPersonnel = [];
+
+        // If personnel are added to the project, handle roles and remove unneeded data
+        personnel
+          // We need to flatten (reverse the nesting) for role_ids
+          .forEach(item => {
+            // For every personnel, iterate through role_ids
+            item.role_id.forEach(role_id => {
+              cleanedPersonnel.push({
+                role_id: role_id,
+                user_id: item.user_id,
+                status_id: 1,
+                notes: item?.notes ?? null,
+              });
+            });
+          });
+
+        cleanedPersonnel = cleanedPersonnel.map(row => ({
           ...filterObjectByKeys(row, ["tableData"]),
           project_id,
         }));
@@ -293,9 +311,14 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        {activeStep > 0 && <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>}
+                        {activeStep > 0 && (
+                          <Button
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        )}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}

@@ -15,6 +15,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const classes = useStyles();
 
   const projectId = data?.moped_project[0].project_id ?? null;
+  const capitallyFunded = data?.moped_project[0].capitally_funded ?? null;
 
   const fieldConfiguration = {
     table: {
@@ -36,6 +37,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           table: "moped_status",
           fieldLabel: "status_name",
           fieldValue: "status_name",
+          relationship: "where: {status_id: {_gt: 0}}, order_by: {status_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
@@ -51,6 +53,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           table: "moped_phases",
           fieldLabel: "phase_name",
           fieldValue: "phase_name",
+          relationship: "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
@@ -86,19 +89,23 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         type: "boolean",
         placeholder: "Select capitally funded",
         editable: true,
+        dependentField: "ecapris_subproject_id"
       },
-      eCapris_id: {
-        label: "eCapris subproject ID",
-        type: "string",
-        placeholder: "Enter eCapris subproject ID",
-        emptyValue: "None",
-        editable: true,
-        format: value =>
-          <ExternalLink
-            text={value}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
-          />
-      },
+      ...(capitallyFunded && {
+        ecapris_subproject_id: {
+          label: "eCapris subproject ID",
+          type: "string",
+          placeholder: "Enter eCapris subproject ID",
+          emptyValue: "None",
+          editable: true,
+          format: value => (
+            <ExternalLink
+              text={value}
+              url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+            />
+          ),
+        },
+      }),
     },
   };
 
