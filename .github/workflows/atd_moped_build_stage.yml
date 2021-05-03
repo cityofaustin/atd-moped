@@ -1,60 +1,20 @@
-#
-# Builds and deploys any branch of moped editor into the development staging instance
-#
-
-name: "Build & Deploy DevStage"
-
-on: workflow_dispatch
+name: Manually triggered workflow
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Person to greet'
+        required: true
+        default: 'Mona the Octocat'
+      home:
+        description: 'location'
+        required: false
+        default: 'The Octoverse'
 
 jobs:
-  build:
-    name: Build
+  say_hello:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.8"
-          architecture: "x64"
-      # Get the code first
-      - name: "Checkout"
-        uses: actions/checkout@v2
-      # Then install the AWC CLI tools & boto3
-      - name: "Install CLI Requirements: AWS, Heroku, Hasura"
-        run: |
-          sudo apt-get install -y python3-setuptools
-          pip3 install awscli boto3 virtualenv requests
-          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-      # Run the shell commands using the AWS environment variables
-      - name: "Build & Deploy Moped Editor"
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          MOPED_PRNUM: ${{ github.event.pull_request.number }}
-          MOPED_PRBODY: ${{ github.event.pull_request.body }}
-        run: |
-          export BRANCH_NAME=${GITHUB_REF##*/}
-          echo "SHA: ${GITHUB_SHA}"
-          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
-          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
-          echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          build_editor
-
-
-      - name: "Moped Database: Re-deploy"
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HASURA_CONFIGURATION_DEVSTAGE: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
-          MOPED_PRNUM: ${{ github.event.pull_request.number }}
-          MOPED_PRBODY: ${{ github.event.pull_request.body }}
-        run: |
-          export BRANCH_NAME=${GITHUB_REF##*/}
-          echo "SHA: ${GITHUB_SHA}"
-          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
-          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
-          echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          clone_heroku_repo
-          build_database
+    - run: |
+        echo "Hello ${{ github.event.inputs.name }}!"
+        echo "- in ${{ github.event.inputs.home }}!"
