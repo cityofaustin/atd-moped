@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
 
+HASURA_SERVER_ENDPOINT="https://atd-moped-editor-development.herokuapp.com"
 
 #
 # Heroku Deployment Helper Script
 #
 
 function print_header() {
-  echo "$1";
+  echo -e "\n-----------------------------------------------------";
+  echo "| $1";
   echo "-----------------------------------------------------";
 }
 
@@ -55,6 +57,7 @@ function build_database() {
   print_header "Destroying Current Application";
   {
     heroku apps:destroy --app "${APPLICATION_NAME}" --confirm "${APPLICATION_NAME}";
+    echo "Done with deletion";
   } || {
     echo "Nothing to destroy."
   }
@@ -64,8 +67,8 @@ function build_database() {
 
   print_header "Change application configuration settings";
   heroku config:set --app="${APPLICATION_NAME}"  \
-    MOPED_API_ACTIONS_URL="http://localhost/actions" \
-    MOPED_API_EVENTS_URL="http://localhost/events" \
+    MOPED_API_ACTIONS_URL="" \
+    MOPED_API_EVENTS_URL="" \
     MOPED_API_APIKEY="" \
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
@@ -82,26 +85,56 @@ function build_database() {
   cd ..;
 }
 
-function run_database_migration() {
-  cd "moped-database";
+function hasura_server_ready() {
+  HASURA_SERVER_STATUS=$(curl --silent $HASURA_SERVER_ENDPOINT/healthz);
+  if [[ "${HASURA_SERVER_STATUS}" = "OK" ]]; then
+    echo "TRUE"
+  else
+    echo "FALSE"
+  fi
+}
 
+function wait_server_ready() {
+  INITIALIZATION_TIMEOUT_LIMIT=60
+  INITIALIZATION_COUNT=1
+
+  while [ "$(hasura_server_ready)" = "FALSE" ]; do
+    echo -ne "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔\r";
+    if [ $INITIALIZATION_COUNT -gt $INITIALIZATION_TIMEOUT_LIMIT ]; then
+      echo "Hasura server unavailable"
+      exit 1
+    fi
+    sleep 1
+    INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
+  done
+  echo "[λ] Hasura server ready!                    ✅";
+}
+
+function run_database_migration() {
   print_header "Applying All Migrations";
   echo "From directory: $(pwd)";
+
+  print_header "Checking the server is online";
+  wait_server_ready;
+
+  cd "moped-database";
+
+
 
   print_header "Apply Migrations";
   hasura migrate apply \
     --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "https://atd-moped-editor-development.herokuapp.com";
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Metadata";
   hasura metadata apply \
     --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "https://atd-moped-editor-development.herokuapp.com";
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Seed data";
   hasura seeds apply \
     --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "https://atd-moped-editor-development.herokuapp.com";
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   cd ..;
 }
