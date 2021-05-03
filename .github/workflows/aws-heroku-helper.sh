@@ -46,7 +46,7 @@ function heroku_commit_and_push() {
 function initialize_heroku_netrc() {
   print_header "Initializing Heroku NETRC"
   if [[ "${HEROKU_NETRC}" != "" ]]; then
-    echo "${HEROKU_NETRC}" > ~/.netrc;
+    sudo echo "${HEROKU_NETRC}" > ~/.netrc;
   fi;
   echo "Done: ";
   grep "git" ~/.netrc;
