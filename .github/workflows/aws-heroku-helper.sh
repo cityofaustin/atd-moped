@@ -37,13 +37,14 @@ function clone_hasura_repo() {
 }
 
 function heroku_commit_and_push() {
+  HEROKU_GIT_ADDR="git.heroku.com/atd-moped-editor-development.git"
   echo "Working from dir: $(pwd)";
-  git init && git add .
-  git commit -m "Deployment Commit"
-  git remote add heroku "https://git.heroku.com/atd-moped-editor-development.git"
-  git config user.email "${ATD_CONTACT_ADDRESS}"
-  git config user.name "Transportation Data"
-  git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$APPLICATION_NAME.git HEAD:master
+  git init && git add .;
+  git commit -m "Deployment Commit";
+  git remote add heroku "https://${HEROKU_GIT_ADDR}";
+  git config user.email "${ATD_CONTACT_ADDRESS}";
+  git config user.name "Transportation Data";
+  git push "https://heroku:${HEROKU_API_KEY}@${HEROKU_GIT_ADDR}" master;
 }
 
 
