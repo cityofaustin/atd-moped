@@ -11,6 +11,9 @@ on:
         default: ""
       test:
         default: "false"
+  pull_request:
+      branches:
+        - 5889-sg-heroku
 
 jobs:
   build:
