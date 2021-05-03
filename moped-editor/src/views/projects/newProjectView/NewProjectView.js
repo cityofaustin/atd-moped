@@ -22,7 +22,11 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { sumFeaturesSelected } from "../../../utils/mapHelpers";
+import {
+  sumFeaturesSelected,
+  mapErrors,
+  mapConfig,
+} from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -101,7 +105,10 @@ const NewProjectView = () => {
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
-    if (sumFeaturesSelected(selectedLayerIds) > 0) {
+    if (
+      sumFeaturesSelected(selectedLayerIds) >=
+      mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(false);
     }
   }, [selectedLayerIds]);
@@ -112,7 +119,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Select a location to save project",
+        error: mapErrors.minimumLocations,
         isError: areNoFeaturesSelected,
       },
     ];
@@ -208,7 +215,9 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+    if (
+      sumFeaturesSelected(selectedLayerIds) < mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(true);
       return;
     } else {
