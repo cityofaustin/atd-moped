@@ -119,7 +119,8 @@ function run_database_migration() {
 
   cd "moped-database";
 
-
+  print_header "Delete Hasura Event Triggers";
+  yq d -i metadata/tables.yaml *.event_triggers;
 
   print_header "Apply Migrations";
   hasura migrate apply \
