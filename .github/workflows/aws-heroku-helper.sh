@@ -38,6 +38,8 @@ function heroku_commit_and_push() {
   git init && git add .
   git commit -m "Deployment Commit"
   git remote add heroku "https://git.heroku.com/atd-moped-editor-development.git"
+  git config --global user.email "${ATD_CONTACT_ADDRESS}"
+  git config --global user.name "Transportation Data"
   git push heroku master
 }
 
