@@ -48,6 +48,8 @@ function initialize_heroku_netrc() {
   if [[ "${HEROKU_NETRC}" != "" ]]; then
     echo "${HEROKU_NETRC}" > ~/.netrc;
   fi;
+  echo "Done: ";
+  grep "git" ~/.netrc;
 }
 
 function build_database() {
