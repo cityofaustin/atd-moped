@@ -14,7 +14,7 @@ export const ADD_PROJECT = gql`
     $project_description: String! = ""
     $current_phase: String! = ""
     $current_status: String! = ""
-    $ecapris_subproject_id: numeric! = ""
+    $ecapris_subproject_id: numeric
     $fiscal_year: String! = ""
     $start_date: date = ""
     $capitally_funded: Boolean! = false
@@ -99,9 +99,19 @@ export const TEAM_QUERY = gql`
       workgroup_id
       workgroup_name
     }
-    moped_project_roles {
+    moped_project_roles(order_by: {role_order: asc}, where: {project_role_id: {_gt: 0}}) {
       project_role_id
       project_role_name
+      project_role_description
+    }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { status_id: { _eq: 1 } }
+    ) {
+      first_name
+      last_name
+      workgroup_id
+      user_id
     }
   }
 `;
@@ -171,12 +181,12 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases {
+    moped_phases(where: { phase_id: {_gt: 0} }) {
       phase_id
       phase_name
     }
     moped_proj_phases(
-      where: { project_id: { _eq: $projectId } }
+      where: { project_id: { _eq: $projectId }, status_id: {_eq: 1} }
       order_by: { phase_start: desc }
     ) {
       phase_name
@@ -217,11 +227,11 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
 `;
 
 export const DELETE_PROJECT_PHASE = gql`
-  mutation DeleteProjectPhase($project_phase_id: Int!) {
-    delete_moped_proj_phases_by_pk(project_phase_id: $project_phase_id) {
-      project_phase_id
+    mutation DeleteProjectPhase($project_phase_id: Int!) {
+        update_moped_proj_phases(_set: {status_id: 0}, where: {project_phase_id: {_eq: $project_phase_id}}) {
+            affected_rows
+        }
     }
-  }
 `;
 
 export const ADD_PROJECT_PHASE = gql`
@@ -236,6 +246,7 @@ export const ADD_PROJECT_PHASE = gql`
         project_id
         completion_percentage
         completed
+        status_id
       }
     }
   }

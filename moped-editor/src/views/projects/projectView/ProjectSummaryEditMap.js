@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import {
+  sumFeaturesSelected,
+  mapErrors,
+  mapConfig,
+} from "../../../utils/mapHelpers";
+import {
   AppBar,
   Button,
-  Container,
   IconButton,
   Dialog,
   makeStyles,
@@ -24,6 +28,9 @@ const useStyles = makeStyles(theme => ({
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  mapAlert: {
+    margin: "0px 24px 24px 24px",
   },
 }));
 
@@ -47,6 +54,8 @@ const ProjectSummaryMap = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
+  const areMinimumFeaturesSet =
+    sumFeaturesSelected(editLayerIds) >= mapConfig.minimumFeaturesInProject;
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -92,6 +101,7 @@ const ProjectSummaryMap = ({
               autoFocus
               color="inherit"
               onClick={handleSave}
+              disabled={!areMinimumFeaturesSet}
               startIcon={<SaveIcon />}
             >
               save
@@ -108,11 +118,14 @@ const ProjectSummaryMap = ({
         setFeatureCollection={setEditFeatureCollection}
       />
       {error && (
-        <Container>
-          <Alert severity="error">
-            The map edit failed to save. Please try again.
-          </Alert>
-        </Container>
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.failedToSave}
+        </Alert>
+      )}
+      {!areMinimumFeaturesSet && (
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.minimumLocations}
+        </Alert>
       )}
     </Dialog>
   );

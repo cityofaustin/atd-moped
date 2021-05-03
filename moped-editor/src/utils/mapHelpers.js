@@ -65,6 +65,7 @@ export const mapConfig = {
     zoom: 12,
   },
   mapboxDefaultMaxZoom: 18,
+  minimumFeaturesInProject: 1,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
@@ -146,6 +147,11 @@ export const mapConfig = {
       },
     },
   },
+};
+
+export const mapErrors = {
+  minimumLocations: "Select a location to save project",
+  failedToSave: "The map edit failed to save. Please try again.",
 };
 
 /**

@@ -22,7 +22,11 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { sumFeaturesSelected } from "../../../utils/mapHelpers";
+import {
+  sumFeaturesSelected,
+  mapErrors,
+  mapConfig,
+} from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -85,7 +89,7 @@ const NewProjectView = () => {
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    ecapris_subproject_id: "",
+    ecapris_subproject_id: null,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -101,7 +105,10 @@ const NewProjectView = () => {
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
-    if (sumFeaturesSelected(selectedLayerIds) > 0) {
+    if (
+      sumFeaturesSelected(selectedLayerIds) >=
+      mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(false);
     }
   }, [selectedLayerIds]);
@@ -112,7 +119,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Select a location to save project",
+        error: mapErrors.minimumLocations,
         isError: areNoFeaturesSelected,
       },
     ];
@@ -208,7 +215,9 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+    if (
+      sumFeaturesSelected(selectedLayerIds) < mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(true);
       return;
     } else {
@@ -228,23 +237,28 @@ const NewProjectView = () => {
       .then(response => {
         const { project_id } = response.data.insert_moped_project.returning[0];
 
-        const cleanedPersonnel = personnel
+        // A variable array of objects
+        let cleanedPersonnel = [];
+
+        // If personnel are added to the project, handle roles and remove unneeded data
+        personnel
           // We need to flatten (reverse the nesting) for role_ids
-          .map(item => {
+          .forEach(item => {
             // For every personnel, iterate through role_ids
-            return item.role_id.map(role_id => {
-              // build a new object with specific values
-              return {
+            item.role_id.forEach(role_id => {
+              cleanedPersonnel.push({
                 role_id: role_id,
                 user_id: item.user_id,
-              };
+                status_id: 1,
+                notes: item?.notes ?? null,
+              });
             });
-          })[0] // The array should be single
-          // Now we proceed as normal...
-          .map(row => ({
-            ...filterObjectByKeys(row, ["tableData"]),
-            project_id,
-          }));
+          });
+
+        cleanedPersonnel = cleanedPersonnel.map(row => ({
+          ...filterObjectByKeys(row, ["tableData"]),
+          project_id,
+        }));
 
         addStaff({
           variables: {
