@@ -10,10 +10,11 @@ function print_header() {
 function build_editor() {
   cd "./moped-editor";
   print_header "Building the editor";
-  npm build local:development;
+  npm run build:development;
   print_header "Deploying to AWS S3";
-  # aws s3 cp ./build/* s3://the-s3-bucket --recursive;
+  aws s3 cp ./build/ s3://atd-moped-editor-development --recursive;
   print_header "Clearing the CF Cache";
+  aws cloudfront create-invalidation --distribution-id E2MEG0I5E6VQWJ --paths "/*";
   echo "Done";
   cd ..;
 }
