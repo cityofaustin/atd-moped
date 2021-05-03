@@ -4,16 +4,7 @@
 
 name: "Build & Deploy DevStage"
 
-on:
-  workflow_dispatch:
-    inputs:
-      description:
-        default: ""
-      test:
-        default: "false"
-  push:
-    branches:
-      - 5889-sg-heroku
+on: workflow_dispatch
 
 jobs:
   build:
