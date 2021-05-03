@@ -2,7 +2,7 @@
 # Builds and deploys any branch of moped editor into the development staging instance
 #
 
-name: "Builds and deploys the development stage"
+name: "Build & Deploy DevStage"
 
 on:
   workflow_dispatch:
@@ -11,9 +11,9 @@ on:
         default: ""
       test:
         default: "false"
-  pull_request:
-      branches:
-        - 5889-sg-heroku
+  push:
+    branches:
+      - 5889-sg-heroku
 
 jobs:
   build:
