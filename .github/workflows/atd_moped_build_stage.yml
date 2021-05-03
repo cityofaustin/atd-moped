@@ -16,8 +16,8 @@ on:
       - 5889-sg-heroku
 
 jobs:
-  build:
-    name: Build
+  build_editor:
+    name: Build Editor
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-python@v2
@@ -28,12 +28,10 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
       # Then install the AWC CLI tools & boto3
-      - name: "Install CLI Requirements: AWS, Heroku, Hasura"
+      - name: "Install CLI Requirements: AWS"
         run: |
           sudo apt-get install -y python3-setuptools
           pip3 install awscli boto3 virtualenv requests
-          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
       # Run the shell commands using the AWS environment variables
       - name: "Build & Deploy Moped Editor"
         env:
@@ -49,9 +47,26 @@ jobs:
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          build_editor
+          echo "Commented out editor build"
+          # build_editor
 
-
+  build_database:
+    name: Build Database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+          architecture: "x64"
+      # Get the code first
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      # Then install the AWC CLI tools & boto3
+      - name: "Install CLI Requirements: Heroku, Hasura"
+        run: |
+          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+      # Run the shell commands using the AWS environment variables
       - name: "Moped Database: Re-deploy"
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
@@ -65,5 +80,5 @@ jobs:
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          clone_heroku_repo
+          clone_hasura_repo
           build_database
