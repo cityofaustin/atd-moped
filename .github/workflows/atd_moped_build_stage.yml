@@ -82,3 +82,4 @@ jobs:
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           clone_hasura_repo
           build_database
+          run_database_migration
