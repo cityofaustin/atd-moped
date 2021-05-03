@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-HASURA_SERVER_ENDPOINT="https://atd-moped-editor-development.herokuapp.com"
+
+APPLICATION_NAME="atd-moped-editor-development";
+HASURA_REPO_NAME="graphql-engine-heroku";
+HASURA_SERVER_ENDPOINT="https://${APPLICATION_NAME}.herokuapp.com"
 
 #
 # Heroku Deployment Helper Script
@@ -40,21 +43,12 @@ function heroku_commit_and_push() {
   git remote add heroku "https://git.heroku.com/atd-moped-editor-development.git"
   git config user.email "${ATD_CONTACT_ADDRESS}"
   git config user.name "Transportation Data"
-  git push heroku master
+  git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$APPLICATION_NAME.git HEAD:master
 }
 
-function initialize_heroku_netrc() {
-  print_header "Initializing Heroku NETRC"
-  if [[ "${HEROKU_NETRC}" != "" ]]; then
-    sudo echo "${HEROKU_NETRC}" > ~/.netrc;
-  fi;
-  echo "Done: ";
-  grep "git" ~/.netrc;
-}
 
 function build_database() {
-  APPLICATION_NAME="atd-moped-editor-development";
-  HASURA_REPO_NAME="graphql-engine-heroku";
+
 
   print_header "Cleaning up"
 
