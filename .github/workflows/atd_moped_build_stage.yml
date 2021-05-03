@@ -86,5 +86,6 @@ jobs:
           echo "YQ Version: $(yq --version)"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           clone_hasura_repo
+          heroku login
           build_database
           run_database_migration
