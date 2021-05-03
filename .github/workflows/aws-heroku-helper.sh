@@ -41,6 +41,13 @@ function heroku_commit_and_push() {
   git push heroku master
 }
 
+function initialize_heroku_netrc() {
+  print_header "Initializing Heroku NETRC"
+  if [[ "${HEROKU_NETRC}" != "" ]]; then
+    echo "${HEROKU_NETRC}" > ~/.netrc;
+  fi;
+}
+
 function build_database() {
   APPLICATION_NAME="atd-moped-editor-development";
   HASURA_REPO_NAME="graphql-engine-heroku";
