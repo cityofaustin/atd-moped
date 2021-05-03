@@ -2,11 +2,20 @@
 # Heroku Deployment Helper Script
 #
 
+function print_header() {
+  echo "$1";
+  echo "-------------------------------------------";
+}
+
 function build_editor() {
-  echo "Built the editor!";
-  echo "Deploying to AWS S3";
-  echo "Clearing the CF Cache";
+  cd "./moped-editor";
+  print_header "Building the editor";
+  npm build local:development;
+  print_header "Deploying to AWS S3";
+  # aws s3 cp ./build/* s3://the-s3-bucket --recursive;
+  print_header "Clearing the CF Cache";
   echo "Done";
+  cd ..;
 }
 
 
