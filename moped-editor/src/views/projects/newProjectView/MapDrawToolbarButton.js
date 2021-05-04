@@ -4,8 +4,8 @@ import theme from "../../../theme/index";
 
 export const useButtonStyles = makeStyles({
   controlTooltip: {
-    position: "absolute",
-    right: 44,
+    position: "fixed",
+    right: 74,
     padding: 4,
     background: theme.palette.text.primary,
     color: theme.palette.background.mapControls,
@@ -20,14 +20,14 @@ export const useButtonStyles = makeStyles({
     justifyContent: "center",
     alignItems: "center",
   },
-  controlRow: ({ selected }) => ({
+  controlRow: ({ isSelected }) => ({
     height: 34,
     padding: 7,
     display: "flex",
     justifyContent: "left",
-    background: selected && theme.palette.primary.main,
+    background: isSelected && theme.palette.primary.main,
     "&:hover": {
-      background: selected
+      background: isSelected
         ? theme.palette.primary.main
         : theme.palette.background.mapControlsHover,
     },
@@ -41,9 +41,9 @@ const MapDrawToolbarButton = ({
   hoveredId,
   onHover,
 }) => {
-  const selected = mode.id === selectedModeId;
+  const isSelected = mode.id === selectedModeId;
 
-  const classes = useButtonStyles({ selected });
+  const classes = useButtonStyles({ isSelected });
 
   return (
     <div

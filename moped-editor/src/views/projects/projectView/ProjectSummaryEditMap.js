@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import {
@@ -33,7 +33,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ProjectSummaryMap = ({
   projectId,
-  selectedLayerIds,
   projectExtentGeoJSON,
   isEditing,
   setIsEditing,
@@ -43,10 +42,14 @@ const ProjectSummaryMap = ({
   const [updateProjectExtent, { loading, error }] = useMutation(
     UPDATE_PROJECT_EXTENT
   );
-  const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
+
+  // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
+  useEffect(() => {
+    setEditFeatureCollection(projectExtentGeoJSON);
+  }, [projectExtentGeoJSON]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -56,11 +59,11 @@ const ProjectSummaryMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data and handles dialog close on success
+   * Calls update project mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
     updateProjectExtent({
-      variables: { projectId, editLayerIds, editFeatureCollection },
+      variables: { projectId, editFeatureCollection },
     }).then(() => {
       refetchProjectDetails();
       handleClose();
@@ -102,10 +105,10 @@ const ProjectSummaryMap = ({
         </Toolbar>
       </AppBar>
       <NewProjectMap
-        selectedLayerIds={editLayerIds}
-        setSelectedLayerIds={setEditLayerIds}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
+        projectId={projectId}
+        refetchProjectDetails={refetchProjectDetails}
       />
       {error && (
         <Container>
