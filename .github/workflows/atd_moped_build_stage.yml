@@ -9,8 +9,6 @@ on:
     inputs:
       description:
         default: ""
-      test:
-        default: "false"
 
 jobs:
   build_editor:
