@@ -11,9 +11,6 @@ on:
         default: ""
       test:
         default: "false"
-  push:
-    branches:
-      - 5889-sg-heroku
 
 jobs:
   build_editor:
@@ -48,7 +45,7 @@ jobs:
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           echo "Commented out editor build"
-          # build_editor
+          build_editor
 
   build_database:
     name: Build Database
