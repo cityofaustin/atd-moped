@@ -120,6 +120,7 @@ function run_database_migration() {
   print_header "Applying All Migrations";
   echo "From directory: $(pwd)";
   echo "Endpoint: ${HASURA_SERVER_ENDPOINT}";
+  sleep 5;
 
   print_header "Checking the server is online";
   wait_server_ready;
@@ -142,9 +143,13 @@ function run_database_migration() {
     --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Seed data";
-  hasura seeds apply \
-    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "${HASURA_SERVER_ENDPOINT}";
+  {
+    hasura seeds apply \
+      --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
+      --endpoint "${HASURA_SERVER_ENDPOINT}";
+  } || {
+    echo "Migrations finished!"
+  }
 
   cd ..;
 }
