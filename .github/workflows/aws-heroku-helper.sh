@@ -76,9 +76,6 @@ function build_database() {
 
   print_header "Change application configuration settings";
   heroku config:set --app="${APPLICATION_NAME}"  \
-    MOPED_API_ACTIONS_URL="" \
-    MOPED_API_EVENTS_URL="" \
-    MOPED_API_APIKEY="" \
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
     HASURA_GRAPHQL_ADMIN_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
