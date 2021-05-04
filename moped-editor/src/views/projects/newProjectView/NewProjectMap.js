@@ -8,6 +8,7 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
+  createSelectedIdsObjectFromFeatureCollection,
   drawnLayerName,
   getClickEditableLayerNames,
   getGeoJSON,
@@ -20,7 +21,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  sumFeaturesSelected,
+  countFeatures,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
@@ -44,8 +45,6 @@ export const useStyles = makeStyles({
 });
 
 const NewProjectMap = ({
-  selectedLayerIds,
-  setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
   projectId = null,
@@ -53,7 +52,10 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(featureCollection);
+  const featureCount = countFeatures(featureCollection);
+  const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
+    featureCollection
+  );
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
@@ -77,7 +79,6 @@ const NewProjectMap = ({
     featureCollection,
     setFeatureCollection,
     projectId,
-    selectedLayerIds,
     refetchProjectDetails,
     viewport.zoom
   );
@@ -99,17 +100,6 @@ const NewProjectMap = ({
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
 
-    const layerIds = selectedLayerIds[layerName] || [];
-
-    const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-      ? [...layerIds, clickedFeatureId]
-      : layerIds.filter(id => id !== clickedFeatureId);
-
-    const updatedSelectedIds = {
-      ...selectedLayerIds,
-      [layerName]: updatedLayerIds,
-    };
-
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
       featureCollection.features,
@@ -126,7 +116,6 @@ const NewProjectMap = ({
           features: [...featureCollection.features, selectedFeature],
         };
 
-    setSelectedLayerIds(updatedSelectedIds);
     setFeatureCollection(updatedFeatureCollection);
   };
 

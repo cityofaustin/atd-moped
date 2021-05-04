@@ -246,6 +246,35 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
+ * Create object with layer name keys and array values containing feature IDs for map styling
+ * @param {object} featureCollection - A GeoJSON feature collection
+ * @return {object} Object with layer name keys and values that are a array of feature ID strings
+ */
+export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
+  const selectedIdsByLayer = featureCollection.features.reduce(
+    (acc, feature) => {
+      const featureSourceLayerName = feature.properties.sourceLayer;
+      const featureId = getFeatureId(feature, featureSourceLayerName);
+
+      return acc[featureSourceLayerName]
+        ? {
+            ...acc,
+            ...{
+              [featureSourceLayerName]: [
+                ...acc[featureSourceLayerName],
+                featureId,
+              ],
+            },
+          }
+        : { ...acc, [featureSourceLayerName]: [featureId] };
+    },
+    {}
+  );
+
+  return selectedIdsByLayer;
+};
+
+/**
  * Get a feature's GeoJSON from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
  * @return {Object} The GeoJSON object that describes the clicked or hovered feature geometry
@@ -425,11 +454,11 @@ export const renderFeatureCount = featureCount => (
 );
 
 /**
- * Count the number of IDs in all arrays nested in the selectLayerIds object
- * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
+ * Count the number of features in the project extent feature collection
+ * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Number} Total number of string IDs
  */
-export const sumFeaturesSelected = featureCollection =>
+export const countFeatures = featureCollection =>
   featureCollection.features.length;
 
 /**
