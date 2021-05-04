@@ -66,6 +66,7 @@ export const mapConfig = {
     zoom: 12,
   },
   mapboxDefaultMaxZoom: 18,
+  minimumFeaturesInProject: 1,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
@@ -170,6 +171,11 @@ export const mapConfig = {
       },
     },
   },
+};
+
+export const mapErrors = {
+  minimumLocations: "Select a location to save project",
+  failedToSave: "The map edit failed to save. Please try again.",
 };
 
 /**
@@ -617,11 +623,12 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
 export const layerSelectStyles = {
   layerSelectBox: {
     position: "absolute",
-    top: 78,
-    left: 10,
+    top: 168,
+    left: 35,
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
+    zIndex: 1,
   },
   layerSelectTitle: {
     fontWeight: "bold",

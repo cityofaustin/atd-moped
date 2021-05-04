@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
@@ -56,6 +56,7 @@ const NewProjectMap = ({
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
+  const mapControlContainerRef = useRef();
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
@@ -123,20 +124,26 @@ const NewProjectMap = ({
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = viewport => setViewport(viewport);
+  const handleViewportChange = useCallback(
+    viewport => setViewport(prevViewport => ({ ...prevViewport, ...viewport })),
+    [setViewport]
+  );
 
   /**
    * Updates viewport on select of location from geocoder form
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
-  const handleGeocoderViewportChange = newViewport => {
-    const geocoderDefaultOverrides = { transitionDuration: 1000 };
+  const handleGeocoderViewportChange = useCallback(
+    newViewport => {
+      const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
-    return handleViewportChange({
-      ...newViewport,
-      ...geocoderDefaultOverrides,
-    });
-  };
+      return handleViewportChange({
+        ...newViewport,
+        ...geocoderDefaultOverrides,
+      });
+    },
+    [handleViewportChange]
+  );
 
   /**
    * Customize cursor depending on user actions
@@ -154,6 +161,18 @@ const NewProjectMap = ({
 
   return (
     <Box className={classes.mapBox}>
+      {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
+      <div
+        ref={mapControlContainerRef}
+        style={{
+          display: "flex",
+          height: 50,
+          position: "absolute",
+          alignItems: "center",
+          right: 32,
+        }}
+      />
+      {renderLayerSelect()}
       <ReactMapGL
         {...viewport}
         ref={mapRef}
@@ -167,13 +186,15 @@ const NewProjectMap = ({
         onViewportChange={handleViewportChange}
       >
         <div className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
+          <NavigationControl showCompass={false} captureClick={false} />
         </div>
         <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
           bbox={mapConfig.geocoderBbox}
+          containerRef={mapControlContainerRef}
+          marker={false}
           position="top-right"
         />
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>

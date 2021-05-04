@@ -22,7 +22,7 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { countFeatures } from "../../../utils/mapHelpers";
+import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -100,7 +100,9 @@ const NewProjectView = () => {
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
-    if (countFeatures(featureCollection) > 0) {
+    if (
+      countFeatures(featureCollection) >= mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(false);
     }
   }, [featureCollection]);
@@ -111,7 +113,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Select a location to save project",
+        error: mapErrors.minimumLocations,
         isError: areNoFeaturesSelected,
       },
     ];
@@ -205,7 +207,7 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (countFeatures(featureCollection) === 0) {
+    if (countFeatures(featureCollection) < mapConfig.minimumFeaturesInProject) {
       setAreNoFeaturesSelected(true);
       return;
     } else {
@@ -224,27 +226,28 @@ const NewProjectView = () => {
       .then(response => {
         const { project_id } = response.data.insert_moped_project.returning[0];
 
+        // A variable array of objects
+        let cleanedPersonnel = [];
+
         // If personnel are added to the project, handle roles and remove unneeded data
-        const cleanedPersonnel =
-          personnel.length > 0
-            ? personnel
-                // We need to flatten (reverse the nesting) for role_ids
-                .map(item => {
-                  // For every personnel, iterate through role_ids
-                  return item.role_id.map(role_id => {
-                    // build a new object with specific values
-                    return {
-                      role_id: role_id,
-                      user_id: item.user_id,
-                    };
-                  });
-                })[0] // The array should be single
-                // Now we proceed as normal...
-                .map(row => ({
-                  ...filterObjectByKeys(row, ["tableData"]),
-                  project_id,
-                }))
-            : [];
+        personnel
+          // We need to flatten (reverse the nesting) for role_ids
+          .forEach(item => {
+            // For every personnel, iterate through role_ids
+            item.role_id.forEach(role_id => {
+              cleanedPersonnel.push({
+                role_id: role_id,
+                user_id: item.user_id,
+                status_id: 1,
+                notes: item?.notes ?? null,
+              });
+            });
+          });
+
+        cleanedPersonnel = cleanedPersonnel.map(row => ({
+          ...filterObjectByKeys(row, ["tableData"]),
+          project_id,
+        }));
 
         addStaff({
           variables: {

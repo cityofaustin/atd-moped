@@ -624,9 +624,9 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_phases: {
     label: "Project Phases",
     fields: {
-      phase_rank: {
+      phase_order: {
         icon: "",
-        label: "Rank",
+        label: "Order",
         type: "int4",
       },
       phase_name: {
