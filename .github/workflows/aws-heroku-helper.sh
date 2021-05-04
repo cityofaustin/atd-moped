@@ -38,6 +38,9 @@ function clone_hasura_repo() {
 
 function heroku_commit_and_push() {
   echo "Working from dir: $(pwd)";
+  echo "Removing existing .git file";
+  rm -rf .git;
+  echo "Reinitializing the git folder";
   git init;
   git config user.email "${ATD_CONTACT_ADDRESS}";
   git config user.name "Transportation Data";
