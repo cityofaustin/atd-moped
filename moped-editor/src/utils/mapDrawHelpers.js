@@ -10,11 +10,10 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
-import { mapStyles } from "../utils/mapHelpers";
+import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
 import { UPDATE_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
-export const drawnLayerName = "drawnByUser";
 export const MODES = [
   {
     id: "drawPoint",
@@ -37,27 +36,91 @@ export const MODES = [
 
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
-const CIRCLE_RADIUS = 20;
 
 const SELECTED_STYLE = {
   stroke: STROKE_COLOR,
-  strokeWidth: 2,
+  strokeWidth: 8,
   fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.selected,
+  fillOpacity: 0,
 };
 
 const HOVERED_STYLE = {
   stroke: STROKE_COLOR,
-  strokeWidth: 2,
+  strokeWidth: 8,
   fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.hovered,
+  fillOpacity: 0,
 };
 
 const DEFAULT_STYLE = {
   stroke: theme.palette.primary.main,
-  strokeWidth: 2,
-  fill: FILL_COLOR,
-  fillOpacity: mapStyles.statusOpacities.unselected,
+  strokeWidth: 4,
+  fill: theme.palette.secondary.main,
+  fillOpacity: 1,
+};
+
+/**
+ * Interpolate a feature width based on the zoom level of map
+ * Adapted from Mapbox GL JS linear interpolation using a formula linked below
+ * https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
+ * https://matthew-brett.github.io/teaching/linear_interpolation.html
+ * @param {number} currentZoom - Current zoom level from the map
+ * @param {number} minZoom - Minimum zoom level from the current bracket
+ * @param {number} maxZoom - Maximum zoom level from the current bracket
+ * @param {number} minPixelWidth - Minimum pixel width from the current bracket
+ * @param {number} maxPixelWidth - Maximum pixel width from the current bracket
+ * @return {number} Interpolated pixel width
+ */
+function linearInterpolation(
+  currentZoom,
+  minZoom,
+  maxZoom,
+  minPixelWidth,
+  maxPixelWidth
+) {
+  return (
+    ((currentZoom - minZoom) * (maxPixelWidth - minPixelWidth)) /
+      (maxZoom - minZoom) +
+    minPixelWidth
+  );
+}
+
+/**
+ * Calculate the circle radius using the circle radius steps in mapStyles and the map zoom level
+ * @param {number} currentZoom - Current zoom level from the map
+ * @return {number} Circle radius in pixels
+ */
+const getCircleRadiusByZoom = currentZoom => {
+  const { stops } = mapStyles.circleRadiusStops;
+  const [bottomZoom, bottomPixelWidth] = stops[0];
+  const [topZoom, topPixelWidth] = stops[stops.length - 1];
+
+  // Loop through the [zoom, radius in pixel] nested arrays in mapStyles.circleRadiusStops
+  // to find which two elements the current zoom level falls between
+  for (let i = 0; i < stops.length - 1; i++) {
+    const [minZoom, minPixelWidth] = stops[i];
+    const [maxZoom, maxPixelWidth] = stops[i + 1];
+
+    // If current zoom is less than zoom in the first element
+    if (currentZoom < bottomZoom) {
+      return bottomPixelWidth;
+    }
+
+    // If current zoom is greater than zoom in the last element
+    if (currentZoom >= topZoom) {
+      return topPixelWidth;
+    }
+
+    // If the current zoom falls somewhere between
+    if (currentZoom >= minZoom && currentZoom < maxZoom) {
+      return linearInterpolation(
+        currentZoom,
+        minZoom,
+        maxZoom,
+        minPixelWidth,
+        maxPixelWidth
+      );
+    }
+  }
 };
 
 // https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#styling-related-options
@@ -68,9 +131,11 @@ const DEFAULT_STYLE = {
  * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
  * @return {object} React style object applied to a feature
  */
-export function getFeatureStyle({ feature, state }) {
+export function getFeatureStyle({ feature, state, currentZoom }) {
   const type = feature.properties.shape || feature.geometry.type;
   let style = null;
+
+  const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
 
   switch (state) {
     case RENDER_STATE.SELECTED:
@@ -139,8 +204,8 @@ const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
  * @param {string} projectId - ID of the project associated with the extent being edited
- * @param {array} selectedLayerIds - List of selected layers IDs to pass with mutations
  * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
+ * @param {number} currentZoom - Current zoom level of the map
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -154,8 +219,8 @@ export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
   projectId,
-  selectedLayerIds,
-  refetchProjectDetails
+  refetchProjectDetails,
+  currentZoom
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -230,7 +295,6 @@ export function useMapDrawTools(
     updateProjectExtent({
       variables: {
         projectId,
-        editLayerIds: selectedLayerIds,
         editFeatureCollection: updatedFeatureCollection,
       },
     }).then(() => {
@@ -246,10 +310,10 @@ export function useMapDrawTools(
   const switchMode = e => {
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
-    const modeHandler = mode && mode.handler ? new mode.handler() : null;
+    const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
 
     setModeId(switchModeId);
-    setModeHandler(modeHandler);
+    setModeHandler(currentModeHandler);
   };
 
   /**
@@ -335,7 +399,9 @@ export function useMapDrawTools(
           initializeExistingDrawFeatures(ref);
           mapEditorRef.current = ref;
         }}
-        featureStyle={getFeatureStyle}
+        featureStyle={featureStyleObj =>
+          getFeatureStyle({ ...featureStyleObj, currentZoom })
+        }
         onSelect={onSelect}
         clickRadius={12}
         mode={modeHandler}

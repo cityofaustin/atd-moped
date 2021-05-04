@@ -7,8 +7,12 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createProjectSelectLayerConfig,
+  createProjectViewLayerConfig,
+  createSelectedIdsObjectFromFeatureCollection,
+  drawnLayerName,
+  getClickEditableLayerNames,
   getGeoJSON,
-  getInteractiveIds,
+  getEditMapInteractiveIds,
   getLayerNames,
   getLayerSource,
   getFeatureId,
@@ -17,7 +21,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
-  sumFeaturesSelected,
+  countFeatures,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
@@ -41,8 +45,6 @@ export const useStyles = makeStyles({
 });
 
 const NewProjectMap = ({
-  selectedLayerIds,
-  setSelectedLayerIds,
   featureCollection,
   setFeatureCollection,
   projectId = null,
@@ -50,7 +52,10 @@ const NewProjectMap = ({
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = countFeatures(featureCollection);
+  const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
+    featureCollection
+  );
 
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
@@ -74,8 +79,8 @@ const NewProjectMap = ({
     featureCollection,
     setFeatureCollection,
     projectId,
-    selectedLayerIds,
-    refetchProjectDetails
+    refetchProjectDetails,
+    viewport.zoom
   );
 
   /**
@@ -85,21 +90,15 @@ const NewProjectMap = ({
   const handleLayerClick = e => {
     const layerName = getLayerSource(e);
 
-    if (!layerName) return;
+    // If a user clicks a drawn point in the map, open draw UI
+    if (layerName === drawnLayerName) {
+      setIsDrawing(true);
+    }
+
+    if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
     const selectedFeature = getGeoJSON(e);
-
-    const layerIds = selectedLayerIds[layerName] || [];
-
-    const updatedLayerIds = !layerIds.includes(clickedFeatureId)
-      ? [...layerIds, clickedFeatureId]
-      : layerIds.filter(id => id !== clickedFeatureId);
-
-    const updatedSelectedIds = {
-      ...selectedLayerIds,
-      [layerName]: updatedLayerIds,
-    };
 
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
@@ -117,7 +116,6 @@ const NewProjectMap = ({
           features: [...featureCollection.features, selectedFeature],
         };
 
-    setSelectedLayerIds(updatedSelectedIds);
     setFeatureCollection(updatedFeatureCollection);
   };
 
@@ -140,6 +138,20 @@ const NewProjectMap = ({
     });
   };
 
+  /**
+   * Customize cursor depending on user actions
+   * @param {object} pointerStates - Object containing pointer state keys and boolean values
+   * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
+   * @param {boolean} pointerStates.isDragging - Is user dragging map
+   */
+  const getCursor = ({ isHovering, isDragging }) => {
+    return isDragging
+      ? "grabbing"
+      : isHovering || isDrawing // Show pointer when user is drawing as well
+      ? "pointer"
+      : "default";
+  };
+
   return (
     <Box className={classes.mapBox}>
       <ReactMapGL
@@ -147,9 +159,10 @@ const NewProjectMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={!isDrawing && getInteractiveIds()}
-        onHover={!isDrawing && handleLayerHover}
-        onClick={!isDrawing && handleLayerClick}
+        interactiveLayerIds={!isDrawing && getEditMapInteractiveIds()}
+        onHover={!isDrawing ? handleLayerHover : null}
+        onClick={!isDrawing ? handleLayerClick : null}
+        getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
       >
@@ -163,24 +176,49 @@ const NewProjectMap = ({
           bbox={mapConfig.geocoderBbox}
           position="top-right"
         />
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => (
-          <Source
-            key={config.layerIdName}
-            type="vector"
-            tiles={[config.layerUrl]}
-            maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
-          >
-            <Layer
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
+          // If a config has a url, it is needs state to update selected/unselected layers
+          config.layerUrl ? (
+            <Source
               key={config.layerIdName}
-              {...createProjectSelectLayerConfig(
-                featureId,
-                sourceName,
-                selectedLayerIds,
-                visibleLayerIds
-              )}
-            />
-          </Source>
-        ))}
+              type="vector"
+              tiles={[config.layerUrl]}
+              maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+            >
+              <Layer
+                key={config.layerIdName}
+                {...createProjectSelectLayerConfig(
+                  featureId,
+                  sourceName,
+                  selectedLayerIds,
+                  visibleLayerIds
+                )}
+              />
+            </Source>
+          ) : (
+            <Source
+              key={config.layerIdName}
+              id={config.layerIdName}
+              type="geojson"
+              data={{
+                ...featureCollection,
+                features: [
+                  ...featureCollection.features.filter(
+                    feature => feature.properties.sourceLayer === sourceName
+                  ),
+                ],
+              }}
+            >
+              <Layer
+                key={config.layerIdName}
+                {...createProjectViewLayerConfig(
+                  config.layerIdName,
+                  visibleLayerIds
+                )}
+              />
+            </Source>
+          )
+        )}
         {renderLayerSelect()}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
