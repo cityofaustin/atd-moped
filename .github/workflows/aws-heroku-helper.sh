@@ -115,31 +115,28 @@ function wait_server_ready() {
 }
 
 function run_database_migration() {
+  cd "moped-database";
+
   print_header "Applying All Migrations";
   echo "From directory: $(pwd)";
 
+  print_header "Generating Configuration";
+  echo "${ATD_MOPED_DEVSTAGE_HASURA_CONFIGURATION}" > config.yaml;
+
   print_header "Checking the server is online";
   wait_server_ready;
-
-  cd "moped-database";
 
   print_header "Delete Hasura Event Triggers";
   yq d -i metadata/tables.yaml *.event_triggers;
 
   print_header "Apply Migrations";
-  hasura migrate apply \
-    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "${HASURA_SERVER_ENDPOINT}";
+  hasura migrate apply;
 
   print_header "Apply Metadata";
-  hasura metadata apply \
-    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "${HASURA_SERVER_ENDPOINT}";
+  hasura metadata apply;
 
   print_header "Apply Seed data";
-  hasura seeds apply \
-    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    --endpoint "${HASURA_SERVER_ENDPOINT}";
+  hasura seeds apply;
 
   cd ..;
 }
