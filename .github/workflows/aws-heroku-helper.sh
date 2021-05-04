@@ -128,6 +128,7 @@ function run_database_migration() {
   yq d -i metadata/tables.yaml *.event_triggers;
 
   print_header "Contents of Configuration";
+  cp config/hasura.local.yaml config.yaml;
   cat config.yaml;
 
   print_header "Apply Migrations";
