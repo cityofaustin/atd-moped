@@ -119,9 +119,7 @@ function run_database_migration() {
 
   print_header "Applying All Migrations";
   echo "From directory: $(pwd)";
-
-  print_header "Generating Configuration";
-  echo "${ATD_MOPED_DEVSTAGE_HASURA_CONFIGURATION}" > config.yaml;
+  echo "Endpoint: ${HASURA_SERVER_ENDPOINT}";
 
   print_header "Checking the server is online";
   wait_server_ready;
@@ -129,14 +127,23 @@ function run_database_migration() {
   print_header "Delete Hasura Event Triggers";
   yq d -i metadata/tables.yaml *.event_triggers;
 
+  print_header "Contents of Configuration";
+  cat config.yaml;
+
   print_header "Apply Migrations";
-  hasura migrate apply;
+  hasura migrate apply \
+    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Metadata";
-  hasura metadata apply;
+  hasura metadata apply \
+    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Seed data";
-  hasura seeds apply;
+  hasura seeds apply \
+    --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
+    --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   cd ..;
 }
