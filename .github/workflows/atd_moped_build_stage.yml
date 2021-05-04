@@ -75,6 +75,8 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
           HASURA_CONFIGURATION_DEVSTAGE: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
+          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET }}
+          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET }}
           MOPED_PRNUM: ${{ github.event.pull_request.number }}
           MOPED_PRBODY: ${{ github.event.pull_request.body }}
         run: |

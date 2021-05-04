@@ -52,8 +52,6 @@ function heroku_commit_and_push() {
 
 
 function build_database() {
-
-
   print_header "Cleaning up"
 
   rm -rf "${HASURA_REPO_NAME}" || echo "Nothing to clean";
@@ -79,7 +77,7 @@ function build_database() {
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
     HASURA_GRAPHQL_ADMIN_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    HASURA_GRAPHQL_JWT_SECRET=$ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET &> /dev/null;
+    HASURA_GRAPHQL_JWT_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET}" &> /dev/null;
   echo "Done (muted result)";
 
   print_header "Create add-ons";
