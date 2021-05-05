@@ -106,7 +106,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             name="start_date"
             label="Start date"
@@ -120,7 +120,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <InputLabel>Fiscal year</InputLabel>
           <Select
             name="fiscal_year"
@@ -139,7 +139,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           </Select>
         </Grid>
 
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <InputLabel>Current status</InputLabel>
           <Select
             name="current_status"
@@ -150,6 +150,23 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             {statuses.moped_status.map(status => (
               <MenuItem key={status.status_name} value={status.status_name}>
                 {capitalize(status.status_name)}
+              </MenuItem>
+            ))}
+          </Select>
+        </Grid>
+
+        <Grid item xs={3}>
+          <InputLabel>Current phase</InputLabel>
+
+          <Select
+            name="current_phase"
+            style={{ width: 150, paddingLeft: 10 }}
+            value={projectDetails.current_phase}
+            onChange={e => handleFieldChange(e.target.value, e.target.name)}
+          >
+            {phases.moped_phases.map(phase => (
+              <MenuItem key={phase.phase_name} value={phase.phase_name}>
+                {capitalize(phase.phase_name)}
               </MenuItem>
             ))}
           </Select>
