@@ -154,23 +154,6 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
             ))}
           </Select>
         </Grid>
-
-        <Grid item xs={3}>
-          <InputLabel>Current phase</InputLabel>
-
-          <Select
-            name="current_phase"
-            style={{ width: 150, paddingLeft: 10 }}
-            value={projectDetails.current_phase}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
-          >
-            {phases.moped_phases.map(phase => (
-              <MenuItem key={phase.phase_name} value={phase.phase_name}>
-                {capitalize(phase.phase_name)}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
