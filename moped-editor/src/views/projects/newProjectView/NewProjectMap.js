@@ -240,7 +240,6 @@ const NewProjectMap = ({
             </Source>
           )
         )}
-        {renderLayerSelect()}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
