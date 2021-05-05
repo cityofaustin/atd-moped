@@ -106,7 +106,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <TextField
             name="start_date"
             label="Start date"
@@ -120,7 +120,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           />
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <InputLabel>Fiscal year</InputLabel>
           <Select
             name="fiscal_year"
@@ -139,7 +139,7 @@ const DefineProjectForm = ({ projectDetails, setProjectDetails, nameError, descr
           </Select>
         </Grid>
 
-        <Grid item xs={3}>
+        <Grid item xs={4}>
           <InputLabel>Current status</InputLabel>
           <Select
             name="current_status"
