@@ -96,6 +96,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+  console.log(data?.moped_proj_phases);
+  console.log(new Date()); 
+
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
@@ -227,7 +230,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           });
                         }
 
-                        setTimeout(() => refetch(), refetchSummary(), 501);
+                        console.log(new Date()); 
+                        console.log("adding project phase");
+
+                        setTimeout(() => {
+                          console.log(new Date()); 
+                          console.log("refetching new project phase");
+                          refetch();
+                          refetchSummary();
+                        }, 3000);
                         resolve();
                       }, 500);
                     }),
@@ -286,7 +297,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           });
                         }
 
-                        setTimeout(() => refetch(), refetchSummary(), 501);
+                        console.log(new Date()); 
+                        console.log("updating project phase");
+
+                        setTimeout(() => {
+                          console.log(new Date()); 
+                          console.log("refetching updated project phase");
+                          refetch();
+                          refetchSummary();
+                        }, 3000);
                         resolve();
                       }, 500);
                     }),
