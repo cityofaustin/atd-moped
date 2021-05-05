@@ -211,6 +211,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             project_id: projectId,
                             completion_percentage: 0,
                             completed: false,
+                            status_id: 1,
                           },
                           newData
                         );
