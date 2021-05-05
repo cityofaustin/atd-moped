@@ -98,24 +98,21 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   });
 
   // Mutations
-  const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE, {
+  const mutationArguments = {
     onCompleted: () => {
       refetch();
       refetchSummary();
     },
-  });
-  const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION, {
-    onCompleted: () => {
-      refetch();
-      refetchSummary();
-    },
-  });
-  const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE, {
-    onCompleted: () => {
-      refetch();
-      refetchSummary();
-    },
-  });
+  };
+  const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE, mutationArguments);
+  const [updateProjectPhase] = useMutation(
+    UPDATE_PROJECT_PHASES_MUTATION,
+    mutationArguments
+  );
+  const [deleteProjectPhase] = useMutation(
+    DELETE_PROJECT_PHASE,
+    mutationArguments
+  );
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -135,13 +132,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {}
   );
 
-  const setOtherPhasesToFalse = (phaseObject) => {
+  const setOtherPhasesToFalse = phaseObject => {
     if (phaseObject.is_current_phase) {
       data.moped_proj_phases.forEach(phase => {
         if (
           phase.is_current_phase &&
-          phase.project_phase_id !==
-            phaseObject.project_phase_id
+          phase.project_phase_id !== phaseObject.project_phase_id
         ) {
           phase.is_current_phase = false;
           updateProjectPhase({
@@ -298,7 +294,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         // to ensure summary table stays up to date
                         oldData.is_current_phase = false;
                         updateProjectPhase({
-                          variables: oldData
+                          variables: oldData,
                         });
                         // Execute delete mutation
                         deleteProjectPhase({
