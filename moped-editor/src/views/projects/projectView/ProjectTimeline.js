@@ -96,14 +96,29 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
-  console.log(data?.moped_proj_phases);
-  console.log(new Date()); 
-
 
   // Mutations
-  const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
-  const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
-  const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
+  const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE, {
+    onCompleted: () => {
+      console.log("refetching");
+      refetch();
+      refetchSummary();
+    },
+  });
+  const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION, {
+    onCompleted: () => {
+      console.log("refetching");
+      refetch();
+      refetchSummary();
+    },
+  });
+  const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE, {
+    onCompleted: () => {
+      console.log("refetching");
+      refetch();
+      refetchSummary();
+    },
+  });
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -200,12 +215,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           newData
                         );
 
-                        // If user didn't select is_current_phase,
-                        // set is_current_phase to false
-                        if (!newPhaseObject.is_current_phase) {
-                          newPhaseObject.is_current_phase = false
-                        };
-
                         // Execute insert mutation
                         addProjectPhase({
                           variables: {
@@ -214,13 +223,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         });
 
                         // If new phase has a current phase of true,
-                        // set current phase of all other phases to false 
+                        // set current phase of all other phases to false
+                        // to ensure there is only one active phase
                         if (newPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
                             if (
                               phase.is_current_phase &&
                               phase.project_phase_id !==
-                              newPhaseObject.project_phase_id
+                                newPhaseObject.project_phase_id
                             ) {
                               phase.is_current_phase = false;
                               updateProjectPhase({
@@ -229,16 +239,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-
-                        console.log(new Date()); 
-                        console.log("adding project phase");
-
-                        setTimeout(() => {
-                          console.log(new Date()); 
-                          console.log("refetching new project phase");
-                          refetch();
-                          refetchSummary();
-                        }, 3000);
                         resolve();
                       }, 500);
                     }),
@@ -281,13 +281,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         });
 
                         // If update involves switching current phase to true,
-                        // set current phase of all other phases to false 
+                        // set current phase of all other phases to false
+                        // to ensure there is only one active phase
                         if (updatedPhaseObject.is_current_phase) {
                           data.moped_proj_phases.forEach(phase => {
                             if (
                               phase.is_current_phase &&
                               phase.project_phase_id !==
-                              updatedPhaseObject.project_phase_id
+                                updatedPhaseObject.project_phase_id
                             ) {
                               phase.is_current_phase = false;
                               updateProjectPhase({
@@ -296,16 +297,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             }
                           });
                         }
-
-                        console.log(new Date()); 
-                        console.log("updating project phase");
-
-                        setTimeout(() => {
-                          console.log(new Date()); 
-                          console.log("refetching updated project phase");
-                          refetch();
-                          refetchSummary();
-                        }, 3000);
                         resolve();
                       }, 500);
                     }),
@@ -318,14 +309,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             project_phase_id: oldData.project_phase_id,
                           },
                         });
-                        // TODO: Ensure deleting a phase sets current phase to none on summary table
-                        setTimeout(() => refetch(), refetchSummary(), 501);
                         resolve();
                       }, 500);
                     }),
                 }}
                 options={{
-                  actionsColumnIndex: -1
+                  actionsColumnIndex: -1,
                 }}
               />
             </div>
