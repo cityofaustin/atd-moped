@@ -1,13 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const PROJECT_NAME = gql`
-  query ProjectName($projectId: Int) {
-    moped_project(where: { project_id: { _eq: $projectId } }) {
-      project_name
-    }
-  }
-`;
-
 export const ADD_PROJECT = gql`
   mutation MyMutation(
     $project_name: String! = ""
