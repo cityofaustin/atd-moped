@@ -304,6 +304,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   onRowDelete: oldData =>
                     new Promise((resolve, reject) => {
                       setTimeout(() => {
+                        // Set current phase of phase to be deleted to false
+                        // to keep summary table up to date
+                        oldData.is_current_phase = false;
+                        updateProjectPhase({
+                          variables: oldData
+                        });
                         // Execute delete mutation
                         deleteProjectPhase({
                           variables: {
