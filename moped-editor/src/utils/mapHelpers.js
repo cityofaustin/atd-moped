@@ -154,6 +154,7 @@ export const mapConfig = {
       layerIdName: drawnLayerName,
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 3,
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
       isClickEditable: false,
