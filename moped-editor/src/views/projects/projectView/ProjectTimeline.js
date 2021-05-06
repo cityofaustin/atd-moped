@@ -19,6 +19,7 @@ import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
+  ADD_PROJECT_MILESTONE
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -83,7 +84,9 @@ const ProjectTimeline = () => {
    * imperatively.
    * @type {object} addActionRef
    * */
-  const addActionRef = React.useRef();
+  const addActionRefPhases = React.useRef();
+  const addActionRefMilestones = React.useRef();
+
 
   /**
    * Queries Hook
@@ -103,6 +106,7 @@ const ProjectTimeline = () => {
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
+  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -122,13 +126,13 @@ const ProjectTimeline = () => {
     {}
   );
 
-  // const milestoneNameLookup = data.moped_milestones.reduce(
-  //   (obj, item) =>
-  //     Object.assign(obj, {
-  //       [item.milestone_name]:
-  //       item.milestone_name.charAt(0).toUpperCase() + item.milestone_name.slice(1),
-  //     })
-  // )
+  const milestoneNameLookup = data.moped_milestones.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.milestone_name]:
+        item.milestone_name.charAt(0).toUpperCase() + item.milestone_name.slice(1),
+      })
+  )
 
   /**
    * Column configuration for <MaterialTable>
@@ -165,7 +169,7 @@ const ProjectTimeline = () => {
 
   const milestoneColumns = [
     {
-      title: "Milestone", field: "milestone_name"
+      title: "Milestone", field: "milestone_name", lookup: milestoneNameLookup
     },
     {
       title: "Description", field: "milestone_description"
@@ -204,7 +208,7 @@ const ProjectTimeline = () => {
                     } else {
                       return (
                         <div
-                          ref={addActionRef}
+                          ref={addActionRefPhases}
                           onClick={props.action.onClick}
                         />
                       );
@@ -303,7 +307,7 @@ const ProjectTimeline = () => {
                 color="primary"
                 size="large"
                 startIcon={<AddBoxIcon />}
-                onClick={() => addActionRef.current.click()}
+                onClick={() => addActionRefPhases.current.click()}
               >
                 Add phase
               </Button>
@@ -315,6 +319,50 @@ const ProjectTimeline = () => {
               columns={milestoneColumns}
               data={data.moped_proj_milestones}
               title="Project Milestones"
+              components={{
+                Action: props => {
+                  //If isn't the add action
+                  if (
+                    typeof props.action === typeof Function ||
+                    props.action.tooltip !== "Add"
+                  ) {
+                    return <MTableAction {...props} />;
+                  } else {
+                    return (
+                      <div
+                        ref={addActionRefMilestones}
+                        onClick={props.action.onClick}
+                      />
+                    );
+                  }
+                },
+              }}
+              editable={{
+                onRowAdd: newData =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // Merge input fields with required fields default data.
+                    const newMilestoneObject = Object.assign(
+                      {
+                        project_id: projectId,
+                      },
+                      newData
+                    );
+
+                    // Execute insert mutation
+                    addProjectMilestone({
+                      variables: {
+                        objects: [newMilestoneObject],
+                      },
+                    });
+                    setTimeout(() => refetch(), 501);
+                    resolve();
+                  }, 500);
+                }),
+              }}
+              options={{
+                actionsColumnIndex: -1,
+              }}
               />
             </div>
             <Box pt={2}>
@@ -323,7 +371,7 @@ const ProjectTimeline = () => {
                 color="primary"
                 size="large"
                 startIcon={<AddBoxIcon />}
-                onClick={() => console.log("Add milestone")}
+                onClick={() => addActionRefMilestones.current.click()}
               >
                 Add milestone
               </Button>

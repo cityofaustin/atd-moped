@@ -264,6 +264,22 @@ export const ADD_PROJECT_PHASE = gql`
   }
 `;
 
+export const ADD_PROJECT_MILESTONE = gql`
+  mutation AddProjectMilestone($objects: [moped_proj_milestones_insert_input!]!) {
+    insert_moped_proj_milestones(objects: $objects) {
+      returning {
+        milestone_name
+        milestone_description
+        milestone_estimate
+        milestone_end
+        completed
+        project_milestone_id
+        project_id
+      }
+    }
+  }
+`;
+
 export const UPDATE_PROJECT_EXTENT = gql`
   mutation UpdateProjectExtent(
     $projectId: Int
