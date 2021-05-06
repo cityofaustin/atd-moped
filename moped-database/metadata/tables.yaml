@@ -3661,7 +3661,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3688,7 +3687,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3715,7 +3713,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3742,7 +3739,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3769,7 +3765,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3797,7 +3792,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3824,7 +3818,6 @@
       - project_description
       - project_description_public
       - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3856,7 +3849,6 @@
         - project_order
         - timeline_id
         - project_extent_geojson
-        - project_extent_ids
         - current_phase
         - current_status
         - ecapris_subproject_id

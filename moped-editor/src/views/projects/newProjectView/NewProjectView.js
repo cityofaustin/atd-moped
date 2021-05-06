@@ -22,7 +22,7 @@ import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { sumFeaturesSelected } from "../../../utils/mapHelpers";
+import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -91,7 +91,6 @@ const NewProjectView = () => {
   const [descriptionError, setDescriptionError] = useState(false);
 
   const [personnel, setPersonnel] = useState([]);
-  const [selectedLayerIds, setSelectedLayerIds] = useState({});
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
@@ -101,10 +100,12 @@ const NewProjectView = () => {
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
-    if (sumFeaturesSelected(selectedLayerIds) > 0) {
+    if (
+      countFeatures(featureCollection) >= mapConfig.minimumFeaturesInProject
+    ) {
       setAreNoFeaturesSelected(false);
     }
-  }, [selectedLayerIds]);
+  }, [featureCollection]);
 
   const getSteps = () => {
     return [
@@ -112,7 +113,7 @@ const NewProjectView = () => {
       { label: "Assign team" },
       {
         label: "Map project",
-        error: "Select a location to save project",
+        error: mapErrors.minimumLocations,
         isError: areNoFeaturesSelected,
       },
     ];
@@ -136,8 +137,6 @@ const NewProjectView = () => {
       case 2:
         return (
           <NewProjectMap
-            selectedLayerIds={selectedLayerIds}
-            setSelectedLayerIds={setSelectedLayerIds}
             featureCollection={featureCollection}
             setFeatureCollection={setFeatureCollection}
           />
@@ -208,7 +207,7 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
-    if (sumFeaturesSelected(selectedLayerIds) === 0) {
+    if (countFeatures(featureCollection) < mapConfig.minimumFeaturesInProject) {
       setAreNoFeaturesSelected(true);
       return;
     } else {
@@ -221,7 +220,6 @@ const NewProjectView = () => {
     addProject({
       variables: {
         ...projectDetails,
-        project_extent_ids: selectedLayerIds,
         project_extent_geojson: featureCollection,
       },
     })

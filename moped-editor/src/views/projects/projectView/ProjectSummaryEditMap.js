@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
+import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 import {
   AppBar,
   Button,
-  Container,
   IconButton,
   Dialog,
   makeStyles,
@@ -25,6 +25,9 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
     flex: 1,
   },
+  mapAlert: {
+    margin: "0px 24px 24px 24px",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -33,7 +36,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 const ProjectSummaryMap = ({
   projectId,
-  selectedLayerIds,
   projectExtentGeoJSON,
   isEditing,
   setIsEditing,
@@ -43,10 +45,16 @@ const ProjectSummaryMap = ({
   const [updateProjectExtent, { loading, error }] = useMutation(
     UPDATE_PROJECT_EXTENT
   );
-  const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectExtentGeoJSON
   );
+  const areMinimumFeaturesSet =
+    countFeatures(projectExtentGeoJSON) >= mapConfig.minimumFeaturesInProject;
+
+  // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
+  useEffect(() => {
+    setEditFeatureCollection(projectExtentGeoJSON);
+  }, [projectExtentGeoJSON]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -56,11 +64,11 @@ const ProjectSummaryMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data and handles dialog close on success
+   * Calls update project mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
     updateProjectExtent({
-      variables: { projectId, editLayerIds, editFeatureCollection },
+      variables: { projectId, editFeatureCollection },
     }).then(() => {
       refetchProjectDetails();
       handleClose();
@@ -92,6 +100,7 @@ const ProjectSummaryMap = ({
               autoFocus
               color="inherit"
               onClick={handleSave}
+              disabled={!areMinimumFeaturesSet}
               startIcon={<SaveIcon />}
             >
               save
@@ -102,17 +111,20 @@ const ProjectSummaryMap = ({
         </Toolbar>
       </AppBar>
       <NewProjectMap
-        selectedLayerIds={editLayerIds}
-        setSelectedLayerIds={setEditLayerIds}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
+        projectId={projectId}
+        refetchProjectDetails={refetchProjectDetails}
       />
       {error && (
-        <Container>
-          <Alert severity="error">
-            The map edit failed to save. Please try again.
-          </Alert>
-        </Container>
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.failedToSave}
+        </Alert>
+      )}
+      {!areMinimumFeaturesSet && (
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.minimumLocations}
+        </Alert>
       )}
     </Dialog>
   );

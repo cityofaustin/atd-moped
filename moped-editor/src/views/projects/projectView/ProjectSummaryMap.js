@@ -7,12 +7,12 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createSummaryMapLayers,
-  getInteractiveIds,
+  getSummaryMapInteractiveIds,
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
   renderFeatureCount,
-  sumFeaturesSelected,
+  countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
@@ -36,16 +36,12 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  selectedLayerIds,
-  projectExtentGeoJSON,
-  setIsEditing,
-}) => {
+const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = countFeatures(projectExtentGeoJSON);
 
-  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
     projectExtentGeoJSON
@@ -64,7 +60,7 @@ const ProjectSummaryMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={getInteractiveIds()}
+        interactiveLayerIds={getSummaryMapInteractiveIds(projectExtentGeoJSON)}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -72,9 +68,8 @@ const ProjectSummaryMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        {projectExtentGeoJSON &&
-          createSummaryMapLayers(selectedLayerIds, projectExtentGeoJSON)}
-        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
+        {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
+        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"
           color="primary"
