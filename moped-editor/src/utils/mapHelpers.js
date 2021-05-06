@@ -269,6 +269,18 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
+ * Create a GeoJSON feature collection from project features
+ * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
+ * @return {object} A GeoJSON feature collection to display project features on a map
+ */
+export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
+  type: "FeatureCollection",
+  features: projectFeatureRecords
+    ? projectFeatureRecords.map(feature => feature.location)
+    : [],
+});
+
+/**
  * Create object with layer name keys and array values containing feature IDs for map styling
  * @param {object} featureCollection - A GeoJSON feature collection
  * @return {object} Object with layer name keys and values that are a array of feature ID strings

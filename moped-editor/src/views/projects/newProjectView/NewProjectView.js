@@ -20,7 +20,7 @@ import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
-import { ADD_PROJECT, ADD_PROJECT_PERSONNEL } from "../../../queries/project";
+import { ADD_PROJECT } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 
@@ -194,7 +194,6 @@ const NewProjectView = () => {
   };
 
   const [addProject] = useMutation(ADD_PROJECT);
-  const [addStaff] = useMutation(ADD_PROJECT_PERSONNEL);
 
   const timer = React.useRef();
 
@@ -217,51 +216,43 @@ const NewProjectView = () => {
     // Change the initial state...
     setLoading(true);
 
+    const cleanedPersonnel =
+      personnel.length > 0
+        ? personnel
+            // We need to flatten (reverse the nesting) for role_ids
+            .map(item => {
+              // For every personnel, iterate through role_ids
+              return item.role_id.map(role_id => {
+                // build a new object with specific values
+                return {
+                  role_id: role_id,
+                  user_id: item.user_id,
+                };
+              });
+            })[0] // The array should be single
+            // Now we proceed as normal...
+            .map(row => ({
+              ...filterObjectByKeys(row, ["tableData"]),
+            }))
+        : [];
+
+    const projectFeatures = featureCollection.features.map(feature => ({
+      location: feature,
+      status_id: 1,
+    }));
+
     addProject({
       variables: {
-        ...projectDetails,
-        project_extent_geojson: featureCollection,
+        object: {
+          ...projectDetails,
+          moped_proj_features: { data: projectFeatures },
+          moped_proj_personnel: { data: cleanedPersonnel },
+        },
       },
     })
       .then(response => {
-        const { project_id } = response.data.insert_moped_project.returning[0];
-
-        // A variable array of objects
-        let cleanedPersonnel = [];
-
-        // If personnel are added to the project, handle roles and remove unneeded data
-        personnel
-          // We need to flatten (reverse the nesting) for role_ids
-          .forEach(item => {
-            // For every personnel, iterate through role_ids
-            item.role_id.forEach(role_id => {
-              cleanedPersonnel.push({
-                role_id: role_id,
-                user_id: item.user_id,
-                status_id: 1,
-                notes: item?.notes ?? null,
-              });
-            });
-          });
-
-        cleanedPersonnel = cleanedPersonnel.map(row => ({
-          ...filterObjectByKeys(row, ["tableData"]),
-          project_id,
-        }));
-
-        addStaff({
-          variables: {
-            objects: cleanedPersonnel,
-          },
-        })
-          .then(() => {
-            setNewProjectId(project_id);
-          })
-          .catch(err => {
-            alert(err);
-            setLoading(false);
-            setSuccess(false);
-          });
+        const { project_id } = response.data.insert_moped_project_one;
+        setNewProjectId(project_id);
       })
       .catch(err => {
         alert(err);
