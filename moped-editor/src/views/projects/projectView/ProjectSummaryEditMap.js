@@ -51,7 +51,8 @@ const ProjectSummaryEditMap = ({
     projectFeatureCollection
   );
   const areMinimumFeaturesSet =
-    countFeatures(projectExtentGeoJSON) >= mapConfig.minimumFeaturesInProject;
+    countFeatures(projectFeatureCollection) >=
+    mapConfig.minimumFeaturesInProject;
 
   // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
   useEffect(() => {
