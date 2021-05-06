@@ -97,11 +97,6 @@ export const ProjectActivityLogTableMaps = {
         label: "Added by",
         data_type: "integer",
       },
-      project_extent_ids: {
-        icon: "",
-        label: "Extent",
-        data_type: "jsonb",
-      },
       project_extent_geojson: {
         icon: "",
         label: "Extent GeoJson Data",
@@ -1416,9 +1411,6 @@ export const ProjectActivityLogOperationMaps = {
 };
 
 export const ProjectActivityLogGenericDescriptions = {
-  project_extent_ids: {
-    label: "Project extent updated",
-  },
   project_extent_geojson: {
     label: "Project GeoJSON updated",
   },
