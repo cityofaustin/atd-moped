@@ -41,7 +41,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   const mapRef = useRef();
   const featureCount = countFeatures(projectExtentGeoJSON);
 
-  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
     projectExtentGeoJSON
@@ -69,7 +69,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
           <NavigationControl showCompass={false} />
         </div>
         {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
-        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
+        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"
           color="primary"
