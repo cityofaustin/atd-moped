@@ -19,7 +19,6 @@ export const ADD_PROJECT = gql`
     $start_date: date = ""
     $capitally_funded: Boolean! = false
     $project_priority: String! = ""
-    $project_extent_ids: jsonb = {}
     $project_extent_geojson: jsonb = {}
   ) {
     insert_moped_project(
@@ -33,7 +32,6 @@ export const ADD_PROJECT = gql`
         start_date: $start_date
         capitally_funded: $capitally_funded
         project_priority: $project_priority
-        project_extent_ids: $project_extent_ids
         project_extent_geojson: $project_extent_geojson
       }
     ) {
@@ -49,7 +47,6 @@ export const ADD_PROJECT = gql`
         fiscal_year
         capitally_funded
         start_date
-        project_extent_ids
         project_extent_geojson
       }
     }
@@ -69,7 +66,6 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      project_extent_ids
       project_extent_geojson
     }
   }
@@ -255,14 +251,12 @@ export const ADD_PROJECT_PHASE = gql`
 export const UPDATE_PROJECT_EXTENT = gql`
   mutation UpdateProjectExtent(
     $projectId: Int
-    $editLayerIds: jsonb
     $editFeatureCollection: jsonb
   ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: {
         project_extent_geojson: $editFeatureCollection
-        project_extent_ids: $editLayerIds
       }
     ) {
       affected_rows
@@ -414,4 +408,3 @@ export const PROJECT_ARCHIVE= gql`
     }
   }
 `
-
