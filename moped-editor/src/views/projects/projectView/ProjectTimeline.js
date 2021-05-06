@@ -97,6 +97,8 @@ const ProjectTimeline = () => {
     fetchPolicy: "no-cache",
   });
 
+  console.log(data);
+
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
@@ -119,6 +121,14 @@ const ProjectTimeline = () => {
       }),
     {}
   );
+
+  // const milestoneNameLookup = data.moped_milestones.reduce(
+  //   (obj, item) =>
+  //     Object.assign(obj, {
+  //       [item.milestone_name]:
+  //       item.milestone_name.charAt(0).toUpperCase() + item.milestone_name.slice(1),
+  //     })
+  // )
 
   /**
    * Column configuration for <MaterialTable>
@@ -150,6 +160,24 @@ const ProjectTimeline = () => {
       editComponent: props => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
+    },
+  ];
+
+  const milestoneColumns = [
+    {
+      title: "Milestone", field: "milestone_name"
+    },
+    {
+      title: "Description", field: "milestone_description"
+    },
+    {
+      title: "Completion estimate", field: "milestone_estimate"
+    },
+    {
+      title: "Date completed", field: "milestone_end" 
+    },
+    {
+      title: "Complete", field: "completed", lookup: { true: "Yes", false: "No" },
     },
   ];
 
@@ -265,7 +293,7 @@ const ProjectTimeline = () => {
                     }),
                 }}
                 options={{
-                  actionsColumnIndex: -1
+                  actionsColumnIndex: -1,
                 }}
               />
             </div>
@@ -278,6 +306,26 @@ const ProjectTimeline = () => {
                 onClick={() => addActionRef.current.click()}
               >
                 Add phase
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={12}>
+            <div style={{ maxWidth: "100%" }}>
+              <MaterialTable
+              columns={milestoneColumns}
+              data={data.moped_proj_milestones}
+              title="Project Milestones"
+              />
+            </div>
+            <Box pt={2}>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<AddBoxIcon />}
+                onClick={() => console.log("Add milestone")}
+              >
+                Add milestone
               </Button>
             </Box>
           </Grid>
