@@ -21,6 +21,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
+  renderTooltip,
   countFeatures,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
@@ -64,7 +65,12 @@ const NewProjectMap = ({
     false
   );
 
-  const { handleLayerHover, featureId } = useHoverLayer();
+  const {
+    handleLayerHover,
+    featureText,
+    featureId,
+    hoveredCoords,
+  } = useHoverLayer();
 
   const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
     getLayerNames(),
@@ -240,6 +246,7 @@ const NewProjectMap = ({
             </Source>
           )
         )}
+        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}

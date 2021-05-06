@@ -7,6 +7,7 @@ import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const drawnLayerName = "drawnByUser";
+const TRAIL_LINE_TYPE = "Off-Street";
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
 const austinFullPurposeJurisdictionFeatureCollection = {
@@ -73,11 +74,12 @@ export const mapConfig = {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
+      tooltipTextProperty: "FULL_STREET_NAME",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_Vector_Tiles_with_Street_Name/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_VTs_with_Line_Type/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 14,
       isClickEditable: true,
       get layerStyleSpec() {
@@ -103,7 +105,12 @@ export const mapConfig = {
               "line-cap": "round",
             },
             paint: {
-              "line-color": this.layerColor,
+              "line-color": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                theme.palette.map.trail,
+                this.layerColor,
+              ],
               "line-width": mapStyles.lineWidthStops,
               ...(isEditing && editMapPaintStyles),
             },
@@ -240,6 +247,15 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  */
 export const getFeatureId = (feature, layerName) =>
   get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
+
+/**
+ * Get a feature's property that contains text to show in a tooltip
+ * @param {object} feature - GeoJSON feature taken from a Mapbox click or hover event
+ * @param {string} layerName - Name of layer to find tooltip text property from layer config
+ * @return {string} The text to show in the tooltip
+ */
+export const getFeatureHoverText = (feature, layerName) =>
+  feature.properties[mapConfig.layerConfigs[layerName].tooltipTextProperty];
 
 /**
  * Get a feature's layer source from a Mapbox map click or hover event
@@ -426,13 +442,13 @@ export const createProjectViewLayerConfig = (
 
 /**
  * Build the JSX of the hover tooltip on map
- * @param {String} hoveredFeature - The ID of the feature hovered
+ * @param {String} tooltipText - Text to show in the tooltip
  * @param {Object} hoveredCoords - Object with keys x and y that describe position of cursor
  * @param {Object} className - Styles from the classes object
  * @return {JSX} The populated tooltip JSX
  */
-export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
-  hoveredFeature && (
+export const renderTooltip = (tooltipText, hoveredCoords, className) =>
+  tooltipText && (
     <div
       className={className}
       style={{
@@ -440,7 +456,7 @@ export const renderTooltip = (hoveredFeature, hoveredCoords, className) =>
         top: hoveredCoords?.y,
       }}
     >
-      <div>Polygon ID: {hoveredFeature}</div>
+      <div>{tooltipText}</div>
     </div>
   );
 
@@ -477,6 +493,7 @@ export const countFeatures = featureCollection =>
  * @typedef {Object} HoverObject
  * @property {Function} handleLayerHover - Function that get and sets featureId and Point for tooltip
  * @property {String} featuredId - The ID of the hovered feature
+ * @property {String} featuredText - Text from feature property to show in tooltip
  * @property {Point} hoveredCoords - The coordinates used to place the tooltip
  */
 /**
@@ -485,7 +502,8 @@ export const countFeatures = featureCollection =>
  * @property {Number} y - The y coordinate to the place the tooltip
  */
 export function useHoverLayer() {
-  const [featureId, setFeature] = useState(null);
+  const [featureText, setFeatureText] = useState(null);
+  const [featureId, setFeatureId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
 
   /**
@@ -498,7 +516,8 @@ export function useHoverLayer() {
     // If a layer isn't hovered, reset state and don't proceed
     if (!layerSource) {
       setHoveredCoords(null);
-      setFeature(null);
+      setFeatureText(null);
+      setFeatureId(null);
       return;
     }
 
@@ -506,13 +525,15 @@ export function useHoverLayer() {
     const {
       srcEvent: { offsetX, offsetY },
     } = e;
-    const hoveredFeatureId = getFeatureId(e.features[0], layerSource);
+    const featureId = getFeatureId(e.features[0], layerSource);
+    const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
-    setFeature(hoveredFeatureId);
+    setFeatureText(hoveredFeatureText);
+    setFeatureId(featureId);
     setHoveredCoords({ x: offsetX, y: offsetY });
   };
 
-  return { handleLayerHover, featureId, hoveredCoords };
+  return { handleLayerHover, featureId, featureText, hoveredCoords };
 }
 
 /**
