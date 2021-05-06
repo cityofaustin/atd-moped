@@ -23,6 +23,7 @@ const theme = createMuiTheme({
     },
     map: {
       transparent: "rgba(0,0,0,0)",
+      trail: "#4caf50",
     },
   },
   shadows,
