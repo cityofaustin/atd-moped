@@ -27,6 +27,9 @@ const useStyles = makeStyles(theme => ({
   noLabel: {
     marginTop: theme.spacing(3),
   },
+  infoIcon: {
+    color: theme.palette.action.disabled,
+  },
 }));
 
 const ITEM_HEIGHT = 48;
@@ -42,6 +45,7 @@ const MenuProps = {
 
 const ProjectTeamRoleMultiselect = ({
   roles,
+  roleDescriptions,
   initialValue,
   value,
   onChange,

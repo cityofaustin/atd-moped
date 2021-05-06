@@ -67,6 +67,7 @@ export const mapConfig = {
     zoom: 12,
   },
   mapboxDefaultMaxZoom: 18,
+  minimumFeaturesInProject: 1,
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   layerConfigs: {
     CTN: {
@@ -75,6 +76,7 @@ export const mapConfig = {
       layerIdField: "PROJECT_EXTENT_ID",
       tooltipTextProperty: "FULL_STREET_NAME",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_VTs_with_Line_Type/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -121,6 +123,7 @@ export const mapConfig = {
       layerIdName: "project-component-points",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
@@ -158,6 +161,7 @@ export const mapConfig = {
       layerIdName: drawnLayerName,
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 3,
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
       isClickEditable: false,
@@ -175,6 +179,11 @@ export const mapConfig = {
       },
     },
   },
+};
+
+export const mapErrors = {
+  minimumLocations: "Select a location to save project",
+  failedToSave: "The map edit failed to save. Please try again.",
 };
 
 /**
@@ -260,6 +269,35 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
+ * Create object with layer name keys and array values containing feature IDs for map styling
+ * @param {object} featureCollection - A GeoJSON feature collection
+ * @return {object} Object with layer name keys and values that are a array of feature ID strings
+ */
+export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
+  const selectedIdsByLayer = featureCollection.features.reduce(
+    (acc, feature) => {
+      const featureSourceLayerName = feature.properties.sourceLayer;
+      const featureId = getFeatureId(feature, featureSourceLayerName);
+
+      return acc[featureSourceLayerName]
+        ? {
+            ...acc,
+            ...{
+              [featureSourceLayerName]: [
+                ...acc[featureSourceLayerName],
+                featureId,
+              ],
+            },
+          }
+        : { ...acc, [featureSourceLayerName]: [featureId] };
+    },
+    {}
+  );
+
+  return selectedIdsByLayer;
+};
+
+/**
  * Get a feature's GeoJSON from a Mapbox map click or hover event
  * @param {Object} e - Event object for click or hover on map
  * @return {Object} The GeoJSON object that describes the clicked or hovered feature geometry
@@ -297,6 +335,7 @@ export const isFeaturePresent = (selectedFeature, features, layerName) => {
  * @param {String} hoveredId - The ID of the feature hovered
  * @param {String} sourceName - Source name to get config properties for layer styles
  * @param {Array} selectedLayerIds - Array of string IDs that a user has selected
+ * @param {Array} visibleLayerIds - Array of layer names that are visible and have checked boxes in the useLayerSelect UI
  * @return {Object} Mapbox layer style object
  */
 export const createProjectSelectLayerConfig = (
@@ -347,8 +386,8 @@ export const createSummaryMapLayers = geoJSON => {
       : { ...acc, [sourceLayerName]: { ...geoJSON, features: [feature] } };
   }, {});
 
-  return Object.entries(geoJSONBySource).map(
-    ([sourceLayerName, sourceLayerGeoJSON]) => (
+  return Object.entries(geoJSONBySource)
+    .map(([sourceLayerName, sourceLayerGeoJSON]) => (
       <Source
         key={sourceLayerName}
         id={sourceLayerName}
@@ -360,8 +399,16 @@ export const createSummaryMapLayers = geoJSON => {
           {...createProjectViewLayerConfig(sourceLayerName)}
         />
       </Source>
-    )
-  );
+    ))
+    .sort((a, b) => {
+      // The id of the Source component maps to the source layer names in mapConfig, each layer config has a set order
+      const idA = a.props.id;
+      const idB = b.props.id;
+      const orderA = mapConfig.layerConfigs[idA].layerOrder;
+      const orderB = mapConfig.layerConfigs[idB].layerOrder;
+
+      return orderA > orderB ? 1 : -1;
+    });
 };
 
 /**
@@ -369,10 +416,29 @@ export const createSummaryMapLayers = geoJSON => {
  * @summary The fill color key's value below is a Mapbox "case" expression whose cases are
  * built in fillColorCases above. These cases use the sourceLayer and color values set in
  * layerConfigs to set colors of features in the projectExtent feature collection layer on the map.
- * @return {Object} Mapbox layer style object
+ * @param {string} sourceName - Source name to get config properties for layer styles
+ * @param {Array} visibleLayerIds - Array of layer names that are visible and have checked boxes in the useLayerSelect UI
+ * @return {object} Mapbox layer style object
  */
-export const createProjectViewLayerConfig = id =>
-  mapConfig.layerConfigs[id]?.layerStyleSpec() ?? null;
+export const createProjectViewLayerConfig = (
+  sourceName,
+  visibleLayerIds = null
+) => {
+  let layerStyleSpec =
+    mapConfig.layerConfigs[sourceName]?.layerStyleSpec() ?? null;
+
+  if (!!layerStyleSpec && !!visibleLayerIds) {
+    layerStyleSpec = {
+      ...layerStyleSpec,
+      layout: {
+        ...layerStyleSpec.layout,
+        visibility: visibleLayerIds.includes(sourceName) ? "visible" : "none",
+      },
+    };
+  }
+
+  return layerStyleSpec;
+};
 
 /**
  * Build the JSX of the hover tooltip on map
@@ -411,11 +477,11 @@ export const renderFeatureCount = featureCount => (
 );
 
 /**
- * Count the number of IDs in all arrays nested in the selectLayerIds object
- * @param {Object} selectedLayerIds - An object whose keys are layer names and values are arrays of ID strings
+ * Count the number of features in the project extent feature collection
+ * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Number} Total number of string IDs
  */
-export const sumFeaturesSelected = featureCollection =>
+export const countFeatures = featureCollection =>
   featureCollection.features.length;
 
 /**
@@ -579,11 +645,12 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
 export const layerSelectStyles = {
   layerSelectBox: {
     position: "absolute",
-    top: 78,
-    left: 10,
+    top: 168,
+    left: 35,
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
+    zIndex: 1,
   },
   layerSelectTitle: {
     fontWeight: "bold",
