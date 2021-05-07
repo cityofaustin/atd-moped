@@ -261,37 +261,54 @@ export function useMapDrawTools(
       feature => feature.properties.sourceLayer !== drawnLayerName
     );
 
-    // Add a UUID and layer name to the features for retrieval and styling and create feature records
-    const drawnFeatureRecords = newDrawnFeatures
-      .map(feature => {
-        const featureUUID = uuidv4();
+    // Add a UUID and layer name to the new features for retrieval and styling
+    const drawnFeaturesWithSourceAndId = newDrawnFeatures.map(feature => {
+      const featureUUID = uuidv4();
 
-        return {
-          ...feature,
-          id: featureUUID,
-          properties: {
-            ...feature.properties,
-            renderType: "Point",
-            PROJECT_EXTENT_ID: featureUUID,
-            sourceLayer: drawnLayerName,
-          },
-        };
-      })
-      .map(feature => ({
+      return {
+        ...feature,
+        id: featureUUID,
+        properties: {
+          ...feature.properties,
+          renderType: "Point",
+          PROJECT_EXTENT_ID: featureUUID,
+          sourceLayer: drawnLayerName,
+        },
+      };
+    });
+
+    // If this is a new project, update state. If it exists, mutate existing project data
+    if (isNewProject) {
+      // Update existing featureCollection with new drawn features so they can be inserted in NewProjectView
+      const updatedFeatureCollection = {
+        ...featureCollection,
+        features: [
+          ...featureCollection.features,
+          ...drawnFeaturesWithSourceAndId,
+        ],
+      };
+
+      setFeatureCollection(updatedFeatureCollection);
+    } else if (!isNewProject) {
+      // Create feature records for upsert
+      const drawnFeatureRecords = drawnFeaturesWithSourceAndId.map(feature => ({
         location: feature,
         project_id: projectId,
         status_id: 1,
       }));
 
-    // Upsert project feature records, refetch data, and then close UI for user
-    updateProjectExtent({
-      variables: {
-        upserts: drawnFeatureRecords,
-      },
-    }).then(() => {
-      refetchProjectDetails();
-      setIsDrawing(false);
-    });
+      // Upsert project feature records and refetch data
+      updateProjectExtent({
+        variables: {
+          upserts: drawnFeatureRecords,
+        },
+      }).then(() => {
+        refetchProjectDetails();
+      });
+    }
+
+    // Close UI for user
+    setIsDrawing(false);
   };
 
   /**
