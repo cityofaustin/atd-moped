@@ -20,6 +20,8 @@ const ProjectSummary = () => {
   const { projectId } = useParams();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [mapError, setMapError] = useState(false);
+
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
@@ -43,14 +45,25 @@ const ProjectSummary = () => {
           </Grid>
           <Grid item xs={12} md={6}>
             {project_extent_geojson && (
-              <>
-                <ErrorBoundary FallbackComponent={ProjectSummaryMapFallback}>
-                  <ProjectSummaryMap
-                    projectExtentGeoJSON={project_extent_geojson}
+              <ErrorBoundary
+                FallbackComponent={({ error, resetErrorBoundary}) => (
+                  <ProjectSummaryMapFallback
+                    error={error}
+                    resetErrorBoundary={resetErrorBoundary}
+                    projectId={projectId}
                     setIsEditing={setIsEditing}
+                    refetchProjectDetails={refetch}
+                    mapData={project_extent_geojson}
                   />
-                </ErrorBoundary>
-              </>
+                )}
+                onReset={() => setMapError(false)}
+                resetKeys={[mapError]}
+              >
+                <ProjectSummaryMap
+                  projectExtentGeoJSON={project_extent_geojson}
+                  setIsEditing={setIsEditing}
+                />
+              </ErrorBoundary>
             )}
             {isEditing && (
               <ProjectSummaryEditMap
