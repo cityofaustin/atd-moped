@@ -11,7 +11,7 @@ import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
 import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
-import { UPDATE_PROJECT_EXTENT } from "../queries/project";
+import { UPSERT_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
 export const MODES = [
@@ -189,17 +189,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   );
 
 /**
- * Add points drawn using the UI exposed from useMapDrawTools
- * @param {object} featureCollection - GeoJSON feature collection containing project extent
- * @param {array} drawnFeatures - List of GeoJSON features generated from the draw UI
- * @return {object} The updated feature collection
- */
-const addDrawnFeaturesToCollection = (featureCollection, drawnFeatures) => ({
-  ...featureCollection,
-  features: [...featureCollection.features, ...drawnFeatures],
-});
-
-/**
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
@@ -257,7 +246,7 @@ export function useMapDrawTools(
     [featureCollection]
   );
 
-  const [updateProjectExtent] = useMutation(UPDATE_PROJECT_EXTENT);
+  const [updateProjectExtent] = useMutation(UPSERT_PROJECT_EXTENT);
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
@@ -272,43 +261,37 @@ export function useMapDrawTools(
       feature => feature.properties.sourceLayer !== drawnLayerName
     );
 
-    // Add a unique ID and layer name to the feature for future retrieval and styling
-    const drawnFeaturesWithIdAndLayer = newDrawnFeatures.map(feature => {
-      const featureUUID = uuidv4();
+    // Add a UUID and layer name to the features for retrieval and styling and create feature records
+    const drawnFeatureRecords = newDrawnFeatures
+      .map(feature => {
+        const featureUUID = uuidv4();
 
-      return {
-        ...feature,
-        id: featureUUID,
-        properties: {
-          ...feature.properties,
-          renderType: "Point",
-          PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer: drawnLayerName,
-        },
-      };
+        return {
+          ...feature,
+          id: featureUUID,
+          properties: {
+            ...feature.properties,
+            renderType: "Point",
+            PROJECT_EXTENT_ID: featureUUID,
+            sourceLayer: drawnLayerName,
+          },
+        };
+      })
+      .map(feature => ({
+        location: feature,
+        project_id: projectId,
+        status_id: 1,
+      }));
+
+    // Upsert project feature records, refetch data, and then close UI for user
+    updateProjectExtent({
+      variables: {
+        upserts: drawnFeatureRecords,
+      },
+    }).then(() => {
+      refetchProjectDetails();
+      setIsDrawing(false);
     });
-
-    const updatedFeatureCollection = addDrawnFeaturesToCollection(
-      featureCollection,
-      drawnFeaturesWithIdAndLayer
-    );
-
-    // If this is a new project, update state. If it exists, mutate existing project data
-    if (isNewProject) {
-      setFeatureCollection(updatedFeatureCollection);
-    } else if (!isNewProject) {
-      // Update project extent in DB, refetch data, and then close UI for user
-      updateProjectExtent({
-        variables: {
-          projectId,
-          editFeatureCollection: updatedFeatureCollection,
-        },
-      }).then(() => {
-        refetchProjectDetails();
-      });
-    }
-
-    setIsDrawing(false);
   };
 
   /**
