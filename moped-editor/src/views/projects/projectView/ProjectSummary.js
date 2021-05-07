@@ -10,6 +10,12 @@ import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
+/*
+  Error Handler and Fallback Component
+*/
+import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
+import { ErrorBoundary } from "react-error-boundary";
+
 const ProjectSummary = () => {
   const { projectId } = useParams();
 
@@ -38,10 +44,12 @@ const ProjectSummary = () => {
           <Grid item xs={12} md={6}>
             {project_extent_geojson && (
               <>
-                <ProjectSummaryMap
-                  projectExtentGeoJSON={project_extent_geojson}
-                  setIsEditing={setIsEditing}
-                />
+                <ErrorBoundary FallbackComponent={ProjectSummaryMapFallback}>
+                  <ProjectSummaryMap
+                    projectExtentGeoJSON={project_extent_geojson}
+                    setIsEditing={setIsEditing}
+                  />
+                </ErrorBoundary>
               </>
             )}
             {isEditing && (
