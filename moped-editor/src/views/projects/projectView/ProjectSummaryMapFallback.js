@@ -1,6 +1,8 @@
 import React from "react";
 
 import { Box, Button, Card, Icon, makeStyles } from "@material-ui/core";
+import { useMutation } from "@apollo/client";
+import { PROJECT_CLEAR_MAP_DATA } from "../../../queries/project";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -25,12 +27,32 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectSummaryMapFallback = ({
-  error,
-  componentStack,
-  resetErrorBoundary,
-}) => {
+const ProjectSummaryMapFallback = ({ error, resetErrorBoundary, projectId, refetchProjectDetails, setIsEditing, mapData }) => {
   const classes = useStyles();
+
+  const [clearProjectMapData] = useMutation(PROJECT_CLEAR_MAP_DATA, {
+    variables: {
+      projectId: projectId,
+    },
+  });
+
+  /**
+   * Log whatever error there may be
+   */
+  console.error("MapDataError: ", error);
+  console.error("MapData: ", mapData);
+
+  /**
+   * Clears the json data in the project and opens the editor
+   */
+  const clearAndEdit = () => {
+    clearProjectMapData().then(() => {
+      refetchProjectDetails().then(() => {
+        setIsEditing(true);
+        resetErrorBoundary();
+      });
+    });
+  };
 
   return (
     <Box>
@@ -56,6 +78,7 @@ const ProjectSummaryMapFallback = ({
           variant="contained"
           color="primary"
           startIcon={<Icon>edit</Icon>}
+          onClick={clearAndEdit}
         >
           Clear & Edit Map
         </Button>
