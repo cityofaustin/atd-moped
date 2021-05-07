@@ -23,7 +23,7 @@ export const MODES = [
   },
   {
     id: "edit",
-    text: "Edit Point",
+    text: "Select Point",
     handler: EditingMode,
     icon: "icon-select.svg",
   },
@@ -222,6 +222,8 @@ export function useMapDrawTools(
   refetchProjectDetails,
   currentZoom
 ) {
+  const isNewProject = projectId === null;
+
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
@@ -291,16 +293,22 @@ export function useMapDrawTools(
       drawnFeaturesWithIdAndLayer
     );
 
-    // Update project extent in DB, refetch data, and then close UI for user
-    updateProjectExtent({
-      variables: {
-        projectId,
-        editFeatureCollection: updatedFeatureCollection,
-      },
-    }).then(() => {
-      refetchProjectDetails();
-      setIsDrawing(false);
-    });
+    // If this is a new project, update state. If it exists, mutate existing project data
+    if (isNewProject) {
+      setFeatureCollection(updatedFeatureCollection);
+    } else if (!isNewProject) {
+      // Update project extent in DB, refetch data, and then close UI for user
+      updateProjectExtent({
+        variables: {
+          projectId,
+          editFeatureCollection: updatedFeatureCollection,
+        },
+      }).then(() => {
+        refetchProjectDetails();
+      });
+    }
+
+    setIsDrawing(false);
   };
 
   /**

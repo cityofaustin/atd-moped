@@ -3,23 +3,6 @@ import { makeStyles, Tooltip } from "@material-ui/core";
 import theme from "../../../theme/index";
 
 export const useButtonStyles = makeStyles({
-  controlTooltip: {
-    position: "fixed",
-    right: 74,
-    padding: 4,
-    background: theme.palette.text.primary,
-    color: theme.palette.background.mapControls,
-    borderRadius: 4,
-    minWidth: 100,
-    maxWidth: 300,
-    height: 24,
-    fontSize: 12,
-    zIndex: 9,
-    pointerEvents: "none",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
   controlRow: ({ isSelected }) => ({
     height: 34,
     padding: 7,

@@ -61,7 +61,7 @@ const NewProjectMap = ({
   featureCollection,
   setFeatureCollection,
   projectId = null,
-  refetchProjectDetails,
+  refetchProjectDetails = null,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
