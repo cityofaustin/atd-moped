@@ -70,8 +70,9 @@ const ProjectSummaryMap = ({
     updateProjectExtent({
       variables: { projectId, editFeatureCollection },
     }).then(() => {
-      refetchProjectDetails();
-      handleClose();
+      refetchProjectDetails().then(() => {
+        handleClose();
+      });
     });
   };
 
