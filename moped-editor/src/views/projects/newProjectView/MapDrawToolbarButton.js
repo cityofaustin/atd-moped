@@ -1,5 +1,5 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Tooltip } from "@material-ui/core";
 import theme from "../../../theme/index";
 
 export const useButtonStyles = makeStyles({
@@ -34,36 +34,26 @@ export const useButtonStyles = makeStyles({
   }),
 });
 
-const MapDrawToolbarButton = ({
-  onClick,
-  selectedModeId,
-  mode,
-  hoveredId,
-  onHover,
-}) => {
+const MapDrawToolbarButton = ({ onClick, selectedModeId, mode }) => {
   const isSelected = mode.id === selectedModeId;
 
   const classes = useButtonStyles({ isSelected });
 
   return (
-    <div
-      className={classes.controlRow}
-      onClick={onClick}
-      onMouseOver={onHover}
-      onMouseOut={() => onHover(null)}
-      key={mode.id}
-      id={mode.id}
-    >
-      <img
+    <Tooltip title={mode.text} aria-label={mode.text} placement="left">
+      <div
+        className={classes.controlRow}
+        onClick={onClick}
+        key={mode.id}
         id={mode.id}
-        onMouseOver={onHover}
-        alt={mode.text}
-        src={`${process.env.PUBLIC_URL}/static/${mode.icon}`}
-      />
-      {hoveredId === mode.id && (
-        <div className={classes.controlTooltip}>{mode.text}</div>
-      )}
-    </div>
+      >
+        <img
+          id={mode.id}
+          alt={mode.text}
+          src={`${process.env.PUBLIC_URL}/static/${mode.icon}`}
+        />
+      </div>
+    </Tooltip>
   );
 };
 
