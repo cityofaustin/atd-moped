@@ -25,9 +25,19 @@ const useStyles = makeStyles(theme => ({
   button: {
     margin: "1rem",
   },
+  mapErrorTitle: {
+    fontSize: "24px",
+  },
 }));
 
-const ProjectSummaryMapFallback = ({ error, resetErrorBoundary, projectId, refetchProjectDetails, setIsEditing, mapData }) => {
+const ProjectSummaryMapFallback = ({
+  error,
+  resetErrorBoundary,
+  projectId,
+  refetchProjectDetails,
+  setIsEditing,
+  mapData,
+}) => {
   const classes = useStyles();
 
   const [clearProjectMapData] = useMutation(PROJECT_CLEAR_MAP_DATA, {
@@ -62,15 +72,19 @@ const ProjectSummaryMapFallback = ({ error, resetErrorBoundary, projectId, refet
           alt="Logo"
           src={`${process.env.PUBLIC_URL}/static/map-error.svg`}
         />
-        <h1>Map Unavailable</h1>
+        <h3 className={classes.mapErrorTitle}>No map available</h3>
         <div className={classes.paragraphGroup}>
           <p>
-            It appears the map data does not exist, or it has become outdated or
-            corrupted.
-          </p>
-          <p>
-            Create another map, or feel free to contact support for more
-            options.
+            The map for this project is either missing or outdated. Create a new
+            map or{" "}
+            <a
+              href={
+                "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+              }
+            >
+              submit a support request
+            </a>{" "}
+            for more options.
           </p>
         </div>
         <Button
@@ -80,7 +94,7 @@ const ProjectSummaryMapFallback = ({ error, resetErrorBoundary, projectId, refet
           startIcon={<Icon>edit</Icon>}
           onClick={clearAndEdit}
         >
-          Clear & Edit Map
+          MAP PROJECT
         </Button>
       </Card>
     </Box>
