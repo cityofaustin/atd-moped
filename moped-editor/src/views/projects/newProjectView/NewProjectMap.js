@@ -49,7 +49,8 @@ export const useStyles = makeStyles({
     position: "absolute",
     alignItems: "center",
     right: 32,
-    ["@media (max-width:640px)"]: {
+    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
+    "@media (max-width:640px)": {
       top: 32,
     },
   },
