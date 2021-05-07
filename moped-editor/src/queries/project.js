@@ -408,3 +408,31 @@ export const PROJECT_ARCHIVE= gql`
     }
   }
 `
+
+export const PROJECT_CLEAR_MAP_DATA = gql`
+  mutation ClearProjectMapData($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: {
+        project_extent_geojson: {
+          type: "FeatureCollection", features: [
+            {
+              id: 101277,
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [-97.74282043799758, 30.26807093069874]
+              },
+              properties: {
+                sourceLayer: "Project_Component_Points_prototype",
+                PROJECT_EXTENT_ID: 701277
+              }
+            }
+          ]
+        }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
