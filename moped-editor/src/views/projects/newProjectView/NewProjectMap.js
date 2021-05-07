@@ -41,6 +41,7 @@ export const useStyles = makeStyles({
   },
   mapBox: {
     padding: 25,
+    position: "relative",
   },
   ...layerSelectStyles,
 });

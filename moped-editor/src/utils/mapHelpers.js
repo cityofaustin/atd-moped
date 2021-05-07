@@ -715,7 +715,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
 export const layerSelectStyles = {
   layerSelectBox: {
     position: "absolute",
-    top: 168,
+    top: 105,
     left: 35,
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
