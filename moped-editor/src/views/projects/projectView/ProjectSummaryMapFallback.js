@@ -30,6 +30,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * Renders a fallback component that shows the user whenever there is a map error.
+ * @param {object} error - provided by ErrorBoundary component, contains error details.
+ * @param {function} resetErrorBoundary - A function that forces ErrorBoundary to re-render it's children components
+ * @param {integer} projectId - The project id of the map
+ * @param {function} refetchProjectDetails - A refetch function to run after the data is cleared
+ * @param {function} setIsEditing - A function to enable editing
+ * @param {object} mapData - The map data with errors to show in the console for debugging
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectSummaryMapFallback = ({
   error,
   resetErrorBoundary,
