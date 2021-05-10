@@ -1,8 +1,9 @@
 import React from "react";
 
 import { Box, Button, Card, Icon, makeStyles } from "@material-ui/core";
-import { useMutation } from "@apollo/client";
-import { PROJECT_CLEAR_MAP_DATA } from "../../../queries/project";
+import { gql, useMutation } from "@apollo/client";
+import { PROJECT_CLEAR_MAP_DATA_TEMPLATE } from "../../../queries/project";
+import { v4 as uuid } from "uuid";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,11 +52,14 @@ const ProjectSummaryMapFallback = ({
 }) => {
   const classes = useStyles();
 
-  const [clearProjectMapData] = useMutation(PROJECT_CLEAR_MAP_DATA, {
-    variables: {
-      projectId: projectId,
-    },
-  });
+  const [clearProjectMapData] = useMutation(
+    gql(PROJECT_CLEAR_MAP_DATA_TEMPLATE.replace("RANDOM_FEATURE_ID", uuid())),
+    {
+      variables: {
+        projectId: projectId,
+      },
+    }
+  );
 
   /**
    * Log whatever error there may be
