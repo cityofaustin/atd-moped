@@ -15,7 +15,8 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
-import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
+import { UPSERT_PROJECT_EXTENT } from "../../../queries/project";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -34,27 +35,29 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ProjectSummaryMap = ({
+const ProjectSummaryEditMap = ({
   projectId,
-  projectExtentGeoJSON,
+  projectFeatureCollection,
+  projectFeatureRecords,
   isEditing,
   setIsEditing,
   refetchProjectDetails,
 }) => {
   const classes = useStyles();
   const [updateProjectExtent, { loading, error }] = useMutation(
-    UPDATE_PROJECT_EXTENT
+    UPSERT_PROJECT_EXTENT
   );
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    projectExtentGeoJSON
+    projectFeatureCollection
   );
   const areMinimumFeaturesSet =
-    countFeatures(projectExtentGeoJSON) >= mapConfig.minimumFeaturesInProject;
+    countFeatures(projectFeatureCollection) >=
+    mapConfig.minimumFeaturesInProject;
 
   // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
   useEffect(() => {
-    setEditFeatureCollection(projectExtentGeoJSON);
-  }, [projectExtentGeoJSON]);
+    setEditFeatureCollection(projectFeatureCollection);
+  }, [projectFeatureCollection]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -64,11 +67,47 @@ const ProjectSummaryMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data, and handles dialog close on success
+   * Calls upsert project features mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
+    const editedFeatures = editFeatureCollection.features;
+
+    // Find new records that need to be inserted and create a feature record from them
+    const newRecordsToInsert = editedFeatures
+      .filter(
+        feature =>
+          !projectFeatureRecords.find(
+            record =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(feature => ({
+        location: feature,
+        project_id: projectId,
+        status_id: 1,
+      }));
+
+    // Find existing records that need to be soft deleted, clean them, and set status to inactive
+    const existingRecordsToUpdate = projectFeatureRecords
+      .map(record => filterObjectByKeys(record, ["__typename"]))
+      .filter(
+        record =>
+          !editedFeatures.find(
+            feature =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(record => ({
+        ...record,
+        status_id: 0,
+      }));
+
+    const upserts = [...newRecordsToInsert, ...existingRecordsToUpdate];
+
     updateProjectExtent({
-      variables: { projectId, editFeatureCollection },
+      variables: { upserts },
     }).then(() => {
       refetchProjectDetails().then(() => {
         handleClose();
@@ -131,4 +170,4 @@ const ProjectSummaryMap = ({
   );
 };
 
-export default ProjectSummaryMap;
+export default ProjectSummaryEditMap;
