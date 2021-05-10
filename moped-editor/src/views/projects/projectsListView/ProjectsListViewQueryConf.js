@@ -88,6 +88,12 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
+    current_phase: {
+      searchable: false,
+      sortable: false,
+      label: "Current Phase",
+      width: "15%",
+    },
     start_date: {
       searchable: false,
       sortable: true,
