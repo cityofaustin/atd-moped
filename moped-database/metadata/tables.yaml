@@ -1418,6 +1418,76 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_features
+  object_relationships:
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+      check: null
+- table:
+    schema: public
     name: moped_proj_financials
   insert_permissions:
   - role: moped-admin
@@ -3644,6 +3714,21 @@
 - table:
     schema: public
     name: moped_project
+  array_relationships:
+  - name: moped_proj_features
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_features
+  - name: moped_proj_personnel
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_personnel
   insert_permissions:
   - role: moped-admin
     permission:
@@ -3660,8 +3745,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3687,8 +3770,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3714,8 +3795,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3741,8 +3820,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3768,8 +3845,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3796,8 +3871,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3823,8 +3896,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
-      - project_extent_ids
       - project_id
       - project_importance
       - project_length
@@ -3855,8 +3926,6 @@
         - project_length
         - project_order
         - timeline_id
-        - project_extent_geojson
-        - project_extent_ids
         - current_phase
         - current_status
         - ecapris_subproject_id

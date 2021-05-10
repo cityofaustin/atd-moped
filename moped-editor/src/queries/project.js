@@ -9,49 +9,22 @@ export const PROJECT_NAME = gql`
 `;
 
 export const ADD_PROJECT = gql`
-  mutation MyMutation(
-    $project_name: String! = ""
-    $project_description: String! = ""
-    $current_phase: String! = ""
-    $current_status: String! = ""
-    $ecapris_subproject_id: numeric
-    $fiscal_year: String! = ""
-    $start_date: date = ""
-    $capitally_funded: Boolean! = false
-    $project_priority: String! = ""
-    $project_extent_ids: jsonb = {}
-    $project_extent_geojson: jsonb = {}
+  mutation AddProject(
+    $object: moped_project_insert_input!
   ) {
-    insert_moped_project(
-      objects: {
-        project_name: $project_name
-        project_description: $project_description
-        current_phase: $current_phase
-        current_status: $current_status
-        ecapris_subproject_id: $ecapris_subproject_id
-        fiscal_year: $fiscal_year
-        start_date: $start_date
-        capitally_funded: $capitally_funded
-        project_priority: $project_priority
-        project_extent_ids: $project_extent_ids
-        project_extent_geojson: $project_extent_geojson
-      }
+    insert_moped_project_one(
+      object: $object
     ) {
-      affected_rows
-      returning {
-        project_id
-        project_name
-        project_description
-        project_priority
-        current_phase
-        current_status
-        ecapris_subproject_id
-        fiscal_year
-        capitally_funded
-        start_date
-        project_extent_ids
-        project_extent_geojson
-      }
+      project_id
+      project_name
+      project_description
+      project_priority
+      current_phase
+      current_status
+      ecapris_subproject_id
+      fiscal_year
+      capitally_funded
+      start_date
     }
   }
 `;
@@ -69,8 +42,11 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      project_extent_ids
-      project_extent_geojson
+      moped_proj_features(where: {status_id: {_eq: 1}}) {
+        feature_id
+        project_id
+        location
+      }
     }
   }
 `;
@@ -112,16 +88,6 @@ export const TEAM_QUERY = gql`
       last_name
       workgroup_id
       user_id
-    }
-  }
-`;
-
-export const ADD_PROJECT_PERSONNEL = gql`
-  mutation AddProjectPersonnel(
-    $objects: [moped_proj_personnel_insert_input!]!
-  ) {
-    insert_moped_proj_personnel(objects: $objects) {
-      affected_rows
     }
   }
 `;
@@ -252,17 +218,15 @@ export const ADD_PROJECT_PHASE = gql`
   }
 `;
 
-export const UPDATE_PROJECT_EXTENT = gql`
-  mutation UpdateProjectExtent(
-    $projectId: Int
-    $editLayerIds: jsonb
-    $editFeatureCollection: jsonb
+export const UPSERT_PROJECT_EXTENT = gql`
+  mutation UpsertProjectExtent(
+    $upserts: [moped_proj_features_insert_input!]!
   ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: {
-        project_extent_geojson: $editFeatureCollection
-        project_extent_ids: $editLayerIds
+    insert_moped_proj_features(
+      objects: $upserts
+      on_conflict: {
+        constraint: moped_proj_features_pkey
+        update_columns: status_id
       }
     ) {
       affected_rows
@@ -414,4 +378,3 @@ export const PROJECT_ARCHIVE= gql`
     }
   }
 `
-

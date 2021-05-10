@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
+import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import { SUMMARY_QUERY } from "../../../queries/project";
@@ -21,7 +22,10 @@ const ProjectSummary = () => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const { project_extent_ids, project_extent_geojson } = data.moped_project[0];
+  const projectFeatureRecords = data?.moped_project[0]?.moped_proj_features;
+  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
+    projectFeatureRecords
+  );
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -36,11 +40,10 @@ const ProjectSummary = () => {
             />
           </Grid>
           <Grid item xs={12} md={6}>
-            {project_extent_geojson && project_extent_ids && (
+            {projectFeatureCollection && (
               <>
                 <ProjectSummaryMap
-                  selectedLayerIds={project_extent_ids}
-                  projectExtentGeoJSON={project_extent_geojson}
+                  projectExtentGeoJSON={projectFeatureCollection}
                   setIsEditing={setIsEditing}
                 />
               </>
@@ -48,8 +51,8 @@ const ProjectSummary = () => {
             {isEditing && (
               <ProjectSummaryEditMap
                 projectId={projectId}
-                selectedLayerIds={project_extent_ids}
-                projectExtentGeoJSON={project_extent_geojson}
+                projectFeatureRecords={projectFeatureRecords}
+                projectFeatureCollection={projectFeatureCollection}
                 isEditing={isEditing}
                 setIsEditing={setIsEditing}
                 refetchProjectDetails={refetch}
