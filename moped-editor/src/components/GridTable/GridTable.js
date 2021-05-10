@@ -357,6 +357,11 @@ const GridTable = ({ title, query }) => {
     query.config.options.useQuery
   );
 
+  console.log(query)
+  console.log("data", data)
+  query.columns.map(col => console.log(col, isAlphanumeric(col)))
+  console.log(query.config.customSingleItemButton)
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -425,7 +430,7 @@ const GridTable = ({ title, query }) => {
                                         <RouterLink
                                           to={`/${query.singleItem}/${row[column]}`}
                                         >
-                                          {query.config.columns[
+                                          {!query.config.columns[
                                             column
                                           ].hasOwnProperty("icon") ? (
                                             <Icon

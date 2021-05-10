@@ -63,6 +63,7 @@ export const ProjectsListViewQueryConf = {
       type: "String",
     },
     project_description: {
+      hidden: true,
       searchable: true,
       sortable: false,
       label: "Project Description",
