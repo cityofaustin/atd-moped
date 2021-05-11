@@ -28,9 +28,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
-  filterButton: {
-    height: "3.4rem",
-  },
   filterButtonFilters: {
     marginTop: theme.spacing(1),
     height: "3.4rem",
@@ -186,7 +183,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
   };
 
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={1}>
       <Grid item xs={12} sm={8} lg={10}>
         <TextField
           fullWidth
@@ -204,6 +201,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
           placeholder={getSearchPlaceholder()}
           variant="outlined"
           value={searchFieldValue}
+          size="small"
         />
       </Grid>
       <Grid item xs={12} sm={4} lg={2}>
