@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     width: "100%",
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(2),
   },
   title: {
     position: "relative",
@@ -407,7 +407,6 @@ const GridTable = ({ title, query }) => {
                                 // If column is hidden, don't render <td>
                                 !query.isHidden(column) && (
                                   <TableCell
-                                    size="small"
                                     key={columnIndex}
                                     width={
                                       query.config.columns[
