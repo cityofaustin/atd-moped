@@ -89,7 +89,7 @@ export const ProjectsListViewQueryConf = {
       },
     },
     current_phase: {
-      searchable: false,
+      searchable: true,
       sortable: false,
       label: "Current Phase",
       width: "15%",
