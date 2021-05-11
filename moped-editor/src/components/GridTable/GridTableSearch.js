@@ -32,6 +32,15 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1),
     },
   },
+  downloadButtonGrid: {
+    padding: "1rem 1rem 0 1rem",
+  },
+  downloadCsvButton: {
+    height: "2.5rem",
+  },
+  tabStyle: {
+    margin: ".5rem",
+  },
 }));
 
 /**
@@ -254,10 +263,10 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
       <GridTableExport query={query} />
       {children}
 
-      <Box>
+      <Box mt={3}>
         <Paper>
-          <Grid container>
-            <Grid item>
+          <Grid container lg={12}>
+            <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
               <Tabs
                 value={tabValue}
                 onChange={handleTabChange}
@@ -266,6 +275,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
                 aria-label="Search Data Table"
               >
                 <Tab
+                  className={classes.tabStyle}
                   onClick={handleSwitchToSearch}
                   label={
                     <div>
@@ -275,6 +285,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
                   }
                 />
                 <Tab
+                  className={classes.tabStyle}
                   onClick={handleSwitchToAdvancedSearch}
                   label={
                     <div>
@@ -287,15 +298,21 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
             </Grid>
             <Grid
               item
+              xs={12}
+              sm={6}
+              md={4}
+              lg={2}
+              xl={2}
+              className={classes.downloadButtonGrid}
             >
               {query.config.showExport && (
                 <Button
+                  className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
                   startIcon={<Icon>save</Icon>}
                   variant="outlined"
                   color="primary"
                   fullWidth
-                  size="small"
                 >
                   Download
                 </Button>

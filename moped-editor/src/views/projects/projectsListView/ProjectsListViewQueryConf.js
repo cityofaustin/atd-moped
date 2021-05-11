@@ -41,7 +41,7 @@ export const ProjectsListViewQueryConf = {
       primary_key: true,
       searchable: false,
       sortable: false,
-      label: "Details",
+      label: "",
       icon: {
         name: "edit_road",
         color: "primary",
@@ -59,7 +59,20 @@ export const ProjectsListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "*",
+      width: "20%",
+      type: "String",
+    },
+    project_description: {
+      searchable: true,
+      sortable: false,
+      label: "Project Description",
+      search: {
+        label: "Search by project description",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      width: "50%",
       type: "String",
     },
     current_status: {
@@ -67,7 +80,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Status",
       type: "String",
-      width: "*",
+      width: "5%",
       chip: {
         active: "primary",
         hold: "secondary",
@@ -78,7 +91,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Start Date",
-      width: "*",
+      width: "10%",
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },

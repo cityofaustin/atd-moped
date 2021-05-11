@@ -82,7 +82,6 @@ const GridTableListHeader = ({
                     : null
                 }
                 key={`th-${index}`}
-                size="small"
               >
                 {renderLabel(
                   // Get a human-readable label string
