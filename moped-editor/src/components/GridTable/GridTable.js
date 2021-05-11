@@ -147,9 +147,9 @@ const GridTable = ({ title, query }) => {
   query.cleanWhere();
 
   /**
-   * Attempts to retrieve a valid graphql search value, for example when searching on an
-   * integer/float field but providing it a string, this function returns the value configured
-   * in the invalidValueDefault field in the search object, or null.
+   * Attempts to parse search value into a valid graphql search value.
+   * Ex: when searching on an integer/float field but providing a string, 
+   * function returns the invalidValueDefault field in the search config, or null.
    * @param {string} column - The name of the column to search
    * @param {*} value - The value in question
    * @returns {*} - The value output
@@ -173,6 +173,7 @@ const GridTable = ({ title, query }) => {
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
+    console.log('value ', search.value)
 
     /**
      * Iterate through all column keys, if they are searchable
@@ -196,6 +197,7 @@ const GridTable = ({ title, query }) => {
   // For each filter added to state, add a where clause in GraphQL
   Object.keys(filters).forEach(filter => {
     let { envelope, field, gqlOperator, value, type } = filters[filter];
+    console.log("HERE: ", envelope, field, gqlOperator, value, type)
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
@@ -359,8 +361,6 @@ const GridTable = ({ title, query }) => {
 
   console.log(query)
   console.log("data", data)
-  query.columns.map(col => console.log(col, isAlphanumeric(col)))
-  console.log(query.config.customSingleItemButton)
 
   return (
     <ApolloErrorHandler error={error}>
@@ -430,7 +430,7 @@ const GridTable = ({ title, query }) => {
                                         <RouterLink
                                           to={`/${query.singleItem}/${row[column]}`}
                                         >
-                                          {!query.config.columns[
+                                          {query.config.columns[
                                             column
                                           ].hasOwnProperty("icon") ? (
                                             <Icon

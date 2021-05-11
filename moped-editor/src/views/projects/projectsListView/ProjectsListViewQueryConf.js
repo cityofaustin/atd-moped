@@ -94,6 +94,10 @@ export const ProjectsListViewQueryConf = {
       label: "Current Phase",
       width: "15%",
     },
+    // moped_proj_personnel: {
+    //   searchable: false,
+    //   width: "15%",
+    // },
     start_date: {
       searchable: false,
       sortable: true,
