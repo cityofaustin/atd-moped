@@ -8,7 +8,6 @@ import theme from "src/theme";
 import { routes, restrictRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 import { setContext } from "@apollo/client/link/context";
-var pckg = require("../package.json");
 
 // Apollo GraphQL Client
 import {
@@ -18,6 +17,7 @@ import {
   createHttpLink,
 } from "@apollo/client";
 
+var pckg = require("../package.json");
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
 const App = () => {
