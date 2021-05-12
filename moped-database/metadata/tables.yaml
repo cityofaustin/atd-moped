@@ -2173,6 +2173,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2197,6 +2198,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2221,6 +2223,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       filter: {}
   - role: moped-editor
     permission:
@@ -2244,6 +2247,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       filter: {}
   - role: moped-viewer
     permission:
@@ -2267,6 +2271,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2291,6 +2296,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       filter: {}
       check: {}
   - role: moped-editor
@@ -2315,6 +2321,7 @@
       - project_id
       - project_milestone_id
       - started_by_user_id
+      - status_id
       filter: {}
       check: {}
 - table:

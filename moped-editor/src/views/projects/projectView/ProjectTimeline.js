@@ -19,7 +19,9 @@ import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
-  ADD_PROJECT_MILESTONE
+  ADD_PROJECT_MILESTONE,
+  UPDATE_PROJECT_MILESTONES_MUTATION,
+  DELETE_PROJECT_MILESTONE
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -87,7 +89,6 @@ const ProjectTimeline = () => {
   const addActionRefPhases = React.useRef();
   const addActionRefMilestones = React.useRef();
 
-
   /**
    * Queries Hook
    * @type {boolean} - loading state
@@ -107,6 +108,10 @@ const ProjectTimeline = () => {
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
+  const [updateProjectMilestone] = useMutation(
+    UPDATE_PROJECT_MILESTONES_MUTATION
+  );
+  const [deleteProjectMilestone] = useMutation(DELETE_PROJECT_MILESTONE);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -126,13 +131,13 @@ const ProjectTimeline = () => {
     {}
   );
 
-  const milestoneNameLookup = data.moped_milestones.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.milestone_name]:
-        item.milestone_name.charAt(0).toUpperCase() + item.milestone_name.slice(1),
-      })
-  )
+  const milestoneNameLookup = data.moped_milestones.reduce((obj, item) =>
+    Object.assign(obj, {
+      [item.milestone_name]:
+        item.milestone_name.charAt(0).toUpperCase() +
+        item.milestone_name.slice(1),
+    })
+  );
 
   /**
    * Column configuration for <MaterialTable>
@@ -169,19 +174,43 @@ const ProjectTimeline = () => {
 
   const milestoneColumns = [
     {
-      title: "Milestone", field: "milestone_name", lookup: milestoneNameLookup
+      title: "Milestone",
+      field: "milestone_name",
+      lookup: milestoneNameLookup,
     },
     {
-      title: "Description", field: "milestone_description"
+      title: "Description",
+      field: "milestone_description",
     },
     {
-      title: "Completion estimate", field: "milestone_estimate"
+      title: "Completion estimate",
+      field: "milestone_estimate",
+      editComponent: props => (
+        <DateFieldEditComponent
+          {...props}
+          name="milestone_estimate"
+          label="Completion estimate"
+        />
+      ),
     },
     {
-      title: "Date completed", field: "milestone_end" 
+      title: "Date completed",
+      field: "milestone_end",
+      editComponent: props => (
+        <DateFieldEditComponent
+          {...props}
+          name="milestone_end"
+          label="Date completed"
+        />
+      ),
     },
     {
-      title: "Complete", field: "completed", lookup: { true: "Yes", false: "No" },
+      title: "Complete",
+      field: "completed",
+      lookup: { true: "Yes", false: "No" },
+      editComponent: props => (
+        <ToggleEditComponent {...props} name="completed" />
+      ),
     },
   ];
 
@@ -316,53 +345,109 @@ const ProjectTimeline = () => {
           <Grid item xs={12}>
             <div style={{ maxWidth: "100%" }}>
               <MaterialTable
-              columns={milestoneColumns}
-              data={data.moped_proj_milestones}
-              title="Project Milestones"
-              components={{
-                Action: props => {
-                  //If isn't the add action
-                  if (
-                    typeof props.action === typeof Function ||
-                    props.action.tooltip !== "Add"
-                  ) {
-                    return <MTableAction {...props} />;
-                  } else {
-                    return (
-                      <div
-                        ref={addActionRefMilestones}
-                        onClick={props.action.onClick}
-                      />
-                    );
-                  }
-                },
-              }}
-              editable={{
-                onRowAdd: newData =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    // Merge input fields with required fields default data.
-                    const newMilestoneObject = Object.assign(
-                      {
-                        project_id: projectId,
-                      },
-                      newData
-                    );
+                columns={milestoneColumns}
+                data={data.moped_proj_milestones}
+                title="Project Milestones"
+                components={{
+                  Action: props => {
+                    //If isn't the add action
+                    if (
+                      typeof props.action === typeof Function ||
+                      props.action.tooltip !== "Add"
+                    ) {
+                      return <MTableAction {...props} />;
+                    } else {
+                      return (
+                        <div
+                          ref={addActionRefMilestones}
+                          onClick={props.action.onClick}
+                        />
+                      );
+                    }
+                  },
+                }}
+                editable={{
+                  onRowAdd: newData =>
+                    new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        // Merge input fields with required fields default data.
+                        const newMilestoneObject = Object.assign(
+                          {
+                            project_id: projectId,
+                            status_id: 1,
+                          },
+                          newData
+                        );
 
-                    // Execute insert mutation
-                    addProjectMilestone({
-                      variables: {
-                        objects: [newMilestoneObject],
-                      },
-                    });
-                    setTimeout(() => refetch(), 501);
-                    resolve();
-                  }, 500);
-                }),
-              }}
-              options={{
-                actionsColumnIndex: -1,
-              }}
+                        // Execute insert mutation
+                        addProjectMilestone({
+                          variables: {
+                            objects: [newMilestoneObject],
+                          },
+                        });
+                        setTimeout(() => refetch(), 501);
+                        resolve();
+                      }, 500);
+                    }),
+                  onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        const updatedMilestoneObject = {
+                          ...oldData,
+                        };
+
+                        // Array of differences between new and old data
+                        let differences = Object.keys(oldData).filter(
+                          key => oldData[key] !== newData[key]
+                        );
+
+                        // Loop through the differences and assign newData values.
+                        // If one of the Date fields is blanked out, coerce empty
+                        // string to null.
+                        differences.forEach(diff => {
+                          let shouldCoerceEmptyStringToNull =
+                            newData[diff] === "" &&
+                            (diff === "phase_start" || diff === "phase_end");
+
+                          if (shouldCoerceEmptyStringToNull) {
+                            updatedMilestoneObject[diff] = null;
+                          } else {
+                            updatedMilestoneObject[diff] = newData[diff];
+                          }
+                        });
+
+                        // Remove extraneous fields given by MaterialTable that
+                        // Hasura doesn't need
+                        delete updatedMilestoneObject.tableData;
+                        delete updatedMilestoneObject.project_id;
+                        delete updatedMilestoneObject.__typename;
+
+                        // Execute update mutation
+                        updateProjectMilestone({
+                          variables: updatedMilestoneObject,
+                        });
+
+                        setTimeout(() => refetch(), 501);
+                        resolve();
+                      }, 500);
+                    }),
+                  onRowDelete: oldData =>
+                    new Promise((resolve, reject) => {
+                      setTimeout(() => {
+                        // Execute delete mutation
+                        deleteProjectMilestone({
+                          variables: {
+                            project_milestone_id: oldData.project_milestone_id,
+                          },
+                        });
+                        setTimeout(() => refetch(), 501);
+                        resolve();
+                      }, 500);
+                    }),
+                }}
+                options={{
+                  actionsColumnIndex: -1,
+                }}
               />
             </div>
             <Box pt={2}>
