@@ -3,6 +3,32 @@ import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 
+
+// just for now
+const personnelName = value => {
+  const parsedJson = JSON.parse(value)
+  let uniqueNames = {}
+  let personnel = []
+  const names = parsedJson.map(person => 
+    `${person.moped_user.first_name} ${person.moped_user.last_name} (${person.moped_project_role.project_role_name})`)
+
+  parsedJson.map(person => {
+    let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
+    if (uniqueNames[fullName]) {
+      uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
+    } else {
+      uniqueNames[fullName] = person.moped_project_role.project_role_name
+    }
+  })
+
+  for (const [key, value] of Object.entries(uniqueNames)) {
+    personnel.push(`${key} (${value})`)
+  }
+
+  return names.join(", ")
+  //return personnel.join(", ")
+}
+
 /**
  * The Query configuration (now also including filters)
  * @constant
@@ -94,10 +120,13 @@ export const ProjectsListViewQueryConf = {
       label: "Current Phase",
       width: "15%",
     },
-    "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } }": {
+    "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } moped_project_role { project_role_name }}": {
       searchable: false,
+      sortable: false,
+      stringify: true,
       label: "Team Members",
       width: "15%",
+      filter: personnelName,
     },
     start_date: {
       searchable: false,
