@@ -34,7 +34,7 @@ import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
-import ProjectNotes from "./ProjectNotes";
+import ProjectComments from "./Comments/ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import { PROJECT_NAME, PROJECT_ARCHIVE } from "../../../queries/project";
@@ -99,7 +99,7 @@ const TABS = [
   { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
-  { label: "Notes", Component: ProjectNotes, param: "notes" },
+  { label: "Comments", Component: ProjectComments, param: "comments" },
   {
     label: "Activity Log",
     Component: ProjectActivityLog,

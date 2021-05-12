@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Box, Divider } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import JoditEditor from "jodit-react";
-import { useUser } from "../../auth/user";
+import { useUser } from "src/auth/user";
 
 const useStyles = makeStyles(theme => ({
   button: {
@@ -11,7 +11,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const Note = ({ content, editNote, id, deleteNote }) => {
+const Comment = ({ content, editComment, id, deleteComment }) => {
   const classes = useStyles();
   const config = {
     readonly: true,
@@ -39,10 +39,10 @@ const Note = ({ content, editNote, id, deleteNote }) => {
           tabIndex={1} // tabIndex of textarea
         />
         <Divider />
-        <Button onClick={() => editNote(id)} className={classes.button}>
+        <Button onClick={() => editComment(id)} className={classes.button}>
           Edit
         </Button>
-        <Button onClick={() => deleteNote(id)} className={classes.button}>
+        <Button onClick={() => deleteComment(id)} className={classes.button}>
           Delete
         </Button>
       </Box>
@@ -50,4 +50,4 @@ const Note = ({ content, editNote, id, deleteNote }) => {
     </>
   );
 };
-export default Note;
+export default Comment;

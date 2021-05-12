@@ -1,14 +1,14 @@
 import React from "react";
-import DisplayAllNotes from "../DisplayAllNotes";
+import DisplayAllComments from "./DisplayAllComments";
 import Page from "src/components/Page";
 import { Container, Card, Divider } from "@material-ui/core";
 
-const ProjectNotes = () => {
+const ProjectComments = () => {
   return (
     <Page title="Project Notes Page">
       <Container>
         <Card>
-          <DisplayAllNotes />
+          <DisplayAllComments />
           <Divider />
         </Card>
       </Container>
@@ -16,4 +16,4 @@ const ProjectNotes = () => {
   );
 };
 
-export default ProjectNotes;
+export default ProjectComments;

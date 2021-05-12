@@ -5,7 +5,7 @@ import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
-import ProjectNotes from "./projectView/ProjectNotes";
+import ProjectComments from "./projectView/Comments/ProjectComments";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -154,7 +154,7 @@ const ProjectSummary = () => {
                 <Tab label="Summary" {...a11yProps(0)} />
                 <Tab label="Team" {...a11yProps(1)} />
                 <Tab label="Timeline" {...a11yProps(2)} />
-                <Tab label="Notes" {...a11yProps(3)} />
+                <Tab label="Comments" {...a11yProps(3)} />
                 <Tab label="Activity Log" {...a11yProps(4)} />
               </Tabs>
             </AppBar>
@@ -186,7 +186,7 @@ const ProjectSummary = () => {
               TBD
             </TabPanel>
             <TabPanel value={activeTab} index={3}>
-              <ProjectNotes />
+              <ProjectComments />
             </TabPanel>
             <TabPanel value={activeTab} index={4}>
               TBD

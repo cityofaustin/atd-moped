@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
-import CreateNewNote from "./CreateNewNote";
-import Note from "./Note";
-import ModifyNote from "./ModifyNote";
+import CreateNewComment from "./CreateNewComment";
+import Comment from "./Comment";
+import ModifyComment from "./ModifyComment";
 import { Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useMutation } from "@apollo/client";
@@ -14,13 +14,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DisplayAllNotes = () => {
+const DisplayAllComments = () => {
   const classes = useStyles();
 
   const [content, setContent] = useState("");
   const [allNotes, setAllNotes] = useState([]);
-  const [isCreateNewNote, setIsCreateNewNote] = useState(false);
-  const [isModifyNote, setIsModifyNote] = useState(false);
+  const [isCreateNewComment, setIsCreateNewComment] = useState(false);
+  const [isModifyComment, setIsModifyComment] = useState(false);
   const [editNoteId, setEditNoteId] = useState("");
 
   // Initialize useRef
@@ -45,15 +45,15 @@ const DisplayAllNotes = () => {
   const saveNoteContentToState = event => {
     setContent(event.target.innerHTML);
   };
-  const toggleCreateNewNote = () => {
-    setIsCreateNewNote(!isCreateNewNote);
+  const toggleCreateNewComment = () => {
+    setIsCreateNewComment(!isCreateNewComment);
   };
-  const toggleModifyNoteComponent = () => {
-    setIsModifyNote(!isModifyNote);
+  const toggleModifyCommentComponent = () => {
+    setIsModifyComment(!isModifyComment);
   };
   const editNote = id => {
     setEditNoteId(id);
-    toggleModifyNoteComponent();
+    toggleModifyCommentComponent();
   };
   const deleteNote = id => {
     const modifiedNote = allNotes.filter(eachNote => {
@@ -73,7 +73,7 @@ const DisplayAllNotes = () => {
       return eachNote;
     });
     setAllNotes(updatedNote);
-    toggleModifyNoteComponent();
+    toggleModifyCommentComponent();
   };
   const saveNote = event => {
     event.preventDefault();
@@ -85,12 +85,12 @@ const DisplayAllNotes = () => {
     });
     setContent("");
     getContent.current.value = "";
-    toggleCreateNewNote();
+    toggleCreateNewComment();
   };
-  if (isCreateNewNote) {
+  if (isCreateNewComment) {
     return (
       <>
-        <CreateNewNote
+        <CreateNewComment
           getContent={getContent}
           saveNoteContentToState={saveNoteContentToState}
           saveNote={saveNote}
@@ -98,12 +98,12 @@ const DisplayAllNotes = () => {
         />
       </>
     );
-  } else if (isModifyNote) {
+  } else if (isModifyComment) {
     const note = allNotes.find(note => {
       return note.id === editNoteId;
     });
     return (
-      <ModifyNote
+      <ModifyComment
         content={note.content}
         updateNote={updateNote}
         saveNoteContentToState={saveNoteContentToState}
@@ -118,7 +118,7 @@ const DisplayAllNotes = () => {
           <br />
           <br />
           <Box>
-            <Button onClick={toggleCreateNewNote} className={classes.button}>
+            <Button onClick={toggleCreateNewComment} className={classes.button}>
               Create New
             </Button>
           </Box>
@@ -129,7 +129,7 @@ const DisplayAllNotes = () => {
           <section>
             {allNotes.map(eachNote => {
               return (
-                <Note
+                <Comment
                   id={eachNote.id}
                   key={eachNote.id}
                   content={eachNote.content}
@@ -139,7 +139,10 @@ const DisplayAllNotes = () => {
               );
             })}
             <Box>
-              <Button onClick={toggleCreateNewNote} className={classes.button}>
+              <Button
+                onClick={toggleCreateNewComment}
+                className={classes.button}
+              >
                 Create New
               </Button>
             </Box>
@@ -149,4 +152,4 @@ const DisplayAllNotes = () => {
     </>
   );
 };
-export default DisplayAllNotes;
+export default DisplayAllComments;

@@ -10,7 +10,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const CreateNewNote = props => {
+const CreateNewComment = props => {
   const classes = useStyles();
   const config = {
     readonly: false, // all options from https://xdsoft.net/jodit/doc/
@@ -35,4 +35,4 @@ const CreateNewNote = props => {
     </>
   );
 };
-export default CreateNewNote;
+export default CreateNewComment;

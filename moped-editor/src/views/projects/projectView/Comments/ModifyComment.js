@@ -10,12 +10,12 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ModifyNote = props => {
+const ModifyComment = props => {
   const classes = useStyles();
   return (
     <>
       <form onSubmit={props.updateNote}>
-        <h3>Modify Note</h3>
+        <h3>Modify Comment</h3>
         <JoditEditor
           value={props.content}
           onBlur={props.saveNoteContentToState}
@@ -23,11 +23,11 @@ const ModifyNote = props => {
         />
         <Box>
           <Button type="submit" className={classes.button}>
-            Update Note
+            Update Comment
           </Button>
         </Box>
       </form>
     </>
   );
 };
-export default ModifyNote;
+export default ModifyComment;
