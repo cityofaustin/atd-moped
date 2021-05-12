@@ -1,17 +1,18 @@
 import React, { useRef } from "react";
-import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
-  createProjectViewLayerConfig,
+  createSummaryMapLayers,
+  getSummaryMapInteractiveIds,
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
   renderFeatureCount,
-  sumFeaturesSelected,
+  countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
@@ -35,16 +36,12 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  selectedLayerIds,
-  projectExtentGeoJSON,
-  setIsEditing,
-}) => {
+const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = sumFeaturesSelected(selectedLayerIds);
+  const featureCount = countFeatures(projectExtentGeoJSON);
 
-  const { handleLayerHover, featureId, hoveredCoords } = useHoverLayer();
+  const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
     projectExtentGeoJSON
@@ -63,7 +60,7 @@ const ProjectSummaryMap = ({
         ref={mapRef}
         width="100%"
         height="60vh"
-        interactiveLayerIds={["projectExtent"]}
+        interactiveLayerIds={getSummaryMapInteractiveIds(projectExtentGeoJSON)}
         onHover={handleLayerHover}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -71,12 +68,8 @@ const ProjectSummaryMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
-        {projectExtentGeoJSON && (
-          <Source type="geojson" data={projectExtentGeoJSON}>
-            <Layer {...createProjectViewLayerConfig()} />
-          </Source>
-        )}
-        {renderTooltip(featureId, hoveredCoords, classes.toolTip)}
+        {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
+        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         <Button
           variant="contained"
           color="primary"

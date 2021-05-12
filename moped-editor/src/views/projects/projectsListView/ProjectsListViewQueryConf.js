@@ -1,5 +1,7 @@
+import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+import ExternalLink from "../../../components/ExternalLink";
 
 /**
  * The Query configuration (now also including filters)
@@ -93,22 +95,31 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
-    eCapris_id: {
+    ecapris_subproject_id: {
       hidden: false,
       searchable: true,
-      sortable: false,
+      sortable: true,
       label: "eCapris Subp.",
-      type: "string",
+      filter: value => (
+        <ExternalLink
+          text={value}
+          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+        />
+      ),
+      type: "number",
       search: {
         label: "Search by eCapris subproject id",
-        operator: "_ilike",
-        quoted: true,
+        operator: "_eq",
+        quoted: false,
         envelope: "%{VALUE}%",
+        invalidValueDefault: 0
       },
     },
   },
   order_by: {},
-  where: {},
+  where: {
+    is_retired: "_eq: false"
+  },
   limit: 25,
   offset: 0,
 };

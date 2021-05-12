@@ -19,9 +19,10 @@ import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import Page from "src/components/Page";
-import { useMutation, gql } from "@apollo/client";
-import { ADD_PROJECT_PERSONNEL } from "../../../queries/project";
+import { useMutation } from "@apollo/client";
+import { ADD_PROJECT } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -79,24 +80,43 @@ const NewProjectView = () => {
   const [projectDetails, setProjectDetails] = useState({
     fiscal_year: "",
     current_phase: "",
-    project_priority: "",
     project_description: "",
     project_name: "",
     start_date: moment().format("YYYY-MM-DD"),
     current_status: "",
     capitally_funded: false,
-    eCapris_id: "",
+    ecapris_subproject_id: null,
   });
+  const [nameError, setNameError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(false);
 
   const [personnel, setPersonnel] = useState([]);
-  const [selectedLayerIds, setSelectedLayerIds] = useState({});
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
   });
 
+  const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+
+  // Reset areNoFeaturesSelected once a feature is selected to remove error message
+  useEffect(() => {
+    if (
+      countFeatures(featureCollection) >= mapConfig.minimumFeaturesInProject
+    ) {
+      setAreNoFeaturesSelected(false);
+    }
+  }, [featureCollection]);
+
   const getSteps = () => {
-    return ["Define Project", "Assign Team", "Map Project"];
+    return [
+      { label: "Define project" },
+      { label: "Assign team" },
+      {
+        label: "Map project",
+        error: mapErrors.minimumLocations,
+        isError: areNoFeaturesSelected,
+      },
+    ];
   };
 
   const getStepContent = step => {
@@ -106,6 +126,8 @@ const NewProjectView = () => {
           <DefineProjectForm
             projectDetails={projectDetails}
             setProjectDetails={setProjectDetails}
+            nameError={nameError}
+            descriptionError={descriptionError}
           />
         );
       case 1:
@@ -115,8 +137,6 @@ const NewProjectView = () => {
       case 2:
         return (
           <NewProjectMap
-            selectedLayerIds={selectedLayerIds}
-            setSelectedLayerIds={setSelectedLayerIds}
             featureCollection={featureCollection}
             setFeatureCollection={setFeatureCollection}
           />
@@ -128,23 +148,31 @@ const NewProjectView = () => {
   const steps = getSteps();
 
   const handleNext = () => {
-    let canContinue = true;
-    switch (activeStep) {
-      case 0:
-        canContinue = true;
-        break;
-      case 1:
-        canContinue = true;
-        break;
-      case 2:
-        canContinue = handleSubmit();
-        break;
-      default:
-        return "not a valid step";
+    let nameError = projectDetails.project_name.length === 0;
+    let descriptionError = projectDetails.project_description.length === 0;
+    let canContinue = false;
+
+    if (!nameError && !descriptionError) {
+      switch (activeStep) {
+        case 0:
+          canContinue = true;
+          break;
+        case 1:
+          canContinue = true;
+          break;
+        case 2:
+          canContinue = handleSubmit();
+          break;
+        default:
+          return "not a valid step";
+      }
     }
     if (canContinue) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
+
+    setNameError(nameError);
+    setDescriptionError(descriptionError);
   };
 
   const handleBack = () => {
@@ -165,57 +193,7 @@ const NewProjectView = () => {
     setActiveStep(0);
   };
 
-  const addNewProject = gql`
-    mutation MyMutation(
-      $project_name: String! = ""
-      $project_description: String! = ""
-      $current_phase: String! = ""
-      $current_status: String! = ""
-      $eCapris_id: String! = ""
-      $fiscal_year: String! = ""
-      $start_date: date = ""
-      $capitally_funded: Boolean! = false
-      $project_priority: String! = ""
-      $project_extent_ids: jsonb = {}
-      $project_extent_geojson: jsonb = {}
-    ) {
-      insert_moped_project(
-        objects: {
-          project_name: $project_name
-          project_description: $project_description
-          current_phase: $current_phase
-          current_status: $current_status
-          eCapris_id: $eCapris_id
-          fiscal_year: $fiscal_year
-          start_date: $start_date
-          capitally_funded: $capitally_funded
-          project_priority: $project_priority
-          project_extent_ids: $project_extent_ids
-          project_extent_geojson: $project_extent_geojson
-        }
-      ) {
-        affected_rows
-        returning {
-          project_id
-          project_name
-          project_description
-          project_priority
-          current_phase
-          current_status
-          eCapris_id
-          fiscal_year
-          capitally_funded
-          start_date
-          project_extent_ids
-          project_extent_geojson
-        }
-      }
-    }
-  `;
-
-  const [addProject] = useMutation(addNewProject);
-
-  const [addStaff] = useMutation(ADD_PROJECT_PERSONNEL);
+  const [addProject] = useMutation(ADD_PROJECT);
 
   const timer = React.useRef();
 
@@ -228,37 +206,53 @@ const NewProjectView = () => {
   }, []);
 
   const handleSubmit = () => {
+    if (countFeatures(featureCollection) < mapConfig.minimumFeaturesInProject) {
+      setAreNoFeaturesSelected(true);
+      return;
+    } else {
+      setAreNoFeaturesSelected(false);
+    }
+
     // Change the initial state...
     setLoading(true);
 
+    const cleanedPersonnel =
+      personnel.length > 0
+        ? personnel
+            // We need to flatten (reverse the nesting) for role_ids
+            .map(item => {
+              // For every personnel, iterate through role_ids
+              return item.role_id.map(role_id => {
+                // build a new object with specific values
+                return {
+                  role_id: role_id,
+                  user_id: item.user_id,
+                };
+              });
+            })[0] // The array should be single
+            // Now we proceed as normal...
+            .map(row => ({
+              ...filterObjectByKeys(row, ["tableData"]),
+            }))
+        : [];
+
+    const projectFeatures = featureCollection.features.map(feature => ({
+      location: feature,
+      status_id: 1,
+    }));
+
     addProject({
       variables: {
-        ...projectDetails,
-        project_extent_ids: selectedLayerIds,
-        project_extent_geojson: featureCollection,
+        object: {
+          ...projectDetails,
+          moped_proj_features: { data: projectFeatures },
+          moped_proj_personnel: { data: cleanedPersonnel },
+        },
       },
     })
       .then(response => {
-        const { project_id } = response.data.insert_moped_project.returning[0];
-
-        const cleanedPersonnel = personnel.map(row => ({
-          ...filterObjectByKeys(row, ["tableData"]),
-          project_id,
-        }));
-
-        addStaff({
-          variables: {
-            objects: cleanedPersonnel,
-          },
-        })
-          .then(() => {
-            setNewProjectId(project_id);
-          })
-          .catch(err => {
-            alert(err);
-            setLoading(false);
-            setSuccess(false);
-          });
+        const { project_id } = response.data.insert_moped_project_one;
+        setNewProjectId(project_id);
       })
       .catch(err => {
         alert(err);
@@ -270,21 +264,25 @@ const NewProjectView = () => {
   return (
     <>
       {
-        <Page title="New Project">
+        <Page title="New project">
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title="New Project" />
+                <CardHeader title="New project" />
               </Box>
               <Divider />
               <CardContent>
                 <Stepper activeStep={activeStep}>
-                  {steps.map((label, index) => {
+                  {steps.map((step, index) => {
                     const stepProps = {};
                     const labelProps = {};
                     return (
-                      <Step key={label} {...stepProps}>
-                        <StepLabel {...labelProps}>{label}</StepLabel>
+                      <Step key={step.label} {...stepProps}>
+                        {step.isError ? (
+                          <StepLabel error={true}>{step.error}</StepLabel>
+                        ) : (
+                          <StepLabel {...labelProps}>{step.label}</StepLabel>
+                        )}
                       </Step>
                     );
                   })}
@@ -302,9 +300,14 @@ const NewProjectView = () => {
                       {getStepContent(activeStep)}
                       <Divider />
                       <Box pt={2} pl={2} className={classes.buttons}>
-                        <Button onClick={handleBack} className={classes.button}>
-                          Back
-                        </Button>
+                        {activeStep > 0 && (
+                          <Button
+                            onClick={handleBack}
+                            className={classes.button}
+                          >
+                            Back
+                          </Button>
+                        )}
                         {activeStep === steps.length - 1 ? (
                           <ProjectSaveButton
                             label={"Finish"}

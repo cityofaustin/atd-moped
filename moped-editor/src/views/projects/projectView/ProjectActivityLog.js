@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
+  getCreationLabel,
   getOperationName,
   getChangeIcon,
   getRecordTypeLabel,
   getHumanReadableField,
+  getMappedValue,
+  isFieldMapped,
   ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
@@ -55,9 +59,18 @@ const useStyles = makeStyles(theme => ({
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
+  const userList = {};
+
+  const {
+    getLookups,
+    lookupLoading,
+    lookupError,
+    lookupMap,
+  } = useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
+    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
   const [activityId, setActivityId] = useState(null);
@@ -77,7 +90,7 @@ const ProjectActivityLog = () => {
     setActivityId(activityId);
   };
 
-  if (loading) return <CircularProgress />;
+  if (loading || lookupLoading) return <CircularProgress />;
 
   /**
    * Formats the iso date into human-readable locale date.
@@ -103,25 +116,6 @@ const ProjectActivityLog = () => {
       .toUpperCase();
 
   /**
-   * Based on an operation type, returns the name of the label if there are no differences,
-   * @param {string} operationType - The name of the operation ty[e
-   * @return {string}
-   */
-  const getLabelNoDiff = operationType => {
-    switch (operationType.toLowerCase()) {
-      case "insert": {
-        return "Record Created";
-      }
-      case "delete": {
-        return "Item Deleted";
-      }
-      default: {
-        return "No difference";
-      }
-    }
-  };
-
-  /**
    * Attempt to get the number of items we retrieved
    * @return {number}
    */
@@ -137,8 +131,39 @@ const ProjectActivityLog = () => {
   const isFieldGeneric = field =>
     field in ProjectActivityLogGenericDescriptions;
 
+  /**
+   * Makes sure the creation of the project always comes first
+   * @param {Array} eventList - The data object as provided by apollo
+   * @return {Array}
+   */
+  const reorderEventList = eventList => {
+    let outputList = [];
+    // For each event
+    eventList.forEach(event => {
+      // If this is the creation of a project
+      if (
+        event.record_type === "moped_project" &&
+        event.operation_type === "INSERT"
+      ) {
+        // Move it to the top of the list (make it first)
+        outputList.unshift(event);
+      } else {
+        // Else, just stack it to the bottom
+        outputList.push(event);
+      }
+    });
+
+    return outputList;
+  };
+
+  if (data) {
+    data["moped_users"].forEach(user => {
+      userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
+    });
+  }
+
   return (
-    <ApolloErrorHandler error={error}>
+    <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
         <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
         {getTotalItems() === 0 ? (
@@ -166,7 +191,7 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data["moped_activity_log"].map(change => (
+                {reorderEventList(data["moped_activity_log"]).map(change => (
                   <TableRow key={change.activity_id}>
                     <TableCell
                       align="left"
@@ -205,7 +230,12 @@ const ProjectActivityLog = () => {
                       width="5%"
                       className={classes.tableCell}
                     >
-                      <b>{getOperationName(change.operation_type)}</b>
+                      <b>
+                        {getOperationName(
+                          change.operation_type,
+                          change.record_type
+                        )}
+                      </b>
                     </TableCell>
                     <TableCell
                       align="left"
@@ -214,14 +244,19 @@ const ProjectActivityLog = () => {
                     >
                       <Box display="flex" p={0}>
                         <Box p={0}>
-                          <Icon>{getChangeIcon(change.operation_type)}</Icon>
+                          <Icon>
+                            {getChangeIcon(
+                              change.operation_type,
+                              change.record_type
+                            )}
+                          </Icon>
                         </Box>
                         <Box p={0} flexGrow={1}>
                           <Grid continer>
                             {Array.isArray(change.description) &&
                               change.description.length === 0 && (
                                 <Grid item className={classes.tableChangeItem}>
-                                  <b>{getLabelNoDiff(change.operation_type)}</b>
+                                  <b>{getCreationLabel(change, userList)}</b>
                                 </Grid>
                               )}
                             {change.description.map(changeItem => {
@@ -246,11 +281,39 @@ const ProjectActivityLog = () => {
                                       </b>{" "}
                                       from{" "}
                                       <b>
-                                        &quot;{String(changeItem.old)}&quot;
+                                        &quot;
+                                        {isFieldMapped(
+                                          change.record_type,
+                                          changeItem.field
+                                        )
+                                          ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.old)
+                                            )
+                                          : lookupMap?.[change.record_type]?.[
+                                              changeItem.field
+                                            ]?.[changeItem.old] ||
+                                            String(changeItem.old)}
+                                        &quot;
                                       </b>{" "}
                                       to{" "}
                                       <b>
-                                        &quot;{String(changeItem.new)}&quot;
+                                        &quot;
+                                        {isFieldMapped(
+                                            change.record_type,
+                                            changeItem.field
+                                        )
+                                            ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.new)
+                                            )
+                                            : lookupMap?.[change.record_type]?.[
+                                                changeItem.field
+                                                ]?.[changeItem.new] ||
+                                            String(changeItem.new)}
+                                        &quot;
                                       </b>
                                     </>
                                   )}

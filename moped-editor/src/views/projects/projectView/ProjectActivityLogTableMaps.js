@@ -22,8 +22,8 @@ export const ProjectActivityLogTableMaps = {
         label: "Public description",
         data_type: "text",
       },
-      ecapris_id: {
-        label: "eCapris ID",
+      ecapris_subproject_id: {
+        label: "eCAPRIS subproject ID",
         icon: "",
         data_type: "text",
       },
@@ -96,11 +96,6 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Added by",
         data_type: "integer",
-      },
-      project_extent_ids: {
-        icon: "",
-        label: "Extent",
-        data_type: "jsonb",
       },
       project_extent_geojson: {
         icon: "",
@@ -217,7 +212,7 @@ export const ProjectActivityLogTableMaps = {
         label: "Subproject Name",
         type: "text",
       },
-      eCapris_id: {
+      ecapris_subproject_id: {
         icon: "",
         label: "eCapris ID",
         type: "text",
@@ -593,16 +588,35 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Status",
         type: "int4",
+        map: {
+          0: "Inactive",
+          1: "Active",
+        },
       },
       project_id: {
         icon: "",
         label: "Project ID",
         type: "int4",
       },
+      role_id: {
+        icon: "",
+        label: "Role",
+        type: "int4",
+        lookup: {
+          table: "moped_project_roles",
+          fieldLabel: "project_role_id",
+          fieldValues: ["project_role_name"],
+        },
+      },
       user_id: {
         icon: "",
-        label: "User ID",
+        label: "User",
         type: "int4",
+        lookup: {
+          table: "moped_users",
+          fieldLabel: "user_id",
+          fieldValues: ["first_name", "last_name"],
+        },
       },
     },
   },
@@ -610,9 +624,9 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_phases: {
     label: "Project Phases",
     fields: {
-      phase_rank: {
+      phase_order: {
         icon: "",
-        label: "Rank",
+        label: "Order",
         type: "int4",
       },
       phase_name: {
@@ -962,7 +976,7 @@ export const ProjectActivityLogTableMaps = {
       },
       project_role_id: {
         icon: "",
-        label: "",
+        label: "Role",
         type: "int4",
       },
       date_added: {
@@ -1247,29 +1261,185 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+  moped_project_files: {
+    label: "Project File",
+    fields: {
+      project_file_id: {
+        icon: "",
+        label: "ID",
+        data_type: "int4",
+      },
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "int4",
+      },
+      file_key: {
+        icon: "",
+        label: "Storage File Name",
+        data_type: "text",
+      },
+      file_name: {
+        icon: "",
+        label: "Title",
+        data_type: "text",
+      },
+      file_description: {
+        icon: "",
+        label: "Description",
+        data_type: "text",
+      },
+      file_size: {
+        icon: "",
+        label: "File Size",
+        data_type: "int4",
+      },
+      file_permissions: {
+        icon: "",
+        label: "File Permissions",
+        data_type: "jsonb",
+      },
+      file_metadata: {
+        icon: "",
+        label: "File Metadata",
+        data_type: "jsonb",
+      },
+      api_response: {
+        icon: "",
+        label: "API Response",
+        data_type: "jsonb",
+      },
+      created_by: {
+        icon: "",
+        label: "Created By",
+        data_type: "int4",
+      },
+      create_date: {
+        icon: "",
+        label: "Create Date",
+        data_type: "date",
+      },
+      is_scanned: {
+        icon: "",
+        label: "Marked Scanned",
+        data_type: "bool",
+      },
+      is_retired: {
+        icon: "",
+        label: "Marked Deleted",
+        data_type: "bool",
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
-  DELETE: {
-    label: "Deleted",
-    icon: "close",
+  moped_project: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "beenhere",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
-  INSERT: {
-    label: "Created",
-    icon: "beenhere",
+
+  moped_proj_personnel: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "personadd",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
   },
-  UPDATE: {
-    label: "Update",
-    icon: "create",
+
+  moped_proj_phases: {
+    DELETE: {
+      label: "Removed",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "event",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
+  },
+
+  moped_project_files: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Added",
+      icon: "description",
+    },
+    UPDATE: {
+      label: "Updated",
+      icon: "create",
+    },
+  },
+
+  generic: {
+    DELETE: {
+      label: "Deleted",
+      icon: "close",
+    },
+    INSERT: {
+      label: "Created",
+      icon: "addcircle",
+    },
+    UPDATE: {
+      label: "Update",
+      icon: "create",
+    },
   },
 };
 
 export const ProjectActivityLogGenericDescriptions = {
-  project_extent_ids: {
-    label: "Project extent updated",
-  },
   project_extent_geojson: {
     label: "Project GeoJSON updated",
+  },
+};
+
+export const ProjectActivityLogCreateDescriptions = {
+  moped_project: {
+    label: () => "Created Project",
+  },
+  moped_proj_personnel: {
+    label: (record, userList) =>
+      userList[`${record.record_data.event.data.new.user_id}`] +
+      " to Project Personnel",
+  },
+  moped_proj_phases: {
+    label: record => {
+      const recordData = record.record_data.event.data.new;
+      const phaseName = recordData.phase_name
+        .trim()
+        .toLowerCase()
+        .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
+      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
+    },
+  },
+  moped_project_files: {
+    label: record => `New file '${record.record_data.event.data.new.file_name}'`,
+  },
+  generic: {
+    label: () => "Added",
   },
 };
 
@@ -1287,6 +1457,27 @@ export const getHumanReadableField = (type, field) => {
 };
 
 /**
+ * Returns true if a specific field is mapped
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @return {boolean}
+ */
+export const isFieldMapped = (type, field) =>
+  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map ?? null) !== null;
+
+/**
+ * Returns the mapped value within the configuration
+ * @param {string} type - The table name
+ * @param {string} field - The column name
+ * @param {*} value - Usually an integer but it can be a string
+ * @return {string}
+ */
+export const getMappedValue = (type, field, value) =>
+  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
+    ?.map[value];
+
+/**
  * Returns the
  * @param {string} type - The name of the table
  * @return {string}
@@ -1297,22 +1488,46 @@ export const getRecordTypeLabel = type => {
 
 /**
  * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
- * @param {string} type
- * @param {string} field
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
-export const getChangeIcon = type => {
-  return ProjectActivityLogOperationMaps[type]?.icon ?? "create";
+export const getChangeIcon = (event_type, record_type = "moped_project") => {
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
+  return (
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.icon ?? "create"
+  );
 };
 
 /**
  * Translates the operation type value into friendly label
- * @param {string} operationName - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
+ * @param {string} record_type - The name of the table
  * @return {string}
  */
-export const getOperationName = operationName => {
+export const getOperationName = (event_type, record_type = "moped_project") => {
+  const recordType =
+    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
   return (
-    ProjectActivityLogOperationMaps[operationName.toUpperCase()]?.label ??
-    "Unknown"
+    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
+      ?.label ?? "Unknown"
   );
+};
+
+/**
+ * Translates the operation type value into friendly label when there is no specified difference
+ * @param {string} record - The event record
+ * @return {string}
+ */
+export const getCreationLabel = (record, userList) => {
+  const recordType =
+    record.record_type in ProjectActivityLogCreateDescriptions
+      ? record.record_type
+      : "generic";
+
+  const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
+
+  return label ? label(record, userList) : "Created";
 };

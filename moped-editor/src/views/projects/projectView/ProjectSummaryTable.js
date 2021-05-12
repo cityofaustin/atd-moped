@@ -3,6 +3,8 @@ import React from "react";
 import DataTable from "../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
+import ExternalLink from "../../../components/ExternalLink";
+
 const useStyles = makeStyles(theme => ({
   fieldSelectCapitalize: {
     textTransform: "capitalize",
@@ -13,6 +15,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
   const classes = useStyles();
 
   const projectId = data?.moped_project[0].project_id ?? null;
+  const capitallyFunded = data?.moped_project[0].capitally_funded ?? null;
 
   const fieldConfiguration = {
     table: {
@@ -25,22 +28,23 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
     fields: {
       current_status: {
-        label: "Current Status",
+        label: "Current status",
         labelStyle: classes.fieldSelectCapitalize,
         type: "select",
-        placeholder: "Select Status",
+        placeholder: "Select status",
         editable: true,
         lookup: {
           table: "moped_status",
           fieldLabel: "status_name",
           fieldValue: "status_name",
+          relationship: "where: {status_id: {_gt: 0}}, order_by: {status_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
         style: classes.fieldSelectCapitalize,
       },
       current_phase: {
-        label: "Current Phase",
+        label: "Current phase",
         labelStyle: classes.fieldSelectCapitalize,
         placeholder: "Select phase",
         type: "select",
@@ -49,6 +53,7 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           table: "moped_phases",
           fieldLabel: "phase_name",
           fieldValue: "phase_name",
+          relationship: "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
@@ -63,13 +68,13 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         multilineRows: 4,
       },
       start_date: {
-        label: "Start Date",
+        label: "Start date",
         type: "date",
         placeholder: "Select date",
         editable: true,
       },
       fiscal_year: {
-        label: "Fiscal Year",
+        label: "Fiscal year",
         type: "select",
         placeholder: "Select fiscal year",
         lookup: {
@@ -80,18 +85,27 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
       },
       capitally_funded: {
-        label: "Capital Funding",
+        label: "Capital funding",
         type: "boolean",
         placeholder: "Select capitally funded",
         editable: true,
+        dependentField: "ecapris_subproject_id"
       },
-      eCapris_id: {
-        label: "eCapris ID",
-        type: "string",
-        placeholder: "Enter eCapris ID",
-        emptyValue: "None",
-        editable: true,
-      },
+      ...(capitallyFunded && {
+        ecapris_subproject_id: {
+          label: "eCapris subproject ID",
+          type: "string",
+          placeholder: "Enter eCapris subproject ID",
+          emptyValue: "None",
+          editable: true,
+          format: value => (
+            <ExternalLink
+              text={value}
+              url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+            />
+          ),
+        },
+      }),
     },
   };
 

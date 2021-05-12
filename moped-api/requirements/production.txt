@@ -20,7 +20,7 @@ future==0.18.2
 hjson==3.0.2
 idna==2.10
 itsdangerous==1.1.0
-Jinja2==2.11.2
+Jinja2==2.11.3
 jmespath==0.10.0
 kappa==0.6.0
 MarkupSafe==1.1.1
@@ -32,9 +32,9 @@ python-dateutil==2.6.1
 python-jose==3.2.0
 python-slugify==4.0.1
 pytz==2020.1
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.24.0
-rsa==4.6
+rsa==4.7
 s3transfer==0.3.3
 six==1.15.0
 text-unidecode==1.3

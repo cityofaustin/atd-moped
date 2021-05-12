@@ -193,6 +193,9 @@ def user_update_user(id: str, claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
+        # Remove date_added, if provided, so we don't reset this field
+        request.json.pop('date_added', None)
+
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
             ignore_fields=["password"]
@@ -221,6 +224,18 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 500
 
+        # Check we received a database_id and workgroup_id from database
+        database_id, workgroup_id = get_user_database_ids(response=db_response)
+
+        if database_id == "0" or workgroup_id == "0":
+            response = {
+                "error": {
+                    "message": f"Cannot update user, invalid database id or workgroup id.",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 500
+
         updated_attributes = generate_cognito_attributes(user_profile=json_data)
 
         cognito_response = cognito_client.admin_update_user_attributes(
@@ -234,9 +249,6 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             delete_claims(user_email=user_email_before_update)
 
         if roles:
-            # Retrieve database id values as strings
-            database_id, workgroup_id = get_user_database_ids(response=db_response)
-
             user_claims = format_claims(
                 user_id=id,
                 roles=roles,

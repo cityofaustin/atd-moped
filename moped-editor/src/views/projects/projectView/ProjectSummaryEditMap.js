@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client";
 import NewProjectMap from "../newProjectView/NewProjectMap";
+import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
 import {
   AppBar,
   Button,
-  Container,
   IconButton,
   Dialog,
   makeStyles,
@@ -15,7 +15,8 @@ import {
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { Close as CloseIcon, Save as SaveIcon } from "@material-ui/icons";
-import { UPDATE_PROJECT_EXTENT } from "../../../queries/project";
+import { UPSERT_PROJECT_EXTENT } from "../../../queries/project";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -25,28 +26,38 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(2),
     flex: 1,
   },
+  mapAlert: {
+    margin: "0px 24px 24px 24px",
+  },
 }));
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-const ProjectSummaryMap = ({
+const ProjectSummaryEditMap = ({
   projectId,
-  selectedLayerIds,
-  projectExtentGeoJSON,
+  projectFeatureCollection,
+  projectFeatureRecords,
   isEditing,
   setIsEditing,
   refetchProjectDetails,
 }) => {
   const classes = useStyles();
   const [updateProjectExtent, { loading, error }] = useMutation(
-    UPDATE_PROJECT_EXTENT
+    UPSERT_PROJECT_EXTENT
   );
-  const [editLayerIds, setEditLayerIds] = useState(selectedLayerIds);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    projectExtentGeoJSON
+    projectFeatureCollection
   );
+  const areMinimumFeaturesSet =
+    countFeatures(projectFeatureCollection) >=
+    mapConfig.minimumFeaturesInProject;
+
+  // projectExtent updates when refetchProjectDetails is called, update editFeatureCollection which is passed to editor and draw UI
+  useEffect(() => {
+    setEditFeatureCollection(projectFeatureCollection);
+  }, [projectFeatureCollection]);
 
   /**
    * Updates isEditing state to close dialog on cancel button click
@@ -56,14 +67,51 @@ const ProjectSummaryMap = ({
   };
 
   /**
-   * Calls update project mutation, refetches data and handles dialog close on success
+   * Calls upsert project features mutation, refetches data, and handles dialog close on success
    */
   const handleSave = () => {
+    const editedFeatures = editFeatureCollection.features;
+
+    // Find new records that need to be inserted and create a feature record from them
+    const newRecordsToInsert = editedFeatures
+      .filter(
+        feature =>
+          !projectFeatureRecords.find(
+            record =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(feature => ({
+        location: feature,
+        project_id: projectId,
+        status_id: 1,
+      }));
+
+    // Find existing records that need to be soft deleted, clean them, and set status to inactive
+    const existingRecordsToUpdate = projectFeatureRecords
+      .map(record => filterObjectByKeys(record, ["__typename"]))
+      .filter(
+        record =>
+          !editedFeatures.find(
+            feature =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(record => ({
+        ...record,
+        status_id: 0,
+      }));
+
+    const upserts = [...newRecordsToInsert, ...existingRecordsToUpdate];
+
     updateProjectExtent({
-      variables: { projectId, editLayerIds, editFeatureCollection },
+      variables: { upserts },
     }).then(() => {
-      refetchProjectDetails();
-      handleClose();
+      refetchProjectDetails().then(() => {
+        handleClose();
+      });
     });
   };
 
@@ -92,6 +140,7 @@ const ProjectSummaryMap = ({
               autoFocus
               color="inherit"
               onClick={handleSave}
+              disabled={!areMinimumFeaturesSet}
               startIcon={<SaveIcon />}
             >
               save
@@ -102,20 +151,23 @@ const ProjectSummaryMap = ({
         </Toolbar>
       </AppBar>
       <NewProjectMap
-        selectedLayerIds={editLayerIds}
-        setSelectedLayerIds={setEditLayerIds}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
+        projectId={projectId}
+        refetchProjectDetails={refetchProjectDetails}
       />
       {error && (
-        <Container>
-          <Alert severity="error">
-            The map edit failed to save. Please try again.
-          </Alert>
-        </Container>
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.failedToSave}
+        </Alert>
+      )}
+      {!areMinimumFeaturesSet && (
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.minimumLocations}
+        </Alert>
       )}
     </Dialog>
   );
 };
 
-export default ProjectSummaryMap;
+export default ProjectSummaryEditMap;
