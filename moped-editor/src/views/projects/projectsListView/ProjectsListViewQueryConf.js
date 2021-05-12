@@ -25,8 +25,8 @@ const personnelName = value => {
     personnel.push(`${key} (${value})`)
   }
 
-  return names.join(", ")
-  //return personnel.join(", ")
+  // return names.join(", ")
+  return personnel.join(", ")
 }
 
 /**
