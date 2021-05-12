@@ -147,9 +147,9 @@ const GridTable = ({ title, query }) => {
   query.cleanWhere();
 
   /**
-   * Attempts to parse search value into a valid graphql search value.
-   * Ex: when searching on an integer/float field but providing a string, 
-   * function returns the invalidValueDefault field in the search config, or null.
+   * Attempts to retrieve a valid graphql search value, for example when searching on an
+   * integer/float field but providing it a string, this function returns the value configured
+   * in the invalidValueDefault field in the search object, or null.
    * @param {string} column - The name of the column to search
    * @param {*} value - The value in question
    * @returns {*} - The value output
@@ -173,7 +173,6 @@ const GridTable = ({ title, query }) => {
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
-    console.log('value ', search.value)
 
     /**
      * Iterate through all column keys, if they are searchable
@@ -197,7 +196,6 @@ const GridTable = ({ title, query }) => {
   // For each filter added to state, add a where clause in GraphQL
   Object.keys(filters).forEach(filter => {
     let { envelope, field, gqlOperator, value, type } = filters[filter];
-    console.log("HERE: ", envelope, field, gqlOperator, value, type)
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
@@ -281,7 +279,7 @@ const GridTable = ({ title, query }) => {
 
   /**
    * Returns the value of a data structure based on the list of keys provided
-   * @param {object} obj - the object in question
+   * @param {object} obj - the item from the row section
    * @param {Array} keys - the list of keys
    * @returns {*}
    */
@@ -298,8 +296,8 @@ const GridTable = ({ title, query }) => {
 
   /**
    * Extracts the value (or summary of values) for nested field names
-   * @param {object} obj - The dataset current object
-   * @param {string} exp - The graphql expression
+   * @param {object} obj - The dataset current object (the table row)
+   * @param {string} exp - The graphql expression (from the column name)
    * @returns {string}
    */
   const getSummary = (obj, exp) => {
@@ -307,7 +305,8 @@ const GridTable = ({ title, query }) => {
     let map = new Map();
     const keys = listKeys(exp);
 
-    // First we need to get to the specific section of the object we need
+    // First we need to get to the specific section of the dataset object
+    // The first key is the outermost nested part of the graphql query
     const section = obj[keys[0]];
 
     // If not an array, resolve its value
@@ -358,9 +357,6 @@ const GridTable = ({ title, query }) => {
     query.gql,
     query.config.options.useQuery
   );
-
-  console.log(query)
-  console.log("data", data)
 
   return (
     <ApolloErrorHandler error={error}>
@@ -464,6 +460,8 @@ const GridTable = ({ title, query }) => {
                                             )}
                                       </>
                                     ) : (
+                                      // if column is not alphanumeric
+                                      // it is formatted like a nested query
                                       query.getFormattedValue(
                                         column,
                                         getSummary(row, column.trim())

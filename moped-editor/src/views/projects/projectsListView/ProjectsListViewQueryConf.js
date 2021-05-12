@@ -94,16 +94,17 @@ export const ProjectsListViewQueryConf = {
       label: "Current Phase",
       width: "15%",
     },
-    // moped_proj_personnel: {
-    //   searchable: false,
-    //   width: "15%",
-    // },
+    "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } }": {
+      searchable: false,
+      label: "Team Members",
+      width: "15%",
+    },
     start_date: {
       searchable: false,
       sortable: true,
       label: "Start Date",
       width: "10%",
-      filter: value => new Date(value).toLocaleDateString(),
+      filter: value => new Date(value).toLocaleDateString(), // start here
       type: "date_iso",
     },
     ecapris_subproject_id: {
