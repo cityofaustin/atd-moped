@@ -72,7 +72,7 @@ const NewProjectMap = ({
     hoveredCoords,
   } = useHoverLayer();
 
-  const { visibleLayerIds, renderLayerSelect } = useLayerSelect(
+  const { visibleLayerIds, renderLayerSelect, mapStyleConfig } = useLayerSelect(
     getLayerNames(),
     classes
   );
@@ -190,6 +190,7 @@ const NewProjectMap = ({
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
+        mapStyle={mapStyleConfig}
       >
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} captureClick={false} />

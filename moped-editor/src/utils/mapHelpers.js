@@ -2,10 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
-import { Box, Checkbox, Typography } from "@material-ui/core";
+import {
+  Box,
+  Checkbox,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  Typography,
+} from "@material-ui/core";
 import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 export const drawnLayerName = "drawnByUser";
 const TRAIL_LINE_TYPE = "Off-Street";
 
@@ -20,6 +28,33 @@ const austinFullPurposeJurisdictionFeatureCollection = {
   },
   bbox: [-97.940377, 30.133717, -97.578205, 30.464826],
   features: [],
+};
+
+const basemaps = {
+  streets: "mapbox://styles/mapbox/light-v8",
+  // Provide style parameters to render Nearmap tiles in react-map-gl
+  // https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
+  aerial: {
+    version: 8,
+    sources: {
+      "raster-tiles": {
+        type: "raster",
+        tiles: [
+          `https://api.nearmap.com/tiles/v3/Vert/{z}/{x}/{y}.jpg?apikey=${NEARMAP_KEY}`,
+        ],
+        tileSize: 256,
+      },
+    },
+    layers: [
+      {
+        id: "simple-tiles",
+        type: "raster",
+        source: "raster-tiles",
+        minzoom: 0,
+        maxzoom: 22,
+      },
+    ],
+  },
 };
 
 export const mapStyles = {
@@ -267,6 +302,18 @@ export const getLayerSource = e =>
   e.features.length > 0 &&
   (e.features[0].layer["source-layer"] ||
     e.features[0].properties["sourceLayer"]);
+
+/**
+ * Create a GeoJSON feature collection from project features
+ * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
+ * @return {object} A GeoJSON feature collection to display project features on a map
+ */
+export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
+  type: "FeatureCollection",
+  features: projectFeatureRecords
+    ? projectFeatureRecords.map(feature => feature.location)
+    : [],
+});
 
 /**
  * Create object with layer name keys and array values containing feature IDs for map styling
@@ -611,7 +658,13 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   const [visibleLayerIds, setVisibleLayerIds] = useState(
     initialSelectedLayerNames
   );
+  const [mapStyle, setMapStyle] = useState("streets");
+  const mapStyleConfig = basemaps[mapStyle];
 
+  /**
+   * Takes a click event and adds/removes a layer name from the visible layers array
+   * @param {Object} e - Mouse click event that supplies layer name
+   */
   const handleLayerCheckboxClick = e => {
     const layerName = e.target.name;
 
@@ -620,6 +673,16 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         ? [...prevLayers.filter(name => name !== layerName)]
         : [...prevLayers, layerName];
     });
+  };
+
+  /**
+   * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
+   * @param {Object} e - Mouse click event that supplies basemaps object key from the radio button
+   */
+  const handleBasemapChange = e => {
+    const basemapKey = e.target.value;
+
+    setMapStyle(basemapKey);
   };
 
   const renderLayerSelect = () => (
@@ -636,10 +699,29 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
           {mapConfig.layerConfigs[name].layerLabel}
         </Typography>
       ))}
+      <Typography className={classes.layerSelectTitle}>Basemap</Typography>
+      <RadioGroup
+        aria-label="basemap"
+        name="basemap"
+        className={classes.layerRadioGroup}
+        value={mapStyle}
+        onChange={handleBasemapChange}
+      >
+        <FormControlLabel
+          value="streets"
+          control={<Radio color="primary" />}
+          label="Streets"
+        />
+        <FormControlLabel
+          value="aerial"
+          control={<Radio color="primary" />}
+          label="Aerial"
+        />
+      </RadioGroup>
     </Box>
   );
 
-  return { visibleLayerIds, renderLayerSelect };
+  return { visibleLayerIds, renderLayerSelect, mapStyleConfig };
 }
 
 export const layerSelectStyles = {
@@ -658,5 +740,8 @@ export const layerSelectStyles = {
   },
   layerSelectText: {
     paddingRight: 10,
+  },
+  layerRadioGroup: {
+    paddingLeft: 10,
   },
 };
