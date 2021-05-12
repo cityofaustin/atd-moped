@@ -12,7 +12,7 @@ const personnelName = value => {
   const names = parsedJson.map(person => 
     `${person.moped_user.first_name} ${person.moped_user.last_name} (${person.moped_project_role.project_role_name})`)
 
-  parsedJson.map(person => {
+  parsedJson.forEach(person => {
     let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
     if (uniqueNames[fullName]) {
       uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
@@ -119,6 +119,13 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Current Phase",
       width: "15%",
+      search: {
+        label: "Search by current phase",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
     },
     "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } moped_project_role { project_role_name }}": {
       searchable: false,
