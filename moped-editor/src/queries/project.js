@@ -151,10 +151,6 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
     }
-    moped_milestones(where: { milestone_id: {_gt: 0} }) {
-      milestone_id
-      milestone_name
-    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, status_id: {_eq: 1} }
       order_by: { phase_start: desc }
@@ -165,6 +161,10 @@ export const TIMELINE_QUERY = gql`
       project_id
       phase_start
       phase_end
+    }
+    moped_milestones(where: { milestone_id: {_gt: 0} }) {
+      milestone_id
+      milestone_name
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, status_id: {_eq: 1} }

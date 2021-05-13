@@ -21,7 +21,7 @@ import {
   ADD_PROJECT_PHASE,
   ADD_PROJECT_MILESTONE,
   UPDATE_PROJECT_MILESTONES_MUTATION,
-  DELETE_PROJECT_MILESTONE
+  DELETE_PROJECT_MILESTONE,
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -131,12 +131,14 @@ const ProjectTimeline = () => {
     {}
   );
 
-  const milestoneNameLookup = data.moped_milestones.reduce((obj, item) =>
-    Object.assign(obj, {
-      [item.milestone_name]:
-        item.milestone_name.charAt(0).toUpperCase() +
-        item.milestone_name.slice(1),
-    })
+  const milestoneNameLookup = data.moped_milestones.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.milestone_name]:
+          item.milestone_name.charAt(0).toUpperCase() +
+          item.milestone_name.slice(1),
+      }),
+    {}
   );
 
   /**
