@@ -2,7 +2,20 @@ import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
+import { NavLink as RouterLink } from "react-router-dom";
 
+
+// for now
+
+const linkProject = values => {
+  const jsonValues = JSON.parse(values)
+  return (
+  <RouterLink
+    to={`/${jsonValues.singleItem}/${jsonValues.link}`}
+  >
+    {jsonValues.data}
+  </RouterLink>
+)}
 /**
  * The Query configuration (now also including filters)
  * @constant
@@ -38,6 +51,7 @@ export const ProjectsListViewQueryConf = {
   },
   columns: {
     project_id: {
+      hidden: true,
       primary_key: true,
       searchable: false,
       sortable: false,
@@ -52,6 +66,7 @@ export const ProjectsListViewQueryConf = {
     project_name: {
       searchable: true,
       sortable: false,
+      link: "project_id",
       label: "Project Name",
       search: {
         label: "Search by project name",
@@ -59,8 +74,9 @@ export const ProjectsListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "20%",
+      width: "*",
       type: "String",
+      filter: linkProject,
     },
     project_description: {
       hidden: true,

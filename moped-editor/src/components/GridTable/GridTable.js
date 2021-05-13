@@ -449,7 +449,10 @@ const GridTable = ({ title, query }) => {
                                           )}
                                         </RouterLink>
                                       )
-                                    ) : isAlphanumeric(column) ? (
+                                    ) : query.config.columns[column]?.link ? (
+                                      query.getFormattedValue(column, JSON.stringify({singleItem: query.singleItem, data: row[column], link: row[query.config.columns[column].link]}))
+                                    )
+                                    : isAlphanumeric(column) ? (
                                       <>
                                         {query.config.columns[
                                           column
