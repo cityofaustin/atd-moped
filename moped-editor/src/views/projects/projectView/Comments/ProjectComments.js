@@ -22,6 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
+import parse from "html-react-parser";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -100,7 +101,6 @@ const ProjectComments = () => {
             added_by: "Mateo",
             project_note: noteText,
             project_id: projectId,
-            // date_created: "2020-12-03T00:00:00+00:00",
           },
         ],
       },
@@ -140,7 +140,7 @@ const ProjectComments = () => {
                         }
                         secondary={
                           <Typography className={classes.noteText}>
-                            {item.project_note}
+                            {parse(item.project_note)}
                           </Typography>
                         }
                       />
