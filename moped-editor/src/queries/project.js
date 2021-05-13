@@ -378,3 +378,37 @@ export const PROJECT_ARCHIVE= gql`
     }
   }
 `
+
+export const PROJECT_CLEAR_MAP_DATA_TEMPLATE =
+    `mutation ClearProjectMapData($projectId: Int!) {
+      update_moped_proj_features(
+        where: { project_id: { _eq: $projectId } }
+        _set: {
+          status_id: 0
+        }
+      ) {
+        affected_rows
+      }
+      insert_moped_proj_features(objects:[
+        {
+          project_id: $projectId,
+          location: {
+              id: "RANDOM_FEATURE_ID",
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [-97.74280552637893, 30.26807489857954],
+              },
+              properties: {
+                renderType: "Point",
+                sourceLayer: "drawnByUser",
+                PROJECT_EXTENT_ID: "RANDOM_FEATURE_ID",
+              },
+            },
+          status_id: 1
+        }
+      ]) {
+        affected_rows
+      }
+    }
+`;
