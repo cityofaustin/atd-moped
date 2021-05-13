@@ -10,7 +10,6 @@ import {
   TextField,
   Switch,
   FormControl,
-  InputLabel,
   Select,
   MenuItem,
 } from "@material-ui/core";
