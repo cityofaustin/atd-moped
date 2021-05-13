@@ -23,6 +23,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -99,7 +100,7 @@ const ProjectComments = () => {
         objects: [
           {
             added_by: "Mateo",
-            project_note: noteText,
+            project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
           },
         ],
