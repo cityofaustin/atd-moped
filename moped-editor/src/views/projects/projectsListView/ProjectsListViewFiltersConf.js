@@ -68,17 +68,6 @@ export const ProjectsListViewFiltersConf = {
         "string_is_not_null",
       ],
     },
-    // {
-    //   name: "moped_proj_personnel: { moped_user: { first_name  ",
-    //   label: "Project Team members",
-    //   placeholder: "Team member",
-    //   type: "stringify",
-    //   operators: [
-    //     "string_contains_case_insensitive",
-    //     "string_begins_with_case_insensitive",
-    //     "string_ends_with_case_insensitive",
-    //   ],
-    // },
   ],
 
   operators: {

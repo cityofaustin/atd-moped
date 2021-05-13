@@ -56,9 +56,9 @@ export const destroyLoggedInProfile = () =>
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
-  // if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
-  //   return null
-  // }
+  if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
+    return null
+  }
   return JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName))
 }
 
