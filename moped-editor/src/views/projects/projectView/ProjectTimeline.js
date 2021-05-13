@@ -9,6 +9,10 @@ import {
   Grid,
   TextField,
   Switch,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import MaterialTable, { MTableAction } from "material-table";
@@ -23,49 +27,6 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-
-/**
- * DateFieldEditComponent - renders a Date type Calendar select
- * @param {object} props - Values passed through Material Table `editComponent`
- * @param {string} name - Field name
- * @param {string} label - Display label
- * @return {JSX.Element}
- * @constructor
- */
-const DateFieldEditComponent = (props, name, label) => (
-  <TextField
-    name={name}
-    label={label}
-    type="date"
-    variant="standard"
-    value={props.value}
-    onChange={e => props.onChange(e.target.value)}
-    InputLabelProps={{
-      shrink: true,
-    }}
-  />
-);
-
-/**
- * ToggleEditComponent - renders a toggle for True/False edit fields
- * @param {object} props - Values passed through Material Table `editComponent`
- * @param {string} name - Field name
- * @return {JSX.Element}
- * @constructor
- */
-const ToggleEditComponent = (props, name) => (
-  <Grid component="label" container alignItems="center" spacing={1}>
-    <Grid item>
-      <Switch
-        checked={props.value}
-        onChange={e => props.onChange(!props.value)}
-        color="primary"
-        name={name}
-        inputProps={{ "aria-label": "primary checkbox" }}
-      />
-    </Grid>
-  </Grid>
-);
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -107,6 +68,79 @@ const ProjectTimeline = () => {
   if (loading || !data) return <CircularProgress />;
 
   /**
+   * Prevents the line from being saved on enter key
+   * @param {object} e - Event Object
+   */
+  const handleKeyEvent = e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+    }
+  };
+
+  /**
+   * DateFieldEditComponent - renders a Date type Calendar select
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @param {string} label - Display label
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const DateFieldEditComponent = (props, name, label) => (
+    <TextField
+      name={name}
+      label={label}
+      type="date"
+      variant="standard"
+      value={props.value}
+      onChange={e => props.onChange(e.target.value)}
+      onKeyDown={e => handleKeyEvent(e)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  );
+
+  /**
+   * ToggleEditComponent - renders a toggle for True/False edit fields
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const ToggleEditComponent = (props, name) => (
+    <Grid component="label" container alignItems="center" spacing={1}>
+      <Grid item>
+        <Switch
+          checked={props.value}
+          onChange={e => props.onChange(!props.value)}
+          color="primary"
+          name={name}
+          inputProps={{ "aria-label": "primary checkbox" }}
+          onKeyDown={e => handleKeyEvent(e)}
+        />
+      </Grid>
+    </Grid>
+  );
+
+  const DropDownSelectComponent = (props, name) => (
+    <FormControl>
+      <Select id={name} value={props.value}>
+        {Object.keys(props.columnDef.lookup).map(key => {
+          return (
+            <MenuItem
+              onChange={e => props.onChange(props.value)}
+              onKeyDown={e => handleKeyEvent(e)}
+              value={key}
+            >
+              {props.columnDef.lookup[key]}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    </FormControl>
+  );
+
+  /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
    * expects.
    * Ex: { construction: "Construction", hold: "Hold", ...}
@@ -114,7 +148,7 @@ const ProjectTimeline = () => {
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.phase_name]:
+        [item.phase_name.toLowerCase()]:
           item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
       }),
     {}
@@ -124,7 +158,14 @@ const ProjectTimeline = () => {
    * Column configuration for <MaterialTable>
    */
   const columns = [
-    { title: "Phase Name", field: "phase_name", lookup: phaseNameLookup },
+    {
+      title: "Phase Name",
+      field: "phase_name",
+      lookup: phaseNameLookup,
+      editComponent: props => (
+        <DropDownSelectComponent {...props} name={"phase_name"} />
+      ),
+    },
     {
       title: "Active?",
       field: "is_current_phase",
@@ -148,7 +189,12 @@ const ProjectTimeline = () => {
       title: "End Date",
       field: "phase_end",
       editComponent: props => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent
+          {...props}
+          name="phase_end"
+          label="End Date"
+          onKeyDown={e => handleKeyEvent(e)}
+        />
       ),
     },
   ];
@@ -265,7 +311,7 @@ const ProjectTimeline = () => {
                     }),
                 }}
                 options={{
-                  actionsColumnIndex: -1
+                  actionsColumnIndex: -1,
                 }}
               />
             </div>
