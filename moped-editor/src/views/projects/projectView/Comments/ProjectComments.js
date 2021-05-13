@@ -1,27 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import DisplayAllComments from "./DisplayAllComments";
 import Page from "src/components/Page";
 import {
+  Avatar,
+  Button,
+  Box,
   Container,
   Card,
   CircularProgress,
+  Divider,
   List,
   ListItem,
-  Divider,
-  ListItemText,
   ListItemAvatar,
+  ListItemText,
   Typography,
-  Avatar,
 } from "@material-ui/core";
+import AddBoxIcon from "@material-ui/icons/AddBox";
+
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useQuery } from "@apollo/react-hooks";
+import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
-import MaterialTable, { MTableAction } from "material-table";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-const NOTES_QUERY = gql`
-  query getProjectNotes($projectId: Int!) {
+const COMMENTS_QUERY = gql`
+  query getProjectComments($projectId: Int!) {
     moped_proj_notes(where: { project_id: { _eq: $projectId } }) {
       added_by
       project_note
@@ -32,19 +37,25 @@ const NOTES_QUERY = gql`
   }
 `;
 
-// const NOTES_MUTATION = gql`
-//   mutation Notes($project_note: String! = "") {
-//     insert_moped_proj_notes(
-//       objects: { project_note: $project_note, project_id: 1 }
-//     ) {
-//       affected_rows
-//       returning {
-//         project_id
-//         project_note
-//       }
-//     }
-//   }
-// `;
+const ADD_PROJECT_COMMENT = gql`
+  mutation AddProjectComment($objects: [moped_proj_notes_insert_input!]!) {
+    insert_moped_proj_notes(objects: $objects) {
+      returning {
+        project_id
+        project_note
+      }
+    }
+  }
+`;
+
+const quillModules = {
+  toolbar: [
+    ["bold", "italic", "underline", "strike"],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["link"],
+    ["clean"],
+  ],
+};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -66,16 +77,35 @@ const useStyles = makeStyles(theme => ({
 const ProjectComments = () => {
   const { projectId } = useParams();
   const classes = useStyles();
+  const [noteText, setNoteText] = useState("");
 
-  const { loading, error, data } = useQuery(NOTES_QUERY, {
+  const { loading, error, data } = useQuery(COMMENTS_QUERY, {
     variables: { projectId },
   });
 
+  const [addNewComment] = useMutation(ADD_PROJECT_COMMENT);
+
   console.log(data);
+  console.log(noteText);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
+
+  const submitNewComment = () => {
+    addNewComment({
+      variables: {
+        objects: [
+          {
+            added_by: "Mateo",
+            project_note: noteText,
+            project_id: projectId,
+            // date_created: "2020-12-03T00:00:00+00:00",
+          },
+        ],
+      },
+    });
+  };
 
   return (
     <Page title="Project Notes">
@@ -127,8 +157,27 @@ const ProjectComments = () => {
               No comments to display
             </Typography>
           )}
-
           {/* <DisplayAllComments /> */}
+        </Card>
+        <Card>
+          <ReactQuill
+            theme="snow"
+            value={noteText}
+            onChange={setNoteText}
+            modules={quillModules}
+          />
+
+          <Box pt={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<AddBoxIcon />}
+              onClick={submitNewComment}
+            >
+              Add comment
+            </Button>
+          </Box>
         </Card>
       </Container>
     </Page>
