@@ -3,32 +3,6 @@ import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 
-
-// just for now
-const personnelName = value => {
-  const parsedJson = JSON.parse(value)
-  let uniqueNames = {}
-  let personnel = []
-  const names = parsedJson.map(person => 
-    `${person.moped_user.first_name} ${person.moped_user.last_name} (${person.moped_project_role.project_role_name})`)
-
-  parsedJson.forEach(person => {
-    let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
-    if (uniqueNames[fullName]) {
-      uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
-    } else {
-      uniqueNames[fullName] = person.moped_project_role.project_role_name
-    }
-  })
-
-  for (const [key, value] of Object.entries(uniqueNames)) {
-    personnel.push(`${key} (${value})`)
-  }
-
-  // return names.join(", ")
-  return personnel.join(", ")
-}
-
 /**
  * The Query configuration (now also including filters)
  * @constant
@@ -133,7 +107,26 @@ export const ProjectsListViewQueryConf = {
       stringify: true,
       label: "Team Members",
       width: "15%",
-      filter: personnelName,
+      filter: value => {
+        const parsedJson = JSON.parse(value)
+        let uniqueNames = {}
+        let personnel = []
+
+        parsedJson.forEach(person => {
+          let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
+          if (uniqueNames[fullName]) {
+            uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
+          } else {
+            uniqueNames[fullName] = person.moped_project_role.project_role_name
+          }
+        })
+
+        for (const [key, value] of Object.entries(uniqueNames)) {
+          personnel.push(`${key} (${value})`)
+        }
+
+        return personnel.join(", ")
+      }
     },
     start_date: {
       searchable: false,
