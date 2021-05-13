@@ -201,14 +201,8 @@ const GridTable = ({ title, query }) => {
       return;
     }
 
-    // if (type === "stringify") {
-    //   console.log(field)
-    //   query.setWhere(field, )
-    // }
-
     // If the operator includes "is_null", then the value is always true
     if (gqlOperator.includes("is_null")) {
-      // how do we check is null equals false ??
       value = "true";
     } else {
       // We have a normal operator, if we have a normal value

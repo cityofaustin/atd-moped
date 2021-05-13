@@ -133,7 +133,7 @@ export const ProjectsListViewQueryConf = {
       sortable: true,
       label: "Start Date",
       width: "10%",
-      filter: value => new Date(value).toLocaleDateString(), // start here
+      filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
     ecapris_subproject_id: {
