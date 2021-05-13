@@ -9,6 +9,7 @@ import {
   Card,
   CircularProgress,
   Divider,
+  Grid,
   List,
   ListItem,
   ListItemAvatar,
@@ -26,6 +27,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import ProjectSaveButton from "../../newProjectView/ProjectSaveButton";
 
 const COMMENTS_QUERY = gql`
   query getProjectComments($projectId: Int!) {
@@ -80,12 +82,24 @@ const ProjectComments = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const [noteText, setNoteText] = useState("");
+  const [commentAddLoading, setCommentAddLoading] = useState(false);
+  const [commentAddSuccess, setCommentAddSuccess] = useState(false);
 
-  const { loading, error, data } = useQuery(COMMENTS_QUERY, {
+  const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: { projectId },
   });
 
-  const [addNewComment] = useMutation(ADD_PROJECT_COMMENT);
+  const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
+    onCompleted() {
+      setNoteText("");
+      refetch();
+      setCommentAddSuccess(true);
+      setTimeout(() => {
+        setCommentAddLoading(false);
+        setCommentAddSuccess(false);
+      }, 350);
+    },
+  });
 
   console.log(data);
   console.log(noteText);
@@ -95,6 +109,7 @@ const ProjectComments = () => {
   if (loading || !data) return <CircularProgress />;
 
   const submitNewComment = () => {
+    setCommentAddLoading(true);
     addNewComment({
       variables: {
         objects: [
@@ -111,75 +126,91 @@ const ProjectComments = () => {
   return (
     <Page title="Project Notes">
       <Container>
-        <Card>
-          {data.moped_proj_notes.length > 0 ? (
-            <List className={classes.root}>
-              {data.moped_proj_notes.map((item, i) => {
-                let isNotLastItem = i < data.moped_proj_notes.length - 1;
-                return (
-                  <>
-                    <ListItem alignItems="flex-start">
-                      <ListItemAvatar>
-                        <Avatar />
-                      </ListItemAvatar>
-                      <ListItemText
-                        primary={
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Card>
+              {data.moped_proj_notes.length > 0 ? (
+                <List className={classes.root}>
+                  {data.moped_proj_notes.map((item, i) => {
+                    let isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    return (
+                      <>
+                        <ListItem alignItems="flex-start">
+                          <ListItemAvatar>
+                            <Avatar />
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={
+                              <>
+                                <Typography className={classes.commentorText}>
+                                  {item.added_by}
+                                </Typography>
+                                <Typography variant="button">
+                                  {` - ${new Date(
+                                    item.date_created
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}`}
+                                </Typography>
+                              </>
+                            }
+                            secondary={
+                              <Typography className={classes.noteText}>
+                                {parse(item.project_note)}
+                              </Typography>
+                            }
+                          />
+                        </ListItem>
+                        {isNotLastItem && (
+                          <Divider variant="inset" component="li" />
+                        )}
+                      </>
+                    );
+                  })}
+                </List>
+              ) : (
+                <Typography className={classes.emptyState}>
+                  No comments to display
+                </Typography>
+              )}
+              {/* <DisplayAllComments /> */}
+            </Card>
+          </Grid>
+          <Grid item xs={12}>
+            <Card>
+              <Container>
+                <Grid xs={12} sm={10} container direction="column" spacing={1}>
+                  <Grid item>
+                    <Box pt={2}>
+                      <ReactQuill
+                        theme="snow"
+                        value={noteText}
+                        onChange={setNoteText}
+                        modules={quillModules}
+                      />
+                    </Box>
+                  </Grid>
+                  <Grid item>
+                    <Box pb={2}>
+                      <ProjectSaveButton
+                        label={
                           <>
-                            <Typography className={classes.commentorText}>
-                              {item.added_by}
-                            </Typography>
-                            <Typography variant="button">
-                              {` - ${new Date(
-                                item.date_created
-                              ).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              })}`}
-                            </Typography>
+                            <AddBoxIcon /> <Box ml={1}>Add comment</Box>
                           </>
                         }
-                        secondary={
-                          <Typography className={classes.noteText}>
-                            {parse(item.project_note)}
-                          </Typography>
-                        }
+                        loading={commentAddLoading}
+                        success={commentAddSuccess}
+                        handleButtonClick={submitNewComment}
                       />
-                    </ListItem>
-                    {isNotLastItem && (
-                      <Divider variant="inset" component="li" />
-                    )}
-                  </>
-                );
-              })}
-            </List>
-          ) : (
-            <Typography className={classes.emptyState}>
-              No comments to display
-            </Typography>
-          )}
-          {/* <DisplayAllComments /> */}
-        </Card>
-        <Card>
-          <ReactQuill
-            theme="snow"
-            value={noteText}
-            onChange={setNoteText}
-            modules={quillModules}
-          />
-
-          <Box pt={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              startIcon={<AddBoxIcon />}
-              onClick={submitNewComment}
-            >
-              Add comment
-            </Button>
-          </Box>
-        </Card>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Container>
+            </Card>
+          </Grid>
+        </Grid>
       </Container>
     </Page>
   );
