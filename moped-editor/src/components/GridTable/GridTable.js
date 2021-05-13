@@ -354,6 +354,20 @@ const GridTable = ({ title, query }) => {
   };
 
   /**
+   * Returns a stringified object with information to format link.
+   * @param {string} row - row from data
+   * @param {Object} column - column with link attribute
+   * @return {string}
+   */
+  const buildLinkData = (row, column) => (
+    JSON.stringify({
+      singleItem: query.singleItem,
+      data: row[column],
+      link: row[query.config.columns[column].link]
+    })
+  );
+
+  /**
    * Data Management
    */
   console.log(query.query);
@@ -450,7 +464,9 @@ const GridTable = ({ title, query }) => {
                                         </RouterLink>
                                       )
                                     ) : query.config.columns[column]?.link ? (
-                                      query.getFormattedValue(column, JSON.stringify({singleItem: query.singleItem, data: row[column], link: row[query.config.columns[column].link]}))
+                                      query.getFormattedValue(
+                                        column,
+                                        buildLinkData(row, column))
                                     )
                                     : isAlphanumeric(column) ? (
                                       <>
