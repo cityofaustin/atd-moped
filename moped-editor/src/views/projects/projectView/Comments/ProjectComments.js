@@ -19,7 +19,7 @@ import {
 import AddBoxIcon from "@material-ui/icons/AddBox";
 
 import { makeStyles } from "@material-ui/core/styles";
-
+import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
@@ -81,6 +81,7 @@ const useStyles = makeStyles(theme => ({
 const ProjectComments = () => {
   const { projectId } = useParams();
   const classes = useStyles();
+  const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
   const [commentAddLoading, setCommentAddLoading] = useState(false);
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
@@ -114,7 +115,7 @@ const ProjectComments = () => {
       variables: {
         objects: [
           {
-            added_by: "Mateo",
+            added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
           },
