@@ -340,7 +340,6 @@ const ProjectTimeline = () => {
                       key => oldData[key] !== newData[key]
                     );
 
-                    debugger;
 
                     // Loop through the differences and assign newData values.
                     // If one of the Date fields is blanked out, coerce empty
