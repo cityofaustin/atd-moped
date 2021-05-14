@@ -9,7 +9,6 @@ import {
   Grid,
   TextField,
   Switch,
-  FormControl,
   Select,
   MenuItem,
 } from "@material-ui/core";
