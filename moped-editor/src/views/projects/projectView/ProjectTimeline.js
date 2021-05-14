@@ -9,6 +9,8 @@ import {
   Grid,
   TextField,
   Switch,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import MaterialTable, { MTableAction } from "material-table";
@@ -23,49 +25,6 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-
-/**
- * DateFieldEditComponent - renders a Date type Calendar select
- * @param {object} props - Values passed through Material Table `editComponent`
- * @param {string} name - Field name
- * @param {string} label - Display label
- * @return {JSX.Element}
- * @constructor
- */
-const DateFieldEditComponent = (props, name, label) => (
-  <TextField
-    name={name}
-    label={label}
-    type="date"
-    variant="standard"
-    value={props.value}
-    onChange={e => props.onChange(e.target.value)}
-    InputLabelProps={{
-      shrink: true,
-    }}
-  />
-);
-
-/**
- * ToggleEditComponent - renders a toggle for True/False edit fields
- * @param {object} props - Values passed through Material Table `editComponent`
- * @param {string} name - Field name
- * @return {JSX.Element}
- * @constructor
- */
-const ToggleEditComponent = (props, name) => (
-  <Grid component="label" container alignItems="center" spacing={1}>
-    <Grid item>
-      <Switch
-        checked={props.value}
-        onChange={e => props.onChange(!props.value)}
-        color="primary"
-        name={name}
-        inputProps={{ "aria-label": "primary checkbox" }}
-      />
-    </Grid>
-  </Grid>
-);
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -107,6 +66,85 @@ const ProjectTimeline = () => {
   if (loading || !data) return <CircularProgress />;
 
   /**
+   * Prevents the line from being saved on enter key
+   * @param {object} e - Event Object
+   */
+  const handleKeyEvent = e => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.stopPropagation();
+    }
+  };
+
+  /**
+   * DateFieldEditComponent - renders a Date type Calendar select
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @param {string} label - Display label
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const DateFieldEditComponent = (props, name, label) => (
+    <TextField
+      name={name}
+      label={label}
+      type="date"
+      variant="standard"
+      value={props.value}
+      onChange={e => props.onChange(e.target.value)}
+      onKeyDown={e => handleKeyEvent(e)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  );
+
+  /**
+   * ToggleEditComponent - renders a toggle for True/False edit fields
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const ToggleEditComponent = (props, name) => (
+    <Grid component="label" container alignItems="center" spacing={1}>
+      <Grid item>
+        <Switch
+          checked={props.value}
+          onChange={e => props.onChange(!props.value)}
+          color="primary"
+          name={name}
+          inputProps={{ "aria-label": "primary checkbox" }}
+          onKeyDown={e => handleKeyEvent(e)}
+        />
+      </Grid>
+    </Grid>
+  );
+
+  /**
+   * DropDownSelectComponent - Renders a drop down menu for MaterialTable
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const DropDownSelectComponent = (props, name) => (
+    <Select id={name} value={props.value}>
+      {Object.keys(props.columnDef.lookup).map(key => {
+        return (
+          <MenuItem
+            onChange={() => props.onChange(key)}
+            onClick={() => props.onChange(key)}
+            onKeyDown={e => handleKeyEvent(e)}
+            value={key}
+          >
+            {props.columnDef.lookup[key]}
+          </MenuItem>
+        );
+      })}
+    </Select>
+  );
+
+  /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
    * expects.
    * Ex: { construction: "Construction", hold: "Hold", ...}
@@ -114,7 +152,7 @@ const ProjectTimeline = () => {
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.phase_name]:
+        [item.phase_name.toLowerCase()]:
           item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
       }),
     {}
@@ -124,7 +162,14 @@ const ProjectTimeline = () => {
    * Column configuration for <MaterialTable>
    */
   const columns = [
-    { title: "Phase Name", field: "phase_name", lookup: phaseNameLookup },
+    {
+      title: "Phase Name",
+      field: "phase_name",
+      lookup: phaseNameLookup,
+      editComponent: props => (
+        <DropDownSelectComponent {...props} name={"phase_name"} />
+      ),
+    },
     {
       title: "Active?",
       field: "is_current_phase",
@@ -148,7 +193,11 @@ const ProjectTimeline = () => {
       title: "End Date",
       field: "phase_end",
       editComponent: props => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent
+          {...props}
+          name="phase_end"
+          label="End Date"
+        />
       ),
     },
   ];
@@ -184,88 +233,70 @@ const ProjectTimeline = () => {
                   },
                 }}
                 editable={{
-                  onRowAdd: newData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Merge input fields with required fields default data.
-                        const newPhaseObject = Object.assign(
-                          {
-                            project_id: projectId,
-                            completion_percentage: 0,
-                            completed: false,
-                            status_id: 1,
-                          },
-                          newData
-                        );
+                  onRowAdd: newData => {
+                    const newPhaseObject = Object.assign(
+                      {
+                        project_id: projectId,
+                        completion_percentage: 0,
+                        completed: false,
+                        status_id: 1,
+                      },
+                      newData
+                    );
 
-                        // Execute insert mutation
-                        addProjectPhase({
-                          variables: {
-                            objects: [newPhaseObject],
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        const updatedPhaseObject = {
-                          ...oldData,
-                        };
+                    // Execute insert mutation, return promise
+                    return addProjectPhase({
+                      variables: {
+                        objects: [newPhaseObject],
+                      },
+                    }).then(() => refetch());
+                  },
+                  onRowUpdate: (newData, oldData) => {
+                    const updatedPhaseObject = {
+                      ...oldData,
+                    };
 
-                        // Array of differences between new and old data
-                        let differences = Object.keys(oldData).filter(
-                          key => oldData[key] !== newData[key]
-                        );
+                    // Array of differences between new and old data
+                    let differences = Object.keys(oldData).filter(
+                      key => oldData[key] !== newData[key]
+                    );
 
-                        // Loop through the differences and assign newData values.
-                        // If one of the Date fields is blanked out, coerce empty
-                        // string to null.
-                        differences.forEach(diff => {
-                          let shouldCoerceEmptyStringToNull =
-                            newData[diff] === "" &&
-                            (diff === "phase_start" || diff === "phase_end");
+                    // Loop through the differences and assign newData values.
+                    // If one of the Date fields is blanked out, coerce empty
+                    // string to null.
+                    differences.forEach(diff => {
+                      let shouldCoerceEmptyStringToNull =
+                        newData[diff] === "" &&
+                        (diff === "phase_start" || diff === "phase_end");
 
-                          if (shouldCoerceEmptyStringToNull) {
-                            updatedPhaseObject[diff] = null;
-                          } else {
-                            updatedPhaseObject[diff] = newData[diff];
-                          }
-                        });
+                      if (shouldCoerceEmptyStringToNull) {
+                        updatedPhaseObject[diff] = null;
+                      } else {
+                        updatedPhaseObject[diff] = newData[diff];
+                      }
+                    });
 
-                        // Remove extraneous fields given by MaterialTable that
-                        // Hasura doesn't need
-                        delete updatedPhaseObject.tableData;
-                        delete updatedPhaseObject.project_id;
-                        delete updatedPhaseObject.__typename;
+                    // Remove extraneous fields given by MaterialTable that
+                    // Hasura doesn't need
+                    delete updatedPhaseObject.tableData;
+                    delete updatedPhaseObject.project_id;
+                    delete updatedPhaseObject.__typename;
 
-                        // Execute update mutation
-                        updateProjectPhase({
-                          variables: updatedPhaseObject,
-                        });
-
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
+                    // Execute update mutation, returns promise
+                    return updateProjectPhase({
+                      variables: updatedPhaseObject,
+                    }).then(() => refetch());
+                  },
                   onRowDelete: oldData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Execute delete mutation
-                        deleteProjectPhase({
-                          variables: {
-                            project_phase_id: oldData.project_phase_id,
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
+                    // Return promise
+                    deleteProjectPhase({
+                      variables: {
+                        project_phase_id: oldData.project_phase_id,
+                      },
+                    }).then(() => refetch()),
                 }}
                 options={{
-                  actionsColumnIndex: -1
+                  actionsColumnIndex: -1,
                 }}
               />
             </div>
