@@ -197,7 +197,6 @@ const ProjectTimeline = () => {
           {...props}
           name="phase_end"
           label="End Date"
-          onKeyDown={e => handleKeyEvent(e)}
         />
       ),
     },
