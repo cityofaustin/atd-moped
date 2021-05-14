@@ -234,85 +234,67 @@ const ProjectTimeline = () => {
                   },
                 }}
                 editable={{
-                  onRowAdd: newData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Merge input fields with required fields default data.
-                        const newPhaseObject = Object.assign(
-                          {
-                            project_id: projectId,
-                            completion_percentage: 0,
-                            completed: false,
-                            status_id: 1,
-                          },
-                          newData
-                        );
+                  onRowAdd: newData => {
+                    const newPhaseObject = Object.assign(
+                      {
+                        project_id: projectId,
+                        completion_percentage: 0,
+                        completed: false,
+                        status_id: 1,
+                      },
+                      newData
+                    );
 
-                        // Execute insert mutation
-                        addProjectPhase({
-                          variables: {
-                            objects: [newPhaseObject],
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        const updatedPhaseObject = {
-                          ...oldData,
-                        };
+                    // Execute insert mutation, return promise
+                    return addProjectPhase({
+                      variables: {
+                        objects: [newPhaseObject],
+                      },
+                    }).then(() => refetch());
+                  },
+                  onRowUpdate: (newData, oldData) => {
+                    const updatedPhaseObject = {
+                      ...oldData,
+                    };
 
-                        // Array of differences between new and old data
-                        let differences = Object.keys(oldData).filter(
-                          key => oldData[key] !== newData[key]
-                        );
+                    // Array of differences between new and old data
+                    let differences = Object.keys(oldData).filter(
+                      key => oldData[key] !== newData[key]
+                    );
 
-                        // Loop through the differences and assign newData values.
-                        // If one of the Date fields is blanked out, coerce empty
-                        // string to null.
-                        differences.forEach(diff => {
-                          let shouldCoerceEmptyStringToNull =
-                            newData[diff] === "" &&
-                            (diff === "phase_start" || diff === "phase_end");
+                    // Loop through the differences and assign newData values.
+                    // If one of the Date fields is blanked out, coerce empty
+                    // string to null.
+                    differences.forEach(diff => {
+                      let shouldCoerceEmptyStringToNull =
+                        newData[diff] === "" &&
+                        (diff === "phase_start" || diff === "phase_end");
 
-                          if (shouldCoerceEmptyStringToNull) {
-                            updatedPhaseObject[diff] = null;
-                          } else {
-                            updatedPhaseObject[diff] = newData[diff];
-                          }
-                        });
+                      if (shouldCoerceEmptyStringToNull) {
+                        updatedPhaseObject[diff] = null;
+                      } else {
+                        updatedPhaseObject[diff] = newData[diff];
+                      }
+                    });
 
-                        // Remove extraneous fields given by MaterialTable that
-                        // Hasura doesn't need
-                        delete updatedPhaseObject.tableData;
-                        delete updatedPhaseObject.project_id;
-                        delete updatedPhaseObject.__typename;
+                    // Remove extraneous fields given by MaterialTable that
+                    // Hasura doesn't need
+                    delete updatedPhaseObject.tableData;
+                    delete updatedPhaseObject.project_id;
+                    delete updatedPhaseObject.__typename;
 
-                        // Execute update mutation
-                        updateProjectPhase({
-                          variables: updatedPhaseObject,
-                        });
-
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
+                    // Execute update mutation, returns promise
+                    return updateProjectPhase({
+                      variables: updatedPhaseObject,
+                    }).then(() => refetch());
+                  },
                   onRowDelete: oldData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Execute delete mutation
-                        deleteProjectPhase({
-                          variables: {
-                            project_phase_id: oldData.project_phase_id,
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
+                    // Return promise
+                    deleteProjectPhase({
+                      variables: {
+                        project_phase_id: oldData.project_phase_id,
+                      },
+                    }).then(() => refetch()),
                 }}
                 options={{
                   actionsColumnIndex: -1,
