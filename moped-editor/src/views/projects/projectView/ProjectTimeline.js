@@ -120,6 +120,13 @@ const ProjectTimeline = () => {
     </Grid>
   );
 
+  /**
+   * DropDownSelectComponent - Renders a drop down menu for MaterialTable
+   * @param {object} props - Values passed through Material Table `editComponent`
+   * @param {string} name - Field name
+   * @return {JSX.Element}
+   * @constructor
+   */
   const DropDownSelectComponent = (props, name) => (
     <Select id={name} value={props.value}>
       {Object.keys(props.columnDef.lookup).map(key => {
