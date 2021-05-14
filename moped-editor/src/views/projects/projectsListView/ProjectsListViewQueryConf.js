@@ -122,7 +122,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       stringify: true,
       label: "Team Members",
-      width: "15%",
+      width: "20%",
       filter: value => {
         const parsedJson = JSON.parse(value)
         let uniqueNames = {}
@@ -138,10 +138,10 @@ export const ProjectsListViewQueryConf = {
         })
 
         for (const [key, value] of Object.entries(uniqueNames)) {
-          personnel.push(`${key} (${value})`)
+          personnel.push(`${key} - ${value}`)
         }
 
-        return personnel.join(", ")
+        return personnel.join("\n")
       }
     },
     start_date: {

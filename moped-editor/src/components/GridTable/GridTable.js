@@ -67,6 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     "text-transform": "capitalize",
+    "white-space": "pre-wrap",
   },
   tableChip: {
     "text-transform": "capitalize",
@@ -434,6 +435,7 @@ const GridTable = ({ title, query }) => {
                                         ? query.config.columns[column].width
                                         : 0
                                     }
+                                    className={classes.tableCell}
                                   >
                                     {query.isPK(column) ? (
                                       // If there is custom JSX for the PK single item button, render it
