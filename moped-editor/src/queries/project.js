@@ -150,6 +150,11 @@ export const TIMELINE_QUERY = gql`
     moped_phases(where: { phase_id: {_gt: 0} }) {
       phase_id
       phase_name
+      subphases
+    }
+    moped_subphases(where: { subphase_id: {_gt: 0} }, order_by: { subphase_order: asc }) {
+      subphase_id
+      subphase_name
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, status_id: {_eq: 1} }
@@ -161,6 +166,8 @@ export const TIMELINE_QUERY = gql`
       project_id
       phase_start
       phase_end
+      subphase_name
+      subphase_id
     }
   }
 `;
