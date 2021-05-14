@@ -66,6 +66,53 @@ const ProjectTimeline = () => {
   if (loading || !data) return <CircularProgress />;
 
   /**
+   * Phase table lookup object formatted into the shape that <MaterialTable>
+   * expects.
+   * Ex: { construction: "Construction", hold: "Hold", ...}
+   */
+  const phaseNameLookup = data.moped_phases.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.phase_name.toLowerCase()]:
+          item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
+      }),
+    {}
+  );
+
+  /**
+   * Phase table lookup object formatted into the shape that <MaterialTable>
+   * expects.
+   * Ex: { construction: "Construction", hold: "Hold", ...}
+   */
+  const subphaseNameLookup = data.moped_subphases.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.subphase_name.toLowerCase()]:
+          item.subphase_name.charAt(0).toUpperCase() +
+          item.subphase_name.slice(1),
+      }),
+    {}
+  );
+
+  /**
+   * Generates a filtered number of sub-phase lookup elements
+   * @param {Array} allowedSubphaseIds - An array of integers containing the allowed subphase ids
+   * @param {Object} moped_subphases - The data object containing all sub-phase data
+   */
+  const generateSubphaseLookup = (allowedSubphaseIds, moped_subphases) =>
+    moped_subphases
+      .filter(item => allowedSubphaseIds.includes(item.subphase_id))
+      .reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.subphase_name.toLowerCase()]:
+              item.subphase_name.charAt(0).toUpperCase() +
+              item.subphase_name.slice(1),
+          }),
+        {}
+      );
+
+  /**
    * Prevents the line from being saved on enter key
    * @param {object} e - Event Object
    */
@@ -127,36 +174,60 @@ const ProjectTimeline = () => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DropDownSelectComponent = (props, name) => (
-    <Select id={name} value={props.value}>
-      {Object.keys(props.columnDef.lookup).map(key => {
-        return (
-          <MenuItem
-            onChange={() => props.onChange(key)}
-            onClick={() => props.onChange(key)}
-            onKeyDown={e => handleKeyEvent(e)}
-            value={key}
-          >
-            {props.columnDef.lookup[key]}
-          </MenuItem>
-        );
-      })}
-    </Select>
-  );
+  const DropDownSelectComponent = props => {
+    // If the component name is phase_name, then assume phaseNameLookup values
+    // Otherwise assume null,
+    let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
-  /**
-   * Phase table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { construction: "Construction", hold: "Hold", ...}
-   */
-  const phaseNameLookup = data.moped_phases.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.phase_name.toLowerCase()]:
-          item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
-      }),
-    {}
-  );
+    // If lookup values is null, then it is a sub-phase list we need to generate
+    if (lookupValues === null) {
+      // First retrieve the sub-phase id's from moped_phases for that specific row
+      const allowedSubphaseIds = props.data.moped_phases
+        .filter(
+          item =>
+            // filter out any phases that are not the one we selected
+            (item?.phase_name ?? "").toLowerCase() ===
+            // props.rowData.phase_name is the row's phase name
+            // which could be null if nothing is selected
+            (props.rowData?.phase_name ?? "").toLowerCase()
+        )
+        .reduce(
+            // Then using reduce, aggregate the sub-phase ids from whatever array is left
+          (accumulator, item) =>
+            (accumulator = [...accumulator, ...(item?.subphases ?? [])]),
+          []
+        );
+
+      // If we are left with a zero-length array, hide the drop-down.
+      if (allowedSubphaseIds.length === 0) {
+        return null;
+      }
+
+      // We have a usable array of sub-phase ids, generate lookup values,
+      lookupValues = generateSubphaseLookup(
+        allowedSubphaseIds,
+        props.data.moped_subphases
+      );
+    }
+
+    // Proceed normally and generate the drop-down
+    return (
+      <Select id={props.name} value={props.value}>
+        {Object.keys(lookupValues).map(key => {
+          return (
+            <MenuItem
+              onChange={() => props.onChange(key)}
+              onClick={() => props.onChange(key)}
+              onKeyDown={e => handleKeyEvent(e)}
+              value={key}
+            >
+              {lookupValues[key]}
+            </MenuItem>
+          );
+        })}
+      </Select>
+    );
+  };
 
   /**
    * Column configuration for <MaterialTable>
@@ -167,7 +238,19 @@ const ProjectTimeline = () => {
       field: "phase_name",
       lookup: phaseNameLookup,
       editComponent: props => (
-        <DropDownSelectComponent {...props} name={"phase_name"} />
+        <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
+      ),
+    },
+    {
+      title: "Sub-Phase Name",
+      field: "subphase_name",
+      lookup: subphaseNameLookup,
+      editComponent: props => (
+        <DropDownSelectComponent
+          {...props}
+          name={"subphase_name"}
+          data={data}
+        />
       ),
     },
     {
@@ -193,11 +276,7 @@ const ProjectTimeline = () => {
       title: "End Date",
       field: "phase_end",
       editComponent: props => (
-        <DateFieldEditComponent
-          {...props}
-          name="phase_end"
-          label="End Date"
-        />
+        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
     },
   ];
@@ -260,6 +339,8 @@ const ProjectTimeline = () => {
                     let differences = Object.keys(oldData).filter(
                       key => oldData[key] !== newData[key]
                     );
+
+                    debugger;
 
                     // Loop through the differences and assign newData values.
                     // If one of the Date fields is blanked out, coerce empty
