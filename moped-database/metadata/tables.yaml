@@ -2755,6 +2755,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       backend_only: false
   - role: moped-editor
     permission:
@@ -2779,6 +2780,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2803,6 +2805,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       filter: {}
   - role: moped-editor
     permission:
@@ -2826,6 +2829,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       filter: {}
   - role: moped-viewer
     permission:
@@ -2849,6 +2853,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2873,6 +2878,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       filter: {}
       check: {}
   - role: moped-editor
@@ -2897,6 +2903,7 @@
       - started_by_user_id
       - status_id
       - subphase_id
+      - subphase_name
       filter: {}
       check: {}
   event_triggers:
