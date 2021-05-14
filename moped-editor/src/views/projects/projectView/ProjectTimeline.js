@@ -122,21 +122,20 @@ const ProjectTimeline = () => {
   );
 
   const DropDownSelectComponent = (props, name) => (
-    <FormControl>
-      <Select id={name} value={props.value}>
-        {Object.keys(props.columnDef.lookup).map(key => {
-          return (
-            <MenuItem
-              onChange={e => props.onChange(props.value)}
-              onKeyDown={e => handleKeyEvent(e)}
-              value={key}
-            >
-              {props.columnDef.lookup[key]}
-            </MenuItem>
-          );
-        })}
-      </Select>
-    </FormControl>
+    <Select id={name} value={props.value}>
+      {Object.keys(props.columnDef.lookup).map(key => {
+        return (
+          <MenuItem
+            onChange={() => props.onChange(key)}
+            onClick={() => props.onChange(key)}
+            onKeyDown={e => handleKeyEvent(e)}
+            value={key}
+          >
+            {props.columnDef.lookup[key]}
+          </MenuItem>
+        );
+      })}
+    </Select>
   );
 
   /**
