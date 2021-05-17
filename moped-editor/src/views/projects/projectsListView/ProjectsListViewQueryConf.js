@@ -16,7 +16,7 @@ export const ProjectsListViewQueryConf = {
       fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
     },
   },
-  table: "moped_project",
+  table: "project_list_view",
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
@@ -101,26 +101,26 @@ export const ProjectsListViewQueryConf = {
       },
       type: "string",
     },
-    "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } moped_project_role { project_role_name }}": {
+    project_team_members: {
       searchable: false,
       sortable: false,
-      stringify: true,
       label: "Team Members",
       width: "20%",
       filter: value => {
-        const parsedJson = JSON.parse(value)
+        if (value === " :") {
+          return ""
+        }
+        let namesArray = value.split(',')
         let uniqueNames = {}
         let personnel = []
-
-        parsedJson.forEach(person => {
-          let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
+        namesArray.forEach(person => {
+          let [fullName, projectRole] = person.split(":")
           if (uniqueNames[fullName]) {
-            uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
-          } else {
-            uniqueNames[fullName] = person.moped_project_role.project_role_name
+             uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`
+           } else {
+             uniqueNames[fullName] = projectRole
           }
         })
-
         for (const [key, value] of Object.entries(uniqueNames)) {
           personnel.push(`${key} - ${value}`)
         }

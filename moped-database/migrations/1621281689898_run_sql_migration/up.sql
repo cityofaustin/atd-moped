@@ -21,9 +21,9 @@ CREATE OR REPLACE VIEW project_list_view AS
         mp.is_retired,
         mp.milestone_id,
         mp.status_id,
-       string_agg(CONCAT(mu.first_name, ' ', mu.last_name, ' - ', mpr.project_role_name), ', ') AS project_team_members
+       string_agg(CONCAT(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
    FROM moped_project AS mp
-  LEFT JOIN moped_proj_personnel mpp ON mp.project_id = mpp.project_id
+  LEFT JOIN moped_proj_personnel mpp ON mp.project_id = mpp.project_id AND mpp.status_id = 1
   LEFT JOIN moped_users mu on mpp.user_id = mu.user_id
   LEFT JOIN moped_project_roles mpr on mpp.role_id = mpr.project_role_id
   GROUP BY mp.project_uuid,
