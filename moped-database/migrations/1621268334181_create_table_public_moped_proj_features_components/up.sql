@@ -10,3 +10,10 @@ CREATE TABLE "public"."moped_proj_features_components"(
         REFERENCES "public"."moped_proj_features"("feature_id")
             ON UPDATE no action ON DELETE no action
 );
+
+
+CREATE INDEX moped_proj_features_components_moped_proj_component_id_index
+	ON moped_proj_features_components (moped_proj_component_id);
+
+CREATE INDEX moped_proj_features_components_moped_proj_features_id_index
+	ON moped_proj_features_components (moped_proj_features_id);
