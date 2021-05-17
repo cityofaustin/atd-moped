@@ -2,6 +2,10 @@ CREATE TABLE "public"."moped_proj_features_components"(
     "project_features_components_id" serial NOT NULL,
     "moped_proj_features_id" integer NOT NULL,
     "moped_proj_component_id" integer NOT NULL,
+    "name" text NULL,
+    "description" text NULL,
+    "create_date" timestamp default now(),
+    "status_id" integer NOT NULL default 0,
     PRIMARY KEY ("project_features_components_id"),
     FOREIGN KEY ("moped_proj_component_id")
         REFERENCES "public"."moped_proj_components"("project_component_id")
