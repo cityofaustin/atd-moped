@@ -5,17 +5,6 @@ import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 
 
-// for now
-
-const linkProject = values => {
-  const jsonValues = JSON.parse(values)
-  return (
-  <RouterLink
-    to={`/${jsonValues.singleItem}/${jsonValues.link}`}
-  >
-    {jsonValues.data}
-  </RouterLink>
-)}
 /**
  * The Query configuration (now also including filters)
  * @constant
@@ -76,7 +65,16 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: linkProject,
+      filter: values => {
+        const jsonValues = JSON.parse(values)
+        return (
+          <RouterLink
+            to={`/${jsonValues.singleItem}/${jsonValues.link}`}
+          >
+            {jsonValues.data}
+          </RouterLink>
+        )
+      }
     },
     project_description: {
       hidden: true,
