@@ -2602,6 +2602,9 @@
     schema: public
     name: moped_proj_personnel
   object_relationships:
+  - name: moped_project_role
+    using:
+      foreign_key_constraint_on: role_id
   - name: moped_user
     using:
       foreign_key_constraint_on: user_id

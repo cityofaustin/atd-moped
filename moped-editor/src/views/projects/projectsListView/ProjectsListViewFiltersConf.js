@@ -55,6 +55,19 @@ export const ProjectsListViewFiltersConf = {
         "*", // All of them (shortcut)
       ],
     },
+    {
+      name: "current_phase",
+      label: "Currrent Phase",
+      placeholder: "Current phase",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
   ],
 
   operators: {
