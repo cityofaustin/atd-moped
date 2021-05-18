@@ -68,6 +68,17 @@ export const ProjectsListViewFiltersConf = {
         "string_is_not_null",
       ],
     },
+    {
+      name: "project_team_members",
+      label: "Team Member",
+      placeholder: "Team member",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
   ],
 
   operators: {
