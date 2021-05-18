@@ -1,46 +1,22 @@
 import { gql } from "@apollo/client";
 
 export const ADD_PROJECT = gql`
-  mutation MyMutation(
-    $project_name: String! = ""
-    $project_description: String! = ""
-    $current_phase: String! = ""
-    $current_status: String! = ""
-    $ecapris_subproject_id: numeric
-    $fiscal_year: String! = ""
-    $start_date: date = ""
-    $capitally_funded: Boolean! = false
-    $project_priority: String! = ""
-    $project_extent_geojson: jsonb = {}
+  mutation AddProject(
+    $object: moped_project_insert_input!
   ) {
-    insert_moped_project(
-      objects: {
-        project_name: $project_name
-        project_description: $project_description
-        current_phase: $current_phase
-        current_status: $current_status
-        ecapris_subproject_id: $ecapris_subproject_id
-        fiscal_year: $fiscal_year
-        start_date: $start_date
-        capitally_funded: $capitally_funded
-        project_priority: $project_priority
-        project_extent_geojson: $project_extent_geojson
-      }
+    insert_moped_project_one(
+      object: $object
     ) {
-      affected_rows
-      returning {
-        project_id
-        project_name
-        project_description
-        project_priority
-        current_phase
-        current_status
-        ecapris_subproject_id
-        fiscal_year
-        capitally_funded
-        start_date
-        project_extent_geojson
-      }
+      project_id
+      project_name
+      project_description
+      project_priority
+      current_phase
+      current_status
+      ecapris_subproject_id
+      fiscal_year
+      capitally_funded
+      start_date
     }
   }
 `;
@@ -58,7 +34,11 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      project_extent_geojson
+      moped_proj_features(where: {status_id: {_eq: 1}}) {
+        feature_id
+        project_id
+        location
+      }
     }
     moped_phases {
       phase_id
@@ -121,16 +101,6 @@ export const TEAM_QUERY = gql`
   }
 `;
 
-export const ADD_PROJECT_PERSONNEL = gql`
-  mutation AddProjectPersonnel(
-    $objects: [moped_proj_personnel_insert_input!]!
-  ) {
-    insert_moped_proj_personnel(objects: $objects) {
-      affected_rows
-    }
-  }
-`;
-
 export const UPSERT_PROJECT_PERSONNEL = gql`
   mutation UpsertProjectPersonnel(
     $objects: [moped_proj_personnel_insert_input!]!
@@ -189,6 +159,11 @@ export const TIMELINE_QUERY = gql`
     moped_phases(where: { phase_id: {_gt: 0} }) {
       phase_id
       phase_name
+      subphases
+    }
+    moped_subphases(where: { subphase_id: {_gt: 0} }, order_by: { subphase_order: asc }) {
+      subphase_id
+      subphase_name
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, status_id: {_eq: 1} }
@@ -200,6 +175,8 @@ export const TIMELINE_QUERY = gql`
       project_id
       phase_start
       phase_end
+      subphase_name
+      subphase_id
     }
   }
 `;
@@ -211,6 +188,8 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $phase_end: date = null
     $project_phase_id: Int!
     $phase_name: String!
+    $subphase_id: Int = 0,
+    $subphase_name: String = null,
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -219,6 +198,8 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         phase_start: $phase_start
         phase_end: $phase_end
         phase_name: $phase_name
+        subphase_id: $subphase_id
+        subphase_name: $subphase_name
       }
     ) {
       project_id
@@ -226,6 +207,8 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       phase_name
       phase_start
       phase_end
+      subphase_id
+      subphase_name
       is_current_phase
     }
   }
@@ -257,15 +240,15 @@ export const ADD_PROJECT_PHASE = gql`
   }
 `;
 
-export const UPDATE_PROJECT_EXTENT = gql`
-  mutation UpdateProjectExtent(
-    $projectId: Int
-    $editFeatureCollection: jsonb
+export const UPSERT_PROJECT_EXTENT = gql`
+  mutation UpsertProjectExtent(
+    $upserts: [moped_proj_features_insert_input!]!
   ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: {
-        project_extent_geojson: $editFeatureCollection
+    insert_moped_proj_features(
+      objects: $upserts
+      on_conflict: {
+        constraint: moped_proj_features_pkey
+        update_columns: status_id
       }
     ) {
       affected_rows
@@ -277,7 +260,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
-      order_by: { created_at: asc }
+      order_by: { created_at: desc }
     ) {
       activity_id
       created_at
@@ -417,3 +400,37 @@ export const PROJECT_ARCHIVE= gql`
     }
   }
 `
+
+export const PROJECT_CLEAR_MAP_DATA_TEMPLATE =
+    `mutation ClearProjectMapData($projectId: Int!) {
+      update_moped_proj_features(
+        where: { project_id: { _eq: $projectId } }
+        _set: {
+          status_id: 0
+        }
+      ) {
+        affected_rows
+      }
+      insert_moped_proj_features(objects:[
+        {
+          project_id: $projectId,
+          location: {
+              id: "RANDOM_FEATURE_ID",
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [-97.74280552637893, 30.26807489857954],
+              },
+              properties: {
+                renderType: "Point",
+                sourceLayer: "drawnByUser",
+                PROJECT_EXTENT_ID: "RANDOM_FEATURE_ID",
+              },
+            },
+          status_id: 1
+        }
+      ]) {
+        affected_rows
+      }
+    }
+`;

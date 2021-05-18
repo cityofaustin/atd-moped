@@ -1,0 +1,1 @@
+CREATE TABLE "public"."moped_proj_features"("feature_id" serial NOT NULL, "project_id" integer, "location" jsonb, PRIMARY KEY ("feature_id") , FOREIGN KEY ("project_id") REFERENCES "public"."moped_project"("project_id") ON UPDATE restrict ON DELETE restrict, UNIQUE ("feature_id")); COMMENT ON TABLE "public"."moped_proj_features" IS E'Project extent features';

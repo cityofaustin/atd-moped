@@ -707,81 +707,85 @@
     permission:
       check: {}
       columns:
-      - phase_name
-      - phase_description
-      - phase_order
       - phase_average_length
-      - required_phase
+      - phase_description
       - phase_id
+      - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - phase_name
-      - phase_description
-      - phase_order
       - phase_average_length
-      - required_phase
+      - phase_description
       - phase_id
+      - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - required_phase
       - phase_average_length
-      - phase_id
-      - phase_order
       - phase_description
+      - phase_id
       - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - required_phase
       - phase_average_length
-      - phase_id
-      - phase_order
       - phase_description
+      - phase_id
       - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - phase_name
-      - phase_description
-      - phase_order
       - phase_average_length
-      - required_phase
+      - phase_description
       - phase_id
+      - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - required_phase
       - phase_average_length
-      - phase_id
-      - phase_order
       - phase_description
+      - phase_id
       - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
-      - required_phase
       - phase_average_length
-      - phase_id
-      - phase_order
       - phase_description
+      - phase_id
       - phase_name
+      - phase_order
+      - required_phase
+      - subphases
       filter: {}
-      check: null
+      check: {}
 - table:
     schema: public
     name: moped_proj_categories
@@ -1416,6 +1420,76 @@
       value_from_env: MOPED_API_APIKEY
     - value: activity_log
       name: MOPED_API_EVENT_NAME
+- table:
+    schema: public
+    name: moped_proj_features
+  object_relationships:
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - feature_id
+      - location
+      - project_id
+      - status_id
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_proj_financials
@@ -2532,6 +2606,9 @@
     schema: public
     name: moped_proj_personnel
   object_relationships:
+  - name: moped_project_role
+    using:
+      foreign_key_constraint_on: role_id
   - name: moped_user
     using:
       foreign_key_constraint_on: user_id
@@ -2671,15 +2748,17 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       backend_only: false
   - role: moped-editor
     permission:
@@ -2694,15 +2773,17 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2717,17 +2798,18 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2740,17 +2822,18 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2763,17 +2846,18 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2787,17 +2871,19 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
@@ -2810,17 +2896,19 @@
       - phase_end
       - phase_id
       - phase_name
+      - phase_order
       - phase_priority
       - phase_privacy
-      - phase_order
       - phase_start
       - phase_status
       - project_id
       - project_phase_id
       - started_by_user_id
       - status_id
+      - subphase_id
+      - subphase_name
       filter: {}
-      check: null
+      check: {}
   event_triggers:
   - name: activity_log_moped_proj_phases
     definition:
@@ -3322,170 +3410,6 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
-    name: moped_proj_subphases
-  insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_subphase_id
-      - project_id
-      - subphase_name
-      - subphase_description
-      - subphase_order
-      - completion_percentage
-      - subphase_status
-      - subphase_privacy
-      - subphase_start
-      - subphase_end
-      - subphase_priority
-      - subphase_date_type
-      - subphase_related_phase_id
-      - is_current_subphase
-      - completed
-      - started_by_user_id
-      - completed_by_user_id
-      - date_added
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      filter: {}
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - completed
-      - is_current_subphase
-      - subphase_privacy
-      - subphase_end
-      - subphase_start
-      - completed_by_user_id
-      - completion_percentage
-      - project_id
-      - project_subphase_id
-      - started_by_user_id
-      - subphase_priority
-      - subphase_order
-      - subphase_related_phase_id
-      - subphase_date_type
-      - subphase_description
-      - subphase_name
-      - subphase_status
-      - date_added
-      filter: {}
-      check: null
-- table:
-    schema: public
     name: moped_proj_timeline
   insert_permissions:
   - role: moped-admin
@@ -3644,6 +3568,21 @@
 - table:
     schema: public
     name: moped_project
+  array_relationships:
+  - name: moped_proj_features
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_features
+  - name: moped_proj_personnel
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_personnel
   insert_permissions:
   - role: moped-admin
     permission:
@@ -3660,7 +3599,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3686,7 +3624,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3712,7 +3649,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3738,7 +3674,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3764,7 +3699,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3791,7 +3725,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3817,7 +3750,6 @@
       - is_retired
       - project_description
       - project_description_public
-      - project_extent_geojson
       - project_id
       - project_importance
       - project_length
@@ -3848,7 +3780,6 @@
         - project_length
         - project_order
         - timeline_id
-        - project_extent_geojson
         - current_phase
         - current_status
         - ecapris_subproject_id
