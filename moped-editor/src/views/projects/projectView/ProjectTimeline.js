@@ -60,21 +60,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
-  // const mutationArguments = {
-  //   onCompleted: () => {
-  //     refetch();
-  //     refetchSummary();
-  //   },
-  // };
-  // const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE, mutationArguments);
-  // const [updateProjectPhase] = useMutation(
-  //   UPDATE_PROJECT_PHASES_MUTATION,
-  //   mutationArguments
-  // );
-  // const [deleteProjectPhase] = useMutation(
-  //   DELETE_PROJECT_PHASE,
-  //   mutationArguments
-  // );
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -420,11 +405,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         variables: {
                           project_phase_id: oldData.project_phase_id,
                         },
-                      }).then(
-                        () =>
+                      }).then(() => {
                           // Refetch data
-                          refetch(),
-                          refetchSummary()
+                          refetch();
+                          refetchSummary();
+                        }
                       );
                     });
                   },
