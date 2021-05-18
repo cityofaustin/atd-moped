@@ -1,8 +1,8 @@
 #
-# Builds and deploys any branch of moped editor into the development staging instance
+# Builds and deploys any branch of moped editor into the test staging instance
 #
 
-name: "Build & Deploy DevStage"
+name: "Build & Deploy Test Stage"
 
 on:
   workflow_dispatch:

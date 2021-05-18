@@ -109,8 +109,9 @@ const ProjectSummaryEditMap = ({
     updateProjectExtent({
       variables: { upserts },
     }).then(() => {
-      refetchProjectDetails();
-      handleClose();
+      refetchProjectDetails().then(() => {
+        handleClose();
+      });
     });
   };
 

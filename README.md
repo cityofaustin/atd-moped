@@ -5,7 +5,7 @@
 
 - Production: [https://mobility.austin.gov/moped/](https://mobility.austin.gov/moped/)
 - Staging: [https://moped.austinmobility.io/moped/](https://moped.austinmobility.io/moped/)
-- Test: [https://moped-dev.austinmobility.io/moped/](https://moped-dev.austinmobility.io/moped/)
+- Test: [https://moped-test.austinmobility.io/moped/](https://moped-test.austinmobility.io/moped/)
 
 
 #### How might we support comprehensive tracking of Austin’s mobility activities? 
