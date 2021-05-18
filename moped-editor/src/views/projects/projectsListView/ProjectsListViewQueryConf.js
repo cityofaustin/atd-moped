@@ -70,6 +70,7 @@ export const ProjectsListViewQueryConf = {
         return (
           <RouterLink
             to={`/${jsonValues.singleItem}/${jsonValues.link}`}
+            className={"MuiTypography-colorPrimary"}
           >
             {jsonValues.data}
           </RouterLink>
