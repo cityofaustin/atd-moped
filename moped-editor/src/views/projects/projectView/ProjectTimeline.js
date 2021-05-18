@@ -406,11 +406,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           project_phase_id: oldData.project_phase_id,
                         },
                       }).then(() => {
-                          // Refetch data
-                          refetch();
-                          refetchSummary();
-                        }
-                      );
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
                     });
                   },
                 }}
