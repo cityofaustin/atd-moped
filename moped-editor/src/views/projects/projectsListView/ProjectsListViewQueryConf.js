@@ -125,20 +125,18 @@ export const ProjectsListViewQueryConf = {
         if (value === " :") {
           return ""
         }
-        let namesArray = value.split(',')
-        let uniqueNames = {}
-        let personnel = []
+        const namesArray = value.split(',')
+        const uniqueNames = {}
         namesArray.forEach(person => {
-          let [fullName, projectRole] = person.split(":")
+          const [fullName, projectRole] = person.split(":")
           if (uniqueNames[fullName]) {
             uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`
           } else {
             uniqueNames[fullName] = projectRole
           }
         })
-        for (const [key, value] of Object.entries(uniqueNames)) {
-          personnel.push(`${key} - ${value}`)
-        }
+        const personnel = Object.keys(uniqueNames).map(
+          key => `${key} - ${uniqueNames[key]}`);
 
         return personnel.join("\n")
       }
