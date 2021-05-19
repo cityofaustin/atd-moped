@@ -309,6 +309,11 @@ const GridTable = ({ title, query }) => {
     // The first key is the outermost nested part of the graphql query
     const section = obj[keys[0]];
 
+    // Bypass value extraction if column value should be "stringified"
+    if (query.config.columns[exp]?.stringify) {
+      return JSON.stringify(section)
+    }
+
     // If not an array, resolve its value
     if (!Array.isArray(section)) {
       // Return direct value
