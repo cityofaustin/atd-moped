@@ -59,7 +59,6 @@
     "formik": "^2.1.5",
     "history": "^5.0.0",
     "html-react-parser": "^1.2.6",
-    "jodit-react": "^1.0.66",
     "lodash.foreach": "^4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.toarray": "^4.4.0",
