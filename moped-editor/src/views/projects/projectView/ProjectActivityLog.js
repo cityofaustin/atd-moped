@@ -60,6 +60,7 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const userList = {};
+  const unknownUserNameValue = "Unknown User";
 
   const {
     getLookups,
@@ -106,10 +107,11 @@ const ProjectActivityLog = () => {
    * @return {string}
    */
   const getUserFullName = moped_user => {
-    const firstName = moped_user?.first_name ?? null;
-    const lastName = moped_user?.last_name ?? null;
-    if (firstName === null || lastName === null) return "Unknown User";
-    return `${moped_user?.first_name} ${moped_user?.last_name}`;
+    const firstName = moped_user?.first_name ?? "";
+    const lastName = moped_user?.last_name ?? "";
+    if (firstName.length === 0 && firstName.length === 0)
+      return unknownUserNameValue;
+    return `${firstName} ${lastName}`;
   };
 
   /**
@@ -118,11 +120,13 @@ const ProjectActivityLog = () => {
    * @return {string}
    */
   const getInitials = moped_user => {
-    const name = getUserFullName(moped_user);
+    // Get any names if available
+    const name = getUserFullName(moped_user).trim();
 
-    // If name is not available
-    if (name === "Unknown User") return null;
+    // If no names are available, return null to force the generic humanoid avatar
+    if (name.length === 0 || name === unknownUserNameValue) return null;
 
+    // Else, extract initials
     return name
       .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
       .replace(/ +/gi, " ")
