@@ -1,11 +1,11 @@
 import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { Link as RouterLink } from "react-router-dom";
-import { gql } from "apollo-boost";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
 import ProjectComments from "./projectView/Comments/ProjectComments";
+import { SUMMARY_QUERY, TEAM_QUERY } from "src/queries/project.js";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -44,33 +44,6 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(2),
   },
 }));
-
-const SUMMARY_QUERY = gql`
-  query ProjectSummary($projectId: Int) {
-    moped_project(where: { project_id: { _eq: $projectId } }) {
-      project_name
-      project_description
-      start_date
-      current_phase
-      current_status
-      capitally_funded
-      eCapris_id
-      fiscal_year
-      project_priority
-    }
-  }
-`;
-
-const TEAM_QUERY = gql`
-  query TeamSummary {
-    moped_proj_personnel(limit: 2, order_by: { project_personnel_id: desc }) {
-      first_name
-      last_name
-      role_name
-      notes
-    }
-  }
-`;
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
