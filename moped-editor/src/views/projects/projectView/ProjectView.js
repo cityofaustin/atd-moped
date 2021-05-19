@@ -33,7 +33,6 @@ import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
-import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
 import ProjectComments from "./Comments/ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";

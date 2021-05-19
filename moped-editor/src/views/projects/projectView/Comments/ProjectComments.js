@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import DisplayAllComments from "./DisplayAllComments";
 import Page from "src/components/Page";
 import {
   Avatar,
-  Button,
   Box,
   Container,
   Card,
@@ -102,12 +100,11 @@ const ProjectComments = () => {
     },
   });
 
-  console.log(data);
-  console.log(noteText);
-
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
+
+  if (error) return console.log(error);
 
   const submitNewComment = () => {
     setCommentAddLoading(true);
@@ -176,7 +173,6 @@ const ProjectComments = () => {
                   No comments to display
                 </Typography>
               )}
-              {/* <DisplayAllComments /> */}
             </Card>
           </Grid>
           <Grid item xs={12}>
