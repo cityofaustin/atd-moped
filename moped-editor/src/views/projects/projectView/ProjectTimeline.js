@@ -80,6 +80,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   );
 
   const updateExistingPhases = phaseObject => {
+    // If new or updated phase has a current phase of true,
+    // set current phase of any other true phases to false
+    // to ensure there is only one active phase
     if (phaseObject.is_current_phase) {
       data.moped_proj_phases.forEach(phase => {
         if (
@@ -87,7 +90,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           phase.project_phase_id !== phaseObject.project_phase_id
         ) {
           phase.is_current_phase = false;
-          // Execute update mutation, return promise
+          // Execute update mutation, returns promise
           return updateProjectPhase({
             variables: phase,
           }).then(() => {
@@ -316,7 +319,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 // https://github.com/mbrn/material-table/issues/2133
                 components={{
                   Action: props => {
-                    //If isn't the add action
+                    // If isn't the add action
                     if (
                       typeof props.action === typeof Function ||
                       props.action.tooltip !== "Add"
@@ -344,12 +347,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       newData
                     );
 
-                    // If new phase has a current phase of true,
-                    // set current phase of any other true phases to false
-                    // to ensure there is only one active phase
                     updateExistingPhases(newPhaseObject);
 
-                    // Execute insert mutation, return promise
+                    // Execute insert mutation, returns promise
                     return addProjectPhase({
                       variables: {
                         objects: [newPhaseObject],
@@ -391,9 +391,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
 
-                    // If update involves switching current phase to true,
-                    // set current phase of any other true phases to false
-                    // to ensure there is only one active phase
                     updateExistingPhases(updatedPhaseObject);
 
                     // Execute update mutation, returns promise
@@ -412,7 +409,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     return updateProjectPhase({
                       variables: oldData,
                     }).then(() => {
-                      // Execute delete mutation, return promise
+                      // Execute delete mutation, returns promise
                       return deleteProjectPhase({
                         variables: {
                           project_phase_id: oldData.project_phase_id,
