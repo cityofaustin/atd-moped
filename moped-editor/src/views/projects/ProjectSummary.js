@@ -4,7 +4,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
-import ProjectComments from "./projectView/Comments/ProjectComments";
+import ProjectComments from "./projectView/ProjectComments";
 import { SUMMARY_QUERY, TEAM_QUERY } from "src/queries/project.js";
 import PropTypes from "prop-types";
 import {
