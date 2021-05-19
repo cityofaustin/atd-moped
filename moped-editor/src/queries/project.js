@@ -25,28 +25,6 @@ export const ADD_PROJECT = gql`
   }
 `;
 
-export const SUMMARY_QUERY = gql`
-  query ProjectSummary($projectId: Int) {
-    moped_project(where: { project_id: { _eq: $projectId } }) {
-      project_id
-      project_name
-      project_description
-      start_date
-      current_phase
-      current_status
-      capitally_funded
-      ecapris_subproject_id
-      fiscal_year
-      project_priority
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        feature_id
-        project_id
-        location
-      }
-    }
-  }
-`;
-
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
@@ -405,7 +383,7 @@ export const SUMMARY_QUERY = gql`
   }
 `;
 
-export const TEAM_QUERY = gql`
+export const TEAM_SUMMARY_QUERY = gql`
   query TeamSummary {
     moped_proj_personnel(limit: 2, order_by: { project_personnel_id: desc }) {
       first_name

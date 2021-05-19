@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
 import ProjectComments from "./projectView/ProjectComments";
-import { SUMMARY_QUERY, TEAM_QUERY } from "src/queries/project.js";
+import { SUMMARY_QUERY, TEAM_SUMMARY_QUERY } from "src/queries/project.js";
 import PropTypes from "prop-types";
 import {
   Button,
