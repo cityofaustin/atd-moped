@@ -90,7 +90,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           // Execute update mutation, return promise
           return updateProjectPhase({
             variables: phase,
-          }).then(() => refetch(), refetchSummary());
+          }).then(() => {
+            // Refetch data
+            refetch();
+            refetchSummary();
+          });
         }
       });
     }
@@ -350,7 +354,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       variables: {
                         objects: [newPhaseObject],
                       },
-                    }).then(() => refetch(), refetchSummary());
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                      refetchSummary();
+                    });
                   },
                   onRowUpdate: (newData, oldData) => {
                     const updatedPhaseObject = {
@@ -391,7 +399,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
-                    }).then(() => refetch(), refetchSummary());
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                      refetchSummary();
+                    });
                   },
                   onRowDelete: oldData => {
                     // Execute mutation to set current phase of phase to be deleted to false
