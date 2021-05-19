@@ -25,7 +25,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import ProjectSaveButton from "../../newProjectView/ProjectSaveButton";
+import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
 const COMMENTS_QUERY = gql`
   query getProjectComments($projectId: Int!) {
