@@ -55,12 +55,8 @@ export const destroyLoggedInProfile = () =>
  * Parses the user database data from localStorage
  * @return {Object}
  */
-export const getSessionDatabaseData = () => {
-  if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
-    return null
-  }
-  return JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName))
-}
+export const getSessionDatabaseData = () =>
+  JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
 
 /**
  * Persists the user database data into localStorage

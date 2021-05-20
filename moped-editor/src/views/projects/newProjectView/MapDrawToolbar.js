@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
 import { makeStyles } from "@material-ui/core";
 import theme from "../../../theme/index";
@@ -24,7 +24,17 @@ export const useToolbarStyles = makeStyles({
 });
 
 const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
+  const [hoveredId, setHoveredId] = useState(null);
+
   const classes = useToolbarStyles();
+
+  /**
+   * Sets the hovered button ID in state to style and show tooltip label
+   * @param {Object} e - Event object for hover
+   */
+  const onHover = e => {
+    setHoveredId(e && e.target.id);
+  };
 
   /**
    * Calls onDelete function to delete a point feature from the draw UI
@@ -41,6 +51,8 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
           <MapDrawToolbarButton
             selectedModeId={selectedModeId}
             onClick={mode.id === "delete" ? onDeleteClick : onSwitchMode}
+            hoveredId={hoveredId}
+            onHover={onHover}
             key={mode.id}
             mode={mode}
           />

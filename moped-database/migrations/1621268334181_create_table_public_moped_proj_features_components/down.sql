@@ -1,5 +1,0 @@
-DROP INDEX moped_proj_features_components_moped_proj_component_id_index;
-
-DROP INDEX moped_proj_features_components_moped_proj_features_id_index;
-
-DROP TABLE "public"."moped_proj_features_components";

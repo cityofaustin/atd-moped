@@ -121,11 +121,6 @@ export const TIMELINE_QUERY = gql`
     moped_phases(where: { phase_id: { _gt: 0 } }) {
       phase_id
       phase_name
-      subphases
-    }
-    moped_subphases(where: { subphase_id: {_gt: 0} }, order_by: { subphase_order: asc }) {
-      subphase_id
-      subphase_name
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
@@ -137,8 +132,6 @@ export const TIMELINE_QUERY = gql`
       project_id
       phase_start
       phase_end
-      subphase_name
-      subphase_id
     }
   }
 `;
@@ -150,8 +143,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $phase_end: date = null
     $project_phase_id: Int!
     $phase_name: String!
-    $subphase_id: Int = 0,
-    $subphase_name: String = null,
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -160,8 +151,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         phase_start: $phase_start
         phase_end: $phase_end
         phase_name: $phase_name
-        subphase_id: $subphase_id
-        subphase_name: $subphase_name
       }
     ) {
       project_id
@@ -169,8 +158,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       phase_name
       phase_start
       phase_end
-      subphase_id
-      subphase_name
       is_current_phase
     }
   }
@@ -223,7 +210,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
-      order_by: { created_at: desc }
+      order_by: { created_at: asc }
     ) {
       activity_id
       created_at

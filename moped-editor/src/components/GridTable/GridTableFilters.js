@@ -167,7 +167,7 @@ const GridTableFilters = ({ query, filterState }) => {
   };
 
   /**
-   * Handles the click event on the field drop-down menu
+   * Handles the click event on the filter drop-down menu
    * @param {string} filterId - State FieldID to modify
    * @param {Object} field - The field object being clicked
    */

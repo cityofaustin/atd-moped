@@ -86,7 +86,7 @@ export const StaffListViewQueryConf = {
       sortable: true,
       label: "Date Added",
       width: "10%",
-      filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
+      filter: value => new Date(value).toLocaleDateString(),
       type: "date_iso",
     },
     title: {

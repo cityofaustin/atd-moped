@@ -41,18 +41,6 @@ export const useStyles = makeStyles({
   },
   mapBox: {
     padding: 25,
-    position: "relative",
-  },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    right: 32,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
   },
   ...layerSelectStyles,
 });
@@ -61,7 +49,7 @@ const NewProjectMap = ({
   featureCollection,
   setFeatureCollection,
   projectId = null,
-  refetchProjectDetails = null,
+  refetchProjectDetails,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -180,7 +168,16 @@ const NewProjectMap = ({
   return (
     <Box className={classes.mapBox}>
       {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
-      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+      <div
+        ref={mapControlContainerRef}
+        style={{
+          display: "flex",
+          height: 50,
+          position: "absolute",
+          alignItems: "center",
+          right: 32,
+        }}
+      />
       {renderLayerSelect()}
       <ReactMapGL
         {...viewport}

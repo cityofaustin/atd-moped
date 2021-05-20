@@ -97,7 +97,7 @@ const ProjectActivityLog = () => {
    * @param {string} date - The ISO date as a string
    * @return {string}
    */
-  const formatDate = date => new Date(date).toLocaleDateString('en-US', {timeZone: 'UTC'});
+  const formatDate = date => new Date(date).toLocaleDateString();
 
   /**
    * Safely returns the initials from a full name
@@ -136,18 +136,19 @@ const ProjectActivityLog = () => {
    * @param {Array} eventList - The data object as provided by apollo
    * @return {Array}
    */
-  const reorderCreationEvent = eventList => {
-    // Clone eventList array so it can be mutated
-    let outputList = [...eventList];
-
-    outputList.forEach(event => {
+  const reorderEventList = eventList => {
+    let outputList = [];
+    // For each event
+    eventList.forEach(event => {
       // If this is the creation of a project
       if (
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
-        // Remove that object from the array and add it back on at the end
-        outputList.splice(outputList.indexOf(event), 1);
+        // Move it to the top of the list (make it first)
+        outputList.unshift(event);
+      } else {
+        // Else, just stack it to the bottom
         outputList.push(event);
       }
     });
@@ -190,7 +191,7 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderCreationEvent(data["moped_activity_log"]).map(change => (
+                {reorderEventList(data["moped_activity_log"]).map(change => (
                   <TableRow key={change.activity_id}>
                     <TableCell
                       align="left"
