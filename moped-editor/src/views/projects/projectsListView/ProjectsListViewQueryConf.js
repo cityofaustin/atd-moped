@@ -16,7 +16,7 @@ export const ProjectsListViewQueryConf = {
       fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
     },
   },
-  table: "moped_project",
+  table: "project_list_view",
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
@@ -87,6 +87,45 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
+    current_phase: {
+      searchable: true,
+      sortable: false,
+      label: "Current Phase",
+      width: "15%",
+      search: {
+        label: "Search by current phase",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+    },
+    project_team_members: {
+      searchable: false,
+      sortable: false,
+      label: "Team Members",
+      width: "20%",
+      filter: value => {
+        if (value === " :") {
+          return "";
+        }
+        const namesArray = value.split(",");
+        const uniqueNames = {};
+        namesArray.forEach(person => {
+          const [fullName, projectRole] = person.split(":");
+          if (uniqueNames[fullName]) {
+            uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`;
+          } else {
+            uniqueNames[fullName] = projectRole;
+          }
+        });
+        const personnel = Object.keys(uniqueNames).map(
+          key => `${key} - ${uniqueNames[key]}`
+        );
+
+        return personnel.join("\n");
+      },
+    },
     start_date: {
       searchable: false,
       sortable: true,
@@ -112,13 +151,13 @@ export const ProjectsListViewQueryConf = {
         operator: "_eq",
         quoted: false,
         envelope: "%{VALUE}%",
-        invalidValueDefault: 0
+        invalidValueDefault: 0,
       },
     },
   },
   order_by: {},
   where: {
-    is_retired: "_eq: false"
+    is_retired: "_eq: false",
   },
   limit: 25,
   offset: 0,

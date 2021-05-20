@@ -36,7 +36,7 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import { PROJECT_NAME, PROJECT_ARCHIVE } from "../../../queries/project";
+import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
@@ -150,9 +150,9 @@ const ProjectView = () => {
   };
 
   /**
-   * The query to gather the project name
+   * The query to gather the project summary data
    */
-  const { loading, error, data } = useQuery(PROJECT_NAME, {
+  const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
   });
 
@@ -380,7 +380,12 @@ const ProjectView = () => {
                   const TabComponent = tab.Component;
                   return (
                     <TabPanel key={tab.label} value={activeTab} index={i}>
-                      <TabComponent />
+                      <TabComponent 
+                        loading={loading}
+                        data={data}
+                        error={error}
+                        refetch={refetch}
+                      />
                     </TabPanel>
                   );
                 })}

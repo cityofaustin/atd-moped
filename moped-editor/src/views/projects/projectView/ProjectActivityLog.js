@@ -60,6 +60,7 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const userList = {};
+  const unknownUserNameValue = "Unknown User";
 
   const {
     getLookups,
@@ -97,15 +98,36 @@ const ProjectActivityLog = () => {
    * @param {string} date - The ISO date as a string
    * @return {string}
    */
-  const formatDate = date => new Date(date).toLocaleDateString();
+  const formatDate = date =>
+    new Date(date).toLocaleDateString("en-US", { timeZone: "UTC" });
+
+  /**
+   * Retrieve the user's full name or return an "N/A"
+   * @param {object} moped_user - The user object as provided by hasura
+   * @return {string}
+   */
+  const getUserFullName = moped_user => {
+    const firstName = moped_user?.first_name ?? "";
+    const lastName = moped_user?.last_name ?? "";
+    if (firstName.length === 0 && firstName.length === 0)
+      return unknownUserNameValue;
+    return `${firstName} ${lastName}`;
+  };
 
   /**
    * Safely returns the initials from a full name
-   * @param {string} name - The full name of the user
+   * @param {object} moped_user - The full name of the user
    * @return {string}
    */
-  const getInitials = name =>
-    name
+  const getInitials = moped_user => {
+    // Get any names if available
+    const name = getUserFullName(moped_user).trim();
+
+    // If no names are available, return null to force the generic humanoid avatar
+    if (name.length === 0 || name === unknownUserNameValue) return null;
+
+    // Else, extract initials
+    return name
       .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
       .replace(/ +/gi, " ")
       .split(/ /)
@@ -114,6 +136,7 @@ const ProjectActivityLog = () => {
       .concat(name)
       .substr(0, 2)
       .toUpperCase();
+  };
 
   /**
    * Attempt to get the number of items we retrieved
@@ -136,19 +159,18 @@ const ProjectActivityLog = () => {
    * @param {Array} eventList - The data object as provided by apollo
    * @return {Array}
    */
-  const reorderEventList = eventList => {
-    let outputList = [];
-    // For each event
-    eventList.forEach(event => {
+  const reorderCreationEvent = eventList => {
+    // Clone eventList array so it can be mutated
+    let outputList = [...eventList];
+
+    outputList.forEach(event => {
       // If this is the creation of a project
       if (
         event.record_type === "moped_project" &&
         event.operation_type === "INSERT"
       ) {
-        // Move it to the top of the list (make it first)
-        outputList.unshift(event);
-      } else {
-        // Else, just stack it to the bottom
+        // Remove that object from the array and add it back on at the end
+        outputList.splice(outputList.indexOf(event), 1);
         outputList.push(event);
       }
     });
@@ -191,148 +213,159 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderEventList(data["moped_activity_log"]).map(change => (
-                  <TableRow key={change.activity_id}>
-                    <TableCell
-                      align="left"
-                      component="th"
-                      scope="row"
-                      width="5%"
-                      className={classes.tableCell}
-                    >
-                      {formatDate(change.created_at)}
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      width="15%"
-                      className={classes.tableCell}
-                    >
-                      <Box display="flex" p={0}>
-                        <Box p={0}>
-                          <Avatar
-                            alt={`${change.moped_user.first_name} ${change.moped_user.last_name}`}
-                            src="/moped/static/images/avatars/userAvatar.jpg"
-                            className={classes.avatarSmall}
+                {reorderCreationEvent(data["moped_activity_log"]).map(
+                  change => (
+                    <TableRow key={change.activity_id}>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        width="5%"
+                        className={classes.tableCell}
+                      >
+                        {formatDate(change.created_at)}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        width="15%"
+                        className={classes.tableCell}
+                      >
+                        <Box display="flex" p={0}>
+                          <Box p={0}>
+                            <Avatar
+                              alt={getInitials(change?.moped_user)}
+                              src="/moped/static/images/avatars/userAvatar.jpg"
+                              className={classes.avatarSmall}
+                            >
+                              {getInitials(change?.moped_user)}
+                            </Avatar>
+                          </Box>
+                          <Box
+                            p={0}
+                            flexGrow={1}
+                            className={classes.avatarName}
                           >
-                            {getInitials(
-                              `${change.moped_user.first_name} ${change.moped_user.last_name}`
-                            )}
-                          </Avatar>
+                            {getUserFullName(change?.moped_user)}
+                          </Box>
                         </Box>
-                        <Box p={0} flexGrow={1} className={classes.avatarName}>
-                          {change.moped_user.first_name}{" "}
-                          {change.moped_user.last_name}
-                        </Box>
-                      </Box>
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      width="5%"
-                      className={classes.tableCell}
-                    >
-                      <b>
-                        {getOperationName(
-                          change.operation_type,
-                          change.record_type
-                        )}
-                      </b>
-                    </TableCell>
-                    <TableCell
-                      align="left"
-                      width="70%"
-                      className={classes.tableCell}
-                    >
-                      <Box display="flex" p={0}>
-                        <Box p={0}>
-                          <Icon>
-                            {getChangeIcon(
-                              change.operation_type,
-                              change.record_type
-                            )}
-                          </Icon>
-                        </Box>
-                        <Box p={0} flexGrow={1}>
-                          <Grid continer>
-                            {Array.isArray(change.description) &&
-                              change.description.length === 0 && (
-                                <Grid item className={classes.tableChangeItem}>
-                                  <b>{getCreationLabel(change, userList)}</b>
-                                </Grid>
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        width="5%"
+                        className={classes.tableCell}
+                      >
+                        <b>
+                          {getOperationName(
+                            change.operation_type,
+                            change.record_type
+                          )}
+                        </b>
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        width="70%"
+                        className={classes.tableCell}
+                      >
+                        <Box display="flex" p={0}>
+                          <Box p={0}>
+                            <Icon>
+                              {getChangeIcon(
+                                change.operation_type,
+                                change.record_type
                               )}
-                            {change.description.map(changeItem => {
-                              return (
-                                <Grid item className={classes.tableChangeItem}>
-                                  {isFieldGeneric(changeItem.field) ? (
-                                    <b>
-                                      {
-                                        ProjectActivityLogGenericDescriptions[
-                                          changeItem.field
-                                        ]?.label
-                                      }
-                                    </b>
-                                  ) : (
-                                    <>
+                            </Icon>
+                          </Box>
+                          <Box p={0} flexGrow={1}>
+                            <Grid continer>
+                              {Array.isArray(change.description) &&
+                                change.description.length === 0 && (
+                                  <Grid
+                                    item
+                                    className={classes.tableChangeItem}
+                                  >
+                                    <b>{getCreationLabel(change, userList)}</b>
+                                  </Grid>
+                                )}
+                              {change.description.map(changeItem => {
+                                return (
+                                  <Grid
+                                    item
+                                    className={classes.tableChangeItem}
+                                  >
+                                    {isFieldGeneric(changeItem.field) ? (
                                       <b>
-                                        {getRecordTypeLabel(change.record_type)}{" "}
-                                        {getHumanReadableField(
-                                          change.record_type,
-                                          changeItem.field
-                                        )}
-                                      </b>{" "}
-                                      from{" "}
-                                      <b>
-                                        &quot;
-                                        {isFieldMapped(
-                                          change.record_type,
-                                          changeItem.field
-                                        )
-                                          ? getMappedValue(
+                                        {
+                                          ProjectActivityLogGenericDescriptions[
+                                            changeItem.field
+                                          ]?.label
+                                        }
+                                      </b>
+                                    ) : (
+                                      <>
+                                        <b>
+                                          {getRecordTypeLabel(
+                                            change.record_type
+                                          )}{" "}
+                                          {getHumanReadableField(
+                                            change.record_type,
+                                            changeItem.field
+                                          )}
+                                        </b>{" "}
+                                        from{" "}
+                                        <b>
+                                          &quot;
+                                          {isFieldMapped(
+                                            change.record_type,
+                                            changeItem.field
+                                          )
+                                            ? getMappedValue(
                                                 change.record_type,
                                                 changeItem.field,
                                                 String(changeItem.old)
-                                            )
-                                          : lookupMap?.[change.record_type]?.[
-                                              changeItem.field
-                                            ]?.[changeItem.old] ||
-                                            String(changeItem.old)}
-                                        &quot;
-                                      </b>{" "}
-                                      to{" "}
-                                      <b>
-                                        &quot;
-                                        {isFieldMapped(
+                                              )
+                                            : lookupMap?.[change.record_type]?.[
+                                                changeItem.field
+                                              ]?.[changeItem.old] ||
+                                              String(changeItem.old)}
+                                          &quot;
+                                        </b>{" "}
+                                        to{" "}
+                                        <b>
+                                          &quot;
+                                          {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
-                                        )
+                                          )
                                             ? getMappedValue(
                                                 change.record_type,
                                                 changeItem.field,
                                                 String(changeItem.new)
-                                            )
+                                              )
                                             : lookupMap?.[change.record_type]?.[
                                                 changeItem.field
-                                                ]?.[changeItem.new] ||
-                                            String(changeItem.new)}
-                                        &quot;
-                                      </b>
-                                    </>
-                                  )}
-                                </Grid>
-                              );
-                            })}
-                          </Grid>
+                                              ]?.[changeItem.new] ||
+                                              String(changeItem.new)}
+                                          &quot;
+                                        </b>
+                                      </>
+                                    )}
+                                  </Grid>
+                                );
+                              })}
+                            </Grid>
+                          </Box>
                         </Box>
-                      </Box>
-                    </TableCell>
-                    <TableCell width="5%">
-                      <Button
-                        onClick={() => handleDetailsOpen(change.activity_id)}
-                      >
-                        Details
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                      </TableCell>
+                      <TableCell width="5%">
+                        <Button
+                          onClick={() => handleDetailsOpen(change.activity_id)}
+                        >
+                          Details
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  )
+                )}
               </TableBody>
             </Table>
           </TableContainer>

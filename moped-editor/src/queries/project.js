@@ -1,13 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const PROJECT_NAME = gql`
-  query ProjectName($projectId: Int) {
-    moped_project(where: { project_id: { _eq: $projectId } }) {
-      project_name
-    }
-  }
-`;
-
 export const ADD_PROJECT = gql`
   mutation AddProject($object: moped_project_insert_input!) {
     insert_moped_project_one(object: $object) {
@@ -21,6 +13,45 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       start_date
+    }
+  }
+`;
+
+export const SUMMARY_QUERY = gql`
+  query ProjectSummary($projectId: Int) {
+    moped_project(where: { project_id: { _eq: $projectId } }) {
+      project_id
+      project_name
+      project_description
+      start_date
+      current_phase
+      current_status
+      capitally_funded
+      ecapris_subproject_id
+      fiscal_year
+      project_priority
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+        feature_id
+        project_id
+        location
+      }
+    }
+    moped_phases {
+      phase_id
+      phase_name
+    }
+    moped_proj_phases(
+      where: {
+        project_id: { _eq: $projectId }
+        is_current_phase: { _eq: true }
+      }
+    ) {
+      phase_name
+      project_phase_id
+      is_current_phase
+      project_id
+      phase_start
+      phase_end
     }
   }
 `;

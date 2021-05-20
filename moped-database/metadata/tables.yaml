@@ -4556,3 +4556,91 @@
       - date_added
       filter: {}
       check: null
+- table:
+    schema: public
+    name: project_list_view
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - project_uuid
+      - project_id
+      - project_name
+      - project_description
+      - project_description_public
+      - ecapris_subproject_id
+      - project_importance
+      - project_order
+      - current_status
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      - is_retired
+      - milestone_id
+      - status_id
+      - project_team_members
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+      - project_uuid
+      - project_id
+      - project_name
+      - project_description
+      - project_description_public
+      - ecapris_subproject_id
+      - project_importance
+      - project_order
+      - current_status
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      - is_retired
+      - milestone_id
+      - status_id
+      - project_team_members
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_uuid
+      - project_id
+      - project_name
+      - project_description
+      - project_description_public
+      - ecapris_subproject_id
+      - project_importance
+      - project_order
+      - current_status
+      - timeline_id
+      - current_phase
+      - end_date
+      - project_length
+      - start_date
+      - fiscal_year
+      - capitally_funded
+      - project_priority
+      - date_added
+      - added_by
+      - is_retired
+      - milestone_id
+      - status_id
+      - project_team_members
+      filter: {}
+      allow_aggregations: true

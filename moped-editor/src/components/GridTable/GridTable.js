@@ -158,22 +158,22 @@ const GridTable = ({ title, query }) => {
     // Retrieve the type of field (string, float, int, etc)
     const type = query.config.columns[column].type.toLowerCase();
     // Get the invalidValueDefault in the search config object
-    const invalidValueDefault = query.config.columns[column].search?.invalidValueDefault ?? null;
+    const invalidValueDefault =
+      query.config.columns[column].search?.invalidValueDefault ?? null;
     // If the type is number of float, attempt to parse as such
-    if(["number", "float", "double"].includes(type)) {
+    if (["number", "float", "double"].includes(type)) {
       value = Number.parseFloat(value) || invalidValueDefault;
     }
     // If integer, attempt to parse as integer
-    if(["int", "integer"].includes(type)) {
-      value = Number.parseInt(value)  || invalidValueDefault;
+    if (["int", "integer"].includes(type)) {
+      value = Number.parseInt(value) || invalidValueDefault;
     }
     // Any other value types are pass-through for now
     return value;
-  }
+  };
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
-
     /**
      * Iterate through all column keys, if they are searchable
      * add the to the Or list.
@@ -307,6 +307,11 @@ const GridTable = ({ title, query }) => {
 
     // First we need to get to the specific section of the object we need
     const section = obj[keys[0]];
+
+    // Bypass value extraction if column value should be "stringified"
+    if (query.config.columns[exp]?.stringify) {
+      return JSON.stringify(section);
+    }
 
     // If not an array, resolve its value
     if (!Array.isArray(section)) {
