@@ -32,7 +32,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = () => {
+const ProjectTimeline = ({ refetch: refetchSummary }) => {
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -78,6 +78,30 @@ const ProjectTimeline = () => {
       }),
     {}
   );
+
+  const updateExistingPhases = phaseObject => {
+    // If new or updated phase has a current phase of true,
+    // set current phase of any other true phases to false
+    // to ensure there is only one active phase
+    if (phaseObject.is_current_phase) {
+      data.moped_proj_phases.forEach(phase => {
+        if (
+          phase.is_current_phase &&
+          phase.project_phase_id !== phaseObject.project_phase_id
+        ) {
+          phase.is_current_phase = false;
+          // Execute update mutation, returns promise
+          return updateProjectPhase({
+            variables: phase,
+          }).then(() => {
+            // Refetch data
+            refetch();
+            refetchSummary();
+          });
+        }
+      });
+    }
+  };
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -192,7 +216,7 @@ const ProjectTimeline = () => {
             (props.rowData?.phase_name ?? "").toLowerCase()
         )
         .reduce(
-            // Then using reduce, aggregate the sub-phase ids from whatever array is left
+          // Then using reduce, aggregate the sub-phase ids from whatever array is left
           (accumulator, item) =>
             (accumulator = [...accumulator, ...(item?.subphases ?? [])]),
           []
@@ -295,7 +319,7 @@ const ProjectTimeline = () => {
                 // https://github.com/mbrn/material-table/issues/2133
                 components={{
                   Action: props => {
-                    //If isn't the add action
+                    // If isn't the add action
                     if (
                       typeof props.action === typeof Function ||
                       props.action.tooltip !== "Add"
@@ -323,12 +347,18 @@ const ProjectTimeline = () => {
                       newData
                     );
 
-                    // Execute insert mutation, return promise
+                    updateExistingPhases(newPhaseObject);
+
+                    // Execute insert mutation, returns promise
                     return addProjectPhase({
                       variables: {
                         objects: [newPhaseObject],
                       },
-                    }).then(() => refetch());
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                      refetchSummary();
+                    });
                   },
                   onRowUpdate: (newData, oldData) => {
                     const updatedPhaseObject = {
@@ -339,7 +369,6 @@ const ProjectTimeline = () => {
                     let differences = Object.keys(oldData).filter(
                       key => oldData[key] !== newData[key]
                     );
-
 
                     // Loop through the differences and assign newData values.
                     // If one of the Date fields is blanked out, coerce empty
@@ -362,18 +391,36 @@ const ProjectTimeline = () => {
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
 
+                    updateExistingPhases(updatedPhaseObject);
+
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
-                    }).then(() => refetch());
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                      refetchSummary();
+                    });
                   },
-                  onRowDelete: oldData =>
-                    // Return promise
-                    deleteProjectPhase({
-                      variables: {
-                        project_phase_id: oldData.project_phase_id,
-                      },
-                    }).then(() => refetch()),
+                  onRowDelete: oldData => {
+                    // Execute mutation to set current phase of phase to be deleted to false
+                    // to ensure summary table stays up to date
+                    oldData.is_current_phase = false;
+                    return updateProjectPhase({
+                      variables: oldData,
+                    }).then(() => {
+                      // Execute delete mutation, returns promise
+                      return deleteProjectPhase({
+                        variables: {
+                          project_phase_id: oldData.project_phase_id,
+                        },
+                      }).then(() => {
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
+                    });
+                  },
                 }}
                 options={{
                   actionsColumnIndex: -1,
