@@ -23,6 +23,12 @@ export const MODES = [
     icon: "icon-point.svg",
   },
   {
+    id: "drawLine",
+    text: "Draw Line",
+    handler: DrawLineStringMode,
+    icon: "icon-line-draw.svg",
+  },
+  {
     id: "edit",
     text: "Select Point",
     handler: EditingMode,
