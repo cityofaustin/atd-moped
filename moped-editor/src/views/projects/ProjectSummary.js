@@ -5,7 +5,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 import ProjectSummaryDetails from "./ProjectSummaryDetails";
 import ProjectComments from "./projectView/ProjectComments";
-import { SUMMARY_QUERY, TEAM_SUMMARY_QUERY } from "src/queries/project.js";
 import PropTypes from "prop-types";
 import {
   Button,
@@ -46,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index, data: projectData, ...other } = props;
 
   return (
     <div
@@ -88,19 +87,11 @@ const ProjectSummary = () => {
     setActiveTab(newTab);
   };
 
-  const {
-    loading: projectLoading,
-    error: projectError,
-    data: projectData,
-  } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId },
-  });
-
   const { loading: teamLoading, error: teamError, data: teamData } = useQuery(
     TEAM_QUERY
   );
 
-  if (projectError) return `Error! ${projectError.message}`;
+  // if (projectError) return `Error! ${projectError.message}`;
   if (teamError) return `Error! ${teamError.message}`;
 
   return (
@@ -108,15 +99,11 @@ const ProjectSummary = () => {
       <Container>
         <Card className={classes.cardWrapper}>
           <div className={classes.root}>
-            {projectLoading ? (
-              <CircularProgress />
-            ) : (
-              <Box p={4} pb={2}>
-                <Typography color="textPrimary" variant="h2">
-                  {projectData.moped_project[0].project_name}
-                </Typography>
-              </Box>
-            )}
+            <Box p={4} pb={2}>
+              <Typography color="textPrimary" variant="h2">
+                {projectData.moped_project[0].project_name}
+              </Typography>
+            </Box>
             <Divider />
             <AppBar position="static">
               <Tabs
