@@ -21,9 +21,9 @@ import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
-  ADD_PROJECT_MILESTONE,
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
+  ADD_PROJECT_MILESTONE
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -519,7 +519,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 title="Project Milestones"
                 components={{
                   Action: props => {
-                    //If isn't the add action
+                    // If isn't the add action
                     if (
                       typeof props.action === typeof Function ||
                       props.action.tooltip !== "Add"
