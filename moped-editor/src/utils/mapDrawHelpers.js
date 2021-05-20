@@ -2,6 +2,7 @@ import React, { useState, useRef, useCallback } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
+  DrawLineStringMode,
   DrawPointMode,
   EditingMode,
   RENDER_STATE,
