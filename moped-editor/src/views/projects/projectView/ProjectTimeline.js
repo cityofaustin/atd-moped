@@ -60,17 +60,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     fetchPolicy: "no-cache",
   });
 
-  console.log(data);
-
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
-  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
   const [updateProjectMilestone] = useMutation(
     UPDATE_PROJECT_MILESTONES_MUTATION
   );
   const [deleteProjectMilestone] = useMutation(DELETE_PROJECT_MILESTONE);
+  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -90,39 +88,20 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {}
   );
 
+  /**
+   * Milestone table lookup object formatted into the shape that <MaterialTable>
+   * expects.
+   * Ex: { construction: "Construction", hold: "Hold", ...}
+   */
   const milestoneNameLookup = data.moped_milestones.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.milestone_name]:
+        [item.milestone_name.toLowerCase()]:
           item.milestone_name.charAt(0).toUpperCase() +
           item.milestone_name.slice(1),
       }),
     {}
   );
-
-  const updateExistingPhases = phaseObject => {
-    // If new or updated phase has a current phase of true,
-    // set current phase of any other true phases to false
-    // to ensure there is only one active phase
-    if (phaseObject.is_current_phase) {
-      data.moped_proj_phases.forEach(phase => {
-        if (
-          phase.is_current_phase &&
-          phase.project_phase_id !== phaseObject.project_phase_id
-        ) {
-          phase.is_current_phase = false;
-          // Execute update mutation, returns promise
-          return updateProjectPhase({
-            variables: phase,
-          }).then(() => {
-            // Refetch data
-            refetch();
-            refetchSummary();
-          });
-        }
-      });
-    }
-  };
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -156,6 +135,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           }),
         {}
       );
+
+  /**
+   * If new or updated phase has a current phase of true,
+   * set current phase of any other true phases to false
+   * to ensure there is only one active phase
+   */
+
+  const updateExistingPhases = phaseObject => {
+    if (phaseObject.is_current_phase) {
+      data.moped_proj_phases.forEach(phase => {
+        if (
+          phase.is_current_phase &&
+          phase.project_phase_id !== phaseObject.project_phase_id
+        ) {
+          phase.is_current_phase = false;
+          // Execute update mutation, returns promise
+          return updateProjectPhase({
+            variables: phase,
+          }).then(() => {
+            // Refetch data
+            refetch();
+            refetchSummary();
+          });
+        }
+      });
+    }
+  };
 
   /**
    * Prevents the line from being saved on enter key
@@ -275,9 +281,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   };
 
   /**
-   * Column configuration for <MaterialTable>
+   * Column configuration for <MaterialTable> Phases table
    */
-  const columns = [
+  const phasesColumns = [
     {
       title: "Phase Name",
       field: "phase_name",
@@ -326,6 +332,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     },
   ];
 
+  /**
+   * Column configuration for <MaterialTable> Milestones table
+   */
   const milestoneColumns = [
     {
       title: "Milestone",
@@ -375,7 +384,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           <Grid item xs={12}>
             <div style={{ maxWidth: "100%" }}>
               <MaterialTable
-                columns={columns}
+                columns={phasesColumns}
                 data={data.moped_proj_phases}
                 title="Project Phases"
                 // Action component customized as described in this gh-issue:
@@ -527,83 +536,76 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   },
                 }}
                 editable={{
-                  onRowAdd: newData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Merge input fields with required fields default data.
-                        const newMilestoneObject = Object.assign(
-                          {
-                            project_id: projectId,
-                            status_id: 1,
-                          },
-                          newData
-                        );
+                  onRowAdd: newData => {
+                    // Merge input fields with required fields default data.
+                    const newMilestoneObject = Object.assign(
+                      {
+                        project_id: projectId,
+                        status_id: 1,
+                      },
+                      newData
+                    );
 
-                        // Execute insert mutation
-                        addProjectMilestone({
-                          variables: {
-                            objects: [newMilestoneObject],
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
-                  onRowUpdate: (newData, oldData) =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        const updatedMilestoneObject = {
-                          ...oldData,
-                        };
+                    // Execute insert mutation
+                    return addProjectMilestone({
+                      variables: {
+                        objects: [newMilestoneObject],
+                      },
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                    });
+                  },
+                  onRowUpdate: (newData, oldData) => {
+                    const updatedMilestoneObject = {
+                      ...oldData,
+                    };
 
-                        // Array of differences between new and old data
-                        let differences = Object.keys(oldData).filter(
-                          key => oldData[key] !== newData[key]
-                        );
+                    // Array of differences between new and old data
+                    let differences = Object.keys(oldData).filter(
+                      key => oldData[key] !== newData[key]
+                    );
 
-                        // Loop through the differences and assign newData values.
-                        // If one of the Date fields is blanked out, coerce empty
-                        // string to null.
-                        differences.forEach(diff => {
-                          let shouldCoerceEmptyStringToNull =
-                            newData[diff] === "" &&
-                            (diff === "phase_start" || diff === "phase_end");
+                    // Loop through the differences and assign newData values.
+                    // If one of the Date fields is blanked out, coerce empty
+                    // string to null.
+                    differences.forEach(diff => {
+                      let shouldCoerceEmptyStringToNull =
+                        newData[diff] === "" &&
+                        (diff === "phase_start" || diff === "phase_end");
 
-                          if (shouldCoerceEmptyStringToNull) {
-                            updatedMilestoneObject[diff] = null;
-                          } else {
-                            updatedMilestoneObject[diff] = newData[diff];
-                          }
-                        });
+                      if (shouldCoerceEmptyStringToNull) {
+                        updatedMilestoneObject[diff] = null;
+                      } else {
+                        updatedMilestoneObject[diff] = newData[diff];
+                      }
+                    });
 
-                        // Remove extraneous fields given by MaterialTable that
-                        // Hasura doesn't need
-                        delete updatedMilestoneObject.tableData;
-                        delete updatedMilestoneObject.project_id;
-                        delete updatedMilestoneObject.__typename;
+                    // Remove extraneous fields given by MaterialTable that
+                    // Hasura doesn't need
+                    delete updatedMilestoneObject.tableData;
+                    delete updatedMilestoneObject.project_id;
+                    delete updatedMilestoneObject.__typename;
 
-                        // Execute update mutation
-                        updateProjectMilestone({
-                          variables: updatedMilestoneObject,
-                        });
-
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
-                  onRowDelete: oldData =>
-                    new Promise((resolve, reject) => {
-                      setTimeout(() => {
-                        // Execute delete mutation
-                        deleteProjectMilestone({
-                          variables: {
-                            project_milestone_id: oldData.project_milestone_id,
-                          },
-                        });
-                        setTimeout(() => refetch(), 501);
-                        resolve();
-                      }, 500);
-                    }),
+                    // Execute update mutation
+                    return updateProjectMilestone({
+                      variables: updatedMilestoneObject,
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                    });
+                  },
+                  onRowDelete: oldData => {
+                    // Execute delete mutation
+                    return deleteProjectMilestone({
+                      variables: {
+                        project_milestone_id: oldData.project_milestone_id,
+                      },
+                    }).then(() => {
+                      // Refetch data
+                      refetch();
+                    });
+                  },
                 }}
                 options={{
                   actionsColumnIndex: -1,
