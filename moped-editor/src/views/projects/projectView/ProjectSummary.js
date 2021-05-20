@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
 import ProjectSummaryTable from "./ProjectSummaryTable";
@@ -8,7 +7,6 @@ import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
-import { SUMMARY_QUERY } from "../../../queries/project";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 /*
@@ -17,15 +15,11 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 
-const ProjectSummary = () => {
+const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
 
   const [isEditing, setIsEditing] = useState(false);
   const [mapError, setMapError] = useState(false);
-
-  const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId },
-  });
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;

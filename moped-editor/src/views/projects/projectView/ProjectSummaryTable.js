@@ -2,6 +2,7 @@ import React from "react";
 
 import DataTable from "../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Box, Grid } from '@material-ui/core';
 
 import ExternalLink from "../../../components/ExternalLink";
 
@@ -38,22 +39,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           fieldLabel: "status_name",
           fieldValue: "status_name",
           relationship: "where: {status_id: {_gt: 0}}, order_by: {status_order: asc}",
-          style: classes.fieldSelectCapitalize,
-          format: value => String(value).toLowerCase(),
-        },
-        style: classes.fieldSelectCapitalize,
-      },
-      current_phase: {
-        label: "Current phase",
-        labelStyle: classes.fieldSelectCapitalize,
-        placeholder: "Select phase",
-        type: "select",
-        editable: true,
-        lookup: {
-          table: "moped_phases",
-          fieldLabel: "phase_name",
-          fieldValue: "phase_name",
-          relationship: "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
@@ -109,15 +94,53 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
   };
 
+  const fieldConfigurationPhases = {
+    table: {
+      name: "moped_proj_phases",
+    },
+    fields: {
+      phase_name: {
+        label: "Current phase",
+        labelStyle: classes.fieldSelectCapitalize,
+        type: "string",
+        emptyValue: "None",
+        editable: false,
+        lookup: {
+          table: "moped_phases",
+          fieldLabel: "phase_name",
+          fieldValue: "phase_name",
+          relationship: "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
+          style: classes.fieldSelectCapitalize,
+          format: value => String(value).toLowerCase(),
+        },
+        style: classes.fieldSelectCapitalize,
+      },
+    },
+  };
+
   return (
-    <DataTable
-      fieldConfiguration={fieldConfiguration}
-      tableName={"moped_project"}
-      loading={loading}
-      error={error}
-      data={data}
-      refetch={refetch}
-    />
+    <Grid>
+      <Box mb={2}>
+        <DataTable
+          fieldConfiguration={fieldConfigurationPhases}
+          tableName={"moped_proj_phases"}
+          loading={loading}
+          error={error}
+          data={data}
+          refetch={refetch}
+        />
+      </Box>
+      <Box>
+        <DataTable
+          fieldConfiguration={fieldConfiguration}
+          tableName={"moped_project"}
+          loading={loading}
+          error={error}
+          data={data}
+          refetch={refetch}
+        />
+      </Box>
+    </Grid>
   );
 };
 
