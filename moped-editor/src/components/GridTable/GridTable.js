@@ -67,6 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   tableCell: {
     "text-transform": "capitalize",
+    "white-space": "pre-wrap",
   },
   tableChip: {
     "text-transform": "capitalize",
@@ -173,7 +174,6 @@ const GridTable = ({ title, query }) => {
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
-
     /**
      * Iterate through all column keys, if they are searchable
      * add the to the Or list.
@@ -279,7 +279,7 @@ const GridTable = ({ title, query }) => {
 
   /**
    * Returns the value of a data structure based on the list of keys provided
-   * @param {object} obj - the object in question
+   * @param {object} obj - the item from the row section
    * @param {Array} keys - the list of keys
    * @returns {*}
    */
@@ -296,8 +296,8 @@ const GridTable = ({ title, query }) => {
 
   /**
    * Extracts the value (or summary of values) for nested field names
-   * @param {object} obj - The dataset current object
-   * @param {string} exp - The graphql expression
+   * @param {object} obj - The dataset current object (the table row)
+   * @param {string} exp - The graphql expression (from the column name)
    * @returns {string}
    */
   const getSummary = (obj, exp) => {
@@ -305,8 +305,14 @@ const GridTable = ({ title, query }) => {
     let map = new Map();
     const keys = listKeys(exp);
 
-    // First we need to get to the specific section of the object we need
+    // First we need to get to the specific section of the dataset object
+    // The first key is the outermost nested part of the graphql query
     const section = obj[keys[0]];
+
+     // Bypass value extraction if column value should be "stringified"
+    if (query.config.columns[exp]?.stringify) {
+      return JSON.stringify(section)
+    }
 
     // If not an array, resolve its value
     if (!Array.isArray(section)) {
@@ -347,6 +353,20 @@ const GridTable = ({ title, query }) => {
       <span>{defaultLabel}</span>
     );
   };
+
+  /**
+   * Returns a stringified object with information to format link.
+   * @param {string} row - row from data
+   * @param {Object} column - column with link attribute
+   * @return {string}
+   */
+  const buildLinkData = (row, column) => (
+    JSON.stringify({
+      singleItem: query.singleItem,
+      data: row[column],
+      link: row[query.config.columns[column].link]
+    })
+  );
 
   /**
    * Data Management
@@ -415,6 +435,7 @@ const GridTable = ({ title, query }) => {
                                         ? query.config.columns[column].width
                                         : 0
                                     }
+                                    className={classes.tableCell}
                                   >
                                     {query.isPK(column) ? (
                                       // If there is custom JSX for the PK single item button, render it
@@ -444,7 +465,12 @@ const GridTable = ({ title, query }) => {
                                           )}
                                         </RouterLink>
                                       )
-                                    ) : isAlphanumeric(column) ? (
+                                    ) : query.config.columns[column]?.link ? (
+                                      query.getFormattedValue(
+                                        column,
+                                        buildLinkData(row, column))
+                                    )
+                                    : isAlphanumeric(column) ? (
                                       <>
                                         {query.config.columns[
                                           column
@@ -459,6 +485,8 @@ const GridTable = ({ title, query }) => {
                                             )}
                                       </>
                                     ) : (
+                                      // if column is not alphanumeric
+                                      // it is formatted like a nested query
                                       query.getFormattedValue(
                                         column,
                                         getSummary(row, column.trim())

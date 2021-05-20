@@ -2,6 +2,8 @@ import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
+import { NavLink as RouterLink } from "react-router-dom";
+
 
 /**
  * The Query configuration (now also including filters)
@@ -38,6 +40,7 @@ export const ProjectsListViewQueryConf = {
   },
   columns: {
     project_id: {
+      hidden: true,
       primary_key: true,
       searchable: false,
       sortable: false,
@@ -52,6 +55,7 @@ export const ProjectsListViewQueryConf = {
     project_name: {
       searchable: true,
       sortable: false,
+      link: "project_id",
       label: "Project Name",
       search: {
         label: "Search by project name",
@@ -59,10 +63,22 @@ export const ProjectsListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "20%",
+      width: "*",
       type: "String",
+      filter: values => {
+        const jsonValues = JSON.parse(values)
+        return (
+          <RouterLink
+            to={`/${jsonValues.singleItem}/${jsonValues.link}`}
+            className={"MuiTypography-colorPrimary"}
+          >
+            {jsonValues.data}
+          </RouterLink>
+        )
+      }
     },
     project_description: {
+      hidden: true,
       searchable: true,
       sortable: false,
       label: "Project Description",
@@ -87,12 +103,52 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
+    current_phase: {
+      searchable: true,
+      sortable: false,
+      label: "Current Phase",
+      width: "15%",
+      search: {
+        label: "Search by current phase",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+    },
+    "moped_proj_personnel (where: {status_id: { _eq:1 }}) { moped_user { first_name last_name } moped_project_role { project_role_name }}": {
+      searchable: false,
+      sortable: false,
+      stringify: true,
+      label: "Team Members",
+      width: "20%",
+      filter: value => {
+        const parsedJson = JSON.parse(value)
+        let uniqueNames = {}
+        let personnel = []
+
+        parsedJson.forEach(person => {
+          let fullName = person.moped_user.first_name + " " + person.moped_user.last_name
+          if (uniqueNames[fullName]) {
+            uniqueNames[fullName] = uniqueNames[fullName] + `, ${person.moped_project_role.project_role_name}`
+          } else {
+            uniqueNames[fullName] = person.moped_project_role.project_role_name
+          }
+        })
+
+        for (const [key, value] of Object.entries(uniqueNames)) {
+          personnel.push(`${key} - ${value}`)
+        }
+
+        return personnel.join("\n")
+      }
+    },
     start_date: {
       searchable: false,
       sortable: true,
       label: "Start Date",
       width: "10%",
-      filter: value => new Date(value).toLocaleDateString(),
+      filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
       type: "date_iso",
     },
     ecapris_subproject_id: {
