@@ -161,7 +161,9 @@ export function getFeatureStyle({ feature, state, currentZoom }) {
     case SHAPE.POINT:
       style.r = CIRCLE_RADIUS;
       break;
-
+    case SHAPE.LINE_STRING:
+      style.fillOpacity = 0;
+      break;
     default:
   }
 
