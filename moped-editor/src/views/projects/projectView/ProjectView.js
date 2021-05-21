@@ -34,6 +34,7 @@ import ProjectSummary from "./ProjectSummary";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
+import ProjectComments from "./ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "../../../queries/project";
@@ -98,7 +99,7 @@ const TABS = [
   { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
-  { label: "Notes", Component: ProjectTabPlaceholder, param: "notes" },
+  { label: "Comments", Component: ProjectComments, param: "comments" },
   {
     label: "Activity Log",
     Component: ProjectActivityLog,
@@ -380,7 +381,7 @@ const ProjectView = () => {
                   const TabComponent = tab.Component;
                   return (
                     <TabPanel key={tab.label} value={activeTab} index={i}>
-                      <TabComponent 
+                      <TabComponent
                         loading={loading}
                         data={data}
                         error={error}
