@@ -174,7 +174,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: false,
       label: "Last Modified",
-      filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
+      filter: value => new Date(value).toLocaleDateString('en-US'),
       type: "date_iso",
     },
   },
