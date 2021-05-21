@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
     display: "inline",
     fontWeight: "bold",
   },
-  noteText: {
+  newNoteText: {
     marginTop: theme.spacing(1),
   },
   emptyState: {
@@ -81,9 +81,13 @@ const ProjectComments = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
-  const [noteText, setNoteText] = useState("");
+  const [newNoteText, setNewNoteText] = useState("");
+  const [editNoteText, setEditNoteText] = useState("");
   const [commentAddLoading, setCommentAddLoading] = useState(false);
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
+  const [noteEditId, setNoteEditId] = useState(null);
+
+  console.log(noteEditId);
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: { projectId },
@@ -91,7 +95,7 @@ const ProjectComments = () => {
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
-      setNoteText("");
+      setNewNoteText("");
       refetch();
       setCommentAddSuccess(true);
       setTimeout(() => {
@@ -114,7 +118,7 @@ const ProjectComments = () => {
         objects: [
           {
             added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
-            project_note: DOMPurify.sanitize(noteText),
+            project_note: DOMPurify.sanitize(newNoteText),
             project_id: projectId,
           },
         ],
@@ -153,13 +157,26 @@ const ProjectComments = () => {
                                     day: "numeric",
                                   })}`}
                                 </Typography>
-                                <ProjectCommentEdit />
+                                <ProjectCommentEdit
+                                  setNoteEditId={setNoteEditId}
+                                  commentData={item}
+                                />
                               </>
                             }
                             secondary={
-                              <Typography className={classes.noteText}>
-                                {parse(item.project_note)}
-                              </Typography>
+                              noteEditId === item.project_note_id ? (
+                                <ReactQuill
+                                  theme="snow"
+                                  value={item.project_note}
+                                  onChange={setEditNoteText}
+                                  modules={quillModules}
+                                />
+                              ) : (
+                                // TODO: Add "Edit Comment" & "Cancel" Buttons
+                                <Typography className={classes.newNoteText}>
+                                  {parse(item.project_note)}
+                                </Typography>
+                              )
                             }
                           />
                         </ListItem>
@@ -185,8 +202,8 @@ const ProjectComments = () => {
                     <Box pt={2}>
                       <ReactQuill
                         theme="snow"
-                        value={noteText}
-                        onChange={setNoteText}
+                        value={newNoteText}
+                        onChange={setNewNoteText}
                         modules={quillModules}
                       />
                     </Box>

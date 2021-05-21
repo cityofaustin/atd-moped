@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectCommentEdit = () => {
+const ProjectCommentEdit = ({ setNoteEditId, commentData }) => {
   const classes = useStyles();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -77,10 +77,10 @@ const ProjectCommentEdit = () => {
   };
 
   /**
-   * Handles the rename menu option click
+   * Handles the edit menu option click
    */
-  const handleRenameClick = () => {
-    setIsEditing(true);
+  const handleEditClick = () => {
+    setNoteEditId(commentData.project_note_id);
     handleMenuClose();
   };
 
@@ -88,6 +88,7 @@ const ProjectCommentEdit = () => {
    * Handles the delete menu option click
    */
   const handleDeleteClick = () => {
+    //   TODO: Make this do the intended thing
     setDialogContent(
       "Are you sure?",
       <span>
@@ -163,11 +164,11 @@ const ProjectCommentEdit = () => {
           horizontal: "center",
         }}
       >
-        <MenuItem onClick={handleRenameClick} selected={false}>
+        <MenuItem onClick={handleEditClick} selected={false}>
           <ListItemIcon>
             <Icon fontSize="small">create</Icon>
           </ListItemIcon>
-          <ListItemText primary="Rename" />
+          <ListItemText primary="Edit" />
         </MenuItem>
 
         <MenuItem
