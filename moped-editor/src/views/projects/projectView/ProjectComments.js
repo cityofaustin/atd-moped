@@ -26,6 +26,7 @@ import DOMPurify from "dompurify";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
+import ProjectCommentEdit from "./ProjectCommentEdit";
 
 const COMMENTS_QUERY = gql`
   query getProjectComments($projectId: Int!) {
@@ -152,6 +153,7 @@ const ProjectComments = () => {
                                     day: "numeric",
                                   })}`}
                                 </Typography>
+                                <ProjectCommentEdit />
                               </>
                             }
                             secondary={
