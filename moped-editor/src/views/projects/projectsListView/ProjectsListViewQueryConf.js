@@ -172,14 +172,13 @@ export const ProjectsListViewQueryConf = {
     updated_at: {
       hidden: false,
       searchable: false,
-      sortable: false,
+      sortable: true,
       label: "Last Modified",
       filter: value => new Date(value).toLocaleDateString('en-US'),
       type: "date_iso",
     },
   },
   order_by: { updated_at: "desc" },
-  // order_by: {},
   where: {
     is_retired: "_eq: false"
   },
