@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
+import { createBrowserHistory } from "history";
 
 /**
  * Material UI
@@ -73,6 +74,8 @@ const useStyles = makeStyles(theme => ({
     "text-transform": "capitalize",
   },
 }));
+
+const history = createBrowserHistory();
 
 /**
  * GridTable Component for Material UI
@@ -371,7 +374,9 @@ const GridTable = ({ title, query }) => {
   /**
    * Data Management
    */
-  console.log(query.query);
+  // console.log(query.query);
+  console.log(history)
+  console.log("filters ", filters)
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery

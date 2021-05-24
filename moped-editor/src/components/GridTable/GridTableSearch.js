@@ -328,8 +328,8 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
           </TabPanel>
           <TabPanel value={tabValue} index={1} dir={theme.direction}>
             <GridTableFilters
-                query={query}
-                filterState={filterState}
+              query={query}
+              filterState={filterState}
             />
           </TabPanel>
         </Paper>

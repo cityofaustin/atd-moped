@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {
@@ -21,6 +22,11 @@ import {
 
 import { Alert } from "@material-ui/lab";
 
+// todo: move this to a better place
+function useQueryParams() {
+  console.log(useLocation().search)
+  return new URLSearchParams(useLocation().search);
+}
 /**
  * The styling for the filter components
  * @type {Object}
@@ -78,7 +84,7 @@ const GridTableFilters = ({ query, filterState }) => {
   );
 
   /**
-   * Confirm dialog state. .
+   * Confirm dialog state.
    * @type {boolean} confirmDialogOpen - True to show, False to hide
    * @function setConfirmDialogOpen - Update the state of confirmDialogOpen
    * @default false
@@ -407,6 +413,10 @@ const GridTableFilters = ({ query, filterState }) => {
       filterState.setFilterParameters(filterParameters);
     }
   }, [filterParameters, filterState]);
+
+
+  let filterQuery = useQueryParams();
+  console.log(Array.from(filterQuery).length)
 
   return (
     <Grid>
