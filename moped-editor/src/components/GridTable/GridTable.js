@@ -127,6 +127,12 @@ const GridTable = ({ title, query }) => {
   });
 
   const filterQuery = new URLSearchParams(useLocation().search);
+  const getFilterQuery = () => {
+    if (Array.from(filterQuery).length > 0) {
+      return JSON.parse(atob(filterQuery.get("filter")))
+    }
+    return false;
+  }
 
   /**
    * Stores objects storing a random id, column, operator, and value.
@@ -134,7 +140,7 @@ const GridTable = ({ title, query }) => {
    * @function setFilter - Sets the state of filters
    * @default {{}}
    */
-  const [filters, setFilter] = useState(Array.from(filterQuery).length > 0 ? JSON.parse(atob(filterQuery.get("filter"))): {});
+  const [filters, setFilter] = useState(getFilterQuery() || {});
 
   // useEffect(function updateFilters() {
   //   if (Array.from(filterQuery).length > 0) {
