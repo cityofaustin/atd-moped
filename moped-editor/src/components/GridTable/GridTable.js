@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
-import { createBrowserHistory } from "history";
 
 /**
  * Material UI
@@ -127,23 +126,22 @@ const GridTable = ({ title, query }) => {
     column: "",
   });
 
+  const filterQuery = new URLSearchParams(useLocation().search);
+
   /**
    * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
    * @function setFilter - Sets the state of filters
    * @default {{}}
    */
-  const [filters, setFilter] = useState({});
+  const [filters, setFilter] = useState(Array.from(filterQuery).length > 0 ? JSON.parse(atob(filterQuery.get("filter"))): {});
 
-
-  const filterQuery = new URLSearchParams(useLocation().search);
-
-  useEffect(function updateFilters() {
-    if (Array.from(filterQuery).length > 0) {
-      const urlFilters = JSON.parse(atob(filterQuery.get("filter")))
-      setFilter(urlFilters)
-    }
-  }, []);
+  // useEffect(function updateFilters() {
+  //   if (Array.from(filterQuery).length > 0) {
+  //     const urlFilters = JSON.parse(atob(filterQuery.get("filter")))
+  //     setFilter(urlFilters)
+  //   }
+  // }, []);
 
   /**
    * Query Management
