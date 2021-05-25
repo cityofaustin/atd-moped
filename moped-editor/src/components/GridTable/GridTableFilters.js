@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { createBrowserHistory } from "history";
 
 import {
   Button,
@@ -52,6 +53,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const history = createBrowserHistory();
+
 /**
  * Filter Search Component
  * @param {Object} query - The main query object
@@ -59,7 +62,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query, filterState }) => {
+const GridTableFilters = ({ query, filterState, filterQuery }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -237,6 +240,7 @@ const GridTableFilters = ({ query, filterState }) => {
 
       // Update the state
       setFilterParameters(filtersNewState);
+      console.log("UPDATED", filtersNewState)
     } else {
       console.debug(
         `The filter id ${filterId} does not exist, ignoring click event.`
@@ -386,6 +390,9 @@ const GridTableFilters = ({ query, filterState }) => {
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
+    console.log("FP: ", filterParameters)
+    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
+    history.push(`/moped/projects?filter=${btoa(JSON.stringify(filterParameters))}`);
     filterState.setFilterParameters(filterParameters);
   };
 

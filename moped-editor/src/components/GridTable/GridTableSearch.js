@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearch = ({ query, searchState, filterState, children }) => {
+const GridTableSearch = ({ query, searchState, filterState, children, filterQuery }) => {
   const classes = useStyles();
   const theme = useTheme();
 
@@ -330,6 +330,7 @@ const GridTableSearch = ({ query, searchState, filterState, children }) => {
             <GridTableFilters
               query={query}
               filterState={filterState}
+              filterQuery={filterQuery}
             />
           </TabPanel>
         </Paper>

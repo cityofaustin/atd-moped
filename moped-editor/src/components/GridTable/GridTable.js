@@ -75,8 +75,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const history = createBrowserHistory();
-
 /**
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
@@ -415,6 +413,7 @@ const GridTable = ({ title, query }) => {
               filterParameters: filters,
               setFilterParameters: setFilter,
             }}
+            filterQuery={filterQuery}
           />
         </GridTableToolbar>
         {/*Main Table Body*/}
