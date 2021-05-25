@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 
 /**
@@ -136,6 +136,16 @@ const GridTable = ({ title, query }) => {
    * @default {{}}
    */
   const [filters, setFilter] = useState({});
+
+
+  const filterQuery = new URLSearchParams(useLocation().search);
+
+  useEffect(function updateFilters() {
+    if (Array.from(filterQuery).length > 0) {
+      const urlFilters = JSON.parse(atob(filterQuery.get("filter")))
+      setFilter(urlFilters)
+    }
+  }, []);
 
   /**
    * Query Management
@@ -375,8 +385,7 @@ const GridTable = ({ title, query }) => {
    * Data Management
    */
   // console.log(query.query);
-  console.log(history)
-  console.log("filters ", filters)
+  console.log("filters ", JSON.stringify(filters))
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery

@@ -21,12 +21,6 @@ import {
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
-
-// todo: move this to a better place
-function useQueryParams() {
-  console.log(useLocation().search)
-  return new URLSearchParams(useLocation().search);
-}
 /**
  * The styling for the filter components
  * @type {Object}
@@ -413,10 +407,6 @@ const GridTableFilters = ({ query, filterState }) => {
       filterState.setFilterParameters(filterParameters);
     }
   }, [filterParameters, filterState]);
-
-
-  let filterQuery = useQueryParams();
-  console.log(Array.from(filterQuery).length)
 
   return (
     <Grid>
