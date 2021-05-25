@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
 
@@ -391,7 +390,7 @@ const GridTableFilters = ({ query, filterState, filterQuery }) => {
    */
   const handleApplyButtonClick = () => {
     console.log("FP: ", filterParameters)
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
+    filterQuery.set("filter", btoa(JSON.stringify(filterParameters))) // do i need to do this
     history.push(`/moped/projects?filter=${btoa(JSON.stringify(filterParameters))}`);
     filterState.setFilterParameters(filterParameters);
   };

@@ -62,7 +62,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    * @function setTabValue - Sets the state of tabValue
    * @default false
    */
-  const [tabValue, setTabValue] = React.useState(0);
+  const [tabValue, setTabValue] = React.useState(Array.from(filterQuery).length);
 
   /**
    * When True, the dialog is open.
@@ -229,6 +229,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    * @param {number} newTabValue - The clicked tab value
    */
   const handleTabChange = (event, newTabValue) => {
+    console.log(newTabValue)
     setTabValue(newTabValue);
   };
 
