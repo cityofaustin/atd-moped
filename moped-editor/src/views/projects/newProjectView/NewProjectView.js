@@ -227,6 +227,8 @@ const NewProjectView = () => {
                 return {
                   role_id: role_id,
                   user_id: item.user_id,
+                  status_id: 1,
+                  notes: item?.notes ?? null,
                 };
               });
             })[0] // The array should be single
