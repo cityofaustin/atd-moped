@@ -25,7 +25,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
+const TopBar = ({ className, onNavOpen, ...rest }) => {
   const classes = useStyles();
   const { user, logout } = useUser();
 
@@ -59,7 +59,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             )}
           </div>
         </Box>
-        <IconButton color="inherit" onClick={onMobileNavOpen}>
+        <IconButton color="inherit" onClick={onNavOpen}>
           <MenuIcon />
         </IconButton>
       </Toolbar>
@@ -69,7 +69,7 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
 
 TopBar.propTypes = {
   className: PropTypes.string,
-  onMobileNavOpen: PropTypes.func,
+  onNavOpen: PropTypes.func,
 };
 
 export default TopBar;

@@ -40,7 +40,7 @@ const items = [
 ];
 
 const useStyles = makeStyles(() => ({
-  mobileDrawer: {
+  navDrawer: {
     width: 256,
   },
   avatar: {
@@ -50,13 +50,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NavBar = ({ onMobileClose, openMobile }) => {
+const NavBar = ({ onNavClose, openNav }) => {
   const classes = useStyles();
   const location = useLocation();
 
   useEffect(() => {
-    if (openMobile && onMobileClose) {
-      onMobileClose();
+    if (openNav && onNavClose) {
+      onNavClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
@@ -82,9 +82,9 @@ const NavBar = ({ onMobileClose, openMobile }) => {
   return (
     <Drawer
       anchor="left"
-      classes={{ paper: classes.mobileDrawer }}
-      onClose={onMobileClose}
-      open={openMobile}
+      classes={{ paper: classes.navDrawer }}
+      onClose={onNavClose}
+      open={openNav}
       variant="temporary"
     >
       {content}
@@ -93,13 +93,13 @@ const NavBar = ({ onMobileClose, openMobile }) => {
 };
 
 NavBar.propTypes = {
-  onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool,
+  onNavClose: PropTypes.func,
+  openNav: PropTypes.bool,
 };
 
 NavBar.defaultProps = {
-  onMobileClose: () => {},
-  openMobile: false,
+  onNavClose: () => {},
+  openNav: false,
 };
 
 export default NavBar;
