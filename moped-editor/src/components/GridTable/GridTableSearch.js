@@ -60,7 +60,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    * Controls what tab is being displayed
    * @type {boolean} tabValue
    * @function setTabValue - Sets the state of tabValue
-   * @default false
+   * @default if filter exists in url, 1. Otherwise 0.
    */
   const [tabValue, setTabValue] = React.useState(Array.from(filterQuery).length);
 

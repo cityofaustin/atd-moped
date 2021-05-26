@@ -333,7 +333,7 @@ const GridTableFilters = ({ query, filterState, filterQuery }) => {
     typingTimer = setTimeout(() => {
       // Update the state
       setFilterParameters(filtersNewState);
-    }, 333);
+    }, 0);
   };
 
   /**
@@ -537,6 +537,7 @@ const GridTableFilters = ({ query, filterState, filterQuery }) => {
                         handleSearchValueChange(filterId, e.target.value)
                       }
                       variant="outlined"
+                      value={filterParameters[filterId].value}
                     />
                   )}
                 </FormControl>
