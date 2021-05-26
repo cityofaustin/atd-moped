@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
 
 import {
   Button,
@@ -52,7 +52,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const history = createBrowserHistory();
+// const history = createBrowserHistory();
 
 /**
  * Filter Search Component
@@ -61,7 +61,7 @@ const history = createBrowserHistory();
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query, filterState, filterQuery }) => {
+const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -390,7 +390,7 @@ const GridTableFilters = ({ query, filterState, filterQuery }) => {
    */
   const handleApplyButtonClick = () => {
     console.log("FP: ", filterParameters)
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters))) // do i need to do this
+    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
     history.push(`/moped/projects?filter=${btoa(JSON.stringify(filterParameters))}`);
     filterState.setFilterParameters(filterParameters);
   };

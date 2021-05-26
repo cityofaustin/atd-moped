@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { createBrowserHistory } from "history";
 
 import {
   Box,
@@ -42,6 +43,8 @@ const useStyles = makeStyles(theme => ({
     margin: ".5rem",
   },
 }));
+
+const history = createBrowserHistory();
 
 /**
  * Renders a table search component with a search bar and search filters
@@ -211,6 +214,9 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    */
   const handleSwitchToSearch = () => {
     filterState.setFilterParameters({});
+    filterQuery.delete("filter")
+    // history.replace(`/moped/projects`);
+    window.history.replaceState({}, '', `/moped/projects`);
   }
 
   /**
@@ -229,7 +235,6 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    * @param {number} newTabValue - The clicked tab value
    */
   const handleTabChange = (event, newTabValue) => {
-    console.log(newTabValue)
     setTabValue(newTabValue);
   };
 
@@ -332,6 +337,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
               query={query}
               filterState={filterState}
               filterQuery={filterQuery}
+              history={history}
             />
           </TabPanel>
         </Paper>
