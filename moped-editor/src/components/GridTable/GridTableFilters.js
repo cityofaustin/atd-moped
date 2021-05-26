@@ -313,6 +313,8 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
+      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)))
+      history.push(`/moped/projects?filter=${btoa(JSON.stringify(filtersNewState))}`);
       setFilterParameters(filtersNewState);
     }
   };
