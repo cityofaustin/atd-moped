@@ -222,9 +222,9 @@
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       backend_only: false
   - role: moped-editor
     permission:
@@ -232,9 +232,9 @@
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -242,27 +242,27 @@
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       filter: {}
   - role: moped-editor
     permission:
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       filter: {}
   - role: moped-viewer
     permission:
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -270,9 +270,9 @@
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       filter: {}
       check: {}
   - role: moped-editor
@@ -280,9 +280,9 @@
       columns:
       - component_id
       - component_name
-      - component_order
-      - date_added
       - status_id
+      - component_subtype
+      - line_representation
       filter: {}
       check: {}
 - table:
@@ -1066,6 +1066,65 @@
       - component_id
       - name
       - description
+      filter: {}
+      check: {}
+- table:
+    schema: public
+    name: moped_proj_components_subcomponents
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
+      filter: {}
+      check: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - component_subcomponent_id
+      - project_component_id
+      - subcomponent_id
       filter: {}
       check: {}
 - table:
@@ -4160,6 +4219,9 @@
       - status_priority
       filter: {}
       check: {}
+- table:
+    schema: public
+    name: moped_subcomponents
 - table:
     schema: public
     name: moped_subphases
