@@ -169,8 +169,16 @@ export const ProjectsListViewQueryConf = {
         invalidValueDefault: 0
       },
     },
+    updated_at: {
+      hidden: false,
+      searchable: false,
+      sortable: true,
+      label: "Last Modified",
+      filter: value => new Date(value).toLocaleDateString('en-US'),
+      type: "date_iso",
+    },
   },
-  order_by: {},
+  order_by: { updated_at: "desc" },
   where: {
     is_retired: "_eq: false"
   },
