@@ -4453,84 +4453,87 @@
   - role: moped-admin
     permission:
       columns:
-      - project_uuid
-      - project_id
-      - project_name
-      - project_description
-      - project_description_public
-      - ecapris_subproject_id
-      - project_importance
-      - project_order
-      - current_status
-      - timeline_id
-      - current_phase
-      - end_date
-      - project_length
-      - start_date
-      - fiscal_year
-      - capitally_funded
-      - project_priority
-      - date_added
       - added_by
+      - capitally_funded
+      - current_phase
+      - current_status
+      - date_added
+      - ecapris_subproject_id
+      - end_date
+      - fiscal_year
       - is_retired
       - milestone_id
-      - status_id
+      - project_description
+      - project_description_public
+      - project_id
+      - project_importance
+      - project_length
+      - project_name
+      - project_order
+      - project_priority
       - project_team_members
+      - project_uuid
+      - start_date
+      - status_id
+      - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - project_uuid
-      - project_id
-      - project_name
-      - project_description
-      - project_description_public
-      - ecapris_subproject_id
-      - project_importance
-      - project_order
-      - current_status
-      - timeline_id
-      - current_phase
-      - end_date
-      - project_length
-      - start_date
-      - fiscal_year
-      - capitally_funded
-      - project_priority
-      - date_added
       - added_by
+      - capitally_funded
+      - current_phase
+      - current_status
+      - date_added
+      - ecapris_subproject_id
+      - end_date
+      - fiscal_year
       - is_retired
       - milestone_id
-      - status_id
+      - project_description
+      - project_description_public
+      - project_id
+      - project_importance
+      - project_length
+      - project_name
+      - project_order
+      - project_priority
       - project_team_members
+      - project_uuid
+      - start_date
+      - status_id
+      - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - project_uuid
-      - project_id
-      - project_name
-      - project_description
-      - project_description_public
-      - ecapris_subproject_id
-      - project_importance
-      - project_order
-      - current_status
-      - timeline_id
-      - current_phase
-      - end_date
-      - project_length
-      - start_date
-      - fiscal_year
-      - capitally_funded
-      - project_priority
-      - date_added
       - added_by
+      - capitally_funded
+      - current_phase
+      - current_status
+      - date_added
+      - ecapris_subproject_id
+      - end_date
+      - fiscal_year
       - is_retired
       - milestone_id
-      - status_id
+      - project_description
+      - project_description_public
+      - project_id
+      - project_importance
+      - project_length
+      - project_name
+      - project_order
+      - project_priority
       - project_team_members
+      - project_uuid
+      - start_date
+      - status_id
+      - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
