@@ -59,16 +59,9 @@ const TopBar = ({ className, onMobileNavOpen, ...rest }) => {
             )}
           </div>
         </Box>
-        <Hidden mdDown>
-          <IconButton color="inherit" onClick={logout}>
-            <LogOutIcon />
-          </IconButton>
-        </Hidden>
-        <Hidden lgUp>
-          <IconButton color="inherit" onClick={onMobileNavOpen}>
-            <MenuIcon />
-          </IconButton>
-        </Hidden>
+        <IconButton color="inherit" onClick={onMobileNavOpen}>
+          <MenuIcon />
+        </IconButton>
       </Toolbar>
     </AppBar>
   );
