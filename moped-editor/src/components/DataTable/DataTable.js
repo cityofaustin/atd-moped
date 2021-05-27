@@ -9,7 +9,6 @@ import {
   Icon,
   InputLabel,
   MenuItem,
-  Paper,
   Select,
   Snackbar,
   Switch,
