@@ -6,13 +6,11 @@ import {
   AppBar,
   Avatar,
   Box,
-  Hidden,
   IconButton,
   Toolbar,
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { LogOut as LogOutIcon } from "react-feather";
 import Logo from "src/components/Logo";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
@@ -27,7 +25,7 @@ const useStyles = makeStyles(() => ({
 
 const TopBar = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
-  const { user, logout } = useUser();
+  const { user } = useUser();
 
   const userDbData = getSessionDatabaseData();
 
