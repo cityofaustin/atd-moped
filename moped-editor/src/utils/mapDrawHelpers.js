@@ -176,8 +176,8 @@ export function getFeatureStyle({ feature, state, currentZoom }) {
  * @return {array} List of features that originated from the draw UI
  */
 const getDrawnFeaturesFromFeatureCollection = featureCollection =>
-  featureCollection.features.filter(
-    feature => drawnLayerNames.includes(feature.properties.sourceLayer)
+  featureCollection.features.filter(feature =>
+    drawnLayerNames.includes(feature.properties.sourceLayer)
   );
 
 /**
@@ -267,7 +267,7 @@ export function useMapDrawTools(
 
     // Track existing drawn features so that we don't duplicate them on each save
     const newDrawnFeatures = drawnFeatures.filter(
-      feature => !drawnLayerNames.includes(feature.properties.sourceLayer)
+      feature => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
     );
 
     // Add a UUID and layer name to the new features for retrieval and styling
@@ -279,9 +279,12 @@ export function useMapDrawTools(
         id: featureUUID,
         properties: {
           ...feature.properties,
-          renderType: "Point",
+          renderType: feature.geometry.type,
           PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer: "drawnByUser",
+          sourceLayer:
+            feature.geometry.type === "LineString"
+              ? "drawnByUserLine"
+              : "drawnByUser",
         },
       };
     });
