@@ -140,7 +140,9 @@ export const StaffListViewQueryConf = {
     },
   },
   order_by: {},
-  where: {},
+  where: {
+    status_id: "_eq: 1"
+  },
   limit: 25,
   offset: 0,
 };
