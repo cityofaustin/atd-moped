@@ -50,13 +50,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const NavBar = ({ onNavClose, openNav }) => {
+const NavBar = ({ isOpen, onClose }) => {
   const classes = useStyles();
   const location = useLocation();
 
   useEffect(() => {
-    if (openNav && onNavClose) {
-      onNavClose();
+    if (isOpen && onClose) {
+      onClose();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname]);
@@ -83,8 +83,8 @@ const NavBar = ({ onNavClose, openNav }) => {
     <Drawer
       anchor="left"
       classes={{ paper: classes.navDrawer }}
-      onClose={onNavClose}
-      open={openNav}
+      onClose={onClose}
+      open={isOpen}
       variant="temporary"
     >
       {content}
@@ -93,8 +93,8 @@ const NavBar = ({ onNavClose, openNav }) => {
 };
 
 NavBar.propTypes = {
-  onNavClose: PropTypes.func,
-  openNav: PropTypes.bool,
+  onClose: PropTypes.func,
+  isOpen: PropTypes.bool,
 };
 
 NavBar.defaultProps = {

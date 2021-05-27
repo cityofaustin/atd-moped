@@ -33,17 +33,17 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = () => {
   const classes = useStyles();
-  const [isNavOpen, setNavOpen] = useState(false);
+  const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
 
   console.log("user", user);
 
   return user ? (
     <div className={classes.root}>
-      <TopBar onNavOpen={() => setNavOpen(true)} />
+      <TopBar onOpen={() => setOpen(true)} />
       <NavBar
-        onNavClose={() => setNavOpen(false)}
-        openNav={isNavOpen}
+        onClose={() => setOpen(false)}
+        isOpen={isOpen}
       />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
