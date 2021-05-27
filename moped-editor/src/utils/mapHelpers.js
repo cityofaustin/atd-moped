@@ -609,9 +609,6 @@ export function useFeatureCollectionToFitBounds(
 
     const mapBounds = createZoomBbox(featureCollection);
     const currentMap = mapRef.current;
-
-    debugger;
-
     /**
      * Takes the existing viewport and transforms it to fit the project's features
      * @param {Object} viewport - Describes the map view
