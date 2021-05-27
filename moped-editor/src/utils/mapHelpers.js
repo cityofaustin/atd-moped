@@ -14,7 +14,9 @@ import { get } from "lodash";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
+
 export const drawnLayerName = "drawnByUser";
+
 const TRAIL_LINE_TYPE = "Off-Street";
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
@@ -95,15 +97,22 @@ export const mapStyles = {
   },
 };
 
+/**
+ * Map Config
+ * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, geocoderBbox: number[], mapboxDefaultMaxZoom: number, layerConfigs: Object}}
+ */
 export const mapConfig = {
+  // The initial map position and zoom level
   mapInit: {
     latitude: 30.268039,
     longitude: -97.742828,
     zoom: 12,
   },
-  mapboxDefaultMaxZoom: 18,
-  minimumFeaturesInProject: 1,
+  mapboxDefaultMaxZoom: 18, // Max zoom level
+  minimumFeaturesInProject: 1, // Determines minimum number of features in project
+  // Geocoder Bounding Box
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
+  // List of layer configurations
   layerConfigs: {
     CTN: {
       layerLabel: "Streets",
@@ -192,6 +201,7 @@ export const mapConfig = {
       },
     },
     drawnByUser: {
+      layerType: "drawn",
       layerLabel: "Drawn",
       layerIdName: drawnLayerName,
       layerIdField: "PROJECT_EXTENT_ID",
@@ -207,7 +217,39 @@ export const mapConfig = {
             type: "circle",
             paint: {
               "circle-color": this.layerColor,
-              "circle-radius": mapStyles.circleRadiusStops,
+              "circle-radius": mapStyles.lineWidthStops,
+            },
+          };
+        };
+      },
+    },
+    drawnByUserLines: {
+      layerType: "drawn",
+      layerLabel: "DrawnLine",
+      layerIdName: "drawnByUserLines",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 3,
+      layerColor: theme.palette.primary.main,
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "line",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                theme.palette.map.trail,
+                this.layerColor,
+              ],
+              "line-width": mapStyles.lineWidthStops,
             },
           };
         };
@@ -419,43 +461,65 @@ export const createProjectSelectLayerConfig = (
  * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
  */
 export const createSummaryMapLayers = geoJSON => {
+  /**
+   * Aggregate all features in geoJSON and group by layer
+   */
   const geoJSONBySource = geoJSON.features.reduce((acc, feature) => {
+    // Copy the sourceLayerName
     const sourceLayerName = feature.properties.sourceLayer;
 
-    return acc[sourceLayerName]
-      ? {
-          ...acc,
-          [sourceLayerName]: {
-            ...geoJSON,
-            features: [...acc[sourceLayerName].features, feature],
-          },
-        }
-      : { ...acc, [sourceLayerName]: { ...geoJSON, features: [feature] } };
+    /**
+     * Build a new state that copies the current state of the accumulator
+     * and append a new key with the source layer name, which includes a
+     * copy of the geoJSON object, a features section which includes the current
+     * feature and any extra features already in the aggregator if any.
+     */
+    return {
+      ...acc,
+      [sourceLayerName]: {
+        ...geoJSON,
+        features: [
+          ...(acc[sourceLayerName] ? acc[sourceLayerName].features : []),
+          feature,
+        ],
+      },
+    };
   }, {});
 
-  return Object.entries(geoJSONBySource)
-    .map(([sourceLayerName, sourceLayerGeoJSON]) => (
-      <Source
-        key={sourceLayerName}
-        id={sourceLayerName}
-        type="geojson"
-        data={sourceLayerGeoJSON}
-      >
-        <Layer
+  /**
+   * For every source layer in geoJSONBySource
+   */
+  return (
+    Object.entries(geoJSONBySource)
+      .map(([sourceLayerName, sourceLayerGeoJSON]) => (
+        // Build a source component, and pass attributes
+        <Source
           key={sourceLayerName}
-          {...createProjectViewLayerConfig(sourceLayerName)}
-        />
-      </Source>
-    ))
-    .sort((a, b) => {
-      // The id of the Source component maps to the source layer names in mapConfig, each layer config has a set order
-      const idA = a.props.id;
-      const idB = b.props.id;
-      const orderA = mapConfig.layerConfigs[idA].layerOrder;
-      const orderB = mapConfig.layerConfigs[idB].layerOrder;
+          id={sourceLayerName}
+          type="geojson"
+          data={sourceLayerGeoJSON}
+        >
+          {/*
+          Build a layer and create a configuration to set the
+          Mapbox spec styles for persisted layer features
+        */}
+          <Layer
+            key={sourceLayerName}
+            {...createProjectViewLayerConfig(sourceLayerName)}
+          />
+        </Source>
+      ))
+      /* We can now sort the components by mapConfig.layerConfigs[n].layerOrder */
+      .sort((a, b) => {
+        // The id of the Source component maps to the source layer names in mapConfig, each layer config has a set order
+        const idA = a.props.id;
+        const idB = b.props.id;
+        const orderA = mapConfig.layerConfigs[idA].layerOrder;
+        const orderB = mapConfig.layerConfigs[idB].layerOrder;
 
-      return orderA > orderB ? 1 : -1;
-    });
+        return orderA > orderB ? 1 : -1;
+      })
+  );
 };
 
 /**
@@ -604,6 +668,7 @@ export function useFeatureCollectionToFitBounds(
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
   useEffect(() => {
+    if (!mapRef.current) return;
     if (!shouldFitOnFeatureUpdate && hasFitInitialized) return;
 
     const mapBounds = createZoomBbox(featureCollection);
@@ -618,8 +683,8 @@ export function useFeatureCollectionToFitBounds(
       if (featureCollection.features.length === 0) return viewport;
       const featureViewport = new WebMercatorViewport({
         viewport,
-        width: currentMap?._width ?? (window.innerWidth * 0.80),
-        height: currentMap?._height ?? (window.innerHeight * 0.80),
+        width: currentMap?._width ?? window.innerWidth * 0.45,
+        height: currentMap?._height ?? window.innerHeight * 0.6,
       });
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
