@@ -11,7 +11,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
-import { mapStyles, drawnLayerName } from "../utils/mapHelpers";
+import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
 import { UPSERT_PROJECT_EXTENT } from "../queries/project";
 import { useMutation } from "@apollo/client";
 
@@ -177,7 +177,7 @@ export function getFeatureStyle({ feature, state, currentZoom }) {
  */
 const getDrawnFeaturesFromFeatureCollection = featureCollection =>
   featureCollection.features.filter(
-    feature => feature.properties.sourceLayer === drawnLayerName
+    feature => drawnLayerNames.includes(feature.properties.sourceLayer)
   );
 
 /**
@@ -267,7 +267,7 @@ export function useMapDrawTools(
 
     // Track existing drawn features so that we don't duplicate them on each save
     const newDrawnFeatures = drawnFeatures.filter(
-      feature => feature.properties.sourceLayer !== drawnLayerName
+      feature => !drawnLayerNames.includes(feature.properties.sourceLayer)
     );
 
     // Add a UUID and layer name to the new features for retrieval and styling
@@ -281,7 +281,7 @@ export function useMapDrawTools(
           ...feature.properties,
           renderType: "Point",
           PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer: drawnLayerName,
+          sourceLayer: "drawnByUser",
         },
       };
     });

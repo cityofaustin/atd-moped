@@ -15,8 +15,6 @@ import { get } from "lodash";
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 
-export const drawnLayerName = "drawnByUser";
-
 const TRAIL_LINE_TYPE = "Off-Street";
 
 // See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
@@ -201,9 +199,9 @@ export const mapConfig = {
       },
     },
     drawnByUser: {
-      layerType: "drawn",
+      layerDrawn: true,
       layerLabel: "Drawn",
-      layerIdName: drawnLayerName,
+      layerIdName: "drawnByUser",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
       layerOrder: 3,
@@ -223,13 +221,13 @@ export const mapConfig = {
         };
       },
     },
-    drawnByUserLines: {
-      layerType: "drawn",
+    drawnByUserLine: {
+      layerDrawn: true,
       layerLabel: "DrawnLine",
-      layerIdName: "drawnByUserLines",
+      layerIdName: "drawnByUserLine",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
-      layerOrder: 3,
+      layerOrder: 4,
       layerColor: theme.palette.primary.main,
       layerMaxLOD: 12,
       isClickEditable: false,
@@ -243,12 +241,7 @@ export const mapConfig = {
               "line-cap": "round",
             },
             paint: {
-              "line-color": [
-                "case",
-                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
-                theme.palette.map.trail,
-                this.layerColor,
-              ],
+              "line-color": theme.palette.secondary.main,
               "line-width": mapStyles.lineWidthStops,
             },
           };
@@ -499,7 +492,7 @@ export const createSummaryMapLayers = geoJSON => {
           type="geojson"
           data={sourceLayerGeoJSON}
         >
-          {/*
+        {/*
           Build a layer and create a configuration to set the
           Mapbox spec styles for persisted layer features
         */}
@@ -809,3 +802,11 @@ export const layerSelectStyles = {
     paddingLeft: 10,
   },
 };
+
+/**
+ * Generates a list of all layers that are drawn
+ */
+export const drawnLayerNames = Object.keys(mapConfig.layerConfigs).map(layerKey => {
+  const layer = mapConfig.layerConfigs[layerKey];
+  if(layer.layerDrawn) return layer.layerIdName;
+});
