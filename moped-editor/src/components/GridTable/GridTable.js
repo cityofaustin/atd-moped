@@ -129,7 +129,12 @@ const GridTable = ({ title, query }) => {
   const filterQuery = new URLSearchParams(useLocation().search);
   const getFilterQuery = () => {
     if (Array.from(filterQuery).length > 0) {
-      return JSON.parse(atob(filterQuery.get("filter")))
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")))
+      }
+      catch {
+        return false;
+      }
     }
     return false;
   }
