@@ -18,11 +18,6 @@ const items = [
     title: "Dashboard",
   },
   {
-    href: "/moped/staff",
-    icon: UsersIcon,
-    title: "Staff",
-  },
-  {
     href: "/moped/projects",
     icon: EmojiTransportation,
     title: "Projects",
@@ -31,6 +26,11 @@ const items = [
     href: "/moped/account",
     icon: UserIcon,
     title: "Account",
+  },
+  {
+    href: "/moped/staff",
+    icon: UsersIcon,
+    title: "Staff",
   },
   {
     href: "/moped/logout",
