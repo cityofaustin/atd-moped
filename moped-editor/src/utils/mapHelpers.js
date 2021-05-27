@@ -616,11 +616,10 @@ export function useFeatureCollectionToFitBounds(
      */
     const fitViewportToBounds = viewport => {
       if (featureCollection.features.length === 0) return viewport;
-
       const featureViewport = new WebMercatorViewport({
         viewport,
-        width: currentMap._width,
-        height: currentMap._height,
+        width: currentMap?._width ?? (window.innerWidth * 0.80),
+        height: currentMap?._height ?? (window.innerHeight * 0.80),
       });
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
