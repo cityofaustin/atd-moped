@@ -668,12 +668,11 @@ export function useFeatureCollectionToFitBounds(
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef?.current) return;
     if (!shouldFitOnFeatureUpdate && hasFitInitialized) return;
 
     const mapBounds = createZoomBbox(featureCollection);
     const currentMap = mapRef.current;
-
     /**
      * Takes the existing viewport and transforms it to fit the project's features
      * @param {Object} viewport - Describes the map view
@@ -684,8 +683,9 @@ export function useFeatureCollectionToFitBounds(
       const featureViewport = new WebMercatorViewport({
         viewport,
         width: currentMap?._width ?? window.innerWidth * 0.45,
-        height: currentMap?._height ?? window.innerHeight * 0.6,
+        height: currentMap?._height ?? window.innerHeight * 0.60,
       });
+
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
       });
