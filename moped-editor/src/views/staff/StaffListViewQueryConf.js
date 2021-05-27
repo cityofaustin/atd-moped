@@ -133,12 +133,6 @@ export const StaffListViewQueryConf = {
       filter: value => (value === true ? "True" : "False"),
       type: "Boolean",
     },
-    status_id: {
-      searchable: false,
-      sortable: false,
-      label: "Status ID",
-      type: "Int",
-    },
   },
   order_by: {},
   where: {
