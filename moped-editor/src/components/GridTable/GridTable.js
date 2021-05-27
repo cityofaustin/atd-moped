@@ -391,7 +391,7 @@ const GridTable = ({ title, query }) => {
   /**
    * Data Management
    */
-  // console.log(query.query);
+  console.log(query.query);
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery

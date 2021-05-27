@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
+import { useLocation } from "react-router-dom";
 
 import {
   Box,
@@ -58,6 +59,7 @@ const history = createBrowserHistory();
 const GridTableSearch = ({ query, searchState, filterState, children, filterQuery }) => {
   const classes = useStyles();
   const theme = useTheme();
+  const queryPath = useLocation().pathname
 
   /**
    * Controls what tab is being displayed
@@ -215,7 +217,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
   const handleSwitchToSearch = () => {
     filterState.setFilterParameters({});
     filterQuery.delete("filter")
-    history.push('/moped/projects?')
+    history.replace(`${queryPath}?`)
   }
 
   /**

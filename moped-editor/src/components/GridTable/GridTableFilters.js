@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import {
@@ -65,6 +66,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
    * @default
    */
   const classes = useStyles();
+  const queryPath = useLocation().pathname
 
   /**
    * The current local filter parameters
@@ -325,13 +327,8 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     const filtersNewState = { ...filterParameters };
     // Patch the new state
     filtersNewState[filterId].value = value;
-    // Clear the current timer
-    clearTimeout(typingTimer);
-    // Start a new timer with a 1/3rd of a second delay.
-    typingTimer = setTimeout(() => {
-      // Update the state
-      setFilterParameters(filtersNewState);
-    }, 0);
+    // Update the state
+    setFilterParameters(filtersNewState);
   };
 
   /**
@@ -388,7 +385,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
    */
   const handleApplyButtonClick = () => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
-    history.push(`/moped/projects?filter=${btoa(JSON.stringify(filterParameters))}`);
+    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     filterState.setFilterParameters(filterParameters);
   };
 
