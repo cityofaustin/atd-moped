@@ -215,8 +215,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
   const handleSwitchToSearch = () => {
     filterState.setFilterParameters({});
     filterQuery.delete("filter")
-    // history.replace(`/moped/projects`);
-    window.history.replaceState({}, '', `/moped/projects`);
+    history.push('/moped/projects?')
   }
 
   /**

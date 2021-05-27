@@ -126,7 +126,14 @@ const GridTable = ({ title, query }) => {
     column: "",
   });
 
+  // create URLSearchParams from url
   const filterQuery = new URLSearchParams(useLocation().search);
+
+  /**
+    * if filter exists in url, decodes base64 string and returns as object
+    * Used to initialize filter state
+    * @return Object if valid JSON otherwise false
+    */
   const getFilterQuery = () => {
     if (Array.from(filterQuery).length > 0) {
       try {
@@ -143,16 +150,9 @@ const GridTable = ({ title, query }) => {
    * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
    * @function setFilter - Sets the state of filters
-   * @default {{}}
+   * @default {if filter in url, use those params, otherwise {}}
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
-
-  // useEffect(function updateFilters() {
-  //   if (Array.from(filterQuery).length > 0) {
-  //     const urlFilters = JSON.parse(atob(filterQuery.get("filter")))
-  //     setFilter(urlFilters)
-  //   }
-  // }, []);
 
   /**
    * Query Management
@@ -392,7 +392,6 @@ const GridTable = ({ title, query }) => {
    * Data Management
    */
   // console.log(query.query);
-  console.log("filters ", JSON.stringify(filters))
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery

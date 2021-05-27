@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-// import { createBrowserHistory } from "history";
 
 import {
   Button,
@@ -51,8 +50,6 @@ const useStyles = makeStyles(theme => ({
     marginBottom: theme.spacing(1),
   },
 }));
-
-// const history = createBrowserHistory();
 
 /**
  * Filter Search Component
@@ -239,7 +236,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
 
       // Update the state
       setFilterParameters(filtersNewState);
-      console.log("UPDATED", filtersNewState)
     } else {
       console.debug(
         `The filter id ${filterId} does not exist, ignoring click event.`
@@ -314,7 +310,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     } finally {
       // Finally, reset the state
       filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)))
-      history.push(`/moped/projects?filter=${btoa(JSON.stringify(filtersNewState))}`);
+      history.push(`/moped/projects?filter=${filterQuery.get("filter")}`);
       setFilterParameters(filtersNewState);
     }
   };
@@ -391,7 +387,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
-    console.log("FP: ", filterParameters)
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
     history.push(`/moped/projects?filter=${btoa(JSON.stringify(filterParameters))}`);
     filterState.setFilterParameters(filterParameters);
