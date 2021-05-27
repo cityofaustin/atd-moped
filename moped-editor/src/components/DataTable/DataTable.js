@@ -438,9 +438,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                   key={fieldConfiguration.fields[field]?.label}
                   className={classes.fieldGridItem}
                   xs={12}
-                  sm={6}
+                  sm={fieldConfiguration.fields[field]?.width ?? 6}
                 >
-                  <Box mb={2}>
+                  <Box>
                     {((isEditing && editField !== field) || !isEditing) && (
                       <h4>
                         {fieldConfiguration.fields[field]?.label ?? "Unknown"}
