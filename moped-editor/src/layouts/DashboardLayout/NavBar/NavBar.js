@@ -98,8 +98,8 @@ NavBar.propTypes = {
 };
 
 NavBar.defaultProps = {
-  onNavClose: () => {},
-  openNav: false,
+  onClose: () => {},
+  isOpen: false,
 };
 
 export default NavBar;
