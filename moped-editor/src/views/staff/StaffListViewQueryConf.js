@@ -72,6 +72,7 @@ export const StaffListViewQueryConf = {
     email: {
       searchable: true,
       sortable: false,
+      className: null,
       label: "E-Mail",
       search: {
         label: "Search by E-mail",
