@@ -237,12 +237,12 @@ export const mapConfig = {
             id: this.layerIdName,
             type: "line",
             layout: {
-              "line-join": "round",
-              "line-cap": "round",
+              "line-join": "miter",
+              "line-cap": "square",
             },
             paint: {
-              "line-color": theme.palette.secondary.main,
-              "line-width": mapStyles.lineWidthStops,
+              "line-color": theme.palette.primary.main,
+              "line-width": 4,
             },
           };
         };
@@ -492,7 +492,7 @@ export const createSummaryMapLayers = geoJSON => {
           type="geojson"
           data={sourceLayerGeoJSON}
         >
-        {/*
+          {/*
           Build a layer and create a configuration to set the
           Mapbox spec styles for persisted layer features
         */}
@@ -676,7 +676,7 @@ export function useFeatureCollectionToFitBounds(
       const featureViewport = new WebMercatorViewport({
         viewport,
         width: currentMap?._width ?? window.innerWidth * 0.45,
-        height: currentMap?._height ?? window.innerHeight * 0.60,
+        height: currentMap?._height ?? window.innerHeight * 0.6,
       });
 
       const newViewport = featureViewport.fitBounds(mapBounds, {
@@ -806,7 +806,6 @@ export const layerSelectStyles = {
 /**
  * Generates a list of all layers that are drawn
  */
-export const drawnLayerNames = Object.keys(mapConfig.layerConfigs).map(layerKey => {
-  const layer = mapConfig.layerConfigs[layerKey];
-  if(layer.layerDrawn) return layer.layerIdName;
-});
+export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
+  .filter(([layerName, layer]) => layer.layerDrawn)
+  .map(([layerName, layer]) => layer.layerIdName);
