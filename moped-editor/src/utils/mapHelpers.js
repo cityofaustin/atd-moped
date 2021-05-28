@@ -200,7 +200,7 @@ export const mapConfig = {
     },
     drawnByUser: {
       layerDrawn: true,
-      layerLabel: "Drawn",
+      layerLabel: "Drawn Points",
       layerIdName: "drawnByUser",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
@@ -215,7 +215,7 @@ export const mapConfig = {
             type: "circle",
             paint: {
               "circle-color": this.layerColor,
-              "circle-radius": mapStyles.lineWidthStops,
+              "circle-radius": mapStyles.circleRadiusStops,
             },
           };
         };
@@ -223,7 +223,7 @@ export const mapConfig = {
     },
     drawnByUserLine: {
       layerDrawn: true,
-      layerLabel: "DrawnLine",
+      layerLabel: "Drawn Lines",
       layerIdName: "drawnByUserLine",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",

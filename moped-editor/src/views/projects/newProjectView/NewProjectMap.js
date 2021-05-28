@@ -110,7 +110,6 @@ const NewProjectMap = ({
     const layerName = getLayerSource(e);
 
     // If a user clicks a drawn point in the map, open draw UI
-    // if (layerName === drawnLayerNames) {
     if (drawnLayerNames.includes(layerName)) {
       setIsDrawing(true);
     }
