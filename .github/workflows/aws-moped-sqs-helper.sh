@@ -56,6 +56,7 @@ function bundle_function {
 #
 function generate_env_vars {
   FUNCTION_NAME_CONFIG=$1
+  echo "Generating Environment Variables for SQS";
   aws secretsmanager get-secret-value \
   --secret-id "ATD_MOPED_EVENT_SQS_ENV_${WORKING_STAGE^^}" | \
   jq -rc ".SecretString" > handler_config.json;

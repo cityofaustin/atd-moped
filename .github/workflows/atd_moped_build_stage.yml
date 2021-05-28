@@ -9,11 +9,6 @@ on:
     inputs:
       description:
         default: ""
-  # Temporary lines for testing:
-  push:
-    branches:
-      - "6227-sg-moped-test-sqs-api"
-  # Delete please after testing --^
 
 jobs:
   build_editor:
