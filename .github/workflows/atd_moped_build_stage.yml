@@ -9,10 +9,93 @@ on:
     inputs:
       description:
         default: ""
+  # Temporary lines for testing:
+  push:
+    branches:
+      - "6227-sg-moped-test-sqs-api"
+  # Delete please after testing --^
 
 jobs:
-  build_editor:
-    name: Build Editor
+#  build_editor:
+#    name: Build Editor
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.8"
+#          architecture: "x64"
+#      # Get the code first
+#      - name: "Checkout"
+#        uses: actions/checkout@v2
+#      # Then install the AWC CLI tools & boto3
+#      - name: "Install CLI Requirements: AWS"
+#        run: |
+#          sudo apt-get install -y python3-setuptools
+#          pip3 install awscli boto3 virtualenv requests
+#      # Run the shell commands using the AWS environment variables
+#      - name: "Build & Deploy Moped Editor"
+#        env:
+#          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          MOPED_PRNUM: ${{ github.event.pull_request.number }}
+#          MOPED_PRBODY: ${{ github.event.pull_request.body }}
+#        run: |
+#          export BRANCH_NAME=${GITHUB_REF##*/}
+#          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
+#          echo "SHA: ${GITHUB_SHA}"
+#          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
+#          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
+#          echo "PWD: $(pwd)"
+#
+#          source $(pwd)/.github/workflows/aws-heroku-helper.sh
+#          echo "Commented out editor build"
+#          build_editor
+#
+#  build_database:
+#    name: Build Database
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: "3.8"
+#          architecture: "x64"
+#      # Get the code first
+#      - name: "Checkout"
+#        uses: actions/checkout@v2
+#      # Then install the AWC CLI tools & boto3
+#      - name: "Install CLI Requirements: Heroku, Hasura"
+#        run: |
+#          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
+#          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+#          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
+#          sudo add-apt-repository ppa:rmescandon/yq
+#          sudo apt update
+#          sudo apt install yq -y
+#      # Run the shell commands using the AWS environment variables
+#      - name: "Moped Database: Re-deploy"
+#        env:
+#          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+#          HASURA_CONFIGURATION_DEVSTAGE: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
+#          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET }}
+#          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET }}
+#          ATD_MOPED_DEVSTAGE_HASURA_CONFIGURATION: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
+#          MOPED_PRNUM: ${{ github.event.pull_request.number }}
+#          MOPED_PRBODY: ${{ github.event.pull_request.body }}
+#        run: |
+#          export BRANCH_NAME=${GITHUB_REF##*/}
+#          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
+#          echo "SHA: ${GITHUB_SHA}"
+#          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
+#          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
+#          echo "PWD: $(pwd)"
+#          echo "YQ Version: $(yq --version)"
+#          source $(pwd)/.github/workflows/aws-heroku-helper.sh
+#          clone_hasura_repo
+#          build_database
+#          run_database_migration
+  build_activity_log_sqs:
+    name: Build Activity Log SQS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/setup-python@v2
@@ -23,66 +106,25 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v2
       # Then install the AWC CLI tools & boto3
-      - name: "Install CLI Requirements: AWS"
+      - name: "Install CLI Requirements: AWS Cli"
         run: |
-          sudo apt-get install -y python3-setuptools
-          pip3 install awscli boto3 virtualenv requests
+          sudo apt-get install python3-setuptools
+          pip3 install awscli boto3
       # Run the shell commands using the AWS environment variables
-      - name: "Build & Deploy Moped Editor"
+      - name: "Moped Database: Re-deploy"
         env:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          MOPED_PRNUM: ${{ github.event.pull_request.number }}
-          MOPED_PRBODY: ${{ github.event.pull_request.body }}
+          ATD_MOPED_EVENTS_ROLE: ${{ secrets.ATD_MOPED_EVENTS_ROLE }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          MOPED_TEST_STAGE: "TRUE"
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
+          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
           echo "SHA: ${GITHUB_SHA}"
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          echo "Commented out editor build"
-          build_editor
-
-  build_database:
-    name: Build Database
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.8"
-          architecture: "x64"
-      # Get the code first
-      - name: "Checkout"
-        uses: actions/checkout@v2
-      # Then install the AWC CLI tools & boto3
-      - name: "Install CLI Requirements: Heroku, Hasura"
-        run: |
-          curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-          sudo add-apt-repository ppa:rmescandon/yq
-          sudo apt update
-          sudo apt install yq -y
-      # Run the shell commands using the AWS environment variables
-      - name: "Moped Database: Re-deploy"
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HASURA_CONFIGURATION_DEVSTAGE: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
-          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET }}
-          ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET: ${{ secrets.ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET }}
-          ATD_MOPED_DEVSTAGE_HASURA_CONFIGURATION: ${{ secrets.HASURA_CONFIGURATION_DEVSTAGE }}
-          MOPED_PRNUM: ${{ github.event.pull_request.number }}
-          MOPED_PRBODY: ${{ github.event.pull_request.body }}
-        run: |
-          export BRANCH_NAME=${GITHUB_REF##*/}
-          echo "SHA: ${GITHUB_SHA}"
-          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
-          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
-          echo "PWD: $(pwd)"
-          echo "YQ Version: $(yq --version)"
-          source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          clone_hasura_repo
-          build_database
-          run_database_migration
+          source $(pwd)/.github/workflows/aws-moped-sqs-helper.sh
+          deploy_event_function "activity_log"
