@@ -11,7 +11,7 @@ case "${BRANCH_NAME}" in
     export WORKING_STAGE="staging";
   ;;
   *)
-    export WORKING_STAGE="moped-test";
+    export WORKING_STAGE="moped_test";
   ;;
 esac
 
@@ -20,7 +20,7 @@ esac
 #
 if [[ "${MOPED_TEST_STAGE}" = "TRUE" ]]; then
   export WORKING_STAGE="test";
-  export BUILD_TYPE="moped-test";
+  export BUILD_TYPE="moped_test";
 else
   export BUILD_TYPE="git push";
 fi;
