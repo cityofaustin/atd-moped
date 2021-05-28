@@ -49,10 +49,20 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
 
   /**
    * Updates viewport on zoom, scroll, and other events
-   * @param {Object} viewport - Mapbox object that stores properties of the map view
+   * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = viewport => setViewport(viewport);
+  const handleViewportChange = updatedViewPort => setViewport(updatedViewPort);
 
+  /**
+   * Let's throw an error intentionally if there are no features for a project.
+   */
+  if(featureCount < 1) {
+    throw Error("Map error: Cannot render or edit maps with no features");
+  }
+
+  /**
+   * If we do have features, proceed to render map.
+   */
   return (
     <Box>
       <ReactMapGL
