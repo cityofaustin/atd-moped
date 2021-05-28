@@ -42,7 +42,7 @@ jobs:
 #          MOPED_PRBODY: ${{ github.event.pull_request.body }}
 #        run: |
 #          export BRANCH_NAME=${GITHUB_REF##*/}
-#          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
+#          echo "Moped Test Build @ ${BRANCH_NAME}: ${{ github.event.inputs.description }}"
 #          echo "SHA: ${GITHUB_SHA}"
 #          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
 #          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
@@ -84,7 +84,7 @@ jobs:
 #          MOPED_PRBODY: ${{ github.event.pull_request.body }}
 #        run: |
 #          export BRANCH_NAME=${GITHUB_REF##*/}
-#          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
+#          echo "Moped Test Build @ ${BRANCH_NAME}: ${{ github.event.inputs.description }}"
 #          echo "SHA: ${GITHUB_SHA}"
 #          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
 #          echo "MOPED_PRNUM: ${MOPED_PRNUM}"
@@ -121,7 +121,7 @@ jobs:
           MOPED_TEST_STAGE: "TRUE"
         run: |
           export BRANCH_NAME=${GITHUB_REF##*/}
-          echo "Moped Test Build @ ${BRANCH NAME}: ${{ github.event.inputs.description }}"
+          echo "Moped Test Build @ ${BRANCH_NAME}: ${{ github.event.inputs.description }}"
           echo "SHA: ${GITHUB_SHA}"
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
