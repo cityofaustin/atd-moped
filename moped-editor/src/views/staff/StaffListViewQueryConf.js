@@ -72,6 +72,7 @@ export const StaffListViewQueryConf = {
     email: {
       searchable: true,
       sortable: false,
+      className: null,
       label: "E-Mail",
       search: {
         label: "Search by E-mail",
@@ -132,15 +133,11 @@ export const StaffListViewQueryConf = {
       filter: value => (value === true ? "True" : "False"),
       type: "Boolean",
     },
-    status_id: {
-      searchable: false,
-      sortable: false,
-      label: "Status ID",
-      type: "Int",
-    },
   },
   order_by: {},
-  where: {},
+  where: {
+    status_id: "_eq: 1"
+  },
   limit: 25,
   offset: 0,
 };

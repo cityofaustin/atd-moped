@@ -456,7 +456,13 @@ const GridTable = ({ title, query }) => {
                                         ? query.config.columns[column].width
                                         : 0
                                     }
-                                    className={classes.tableCell}
+                                    className={
+                                      query.config.columns[
+                                        column
+                                      ].hasOwnProperty("className")
+                                        ? query.config.columns[column].className
+                                        : classes.tableCell
+                                    }
                                   >
                                     {query.isPK(column) ? (
                                       // If there is custom JSX for the PK single item button, render it
