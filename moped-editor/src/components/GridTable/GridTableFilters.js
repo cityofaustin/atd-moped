@@ -21,6 +21,7 @@ import {
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
+
 /**
  * The styling for the filter components
  * @type {Object}
@@ -97,13 +98,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     message: null,
     actions: null,
   });
-
-  /**
-   * This is a timer allocation that will update the state after the user is finished typing.
-   * @type {integer} - The returned timeoutID is a positive integer value which identifies the timer created by the call to setTimeout()
-   * @default null
-   */
-  let typingTimer = null;
 
   /**
    * The default structure of an empty field
@@ -312,7 +306,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     } finally {
       // Finally, reset the state
       filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)))
-      history.push(`/moped/projects?filter=${filterQuery.get("filter")}`);
+      history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
       setFilterParameters(filtersNewState);
     }
   };
