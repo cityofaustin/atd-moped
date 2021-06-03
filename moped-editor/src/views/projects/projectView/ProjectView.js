@@ -5,6 +5,9 @@ import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
+  Breadcrumbs,
+  Link,
+  Typography,
   Button,
   Box,
   Container,
@@ -41,6 +44,7 @@ import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import { GridOffSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -281,6 +285,15 @@ const ProjectView = () => {
               <div className={classes.root}>
                 <Box p={4} pb={2}>
                   <Grid container>
+                    <Grid item xs={12}>
+                      <Box pb={1}>
+                      <Breadcrumbs aria-label="all-projects-breadcrumb">
+                        <Link component={RouterLink} to="/moped/projects">
+                          <strong>{"< ALL PROJECTS"}</strong>
+                        </Link>
+                      </Breadcrumbs>
+                      </Box>
+                    </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
                       <ProjectNameEditable
                         projectName={data.moped_project[0].project_name}
@@ -380,7 +393,7 @@ const ProjectView = () => {
                   const TabComponent = tab.Component;
                   return (
                     <TabPanel key={tab.label} value={activeTab} index={i}>
-                      <TabComponent 
+                      <TabComponent
                         loading={loading}
                         data={data}
                         error={error}
@@ -391,16 +404,6 @@ const ProjectView = () => {
                 })}
               </div>
             )}
-            <Divider />
-            <CardActions className={classes.cardActions}>
-              <Button
-                className={classes.button}
-                component={RouterLink}
-                to="/moped/projects"
-              >
-                All Projects
-              </Button>
-            </CardActions>
           </Card>
         </Container>
         {dialogOpen && dialogState && (
