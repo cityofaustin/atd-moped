@@ -998,6 +998,23 @@
 - table:
     schema: public
     name: moped_proj_components
+  object_relationships:
+  - name: moped_components
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_components
+        column_mapping:
+          project_component_id: component_id
+  array_relationships:
+  - name: moped_proj_features_components
+    using:
+      foreign_key_constraint_on:
+        column: moped_proj_component_id
+        table:
+          schema: public
+          name: moped_proj_features_components
   insert_permissions:
   - role: moped-admin
     permission:
@@ -1482,6 +1499,15 @@
 - table:
     schema: public
     name: moped_proj_features_components
+  array_relationships:
+  - name: moped_proj_feature
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_proj_features
+        column_mapping:
+          moped_proj_features_id: feature_id
   insert_permissions:
   - role: moped-admin
     permission:
