@@ -7,7 +7,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import {
   Breadcrumbs,
   Link,
-  Typography,
   Button,
   Box,
   Container,
@@ -17,7 +16,6 @@ import {
   AppBar,
   Tab,
   Tabs,
-  CardActions,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -44,7 +42,6 @@ import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import { GridOffSharp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
