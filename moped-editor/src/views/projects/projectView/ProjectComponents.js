@@ -33,11 +33,11 @@ const useStyles = makeStyles(theme => ({
     cursor: "pointer",
     backgroundColor: theme.palette.background.paper,
     "&:hover": {
-      background: "#f5f5f5",
+      background: "#f5f5f5", // Gray 50
     }
   },
   componentItemBlue: {
-    cursor: "pointer", // b3e5fc 90caf9
+    cursor: "pointer",
     backgroundColor: "#e1f5fe", // Lightblue 100
     "&:hover": {
       background: "#b3e5fc", // Lightblue 200
