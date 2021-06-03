@@ -31,6 +31,7 @@ import {
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
+import ProjectComponents from "./ProjectComponents";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectTabPlaceholder from "./ProjectTabPlaceholder";
@@ -95,6 +96,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
+  { label: "Map", Component: ProjectComponents, param: "map" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
@@ -380,7 +382,7 @@ const ProjectView = () => {
                   const TabComponent = tab.Component;
                   return (
                     <TabPanel key={tab.label} value={activeTab} index={i}>
-                      <TabComponent 
+                      <TabComponent
                         loading={loading}
                         data={data}
                         error={error}
