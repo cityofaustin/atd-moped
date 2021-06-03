@@ -287,11 +287,11 @@ const ProjectView = () => {
                   <Grid container>
                     <Grid item xs={12}>
                       <Box pb={1}>
-                      <Breadcrumbs aria-label="all-projects-breadcrumb">
-                        <Link component={RouterLink} to="/moped/projects">
-                          <strong>{"< ALL PROJECTS"}</strong>
-                        </Link>
-                      </Breadcrumbs>
+                        <Breadcrumbs aria-label="all-projects-breadcrumb">
+                          <Link component={RouterLink} to="/moped/projects">
+                            <strong>{"< ALL PROJECTS"}</strong>
+                          </Link>
+                        </Breadcrumbs>
                       </Box>
                     </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
