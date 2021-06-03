@@ -15,6 +15,7 @@ import {
   TableRow,
   TableCell,
   CircularProgress,
+  ClickAwayListener,
 } from "@material-ui/core";
 
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
@@ -30,8 +31,20 @@ const useStyles = makeStyles(theme => ({
   },
   componentItem: {
     cursor: "pointer",
+    backgroundColor: theme.palette.background.paper,
+    "&:hover": {
+      background: "#f5f5f5",
+    }
+  },
+  componentItemBlue: {
+    cursor: "pointer", // b3e5fc 90caf9
+    backgroundColor: "#e1f5fe", // Lightblue 100
+    "&:hover": {
+      background: "#b3e5fc", // Lightblue 200
+    }
   },
 }));
+
 /**
  * Project Component Page
  * @return {JSX.Element}
@@ -42,6 +55,9 @@ const ProjectComponents = () => {
   const classes = useStyles();
 
   const [componentsList, setComponentsList] = useState({});
+  const [componentCurrentlySelected, setComponentCurrentlySelected] = useState(
+    0
+  );
   const [mapError, setMapError] = useState(false);
 
   const { error, loading, data, refetch } = useQuery(COMPONENTS_QUERY, {
@@ -60,9 +76,18 @@ const ProjectComponents = () => {
 
   if (loading) return <CircularProgress />;
 
-  const handleComponentClick = e => {
-    debugger;
+  /**
+   * Handles logic whenever a component is clicked
+   * @param componentId - The Database id of the component in question
+   */
+  const handleComponentClick = componentId => {
+    setComponentCurrentlySelected(componentId);
   };
+
+  /**
+   * Resets the color of a selected component back to white
+   */
+  const handleComponentClickAway = () => setComponentCurrentlySelected(0);
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -70,46 +95,57 @@ const ProjectComponents = () => {
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Paper className={classes.root}>
-              <TableContainer className={classes.container}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                      <TableCell>Component</TableCell>
-                      <TableCell>Type</TableCell>
-                      <TableCell>Subtype</TableCell>
-                      <TableCell>Sub-Components</TableCell>
-                      <TableCell align="right">Details</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {data.moped_proj_components.map((component, compIndex) => {
-                      const componentId = component.project_component_id;
-                      return (
-                        <TableRow
-                          hover
-                          role="checkbox"
-                          tabIndex={compIndex}
-                          key={"mcTableRow-" + componentId}
-                          className={classes.componentItem}
-                          onClick={() => handleComponentClick(componentId)}
-                        >
-                          <TableCell>{component?.name}</TableCell>
-                          <TableCell>
-                            {component?.moped_components?.component_type}
-                          </TableCell>
-                          <TableCell>
-                            {component?.moped_components?.component_subtype}
-                          </TableCell>
-                          <TableCell>SubComponents</TableCell>
-                          <TableCell>
-                            <DoubleArrowIcon />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+              <ClickAwayListener onClickAway={handleComponentClickAway}>
+                <TableContainer className={classes.container}>
+                  <Table stickyHeader aria-label="sticky table">
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>Component</TableCell>
+                        <TableCell>Type</TableCell>
+                        <TableCell>Subtype</TableCell>
+                        <TableCell>Sub-Components</TableCell>
+                        <TableCell>Details</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {data.moped_proj_components.map(
+                        (component, compIndex) => {
+                          const componentId = component.project_component_id;
+                          return (
+                            <TableRow
+                              role="checkbox"
+                              tabIndex={compIndex}
+                              key={"mcTableRow-" + componentId}
+                              onClick={() => handleComponentClick(componentId)}
+                              className={
+                                componentId === componentCurrentlySelected
+                                  ? classes.componentItemBlue
+                                  : classes.componentItem
+                              }
+                            >
+                              <TableCell>{component?.name}</TableCell>
+                              <TableCell>
+                                {component?.moped_components?.component_type}
+                              </TableCell>
+                              <TableCell>
+                                {component?.moped_components?.component_subtype}
+                              </TableCell>
+                              <TableCell>
+                                {[...new Set(component.moped_proj_features_components.map(
+                                  subcomponent => subcomponent.name
+                                ))].join(", ")}
+                              </TableCell>
+                              <TableCell align={"center"}>
+                                <DoubleArrowIcon />
+                              </TableCell>
+                            </TableRow>
+                          );
+                        }
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </ClickAwayListener>
             </Paper>
           </Grid>
           <Grid item xs={12} md={6}>
