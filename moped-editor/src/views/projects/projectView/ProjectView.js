@@ -272,7 +272,7 @@ const ProjectView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page title="Project Summary Page">
+      <Page title={loading ? "Project Summary Page" : data.moped_project[0].project_name}>
         <Container maxWidth="xl">
           <Card className={classes.cardWrapper}>
             {loading ? (
