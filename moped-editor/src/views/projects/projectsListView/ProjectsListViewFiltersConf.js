@@ -18,8 +18,6 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
       ],
     },
     {
@@ -32,8 +30,6 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
       ],
     },
     {
@@ -77,6 +73,8 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
   ],
