@@ -22,6 +22,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMap from "./ProjectComponentsMap";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
+import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -53,7 +54,6 @@ const ProjectComponents = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [componentsList, setComponentsList] = useState({});
   const [selectedComp, setSelectedComp] = useState(0);
   const [mapError, setMapError] = useState(false);
 
@@ -73,8 +73,8 @@ const ProjectComponents = () => {
   const projectFeatureRecords = data.moped_proj_components.reduce(
     (accumulator, component) => [
       ...accumulator,
-      ...// Append if current component is selected, or none are selected (0)
-      (selectedComp === component.component_id || selectedComp === 0
+      // Append if current component is selected, or none are selected (0)
+      ...(selectedComp === component.component_id || selectedComp === 0
         ? component.moped_proj_features_components.map(
             feature_comp =>
               feature_comp.moped_proj_feature.map(feature => feature)[0]
@@ -91,7 +91,6 @@ const ProjectComponents = () => {
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
   );
-
 
   /**
    * Handles logic whenever a component is clicked
@@ -172,15 +171,14 @@ const ProjectComponents = () => {
           <Grid item xs={12} md={6}>
             <ErrorBoundary
               FallbackComponent={({ error, resetErrorBoundary }) => (
-                // <ProjectSummaryMapFallback
-                //   error={error}
-                //   resetErrorBoundary={resetErrorBoundary}
-                //   projectId={projectId}
-                //   setIsEditing={setIsEditing}
-                //   refetchProjectDetails={refetch}
-                //   mapData={projectFeatureCollection}
-                // />
-                <div>Something bad happened: {error}</div>
+                <ProjectSummaryMapFallback
+                  error={error}
+                  resetErrorBoundary={resetErrorBoundary}
+                  projectId={projectId}
+                  setIsEditing={null}
+                  refetchProjectDetails={refetch}
+                  mapData={projectFeatureCollection}
+                />
               )}
               onReset={() => setMapError(false)}
               resetKeys={[mapError]}
