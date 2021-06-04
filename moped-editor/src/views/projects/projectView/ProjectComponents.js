@@ -6,7 +6,6 @@ import { COMPONENTS_QUERY } from "../../../queries/project";
 import {
   CardContent,
   Grid,
-  Icon,
   Paper,
   Table,
   TableBody,
@@ -34,14 +33,14 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     "&:hover": {
       background: "#f5f5f5", // Gray 50
-    }
+    },
   },
   componentItemBlue: {
     cursor: "pointer",
     backgroundColor: "#e1f5fe", // Lightblue 50
     "&:hover": {
       background: "#b3e5fc", // Lightblue 100
-    }
+    },
   },
 }));
 
@@ -55,9 +54,7 @@ const ProjectComponents = () => {
   const classes = useStyles();
 
   const [componentsList, setComponentsList] = useState({});
-  const [componentCurrentlySelected, setComponentCurrentlySelected] = useState(
-    0
-  );
+  const [selectedComp, setSelectedComp] = useState(0);
   const [mapError, setMapError] = useState(false);
 
   const { error, loading, data, refetch } = useQuery(COMPONENTS_QUERY, {
@@ -66,28 +63,48 @@ const ProjectComponents = () => {
     },
   });
 
-  const projectFeatureRecords =
-    data?.moped_proj_components[0]?.moped_proj_features_components
-      ?.moped_proj_features ?? [];
+  // Return loading if not in progress
+  if (loading) return <CircularProgress />;
 
+  /**
+   * Retrieve and flatten a nested list of features:
+   *  moped_proj_components -> moped_proj_features_components -> moped_proj_feature
+   */
+  const projectFeatureRecords = data.moped_proj_components.reduce(
+    (accumulator, component) => [
+      ...accumulator,
+      ...// Append if current component is selected, or none are selected (0)
+      (selectedComp === component.component_id || selectedComp === 0
+        ? component.moped_proj_features_components.map(
+            feature_comp =>
+              feature_comp.moped_proj_feature.map(feature => feature)[0]
+          )
+        : []),
+    ],
+    []
+  );
+
+  /**
+   * Reuses this function to generate a collection for the map
+   * @type {Object}
+   */
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
   );
 
-  if (loading) return <CircularProgress />;
 
   /**
    * Handles logic whenever a component is clicked
    * @param componentId - The Database id of the component in question
    */
   const handleComponentClick = componentId => {
-    setComponentCurrentlySelected(componentId);
+    setSelectedComp(componentId);
   };
 
   /**
    * Resets the color of a selected component back to white
    */
-  const handleComponentClickAway = () => setComponentCurrentlySelected(0);
+  const handleComponentClickAway = () => setSelectedComp(0);
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -118,7 +135,7 @@ const ProjectComponents = () => {
                               key={"mcTableRow-" + componentId}
                               onClick={() => handleComponentClick(componentId)}
                               className={
-                                componentId === componentCurrentlySelected
+                                componentId === selectedComp
                                   ? classes.componentItemBlue
                                   : classes.componentItem
                               }
@@ -131,9 +148,13 @@ const ProjectComponents = () => {
                                 {component?.moped_components?.component_subtype}
                               </TableCell>
                               <TableCell>
-                                {[...new Set(component.moped_proj_features_components.map(
-                                  subcomponent => subcomponent.name
-                                ))].join(", ")}
+                                {[
+                                  ...new Set(
+                                    component.moped_proj_features_components.map(
+                                      subcomponent => subcomponent.name
+                                    )
+                                  ),
+                                ].join(", ")}
                               </TableCell>
                               <TableCell align={"center"}>
                                 <DoubleArrowIcon />
