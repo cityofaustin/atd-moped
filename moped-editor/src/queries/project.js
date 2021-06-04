@@ -492,9 +492,7 @@ export const PROJECT_CLEAR_MAP_DATA_TEMPLATE = `mutation ClearProjectMapData($pr
 
 export const COMPONENTS_QUERY = gql`
   query getComponents($projectId: Int) {
-    moped_proj_components(
-      where: { project_id: { _eq: $projectId } }
-    ) {
+    moped_proj_components(where: { project_id: { _eq: $projectId } }) {
       project_component_id
       project_id
       component_id
@@ -503,6 +501,12 @@ export const COMPONENTS_QUERY = gql`
       moped_components {
         component_type: component_name
         component_subtype
+      }
+      moped_proj_components_subcomponents {
+        moped_subcomponent {
+          subcomponent_id
+          subcomponent_name
+        }
       }
       moped_proj_features_components {
         name
