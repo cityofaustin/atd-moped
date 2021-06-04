@@ -175,7 +175,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => new Date(value).toLocaleDateString('en-US'),
+      filter: value => new Date(value).toLocaleDateString("en-US"),
       type: "date_iso",
     },
   },
