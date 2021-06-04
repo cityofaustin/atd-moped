@@ -517,3 +517,38 @@ export const COMPONENTS_QUERY = gql`
     }
   }
 `;
+
+export const COMPONENT_DETAILS_QUERY = gql`
+  query GetComponentDetails($componentId: Int!) {
+    moped_proj_components(where: { component_id: { _eq: $componentId } }) {
+      component_id
+      description
+      name
+      project_component_id
+      project_id
+      moped_components {
+        component_name
+        component_id
+        component_subtype
+      }
+      moped_proj_features_components {
+        moped_proj_feature {
+          location
+          feature_id
+          status_id
+          project_id
+        }
+      }
+    }
+    moped_subcomponents {
+      subcomponent_name
+      subcomponent_id
+      component_id
+    }
+    moped_components {
+      component_name
+      component_subtype
+      component_id
+    }
+  }
+`;
