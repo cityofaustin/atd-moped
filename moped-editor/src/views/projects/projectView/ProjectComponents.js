@@ -23,6 +23,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMap from "./ProjectComponentsMap";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
+import ProjectComponentEdit from "./ProjectComponentEdit";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -56,6 +57,7 @@ const ProjectComponents = () => {
 
   const [selectedComp, setSelectedComp] = useState(0);
   const [mapError, setMapError] = useState(false);
+  const [componentEditMode, setComponentEditMode] = useState(false);
 
   const { error, loading, data, refetch } = useQuery(COMPONENTS_QUERY, {
     variables: {
@@ -105,72 +107,97 @@ const ProjectComponents = () => {
    */
   const handleComponentClickAway = () => setSelectedComp(0);
 
+  const handleComponentDetailsClick = () => {
+    setComponentEditMode(true);
+  };
+
+  const handleCancelEdit = () => {
+    setComponentEditMode(false);
+    setSelectedComp(0);
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <Paper className={classes.root}>
-              <ClickAwayListener onClickAway={handleComponentClickAway}>
-                <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>Component</TableCell>
-                        <TableCell>Type</TableCell>
-                        <TableCell>Subtype</TableCell>
-                        <TableCell>Sub-Components</TableCell>
-                        <TableCell>Details</TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {data.moped_proj_components.map(
-                        (component, compIndex) => {
-                          const componentId = component.project_component_id;
-                          return (
-                            <TableRow
-                              role="checkbox"
-                              tabIndex={compIndex}
-                              key={"mcTableRow-" + componentId}
-                              onClick={() => handleComponentClick(componentId)}
-                              className={
-                                componentId === selectedComp
-                                  ? classes.componentItemBlue
-                                  : classes.componentItem
-                              }
-                            >
-                              <TableCell>{component?.name}</TableCell>
-                              <TableCell>
-                                {component?.moped_components?.component_type}
-                              </TableCell>
-                              <TableCell>
-                                {component?.moped_components?.component_subtype}
-                              </TableCell>
-                              <TableCell>
-                                {[
-                                  ...new Set(
-                                    component.moped_proj_components_subcomponents.map(
-                                      mpcs =>
-                                        mpcs.moped_subcomponent
-                                          .subcomponent_name
-                                    )
-                                  ),
-                                ]
-                                  .sort()
-                                  .join(", ")}
-                              </TableCell>
-                              <TableCell align={"center"}>
-                                <DoubleArrowIcon />
-                              </TableCell>
-                            </TableRow>
-                          );
-                        }
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </ClickAwayListener>
-            </Paper>
+            {!componentEditMode ? (
+              <Paper className={classes.root}>
+                <ClickAwayListener onClickAway={handleComponentClickAway}>
+                  <TableContainer className={classes.container}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Component</TableCell>
+                          <TableCell>Type</TableCell>
+                          <TableCell>Subtype</TableCell>
+                          <TableCell>Sub-Components</TableCell>
+                          <TableCell>Details</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {data.moped_proj_components.map(
+                          (component, compIndex) => {
+                            const componentId = component.project_component_id;
+                            return (
+                              <TableRow
+                                role="checkbox"
+                                tabIndex={compIndex}
+                                key={"mcTableRow-" + componentId}
+                                onClick={() =>
+                                  handleComponentClick(componentId)
+                                }
+                                className={
+                                  componentId === selectedComp
+                                    ? classes.componentItemBlue
+                                    : classes.componentItem
+                                }
+                              >
+                                <TableCell>{component?.name}</TableCell>
+                                <TableCell>
+                                  {component?.moped_components?.component_type}
+                                </TableCell>
+                                <TableCell>
+                                  {
+                                    component?.moped_components
+                                      ?.component_subtype
+                                  }
+                                </TableCell>
+                                <TableCell>
+                                  {[
+                                    ...new Set(
+                                      component.moped_proj_components_subcomponents.map(
+                                        mpcs =>
+                                          mpcs.moped_subcomponent
+                                            .subcomponent_name
+                                      )
+                                    ),
+                                  ]
+                                    .sort()
+                                    .join(", ")}
+                                </TableCell>
+                                <TableCell align={"center"}>
+                                  <DoubleArrowIcon
+                                    onClick={() =>
+                                      handleComponentDetailsClick(componentId)
+                                    }
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            );
+                          }
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </ClickAwayListener>
+              </Paper>
+            ) : (
+              <ProjectComponentEdit
+                componentId={selectedComp}
+                cancelEdit={handleCancelEdit}
+              />
+            )}
           </Grid>
           <Grid item xs={12} md={6}>
             <ErrorBoundary
