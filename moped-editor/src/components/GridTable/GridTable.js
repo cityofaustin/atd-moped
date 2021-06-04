@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 /**
  * Material UI
@@ -126,13 +126,32 @@ const GridTable = ({ title, query }) => {
     column: "",
   });
 
+  // create URLSearchParams from url
+  const filterQuery = new URLSearchParams(useLocation().search);
+
+  /**
+   * if filter exists in url, decodes base64 string and returns as object
+   * Used to initialize filter state
+   * @return Object if valid JSON otherwise false
+   */
+  const getFilterQuery = () => {
+    if (Array.from(filterQuery).length > 0) {
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")));
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+
   /**
    * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
    * @function setFilter - Sets the state of filters
-   * @default {{}}
+   * @default {if filter in url, use those params, otherwise {}}
    */
-  const [filters, setFilter] = useState({});
+  const [filters, setFilter] = useState(getFilterQuery() || {});
 
   /**
    * Query Management
@@ -159,18 +178,19 @@ const GridTable = ({ title, query }) => {
     // Retrieve the type of field (string, float, int, etc)
     const type = query.config.columns[column].type.toLowerCase();
     // Get the invalidValueDefault in the search config object
-    const invalidValueDefault = query.config.columns[column].search?.invalidValueDefault ?? null;
+    const invalidValueDefault =
+      query.config.columns[column].search?.invalidValueDefault ?? null;
     // If the type is number of float, attempt to parse as such
-    if(["number", "float", "double"].includes(type)) {
+    if (["number", "float", "double"].includes(type)) {
       value = Number.parseFloat(value) || invalidValueDefault;
     }
     // If integer, attempt to parse as integer
-    if(["int", "integer"].includes(type)) {
-      value = Number.parseInt(value)  || invalidValueDefault;
+    if (["int", "integer"].includes(type)) {
+      value = Number.parseInt(value) || invalidValueDefault;
     }
     // Any other value types are pass-through for now
     return value;
-  }
+  };
 
   // If we have a search, use the terms...
   if (search.value && search.value !== "") {
@@ -311,7 +331,7 @@ const GridTable = ({ title, query }) => {
 
     // Bypass value extraction if column value should be "stringified"
     if (query.config.columns[exp]?.stringify) {
-      return JSON.stringify(section)
+      return JSON.stringify(section);
     }
 
     // If not an array, resolve its value
@@ -360,13 +380,12 @@ const GridTable = ({ title, query }) => {
    * @param {Object} column - column with link attribute
    * @return {string}
    */
-  const buildLinkData = (row, column) => (
+  const buildLinkData = (row, column) =>
     JSON.stringify({
       singleItem: query.singleItem,
       data: row[column],
-      link: row[query.config.columns[column].link]
-    })
-  );
+      link: row[query.config.columns[column].link],
+    });
 
   /**
    * Data Management
@@ -401,6 +420,7 @@ const GridTable = ({ title, query }) => {
               filterParameters: filters,
               setFilterParameters: setFilter,
             }}
+            filterQuery={filterQuery}
           />
         </GridTableToolbar>
         {/*Main Table Body*/}
@@ -475,9 +495,9 @@ const GridTable = ({ title, query }) => {
                                     ) : query.config.columns[column]?.link ? (
                                       query.getFormattedValue(
                                         column,
-                                        buildLinkData(row, column))
-                                    )
-                                    : isAlphanumeric(column) ? (
+                                        buildLinkData(row, column)
+                                      )
+                                    ) : isAlphanumeric(column) ? (
                                       <>
                                         {query.config.columns[
                                           column
