@@ -204,9 +204,13 @@ const GridTable = ({ title, query }) => {
 
     // If the operator includes "is_null", then the value is always true
     if (gqlOperator.includes("is_null")) {
-      value = "true";
+      console.log(gqlOperator, envelope);
+      // value = "true";
+      // gqlOperator = ""
+      gqlOperator = envelope ? "_eq" : "_neq";
+      value = '""';
     } else {
-      // We have a normal operator, if we have a normal value
+      // We have a normal operator, if we have a normal value <--?
       if (value !== null) {
         // There is a value, if there is an envelope, put inside envelope.
         value = envelope ? envelope.replace("{VALUE}", value) : value;
