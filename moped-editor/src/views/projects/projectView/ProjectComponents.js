@@ -66,6 +66,8 @@ const ProjectComponents = () => {
   // Return loading if not in progress
   if (loading) return <CircularProgress />;
 
+  if (error) return <div>{error}</div>;
+
   /**
    * Retrieve and flatten a nested list of features:
    *  moped_proj_components -> moped_proj_features_components -> moped_proj_feature
@@ -93,12 +95,10 @@ const ProjectComponents = () => {
   );
 
   /**
-   * Handles logic whenever a component is clicked
+   * Handles logic whenever a component is clicked, refreshes whatever is in memory and re-renders
    * @param componentId - The Database id of the component in question
    */
-  const handleComponentClick = componentId => {
-    setSelectedComp(componentId);
-  };
+  const handleComponentClick = componentId => setSelectedComp(componentId);
 
   /**
    * Resets the color of a selected component back to white
@@ -149,11 +149,15 @@ const ProjectComponents = () => {
                               <TableCell>
                                 {[
                                   ...new Set(
-                                    component.moped_proj_features_components.map(
-                                      subcomponent => subcomponent.name
+                                    component.moped_proj_components_subcomponents.map(
+                                      mpcs =>
+                                        mpcs.moped_subcomponent
+                                          .subcomponent_name
                                     )
                                   ),
-                                ].join(", ")}
+                                ]
+                                  .sort()
+                                  .join(", ")}
                               </TableCell>
                               <TableCell align={"center"}>
                                 <DoubleArrowIcon />
