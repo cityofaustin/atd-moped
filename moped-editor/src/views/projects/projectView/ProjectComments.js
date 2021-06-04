@@ -8,13 +8,17 @@ import {
   CircularProgress,
   Divider,
   Grid,
+  IconButton,
   List,
   ListItem,
   ListItemAvatar,
+  ListItemSecondaryAction,
   ListItemText,
   Typography,
 } from "@material-ui/core";
 import AddBoxIcon from "@material-ui/icons/AddBox";
+import DeleteIcon from "@material-ui/icons/Delete";
+import EditIcon from "@material-ui/icons/Edit";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData } from "src/auth/user";
@@ -160,10 +164,16 @@ const ProjectComments = () => {
                               </Typography>
                             }
                           />
+                          <ListItemSecondaryAction>
+                            <IconButton edge="end" aria-label="edit">
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton edge="end" aria-label="delete">
+                              <DeleteIcon />
+                            </IconButton>
+                          </ListItemSecondaryAction>
                         </ListItem>
-                        {isNotLastItem && (
-                          <Divider variant="inset" component="li" />
-                        )}
+                        {isNotLastItem && <Divider component="li" />}
                       </>
                     );
                   })}
