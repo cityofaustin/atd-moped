@@ -1008,6 +1008,13 @@
         column_mapping:
           project_component_id: component_id
   array_relationships:
+  - name: moped_proj_components_subcomponents
+    using:
+      foreign_key_constraint_on:
+        column: project_component_id
+        table:
+          schema: public
+          name: moped_proj_components_subcomponents
   - name: moped_proj_features_components
     using:
       foreign_key_constraint_on:
@@ -1088,6 +1095,10 @@
 - table:
     schema: public
     name: moped_proj_components_subcomponents
+  object_relationships:
+  - name: moped_subcomponent
+    using:
+      foreign_key_constraint_on: subcomponent_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -4262,6 +4273,62 @@
 - table:
     schema: public
     name: moped_subcomponents
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - subcomponent_id
+      - subcomponent_name
+      - component_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - subcomponent_id
+      - subcomponent_name
+      - component_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_subphases
