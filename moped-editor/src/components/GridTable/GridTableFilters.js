@@ -67,7 +67,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
    * @default
    */
   const classes = useStyles();
-  const queryPath = useLocation().pathname
+  const queryPath = useLocation().pathname;
 
   /**
    * The current local filter parameters
@@ -305,7 +305,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)))
+      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)));
       history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
       setFilterParameters(filtersNewState);
     }
@@ -378,7 +378,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
    * Applies the current local state and updates the parent's
    */
   const handleApplyButtonClick = () => {
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)))
+    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     filterState.setFilterParameters(filterParameters);
   };

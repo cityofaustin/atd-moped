@@ -56,10 +56,16 @@ const history = createBrowserHistory();
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearch = ({ query, searchState, filterState, children, filterQuery }) => {
+const GridTableSearch = ({
+  query,
+  searchState,
+  filterState,
+  children,
+  filterQuery,
+}) => {
   const classes = useStyles();
   const theme = useTheme();
-  const queryPath = useLocation().pathname
+  const queryPath = useLocation().pathname;
 
   /**
    * Controls what tab is being displayed
@@ -67,7 +73,9 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    * @function setTabValue - Sets the state of tabValue
    * @default if filter exists in url, 1. Otherwise 0.
    */
-  const [tabValue, setTabValue] = React.useState(Array.from(filterQuery).length);
+  const [tabValue, setTabValue] = React.useState(
+    Array.from(filterQuery).length
+  );
 
   /**
    * When True, the dialog is open.
@@ -216,9 +224,9 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
    */
   const handleSwitchToSearch = () => {
     filterState.setFilterParameters({});
-    filterQuery.delete("filter")
-    history.replace(`${queryPath}?`)
-  }
+    filterQuery.delete("filter");
+    history.replace(`${queryPath}?`);
+  };
 
   /**
    * Clears the simple search when switching to filters
@@ -228,7 +236,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
       value: "",
       column: "",
     });
-  }
+  };
 
   /**
    * Handles the click on a tab to switch between tabs
@@ -328,10 +336,7 @@ const GridTableSearch = ({ query, searchState, filterState, children, filterQuer
           </Grid>
 
           <TabPanel value={tabValue} index={0} dir={theme.direction}>
-            <GridTableSearchBar
-              query={query}
-              searchState={searchState}
-            />
+            <GridTableSearchBar query={query} searchState={searchState} />
           </TabPanel>
           <TabPanel value={tabValue} index={1} dir={theme.direction}>
             <GridTableFilters
