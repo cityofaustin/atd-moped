@@ -10,7 +10,7 @@ export const StaffListViewFiltersConf = {
   fields: [
     {
       name: "first_name",
-      label: "First Name",
+      label: "First name",
       placeholder: "Enter first name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
@@ -24,7 +24,7 @@ export const StaffListViewFiltersConf = {
     },
     {
       name: "last_name",
-      label: "Last Name",
+      label: "Last name",
       placeholder: "Enter last name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
