@@ -59,15 +59,6 @@ export const StaffListViewFiltersConf = {
         "*", // All of them (shortcut)
       ],
     },
-    {
-      name: "is_coa_staff",
-      label: "Is COA staff",
-      placeholder: "Select Staff",
-      type: "boolean",
-      operators: [
-        "*", // All of them (shortcut)
-      ],
-    },
   ],
 
   operators: {

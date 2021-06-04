@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 /**
  * Material UI
@@ -126,13 +126,32 @@ const GridTable = ({ title, query }) => {
     column: "",
   });
 
+  // create URLSearchParams from url
+  const filterQuery = new URLSearchParams(useLocation().search);
+
+  /**
+   * if filter exists in url, decodes base64 string and returns as object
+   * Used to initialize filter state
+   * @return Object if valid JSON otherwise false
+   */
+  const getFilterQuery = () => {
+    if (Array.from(filterQuery).length > 0) {
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")));
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  };
+
   /**
    * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
    * @function setFilter - Sets the state of filters
-   * @default {{}}
+   * @default {if filter in url, use those params, otherwise {}}
    */
-  const [filters, setFilter] = useState({});
+  const [filters, setFilter] = useState(getFilterQuery() || {});
 
   /**
    * Query Management
@@ -405,6 +424,7 @@ const GridTable = ({ title, query }) => {
               filterParameters: filters,
               setFilterParameters: setFilter,
             }}
+            filterQuery={filterQuery}
           />
         </GridTableToolbar>
         {/*Main Table Body*/}
