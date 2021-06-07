@@ -155,13 +155,6 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
   };
 
   /**
-   * Tracks any changes made to the selected subcomponents list
-   */
-  useEffect(() => {
-    console.log("selectedSubcomponents, state change: ", selectedSubcomponents);
-  }, [selectedSubcomponents]);
-
-  /**
    * Tracks any changes made to selectedComponentId
    */
   useEffect(() => {
@@ -316,6 +309,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
             rows={4}
             defaultValue=""
             variant="filled"
+            value={data?.moped_proj_components[0]?.description ?? ""}
           />
         </FormControl>
       </Grid>
