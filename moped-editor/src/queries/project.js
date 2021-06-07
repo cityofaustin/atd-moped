@@ -539,6 +539,15 @@ export const COMPONENT_DETAILS_QUERY = gql`
           project_id
         }
       }
+      moped_proj_components_subcomponents {
+        component_subcomponent_id
+        project_component_id
+        subcomponent_id
+        moped_subcomponent {
+          subcomponent_id
+          subcomponent_name
+        }
+      }
     }
     moped_subcomponents {
       subcomponent_name
