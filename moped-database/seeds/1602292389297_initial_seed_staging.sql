@@ -1443,12 +1443,12 @@ INSERT INTO public.moped_proj_features (feature_id, project_id, location, status
 INSERT INTO public.moped_proj_features (feature_id, project_id, location, status_id) VALUES (14, 159, '{"id": 94927, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74004502221942, 30.268300849117793]}, "properties": {"sourceLayer": "Project_Component_Points_prototype", "PROJECT_EXTENT_ID": 694927}}', 1);
 
 /* MOPED PROJECT COMPONENTS */
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (1, 159, 1, 'Component A', null);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (2, 159, 2, 'Component B', null);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (3, 159, 3, 'Component C', null);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (4, 159, 4, 'Component D', null);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (5, 159, 5, 'Component E', null);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (6, 159, 6, 'Component D', null);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (1, 159, 1, 'Component A', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (2, 159, 2, 'Component B', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (3, 159, 3, 'Component C', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (4, 159, 4, 'Component D', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (5, 159, 5, 'Component E', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description) VALUES (6, 159, 6, 'Component D', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer pellentesque eget mauris mollis pellentesque. Praesent at arcu id turpis ultrices posuere vel ut purus.');
 
 /* MOPED PROJECT COMPONENT SUBCOMPONENTS */
 INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_id, project_component_id, subcomponent_id) VALUES (1, 1, 1);
