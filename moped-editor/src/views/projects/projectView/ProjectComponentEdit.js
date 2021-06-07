@@ -5,6 +5,7 @@ import {
   CircularProgress,
   FormControl,
   Grid,
+  Icon,
   InputLabel,
   MenuItem,
   Select,
@@ -319,6 +320,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
           variant="contained"
           color="primary"
           onClick={handleSaveButtonClick}
+          startIcon={<Icon>save</Icon>}
         >
           Save
         </Button>
@@ -327,6 +329,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
           onClick={handleCancelEdit}
           variant="contained"
           color="secondary"
+          startIcon={<Icon>delete</Icon>}
         >
           Cancel
         </Button>
