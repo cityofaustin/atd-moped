@@ -43,6 +43,10 @@ export const useStyles = makeStyles({
     padding: 25,
     position: "relative",
   },
+  mapBoxNoPadding: {
+    padding: 0,
+    position: "relative",
+  },
   geocoderContainer: {
     display: "flex",
     height: 50,
@@ -62,6 +66,7 @@ const NewProjectMap = ({
   setFeatureCollection,
   projectId = null,
   refetchProjectDetails = null,
+  noPadding = false,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -178,7 +183,7 @@ const NewProjectMap = ({
   };
 
   return (
-    <Box className={classes.mapBox}>
+    <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
       <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
       {renderLayerSelect()}
