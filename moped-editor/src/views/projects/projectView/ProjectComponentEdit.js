@@ -149,6 +149,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
     // Set The selected component type
     setSelectedComponentType(selectedType);
     setAvailableSubtypes(availableSubTypes);
+    setSelectedComponentSubtype(null);
   };
 
   /**
@@ -159,10 +160,25 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
     setSelectedComponentSubtype(e.target.value.toLowerCase());
 
   /**
+   * Retrieves the component_id based no the type and subtype names
+   * @param {string} type - The type name
+   * @param {string} subtype - The subtype name
+   */
+  const getSelectedComponentId = (type, subtype) =>
+    initialTypeCounts[type].count > 1
+      ? initialTypeCounts[type].subtypes[subtype ?? ""].component_id
+      : initialTypeCounts[type].component_id;
+
+  /**
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
-    alert("Not implemented yet!");
+    const selectedComponentId = getSelectedComponentId(
+      selectedComponentType,
+      selectedComponentSubtype
+    );
+
+    console.log("selectedComponentId: ", selectedComponentId);
   };
 
   // Handle loading and error events
