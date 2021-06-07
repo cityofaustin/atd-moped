@@ -23,7 +23,10 @@ const useStyles = makeStyles(theme => ({
     width: "60%",
   },
   formButton: {
-    margin: theme.spacing(1),
+    margin: theme.spacing(2),
+  },
+  formTextField: {
+    margin: theme.spacing(2)
   },
 }));
 
@@ -54,17 +57,17 @@ const testSubcomponentEntries = [
   { name: "SubComponent W", subcomponent_id: 23 },
   { name: "SubComponent X", subcomponent_id: 24 },
   { name: "SubComponent Y", subcomponent_id: 25 },
-  { name: "SubComponent Z", subcomponent_id: 26 }
+  { name: "SubComponent Z", subcomponent_id: 26 },
 ];
 
 /**
  * The project component editor
  * @param {Number} componentId - The moped_proj_component id being edited
- * @param {function} cancelEdit - The function to call if we need to cancel editing
+ * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
+const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
   const classes = useStyles();
 
   /**
@@ -154,6 +157,13 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
    */
   const handleComponentSubtypeSelect = e =>
     setSelectedComponentSubtype(e.target.value.toLowerCase());
+
+  /**
+   * Persists the changes to the database
+   */
+  const handleSaveButtonClick = () => {
+    alert("Not implemented yet!");
+  }
 
   // Handle loading and error events
   if (loading) return <CircularProgress />;
@@ -249,6 +259,7 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
         <FormControl variant="filled" fullWidth>
           <Autocomplete
             multiple
+            fullWidth
             id="moped-subcomponents"
             value={value}
             onChange={(event, newValue) => {
@@ -261,7 +272,6 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
                 <Chip label={option.name} {...getTagProps({ index })} />
               ))
             }
-            style={{ width: 500 }}
             renderInput={params => (
               <TextField
                 {...params}
@@ -278,12 +288,13 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
           className={classes.formButton}
           variant="contained"
           color="primary"
+          onClick={handleSaveButtonClick}
         >
           Save
         </Button>
         <Button
           className={classes.formButton}
-          onClick={cancelEdit}
+          onClick={handleCancelEdit}
           variant="contained"
           color="secondary"
         >
