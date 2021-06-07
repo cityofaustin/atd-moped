@@ -170,6 +170,15 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
       : initialTypeCounts[type].component_id;
 
   /**
+   * Returns true if the given type needs a subtype
+   * @param {string} type
+   * @return {boolean}
+   */
+  const isSubtypeOptional = type =>
+    initialTypeCounts[type].count === 1 ||
+    Object.keys(initialTypeCounts[type]?.subtypes ?? {}).includes("");
+
+  /**
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
