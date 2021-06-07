@@ -2,15 +2,18 @@ import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Button,
+  Chip,
   CircularProgress,
   FormControl,
   Grid,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { COMPONENT_DETAILS_QUERY } from "../../../queries/project";
+import { Autocomplete } from "@material-ui/lab";
 
 const useStyles = makeStyles(theme => ({
   selectEmpty: {
@@ -23,6 +26,36 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
   },
 }));
+
+// Test subcomponent entries
+const testSubcomponentEntries = [
+  { name: "SubComponent A", subcomponent_id: 1 },
+  { name: "SubComponent B", subcomponent_id: 2 },
+  { name: "SubComponent C", subcomponent_id: 3 },
+  { name: "SubComponent D", subcomponent_id: 4 },
+  { name: "SubComponent E", subcomponent_id: 5 },
+  { name: "SubComponent F", subcomponent_id: 6 },
+  { name: "SubComponent G", subcomponent_id: 7 },
+  { name: "SubComponent H", subcomponent_id: 8 },
+  { name: "SubComponent I", subcomponent_id: 9 },
+  { name: "SubComponent J", subcomponent_id: 10 },
+  { name: "SubComponent K", subcomponent_id: 11 },
+  { name: "SubComponent L", subcomponent_id: 12 },
+  { name: "SubComponent M", subcomponent_id: 13 },
+  { name: "SubComponent N", subcomponent_id: 14 },
+  { name: "SubComponent O", subcomponent_id: 15 },
+  { name: "SubComponent P", subcomponent_id: 16 },
+  { name: "SubComponent Q", subcomponent_id: 17 },
+  { name: "SubComponent R", subcomponent_id: 18 },
+  { name: "SubComponent S", subcomponent_id: 19 },
+  { name: "SubComponent T", subcomponent_id: 20 },
+  { name: "SubComponent U", subcomponent_id: 21 },
+  { name: "SubComponent V", subcomponent_id: 22 },
+  { name: "SubComponent W", subcomponent_id: 23 },
+  { name: "SubComponent X", subcomponent_id: 24 },
+  { name: "SubComponent Y", subcomponent_id: 25 },
+  { name: "SubComponent Z", subcomponent_id: 26 }
+];
 
 /**
  * The project component editor
@@ -55,6 +88,8 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
       componentId: componentId,
     },
   });
+
+  const [value, setValue] = useState([]);
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -209,6 +244,34 @@ const ProjectComponentEdit = ({ componentId, cancelEdit }) => {
             </Select>
           </FormControl>
         )}
+      </Grid>
+      <Grid item xs={12}>
+        <FormControl variant="filled" fullWidth>
+          <Autocomplete
+            multiple
+            id="moped-subcomponents"
+            value={value}
+            onChange={(event, newValue) => {
+              setValue([...newValue]);
+            }}
+            options={testSubcomponentEntries}
+            getOptionLabel={option => option.name}
+            renderTags={(tagValue, getTagProps) =>
+              tagValue.map((option, index) => (
+                <Chip label={option.name} {...getTagProps({ index })} />
+              ))
+            }
+            style={{ width: 500 }}
+            renderInput={params => (
+              <TextField
+                {...params}
+                label="Subcomponents"
+                variant="outlined"
+                placeholder={null}
+              />
+            )}
+          />
+        </FormControl>
       </Grid>
       <Grid xs={12}>
         <Button
