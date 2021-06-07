@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   },
   formTextField: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
   },
 }));
 
@@ -163,7 +163,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
    */
   const handleSaveButtonClick = () => {
     alert("Not implemented yet!");
-  }
+  };
 
   // Handle loading and error events
   if (loading) return <CircularProgress />;
@@ -280,6 +280,19 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
                 placeholder={null}
               />
             )}
+          />
+        </FormControl>
+      </Grid>
+      <Grid xs={12}>
+        <FormControl variant="filled" fullWidth>
+          <TextField
+            className={classes.formTextField}
+            id="moped-component-description"
+            label="Description"
+            multiline
+            rows={4}
+            defaultValue=""
+            variant="filled"
           />
         </FormControl>
       </Grid>
