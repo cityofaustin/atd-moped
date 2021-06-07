@@ -233,13 +233,12 @@ const GridTable = ({ title, query }) => {
         value = '""';
       }
     } else {
-      // We have a normal operator, if we have a normal value <--?
       if (value !== null) {
-        // There is a value, if there is an envelope, put inside envelope.
+        // If there is an envelope, insert value in envelope.
         value = envelope ? envelope.replace("{VALUE}", value) : value;
 
         // If it is a number or boolean, it does not need quotation marks
-        // do not envelope in quotation marks.
+        // Otherwise, add quotation marks for the query to identify as string
         value = type in ["number", "boolean"] ? value : `"${value}"`;
       } else {
         // We don't have a value
