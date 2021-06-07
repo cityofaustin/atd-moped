@@ -126,7 +126,7 @@ const ProjectComponents = () => {
     <ApolloErrorHandler errors={error}>
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             {!componentEditMode ? (
               <Paper className={classes.root}>
                 <ClickAwayListener onClickAway={handleComponentClickAway}>
@@ -205,7 +205,7 @@ const ProjectComponents = () => {
               />
             )}
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={8}>
             <ErrorBoundary
               FallbackComponent={({ error, resetErrorBoundary }) => (
                 <ProjectSummaryMapFallback
