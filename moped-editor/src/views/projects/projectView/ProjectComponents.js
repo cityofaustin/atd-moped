@@ -126,7 +126,7 @@ const ProjectComponents = () => {
     <ApolloErrorHandler errors={error}>
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={componentEditMode ? 4 : 6}>
             {!componentEditMode ? (
               <Paper className={classes.root}>
                 <ClickAwayListener onClickAway={handleComponentClickAway}>
@@ -134,7 +134,6 @@ const ProjectComponents = () => {
                     <Table stickyHeader aria-label="sticky table">
                       <TableHead>
                         <TableRow>
-                          <TableCell>Component</TableCell>
                           <TableCell>Type</TableCell>
                           <TableCell>Subtype</TableCell>
                           <TableCell>Sub-Components</TableCell>
@@ -159,7 +158,6 @@ const ProjectComponents = () => {
                                     : classes.componentItem
                                 }
                               >
-                                <TableCell>{component?.name}</TableCell>
                                 <TableCell>
                                   {component?.moped_components?.component_type}
                                 </TableCell>
@@ -205,7 +203,7 @@ const ProjectComponents = () => {
               />
             )}
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={componentEditMode ? 8 : 6}>
             <ErrorBoundary
               FallbackComponent={({ error, resetErrorBoundary }) => (
                 <ProjectSummaryMapFallback
