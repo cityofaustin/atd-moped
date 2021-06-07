@@ -133,7 +133,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
    */
   const getAvailableSubtypes = type =>
     Object.entries(initialTypeCounts[type].subtypes)
-      .map(([_, component]) => component.component_subtype.trim())
+      .map(([_, component]) => (component?.component_subtype ?? "").trim())
       .filter(item => item.length > 0);
 
   /**
