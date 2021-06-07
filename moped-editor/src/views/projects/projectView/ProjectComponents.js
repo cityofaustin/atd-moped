@@ -107,10 +107,16 @@ const ProjectComponents = () => {
    */
   const handleComponentClickAway = () => setSelectedComp(0);
 
+  /**
+   * Takes the user to the components details page
+   */
   const handleComponentDetailsClick = () => {
     setComponentEditMode(true);
   };
 
+  /**
+   * Takes the user back to the components list for a project
+   */
   const handleCancelEdit = () => {
     setComponentEditMode(false);
     setSelectedComp(0);
@@ -195,7 +201,7 @@ const ProjectComponents = () => {
             ) : (
               <ProjectComponentEdit
                 componentId={selectedComp}
-                cancelEdit={handleCancelEdit}
+                handleCancelEdit={handleCancelEdit}
               />
             )}
           </Grid>
