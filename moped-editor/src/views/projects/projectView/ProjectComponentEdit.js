@@ -182,6 +182,16 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
+    // First check if we need to have a subtype
+    const subtypeOptional = isSubtypeOptional(selectedComponentType);
+
+    // Make the check, and exit this function if needed
+    if (subtypeOptional === false && selectedComponentSubtype === null) {
+      alert("You have not selected a subtype.");
+      return;
+    }
+
+    // We have what we need, let's get the component id
     const selectedComponentId = getSelectedComponentId(
       selectedComponentType,
       selectedComponentSubtype
