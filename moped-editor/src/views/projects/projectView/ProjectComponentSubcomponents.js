@@ -34,6 +34,19 @@ const ProjectComponentSubcomponents = ({
       </Alert>
     );
 
+  // Count the total number of available subcomponents we have for this component type
+  const availableSubcomponentsCount = (subcomponentList ?? []).filter(
+    subComponent => subComponent.component_id === componentId
+  ).length;
+
+  // If we have zero, then no point to render the autocomplete react component
+  if (availableSubcomponentsCount === 0)
+    return (
+      <Alert className={classes.alert} severity="info">
+        There are no available subcomponents for this component type.
+      </Alert>
+    );
+
   return (
     <Grid item xs={12}>
       <FormControl variant="filled" fullWidth>
