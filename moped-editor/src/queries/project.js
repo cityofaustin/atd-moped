@@ -558,6 +558,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
       component_name
       component_subtype
       component_id
+      line_representation
     }
   }
 `;
