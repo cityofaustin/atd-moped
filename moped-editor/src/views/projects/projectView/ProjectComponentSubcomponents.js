@@ -58,9 +58,12 @@ const ProjectComponentSubcomponents = ({
           onChange={(event, newValue) => {
             setSelectedSubcomponents([...newValue]);
           }}
-          options={subcomponentList.filter(
-            subComponent => subComponent.component_id === componentId
-          )}
+          options={[
+            ...selectedSubcomponents, // We must show existing selected subcomponents, even if there is a mismatch
+            ...subcomponentList.filter( // Then append any available subcomponents for the current type
+              subComponent => subComponent.component_id === componentId
+            ),
+          ]}
           // The list changes depending on available subcomponents for that specific type
           getOptionLabel={option => option.subcomponent_name}
           renderTags={(tagValue, getTagProps) =>
