@@ -20,10 +20,11 @@ import {
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ProjectComponentsMap from "./ProjectComponentsMap";
+import ProjectComponentsMapView from "./ProjectComponentsMapView";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
+import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -125,9 +126,29 @@ const ProjectComponents = () => {
   return (
     <ApolloErrorHandler errors={error}>
       <CardContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={componentEditMode ? 4 : 6}>
-            {!componentEditMode ? (
+        {componentEditMode && (
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <ProjectComponentEdit
+                componentId={selectedComp}
+                handleCancelEdit={handleCancelEdit}
+              />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <ProjectComponentsMapEdit
+                projectId={null}
+                projectFeatureCollection={projectFeatureCollection}
+                projectFeatureRecords={null}
+                isEditing={null}
+                setIsEditing={null}
+                refetchProjectDetails={null}
+              />
+            </Grid>
+          </Grid>
+        )}
+        {!componentEditMode && (
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
               <Paper className={classes.root}>
                 <ClickAwayListener onClickAway={handleComponentClickAway}>
                   <TableContainer className={classes.container}>
@@ -196,35 +217,30 @@ const ProjectComponents = () => {
                   </TableContainer>
                 </ClickAwayListener>
               </Paper>
-            ) : (
-              <ProjectComponentEdit
-                componentId={selectedComp}
-                handleCancelEdit={handleCancelEdit}
-              />
-            )}
-          </Grid>
-          <Grid item xs={12} md={componentEditMode ? 8 : 6}>
-            <ErrorBoundary
-              FallbackComponent={({ error, resetErrorBoundary }) => (
-                <ProjectSummaryMapFallback
-                  error={error}
-                  resetErrorBoundary={resetErrorBoundary}
-                  projectId={projectId}
-                  setIsEditing={null}
-                  refetchProjectDetails={refetch}
-                  mapData={projectFeatureCollection}
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <ErrorBoundary
+                FallbackComponent={({ error, resetErrorBoundary }) => (
+                  <ProjectSummaryMapFallback
+                    error={error}
+                    resetErrorBoundary={resetErrorBoundary}
+                    projectId={projectId}
+                    setIsEditing={null}
+                    refetchProjectDetails={refetch}
+                    mapData={projectFeatureCollection}
+                  />
+                )}
+                onReset={() => setMapError(false)}
+                resetKeys={[mapError]}
+              >
+                <ProjectComponentsMapView
+                  projectFeatureCollection={projectFeatureCollection}
+                  setIsEditing={false}
                 />
-              )}
-              onReset={() => setMapError(false)}
-              resetKeys={[mapError]}
-            >
-              <ProjectComponentsMap
-                projectExtentGeoJSON={projectFeatureCollection}
-                setIsEditing={false}
-              />
-            </ErrorBoundary>
+              </ErrorBoundary>
+            </Grid>
           </Grid>
-        </Grid>
+        )}
       </CardContent>
     </ApolloErrorHandler>
   );
