@@ -51,8 +51,8 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
   const [selectedComponentSubtype, setSelectedComponentSubtype] = useState(
     null
   );
-  const [availableSubtypes, setAvailableSubtypes] = useState([]);
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
+  const [availableSubtypes, setAvailableSubtypes] = useState([]);
 
   /**
    * Apollo hook functions
@@ -158,16 +158,26 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
    * Tracks any changes made to the selected subcomponents list
    */
   useEffect(() => {
-    console.log("selectedSubcomponents: ", selectedSubcomponents);
+    console.log("selectedSubcomponents, state change: ", selectedSubcomponents);
   }, [selectedSubcomponents]);
 
   /**
    * Tracks any changes made to selectedComponentId
    */
   useEffect(() => {
-    // If the component id changes, clear out the value of selected subcomponents
-    setSelectedSubcomponents([]);
-  }, [selectedComponentId, setSelectedSubcomponents]);
+    // If we have data, look to update the selected subcomponents
+    if (data) {
+      // Now check if we have any subcomponents in the DB
+      const subcomponentsDB = data.moped_proj_components[0].moped_proj_components_subcomponents.map(
+        subcomponent => subcomponent.moped_subcomponent
+      );
+
+      setSelectedSubcomponents([...subcomponentsDB]);
+    } else {
+      // If the component id changes, clear out the value of selected subcomponents
+      setSelectedSubcomponents([]);
+    }
+  }, [data, selectedComponentId, setSelectedSubcomponents]);
 
   /**
    * Tracks any changes made to the selected type and subtype
@@ -291,10 +301,10 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
         )}
       </Grid>
       <ProjectComponentSubcomponents
-          componentId={selectedComponentId}
-          subcomponentList={data?.moped_subcomponents}
-          selectedSubcomponents={selectedSubcomponents}
-          setSelectedSubcomponents={setSelectedSubcomponents}
+        componentId={selectedComponentId}
+        subcomponentList={data?.moped_subcomponents}
+        selectedSubcomponents={selectedSubcomponents}
+        setSelectedSubcomponents={setSelectedSubcomponents}
       />
       <Grid xs={12}>
         <FormControl variant="filled" fullWidth>
