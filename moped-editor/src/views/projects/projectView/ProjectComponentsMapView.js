@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -15,6 +15,7 @@ import {
   useHoverLayer,
   useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
+import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   locationCountText: {
@@ -35,7 +36,11 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectComponentsMap = ({ projectExtentGeoJSON, setIsEditing }) => {
+const ProjectComponentsMap = ({
+  projectExtentGeoJSON,
+  setIsEditing,
+  editEnabled,
+}) => {
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = countFeatures(projectExtentGeoJSON);
@@ -73,6 +78,7 @@ const ProjectComponentsMap = ({ projectExtentGeoJSON, setIsEditing }) => {
    */
   return (
     <Box>
+
       <ReactMapGL
         /* Current state of viewport */
         {...viewport}
@@ -102,6 +108,17 @@ const ProjectComponentsMap = ({ projectExtentGeoJSON, setIsEditing }) => {
         {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
+        {editEnabled && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(true)}
+            startIcon={<EditLocationIcon />}
+            className={classes.editButton}
+          >
+            Edit
+          </Button>
+        )}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
