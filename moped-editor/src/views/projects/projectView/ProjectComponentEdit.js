@@ -177,7 +177,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
       // If the component id changes, clear out the value of selected subcomponents
       setSelectedSubcomponents([]);
     }
-  }, [data, selectedComponentId, setSelectedSubcomponents]);
+  }, [data, selectedComponentId]);
 
   /**
    * Tracks any changes made to the selected type and subtype
