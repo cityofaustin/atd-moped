@@ -222,13 +222,16 @@ const GridTable = ({ title, query }) => {
       return;
     }
 
-    // If the operator includes "is_null", then the value is always true
+    // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-      console.log(gqlOperator, envelope);
-      // value = "true";
-      // gqlOperator = ""
       gqlOperator = envelope ? "_eq" : "_neq";
-      value = '""';
+      // Because of the way the SQL view concatanates the team members and roles
+      // " :" is always present even if there are no team members present
+      if (field === "project_team_members") {
+        value = '" :"';
+      } else {
+        value = '""';
+      }
     } else {
       // We have a normal operator, if we have a normal value <--?
       if (value !== null) {
