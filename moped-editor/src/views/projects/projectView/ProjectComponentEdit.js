@@ -12,10 +12,22 @@ import {
   TextField,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { COMPONENT_DETAILS_QUERY } from "../../../queries/project";
+import {
+  COMPONENT_DETAILS_QUERY,
+  // UPSERT_PROJECT_EXTENT,
+} from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
+import NewProjectMap from "../newProjectView/NewProjectMap";
+import { Alert } from "@material-ui/lab";
+import { countFeatures, mapConfig, mapErrors } from "../../../utils/mapHelpers";
+import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+
 const useStyles = makeStyles(theme => ({
+  title: {
+    marginLeft: theme.spacing(2),
+    flex: 1,
+  },
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
@@ -28,16 +40,26 @@ const useStyles = makeStyles(theme => ({
   formTextField: {
     margin: theme.spacing(2),
   },
+  mapAlert: {
+    margin: theme.spacing(2),
+  },
 }));
 
 /**
  * The project component editor
  * @param {Number} componentId - The moped_proj_component id being edited
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
+ * @param {Object} projectFeatureRecords - The a list of feature records
+ * @param {Object} projectFeatureCollection - The feature collection GeoJSON
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
+const ProjectComponentEdit = ({
+  componentId,
+  handleCancelEdit,
+  projectFeatureRecords,
+  projectFeatureCollection,
+}) => {
   const classes = useStyles();
 
   /**
@@ -54,6 +76,9 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
   );
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
+  const [editFeatureCollection, setEditFeatureCollection] = useState(
+    projectFeatureCollection
+  );
 
   /**
    * Apollo hook functions
@@ -63,6 +88,11 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
       componentId: componentId,
     },
   });
+
+  // const [
+  //   updateProjectExtent,
+  //   { loading: mapMutationLoading, error: mapMutationErrors },
+  // ] = useMutation(UPSERT_PROJECT_EXTENT);
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -149,10 +179,64 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
     Object.keys(initialTypeCounts[type]?.subtypes ?? {}).includes("");
 
   /**
+   * Calls upsert project features mutation, refetches data, and handles dialog close on success
+   */
+  const generateMapUpserts = () => {
+    const editedFeatures = editFeatureCollection.features;
+    console.log("editedFeatures", editedFeatures);
+
+    // Find new records that need to be inserted and create a feature record from them
+    const newRecordsToInsert = editedFeatures
+      .filter(
+        feature =>
+          !projectFeatureRecords.find(
+            record =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(feature => ({
+        location: feature,
+        status_id: 1,
+      }));
+
+    console.log("newRecordsToInsert", newRecordsToInsert);
+
+    // Find existing records that need to be soft deleted, clean them, and set status to inactive
+    const existingRecordsToUpdate = projectFeatureRecords
+      .map(record => filterObjectByKeys(record, ["__typename"]))
+      .filter(
+        record =>
+          !editedFeatures.find(
+            feature =>
+              feature.properties.PROJECT_EXTENT_ID ===
+              record.location.properties.PROJECT_EXTENT_ID
+          )
+      )
+      .map(record => ({
+        ...record,
+        status_id: 0,
+      }));
+    console.log("existingRecordsToUpdate", existingRecordsToUpdate);
+
+    return [...newRecordsToInsert, ...existingRecordsToUpdate];
+
+    //
+    // console.log("Maps Upserts:", upserts);
+    // updateProjectExtent({
+    //   variables: { upserts },
+    // }).then(() => {
+    //   // refetchProjectDetails();
+    //   console.log("Need to run refetchProjectDetails");
+    // });
+  };
+
+  /**
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
-    console.log("We should persist the data now?");
+    const mapUpserts = generateMapUpserts();
+    console.log("mapUpserts: ", mapUpserts);
   };
 
   /**
@@ -204,9 +288,15 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
     // eslint-disable-next-line
   }, [selectedComponentType, selectedComponentSubtype]);
 
-  // Handle loading and error events
   if (loading) return <CircularProgress />;
   if (error) return <div>Error: {error}</div>;
+
+  /**
+   * Returns true if the collection has a minimum of features, false otherwise.
+   * @type {boolean}
+   */
+  const areMinimumFeaturesSet =
+    countFeatures(editFeatureCollection) >= mapConfig.minimumFeaturesInProject;
 
   /**
    * Pre-populates the type and subtype for the existing data from DB
@@ -237,102 +327,125 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
   }
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <FormControl variant="filled" fullWidth>
-          <InputLabel id="mopedComponentType">Type</InputLabel>
-          <Select
-            className={classes.formSelect}
-            labelId="mopedComponentType"
-            id="mopedComponentTypeSelect"
-            value={(selectedComponentType ?? "").toLowerCase()}
-            onChange={handleComponentTypeSelect}
-          >
-            {[
-              ...new Set(
-                data.moped_components.map(
-                  moped_component => moped_component.component_name
-                )
-              ),
-            ]
-              .sort()
-              .map(moped_component => {
-                return (
-                  <MenuItem
-                    key={`moped-component-menuitem-${moped_component}`}
-                    value={moped_component.toLowerCase()}
-                  >
-                    {moped_component}
-                  </MenuItem>
-                );
-              })}
-          </Select>
-        </FormControl>
-      </Grid>
-      <Grid item xs={12}>
-        {availableSubtypes.length > 0 && (
-          <FormControl variant="filled" fullWidth>
-            <InputLabel id="mopedComponentSubtype">Subtype</InputLabel>
-            <Select
-              className={classes.formSelect}
-              labelId="mopedComponentSubtype"
-              id="mopedComponentTypeSelect"
-              value={(selectedComponentSubtype ?? "").toLowerCase()}
-              onChange={handleComponentSubtypeSelect}
-            >
-              {[...new Set(availableSubtypes)].sort().map(subtype => {
-                return (
-                  <MenuItem
-                    key={`moped-component-subtype-menuitem-${subtype}`}
-                    value={subtype.toLowerCase()}
-                  >
-                    {subtype}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-        )}
-      </Grid>
-      <ProjectComponentSubcomponents
-        componentId={selectedComponentId}
-        subcomponentList={data?.moped_subcomponents}
-        selectedSubcomponents={selectedSubcomponents}
-        setSelectedSubcomponents={setSelectedSubcomponents}
-      />
-      <Grid xs={12}>
-        <FormControl variant="filled" fullWidth>
-          <TextField
-            className={classes.formTextField}
-            id="moped-component-description"
-            label="Description"
-            multiline
-            rows={4}
-            defaultValue=""
-            variant="filled"
-            value={data?.moped_proj_components[0]?.description ?? ""}
+    <Grid container spacing={2}>
+      <Grid item xs={12} md={4}>
+        <Grid container spacing={3}>
+          <Grid item xs={12}>
+            <FormControl variant="filled" fullWidth>
+              <InputLabel id="mopedComponentType">Type</InputLabel>
+              <Select
+                className={classes.formSelect}
+                labelId="mopedComponentType"
+                id="mopedComponentTypeSelect"
+                value={(selectedComponentType ?? "").toLowerCase()}
+                onChange={handleComponentTypeSelect}
+              >
+                {[
+                  ...new Set(
+                    data.moped_components.map(
+                      moped_component => moped_component.component_name
+                    )
+                  ),
+                ]
+                  .sort()
+                  .map(moped_component => {
+                    return (
+                      <MenuItem
+                        key={`moped-component-menuitem-${moped_component}`}
+                        value={moped_component.toLowerCase()}
+                      >
+                        {moped_component}
+                      </MenuItem>
+                    );
+                  })}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={12}>
+            {availableSubtypes.length > 0 && (
+              <FormControl variant="filled" fullWidth>
+                <InputLabel id="mopedComponentSubtype">Subtype</InputLabel>
+                <Select
+                  className={classes.formSelect}
+                  labelId="mopedComponentSubtype"
+                  id="mopedComponentTypeSelect"
+                  value={(selectedComponentSubtype ?? "").toLowerCase()}
+                  onChange={handleComponentSubtypeSelect}
+                >
+                  {[...new Set(availableSubtypes)].sort().map(subtype => {
+                    return (
+                      <MenuItem
+                        key={`moped-component-subtype-menuitem-${subtype}`}
+                        value={subtype.toLowerCase()}
+                      >
+                        {subtype}
+                      </MenuItem>
+                    );
+                  })}
+                </Select>
+              </FormControl>
+            )}
+          </Grid>
+          <ProjectComponentSubcomponents
+            componentId={selectedComponentId}
+            subcomponentList={data?.moped_subcomponents}
+            selectedSubcomponents={selectedSubcomponents}
+            setSelectedSubcomponents={setSelectedSubcomponents}
           />
-        </FormControl>
+          <Grid xs={12}>
+            <FormControl variant="filled" fullWidth>
+              <TextField
+                className={classes.formTextField}
+                id="moped-component-description"
+                label="Description"
+                multiline
+                rows={4}
+                defaultValue=""
+                variant="filled"
+                value={data?.moped_proj_components[0]?.description ?? ""}
+              />
+            </FormControl>
+          </Grid>
+          <Grid xs={12}>
+            {!areMinimumFeaturesSet && (
+              <Alert className={classes.mapAlert} severity="error">
+                You must select at least one feature for this component.
+              </Alert>
+            )}
+            <Button
+              className={classes.formButton}
+              variant="contained"
+              color="primary"
+              onClick={handleSaveButtonClick}
+              disabled={!areMinimumFeaturesSet}
+              startIcon={<Icon>save</Icon>}
+            >
+              Save: {String(areMinimumFeaturesSet)}
+            </Button>
+            <Button
+              className={classes.formButton}
+              onClick={handleCancelEdit}
+              variant="contained"
+              color="secondary"
+              startIcon={<Icon>delete</Icon>}
+            >
+              Cancel
+            </Button>
+          </Grid>
+        </Grid>
       </Grid>
-      <Grid xs={12}>
-        <Button
-          className={classes.formButton}
-          variant="contained"
-          color="primary"
-          onClick={handleSaveButtonClick}
-          startIcon={<Icon>save</Icon>}
-        >
-          Save
-        </Button>
-        <Button
-          className={classes.formButton}
-          onClick={handleCancelEdit}
-          variant="contained"
-          color="secondary"
-          startIcon={<Icon>delete</Icon>}
-        >
-          Cancel
-        </Button>
+      <Grid item xs={12} md={8}>
+        <NewProjectMap
+          featureCollection={editFeatureCollection}
+          setFeatureCollection={setEditFeatureCollection}
+          projectId={null}
+          refetchProjectDetails={null}
+        />
+        {error && (
+          <Alert className={classes.mapAlert} severity="error">
+            {mapErrors.failedToSave}
+          </Alert>
+        )}
       </Grid>
     </Grid>
   );
