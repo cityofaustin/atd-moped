@@ -24,7 +24,6 @@ import ProjectComponentsMapView from "./ProjectComponentsMapView";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
-import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -127,24 +126,12 @@ const ProjectComponents = () => {
     <ApolloErrorHandler errors={error}>
       <CardContent>
         {componentEditMode && (
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              <ProjectComponentEdit
-                componentId={selectedComp}
-                handleCancelEdit={handleCancelEdit}
-              />
-            </Grid>
-            <Grid item xs={12} md={8}>
-              <ProjectComponentsMapEdit
-                projectId={null}
-                projectFeatureCollection={projectFeatureCollection}
-                projectFeatureRecords={null}
-                isEditing={null}
-                setIsEditing={null}
-                refetchProjectDetails={null}
-              />
-            </Grid>
-          </Grid>
+          <ProjectComponentEdit
+            componentId={selectedComp}
+            handleCancelEdit={handleCancelEdit}
+            projectFeatureRecords={projectFeatureRecords}
+            projectFeatureCollection={projectFeatureCollection}
+          />
         )}
         {!componentEditMode && (
           <Grid container spacing={2}>
