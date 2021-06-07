@@ -290,6 +290,12 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
           </FormControl>
         )}
       </Grid>
+      <ProjectComponentSubcomponents
+          componentId={selectedComponentId}
+          subcomponentList={data?.moped_subcomponents}
+          selectedSubcomponents={selectedSubcomponents}
+          setSelectedSubcomponents={setSelectedSubcomponents}
+      />
       <Grid xs={12}>
         <FormControl variant="filled" fullWidth>
           <TextField
