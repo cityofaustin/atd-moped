@@ -220,15 +220,6 @@ const ProjectComponentEdit = ({
     console.log("existingRecordsToUpdate", existingRecordsToUpdate);
 
     return [...newRecordsToInsert, ...existingRecordsToUpdate];
-
-    //
-    // console.log("Maps Upserts:", upserts);
-    // updateProjectExtent({
-    //   variables: { upserts },
-    // }).then(() => {
-    //   // refetchProjectDetails();
-    //   console.log("Need to run refetchProjectDetails");
-    // });
   };
 
   /**
@@ -236,7 +227,18 @@ const ProjectComponentEdit = ({
    */
   const handleSaveButtonClick = () => {
     const mapUpserts = generateMapUpserts();
-    console.log("mapUpserts: ", mapUpserts);
+
+    // First update the map features: create, retire,
+    // Associate the map features to the current component: upsert moped_proj_features_components
+
+
+    console.log("Map Upserts:", mapUpserts);
+    // updateProjectExtent({
+    //   variables: { upserts },
+    // }).then(() => {
+    //   // refetchProjectDetails();
+    //   console.log("Need to run refetchProjectDetails");
+    // });
   };
 
   /**
