@@ -229,7 +229,7 @@ const ProjectComponentEdit = ({ componentId, handleCancelEdit }) => {
 
     // If the component type has subtypes, then fetch those and update state
     if (initialTypeCounts[componentTypeDB].count > 1) {
-      const subtypeDB = databaseComponent.component_subtype
+      const subtypeDB = (databaseComponent?.component_subtype ?? "")
         .trim()
         .toLowerCase();
       setSelectedComponentSubtype(subtypeDB);
