@@ -73,8 +73,10 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
+        // Because of the way the SQL view concatanates the team members and roles
+        // " :" is always present even if there are no team members present
+        "string_is_null_special_case",
+        "string_is_not_null_special_case",
       ],
     },
   ],

@@ -215,7 +215,14 @@ const GridTable = ({ title, query }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   Object.keys(filters).forEach(filter => {
-    let { envelope, field, gqlOperator, value, type } = filters[filter];
+    let {
+      envelope,
+      field,
+      gqlOperator,
+      value,
+      type,
+      specialNullValue,
+    } = filters[filter];
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
@@ -224,14 +231,8 @@ const GridTable = ({ title, query }) => {
 
     // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-      gqlOperator = (envelope === "true") ? "_eq" : "_neq";
-      // Because of the way the SQL view concatanates the team members and roles
-      // " :" is always present even if there are no team members present
-      if (field === "project_team_members") {
-        value = '" :"';
-      } else {
-        value = '""';
-      }
+      gqlOperator = envelope === "true" ? "_eq" : "_neq";
+      value = specialNullValue ? specialNullValue : '""';
     } else {
       if (value !== null) {
         // If there is an envelope, insert value in envelope.

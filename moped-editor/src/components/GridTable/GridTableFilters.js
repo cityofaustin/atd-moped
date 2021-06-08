@@ -123,6 +123,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     placeholder: null,
     value: null,
     type: null,
+    specialNullValue: null,
   };
 
   /**
@@ -259,6 +260,9 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
         // Copy the envelope if available
         filtersNewState[filterId].envelope =
           query.config.filters.operators[operator].envelope;
+        // Copy special null value if available
+        filtersNewState[filterId].specialNullValue =
+          query.config.filters.operators[operator].specialNullValue;
       } else {
         // Reset operator values
         filtersNewState[filterId].operator = null;
