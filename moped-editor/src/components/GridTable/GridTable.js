@@ -224,7 +224,7 @@ const GridTable = ({ title, query }) => {
 
     // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-      gqlOperator = envelope ? "_eq" : "_neq";
+      gqlOperator = (envelope === "true") ? "_eq" : "_neq";
       // Because of the way the SQL view concatanates the team members and roles
       // " :" is always present even if there are no team members present
       if (field === "project_team_members") {

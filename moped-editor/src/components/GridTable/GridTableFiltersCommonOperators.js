@@ -23,14 +23,14 @@ export const GridTableFiltersCommonOperators = {
     operator: "_is_null",
     label: "is blank",
     description: "Selected field is null",
-    envelope: true,
+    envelope: "true",
     type: "string",
   },
   string_is_not_null: {
     operator: "_is_null",
     label: "is not blank",
     description: "String field is not null",
-    envelope: false,
+    envelope: "false",
     type: "string",
   },
   string_begins_with_case_insensitive: {
