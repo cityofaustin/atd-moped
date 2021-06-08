@@ -10,7 +10,7 @@ export const ProjectsListViewFiltersConf = {
   fields: [
     {
       name: "project_name",
-      label: "Project Name",
+      label: "Project name",
       placeholder: "Enter project name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
@@ -24,7 +24,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_description",
-      label: "Project Description",
+      label: "Project description",
       placeholder: "Enter project description",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
@@ -48,7 +48,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "start_date",
-      label: "Start Date",
+      label: "Start date",
       placeholder: "Select date",
       type: "date",
       operators: [
@@ -56,8 +56,19 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
+      name: "current_status",
+      label: "Currrent status",
+      placeholder: "Current status",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
       name: "current_phase",
-      label: "Currrent Phase",
+      label: "Currrent phase",
       placeholder: "Current phase",
       type: "string",
       operators: [
@@ -70,7 +81,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_team_members",
-      label: "Team Member",
+      label: "Team member",
       placeholder: "Team member",
       type: "string",
       operators: [
