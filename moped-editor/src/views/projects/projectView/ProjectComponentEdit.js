@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
   Grid,
   Icon,
@@ -32,6 +37,10 @@ const useStyles = makeStyles(theme => ({
     width: "60%",
   },
   formButton: {
+    margin: theme.spacing(2),
+  },
+  formButtonDelete: {
+    float: "right",
     margin: theme.spacing(2),
   },
   formTextField: {
@@ -76,6 +85,16 @@ const ProjectComponentEdit = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     projectFeatureCollection
   );
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   /**
    * Apollo hook functions
@@ -198,7 +217,6 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-    console.log("editedFeatures", editedFeatures);
 
     // Find new records that need to be inserted and create a feature record from them
     const newRecordsToInsert = editedFeatures
@@ -215,8 +233,6 @@ const ProjectComponentEdit = ({
         status_id: 1,
       }));
 
-    console.log("newRecordsToInsert", newRecordsToInsert);
-
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
     const existingRecordsToUpdate = projectFeatureRecords
       .map(record => filterObjectByKeys(record, ["__typename"]))
@@ -232,7 +248,6 @@ const ProjectComponentEdit = ({
         ...record,
         status_id: 0,
       }));
-    console.log("existingRecordsToUpdate", existingRecordsToUpdate);
 
     return [...newRecordsToInsert, ...existingRecordsToUpdate];
   };
@@ -247,6 +262,12 @@ const ProjectComponentEdit = ({
     // Associate the map features to the current component: upsert moped_proj_features_components
 
     console.log("Map Upserts:", mapUpserts);
+    // 1. moped_proj_features (Features get updated first)
+    // 2. moped_proj_features_components (Then the association of features to components)
+
+    // 3. moped_proj_components (Update: The component itself get updated: type, subtype, comments)
+    // 4. moped_proj_components_subcomponents (Upsert: subcomponents activate, deactivate)
+
     // updateProjectExtent({
     //   variables: { upserts },
     // }).then(() => {
@@ -403,7 +424,7 @@ const ProjectComponentEdit = ({
               />
             </FormControl>
           </Grid>
-          <Grid xs={12}>
+          <Grid xs={6}>
             {!areMinimumFeaturesSet && (
               <Alert className={classes.mapAlert} severity="error">
                 You must select at least one feature for this component.
@@ -424,9 +445,20 @@ const ProjectComponentEdit = ({
               onClick={handleCancelEdit}
               variant="contained"
               color="secondary"
-              startIcon={<Icon>delete</Icon>}
+              startIcon={<Icon>cancel</Icon>}
             >
               Cancel
+            </Button>
+          </Grid>
+          <Grid xs={6} alignItems="right">
+            <Button
+              className={classes.formButtonDelete}
+              onClick={handleClickOpen}
+              variant="outlined"
+              color="default"
+              startIcon={<Icon>delete</Icon>}
+            >
+              Delete
             </Button>
           </Grid>
         </Grid>
@@ -444,6 +476,35 @@ const ProjectComponentEdit = ({
           </Alert>
         )}
       </Grid>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          <h2>{"Delete Component?"}</h2>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            You cannot undo this operation, any subcomponents and features will
+            be lost.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Delete
+          </Button>
+          <Button
+            onClick={handleClose}
+            color="secondary"
+            autoFocus
+            startIcon={<Icon>cancel</Icon>}
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Grid>
   );
 };
