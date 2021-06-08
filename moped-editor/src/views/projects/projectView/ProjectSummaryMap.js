@@ -36,7 +36,11 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
+const ProjectSummaryMap = ({
+  projectExtentGeoJSON,
+  setIsEditing,
+  isEditable = false,
+}) => {
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = countFeatures(projectExtentGeoJSON);
@@ -65,7 +69,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   /**
    * Let's throw an error intentionally if there are no features for a project.
    */
-  if(featureCount < 1) {
+  if (featureCount < 1) {
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 
@@ -104,15 +108,17 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         {/* Draw edit button controls with specific styles */}
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => setIsEditing(true)}
-          startIcon={<EditLocationIcon />}
-          className={classes.editButton}
-        >
-          Edit
-        </Button>
+        {isEditable && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setIsEditing(true)}
+            startIcon={<EditLocationIcon />}
+            className={classes.editButton}
+          >
+            Edit
+          </Button>
+        )}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
