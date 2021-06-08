@@ -209,7 +209,7 @@ const ProjectComponentEdit = ({
    * @return {boolean}
    */
   const isSubtypeOptional = type =>
-    initialTypeCounts[type].count === 1 ||
+    (initialTypeCounts[type]?.count ?? 0) === 1 ||
     Object.keys(initialTypeCounts[type]?.subtypes ?? {}).includes("");
 
   /**
@@ -469,6 +469,7 @@ const ProjectComponentEdit = ({
           setFeatureCollection={setEditFeatureCollection}
           projectId={null}
           refetchProjectDetails={null}
+          noPadding={true}
         />
         {error && (
           <Alert className={classes.mapAlert} severity="error">
