@@ -22,17 +22,6 @@ const DefineProjectForm = ({
     setProjectDetails(updatedProjectDetails);
   };
 
-  const PHASES_QUERY = gql`
-    query Phases {
-      moped_phases(
-        order_by: { phase_order: asc }
-        where: { phase_id: { _gt: 0 } }
-      ) {
-        phase_name
-      }
-    }
-  `;
-
   const STATUS_QUERY = gql`
     query Status {
       moped_status(
@@ -52,10 +41,6 @@ const DefineProjectForm = ({
     }
   `;
 
-  const { loading: phaseLoading, error: phaseError, data: phases } = useQuery(
-    PHASES_QUERY
-  );
-
   const {
     loading: statusLoading,
     error: statusError,
@@ -67,9 +52,6 @@ const DefineProjectForm = ({
   );
 
   const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
-
-  if (phaseLoading) return <CircularProgress />;
-  if (phaseError) return `Error! ${phaseError.message}`;
 
   if (statusLoading) return <CircularProgress />;
   if (statusError) return `Error! ${statusError.message}`;
