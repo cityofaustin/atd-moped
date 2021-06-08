@@ -124,6 +124,20 @@ const ProjectComponentEdit = ({
     : {};
 
   /**
+   * This is a constant list containing the names of available types
+   * @type {String[]}
+   */
+  const availableTypes = data
+    ? [
+        ...new Set(
+          data.moped_components.map(
+            moped_component => moped_component.component_name
+          )
+        ),
+      ].sort()
+    : [];
+
+  /**
    * Generates a list of available subtypes for a fiven type name
    * @param {String} type - The type name
    * @return {String[]} - A string array with the available subtypes
@@ -167,8 +181,8 @@ const ProjectComponentEdit = ({
    */
   const getSelectedComponentId = (type, subtype) =>
     initialTypeCounts[type].count > 1
-      ? initialTypeCounts[type].subtypes[subtype ?? ""].component_id
-      : initialTypeCounts[type].component_id;
+      ? initialTypeCounts[type].subtypes[subtype ?? ""]?.component_id ?? null
+      : initialTypeCounts[type]?.component_id ?? null;
 
   /**
    * Returns true if the given type needs a subtype
@@ -337,13 +351,10 @@ const ProjectComponentEdit = ({
               <Autocomplete
                 id="moped-project-select"
                 className={classes.formSelect}
-                options={[
-                  ...new Set(
-                    data.moped_components.map(
-                      moped_component => moped_component.component_name
-                    )
-                  ),
-                ].sort()}
+                value={availableTypes.find(
+                  type => type.toLowerCase() === selectedComponentType
+                )}
+                options={availableTypes}
                 getOptionLabel={component => component}
                 renderInput={params => (
                   <TextField {...params} label="Type" variant="outlined" />
@@ -358,6 +369,10 @@ const ProjectComponentEdit = ({
                 <Autocomplete
                   id="moped-project-subtype-select"
                   className={classes.formSelect}
+                  value={availableSubtypes.find(
+                    subtype =>
+                      subtype.toLowerCase() === selectedComponentSubtype
+                  )}
                   options={[...new Set(availableSubtypes)].sort()}
                   getOptionLabel={component => component}
                   renderInput={params => (
