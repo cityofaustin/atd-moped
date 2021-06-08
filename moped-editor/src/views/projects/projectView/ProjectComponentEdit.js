@@ -6,9 +6,6 @@ import {
   FormControl,
   Grid,
   Icon,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -19,7 +16,7 @@ import {
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
 import NewProjectMap from "../newProjectView/NewProjectMap";
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import { countFeatures, mapConfig, mapErrors } from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 
@@ -132,16 +129,17 @@ const ProjectComponentEdit = ({
    * @return {String[]} - A string array with the available subtypes
    */
   const getAvailableSubtypes = type =>
-    Object.entries(initialTypeCounts[type].subtypes)
+    Object.entries(initialTypeCounts[type]?.subtypes ?? {})
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
       .filter(item => item.length > 0);
 
   /**
    * On select, it changes the available items for that specific type
    * @param {Object} e - The Object Type
+   * @param {String} newValue - The new value from the autocomplete selector
    */
-  const handleComponentTypeSelect = e => {
-    const selectedType = (e.target.value ?? "").toLowerCase();
+  const handleComponentTypeSelect = (e, newValue) => {
+    const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
 
     // Generates a list of available component subtypes given a component type
     const availableSubTypes = getAvailableSubtypes(selectedType);
@@ -155,9 +153,12 @@ const ProjectComponentEdit = ({
   /**
    * On select, it changes the value of selectedSubtype state
    * @param {Object} e - The event object
+   * @param {String} newValue - The new value from the autocomplete selector
    */
-  const handleComponentSubtypeSelect = e =>
-    setSelectedComponentSubtype(e.target.value.toLowerCase());
+  const handleComponentSubtypeSelect = (e, newValue) =>
+    setSelectedComponentSubtype(
+      (newValue ?? e.target.value ?? "").toLowerCase()
+    );
 
   /**
    * Retrieves the component_id based no the type and subtype names
@@ -230,7 +231,6 @@ const ProjectComponentEdit = ({
 
     // First update the map features: create, retire,
     // Associate the map features to the current component: upsert moped_proj_features_components
-
 
     console.log("Map Upserts:", mapUpserts);
     // updateProjectExtent({
@@ -334,57 +334,37 @@ const ProjectComponentEdit = ({
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <FormControl variant="filled" fullWidth>
-              <InputLabel id="mopedComponentType">Type</InputLabel>
-              <Select
+              <Autocomplete
+                id="moped-project-select"
                 className={classes.formSelect}
-                labelId="mopedComponentType"
-                id="mopedComponentTypeSelect"
-                value={(selectedComponentType ?? "").toLowerCase()}
-                onChange={handleComponentTypeSelect}
-              >
-                {[
+                options={[
                   ...new Set(
                     data.moped_components.map(
                       moped_component => moped_component.component_name
                     )
                   ),
-                ]
-                  .sort()
-                  .map(moped_component => {
-                    return (
-                      <MenuItem
-                        key={`moped-component-menuitem-${moped_component}`}
-                        value={moped_component.toLowerCase()}
-                      >
-                        {moped_component}
-                      </MenuItem>
-                    );
-                  })}
-              </Select>
+                ].sort()}
+                getOptionLabel={component => component}
+                renderInput={params => (
+                  <TextField {...params} label="Type" variant="outlined" />
+                )}
+                onChange={handleComponentTypeSelect}
+              />
             </FormControl>
           </Grid>
           <Grid item xs={12}>
             {availableSubtypes.length > 0 && (
               <FormControl variant="filled" fullWidth>
-                <InputLabel id="mopedComponentSubtype">Subtype</InputLabel>
-                <Select
+                <Autocomplete
+                  id="moped-project-subtype-select"
                   className={classes.formSelect}
-                  labelId="mopedComponentSubtype"
-                  id="mopedComponentTypeSelect"
-                  value={(selectedComponentSubtype ?? "").toLowerCase()}
+                  options={[...new Set(availableSubtypes)].sort()}
+                  getOptionLabel={component => component}
+                  renderInput={params => (
+                    <TextField {...params} label="Subtype" variant="outlined" />
+                  )}
                   onChange={handleComponentSubtypeSelect}
-                >
-                  {[...new Set(availableSubtypes)].sort().map(subtype => {
-                    return (
-                      <MenuItem
-                        key={`moped-component-subtype-menuitem-${subtype}`}
-                        value={subtype.toLowerCase()}
-                      >
-                        {subtype}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
+                />
               </FormControl>
             )}
           </Grid>
@@ -422,7 +402,7 @@ const ProjectComponentEdit = ({
               disabled={!areMinimumFeaturesSet}
               startIcon={<Icon>save</Icon>}
             >
-              Save: {String(areMinimumFeaturesSet)}
+              Save
             </Button>
             <Button
               className={classes.formButton}
