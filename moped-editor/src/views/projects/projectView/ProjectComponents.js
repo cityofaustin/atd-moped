@@ -118,6 +118,11 @@ const ProjectComponents = () => {
     setComponentEditMode(true);
   };
 
+  const handleAddNewComponentClick = () => {
+    setSelectedComp(0);
+    handleComponentDetailsClick();
+  };
+
   /**
    * Takes the user back to the components list for a project
    */
@@ -208,7 +213,7 @@ const ProjectComponents = () => {
               </Paper>
               <Button
                 className={classes.componentButtonAddNew}
-                onClick={handleComponentDetailsClick}
+                onClick={handleAddNewComponentClick}
                 variant="outlined"
                 color="default"
                 size={"large"}
