@@ -67,6 +67,10 @@ const ProjectComponentEdit = ({
   projectFeatureCollection,
 }) => {
   const classes = useStyles();
+  const emptyCollection = {
+    type: "FeatureCollection",
+    features: [],
+  };
 
   /**
    * The State
@@ -83,18 +87,10 @@ const ProjectComponentEdit = ({
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    projectFeatureCollection
+    componentId === 0 ? emptyCollection : projectFeatureCollection
   );
 
-  const [open, setOpen] = useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   /**
    * Apollo hook functions
@@ -165,6 +161,20 @@ const ProjectComponentEdit = ({
     Object.entries(initialTypeCounts[type]?.subtypes ?? {})
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
       .filter(item => item.length > 0);
+
+  /**
+   * Handles the delete button click
+   */
+  const handleDeleteDialogClickOpen = () => {
+    setDeleteDialogOpen(true);
+  };
+
+  /**
+   * Handles the closing of the dialog
+   */
+  const handleDeleteDialogClickClose = () => {
+    setDeleteDialogOpen(false);
+  };
 
   /**
    * On select, it changes the available items for that specific type
@@ -281,11 +291,14 @@ const ProjectComponentEdit = ({
    */
   useEffect(() => {
     // If we have data, look to update the selected subcomponents
-    if (data) {
+    if (data && selectedComponentType !== null) {
       // Now check if we have any subcomponents in the DB
-      const subcomponentsDB = data.moped_proj_components[0].moped_proj_components_subcomponents.map(
-        subcomponent => subcomponent.moped_subcomponent
-      );
+      const subcomponentsDB =
+        data.moped_proj_components.length > 0
+          ? data.moped_proj_components[0].moped_proj_components_subcomponents.map(
+              subcomponent => subcomponent.moped_subcomponent
+            )
+          : [];
 
       setSelectedSubcomponents([...subcomponentsDB]);
     } else {
@@ -339,27 +352,37 @@ const ProjectComponentEdit = ({
    * Pre-populates the type and subtype for the existing data from DB
    */
   if (data && initialTypeCounts && selectedComponentType === null) {
-    // Get the component_id from the moped_proj_component table
-    const databaseComponent = data.moped_components.filter(
-      componentItem =>
-        componentItem.component_id ===
-        data.moped_proj_components[0].project_component_id
-    )[0];
+    // Get the component_id from the moped_proj_component table or make databaseComponent null
+    const databaseComponent =
+      componentId > 0
+        ? data.moped_components.filter(
+            componentItem =>
+              componentItem.component_id ===
+              data.moped_proj_components[0].project_component_id
+          )[0]
+        : null;
 
     // Determine component type and available subtypes
-    const componentTypeDB = databaseComponent.component_name.toLowerCase();
-    const availableSubTypes = getAvailableSubtypes(componentTypeDB);
+    const componentTypeDB = databaseComponent
+      ? databaseComponent.component_name.toLowerCase()
+      : null;
 
     // Update state with new values
-    setSelectedComponentType(componentTypeDB);
-    setAvailableSubtypes(availableSubTypes);
+    if (componentTypeDB !== selectedComponentType)
+      setSelectedComponentType(componentTypeDB);
 
-    // If the component type has subtypes, then fetch those and update state
-    if (initialTypeCounts[componentTypeDB].count > 1) {
-      const subtypeDB = (databaseComponent?.component_subtype ?? "")
-        .trim()
-        .toLowerCase();
-      setSelectedComponentSubtype(subtypeDB);
+    // If there is a componentId, then get subtypes
+    if (componentId > 0) {
+      // Now get the available subtypes
+      const availableSubTypes = getAvailableSubtypes(componentTypeDB);
+      setAvailableSubtypes(availableSubTypes);
+      // If the component type has subtypes, then fetch those and update state
+      if (initialTypeCounts[componentTypeDB].count > 1) {
+        const subtypeDB = (databaseComponent?.component_subtype ?? "")
+          .trim()
+          .toLowerCase();
+        setSelectedComponentSubtype(subtypeDB);
+      }
     }
   }
 
@@ -453,7 +476,7 @@ const ProjectComponentEdit = ({
           <Grid xs={6} alignItems="right">
             <Button
               className={classes.formButtonDelete}
-              onClick={handleClickOpen}
+              onClick={handleDeleteDialogClickOpen}
               variant="outlined"
               color="default"
               startIcon={<Icon>delete</Icon>}
@@ -478,8 +501,8 @@ const ProjectComponentEdit = ({
         )}
       </Grid>
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClickClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -493,11 +516,11 @@ const ProjectComponentEdit = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleDeleteDialogClickClose} color="primary">
             Delete
           </Button>
           <Button
-            onClick={handleClose}
+            onClick={handleDeleteDialogClickClose}
             color="secondary"
             autoFocus
             startIcon={<Icon>cancel</Icon>}
