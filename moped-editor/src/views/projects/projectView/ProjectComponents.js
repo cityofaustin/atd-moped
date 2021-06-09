@@ -85,8 +85,7 @@ const ProjectComponents = () => {
       // Append if current component is selected, or none are selected (0)
       ...(selectedComp === component.component_id || selectedComp === 0
         ? component.moped_proj_features_components.map(
-            feature_comp =>
-              feature_comp.moped_proj_feature.map(feature => feature)[0]
+            feature_comp => feature_comp.moped_proj_feature[0]
           )
         : []),
     ],
