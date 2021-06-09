@@ -510,6 +510,7 @@ export const COMPONENTS_QUERY = gql`
       }
       moped_proj_features_components {
         name
+        moped_proj_component_id
         moped_proj_feature {
           location
           feature_id
