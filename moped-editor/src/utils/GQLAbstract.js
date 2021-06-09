@@ -196,10 +196,12 @@ class GQLAbstract {
    */
   setAnd(key, syntax) {
     if (!this.config.and) this.config.and = {};
-    this.config.and[key] = this.config.where[key];
-    // todo: handle the third one
-    // todo: remove the old wehre?
-    this.config.and[key] = this.config.and[key].concat(",", syntax);
+    if (this.config.and[key]) {
+      this.config.and[key] = this.config.and[key].concat(",", syntax);
+    } else {
+      this.config.and[key] = this.config.where[key];
+      this.config.and[key] = this.config.and[key].concat(",", syntax);
+    }
   }
 
   /**
@@ -411,6 +413,15 @@ class GQLAbstract {
       }
     }
 
+    if (this.config.and !== null) {
+      for (const [key, value] of this.getEntries("and")) {
+        const andValues = value.split(",");
+        andValues.forEach(andValue => and.push(`{${key}: {${andValue}}}`));
+        // remove key from where clause after including the values in and
+        this.deleteWhere(key);
+      }
+    }
+
     // If there are any where
     if (this.config.where !== null) {
       for (const [key, value] of this.getEntries("where")) {
@@ -427,13 +438,6 @@ class GQLAbstract {
     if (this.config.or !== null) {
       for (const [key, value] of this.getEntries("or")) {
         or.push(`{${key}: {${value}}}`);
-      }
-    }
-
-    if (this.config.and !== null) {
-      for (const [key, value] of this.getEntries("and")) {
-        const andValues = value.split(",");
-        andValues.forEach(andValue => and.push(`{${key}: {${andValue}}}`));
       }
     }
 
