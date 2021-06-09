@@ -90,6 +90,8 @@ const ProjectComponentEdit = ({
     componentId === 0 ? emptyCollection : projectFeatureCollection
   );
 
+  const [componentDescription, setComponentDescription] = useState(null);
+
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   /**
@@ -263,6 +265,14 @@ const ProjectComponentEdit = ({
   };
 
   /**
+   * Handles the key down events for the description field
+   * @param {Object} e - The event object
+   */
+  const handleDescriptionKeyDown = e => {
+    setComponentDescription(e.target.value);
+  };
+
+  /**
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
@@ -386,6 +396,15 @@ const ProjectComponentEdit = ({
     }
   }
 
+  // Populate component description if available and state is empty
+  if (
+    data &&
+    !!data?.moped_proj_components[0]?.description &&
+    componentDescription === null
+  ) {
+    setComponentDescription(data?.moped_proj_components[0]?.description);
+  }
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
@@ -443,16 +462,19 @@ const ProjectComponentEdit = ({
                 rows={4}
                 defaultValue=""
                 variant="filled"
-                value={data?.moped_proj_components[0]?.description ?? ""}
+                value={componentDescription}
+                onChange={e => handleDescriptionKeyDown(e)}
               />
             </FormControl>
           </Grid>
-          <Grid xs={6}>
-            {!areMinimumFeaturesSet && (
+          {!areMinimumFeaturesSet && (
+            <Grid xs={12}>
               <Alert className={classes.mapAlert} severity="error">
                 You must select at least one feature for this component.
               </Alert>
-            )}
+            </Grid>
+          )}
+          <Grid xs={6}>
             <Button
               className={classes.formButton}
               variant="contained"
@@ -474,15 +496,17 @@ const ProjectComponentEdit = ({
             </Button>
           </Grid>
           <Grid xs={6} alignItems="right">
-            <Button
-              className={classes.formButtonDelete}
-              onClick={handleDeleteDialogClickOpen}
-              variant="outlined"
-              color="default"
-              startIcon={<Icon>delete</Icon>}
-            >
-              Delete
-            </Button>
+            {componentId > 0 && (
+              <Button
+                className={classes.formButtonDelete}
+                onClick={handleDeleteDialogClickOpen}
+                variant="outlined"
+                color="default"
+                startIcon={<Icon>delete</Icon>}
+              >
+                Delete
+              </Button>
+            )}
           </Grid>
         </Grid>
       </Grid>
@@ -516,12 +540,16 @@ const ProjectComponentEdit = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteDialogClickClose} color="primary">
+          <Button
+            onClick={handleDeleteDialogClickClose}
+            color="primary"
+            startIcon={<Icon>delete</Icon>}
+          >
             Delete
           </Button>
           <Button
             onClick={handleDeleteDialogClickClose}
-            color="secondary"
+            color="default"
             autoFocus
             startIcon={<Icon>cancel</Icon>}
           >
