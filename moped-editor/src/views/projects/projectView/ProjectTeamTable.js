@@ -9,8 +9,7 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import AddCircleIcon from "@material-ui/icons/AddCircle";
-import { Clear as ClearIcon } from "@material-ui/icons";
+import { AddCircle as AddCircleIcon, Clear as ClearIcon } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
