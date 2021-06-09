@@ -196,12 +196,11 @@ class GQLAbstract {
    */
   setAnd(key, syntax) {
     if (!this.config.and) this.config.and = {};
-    if (this.config.and[key]) {
-      this.config.and[key] = this.config.and[key].concat(",", syntax);
-    } else {
+    // if the key has not been added to the "and" entry, copy from "where"
+    if (!this.config.and[key]) {
       this.config.and[key] = this.config.where[key];
-      this.config.and[key] = this.config.and[key].concat(",", syntax);
     }
+    this.config.and[key] = this.config.and[key].concat(",", syntax);
   }
 
   /**
