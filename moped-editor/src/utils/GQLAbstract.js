@@ -51,14 +51,14 @@ class GQLAbstract {
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpKey = (exp) => exp.split(/[{} ]+/, 1)[0].trim();
+  getExpKey = exp => exp.split(/[{} ]+/, 1)[0].trim();
 
   /**
    * Returns the value of a nested expression, usually another expression.
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpValue = (exp) =>
+  getExpValue = exp =>
     exp.substring(exp.indexOf("{") + 1, exp.lastIndexOf("}")).trim();
 
   /**
@@ -140,6 +140,7 @@ class GQLAbstract {
   cleanWhere() {
     this.config.where = { ...this.configInit.where };
     this.config.or = null;
+    this.config.and = null;
   }
 
   /**
@@ -170,10 +171,9 @@ class GQLAbstract {
    */
   setWhere(key, syntax) {
     if (!this.config.where) this.config.where = {};
+    // if the key already exists in the config, we are adding an additional query for same key
     if (this.config.where[key]) {
-      console.log(this.config.where, syntax)
-      this.config.where[key] = this.config.where[key].concat(", ", syntax)
-      console.log(this.config.where)
+      this.setAnd(key, syntax);
     } else {
       this.config.where[key] = syntax;
     }
@@ -187,6 +187,19 @@ class GQLAbstract {
   setOr(key, syntax) {
     if (!this.config.or) this.config.or = {};
     this.config.or[key] = syntax;
+  }
+
+  /**
+   * Replaces or creates an 'and' condition in graphql syntax.
+   * @param {string} key - The name of the column
+   * @param {string} syntax - the graphql syntax for the where condition
+   */
+  setAnd(key, syntax) {
+    if (!this.config.and) this.config.and = {};
+    this.config.and[key] = this.config.where[key];
+    // todo: handle the third one
+    // todo: remove the old wehre?
+    this.config.and[key] = this.config.and[key].concat(",", syntax);
   }
 
   /**
@@ -357,7 +370,7 @@ class GQLAbstract {
    * @returns {Array}
    */
   get columns() {
-    return this.getEntries("columns").map((k) => k[0]);
+    return this.getEntries("columns").map(k => k[0]);
   }
 
   /**
@@ -385,6 +398,7 @@ class GQLAbstract {
     const output = [];
     const where = [];
     const or = [];
+    const and = [];
 
     // Aggregates do not need limit and offset filters
     if (aggregate === false) {
@@ -410,11 +424,16 @@ class GQLAbstract {
       }
     }
 
-    console.log("WHERE ARRAY", where)
-
     if (this.config.or !== null) {
       for (const [key, value] of this.getEntries("or")) {
         or.push(`{${key}: {${value}}}`);
+      }
+    }
+
+    if (this.config.and !== null) {
+      for (const [key, value] of this.getEntries("and")) {
+        const andValues = value.split(",");
+        andValues.forEach(andValue => and.push(`{${key}: {${andValue}}}`));
       }
     }
 
@@ -422,8 +441,9 @@ class GQLAbstract {
       "where: {" +
         (where.length > 0 ? where.join(", ") + ", " : "") +
         (or.length > 0 ? "_or: [" + or.join(", ") + "]" : "") +
+        (and.length > 0 ? "_and: [" + and.join(", ") + "]" : "") +
         "}"
-    ); // this is where we need an and
+    );
 
     if (this.config.order_by) {
       const orderBy = [];
@@ -522,7 +542,7 @@ class GQLAbstract {
     const aggregatesQueryArray = [];
 
     // For each config, create query, replace filters/columns, and push to aggregatesQueryArray
-    queryConfigArray.forEach((config) => {
+    queryConfigArray.forEach(config => {
       let query = `
       gqlAbstractTableAggregateName (
           gqlAbstractAggregateFilters
