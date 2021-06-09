@@ -3,13 +3,15 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
+  Button,
   Chip,
   CircularProgress,
   TextField,
   Typography,
 } from "@material-ui/core";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 import { Clear as ClearIcon } from "@material-ui/icons";
-import MaterialTable, { MTableEditRow } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
@@ -40,6 +42,8 @@ const ProjectTeamTable = ({
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+
+  const addActionRef = React.useRef();
 
   const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
 
@@ -363,6 +367,28 @@ const ProjectTeamTable = ({
               }}
             />
           ),
+          Action: props => {
+            // If isn't the add action
+            if (
+              typeof props.action === typeof Function ||
+              props.action.tooltip !== "Add"
+            ) {
+              return <MTableAction {...props} />;
+            } else {
+              return (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<AddCircleIcon />}
+                  ref={addActionRef}
+                  onClick={props.action.onClick}
+                >
+                  Add team member
+                </Button>
+              );
+            }
+          },
         }}
         data={
           isNewProject
@@ -376,6 +402,11 @@ const ProjectTeamTable = ({
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+        }}
+        localization={{
+          header: {
+            actions: "",
+          },
         }}
         icons={{ Delete: ClearIcon }}
         editable={{
