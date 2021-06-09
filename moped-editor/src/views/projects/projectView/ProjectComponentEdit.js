@@ -246,20 +246,23 @@ const ProjectComponentEdit = ({
       }));
 
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
-    const existingRecordsToUpdate = projectFeatureRecords
-      .map(record => filterObjectByKeys(record, ["__typename"]))
-      .filter(
-        record =>
-          !editedFeatures.find(
-            feature =>
-              feature.properties.PROJECT_EXTENT_ID ===
-              record.location.properties.PROJECT_EXTENT_ID
-          )
-      )
-      .map(record => ({
-        ...record,
-        status_id: 0,
-      }));
+    const existingRecordsToUpdate =
+      componentId !== 0
+        ? projectFeatureRecords
+            .map(record => filterObjectByKeys(record, ["__typename"]))
+            .filter(
+              record =>
+                !editedFeatures.find(
+                  feature =>
+                    feature.properties.PROJECT_EXTENT_ID ===
+                    record.location.properties.PROJECT_EXTENT_ID
+                )
+            )
+            .map(record => ({
+              ...record,
+              status_id: 0,
+            }))
+        : []; // if this is a new component, there are no old records to update
 
     return [...newRecordsToInsert, ...existingRecordsToUpdate];
   };
