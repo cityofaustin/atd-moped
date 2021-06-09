@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import {
   Button,
@@ -305,7 +305,7 @@ const ProjectComponentEdit = ({
       // If the component id changes, clear out the value of selected subcomponents
       setSelectedSubcomponents([]);
     }
-  }, [data, selectedComponentId]);
+  }, [data, selectedComponentId, selectedComponentType]);
 
   /**
    * Tracks any changes made to the selected type and subtype
