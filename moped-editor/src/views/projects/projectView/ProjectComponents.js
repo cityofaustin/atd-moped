@@ -15,6 +15,8 @@ import {
   TableCell,
   CircularProgress,
   ClickAwayListener,
+  Icon,
+  Button,
 } from "@material-ui/core";
 
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
@@ -43,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       background: "#b3e5fc", // Lightblue 100
     },
+  },
+  componentButtonAddNew: {
+    marginTop: theme.spacing(2),
   },
 }));
 
@@ -190,9 +195,7 @@ const ProjectComponents = () => {
                                 </TableCell>
                                 <TableCell align={"center"}>
                                   <DoubleArrowIcon
-                                    onClick={() =>
-                                      handleComponentDetailsClick(componentId)
-                                    }
+                                    onClick={handleComponentDetailsClick}
                                   />
                                 </TableCell>
                               </TableRow>
@@ -204,6 +207,16 @@ const ProjectComponents = () => {
                   </TableContainer>
                 </ClickAwayListener>
               </Paper>
+              <Button
+                className={classes.componentButtonAddNew}
+                onClick={handleComponentDetailsClick}
+                variant="outlined"
+                color="default"
+                size={"large"}
+                startIcon={<Icon>add</Icon>}
+              >
+                Add new component
+              </Button>
             </Grid>
             <Grid item xs={12} md={6}>
               <ErrorBoundary
