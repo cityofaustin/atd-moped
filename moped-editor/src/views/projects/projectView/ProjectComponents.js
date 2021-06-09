@@ -118,6 +118,9 @@ const ProjectComponents = () => {
     setComponentEditMode(true);
   };
 
+  /**
+   * Handles add component button logic
+   */
   const handleAddNewComponentClick = () => {
     setSelectedComp(0);
     handleComponentDetailsClick();
