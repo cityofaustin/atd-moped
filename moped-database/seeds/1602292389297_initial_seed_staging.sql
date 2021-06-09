@@ -1473,4 +1473,6 @@ INSERT INTO public.moped_proj_features_components (project_features_components_i
 INSERT INTO public.moped_proj_features_components (project_features_components_id, moped_proj_features_id, moped_proj_component_id, name, description, create_date, status_id) VALUES (12, 12, 6, 'The component a feature two', null, '2021-06-04 18:01:56.267785', 0);
 INSERT INTO public.moped_proj_features_components (project_features_components_id, moped_proj_features_id, moped_proj_component_id, name, description, create_date, status_id) VALUES (13, 13, 1, 'The component a feature two', null, '2021-06-04 18:01:56.267785', 0);
 INSERT INTO public.moped_proj_features_components (project_features_components_id, moped_proj_features_id, moped_proj_component_id, name, description, create_date, status_id) VALUES (14, 14, 2, 'The component a feature two', null, '2021-06-04 18:01:56.267785', 0);
-
+-- Reset the features sequence
+SELECT setval('moped_proj_features_feature_id_seq', COALESCE((SELECT MAX(feature_id)+1 FROM moped_proj_features), 1), false);
+-- Done seeding components
