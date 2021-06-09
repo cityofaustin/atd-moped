@@ -53,7 +53,7 @@ const ProjectSummaryMapFallback = ({
   const classes = useStyles();
 
   const [clearProjectMapData] = useMutation(
-    gql(PROJECT_CLEAR_MAP_DATA_TEMPLATE.replace("RANDOM_FEATURE_ID", uuid())),
+    gql(PROJECT_CLEAR_MAP_DATA_TEMPLATE.replaceAll("RANDOM_FEATURE_ID", uuid())),
     {
       variables: {
         projectId: projectId,
