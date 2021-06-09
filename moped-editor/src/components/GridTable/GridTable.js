@@ -215,24 +215,31 @@ const GridTable = ({ title, query }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   Object.keys(filters).forEach(filter => {
-    let { envelope, field, gqlOperator, value, type } = filters[filter];
+    let {
+      envelope,
+      field,
+      gqlOperator,
+      value,
+      type,
+      specialNullValue,
+    } = filters[filter];
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
       return;
     }
 
-    // If the operator includes "is_null", then the value is always true
+    // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-      value = "true";
+      gqlOperator = envelope === "true" ? "_eq" : "_neq";
+      value = specialNullValue ? specialNullValue : '""';
     } else {
-      // We have a normal operator, if we have a normal value
       if (value !== null) {
-        // There is a value, if there is an envelope, put inside envelope.
+        // If there is an envelope, insert value in envelope.
         value = envelope ? envelope.replace("{VALUE}", value) : value;
 
         // If it is a number or boolean, it does not need quotation marks
-        // do not envelope in quotation marks.
+        // Otherwise, add quotation marks for the query to identify as string
         value = type in ["number", "boolean"] ? value : `"${value}"`;
       } else {
         // We don't have a value
