@@ -483,7 +483,9 @@ const ProjectComponentEdit = ({
               variant="contained"
               color="primary"
               onClick={handleSaveButtonClick}
-              disabled={!areMinimumFeaturesSet}
+              disabled={
+                !areMinimumFeaturesSet || selectedComponentId === null
+              }
               startIcon={<Icon>save</Icon>}
             >
               Save
