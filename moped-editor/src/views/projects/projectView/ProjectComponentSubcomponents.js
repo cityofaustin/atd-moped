@@ -30,7 +30,7 @@ const ProjectComponentSubcomponents = ({
   if (componentId === null)
     return (
       <Alert className={classes.alert} severity="warning">
-        You must select a subtype.
+        You must select a type &amp; subtype.
       </Alert>
     );
 
@@ -60,7 +60,8 @@ const ProjectComponentSubcomponents = ({
           }}
           options={[
             ...selectedSubcomponents, // We must show existing selected subcomponents, even if there is a mismatch
-            ...subcomponentList.filter( // Then append any available subcomponents for the current type
+            ...subcomponentList.filter(
+              // Then append any available subcomponents for the current type
               subComponent => subComponent.component_id === componentId
             ),
           ]}
