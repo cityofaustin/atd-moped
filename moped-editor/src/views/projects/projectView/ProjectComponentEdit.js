@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
@@ -16,7 +16,7 @@ import {
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
   COMPONENT_DETAILS_QUERY,
-  // UPSERT_PROJECT_EXTENT,
+  UPDATE_MOPED_COMPONENT,
 } from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
@@ -24,6 +24,7 @@ import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import { countFeatures, mapConfig, mapErrors } from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
+import { useParams } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -66,6 +67,7 @@ const ProjectComponentEdit = ({
   projectFeatureRecords,
   projectFeatureCollection,
 }) => {
+  const { projectId } = useParams();
   const classes = useStyles();
   const emptyCollection = {
     type: "FeatureCollection",
@@ -103,10 +105,7 @@ const ProjectComponentEdit = ({
     },
   });
 
-  // const [
-  //   updateProjectExtent,
-  //   { loading: mapMutationLoading, error: mapMutationErrors },
-  // ] = useMutation(UPSERT_PROJECT_EXTENT);
+  const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -285,10 +284,12 @@ const ProjectComponentEdit = ({
     // Associate the map features to the current component: upsert moped_proj_features_components
 
     console.log("Map Upserts:", mapUpserts);
+    console.log("ProjectID:", projectId);
+
     // 1. moped_proj_features (Features get updated first)
     // 2. moped_proj_features_components (Then the association of features to components)
 
-    // 3. moped_proj_components (Update: The component itself get updated: type, subtype, comments)
+    // 3. moped_proj_components (Upsert: The component itself get updated: type, subtype, comments)
     // 4. moped_proj_components_subcomponents (Upsert: subcomponents activate, deactivate)
 
     // updateProjectExtent({
@@ -296,7 +297,7 @@ const ProjectComponentEdit = ({
     // }).then(() => {
     //   // refetchProjectDetails();
     //   console.log("Need to run refetchProjectDetails");
-    // });
+    // }).catch(err => err);
   };
 
   /**
@@ -483,9 +484,7 @@ const ProjectComponentEdit = ({
               variant="contained"
               color="primary"
               onClick={handleSaveButtonClick}
-              disabled={
-                !areMinimumFeaturesSet || selectedComponentId === null
-              }
+              disabled={!areMinimumFeaturesSet || selectedComponentId === null}
               startIcon={<Icon>save</Icon>}
             >
               Save
