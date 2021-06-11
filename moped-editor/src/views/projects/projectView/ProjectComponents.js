@@ -73,7 +73,7 @@ const ProjectComponents = () => {
   // Return loading if not in progress
   if (loading) return <CircularProgress />;
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div>{JSON.stringify(error)}</div>;
 
   /**
    * Retrieve and flatten a nested list of features:
@@ -83,7 +83,7 @@ const ProjectComponents = () => {
     (accumulator, component) => [
       ...accumulator,
       // Append if current component is selected, or none are selected (0)
-      ...(selectedComp === component.component_id || selectedComp === 0
+      ...(selectedComp === component.project_component_id || selectedComp === 0
         ? component.moped_proj_features_components.map(
             feature_comp => feature_comp.moped_proj_feature[0]
           )
@@ -102,9 +102,9 @@ const ProjectComponents = () => {
 
   /**
    * Handles logic whenever a component is clicked, refreshes whatever is in memory and re-renders
-   * @param componentId - The Database id of the component in question
+   * @param clickedComponentId - The Database id of the component in question
    */
-  const handleComponentClick = componentId => setSelectedComp(componentId);
+  const handleComponentClick = clickedComponentId => setSelectedComp(clickedComponentId);
 
   /**
    * Resets the color of a selected component back to white
@@ -163,17 +163,18 @@ const ProjectComponents = () => {
                       <TableBody>
                         {data.moped_proj_components.map(
                           (component, compIndex) => {
-                            const componentId = component.project_component_id;
+                            const projComponentId =
+                              component.project_component_id;
                             return (
                               <TableRow
                                 role="checkbox"
                                 tabIndex={compIndex}
-                                key={"mcTableRow-" + componentId}
+                                key={"mcTableRow-" + projComponentId}
                                 onClick={() =>
-                                  handleComponentClick(componentId)
+                                  handleComponentClick(projComponentId)
                                 }
                                 className={
-                                  componentId === selectedComp
+                                  projComponentId === selectedComp
                                     ? classes.componentItemBlue
                                     : classes.componentItem
                                 }
