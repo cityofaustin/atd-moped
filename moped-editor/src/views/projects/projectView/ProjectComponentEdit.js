@@ -99,7 +99,7 @@ const ProjectComponentEdit = ({
   /**
    * Apollo hook functions
    */
-  const { loading, data, error } = useQuery(COMPONENT_DETAILS_QUERY, {
+  const { loading, data, error, refetch } = useQuery(COMPONENT_DETAILS_QUERY, {
     variables: {
       componentId: componentId,
     },
@@ -138,6 +138,17 @@ const ProjectComponentEdit = ({
         };
       }, {})
     : {};
+
+  // Now check if we have any subcomponents in the DB
+  const subcomponentsDB =
+    (data?.moped_proj_components ?? []).length > 0
+      ? data.moped_proj_components[0].moped_proj_components_subcomponents.map(
+          subcomponent => ({
+            ...subcomponent.moped_subcomponent,
+            component_subcomponent_id: subcomponent.component_subcomponent_id,
+          })
+        )
+      : [];
 
   /**
    * This is a constant list containing the names of available types
@@ -267,6 +278,44 @@ const ProjectComponentEdit = ({
   };
 
   /**
+   * Generates a list of subcomponents to be upserted in Hasura
+   * @return {Object[]}
+   */
+  const generateSubcomponentUpserts = () => {
+    // Generate a list of subcomponents to be removed
+    const removalList = subcomponentsDB.filter(
+      // Check every old subcomponent
+      oldSubcomponent =>
+        // If not found, mark it as true so it's part of the selectedSubcomponents list
+        !selectedSubcomponents.find(
+          newSubcomponent =>
+            // Return true if we have found the old subcomponent in this list
+            oldSubcomponent.subcomponent_id === newSubcomponent.subcomponent_id
+        )
+    );
+
+    // Remove existing subcomponents, keep only those that need inserting
+    const insertionList = selectedSubcomponents.filter(
+      // If the subcomponent does not have component_subcomponent_id, then keep
+      subcomponent => isNaN(subcomponent?.component_subcomponent_id)
+    );
+
+    // Generate output, clean up & return
+    return [...insertionList, ...removalList]
+      .map(subcomponent => ({
+        ...subcomponent,
+        status_id: isNaN(subcomponent?.component_subcomponent_id) ? 1 : 0,
+      }))
+      .map(record =>
+        filterObjectByKeys(record, [
+          "__typename",
+          "component_id",
+          "subcomponent_name",
+        ])
+      );
+  };
+
+  /**
    * Handles the key down events for the description field
    * @param {Object} e - The event object
    */
@@ -278,26 +327,45 @@ const ProjectComponentEdit = ({
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
-    const mapUpserts = generateMapUpserts();
+    // 1. Generate feature upserts
+    const featureUpdates = [];
+    const features = generateMapUpserts().map(feature => ({
+      status_id: feature.status_id,
+      moped_proj_feature_object: {
+        on_conflict: {
+          constraint: "moped_proj_features_pkey",
+          update_columns: ["location", "status_id"],
+        },
+        data: {
+          location: feature.location,
+          status_id: feature.status_id,
+        },
+      },
+    }));
+
+    // 2. Generate a list of subcomponent upserts
+    const subcomponentChanges = generateSubcomponentUpserts();
 
     // First update the map features: create, retire,
     // Associate the map features to the current component: upsert moped_proj_features_components
 
-    console.log("Map Upserts:", mapUpserts);
-    console.log("ProjectID:", projectId);
+    const variablePayload = {
+      project_id: Number.parseInt(projectId),
+      component_id: selectedComponentId,
+      subcomponents: subcomponentChanges,
+      description: componentDescription,
+      features: features,
+      featureUpdates: featureUpdates,
+    };
 
-    // 1. moped_proj_features (Features get updated first)
-    // 2. moped_proj_features_components (Then the association of features to components)
-
-    // 3. moped_proj_components (Upsert: The component itself get updated: type, subtype, comments)
-    // 4. moped_proj_components_subcomponents (Upsert: subcomponents activate, deactivate)
-
-    // updateProjectExtent({
-    //   variables: { upserts },
-    // }).then(() => {
-    //   // refetchProjectDetails();
-    //   console.log("Need to run refetchProjectDetails");
-    // }).catch(err => err);
+    updateProjectComponents({ variables: variablePayload })
+      .then(resp => {
+        refetch().then(() => {
+          handleCancelEdit();
+          console.log(resp);
+        });
+      })
+      .catch(err => console.log(err));
   };
 
   /**
@@ -306,14 +374,6 @@ const ProjectComponentEdit = ({
   useEffect(() => {
     // If we have data, look to update the selected subcomponents
     if (data && selectedComponentType !== null) {
-      // Now check if we have any subcomponents in the DB
-      const subcomponentsDB =
-        data.moped_proj_components.length > 0
-          ? data.moped_proj_components[0].moped_proj_components_subcomponents.map(
-              subcomponent => subcomponent.moped_subcomponent
-            )
-          : [];
-
       setSelectedSubcomponents([...subcomponentsDB]);
     } else {
       // If the component id changes, clear out the value of selected subcomponents
@@ -353,7 +413,7 @@ const ProjectComponentEdit = ({
   }, [selectedComponentType, selectedComponentSubtype]);
 
   if (loading) return <CircularProgress />;
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div>Error: {JSON.stringify(error)}</div>;
 
   /**
    * Returns true if the collection has a minimum of features, false otherwise.
@@ -372,7 +432,7 @@ const ProjectComponentEdit = ({
         ? data.moped_components.filter(
             componentItem =>
               componentItem.component_id ===
-              data.moped_proj_components[0].project_component_id
+              data.moped_proj_components[0].component_id
           )[0]
         : null;
 
@@ -478,7 +538,7 @@ const ProjectComponentEdit = ({
               </Alert>
             </Grid>
           )}
-          <Grid xs={6}>
+          <Grid xs={8}>
             <Button
               className={classes.formButton}
               variant="contained"
@@ -499,7 +559,7 @@ const ProjectComponentEdit = ({
               Cancel
             </Button>
           </Grid>
-          <Grid xs={6} alignItems="right">
+          <Grid xs={4} alignItems="right">
             {componentId > 0 && (
               <Button
                 className={classes.formButtonDelete}
@@ -566,3 +626,4 @@ const ProjectComponentEdit = ({
 };
 
 export default ProjectComponentEdit;
+
