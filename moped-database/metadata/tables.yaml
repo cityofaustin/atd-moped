@@ -1001,12 +1001,7 @@
   object_relationships:
   - name: moped_components
     using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: moped_components
-        column_mapping:
-          project_component_id: component_id
+      foreign_key_constraint_on: component_id
   array_relationships:
   - name: moped_proj_components_subcomponents
     using:
