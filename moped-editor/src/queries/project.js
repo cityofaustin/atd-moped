@@ -528,12 +528,14 @@ export const COMPONENT_DETAILS_QUERY = gql`
       name
       project_component_id
       project_id
+      status_id
       moped_components {
         component_name
         component_id
         component_subtype
       }
       moped_proj_features_components {
+        status_id
         moped_proj_feature {
           location
           feature_id
@@ -545,6 +547,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_subcomponent_id
         project_component_id
         subcomponent_id
+        status_id
         moped_subcomponent {
           subcomponent_id
           subcomponent_name
