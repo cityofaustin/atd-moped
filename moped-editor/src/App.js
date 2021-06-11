@@ -19,6 +19,9 @@ import {
 
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
+var pckg = require("../package.json");
+console.log(`🛵 ${pckg.name} ${pckg.version}`);
+
 const App = () => {
   const restrictedRoutes = restrictRoutes(routes);
   const routing = useRoutes(restrictedRoutes);

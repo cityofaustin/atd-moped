@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
   paper: {
     width: "100%",
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
   title: {
     position: "relative",
@@ -427,6 +427,7 @@ const GridTable = ({ title, query }) => {
                                 // If column is hidden, don't render <td>
                                 !query.isHidden(column) && (
                                   <TableCell
+                                    size="small"
                                     key={columnIndex}
                                     width={
                                       query.config.columns[
@@ -435,7 +436,13 @@ const GridTable = ({ title, query }) => {
                                         ? query.config.columns[column].width
                                         : 0
                                     }
-                                    className={classes.tableCell}
+                                    className={
+                                      query.config.columns[
+                                        column
+                                      ].hasOwnProperty("className")
+                                        ? query.config.columns[column].className
+                                        : classes.tableCell
+                                    }
                                   >
                                     {query.isPK(column) ? (
                                       // If there is custom JSX for the PK single item button, render it

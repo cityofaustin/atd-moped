@@ -56,7 +56,7 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: false,
       link: "project_id",
-      label: "Project Name",
+      label: "Project name",
       search: {
         label: "Search by project name",
         operator: "_ilike",
@@ -81,7 +81,7 @@ export const ProjectsListViewQueryConf = {
       hidden: true,
       searchable: true,
       sortable: false,
-      label: "Project Description",
+      label: "Project description",
       search: {
         label: "Search by project description",
         operator: "_ilike",
@@ -103,10 +103,10 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
-    current_phase: {
+    phase_name: {
       searchable: true,
       sortable: false,
-      label: "Current Phase",
+      label: "Current phase",
       width: "15%",
       search: {
         label: "Search by current phase",
@@ -119,7 +119,7 @@ export const ProjectsListViewQueryConf = {
     project_team_members: {
       searchable: false,
       sortable: false,
-      label: "Team Members",
+      label: "Team members",
       width: "20%",
       filter: value => {
         if (value === " :") {
@@ -144,7 +144,7 @@ export const ProjectsListViewQueryConf = {
     start_date: {
       searchable: false,
       sortable: true,
-      label: "Start Date",
+      label: "Start date",
       width: "10%",
       filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
       type: "date_iso",
@@ -153,7 +153,7 @@ export const ProjectsListViewQueryConf = {
       hidden: false,
       searchable: true,
       sortable: true,
-      label: "eCapris Subp.",
+      label: "eCAPRIS ID",
       filter: value => (
         <ExternalLink
           text={value}
@@ -173,7 +173,7 @@ export const ProjectsListViewQueryConf = {
       hidden: false,
       searchable: false,
       sortable: true,
-      label: "Last Modified",
+      label: "Last modified",
       filter: value => new Date(value).toLocaleDateString('en-US'),
       type: "date_iso",
     },
