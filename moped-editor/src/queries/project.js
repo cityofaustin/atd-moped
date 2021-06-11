@@ -522,7 +522,9 @@ export const COMPONENTS_QUERY = gql`
 
 export const COMPONENT_DETAILS_QUERY = gql`
   query GetComponentDetails($componentId: Int!) {
-    moped_proj_components(where: { component_id: { _eq: $componentId } }) {
+    moped_proj_components(
+      where: { project_component_id: { _eq: $componentId } }
+    ) {
       component_id
       description
       name
@@ -576,6 +578,7 @@ export const UPDATE_MOPED_COMPONENT = gql`
     $status_id: Int = 1
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $features: [moped_proj_features_components_insert_input!]!
+    $featureUpdates: [moped_proj_features_insert_input!]!
   ) {
     insert_moped_proj_components(
       objects: {
@@ -608,6 +611,15 @@ export const UPDATE_MOPED_COMPONENT = gql`
       on_conflict: {
         constraint: moped_proj_components_pkey
         update_columns: [component_id, description, status_id]
+      }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_features(
+      objects: $featureUpdates
+      on_conflict: {
+        constraint: moped_proj_features_pkey
+        update_columns: status_id
       }
     ) {
       affected_rows
