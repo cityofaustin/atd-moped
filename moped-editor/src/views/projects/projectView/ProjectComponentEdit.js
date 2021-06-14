@@ -102,7 +102,7 @@ const ProjectComponentEdit = ({
   /**
    * Apollo hook functions
    */
-  const { loading, data, error, refetch } = useQuery(COMPONENT_DETAILS_QUERY, {
+  const { loading, data, error } = useQuery(COMPONENT_DETAILS_QUERY, {
     variables: {
       componentId: componentId,
     },
