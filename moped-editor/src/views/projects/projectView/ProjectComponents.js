@@ -143,6 +143,7 @@ const ProjectComponents = () => {
             handleCancelEdit={handleCancelEdit}
             projectFeatureRecords={projectFeatureRecords}
             projectFeatureCollection={projectFeatureCollection}
+            projectRefetchFeatures={refetch}
           />
         )}
         {!componentEditMode && (
