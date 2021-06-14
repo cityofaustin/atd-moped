@@ -350,6 +350,7 @@ const ProjectComponentEdit = ({
           update_columns: ["location", "status_id"],
         },
         data: {
+          project_id: projectId,
           location: feature.location,
           status_id: feature.status_id,
         },
