@@ -492,7 +492,9 @@ export const PROJECT_CLEAR_MAP_DATA_TEMPLATE = `mutation ClearProjectMapData($pr
 
 export const COMPONENTS_QUERY = gql`
   query getComponents($projectId: Int) {
-    moped_proj_components(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_components(
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+    ) {
       project_component_id
       project_id
       component_id
@@ -536,7 +538,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_id
         component_subtype
       }
-      moped_proj_features_components {
+      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
         status_id
         moped_proj_feature {
           location
@@ -545,7 +547,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
           project_id
         }
       }
-      moped_proj_components_subcomponents {
+      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
         component_subcomponent_id
         project_component_id
         subcomponent_id
@@ -621,6 +623,17 @@ export const UPDATE_MOPED_COMPONENT = gql`
         constraint: moped_proj_features_pkey
         update_columns: status_id
       }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const DELETE_MOPED_COMPONENT = gql`
+  mutation DeleteMopedComponent($projComponentId: Int!) {
+    update_moped_proj_components(
+      where: { project_component_id: { _eq: $projComponentId } }
+      _set: { status_id: 0 }
     ) {
       affected_rows
     }
