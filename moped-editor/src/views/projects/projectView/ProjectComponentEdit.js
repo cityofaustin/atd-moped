@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {Object} projectFeatureRecords - The a list of feature records
  * @param {Object} projectFeatureCollection - The feature collection GeoJSON
+ * @param {function} projectRefetchFeatures - Reload parent component's features
  * @return {JSX.Element}
  * @constructor
  */
@@ -66,6 +67,7 @@ const ProjectComponentEdit = ({
   handleCancelEdit,
   projectFeatureRecords,
   projectFeatureCollection,
+  projectRefetchFeatures,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -360,9 +362,11 @@ const ProjectComponentEdit = ({
 
     updateProjectComponents({ variables: variablePayload })
       .then(resp => {
-        refetch().then(() => {
-          handleCancelEdit();
-          console.log(resp);
+        projectRefetchFeatures().then(() => {
+          refetch().then(() => {
+            handleCancelEdit();
+            console.log(resp);
+          });
         });
       })
       .catch(err => console.log(err));
@@ -379,6 +383,7 @@ const ProjectComponentEdit = ({
       // If the component id changes, clear out the value of selected subcomponents
       setSelectedSubcomponents([]);
     }
+    // eslint-disable-next-line
   }, [data, selectedComponentId, selectedComponentType]);
 
   /**
@@ -626,4 +631,3 @@ const ProjectComponentEdit = ({
 };
 
 export default ProjectComponentEdit;
-
