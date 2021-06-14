@@ -17,6 +17,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
   COMPONENT_DETAILS_QUERY,
   UPDATE_MOPED_COMPONENT,
+  DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
@@ -108,6 +109,8 @@ const ProjectComponentEdit = ({
   });
 
   const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
+
+  const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -326,6 +329,14 @@ const ProjectComponentEdit = ({
   };
 
   /**
+   * Handles the exit of the current edit screen and reloads
+   */
+  const exitAndReload = () => {
+    handleCancelEdit();
+    projectRefetchFeatures();
+  };
+
+  /**
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
@@ -360,16 +371,20 @@ const ProjectComponentEdit = ({
       featureUpdates: featureUpdates,
     };
 
-    updateProjectComponents({ variables: variablePayload })
-      .then(resp => {
-        projectRefetchFeatures().then(() => {
-          refetch().then(() => {
-            handleCancelEdit();
-            console.log(resp);
-          });
-        });
-      })
-      .catch(err => console.log(err));
+    updateProjectComponents({ variables: variablePayload }).then(() =>
+      exitAndReload()
+    );
+  };
+
+  /**
+   * Handles the deletion of the component
+   */
+  const handleComponentDelete = () => {
+    deleteProjectComponent({
+      variables: {
+        projComponentId: componentId,
+      },
+    }).then(() => exitAndReload());
   };
 
   /**
@@ -610,7 +625,7 @@ const ProjectComponentEdit = ({
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleDeleteDialogClickClose}
+            onClick={handleComponentDelete}
             color="primary"
             startIcon={<Icon>delete</Icon>}
           >
