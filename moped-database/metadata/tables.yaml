@@ -3712,6 +3712,13 @@
     schema: public
     name: moped_project
   array_relationships:
+  - name: moped_proj_components
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_components
   - name: moped_proj_features
     using:
       foreign_key_constraint_on:
