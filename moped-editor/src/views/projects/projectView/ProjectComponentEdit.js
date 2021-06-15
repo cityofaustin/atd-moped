@@ -123,6 +123,11 @@ const ProjectComponentEdit = ({
         const componentSubtype = (
           component?.component_subtype ?? ""
         ).toLowerCase();
+
+        const componentSubcomponents = data.moped_subcomponents.filter(
+          subcomponent => subcomponent.component_id === componentId
+        );
+
         // Get the total count
         const currentCount = accumulator[componentName]?.count ?? 0;
 
@@ -140,6 +145,7 @@ const ProjectComponentEdit = ({
                 component_subtype: component?.component_subtype ?? null,
               },
             },
+            subcomponents: componentSubcomponents,
           },
         };
       }, {})
@@ -179,6 +185,14 @@ const ProjectComponentEdit = ({
     Object.entries(initialTypeCounts[type]?.subtypes ?? {})
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
       .filter(item => item.length > 0);
+
+  /**
+   * Returns any available subcomponent objects for a specific type
+   * @param {String} type - Lower case of the name of the type
+   * @return {Object[]}
+   */
+  const getAvailableSubcomponents = () =>
+    initialTypeCounts[selectedComponentType].subcomponents.length;
 
   /**
    * Returns the current project componetn id
@@ -295,11 +309,15 @@ const ProjectComponentEdit = ({
    * @return {Object[]}
    */
   const generateSubcomponentUpserts = () => {
+    // If there are no subcomponents, then remove them all if present.
+    const removeAllSubcomponents = getAvailableSubcomponents().length === 0;
+
     // Generate a list of subcomponents to be removed
     const removalList = subcomponentsDB.filter(
       // Check every old subcomponent
       oldSubcomponent =>
         // If not found, mark it as true so it's part of the selectedSubcomponents list
+        removeAllSubcomponents ||
         !selectedSubcomponents.find(
           newSubcomponent =>
             // Return true if we have found the old subcomponent in this list
@@ -310,6 +328,7 @@ const ProjectComponentEdit = ({
     // Remove existing subcomponents, keep only those that need inserting
     const insertionList = selectedSubcomponents.filter(
       // If the subcomponent does not have component_subcomponent_id, then keep
+      // Otherwise, it means it already exists in the database
       subcomponent => isNaN(subcomponent?.component_subcomponent_id)
     );
 
@@ -349,7 +368,6 @@ const ProjectComponentEdit = ({
    */
   const handleSaveButtonClick = () => {
     // 1. Generate feature upserts
-    const featureUpdates = [];
     const features = generateMapUpserts().map(feature => ({
       status_id: feature.status_id,
       moped_proj_feature_object: {
@@ -365,20 +383,13 @@ const ProjectComponentEdit = ({
       },
     }));
 
+    console.log(features);
+
     // 2. Generate a list of subcomponent upserts
     const subcomponentChanges = generateSubcomponentUpserts();
 
     // First update the map features: create, retire,
     // Associate the map features to the current component: upsert moped_proj_features_components
-
-    // const oldVariablePayload = {
-    //   project_id: Number.parseInt(projectId),
-    //   component_id: selectedComponentId,
-    //   subcomponents: subcomponentChanges,
-    //   description: componentDescription,
-    //   features: features,
-    //   featureUpdates: featureUpdates,
-    // };
 
     const variablePayload = {
       name: "",
@@ -387,6 +398,17 @@ const ProjectComponentEdit = ({
       component_id: selectedComponentId,
       description: componentDescription,
       project_component_id: getProjectComponentId(),
+      moped_proj_components_subcomponents: {
+        data: subcomponentChanges,
+        on_conflict: {
+          constraint: "moped_proj_components_subcomponents_pkey",
+          update_columns: [
+            "project_component_id",
+            "subcomponent_id",
+            "status_id",
+          ],
+        },
+      },
     };
 
     updateProjectComponents({
