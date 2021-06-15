@@ -268,7 +268,7 @@ const ProjectComponentEdit = ({
     const editedFeatures = editFeatureCollection.features;
 
     // Find new records that need to be inserted and create a feature record from them
-    const newRecordsToInsert = editedFeatures
+    const newFeaturesToInsert = editedFeatures
       .filter(
         feature =>
           !projectFeatureRecords.find(
@@ -283,7 +283,7 @@ const ProjectComponentEdit = ({
       }));
 
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
-    const existingRecordsToUpdate =
+    const existingFeaturesToDelete =
       componentId !== 0
         ? projectFeatureRecords
             .map(record => filterObjectByKeys(record, ["__typename"]))
@@ -301,7 +301,7 @@ const ProjectComponentEdit = ({
             }))
         : []; // if this is a new component, there are no old records to update
 
-    return [...newRecordsToInsert, ...existingRecordsToUpdate];
+    return [...newFeaturesToInsert, ...existingFeaturesToDelete];
   };
 
   /**
@@ -424,6 +424,10 @@ const ProjectComponentEdit = ({
         },
       },
     };
+
+    debugger;
+
+    console.log(variablePayload);
 
     updateProjectComponents({
       variables: {

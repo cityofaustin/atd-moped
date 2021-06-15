@@ -1523,10 +1523,6 @@
   - name: moped_proj_component
     using:
       foreign_key_constraint_on: moped_proj_component_id
-  - name: moped_proj_feature_object
-    using:
-      foreign_key_constraint_on: moped_proj_features_id
-  array_relationships:
   - name: moped_proj_feature
     using:
       manual_configuration:
@@ -1535,6 +1531,9 @@
           name: moped_proj_features
         column_mapping:
           moped_proj_features_id: feature_id
+  - name: moped_proj_feature_object
+    using:
+      foreign_key_constraint_on: moped_proj_features_id
   insert_permissions:
   - role: moped-admin
     permission:
