@@ -573,57 +573,8 @@ export const COMPONENT_DETAILS_QUERY = gql`
 `;
 
 export const UPDATE_MOPED_COMPONENT = gql`
-  mutation UpdateMopedComponent(
-    $project_id: Int!
-    $component_id: Int!
-    $description: String = null
-    $status_id: Int = 1
-    $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
-    $features: [moped_proj_features_components_insert_input!]!
-    $featureUpdates: [moped_proj_features_insert_input!]!
-  ) {
-    insert_moped_proj_components(
-      objects: {
-        component_id: $component_id
-        description: $description
-        project_id: $project_id
-        status_id: $status_id
-        name: ""
-        moped_proj_components_subcomponents: {
-          data: $subcomponents
-          on_conflict: {
-            constraint: moped_proj_components_subcomponents_pkey
-            update_columns: [project_component_id, subcomponent_id, status_id]
-          }
-        }
-        moped_proj_features_components: {
-          data: $features
-          on_conflict: {
-            constraint: moped_proj_features_components_pkey
-            update_columns: [
-              moped_proj_features_id
-              moped_proj_component_id
-              name
-              description
-              status_id
-            ]
-          }
-        }
-      }
-      on_conflict: {
-        constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, status_id]
-      }
-    ) {
-      affected_rows
-    }
-    insert_moped_proj_features(
-      objects: $featureUpdates
-      on_conflict: {
-        constraint: moped_proj_features_pkey
-        update_columns: status_id
-      }
-    ) {
+  mutation UpdateMopedComponent($objects: [moped_proj_components_insert_input!]!) {
+    insert_moped_proj_components(objects: $objects, on_conflict: {constraint: moped_proj_components_pkey, update_columns: [component_id, description, status_id]}) {
       affected_rows
     }
   }

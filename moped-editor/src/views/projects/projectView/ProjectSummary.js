@@ -44,7 +44,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             {projectFeatureCollection && (
               <ErrorBoundary
-                FallbackComponent={({ error, resetErrorBoundary}) => (
+                FallbackComponent={({ error, resetErrorBoundary }) => (
                   <ProjectSummaryMapFallback
                     error={error}
                     resetErrorBoundary={resetErrorBoundary}
