@@ -491,7 +491,7 @@ export const PROJECT_CLEAR_MAP_DATA_TEMPLATE = `mutation ClearProjectMapData($pr
 `;
 
 export const COMPONENTS_QUERY = gql`
-  query getComponents($projectId: Int) {
+  query GetComponents($projectId: Int) {
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
     ) {
@@ -504,18 +504,21 @@ export const COMPONENTS_QUERY = gql`
         component_type: component_name
         component_subtype
       }
-      moped_proj_components_subcomponents {
+      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
+        status_id
         moped_subcomponent {
           subcomponent_id
           subcomponent_name
         }
       }
-      moped_proj_features_components {
-        name
+      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
         moped_proj_component_id
+        name
+        status_id
         moped_proj_feature {
           location
           feature_id
+          status_id
         }
       }
     }
@@ -573,8 +576,16 @@ export const COMPONENT_DETAILS_QUERY = gql`
 `;
 
 export const UPDATE_MOPED_COMPONENT = gql`
-  mutation UpdateMopedComponent($objects: [moped_proj_components_insert_input!]!) {
-    insert_moped_proj_components(objects: $objects, on_conflict: {constraint: moped_proj_components_pkey, update_columns: [component_id, description, status_id]}) {
+  mutation UpdateMopedComponent(
+    $objects: [moped_proj_components_insert_input!]!
+  ) {
+    insert_moped_proj_components(
+      objects: $objects
+      on_conflict: {
+        constraint: moped_proj_components_pkey
+        update_columns: [component_id, description, status_id]
+      }
+    ) {
       affected_rows
     }
   }
