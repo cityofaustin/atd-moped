@@ -106,6 +106,7 @@ const ProjectComponentEdit = ({
     variables: {
       componentId: componentId,
     },
+    fetchPolicy: "no-cache",
   });
 
   const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
@@ -178,6 +179,13 @@ const ProjectComponentEdit = ({
     Object.entries(initialTypeCounts[type]?.subtypes ?? {})
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
       .filter(item => item.length > 0);
+
+  /**
+   * Returns the current project componetn id
+   * @return {number|null}
+   */
+  const getProjectComponentId = () =>
+    data ? data.moped_proj_components[0].project_component_id : null;
 
   /**
    * Handles the delete button click
@@ -363,18 +371,29 @@ const ProjectComponentEdit = ({
     // First update the map features: create, retire,
     // Associate the map features to the current component: upsert moped_proj_features_components
 
+    // const oldVariablePayload = {
+    //   project_id: Number.parseInt(projectId),
+    //   component_id: selectedComponentId,
+    //   subcomponents: subcomponentChanges,
+    //   description: componentDescription,
+    //   features: features,
+    //   featureUpdates: featureUpdates,
+    // };
+
     const variablePayload = {
+      name: "",
       project_id: Number.parseInt(projectId),
+      status_id: 1,
       component_id: selectedComponentId,
-      subcomponents: subcomponentChanges,
       description: componentDescription,
-      features: features,
-      featureUpdates: featureUpdates,
+      project_component_id: getProjectComponentId(),
     };
 
-    updateProjectComponents({ variables: variablePayload }).then(() =>
-      exitAndReload()
-    );
+    updateProjectComponents({
+      variables: {
+        objects: variablePayload,
+      },
+    }).then(() => exitAndReload());
   };
 
   /**
