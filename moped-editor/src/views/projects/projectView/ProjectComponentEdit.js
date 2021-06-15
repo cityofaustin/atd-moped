@@ -199,7 +199,7 @@ const ProjectComponentEdit = ({
    * @return {number|null}
    */
   const getProjectComponentId = () =>
-    data ? data.moped_proj_components[0].project_component_id : null;
+    data?.moped_proj_components[0]?.project_component_id ?? null;
 
   /**
    * Handles the delete button click
@@ -331,7 +331,6 @@ const ProjectComponentEdit = ({
       // Otherwise, it means it already exists in the database
       subcomponent => isNaN(subcomponent?.component_subcomponent_id)
     );
-    debugger;
 
     // Generate output, clean up & return
     return [...insertionList, ...removalList]
@@ -368,7 +367,10 @@ const ProjectComponentEdit = ({
    * Persists the changes to the database
    */
   const handleSaveButtonClick = () => {
-    // 1. Generate feature upserts
+    // Retrieve current project component id
+    const projComponentId = getProjectComponentId();
+    
+    // Generate feature upserts
     const features = generateMapUpserts().map(feature => ({
       status_id: feature.status_id,
       moped_proj_feature_object: {
@@ -384,8 +386,6 @@ const ProjectComponentEdit = ({
       },
     }));
 
-    console.log(features);
-
     // 2. Generate a list of subcomponent upserts
     const subcomponentChanges = generateSubcomponentUpserts();
 
@@ -398,7 +398,7 @@ const ProjectComponentEdit = ({
       status_id: 1,
       component_id: selectedComponentId,
       description: componentDescription,
-      project_component_id: getProjectComponentId(),
+      ...(!!projComponentId ? { project_component_id: projComponentId } : {}),
       moped_proj_components_subcomponents: {
         data: subcomponentChanges,
         on_conflict: {
