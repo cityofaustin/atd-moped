@@ -192,7 +192,7 @@ const ProjectComponentEdit = ({
    * @return {Object[]}
    */
   const getAvailableSubcomponents = () =>
-    initialTypeCounts[selectedComponentType].subcomponents.length;
+    initialTypeCounts[selectedComponentType].subcomponents;
 
   /**
    * Returns the current project componetn id
@@ -331,6 +331,7 @@ const ProjectComponentEdit = ({
       // Otherwise, it means it already exists in the database
       subcomponent => isNaN(subcomponent?.component_subcomponent_id)
     );
+    debugger;
 
     // Generate output, clean up & return
     return [...insertionList, ...removalList]
