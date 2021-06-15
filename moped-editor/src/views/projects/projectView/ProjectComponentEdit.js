@@ -369,7 +369,7 @@ const ProjectComponentEdit = ({
   const handleSaveButtonClick = () => {
     // Retrieve current project component id
     const projComponentId = getProjectComponentId();
-    
+
     // Generate feature upserts
     const features = generateMapUpserts().map(feature => ({
       status_id: feature.status_id,
@@ -406,6 +406,19 @@ const ProjectComponentEdit = ({
           update_columns: [
             "project_component_id",
             "subcomponent_id",
+            "status_id",
+          ],
+        },
+      },
+      moped_proj_features_components: {
+        data: features,
+        on_conflict: {
+          constraint: "moped_proj_features_components_pkey",
+          update_columns: [
+            "moped_proj_features_id",
+            "moped_proj_component_id",
+            "name",
+            "description",
             "status_id",
           ],
         },
