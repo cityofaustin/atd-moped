@@ -1,5 +1,9 @@
 import React from "react";
-import { Paper, makeStyles } from "@material-ui/core";
+import { Paper, makeStyles, Box, Avatar } from "@material-ui/core";
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -8,64 +12,64 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
-    colorList: {
-    width: "50%",
-    position: "relative",
-    paddingTop: "30px",
-    margin: "0 auto",
-    marginBottom: "75px",
-    textAlign: "center",
-    listStyle:"none",
-  },
-  colorCircle: {
-    width: "100px",
-    height: "100px",
-    borderRadius: "50%",
-    display:" inline-block",
-    marginRight: "20px",
-  },
-  colorHex: {
-    position: "relative",
-    color: "#D1D1D1",
-    top: "120px",
-    right: "6px"
-  },
-  color1: {
-    background: theme.palette.background.dark,
-  },
-  color2: {
-    backgroundColor: theme.palette.background.mapControlsHover,
-  },
   color3: {
-    backgroundColor: theme.palette.primary.main,
+    background: theme.palette.background.dark,
+    width: "60px",
+    height: "60px",
   },
   color4: {
+    backgroundColor: theme.palette.background.mapControlsHover,
+    width: "60px",
+    height: "60px",
+  },
+  color1: {
+    backgroundColor: theme.palette.primary.main,
+    width: "60px",
+    height: "60px",
+    color: theme.palette.primary.main,
+  },
+  color2: {
     backgroundColor: theme.palette.secondary.main,
-  }
+    width: "60px",
+    height: "60px",
+    color: theme.palette.secondary.main,
+  },
 }));
+
 
 const TypographyView = () => {
   const classes = useStyles();
 
   return (
     <Paper>
-      <ul className={classes.colorList}>
-        <li className={`${classes.colorCircle}  ${classes.color1}`}>
-          <div class="colorHex">#E1E2E1</div>
-        </li>
-        <li className={`${classes.colorCircle}  ${classes.color2}`}>
-          <div class="colorHex">#BAE3C2</div>
-        </li>
-        <li className={`${classes.colorCircle}  ${classes.color3}`}>
-          <div class="colorHex">#C7EDC2</div>
-        </li>
-        <li className={`${classes.colorCircle}  ${classes.color4}`}>
-          <div class="colorHex">#E5EDC2</div>
-        </li>
-        <li className={classes.colorCircle}>
-          <div class="colorHex">#E3E1BA</div>
-        </li>
-      </ul>
+      <Box p={3}>
+      <List>
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.color1}>1</Avatar>
+          </ListItemIcon>
+          <ListItemText primary="Primary Color" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.color2}>2</Avatar>
+          </ListItemIcon>
+          <ListItemText primary="Secondary Color" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.color3}>3</Avatar>
+          </ListItemIcon>
+          <ListItemText primary="Background Color" />
+        </ListItem>
+        <ListItem>
+          <ListItemIcon>
+            <Avatar className={classes.color4}>4</Avatar>
+          </ListItemIcon>
+          <ListItemText primary="Map Control Hover Color" />
+        </ListItem>
+      </List>
+      </Box>
     </Paper>
   );
 };
