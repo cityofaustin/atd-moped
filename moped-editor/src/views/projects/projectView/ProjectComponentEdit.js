@@ -67,12 +67,11 @@ const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
   projectFeatureRecords,
-  projectFeatureCollection,
   projectRefetchFeatures,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
-  const emptyCollection = {
+  const emptyFeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
@@ -91,8 +90,9 @@ const ProjectComponentEdit = ({
   );
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
+  const [editFeatureComponents, setEditFeatureComponents] = useState([]);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    componentId === 0 ? emptyCollection : projectFeatureCollection
+    emptyFeatureCollection
   );
 
   const [componentDescription, setComponentDescription] = useState(null);
@@ -266,26 +266,26 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-
+    debugger;
     // Find new records that need to be inserted and create a feature record from them
     const newFeaturesToInsert = editedFeatures
       .filter(
-        feature =>
-          !projectFeatureRecords.find(
-            record =>
-              feature.properties.PROJECT_EXTENT_ID ===
-              record.location.properties.PROJECT_EXTENT_ID
+        newFeature =>
+          !editFeatureComponents.find(
+            existingRecord =>
+              newFeature?.properties?.PROJECT_EXTENT_ID ===
+              existingRecord.location.properties.PROJECT_EXTENT_ID
           )
       )
       .map(feature => ({
         location: feature,
         status_id: 1,
       }));
-
+    debugger;
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
     const existingFeaturesToDelete =
       componentId !== 0
-        ? projectFeatureRecords
+        ? editFeatureComponents
             .map(record => filterObjectByKeys(record, ["__typename"]))
             .filter(
               record =>
@@ -300,7 +300,7 @@ const ProjectComponentEdit = ({
               status_id: 0,
             }))
         : []; // if this is a new component, there are no old records to update
-
+    debugger;
     return [...newFeaturesToInsert, ...existingFeaturesToDelete];
   };
 
@@ -370,8 +370,10 @@ const ProjectComponentEdit = ({
     // Retrieve current project component id
     const projComponentId = getProjectComponentId();
 
+    const mapUpserts = generateMapUpserts();
+
     // Generate feature upserts
-    const features = generateMapUpserts().map(feature => ({
+    const features = mapUpserts.map(feature => ({
       status_id: feature.status_id,
       moped_proj_feature_object: {
         on_conflict: {
@@ -425,15 +427,11 @@ const ProjectComponentEdit = ({
       },
     };
 
-    debugger;
-
-    console.log(variablePayload);
-
-    updateProjectComponents({
-      variables: {
-        objects: variablePayload,
-      },
-    }).then(() => exitAndReload());
+    // updateProjectComponents({
+    //   variables: {
+    //     objects: variablePayload,
+    //   },
+    // }).then(() => exitAndReload());
   };
 
   /**
@@ -547,6 +545,34 @@ const ProjectComponentEdit = ({
     componentDescription === null
   ) {
     setComponentDescription(data?.moped_proj_components[0]?.description);
+  }
+
+  /**
+   * We need to populate the features we will need in order to build the collection
+   */
+  if (data && editFeatureComponents.length === 0) {
+    const featuresFromComponents = (
+      data?.moped_proj_components[0]?.moped_proj_features_components ?? []
+    ).map(featureComponent => {
+      // Retrieve the feature component's primary key
+      const featureCompId = featureComponent.project_features_components_id;
+      // Clone the geojson data from the feature component
+      const newGeoJson = {
+        ...featureComponent.moped_proj_feature.location,
+      };
+      // Now go ahead and patch the primary key into the GeoJson properties
+      newGeoJson.properties.project_features_components_id = featureCompId;
+
+      return newGeoJson;
+    });
+
+    const featureCollectionFromComponents = {
+      ...emptyFeatureCollection,
+      features: featuresFromComponents,
+    };
+
+    setEditFeatureComponents(featuresFromComponents);
+    setEditFeatureCollection(featureCollectionFromComponents);
   }
 
   return (
