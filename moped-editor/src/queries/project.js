@@ -600,5 +600,33 @@ export const DELETE_MOPED_COMPONENT = gql`
     ) {
       affected_rows
     }
+    update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projComponentId } }
+      _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_features_components(
+      where: {
+        moped_proj_component: {
+          project_component_id: { _eq: $projComponentId }
+        }
+      }
+      _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_features(
+      where: {
+        moped_project: {
+          moped_proj_components: {
+            project_component_id: { _eq: $projComponentId }
+          }
+        }
+      }
+      _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
   }
 `;
