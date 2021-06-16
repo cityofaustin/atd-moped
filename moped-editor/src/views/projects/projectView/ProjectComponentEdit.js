@@ -57,8 +57,6 @@ const useStyles = makeStyles(theme => ({
  * The project component editor
  * @param {Number} componentId - The moped_proj_component id being edited
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
- * @param {Object} projectFeatureRecords - The a list of feature records
- * @param {Object} projectFeatureCollection - The feature collection GeoJSON
  * @param {function} projectRefetchFeatures - Reload parent component's features
  * @return {JSX.Element}
  * @constructor
@@ -66,7 +64,6 @@ const useStyles = makeStyles(theme => ({
 const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
-  projectFeatureRecords,
   projectRefetchFeatures,
 }) => {
   const { projectId } = useParams();
@@ -580,9 +577,11 @@ const ProjectComponentEdit = ({
   }
 
   /**
-   * We need to populate the features we will need in order to build the collection
+   * We need to populate the features we will need in order to build the
+   * geojson collection that we can feed it to the map.
    */
   if (data && editFeatureComponents.length === 0) {
+    // First, we will need a list of all moped_proj_features_components and make it geojson
     const featuresFromComponents = (
       data?.moped_proj_components[0]?.moped_proj_features_components ?? []
     ).map(featureComponent => {
@@ -598,13 +597,19 @@ const ProjectComponentEdit = ({
       return newGeoJson;
     });
 
+    /**
+     * Secondly, use emptyFeatureCollection as a template, then inject our previously rendered features
+     */
     const featureCollectionFromComponents = {
       ...emptyFeatureCollection,
       features: featuresFromComponents,
     };
 
-    setEditFeatureComponents(featuresFromComponents);
-    setEditFeatureCollection(featureCollectionFromComponents);
+    // Unless we have features to work with, then leave it alone
+    if (featuresFromComponents.length > 0) {
+      setEditFeatureComponents(featuresFromComponents);
+      setEditFeatureCollection(featureCollectionFromComponents);
+    }
   }
 
   return (
