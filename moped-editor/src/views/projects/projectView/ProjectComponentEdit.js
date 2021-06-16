@@ -403,16 +403,31 @@ const ProjectComponentEdit = ({
     // 2. Generate a list of subcomponent upserts
     const subcomponentChanges = generateSubcomponentUpserts();
 
-    // First update the map features: create, retire,
-    // Associate the map features to the current component: upsert moped_proj_features_components
-
+    /**
+     * This document represents all the variables Hasura needs
+     * to create a moped_proj_component in Hasura. It uses Hasura's
+     * nested insertion to establish relationships when creating
+     * new objects, and it uses primary keys when upserting.
+     * @type {moped_proj_component}
+     */
     const variablePayload = {
+      /*
+        First we need a component's common fields: name, status, etc.
+      */
       name: "",
       project_id: Number.parseInt(projectId),
       status_id: 1,
       component_id: selectedComponentId,
       description: componentDescription,
+      /*
+        To update a component, we need it's primary key.
+        If the project component is new, it will not have a projComponentId, then it's safe to ignore.
+      */
       ...(!!projComponentId ? { project_component_id: projComponentId } : {}),
+
+      /*
+        Now we need to insert the subcomponents previously generated.
+      */
       moped_proj_components_subcomponents: {
         data: subcomponentChanges,
         on_conflict: {
@@ -424,6 +439,10 @@ const ProjectComponentEdit = ({
           ],
         },
       },
+      /*
+        Finally we inject the features components & geojson features
+        as previously generated.
+      */
       moped_proj_features_components: {
         data: featureComponents,
         on_conflict: {
@@ -439,6 +458,7 @@ const ProjectComponentEdit = ({
       },
     };
 
+    // Finally we must run the graphql query and refetch
     updateProjectComponents({
       variables: {
         objects: variablePayload,
