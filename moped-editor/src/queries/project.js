@@ -30,21 +30,10 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-          moped_proj_feature {
-            feature_id
-            project_id
-            location
-            status_id
-          }
-        }
-      }
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
         location
-        status_id
       }
     }
     moped_phases {
@@ -523,8 +512,8 @@ export const COMPONENTS_QUERY = gql`
         }
       }
       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_component_id
         name
+        moped_proj_component_id
         status_id
         moped_proj_feature {
           location
@@ -556,8 +545,8 @@ export const COMPONENT_DETAILS_QUERY = gql`
         project_features_components_id
         status_id
         moped_proj_feature {
-          feature_id
           location
+          feature_id
           status_id
           project_id
         }
