@@ -156,6 +156,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
 
   /**
