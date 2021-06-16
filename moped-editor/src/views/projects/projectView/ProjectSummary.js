@@ -18,6 +18,7 @@ import { ErrorBoundary } from "react-error-boundary";
 const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
 
+  const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [mapError, setMapError] = useState(false);
 
@@ -28,6 +29,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
   );
+
+  refetch();
+  if (projectFeatureRecords.length === 0 && !makeSureRefresh)
+    setMakeSureRefresh(true);
 
   return (
     <ApolloErrorHandler errors={error}>
