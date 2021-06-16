@@ -618,10 +618,8 @@ export const DELETE_MOPED_COMPONENT = gql`
     }
     update_moped_proj_features(
       where: {
-        moped_project: {
-          moped_proj_components: {
-            project_component_id: { _eq: $projComponentId }
-          }
+        moped_proj_features_components: {
+          moped_proj_component_id: { _eq: $projComponentId }
         }
       }
       _set: { status_id: 0 }

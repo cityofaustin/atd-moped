@@ -1453,6 +1453,14 @@
   - name: moped_project
     using:
       foreign_key_constraint_on: project_id
+  array_relationships:
+  - name: moped_proj_features_components
+    using:
+      foreign_key_constraint_on:
+        column: moped_proj_features_id
+        table:
+          schema: public
+          name: moped_proj_features_components
   insert_permissions:
   - role: moped-admin
     permission:
