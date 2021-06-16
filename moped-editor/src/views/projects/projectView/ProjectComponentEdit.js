@@ -266,7 +266,6 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-    debugger;
     // Find new records that need to be inserted and create a feature record from them
     const newFeaturesToInsert = editedFeatures
       .filter(
@@ -274,14 +273,14 @@ const ProjectComponentEdit = ({
           !editFeatureComponents.find(
             existingRecord =>
               newFeature?.properties?.PROJECT_EXTENT_ID ===
-              existingRecord.location.properties.PROJECT_EXTENT_ID
+              existingRecord.properties.PROJECT_EXTENT_ID
           )
       )
-      .map(feature => ({
-        location: feature,
+      .map(newFeature => ({
+        ...newFeature,
         status_id: 1,
       }));
-    debugger;
+
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
     const existingFeaturesToDelete =
       componentId !== 0
@@ -292,7 +291,7 @@ const ProjectComponentEdit = ({
                 !editedFeatures.find(
                   feature =>
                     feature.properties.PROJECT_EXTENT_ID ===
-                    record.location.properties.PROJECT_EXTENT_ID
+                    record.properties.PROJECT_EXTENT_ID
                 )
             )
             .map(record => ({
@@ -300,7 +299,7 @@ const ProjectComponentEdit = ({
               status_id: 0,
             }))
         : []; // if this is a new component, there are no old records to update
-    debugger;
+
     return [...newFeaturesToInsert, ...existingFeaturesToDelete];
   };
 
@@ -370,19 +369,32 @@ const ProjectComponentEdit = ({
     // Retrieve current project component id
     const projComponentId = getProjectComponentId();
 
-    const mapUpserts = generateMapUpserts();
+    // First, we need a list of map changes only
+    const mapListOfChanges = generateMapUpserts();
 
-    // Generate feature upserts
-    const features = mapUpserts.map(feature => ({
+    // For each change, we generate a list of feature component objects
+    const featureComponents = mapListOfChanges.map(feature => ({
+      // Each feature component shares the status of it's child feature
       status_id: feature.status_id,
+      // Now we must determine if the feature has a nested `project_features_components_id` field
+      ...(feature?.properties?.project_features_components_id ?? null
+        ? // If so, then add it to the object, so that it can be upserted
+          {
+            project_features_components_id:
+              feature.properties.project_features_components_id,
+          }
+        : // If not, ignore it so that we can insert a new one
+          {}),
+      // Create the moped_proj_feature_object key with conflict rules and data
       moped_proj_feature_object: {
         on_conflict: {
           constraint: "moped_proj_features_pkey",
           update_columns: ["location", "status_id"],
         },
+        // This inserts into moped_proj_features, and assumes relationship with moped_proj_features_components
         data: {
-          project_id: projectId,
-          location: feature.location,
+          project_id: Number.parseInt(projectId),
+          location: { ...feature },
           status_id: feature.status_id,
         },
       },
@@ -413,7 +425,7 @@ const ProjectComponentEdit = ({
         },
       },
       moped_proj_features_components: {
-        data: features,
+        data: featureComponents,
         on_conflict: {
           constraint: "moped_proj_features_components_pkey",
           update_columns: [
@@ -427,11 +439,11 @@ const ProjectComponentEdit = ({
       },
     };
 
-    // updateProjectComponents({
-    //   variables: {
-    //     objects: variablePayload,
-    //   },
-    // }).then(() => exitAndReload());
+    updateProjectComponents({
+      variables: {
+        objects: variablePayload,
+      },
+    }).then(() => exitAndReload());
   };
 
   /**
