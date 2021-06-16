@@ -1,9 +1,10 @@
 import React from "react";
+import clsx from "clsx";
 import { Paper, makeStyles, Box, Avatar } from "@material-ui/core";
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemAvatar from "@material-ui/core/ListItemAvatar";
+import ListItemText from "@material-ui/core/ListItemText";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -12,30 +13,28 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
-  color3: {
-    background: theme.palette.background.dark,
+  colorCircles: {
     width: "60px",
     height: "60px",
-  },
-  color4: {
-    backgroundColor: theme.palette.background.mapControlsHover,
-    width: "60px",
-    height: "60px",
+    marginRight: "10px",
   },
   color1: {
     backgroundColor: theme.palette.primary.main,
-    width: "60px",
-    height: "60px",
     color: theme.palette.primary.main,
   },
   color2: {
     backgroundColor: theme.palette.secondary.main,
-    width: "60px",
-    height: "60px",
     color: theme.palette.secondary.main,
   },
+  color3: {
+    backgroundColor: theme.palette.background.dark,
+    color: theme.palette.background.dark,
+  },
+  color4: {
+    backgroundColor: theme.palette.background.mapControlsHover,
+    color: theme.palette.background.mapControlsHover,
+  },
 }));
-
 
 const TypographyView = () => {
   const classes = useStyles();
@@ -43,32 +42,40 @@ const TypographyView = () => {
   return (
     <Paper>
       <Box p={3}>
-      <List>
-        <ListItem>
-          <ListItemIcon>
-            <Avatar className={classes.color1}>1</Avatar>
-          </ListItemIcon>
-          <ListItemText primary="Primary Color" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <Avatar className={classes.color2}>2</Avatar>
-          </ListItemIcon>
-          <ListItemText primary="Secondary Color" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <Avatar className={classes.color3}>3</Avatar>
-          </ListItemIcon>
-          <ListItemText primary="Background Color" />
-        </ListItem>
-        <ListItem>
-          <ListItemIcon>
-            <Avatar className={classes.color4}>4</Avatar>
-          </ListItemIcon>
-          <ListItemText primary="Map Control Hover Color" />
-        </ListItem>
-      </List>
+        <List>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar className={clsx(classes.colorCircles, classes.color1)}>
+                1
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Primary Color" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar className={clsx(classes.colorCircles, classes.color2)}>
+                2
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Secondary Color" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar className={clsx(classes.colorCircles, classes.color3)}>
+                3
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Background Color" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar className={clsx(classes.colorCircles, classes.color4)}>
+                4
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Map Control Hover Color" />
+          </ListItem>
+        </List>
       </Box>
     </Paper>
   );

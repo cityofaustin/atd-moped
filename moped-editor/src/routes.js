@@ -68,7 +68,11 @@ export const routes = [
       { path: "logout", action: "logout:visit", element: <Logout /> },
       { path: "settings", action: "settings:visit", element: <SettingsView /> },
       { path: "404", action: "404:visit", element: <NotFoundView /> },
-      { path: "dev/devias", action: "style:visit", element: <DeviasStyleView />},
+      {
+        path: "dev/devias",
+        action: "style:visit",
+        element: <DeviasStyleView />,
+      },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
   },
