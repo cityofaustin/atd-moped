@@ -67,12 +67,11 @@ const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
   projectFeatureRecords,
-  projectFeatureCollection,
   projectRefetchFeatures,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
-  const emptyCollection = {
+  const emptyFeatureCollection = {
     type: "FeatureCollection",
     features: [],
   };
@@ -91,8 +90,9 @@ const ProjectComponentEdit = ({
   );
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
+  const [editFeatureComponents, setEditFeatureComponents] = useState([]);
   const [editFeatureCollection, setEditFeatureCollection] = useState(
-    componentId === 0 ? emptyCollection : projectFeatureCollection
+    emptyFeatureCollection
   );
 
   const [componentDescription, setComponentDescription] = useState(null);
@@ -266,33 +266,32 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-
     // Find new records that need to be inserted and create a feature record from them
     const newFeaturesToInsert = editedFeatures
       .filter(
-        feature =>
-          !projectFeatureRecords.find(
-            record =>
-              feature.properties.PROJECT_EXTENT_ID ===
-              record.location.properties.PROJECT_EXTENT_ID
+        newFeature =>
+          !editFeatureComponents.find(
+            existingRecord =>
+              newFeature?.properties?.PROJECT_EXTENT_ID ===
+              existingRecord.properties.PROJECT_EXTENT_ID
           )
       )
-      .map(feature => ({
-        location: feature,
+      .map(newFeature => ({
+        ...newFeature,
         status_id: 1,
       }));
 
     // Find existing records that need to be soft deleted, clean them, and set status to inactive
     const existingFeaturesToDelete =
       componentId !== 0
-        ? projectFeatureRecords
+        ? editFeatureComponents
             .map(record => filterObjectByKeys(record, ["__typename"]))
             .filter(
               record =>
                 !editedFeatures.find(
                   feature =>
                     feature.properties.PROJECT_EXTENT_ID ===
-                    record.location.properties.PROJECT_EXTENT_ID
+                    record.properties.PROJECT_EXTENT_ID
                 )
             )
             .map(record => ({
@@ -370,17 +369,32 @@ const ProjectComponentEdit = ({
     // Retrieve current project component id
     const projComponentId = getProjectComponentId();
 
-    // Generate feature upserts
-    const features = generateMapUpserts().map(feature => ({
+    // First, we need a list of map changes only
+    const mapListOfChanges = generateMapUpserts();
+
+    // For each change, we generate a list of feature component objects
+    const featureComponents = mapListOfChanges.map(feature => ({
+      // Each feature component shares the status of it's child feature
       status_id: feature.status_id,
+      // Now we must determine if the feature has a nested `project_features_components_id` field
+      ...(feature?.properties?.project_features_components_id ?? null
+        ? // If so, then add it to the object, so that it can be upserted
+          {
+            project_features_components_id:
+              feature.properties.project_features_components_id,
+          }
+        : // If not, ignore it so that we can insert a new one
+          {}),
+      // Create the moped_proj_feature_object key with conflict rules and data
       moped_proj_feature_object: {
         on_conflict: {
           constraint: "moped_proj_features_pkey",
           update_columns: ["location", "status_id"],
         },
+        // This inserts into moped_proj_features, and assumes relationship with moped_proj_features_components
         data: {
-          project_id: projectId,
-          location: feature.location,
+          project_id: Number.parseInt(projectId),
+          location: { ...feature },
           status_id: feature.status_id,
         },
       },
@@ -411,7 +425,7 @@ const ProjectComponentEdit = ({
         },
       },
       moped_proj_features_components: {
-        data: features,
+        data: featureComponents,
         on_conflict: {
           constraint: "moped_proj_features_components_pkey",
           update_columns: [
@@ -424,10 +438,6 @@ const ProjectComponentEdit = ({
         },
       },
     };
-
-    debugger;
-
-    console.log(variablePayload);
 
     updateProjectComponents({
       variables: {
@@ -547,6 +557,34 @@ const ProjectComponentEdit = ({
     componentDescription === null
   ) {
     setComponentDescription(data?.moped_proj_components[0]?.description);
+  }
+
+  /**
+   * We need to populate the features we will need in order to build the collection
+   */
+  if (data && editFeatureComponents.length === 0) {
+    const featuresFromComponents = (
+      data?.moped_proj_components[0]?.moped_proj_features_components ?? []
+    ).map(featureComponent => {
+      // Retrieve the feature component's primary key
+      const featureCompId = featureComponent.project_features_components_id;
+      // Clone the geojson data from the feature component
+      const newGeoJson = {
+        ...featureComponent.moped_proj_feature.location,
+      };
+      // Now go ahead and patch the primary key into the GeoJson properties
+      newGeoJson.properties.project_features_components_id = featureCompId;
+
+      return newGeoJson;
+    });
+
+    const featureCollectionFromComponents = {
+      ...emptyFeatureCollection,
+      features: featuresFromComponents,
+    };
+
+    setEditFeatureComponents(featuresFromComponents);
+    setEditFeatureCollection(featureCollectionFromComponents);
   }
 
   return (
