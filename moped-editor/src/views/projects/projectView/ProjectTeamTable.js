@@ -9,7 +9,10 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { AddCircle as AddCircleIcon, Clear as ClearIcon } from "@material-ui/icons";
+import {
+  AddCircle as AddCircleIcon,
+  Clear as ClearIcon,
+} from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
@@ -396,8 +399,13 @@ const ProjectTeamTable = ({
                 return personnel[item];
               })
         }
-        title="Project team"
+        title={
+          <Typography variant="h2" color="primary">
+            Project team
+          </Typography>
+        }
         options={{
+          ...(data.moped_proj_personnel.length < 6 && { paging: false }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
@@ -405,6 +413,9 @@ const ProjectTeamTable = ({
         localization={{
           header: {
             actions: "",
+          },
+          body: {
+            emptyDataSourceMessage: <text>No team members to display</text>,
           },
         }}
         icons={{ Delete: ClearIcon }}
