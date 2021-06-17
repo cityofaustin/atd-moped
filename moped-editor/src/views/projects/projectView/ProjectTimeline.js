@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Material
 import {
@@ -7,13 +7,20 @@ import {
   CardContent,
   CircularProgress,
   Grid,
+  IconButton,
   TextField,
   Switch,
   Select,
   MenuItem,
 } from "@material-ui/core";
-import AddBoxIcon from "@material-ui/icons/AddBox";
+import { Clear as ClearIcon, AddBox as AddBoxIcon } from "@material-ui/icons";
 import MaterialTable, { MTableAction } from "material-table";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  MuiPickersUtilsProvider,
+  KeyboardDatePicker,
+} from "@material-ui/pickers";
+import moment from "moment";
 
 // Query
 import {
@@ -23,7 +30,7 @@ import {
   ADD_PROJECT_PHASE,
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
-  ADD_PROJECT_MILESTONE
+  ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -60,6 +67,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     fetchPolicy: "no-cache",
   });
 
+  const [selectedDate, handleDateChange] = useState(new Date());
+
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
@@ -73,6 +82,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
+
+  console.log(data);
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -181,19 +192,35 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = (props, name, label) => (
-    <TextField
-      name={name}
-      label={label}
-      type="date"
-      variant="standard"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      onKeyDown={e => handleKeyEvent(e)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
+
+
+  const DateFieldEditComponent = ( props, name, label ) => (
+    <div>
+      {console.log(props)}
+      {console.log(name)}
+      {console.log(label)}
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <KeyboardDatePicker
+        clearable
+        name={name}
+        label={label}
+        format="dd/MM/yyyy"
+        value={props.value}
+        inputValue={moment(props.value).format("dd/MM/yyyy")}
+        onChange={e => console.log(e.target.value)}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => console.log(null)}>
+              <ClearIcon />
+            </IconButton>
+          ),
+        }}
+        InputAdornmentProps={{
+          position: "start",
+        }}
+      />
+    </MuiPickersUtilsProvider>
+    </div>
   );
 
   /**
@@ -327,7 +354,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "End Date",
       field: "phase_end",
       editComponent: props => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent
+          {...props}
+          name="phase_end"
+          label="End Date"
+        />
       ),
     },
   ];
