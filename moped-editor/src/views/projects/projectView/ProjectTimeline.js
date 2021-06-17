@@ -23,7 +23,7 @@ import {
   ADD_PROJECT_PHASE,
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
-  ADD_PROJECT_MILESTONE,
+  ADD_PROJECT_MILESTONE
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
