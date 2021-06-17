@@ -415,7 +415,7 @@ const ProjectTeamTable = ({
             actions: "",
           },
           body: {
-            emptyDataSourceMessage: <text>No team members to display</text>,
+            emptyDataSourceMessage: <Typography variant="body1">No team members to display</Typography>,
           },
         }}
         icons={{ Delete: ClearIcon }}
