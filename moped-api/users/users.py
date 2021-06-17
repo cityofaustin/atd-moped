@@ -99,7 +99,7 @@ def user_create_user(claims: list) -> (Response, int):
                 UserPoolId=USER_POOL,
                 Username=email,
                 TemporaryPassword=password,
-                MessageAction="SUPPRESS"
+                MessageAction="SUPPRESS",
                 UserAttributes=[
                     {"Name": "email", "Value": email},
                     {"Name": "email_verified", "Value": "true"},
