@@ -405,7 +405,7 @@ const ProjectTeamTable = ({
           </Typography>
         }
         options={{
-          ...(data.moped_proj_personnel.length < 6 && { paging: false }),
+          ...(data.moped_proj_personnel.length < 26 && { paging: false }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
