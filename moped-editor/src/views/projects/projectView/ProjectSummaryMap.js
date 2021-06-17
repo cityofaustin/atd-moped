@@ -65,9 +65,9 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON, setIsEditing }) => {
   /**
    * Let's throw an error intentionally if there are no features for a project.
    */
-  if(featureCount < 1) {
-    throw Error("Map error: Cannot render or edit maps with no features");
-  }
+  // if(featureCount < 1) {
+  //   throw Error("Map error: Cannot render or edit maps with no features");
+  // }
 
   /**
    * If we do have features, proceed to render map.

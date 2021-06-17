@@ -31,28 +31,12 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
-const COMMENTS_QUERY = gql`
-  query getProjectComments($projectId: Int!) {
-    moped_proj_notes(where: { project_id: { _eq: $projectId } }) {
-      added_by
-      project_note
-      project_id
-      date_created
-      project_note_id
-    }
-  }
-`;
-
-const ADD_PROJECT_COMMENT = gql`
-  mutation AddProjectComment($objects: [moped_proj_notes_insert_input!]!) {
-    insert_moped_proj_notes(objects: $objects) {
-      returning {
-        project_id
-        project_note
-      }
-    }
-  }
-`;
+// Query
+import {
+  COMMENTS_QUERY,
+  ADD_PROJECT_COMMENT,
+  UPDATE_PROJECT_COMMENT
+} from "../../../queries/comments";
 
 const quillModules = {
   toolbar: [
@@ -104,6 +88,18 @@ const ProjectComments = () => {
     },
   });
 
+  const [editExistingComment] = useMutation(UPDATE_PROJECT_COMMENT, {
+    onCompleted() {
+      refetch();
+      // change the edit field?
+      setCommentAddSuccess(true);
+      setTimeout(() => {
+        setCommentAddLoading(false);
+        setCommentAddSuccess(false);
+      }, 350);
+    }
+  })
+
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
@@ -117,6 +113,7 @@ const ProjectComments = () => {
         objects: [
           {
             added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
+            // add added_by_user_id
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
           },
@@ -124,6 +121,17 @@ const ProjectComments = () => {
       },
     });
   };
+
+  const submitEditComment = (project_note_id) => {
+    setCommentAddLoading(true);
+    editExistingComment({
+      variables: {
+        // project_note: projectnote
+        projectId: Number(projectId),
+        projectNoteId: project_note_id,
+      },
+    });
+  }
 
   return (
     <Page title="Project Notes">
@@ -165,7 +173,7 @@ const ProjectComments = () => {
                             }
                           />
                           <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="edit">
+                            <IconButton edge="end" aria-label="edit" onClick={() => submitEditComment(item.project_note_id)}>
                               <EditIcon />
                             </IconButton>
                             <IconButton edge="end" aria-label="delete">
