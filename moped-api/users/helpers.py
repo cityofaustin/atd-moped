@@ -14,6 +14,7 @@ from users.queries import (
     GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER,
+    GRAPHQL_USER_EXISTS,
 )
 from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
@@ -172,6 +173,44 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     return response.json()
 
 
+def db_user_exists(user_email: str) -> tuple:
+    """
+    Runs a search in the database for any users with the email
+    or user_cognito_uuid provided.
+    :param str user_email: The email to search
+    :return tuple:
+    """
+    # Find the user
+    try:
+        response = run_query(
+            query=GRAPHQL_USER_EXISTS, variables={"userEmail": user_email}
+        ).json()
+    except:
+        return False, None
+
+    # Check if response is not a valid response
+    if not isinstance(response, dict):
+        return False, None
+
+    # If we have a response but it is not data, then it's an error. Return false.
+    if "data" not in response or "moped_users" not in response["data"]:
+        return False, None
+
+    # If the list is empty, then the user does not exist
+    if len(response["data"]["moped_users"]) == 0:
+        return False, None
+
+    # Select the first element (it should be the only element)
+    moped_user = response["data"]["moped_users"][0]
+
+    # Check if the user is in fact what we are looking for
+    if moped_user["email"] == user_email:
+        return True, moped_user["cognito_user_id"]
+
+    # It's not
+    return False, None
+
+
 def get_user_email_from_attr(user_attr: object) -> str:
     """
     Returns the user email from a user attributes object as provided by the admin_get_user method
@@ -241,7 +280,9 @@ def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
                     attribute["Value"]
                     for attribute in user["Attributes"]
                     if attribute["Name"] == "email"
-                ][0],  # the email
+                ][
+                    0
+                ],  # the email
                 user["Username"],  # the uuid
             ),
             user_list_filtered,  # from our list
