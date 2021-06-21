@@ -3,6 +3,7 @@ import Page from "src/components/Page";
 import {
   Avatar,
   Box,
+  Button,
   Container,
   Card,
   CircularProgress,
@@ -19,11 +20,11 @@ import {
 import AddBoxIcon from "@material-ui/icons/AddBox";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
+import CancelIcon from "@material-ui/icons/Cancel";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
-import { gql } from "apollo-boost";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
@@ -63,6 +64,10 @@ const useStyles = makeStyles(theme => ({
   emptyState: {
     margin: theme.spacing(3),
   },
+  cancelButton: {
+    margin: theme.spacing(1),
+    position: "relative",
+  },
 }));
 
 const ProjectComments = () => {
@@ -72,6 +77,8 @@ const ProjectComments = () => {
   const [noteText, setNoteText] = useState("");
   const [commentAddLoading, setCommentAddLoading] = useState(false);
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
+  const [editingComment, setEditingComment] = useState(false);
+  const [commentId, setCommentId] = useState(-1);
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: { projectId },
@@ -91,9 +98,10 @@ const ProjectComments = () => {
 
   const [editExistingComment] = useMutation(UPDATE_PROJECT_COMMENT, {
     onCompleted() {
+      setNoteText("");
       refetch();
-      // change the edit field?
       setCommentAddSuccess(true);
+      setEditingComment(false);
       setTimeout(() => {
         setCommentAddLoading(false);
         setCommentAddSuccess(false);
@@ -130,13 +138,25 @@ const ProjectComments = () => {
     });
   };
 
+  const editComment = (index, project_note_id) => {
+    setEditingComment(true);
+    setNoteText(data.moped_proj_notes[index].project_note);
+    setCommentId(project_note_id);
+  };
+
+  const cancelCommentEdit = () => {
+    setNoteText("");
+    setEditingComment(false);
+    setCommentId(-1)
+  };
+
   const submitEditComment = project_note_id => {
-    setCommentAddLoading(true); // ?
+    setCommentAddLoading(true);
     editExistingComment({
       variables: {
-        // project_note: projectnote
+        projectNote: DOMPurify.sanitize(noteText),
         projectId: Number(projectId),
-        projectNoteId: project_note_id,
+        projectNoteId: commentId,
       },
     });
   };
@@ -148,7 +168,7 @@ const ProjectComments = () => {
         projectNoteId: project_note_id,
       },
     });
-  }
+  };
 
   return (
     <Page title="Project Notes">
@@ -194,7 +214,7 @@ const ProjectComments = () => {
                               edge="end"
                               aria-label="edit"
                               onClick={() =>
-                                submitEditComment(item.project_note_id)
+                                editComment(i, item.project_note_id)
                               }
                             >
                               <EditIcon />
@@ -237,17 +257,37 @@ const ProjectComments = () => {
                     </Box>
                   </Grid>
                   <Grid item>
-                    <Box pb={2}>
+                    <Box pb={2} display="flex">
                       <ProjectSaveButton
                         label={
                           <>
-                            <AddBoxIcon /> <Box ml={1}>Add comment</Box>
+                            <AddBoxIcon />
+                            <Box ml={1}>
+                              {editingComment
+                                ? "Update comment"
+                                : "Add comment"}
+                            </Box>
                           </>
                         }
                         loading={commentAddLoading}
                         success={commentAddSuccess}
-                        handleButtonClick={submitNewComment} // do i want this to be where the edit is done? hold in state
+                        handleButtonClick={
+                          editingComment ? submitEditComment : submitNewComment
+                        }
                       />
+                      {editingComment && (
+                        <div className={classes.cancelButton}>
+                          <Button
+                            variant="outlined"
+                            color="secondary"
+                            onClick={cancelCommentEdit}
+                          >
+                            <>
+                              <CancelIcon /> <Box ml={1}>Cancel</Box>
+                            </>
+                          </Button>
+                        </div>
+                      )}
                     </Box>
                   </Grid>
                 </Grid>

@@ -27,9 +27,9 @@ export const ADD_PROJECT_COMMENT = gql`
 `;
 
 export const UPDATE_PROJECT_COMMENT = gql`
-  mutation UpdateProjectComment($projectId: Int!, $projectNoteId: Int!) {
+  mutation UpdateProjectComment($projectId: Int!, $projectNoteId: Int!, $projectNote: String!) {
     update_moped_proj_notes(
-      _set: { project_note: "<p>same as it ever was</p>" }
+      _set: { project_note: $projectNote }
       where: {
         project_id: { _eq: $projectId }
         project_note_id: { _eq: $projectNoteId }
