@@ -205,9 +205,7 @@ def get_user_database_ids(response: dict) -> tuple:
 
     # Put separately because if workgroup_id fails, database_id shouldn't default to zero...
     try:
-        database_id = str(
-            response["data"][operation_mode]["returning"][0]["user_id"]
-        )
+        database_id = str(response["data"][operation_mode]["returning"][0]["user_id"])
     except (TypeError, KeyError, IndexError):
         database_id = "0"
     # Put separately because if user_id fails, workgroup_id shouldn't default to zero..
@@ -219,3 +217,40 @@ def get_user_database_ids(response: dict) -> tuple:
         workgroup_id = "0"
 
     return (database_id, workgroup_id)
+
+
+def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
+    """
+    Retrieves the current list of users in Cognito, and returns True if it can find the
+    specified user email. It returns False if it cannot find the user.
+    :param dict user_list_response: The user list response from boto's cognito client
+    :param user_email: The email we need to find in the list
+    :return bool:
+    """
+    # Retrieves the full list of users, but removes any azuread emails
+    user_list_filtered = list(
+        filter(
+            lambda user: "azuread_" not in user["Username"], user_list_response["Users"]
+        )
+    )
+    # Then we extract the emails and cognito_uuid into a list of tuples
+    user_list = list(
+        map(
+            lambda user: (
+                [
+                    attribute["Value"]
+                    for attribute in user["Attributes"]
+                    if attribute["Name"] == "email"
+                ][0],  # the email
+                user["Username"],  # the uuid
+            ),
+            user_list_filtered,  # from our list
+        )
+    )
+    # Now check if the email is present
+    for user in user_list:
+        if user[0] == user_email:
+            # If it is, then return true, and user id as a tuple
+            return True, user[1]
+    # Otherwise, return False and None as the UUID
+    return False, None
