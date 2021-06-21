@@ -35,7 +35,8 @@ import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 import {
   COMMENTS_QUERY,
   ADD_PROJECT_COMMENT,
-  UPDATE_PROJECT_COMMENT
+  UPDATE_PROJECT_COMMENT,
+  DELETE_PROJECT_COMMENT,
 } from "../../../queries/comments";
 
 const quillModules = {
@@ -97,8 +98,14 @@ const ProjectComments = () => {
         setCommentAddLoading(false);
         setCommentAddSuccess(false);
       }, 350);
-    }
-  })
+    },
+  });
+
+  const [deleteExistingComment] = useMutation(DELETE_PROJECT_COMMENT, {
+    onCompleted() {
+      refetch();
+    },
+  });
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -116,17 +123,27 @@ const ProjectComments = () => {
             // add added_by_user_id
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
+            status_id: 1,
           },
         ],
       },
     });
   };
 
-  const submitEditComment = (project_note_id) => {
-    setCommentAddLoading(true);
+  const submitEditComment = project_note_id => {
+    setCommentAddLoading(true); // ?
     editExistingComment({
       variables: {
         // project_note: projectnote
+        projectId: Number(projectId),
+        projectNoteId: project_note_id,
+      },
+    });
+  };
+
+  const submitDeleteComment = project_note_id => {
+    deleteExistingComment({
+      variables: {
         projectId: Number(projectId),
         projectNoteId: project_note_id,
       },
@@ -173,10 +190,22 @@ const ProjectComments = () => {
                             }
                           />
                           <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="edit" onClick={() => submitEditComment(item.project_note_id)}>
+                            <IconButton
+                              edge="end"
+                              aria-label="edit"
+                              onClick={() =>
+                                submitEditComment(item.project_note_id)
+                              }
+                            >
                               <EditIcon />
                             </IconButton>
-                            <IconButton edge="end" aria-label="delete">
+                            <IconButton
+                              edge="end"
+                              aria-label="delete"
+                              onClick={() =>
+                                submitDeleteComment(item.project_note_id)
+                              }
+                            >
                               <DeleteIcon />
                             </IconButton>
                           </ListItemSecondaryAction>
@@ -217,7 +246,7 @@ const ProjectComments = () => {
                         }
                         loading={commentAddLoading}
                         success={commentAddSuccess}
-                        handleButtonClick={submitNewComment}
+                        handleButtonClick={submitNewComment} // do i want this to be where the edit is done? hold in state
                       />
                     </Box>
                   </Grid>

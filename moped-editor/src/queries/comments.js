@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const COMMENTS_QUERY = gql`
-  query getProjectComments($projectId: Int!) {
+  query GetProjectComments($projectId: Int!) {
     moped_proj_notes(
-      where: { project_id: { _eq: $projectId } }
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
       order_by: { date_created: asc }
     ) {
       added_by
@@ -27,7 +27,7 @@ export const ADD_PROJECT_COMMENT = gql`
 `;
 
 export const UPDATE_PROJECT_COMMENT = gql`
-  mutation updateProjectComment($projectId: Int!, $projectNoteId: Int!) {
+  mutation UpdateProjectComment($projectId: Int!, $projectNoteId: Int!) {
     update_moped_proj_notes(
       _set: { project_note: "<p>same as it ever was</p>" }
       where: {
@@ -40,13 +40,16 @@ export const UPDATE_PROJECT_COMMENT = gql`
   }
 `;
 
-// export const ACCOUNT_USER_PICTURE_UPDATE = gql`
-//   mutation UpdateUserPicture($userId: Int!, $picture: String!) {
-//     update_moped_users(
-//       _set: { picture: $picture }
-//       where: { user_id: { _eq: $userId } }
-//     ) {
-//       affected_rows
-//     }
-//   }
-// `;
+export const DELETE_PROJECT_COMMENT = gql`
+  mutation DeleteProjectComent($projectId: Int!, $projectNoteId: Int!) {
+    update_moped_proj_notes(
+      _set: {status_id: 0},
+      where: {
+        project_id: { _eq: $projectId }
+        project_note_id: { _eq: $projectNoteId }
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
