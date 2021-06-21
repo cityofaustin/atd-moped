@@ -54,3 +54,19 @@ GRAPHQL_DEACTIVATE_USER = """
       }
     }
 """
+
+GRAPHQL_USER_EXISTS = """
+  query GetUserExists($userEmail: citext!) {
+      moped_users(
+        where: {
+            email: {_eq: $userEmail}
+        }
+      ) {
+        cognito_user_id
+        email
+        user_id
+        workgroup_id
+        status_id
+      }
+  }
+"""
