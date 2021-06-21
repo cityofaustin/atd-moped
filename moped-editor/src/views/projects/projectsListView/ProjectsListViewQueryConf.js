@@ -4,7 +4,6 @@ import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 
-
 /**
  * The Query configuration (now also including filters)
  * @constant
@@ -66,7 +65,7 @@ export const ProjectsListViewQueryConf = {
       width: "*",
       type: "String",
       filter: values => {
-        const jsonValues = JSON.parse(values)
+        const jsonValues = JSON.parse(values);
         return (
           <RouterLink
             to={`/${jsonValues.singleItem}/${jsonValues.link}`}
@@ -74,8 +73,8 @@ export const ProjectsListViewQueryConf = {
           >
             {jsonValues.data}
           </RouterLink>
-        )
-      }
+        );
+      },
     },
     project_description: {
       hidden: true,
@@ -123,30 +122,32 @@ export const ProjectsListViewQueryConf = {
       width: "20%",
       filter: value => {
         if (value === " :") {
-          return ""
+          return "";
         }
-        const namesArray = value.split(',')
-        const uniqueNames = {}
+        const namesArray = value.split(",");
+        const uniqueNames = {};
         namesArray.forEach(person => {
-          const [fullName, projectRole] = person.split(":")
+          const [fullName, projectRole] = person.split(":");
           if (uniqueNames[fullName]) {
-            uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`
+            uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`;
           } else {
-            uniqueNames[fullName] = projectRole
+            uniqueNames[fullName] = projectRole;
           }
-        })
+        });
         const personnel = Object.keys(uniqueNames).map(
-          key => `${key} - ${uniqueNames[key]}`);
+          key => `${key} - ${uniqueNames[key]}`
+        );
 
-        return personnel.join("\n")
-      }
+        return personnel.join("\n");
+      },
     },
     start_date: {
       searchable: false,
       sortable: true,
       label: "Start date",
       width: "10%",
-      filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
+      filter: value =>
+        new Date(value).toLocaleDateString("en-US", { timeZone: "UTC" }),
       type: "date_iso",
     },
     ecapris_subproject_id: {
@@ -166,7 +167,7 @@ export const ProjectsListViewQueryConf = {
         operator: "_eq",
         quoted: false,
         envelope: "%{VALUE}%",
-        invalidValueDefault: 0
+        invalidValueDefault: 0,
       },
     },
     updated_at: {
@@ -174,13 +175,13 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => new Date(value).toLocaleDateString('en-US'),
+      filter: value => new Date(value).toLocaleDateString("en-US"),
       type: "date_iso",
     },
   },
   order_by: { updated_at: "desc" },
   where: {
-    is_retired: "_eq: false"
+    is_retired: "_eq: false",
   },
   limit: 25,
   offset: 0,
