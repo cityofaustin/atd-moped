@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import Page from "src/components/Page";
 import {
   Avatar,
-  Box,
-  Button,
   Container,
   Card,
   CircularProgress,
@@ -17,10 +15,8 @@ import {
   ListItemText,
   Typography,
 } from "@material-ui/core";
-import AddBoxIcon from "@material-ui/icons/AddBox";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
-import CancelIcon from "@material-ui/icons/Cancel";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData } from "src/auth/user";
@@ -28,9 +24,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
+import CommentInputQuill from "./CommentInputQuill";
 
 // Query
 import {
@@ -39,15 +33,6 @@ import {
   UPDATE_PROJECT_COMMENT,
   DELETE_PROJECT_COMMENT,
 } from "../../../queries/comments";
-
-const quillModules = {
-  toolbar: [
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link"],
-    ["clean"],
-  ],
-};
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -147,12 +132,12 @@ const ProjectComments = () => {
   const cancelCommentEdit = () => {
     setNoteText("");
     setEditingComment(false);
-    setCommentId(null)
+    setCommentId(null);
   };
 
   const submitEditComment = project_note_id => {
     setCommentAddLoading(true);
-    setCommentId(null)
+    setCommentId(null);
     editExistingComment({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
@@ -206,11 +191,15 @@ const ProjectComments = () => {
                             }
                             secondary={
                               commentId === item.project_note_id ? (
-                                <ReactQuill
-                                  theme="snow"
-                                  value={noteText}
-                                  onChange={setNoteText}
-                                  modules={quillModules}
+                                <CommentInputQuill
+                                  noteText={noteText}
+                                  setNoteText={setNoteText}
+                                  editingComment={editingComment}
+                                  commentAddLoading={commentAddLoading}
+                                  commentAddSuccess={commentAddSuccess}
+                                  submitNewComment={submitNewComment}
+                                  submitEditComment={submitEditComment}
+                                  cancelCommentEdit={cancelCommentEdit}
                                 />
                               ) : (
                                 <Typography className={classes.newNoteText}>
@@ -220,15 +209,17 @@ const ProjectComments = () => {
                             }
                           />
                           <ListItemSecondaryAction>
-                            { commentId != item.project_note_id && <IconButton
-                              edge="end"
-                              aria-label="edit"
-                              onClick={() =>
-                                editComment(i, item.project_note_id)
-                              }
-                            >
-                              <EditIcon />
-                            </IconButton> }
+                            {commentId !== item.project_note_id && (
+                              <IconButton
+                                edge="end"
+                                aria-label="edit"
+                                onClick={() =>
+                                  editComment(i, item.project_note_id)
+                                }
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            )}
                             <IconButton
                               edge="end"
                               aria-label="delete"
@@ -252,58 +243,22 @@ const ProjectComments = () => {
               )}
             </Card>
           </Grid>
-          <Grid item xs={12}>
-            <Card>
-              <Container>
-                <Grid xs={12} sm={10} container direction="column" spacing={1}>
-                  <Grid item>
-                    <Box pt={2}>
-                      <ReactQuill
-                        theme="snow"
-                        value={noteText}
-                        onChange={setNoteText}
-                        modules={quillModules}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item>
-                    <Box pb={2} display="flex">
-                      <ProjectSaveButton
-                        label={
-                          <>
-                            <AddBoxIcon />
-                            <Box ml={1}>
-                              {editingComment
-                                ? "Update comment"
-                                : "Add comment"}
-                            </Box>
-                          </>
-                        }
-                        loading={commentAddLoading}
-                        success={commentAddSuccess}
-                        handleButtonClick={
-                          editingComment ? submitEditComment : submitNewComment
-                        }
-                      />
-                      {editingComment && (
-                        <div className={classes.cancelButton}>
-                          <Button
-                            variant="outlined"
-                            color="secondary"
-                            onClick={cancelCommentEdit}
-                          >
-                            <>
-                              <CancelIcon /> <Box ml={1}>Cancel</Box>
-                            </>
-                          </Button>
-                        </div>
-                      )}
-                    </Box>
-                  </Grid>
-                </Grid>
-              </Container>
-            </Card>
-          </Grid>
+          {!editingComment && (
+            <Grid item xs={12}>
+              <Card>
+                <CommentInputQuill
+                  noteText={noteText}
+                  setNoteText={setNoteText}
+                  editingComment={editingComment}
+                  commentAddLoading={commentAddLoading}
+                  commentAddSuccess={commentAddSuccess}
+                  submitNewComment={submitNewComment}
+                  submitEditComment={submitEditComment}
+                  cancelCommentEdit={cancelCommentEdit}
+                />
+              </Card>
+            </Grid>
+          )}
         </Grid>
       </Container>
     </Page>
