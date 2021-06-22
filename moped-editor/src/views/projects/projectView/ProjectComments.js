@@ -78,7 +78,7 @@ const ProjectComments = () => {
   const [commentAddLoading, setCommentAddLoading] = useState(false);
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
-  const [commentId, setCommentId] = useState(-1);
+  const [commentId, setCommentId] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: { projectId },
@@ -147,11 +147,12 @@ const ProjectComments = () => {
   const cancelCommentEdit = () => {
     setNoteText("");
     setEditingComment(false);
-    setCommentId(-1)
+    setCommentId(null)
   };
 
   const submitEditComment = project_note_id => {
     setCommentAddLoading(true);
+    setCommentId(null)
     editExistingComment({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
@@ -204,13 +205,22 @@ const ProjectComments = () => {
                               </>
                             }
                             secondary={
-                              <Typography className={classes.noteText}>
-                                {parse(item.project_note)}
-                              </Typography>
+                              commentId === item.project_note_id ? (
+                                <ReactQuill
+                                  theme="snow"
+                                  value={noteText}
+                                  onChange={setNoteText}
+                                  modules={quillModules}
+                                />
+                              ) : (
+                                <Typography className={classes.newNoteText}>
+                                  {parse(item.project_note)}
+                                </Typography>
+                              )
                             }
                           />
                           <ListItemSecondaryAction>
-                            <IconButton
+                            { commentId != item.project_note_id && <IconButton
                               edge="end"
                               aria-label="edit"
                               onClick={() =>
@@ -218,7 +228,7 @@ const ProjectComments = () => {
                               }
                             >
                               <EditIcon />
-                            </IconButton>
+                            </IconButton> }
                             <IconButton
                               edge="end"
                               aria-label="delete"
