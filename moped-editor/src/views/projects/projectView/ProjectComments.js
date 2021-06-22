@@ -49,10 +49,6 @@ const useStyles = makeStyles(theme => ({
   emptyState: {
     margin: theme.spacing(3),
   },
-  cancelButton: {
-    margin: theme.spacing(1),
-    position: "relative",
-  },
 }));
 
 const ProjectComments = () => {
@@ -113,7 +109,6 @@ const ProjectComments = () => {
         objects: [
           {
             added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
-            // add added_by_user_id
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             status_id: 1,
