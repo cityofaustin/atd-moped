@@ -155,7 +155,7 @@ def user_create_user(claims: list) -> (Response, int):
         if "errors" in db_response:
             final_response = {
                 "error": {
-                    "message": "Error in the database, user deleted from cognito",
+                    "message": "Errors reported",
                     "cognito": cognito_response,
                     "database": db_response,
                 }
