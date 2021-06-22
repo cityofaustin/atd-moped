@@ -160,7 +160,7 @@ def user_create_user(claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(final_response), 500
+            return jsonify(final_response), 400
 
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
