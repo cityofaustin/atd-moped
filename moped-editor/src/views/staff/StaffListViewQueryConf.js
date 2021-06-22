@@ -126,13 +126,6 @@ export const StaffListViewQueryConf = {
       },
       type: "String",
     },
-    is_coa_staff: {
-      searchable: false,
-      sortable: true,
-      label: "COA staff",
-      filter: value => (value === true ? "True" : "False"),
-      type: "Boolean",
-    },
   },
   order_by: {},
   where: {
