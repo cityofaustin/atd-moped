@@ -99,6 +99,9 @@ def user_create_user(claims: list) -> (Response, int):
         json_data = request.json
         password = json_data["password"]
         email = json_data["email"]
+        cognito_response = {
+            "message": "User already existing in Cognito"
+        }
 
         # Determine if the user already exists
         user_already_exists, user_cognito_uuid = cognito_user_exists(
@@ -166,7 +169,7 @@ def user_create_user(claims: list) -> (Response, int):
         database_id, workgroup_id = get_user_database_ids(response=db_response)
 
         user_claims = format_claims(
-            user_id=cognito_username,
+            user_id=user_cognito_uuid,
             roles=roles,
             database_id=database_id,
             workgroup_id=workgroup_id
@@ -175,7 +178,7 @@ def user_create_user(claims: list) -> (Response, int):
         put_claims(
             user_email=email,
             user_claims=user_claims,
-            cognito_uuid=cognito_username,
+            cognito_uuid=user_cognito_uuid,
             database_id=database_id,
             workgroup_id=workgroup_id
         )
@@ -189,7 +192,7 @@ def user_create_user(claims: list) -> (Response, int):
 
         final_response = {
             "success": {
-                "message": f"New user created: {cognito_username}",
+                "message": f"New user created: {user_cognito_uuid}",
                 "cognito": cognito_response,
                 "database": db_response,
             }
