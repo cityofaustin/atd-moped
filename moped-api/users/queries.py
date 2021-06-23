@@ -12,6 +12,7 @@ GRAPHQL_CREATE_USER = """
             cognito_user_id,
             date_added,
             status_id,
+            title,
             workgroup,
             workgroup_id,
             roles
@@ -53,4 +54,20 @@ GRAPHQL_DEACTIVATE_USER = """
         }
       }
     }
+"""
+
+GRAPHQL_USER_EXISTS = """
+  query GetUserExists($userEmail: citext!) {
+      moped_users(
+        where: {
+            email: {_eq: $userEmail}
+        }
+      ) {
+        cognito_user_id
+        email
+        user_id
+        workgroup_id
+        status_id
+      }
+  }
 """
