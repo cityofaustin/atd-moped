@@ -12,7 +12,7 @@ import LoginView from "src/views/auth/LoginView";
 import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
 import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
-import ProjectSummary from "src/views/projects/projectView/ProjectView";
+import ProjectView from "src/views/projects/projectView/ProjectView";
 import SettingsView from "src/views/settings/SettingsView/SettingsView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 
@@ -62,7 +62,7 @@ export const routes = [
       {
         path: "projects/:projectId",
         action: "project:visit",
-        element: <ProjectSummary />,
+        element: <ProjectView />,
       },
       { path: "logout", action: "logout:visit", element: <Logout /> },
       { path: "settings", action: "settings:visit", element: <SettingsView /> },
