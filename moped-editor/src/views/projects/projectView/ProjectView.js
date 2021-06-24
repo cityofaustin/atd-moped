@@ -118,6 +118,10 @@ const ProjectView = () => {
   const { projectId } = useParams();
   let query = useQueryParams();
   const classes = useStyles();
+  const previousFilters = useLocation().state.filters;
+  const allProjectsLink = previousFilters
+    ? `/moped/projects?filter=${previousFilters}`
+    : "/moped/projects";
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
@@ -289,7 +293,7 @@ const ProjectView = () => {
                     <Grid item xs={12}>
                       <Box pb={1}>
                         <Breadcrumbs aria-label="all-projects-breadcrumb">
-                          <Link component={RouterLink} to="/moped/projects">
+                          <Link component={RouterLink} to={allProjectsLink}>
                             <strong>{"< ALL PROJECTS"}</strong>
                           </Link>
                         </Breadcrumbs>
