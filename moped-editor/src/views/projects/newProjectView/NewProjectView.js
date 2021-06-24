@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -114,7 +114,6 @@ const NewProjectView = () => {
       setAreNoFeaturesSelected(false);
     }
   }, [featureCollection]);
-
 
   /**
    * Generates an object with labels for the steps
@@ -283,19 +282,46 @@ const NewProjectView = () => {
       ...filterObjectByKeys(row, ["tableData"]),
     }));
 
-    const projectFeatures = featureCollection.features.map(feature => ({
-      location: feature,
-      status_id: 1,
-    }));
+    /**
+     * We now must generate the payload with variables for our GraphQL query.
+     * @type {Object}
+     */
+    const variablePayload = {
+      object: {
+        // First we need to copy the project details
+        ...projectDetails,
+        // Next we generate the project extent component
+        moped_proj_components: {
+          data: [
+            {
+              name: "Extent",
+              description: "Project full extent",
+              component_id: 1,
+              status_id: 1,
+              moped_proj_features_components: {
+                data: {
+                  name: "Feature Extent Component",
+                  description: "New Project Feature Extent",
+                  status_id: 1,
+                  moped_proj_feature_object: {
+                    // Here we must copy the entire feature collection
+                    data: {
+                      status_id: 1,
+                      location: featureCollection,
+                    },
+                  },
+                },
+              },
+            },
+          ],
+        },
+        // Finally we provide the project personnel
+        moped_proj_personnel: { data: cleanedPersonnel },
+      },
+    };
 
     addProject({
-      variables: {
-        object: {
-          ...projectDetails,
-          moped_proj_features: { data: projectFeatures },
-          moped_proj_personnel: { data: cleanedPersonnel },
-        },
-      },
+      variables: variablePayload,
     })
       .then(response => {
         const { project_id } = response.data.insert_moped_project_one;
