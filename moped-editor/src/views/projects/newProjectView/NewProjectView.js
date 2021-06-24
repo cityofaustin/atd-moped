@@ -300,7 +300,7 @@ const NewProjectView = () => {
             {
               name: "Extent",
               description: "Project full extent",
-              component_id: 1,
+              component_id: 0,
               status_id: 1,
               moped_proj_features_components: {
                 data: featureCollection.features.map(feature => ({
