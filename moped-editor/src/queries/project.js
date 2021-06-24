@@ -550,6 +550,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
       }
       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
         project_features_components_id
+        moped_proj_features_id
         status_id
         moped_proj_feature {
           location
