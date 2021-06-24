@@ -116,9 +116,9 @@ const NewProjectView = () => {
   }, [featureCollection]);
 
 
-  /**\
+  /**
    * Generates an object with labels for the steps
-   * @return {[{label: string}, {label: string}, {isError: boolean, label: string, error: string}]}
+   * @return {Object[]}
    */
   const getSteps = () => {
     return [
@@ -134,7 +134,7 @@ const NewProjectView = () => {
 
   /**
    * Returns a component for a specific step number
-   * @param {Number} step
+   * @param {Number} step - The step number component to render
    * @return {JSX.Element|string}
    */
   const getStepContent = step => {
