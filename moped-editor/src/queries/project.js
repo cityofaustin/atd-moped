@@ -13,7 +13,7 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       start_date
-      moped_proj_components{
+      moped_proj_components {
         moped_proj_features_components {
           moped_proj_feature {
             feature_id
@@ -630,6 +630,17 @@ export const DELETE_MOPED_COMPONENT = gql`
         }
       }
       _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPDATE_NEW_PROJ_FEATURES = gql`
+  mutation UpdateNewProjectFeatures($featureList: [Int!]!, $projectId: Int!) {
+    update_moped_proj_features(
+      where: { feature_id: { _in: $featureList } }
+      _set: { project_id: $projectId }
     ) {
       affected_rows
     }
