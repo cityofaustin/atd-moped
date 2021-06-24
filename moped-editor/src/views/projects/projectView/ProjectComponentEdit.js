@@ -299,6 +299,7 @@ const ProjectComponentEdit = ({
             )
             .map(record => ({
               ...record,
+              feature_id: record.properties.moped_proj_feature_id,
               status_id: 0,
             }))
         : []; // if this is a new component, there are no old records to update
@@ -396,6 +397,9 @@ const ProjectComponentEdit = ({
         },
         // This inserts into moped_proj_features, and assumes relationship with moped_proj_features_components
         data: {
+          ...(feature.hasOwnProperty("feature_id")
+            ? { feature_id: feature.feature_id }
+            : {}),
           project_id: Number.parseInt(projectId),
           location: { ...feature },
           status_id: feature.status_id,
@@ -592,13 +596,17 @@ const ProjectComponentEdit = ({
       data?.moped_proj_components[0]?.moped_proj_features_components ?? []
     ).map(featureComponent => {
       // Retrieve the feature component's primary key
-      const featureCompId = featureComponent.project_features_components_id;
+      const {
+        moped_proj_features_id,
+        project_features_components_id,
+      } = featureComponent;
       // Clone the geojson data from the feature component
       const newGeoJson = {
         ...featureComponent.moped_proj_feature.location,
       };
       // Now go ahead and patch the primary key into the GeoJson properties
-      newGeoJson.properties.project_features_components_id = featureCompId;
+      newGeoJson.properties.project_features_components_id = project_features_components_id;
+      newGeoJson.properties.moped_proj_feature_id = moped_proj_features_id;
 
       return newGeoJson;
     });
