@@ -299,18 +299,17 @@ const NewProjectView = () => {
               component_id: 1,
               status_id: 1,
               moped_proj_features_components: {
-                data: {
+                data: featureCollection.features.map(feature => ({
                   name: "Feature Extent Component",
                   description: "New Project Feature Extent",
                   status_id: 1,
                   moped_proj_feature_object: {
-                    // Here we must copy the entire feature collection
                     data: {
                       status_id: 1,
-                      location: featureCollection,
+                      location: feature,
                     },
                   },
-                },
+                })),
               },
             },
           ],
