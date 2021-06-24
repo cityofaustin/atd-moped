@@ -77,7 +77,13 @@ const ProjectComponentEdit = ({
    * The State
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
-   * @type {String[]} selectedComponentSubtype - A string containing all available subtypes for type
+   * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
+   * @type {Number[]} selectedSubcomponents - A number array containing the id of the selected subcomponents
+   * @type {String[]} availableSubtypes - An string list containing all available subtypes for the selected component
+   * @type {Object[]} editFeatureComponents - An object list containing the features for this component
+   * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
+   * @type {String} componentDescription - The description of this component
+   * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
    * @constant
    */
   const [selectedComponentId, setSelectedComponentId] = useState(null);
