@@ -345,9 +345,23 @@ export const getLayerSource = e =>
  */
 export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
   type: "FeatureCollection",
-  features: projectFeatureRecords
-    ? projectFeatureRecords.map(feature => feature.location)
-    : [],
+  features: projectFeatureRecords // Do we have a records object?
+    ? // We do, then unpack features
+      projectFeatureRecords.reduce(
+        (accumulator, feature) => [
+          // First copy the current state of the accumulator
+          ...accumulator,
+          // Then we must copy any individual feature (or features)
+          ...(feature.location.type === "FeatureCollection"
+            ? // We must unpack the features
+              feature.location.features
+            : // Provide the regular feature
+              [feature.location]),
+        ],
+        [] // Initial accumulator state
+      )
+    : // We don't, return empty array
+      [],
 });
 
 /**

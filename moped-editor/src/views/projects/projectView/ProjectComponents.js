@@ -67,7 +67,7 @@ const ProjectComponents = () => {
 
   const { error, loading, data, refetch } = useQuery(COMPONENTS_QUERY, {
     variables: {
-      projectId,
+      projectId: Number.parseInt(projectId),
     },
   });
 
