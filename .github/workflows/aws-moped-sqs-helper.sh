@@ -63,6 +63,10 @@ function generate_env_vars {
 
   # Replaces the %FUNCTION_NAME% string in the template
   sed -i "s/%FUNCTION_NAME%/${FUNCTION_NAME_CONFIG}/g" handler_config.json;
+
+  # Print Environment
+  echo "Environment: ";
+  grep "Description" handler_config.json;
 }
 
 #
