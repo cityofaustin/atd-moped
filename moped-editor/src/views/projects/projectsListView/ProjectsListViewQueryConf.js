@@ -103,7 +103,7 @@ export const ProjectsListViewQueryConf = {
         canceled: "default",
       },
     },
-    current_phase: {
+    phase_name: {
       searchable: true,
       sortable: false,
       label: "Current phase",
