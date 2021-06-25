@@ -28,6 +28,7 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import moment from "moment";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -315,6 +316,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start Date",
       field: "phase_start",
+      render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -326,6 +328,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "End Date",
       field: "phase_end",
+      render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
       editComponent: props => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),

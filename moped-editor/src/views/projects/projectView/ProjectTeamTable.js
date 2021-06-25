@@ -3,13 +3,17 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
+  Button,
   Chip,
   CircularProgress,
   TextField,
   Typography,
 } from "@material-ui/core";
-import { Clear as ClearIcon } from "@material-ui/icons";
-import MaterialTable, { MTableEditRow } from "material-table";
+import {
+  AddCircle as AddCircleIcon,
+  Clear as ClearIcon,
+} from "@material-ui/icons";
+import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
@@ -40,6 +44,8 @@ const ProjectTeamTable = ({
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+
+  const addActionRef = React.useRef();
 
   const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
 
@@ -363,6 +369,28 @@ const ProjectTeamTable = ({
               }}
             />
           ),
+          Action: props => {
+            // If isn't the add action
+            if (
+              typeof props.action === typeof Function ||
+              props.action.tooltip !== "Add"
+            ) {
+              return <MTableAction {...props} />;
+            } else {
+              return (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<AddCircleIcon />}
+                  ref={addActionRef}
+                  onClick={props.action.onClick}
+                >
+                  Add team member
+                </Button>
+              );
+            }
+          },
         }}
         data={
           isNewProject
@@ -371,11 +399,24 @@ const ProjectTeamTable = ({
                 return personnel[item];
               })
         }
-        title="Project team"
+        title={
+          <Typography variant="h2" color="primary">
+            Project team
+          </Typography>
+        }
         options={{
+          ...(data.moped_proj_personnel.length < 26 && { paging: false }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+        }}
+        localization={{
+          header: {
+            actions: "",
+          },
+          body: {
+            emptyDataSourceMessage: <Typography variant="body1">No team members to display</Typography>,
+          },
         }}
         icons={{ Delete: ClearIcon }}
         editable={{
