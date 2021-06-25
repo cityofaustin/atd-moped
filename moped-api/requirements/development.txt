@@ -52,7 +52,7 @@ text-unidecode==1.3
 toml==0.10.1
 tqdm==4.49.0
 troposphere==2.6.2
-urllib3==1.25.10
+urllib3==1.26.5
 Werkzeug==0.16.1
 wsgi-request-logger==0.4.6
 xmltodict==0.12.0
