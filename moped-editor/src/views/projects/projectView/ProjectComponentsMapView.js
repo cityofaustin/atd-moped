@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
-import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -16,6 +15,7 @@ import {
   useHoverLayer,
   useFeatureCollectionToFitBounds,
 } from "../../../utils/mapHelpers";
+import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 
 const useStyles = makeStyles({
   locationCountText: {
@@ -36,14 +36,14 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  projectExtentGeoJSON,
+const ProjectComponentsMapView = ({
+  projectFeatureCollection,
   setIsEditing,
-  isEditable = false,
+  editEnabled,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = countFeatures(projectExtentGeoJSON);
+  const featureCount = countFeatures(projectFeatureCollection);
 
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler
@@ -57,7 +57,7 @@ const ProjectSummaryMap = ({
    */
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
-    projectExtentGeoJSON
+    projectFeatureCollection
   );
 
   /**
@@ -89,8 +89,10 @@ const ProjectSummaryMap = ({
         mapboxApiAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
-              The getCursor callback will receive isHovering: true when hover over features of these layers */
-        interactiveLayerIds={getSummaryMapInteractiveIds(projectExtentGeoJSON)}
+                      The getCursor callback will receive isHovering: true when hover over features of these layers */
+        interactiveLayerIds={getSummaryMapInteractiveIds(
+          projectFeatureCollection
+        )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
@@ -104,11 +106,11 @@ const ProjectSummaryMap = ({
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
         */}
-        {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
+        {projectFeatureCollection &&
+          createSummaryMapLayers(projectFeatureCollection)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        {/* Draw edit button controls with specific styles */}
-        {isEditable && (
+        {editEnabled && (
           <Button
             variant="contained"
             color="primary"
@@ -125,4 +127,4 @@ const ProjectSummaryMap = ({
   );
 };
 
-export default ProjectSummaryMap;
+export default ProjectComponentsMapView;

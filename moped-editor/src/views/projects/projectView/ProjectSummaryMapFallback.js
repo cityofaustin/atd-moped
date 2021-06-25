@@ -1,9 +1,8 @@
 import React from "react";
 
 import { Box, Button, Card, Icon, makeStyles } from "@material-ui/core";
-import { gql, useMutation } from "@apollo/client";
-import { PROJECT_CLEAR_MAP_DATA_TEMPLATE } from "../../../queries/project";
-import { v4 as uuid } from "uuid";
+
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -35,49 +34,18 @@ const useStyles = makeStyles(theme => ({
  * Renders a fallback component that shows the user whenever there is a map error.
  * @param {object} error - provided by ErrorBoundary component, contains error details.
  * @param {function} resetErrorBoundary - A function that forces ErrorBoundary to re-render it's children components
- * @param {integer} projectId - The project id of the map
- * @param {function} refetchProjectDetails - A refetch function to run after the data is cleared
- * @param {function} setIsEditing - A function to enable editing
  * @param {object} mapData - The map data with errors to show in the console for debugging
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummaryMapFallback = ({
-  error,
-  resetErrorBoundary,
-  projectId,
-  refetchProjectDetails,
-  setIsEditing,
-  mapData,
-}) => {
+const ProjectSummaryMapFallback = ({ error, mapData }) => {
   const classes = useStyles();
-
-  const [clearProjectMapData] = useMutation(
-    gql(PROJECT_CLEAR_MAP_DATA_TEMPLATE.replace("RANDOM_FEATURE_ID", uuid())),
-    {
-      variables: {
-        projectId: projectId,
-      },
-    }
-  );
 
   /**
    * Log whatever error there may be
    */
   console.error("MapDataError: ", error);
   console.error("MapData: ", mapData);
-
-  /**
-   * Clears the json data in the project and opens the editor
-   */
-  const clearAndEdit = () => {
-    clearProjectMapData().then(() => {
-      refetchProjectDetails().then(() => {
-        setIsEditing(true);
-        resetErrorBoundary();
-      });
-    });
-  };
 
   return (
     <Box>
@@ -90,8 +58,8 @@ const ProjectSummaryMapFallback = ({
         <h3 className={classes.mapErrorTitle}>No map available</h3>
         <div className={classes.paragraphGroup}>
           <p>
-            The map for this project is either missing or outdated. Create a new
-            map or{" "}
+            This project does not have components or is outdated. Create new
+            components or{" "}
             <a
               href={
                 "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
@@ -102,15 +70,16 @@ const ProjectSummaryMapFallback = ({
             for more options.
           </p>
         </div>
-        <Button
-          className={classes.button}
-          variant="contained"
-          color="primary"
-          startIcon={<Icon>edit</Icon>}
-          onClick={clearAndEdit}
-        >
-          MAP PROJECT
-        </Button>
+        <Link to="?tab=map">
+          <Button
+            className={classes.button}
+            variant="contained"
+            color="primary"
+            startIcon={<Icon>edit</Icon>}
+          >
+            MAP PROJECT
+          </Button>
+        </Link>
       </Card>
     </Box>
   );

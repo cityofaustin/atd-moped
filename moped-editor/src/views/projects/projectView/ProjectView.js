@@ -32,6 +32,7 @@ import {
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
+import ProjectComponents from "./ProjectComponents";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
@@ -96,6 +97,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
+  { label: "Map", Component: ProjectComponents, param: "map" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
@@ -159,6 +161,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
 
   /**
