@@ -119,29 +119,51 @@ const ProjectComponentEdit = ({
   /**
    * Generates an initial list of component types, subtypes and counts
    */
-  const initialTypeCounts = data
-    ? data.moped_components.reduce((accumulator, component, index) => {
+  const initialTypeCounts = data // Do we have data?
+    ? // Yes, let's get the counts by using reduce
+      data.moped_components.reduce((accumulator, component, index) => {
+        // Retrieve the current component's values, in lower case
         const componentId = component?.component_id ?? null;
         const componentName = (component?.component_name ?? "").toLowerCase();
         const componentSubtype = (
           component?.component_subtype ?? ""
         ).toLowerCase();
 
+        // Then, retrieve the subcomponents associated to this component_id by filtering
         const componentSubcomponents = data.moped_subcomponents.filter(
           subcomponent => subcomponent.component_id === componentId
         );
 
-        // Get the total count
+        // Get the total count for this component name
         const currentCount = accumulator[componentName]?.count ?? 0;
 
+        // Send back to the accumulator a copy of itself plus new data:
         return {
+          // Here is the copy of the current state of the output:
           ...accumulator,
+          // And for new data, create (or overwrite) a new key with the component name
           [componentName]: {
-            count: currentCount + 1,
+            count: currentCount + 1, // Assign count to currentCount + 1
+            /**
+             * If currentCount is zero, it means this is the first iteration of reduce
+             * for this componentName, which means this should be considered a single item
+             * and we need to give it its component_id.
+             *
+             * Otherwise, this is another iteration (n+1) for this componentName, which means
+             * componentName is a group. Let's give it an id of zero as a lazy way to categorize
+             * and differentiate groups from single items.
+             */
             component_id: currentCount > 1 ? 0 : componentId,
+            // Provide Index for context
             index: index,
+            // Initialize a subtypes key with an object containing componentSubtype information.
             subtypes: {
+              // Copy the current state of the accumulator's subtypes
               ...(accumulator[componentName]?.subtypes ?? {}),
+              /**
+               * Create (or overwrite) a new subtype by the name of componentSubtype,
+               * containing all the data of this component iteration.
+               */
               [componentSubtype]: {
                 component_id: componentId,
                 component_name: component?.component_name ?? null,
@@ -156,17 +178,24 @@ const ProjectComponentEdit = ({
 
   // Now check if we have any subcomponents in the DB
   const subcomponentsDB =
+    /**
+     * Get moped_proj_components or assume empty array, if the array is empty it means
+     * the user has not selected a component; which should never be the case. Do we have
+     * a selected component? (is the count greater than zero?)
+     */
     (data?.moped_proj_components ?? []).length > 0
-      ? data.moped_proj_components[0].moped_proj_components_subcomponents.map(
+      ? // Yes, we have project a component, now gather a list of subcomponents for that component
+        data.moped_proj_components[0].moped_proj_components_subcomponents.map(
           subcomponent => ({
             ...subcomponent.moped_subcomponent,
             component_subcomponent_id: subcomponent.component_subcomponent_id,
           })
         )
-      : [];
+      : // Nothing to do here, no valid component is selected.
+        [];
 
   /**
-   * This is a constant list containing the names of available types
+   * This is a unique sorted list containing the names of available components
    * @type {String[]}
    */
   const availableTypes = data
@@ -185,9 +214,11 @@ const ProjectComponentEdit = ({
    * @return {String[]} - A string array with the available subtypes
    */
   const getAvailableSubtypes = type =>
+    // For every subtype found in initialTypeCounts[type]
     Object.entries(initialTypeCounts[type]?.subtypes ?? {})
+      // Destructure the key and value (_ & component, respectively) and gather the name
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
-      .filter(item => item.length > 0);
+      .filter(item => item.length > 0); // Keep only if the name is not empty
 
   /**
    * Returns any available subcomponent objects for a specific type
@@ -246,14 +277,16 @@ const ProjectComponentEdit = ({
     );
 
   /**
-   * Retrieves the component_id based no the type and subtype names
+   * Retrieves the component_id based on the type and subtype names
    * @param {string} type - The type name
    * @param {string} subtype - The subtype name
    */
   const getSelectedComponentId = (type, subtype) =>
-    initialTypeCounts[type].count > 1
-      ? initialTypeCounts[type].subtypes[subtype ?? ""]?.component_id ?? null
-      : initialTypeCounts[type]?.component_id ?? null;
+    initialTypeCounts[type].count > 1 // Is it a group?
+      ? // Yes, we need to look for the subtype's component_id
+        initialTypeCounts[type].subtypes[subtype ?? ""]?.component_id ?? null
+      : // No, then it's safe to get the component_id from the parent
+        initialTypeCounts[type]?.component_id ?? null;
 
   /**
    * Returns true if the given type needs a subtype
@@ -336,18 +369,22 @@ const ProjectComponentEdit = ({
     );
 
     // Generate output, clean up & return
-    return [...insertionList, ...removalList]
-      .map(subcomponent => ({
-        ...subcomponent,
-        status_id: isNaN(subcomponent?.component_subcomponent_id) ? 1 : 0,
-      }))
-      .map(record =>
-        filterObjectByKeys(record, [
-          "__typename",
-          "component_id",
-          "subcomponent_name",
-        ])
-      );
+    return (
+      [...insertionList, ...removalList] // Mix both insertion and removal list
+        // For each subcomponent, mark for deletion (status_id = 0) if component_subcomponent_id has a number
+        .map(subcomponent => ({
+          ...subcomponent,
+          status_id: isNaN(subcomponent?.component_subcomponent_id) ? 1 : 0,
+        }))
+        // Then remove certain objects by their key names from the output
+        .map(record =>
+          filterObjectByKeys(record, [
+            "__typename",
+            "component_id",
+            "subcomponent_name",
+          ])
+        )
+    );
   };
 
   /**
