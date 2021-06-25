@@ -18,6 +18,7 @@ const readOnlyStaticRules = [
   "settings:visit",
   "404:visit",
   "all:visit",
+  "style:visit",
 ];
 
 const editorStaticRules = ["newProjects:visit"];

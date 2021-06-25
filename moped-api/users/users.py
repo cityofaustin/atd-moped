@@ -20,6 +20,8 @@ from users.helpers import (
     db_create_user,
     db_update_user,
     db_deactivate_user,
+    db_user_exists,
+    cognito_user_exists,
 )
 
 users_blueprint = Blueprint("users_blueprint", __name__)
@@ -82,29 +84,58 @@ def user_create_user(claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
+        # Gather if profile is valid and any feedback
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json
         )
 
+        # Check if the profile is valid, if not return error
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
+        # Gather the existing user list
+        user_list_response = cognito_client.list_users(UserPoolId=USER_POOL)
+
+        json_data = request.json
+        password = json_data["password"]
+        email = json_data["email"]
+        cognito_response = {
+            "message": "User already existing in Cognito"
+        }
+
+        # Determine if the user already exists
+        user_already_exists, user_cognito_uuid = cognito_user_exists(
+            user_list_response=user_list_response,
+            user_email=email,
+        )
+
+        # Try creating account
         try:
-            json_data = request.json
-            password = json_data["password"]
-            email = json_data["email"]
+            # If the user does not exist, then create the account
+            if user_already_exists == False:
 
-            # Provide email as username, if valid email, Cognito generates UUID for username
-            cognito_response = cognito_client.admin_create_user(
-                UserPoolId=USER_POOL,
-                Username=email,
-                TemporaryPassword=password,
-                UserAttributes=[
-                    {"Name": "email", "Value": email},
-                    {"Name": "email_verified", "Value": "true"},
-                ],
-            )
+                # Provide email as username, if valid email, Cognito generates UUID for username
+                cognito_response = cognito_client.admin_create_user(
+                    UserPoolId=USER_POOL,
+                    Username=email,
+                    TemporaryPassword=password,
+                    UserAttributes=[
+                        {"Name": "email", "Value": email},
+                        {"Name": "email_verified", "Value": "true"},
+                    ],
+                )
+                # Then  we must set the user password
+                cognito_username = cognito_response["User"]["Username"]
+                cognito_client.admin_set_user_password(
+                    UserPoolId=USER_POOL,
+                    Username=cognito_username,
+                    Password=password,
+                    Permanent=True,
+                )
+                # Copy the username to the UUID variable
+                user_cognito_uuid = cognito_username
 
+            # The account already exists in Cognito, skip this step
         except ClientError as e:
             if e.response["Error"]["Code"] == "UsernameExistsException":
                 return jsonify(e.response), 400  # Bad request
@@ -113,34 +144,23 @@ def user_create_user(claims: list) -> (Response, int):
             else:
                 return jsonify(e.response), 500  # Internal Server Error
 
-        # Temporary password is valid, now make it permanent
-        cognito_username = cognito_response["User"]["Username"]
-        cognito_client.admin_set_user_password(
-            UserPoolId=USER_POOL,
-            Username=cognito_username,
-            Password=password,
-            Permanent=True,
-        )
-
         # Generate the user profile for the database
         user_profile = generate_user_profile(
-            cognito_id=cognito_username, json_data=request.json
+            cognito_id=user_cognito_uuid, json_data=request.json
         )
+
         # Persist the profile in the database
         db_response = db_create_user(user_profile=user_profile)
 
         if "errors" in db_response:
-            cognito_response = cognito_client.admin_delete_user(
-                UserPoolId=USER_POOL, Username=cognito_username
-            )
             final_response = {
                 "error": {
-                    "message": "Error in the database, user deleted from cognito",
+                    "message": "Errors reported",
                     "cognito": cognito_response,
                     "database": db_response,
                 }
             }
-            return jsonify(final_response), 500
+            return jsonify(final_response), 400
 
         # Encrypt and set Hasura metadata in DynamoDB
         roles = json_data["roles"]
@@ -149,7 +169,7 @@ def user_create_user(claims: list) -> (Response, int):
         database_id, workgroup_id = get_user_database_ids(response=db_response)
 
         user_claims = format_claims(
-            user_id=cognito_username,
+            user_id=user_cognito_uuid,
             roles=roles,
             database_id=database_id,
             workgroup_id=workgroup_id
@@ -158,7 +178,7 @@ def user_create_user(claims: list) -> (Response, int):
         put_claims(
             user_email=email,
             user_claims=user_claims,
-            cognito_uuid=cognito_username,
+            cognito_uuid=user_cognito_uuid,
             database_id=database_id,
             workgroup_id=workgroup_id
         )
@@ -172,7 +192,7 @@ def user_create_user(claims: list) -> (Response, int):
 
         final_response = {
             "success": {
-                "message": f"New user created: {cognito_username}",
+                "message": f"New user created: {user_cognito_uuid}",
                 "cognito": cognito_response,
                 "database": db_response,
             }

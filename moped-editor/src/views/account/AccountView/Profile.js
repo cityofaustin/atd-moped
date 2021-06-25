@@ -50,7 +50,7 @@ const useStyles = makeStyles(() => ({
 const Profile = ({ className, ...rest }) => {
   const classes = useStyles();
   const { user } = useUser();
-  const updateFailedPermissionMessage = `Error: Cannot update image, you are now allowed to update this account. Please contact the DTS team for further assistance.`;
+  const updateFailedPermissionMessage = `Error: Cannot update image, you are not allowed to update this account. Please contact the DTS team for further assistance.`;
 
   /**
    * @constant {boolean} dialogOpen - True to make the save dialog visible
