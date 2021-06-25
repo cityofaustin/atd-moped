@@ -19,4 +19,4 @@ requests==2.23.0
 s3transfer==0.3.4
 six==1.15.0
 toml==0.10.2
-urllib3==1.25.9
+urllib3==1.26.5
