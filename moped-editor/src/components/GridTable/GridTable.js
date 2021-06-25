@@ -392,6 +392,11 @@ const GridTable = ({ title, query }) => {
       singleItem: query.singleItem,
       data: row[column],
       link: row[query.config.columns[column].link],
+      state: {
+        filters: Object.keys(filters).length
+          ? btoa(JSON.stringify(filters))
+          : false,
+      },
     });
 
   /**
