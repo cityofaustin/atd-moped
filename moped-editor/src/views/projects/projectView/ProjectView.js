@@ -120,10 +120,11 @@ const ProjectView = () => {
   const { projectId } = useParams();
   let query = useQueryParams();
   const classes = useStyles();
-  const previousFilters = useLocation().state.filters;
-  const allProjectsLink = previousFilters
+  const previousFilters = useLocation()?.state?.filters;
+  const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
+
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
