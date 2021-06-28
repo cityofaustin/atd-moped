@@ -14,6 +14,7 @@ from users.queries import (
     GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER,
+    GRAPHQL_USER_EXISTS,
 )
 from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
@@ -172,6 +173,44 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     return response.json()
 
 
+def db_user_exists(user_email: str) -> tuple:
+    """
+    Runs a search in the database for any users with the email
+    or user_cognito_uuid provided.
+    :param str user_email: The email to search
+    :return tuple:
+    """
+    # Find the user
+    try:
+        response = run_query(
+            query=GRAPHQL_USER_EXISTS, variables={"userEmail": user_email}
+        ).json()
+    except:
+        return False, None
+
+    # Check if response is not a valid response
+    if not isinstance(response, dict):
+        return False, None
+
+    # If we have a response but it is not data, then it's an error. Return false.
+    if "data" not in response or "moped_users" not in response["data"]:
+        return False, None
+
+    # If the list is empty, then the user does not exist
+    if len(response["data"]["moped_users"]) == 0:
+        return False, None
+
+    # Select the first element (it should be the only element)
+    moped_user = response["data"]["moped_users"][0]
+
+    # Check if the user is in fact what we are looking for
+    if moped_user["email"] == user_email:
+        return True, moped_user["cognito_user_id"]
+
+    # It's not
+    return False, None
+
+
 def get_user_email_from_attr(user_attr: object) -> str:
     """
     Returns the user email from a user attributes object as provided by the admin_get_user method
@@ -205,9 +244,7 @@ def get_user_database_ids(response: dict) -> tuple:
 
     # Put separately because if workgroup_id fails, database_id shouldn't default to zero...
     try:
-        database_id = str(
-            response["data"][operation_mode]["returning"][0]["user_id"]
-        )
+        database_id = str(response["data"][operation_mode]["returning"][0]["user_id"])
     except (TypeError, KeyError, IndexError):
         database_id = "0"
     # Put separately because if user_id fails, workgroup_id shouldn't default to zero..
@@ -219,3 +256,42 @@ def get_user_database_ids(response: dict) -> tuple:
         workgroup_id = "0"
 
     return (database_id, workgroup_id)
+
+
+def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
+    """
+    Retrieves the current list of users in Cognito, and returns True if it can find the
+    specified user email. It returns False if it cannot find the user.
+    :param dict user_list_response: The user list response from boto's cognito client
+    :param user_email: The email we need to find in the list
+    :return bool:
+    """
+    # Retrieves the full list of users, but removes any azuread emails
+    user_list_filtered = list(
+        filter(
+            lambda user: "azuread_" not in user["Username"], user_list_response["Users"]
+        )
+    )
+    # Then we extract the emails and cognito_uuid into a list of tuples
+    user_list = list(
+        map(
+            lambda user: (
+                [
+                    attribute["Value"]
+                    for attribute in user["Attributes"]
+                    if attribute["Name"] == "email"
+                ][
+                    0
+                ],  # the email
+                user["Username"],  # the uuid
+            ),
+            user_list_filtered,  # from our list
+        )
+    )
+    # Now check if the email is present
+    for user in user_list:
+        if user[0] == user_email:
+            # If it is, then return true, and user id as a tuple
+            return True, user[1]
+    # Otherwise, return False and None as the UUID
+    return False, None

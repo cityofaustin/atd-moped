@@ -998,79 +998,109 @@
 - table:
     schema: public
     name: moped_proj_components
+  object_relationships:
+  - name: moped_components
+    using:
+      foreign_key_constraint_on: component_id
+  array_relationships:
+  - name: moped_proj_components_subcomponents
+    using:
+      foreign_key_constraint_on:
+        column: project_component_id
+        table:
+          schema: public
+          name: moped_proj_components_subcomponents
+  - name: moped_proj_features_components
+    using:
+      foreign_key_constraint_on:
+        column: moped_proj_component_id
+        table:
+          schema: public
+          name: moped_proj_features_components
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       filter: {}
   - role: moped-editor
     permission:
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       filter: {}
   - role: moped-viewer
     permission:
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       filter: {}
   update_permissions:
   - role: moped-admin
     permission:
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       filter: {}
       check: {}
   - role: moped-editor
     permission:
       columns:
+      - component_id
+      - description
+      - name
       - project_component_id
       - project_id
-      - component_id
-      - name
-      - description
+      - status_id
       filter: {}
       check: {}
 - table:
     schema: public
     name: moped_proj_components_subcomponents
+  object_relationships:
+  - name: moped_subcomponent
+    using:
+      foreign_key_constraint_on: subcomponent_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -1078,6 +1108,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       backend_only: false
   - role: moped-editor
@@ -1086,6 +1117,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       backend_only: false
   select_permissions:
@@ -1094,6 +1126,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       filter: {}
   - role: moped-editor
@@ -1101,6 +1134,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       filter: {}
   - role: moped-viewer
@@ -1108,6 +1142,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       filter: {}
   update_permissions:
@@ -1116,6 +1151,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       filter: {}
       check: {}
@@ -1124,6 +1160,7 @@
       columns:
       - component_subcomponent_id
       - project_component_id
+      - status_id
       - subcomponent_id
       filter: {}
       check: {}
@@ -1416,6 +1453,14 @@
   - name: moped_project
     using:
       foreign_key_constraint_on: project_id
+  array_relationships:
+  - name: moped_proj_features_components
+    using:
+      foreign_key_constraint_on:
+        column: moped_proj_features_id
+        table:
+          schema: public
+          name: moped_proj_features_components
   insert_permissions:
   - role: moped-admin
     permission:
@@ -1482,6 +1527,21 @@
 - table:
     schema: public
     name: moped_proj_features_components
+  object_relationships:
+  - name: moped_proj_component
+    using:
+      foreign_key_constraint_on: moped_proj_component_id
+  - name: moped_proj_feature
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_proj_features
+        column_mapping:
+          moped_proj_features_id: feature_id
+  - name: moped_proj_feature_object
+    using:
+      foreign_key_constraint_on: moped_proj_features_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2488,6 +2548,7 @@
       - date_created
       - comm_id
       - project_id
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2497,6 +2558,7 @@
       - project_note
       - added_by
       - date_created
+      - status_id
       - comm_id
       - project_id
       backend_only: false
@@ -2510,6 +2572,7 @@
       - project_note_id
       - project_note
       - date_created
+      - status_id
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -2521,6 +2584,7 @@
       - project_note_id
       - project_note
       - date_created
+      - status_id
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -2532,6 +2596,7 @@
       - date_created
       - comm_id
       - project_id
+      - status_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -2544,6 +2609,7 @@
       - project_note_id
       - project_note
       - date_created
+      - status_id
       filter: {}
       check: null
   - role: moped-editor
@@ -2555,6 +2621,7 @@
       - project_note_id
       - project_note
       - date_created
+      - status_id
       filter: {}
       check: null
   event_triggers:
@@ -3659,6 +3726,13 @@
     schema: public
     name: moped_project
   array_relationships:
+  - name: moped_proj_components
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_components
   - name: moped_proj_features
     using:
       foreign_key_constraint_on:
@@ -4236,6 +4310,62 @@
 - table:
     schema: public
     name: moped_subcomponents
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - subcomponent_id
+      - subcomponent_name
+      - component_id
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - subcomponent_id
+      - subcomponent_name
+      - component_id
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - component_id
+      - subcomponent_id
+      - subcomponent_name
+      filter: {}
+      check: null
 - table:
     schema: public
     name: moped_subphases

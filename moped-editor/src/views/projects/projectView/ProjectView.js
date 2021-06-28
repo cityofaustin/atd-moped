@@ -5,6 +5,8 @@ import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
 import {
+  Breadcrumbs,
+  Link,
   Button,
   Box,
   Container,
@@ -14,7 +16,6 @@ import {
   AppBar,
   Tab,
   Tabs,
-  CardActions,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -31,6 +32,7 @@ import {
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
+import ProjectComponents from "./ProjectComponents";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
@@ -95,6 +97,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
+  { label: "Map", Component: ProjectComponents, param: "map" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
@@ -117,6 +120,11 @@ const ProjectView = () => {
   const { projectId } = useParams();
   let query = useQueryParams();
   const classes = useStyles();
+  const previousFilters = useLocation()?.state?.filters;
+  const allProjectsLink = !!previousFilters
+    ? `/moped/projects?filter=${previousFilters}`
+    : "/moped/projects";
+
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
@@ -154,6 +162,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
 
   /**
@@ -272,7 +281,11 @@ const ProjectView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page title="Project Summary Page">
+      <Page
+        title={
+          loading ? "Project Summary Page" : data.moped_project[0].project_name
+        }
+      >
         <Container maxWidth="xl">
           <Card className={classes.cardWrapper}>
             {loading ? (
@@ -281,6 +294,15 @@ const ProjectView = () => {
               <div className={classes.root}>
                 <Box p={4} pb={2}>
                   <Grid container>
+                    <Grid item xs={12}>
+                      <Box pb={1}>
+                        <Breadcrumbs aria-label="all-projects-breadcrumb">
+                          <Link component={RouterLink} to={allProjectsLink}>
+                            <strong>{"< ALL PROJECTS"}</strong>
+                          </Link>
+                        </Breadcrumbs>
+                      </Box>
+                    </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
                       <ProjectNameEditable
                         projectName={data.moped_project[0].project_name}
@@ -391,16 +413,6 @@ const ProjectView = () => {
                 })}
               </div>
             )}
-            <Divider />
-            <CardActions className={classes.cardActions}>
-              <Button
-                className={classes.button}
-                component={RouterLink}
-                to="/moped/projects"
-              >
-                All Projects
-              </Button>
-            </CardActions>
           </Card>
         </Container>
         {dialogOpen && dialogState && (
