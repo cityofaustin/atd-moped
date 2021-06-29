@@ -112,6 +112,7 @@ const ProjectComments = () => {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             status_id: 1,
+            added_by_user_id: Number(userSessionData.user_id),
           },
         ],
       },
@@ -203,28 +204,31 @@ const ProjectComments = () => {
                               )
                             }
                           />
-                          <ListItemSecondaryAction>
-                            {commentId !== item.project_note_id && (
+                          {userSessionData.user_id ===
+                            item.added_by_user_id && (
+                            <ListItemSecondaryAction>
+                              {commentId !== item.project_note_id && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="edit"
+                                  onClick={() =>
+                                    editComment(i, item.project_note_id)
+                                  }
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              )}
                               <IconButton
                                 edge="end"
-                                aria-label="edit"
+                                aria-label="delete"
                                 onClick={() =>
-                                  editComment(i, item.project_note_id)
+                                  submitDeleteComment(item.project_note_id)
                                 }
                               >
-                                <EditIcon />
+                                <DeleteIcon />
                               </IconButton>
-                            )}
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() =>
-                                submitDeleteComment(item.project_note_id)
-                              }
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
+                            </ListItemSecondaryAction>
+                          )}
                         </ListItem>
                         {isNotLastItem && <Divider component="li" />}
                       </>
