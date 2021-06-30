@@ -67,7 +67,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     fetchPolicy: "no-cache",
   });
 
-  const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
@@ -194,23 +194,26 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
 
 
-  const DateFieldEditComponent = ( props, name, label ) => (
+  const DateFieldEditComponent = ( props, name, label, dateValue ) => (
     <div>
       {console.log(props)}
       {console.log(name)}
       {console.log(label)}
+      {console.log(dateValue)}
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker
         clearable
         name={name}
         label={label}
-        format="dd/MM/yyyy"
-        value={props.value}
-        inputValue={moment(props.value).format("dd/MM/yyyy")}
-        onChange={e => console.log(e.target.value)}
+        format="MM/dd/yyyy"
+        // value={props.value}
+        value={selectedDate}
+        // inputValue={moment(props.value).format("dd/MM/yyyy")}
+        // onChange={e => console.log(e.target.value)}
+        onChange={setSelectedDate}
         InputProps={{
           endAdornment: (
-            <IconButton onClick={() => console.log(null)}>
+            <IconButton onClick={() => setSelectedDate(null)}>
               <ClearIcon />
             </IconButton>
           ),
@@ -342,22 +345,24 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start Date",
       field: "phase_start",
-      editComponent: props => (
+      editComponent: (props, rowData) => (
         <DateFieldEditComponent
           {...props}
           name="phase_start"
           label="Start Date"
+          dateValue={rowData.phase_start}
         />
       ),
     },
     {
       title: "End Date",
       field: "phase_end",
-      editComponent: props => (
+      editComponent: (props, rowData) => (
         <DateFieldEditComponent
           {...props}
           name="phase_end"
           label="End Date"
+          dateValue={rowData.phase_end}
         />
       ),
     },
