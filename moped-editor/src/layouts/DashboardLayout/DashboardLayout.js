@@ -30,11 +30,6 @@ const useStyles = makeStyles(theme => ({
     height: "100%",
     overflow: "auto",
   },
-  footer: {
-    paddingLeft: theme.spacing(4),
-    paddingBottom: theme.spacing(2),
-    color: "#1492ff",
-  },
 }));
 
 const DashboardLayout = () => {
