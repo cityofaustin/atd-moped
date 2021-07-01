@@ -67,7 +67,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     fetchPolicy: "no-cache",
   });
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date());
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date());
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
@@ -194,20 +196,19 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
 
 
-  const DateFieldEditComponent = ( props, name, label, dateValue ) => (
+  const DateFieldEditComponent = ( props ) => (
     <div>
-      {console.log(props)}
-      {console.log(name)}
-      {console.log(label)}
-      {console.log(dateValue)}
+      {console.log(props.name)}
+      {console.log(props.label)}
+      {console.log(props.dataValue)}
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <KeyboardDatePicker
         clearable
-        name={name}
-        label={label}
+        name={props.name}
+        label={props.label}
         format="MM/dd/yyyy"
         // value={props.value}
-        value={selectedDate}
+        value={selectedDate ?? props.dataValue}
         // inputValue={moment(props.value).format("dd/MM/yyyy")}
         // onChange={e => console.log(e.target.value)}
         onChange={setSelectedDate}
@@ -345,27 +346,28 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start Date",
       field: "phase_start",
+      // render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
       editComponent: (props, rowData) => (
         <DateFieldEditComponent
           {...props}
           name="phase_start"
           label="Start Date"
-          dateValue={rowData.phase_start}
+          dataValue={rowData.phase_start}
         />
       ),
     },
-    {
-      title: "End Date",
-      field: "phase_end",
-      editComponent: (props, rowData) => (
-        <DateFieldEditComponent
-          {...props}
-          name="phase_end"
-          label="End Date"
-          dateValue={rowData.phase_end}
-        />
-      ),
-    },
+    // {
+    //   title: "End Date",
+    //   field: "phase_end",
+    //   editComponent: (props, rowData) => (
+    //     <DateFieldEditComponent
+    //       {...props}
+    //       name="phase_end"
+    //       label="End Date"
+    //       dateValue={rowData.phase_end}
+    //     />
+    //   ),
+    // },
   ];
 
   /**
@@ -445,12 +447,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 }}
                 editable={{
                   onRowAdd: newData => {
+                    console.log(newData)
                     const newPhaseObject = Object.assign(
                       {
                         project_id: projectId,
                         completion_percentage: 0,
                         completed: false,
                         status_id: 1,
+                        phase_start: selectedDate
                       },
                       newData
                     );
