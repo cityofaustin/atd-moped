@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import NavBar from "./NavBar/NavBar";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
-import ExternalLink from "../../components/ExternalLink";
-var pckg = require("../../../package.json");
+import Footer from "./Footer"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,23 +36,6 @@ const useStyles = makeStyles(theme => ({
     color: "#1492ff",
   },
 }));
-
-const Footer = () => {
-  const classes = useStyles();
-  console.log(pckg);
-  return (
-    <div className={classes.footer}>
-      <Typography variant="caption" color="textSecondary">
-        Moped{" "}
-        <ExternalLink
-          text={`v${pckg.version}`}
-          url={`https://github.com/cityofaustin/atd-moped/releases/tag/v${pckg.version}`}
-          linkColor="inherit"
-        />
-      </Typography>
-    </div>
-  );
-};
 
 const DashboardLayout = () => {
   const classes = useStyles();
