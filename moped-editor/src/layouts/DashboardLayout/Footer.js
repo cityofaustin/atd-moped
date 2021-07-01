@@ -5,6 +5,7 @@ var pckg = require("../../../package.json");
 
 const useStyles = makeStyles(theme => ({
   root: {
+    paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingBottom: theme.spacing(2),
   },
