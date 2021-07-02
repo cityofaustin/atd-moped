@@ -216,9 +216,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
-    const mutationValue = value !== null ? value : editValue;
+    const mutationValue = value !== null ? value : editValue; // where does editvalue come from? what is it initially
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
+    // this also prevents you from clicking yes when its not an initial value, just when its not updated
     if (mutationValue !== null) {
       updateField({
         mutation: generateUpdateQuery(mutationField, mutationValue),
@@ -429,14 +430,15 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         <CircularProgress />
       ) : (
         <Grid container>
-          {Object.keys(fieldConfiguration.fields).map(field => {
+          { // map through fields from field configuration
+            Object.keys(fieldConfiguration.fields).map(field => {
             const fieldType =
               fieldConfiguration.fields[field]?.type ?? "string";
 
             return (
               <Grid
                 item
-                key={fieldConfiguration.fields[field]?.label}
+                key={fieldConfiguration.fields[field]?.label} // should there be a default fallback here?
                 className={classes.fieldGridItem}
                 xs={12}
                 sm={fieldConfiguration.fields[field]?.widthSmallAndLarger ?? 6}
@@ -449,6 +451,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                   )}
                   {(isEditing && editField === field) ||
                   fieldType === "boolean" ? (
+                    // boolean type fields are always rendered using function, regardless of editing status
                     <form onSubmit={e => handleAcceptClick(e)}>
                       <Grid container fullWidth>
                         <Grid item xs={12} sm={9}>
@@ -489,6 +492,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                       </Grid>
                     </form>
                   ) : (
+                    // if not currently editing field and field is not Boolean
                     <Typography
                       id={"label-" + field}
                       className={
@@ -507,7 +511,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           <div>
                             <Icon
                               className={classes.editIcon}
-                              onClick={() => handleFieldEdit(field)}
+                              onClick={() => { 
+                                console.log("onclicked ", field)
+                                handleFieldEdit(field)}}
                             >
                               create
                             </Icon>
