@@ -47,6 +47,7 @@ const ProjectNameEditable = props => {
   );
   const [isEditing, setIsEditing] = useState(props?.isEditing ?? false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [titleError, setTitleError] = useState(false);
 
   if (props?.isEditing && !isEditing) {
     setIsEditing(true);
@@ -74,6 +75,9 @@ const ProjectNameEditable = props => {
   };
 
   const handleProjectNameChange = e => {
+    if (titleError) {
+      setTitleError(false)
+    }
     setProjectName(e.target.value);
   };
 
@@ -111,6 +115,8 @@ const ProjectNameEditable = props => {
         setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
       });
+    } else {
+      setTitleError(true);
     }
   };
 
@@ -141,7 +147,8 @@ const ProjectNameEditable = props => {
                 label={"Project Name"}
                 type="text"
                 defaultValue={projectName ?? props?.projectName}
-                placeholder={"Enter project name"}
+                error={titleError}
+                placeholder={titleError ? "Title cannot be blank" : "Enter project name"}
                 multiline={false}
                 rows={1}
                 onChange={e => handleProjectNameChange(e)}
