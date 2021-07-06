@@ -82,6 +82,7 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
+    if (!projectName.trim()==="") {
     updateProjectName({
       variables: {
         projectId: props?.projectId,
@@ -110,6 +111,7 @@ const ProjectNameEditable = props => {
         setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
       });
+    }
   };
 
   /**
@@ -135,7 +137,7 @@ const ProjectNameEditable = props => {
             <Grid item xs={12} sm={9}>
               <TextField
                 fullWidth
-                id="date"
+                id="date" // id is date?
                 label={"Project Name"}
                 type="text"
                 defaultValue={projectName ?? props?.projectName}
@@ -170,7 +172,8 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      {!isEditing && (
+      { // if not Editing Project Name, show edit icon on mouse over of title
+        !isEditing && (
         <Typography
           color="textPrimary"
           variant="h2"
