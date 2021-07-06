@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
  * @param {Number} componentId - The moped_proj_component id being edited
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {function} projectRefetchFeatures - Reload parent component's features
+ * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
  * @constructor
  */
@@ -65,9 +66,12 @@ const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
   projectRefetchFeatures,
+  projectFeatureCollection = null,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
+
+  // Template that should keep all features for this component
   const emptyFeatureCollection = {
     type: "FeatureCollection",
     features: [],
@@ -775,6 +779,8 @@ const ProjectComponentEdit = ({
           projectId={null}
           refetchProjectDetails={null}
           noPadding={true}
+          newFeature={componentId === 0}
+          projectFeatureCollection={projectFeatureCollection}
         />
         {error && (
           <Alert className={classes.mapAlert} severity="error">
