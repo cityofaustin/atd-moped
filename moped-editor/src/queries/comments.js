@@ -7,6 +7,7 @@ export const COMMENTS_QUERY = gql`
       order_by: { date_created: asc }
     ) {
       added_by
+      added_by_user_id
       project_note
       project_id
       date_created
