@@ -94,7 +94,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
+  // editValue, value of field being edited
   const [editValue, setEditValue] = useState(null);
+  // editField: string, name of field being edited
   const [editField, setEditField] = useState("");
   // isEditing is True if any field is in edit state
   const [isEditing, setIsEditing] = useState(false);
@@ -222,12 +224,12 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
-    const mutationValue = value !== null ? value : editValue; // where does editvalue come from? what is it initially
-    console.log(editValue, value) // <-- need to check also about empty not just null
+    const mutationValue = value !== null ? value : editValue;
+    const nullableField = fieldConfiguration.fields[mutationField].nullable ?? true;
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
-    // this also prevents you from clicking yes when its not an initial value, just when its not updated
-    if (mutationValue !== null) {
+    // Also prevents from executing migration if value has not changed
+    if (mutationValue !== null && (nullableField || mutationValue !== "")) {
       updateField({
         mutation: generateUpdateQuery(mutationField, mutationValue),
       })
