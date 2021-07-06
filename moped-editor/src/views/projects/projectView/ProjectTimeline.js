@@ -11,9 +11,12 @@ import {
   Switch,
   Select,
   MenuItem,
+  Typography,
 } from "@material-ui/core";
-import AddBoxIcon from "@material-ui/icons/AddBox";
+import { AddCircle as AddCircleIcon } from "@material-ui/icons";
 import MaterialTable, { MTableAction } from "material-table";
+
+import typography from "../../../theme/typography";
 
 // Query
 import {
@@ -23,7 +26,7 @@ import {
   ADD_PROJECT_PHASE,
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
-  ADD_PROJECT_MILESTONE
+  ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -74,6 +77,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
+
+  console.log(data);
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -402,10 +407,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       return <MTableAction {...props} />;
                     } else {
                       return (
-                        <div
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="large"
+                          startIcon={<AddCircleIcon />}
                           ref={addActionRefPhases}
                           onClick={props.action.onClick}
-                        />
+                        >
+                          Add phase
+                        </Button>
                       );
                     }
                   },
@@ -497,22 +508,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     });
                   },
                 }}
+                title={
+                  <Typography variant="h2" color="primary">
+                    Project phases
+                  </Typography>
+                }
                 options={{
+                  ...(data.moped_proj_phases.length < 26 && {
+                    paging: false,
+                  }),
+                  search: false,
+                  rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
+                }}
+                localization={{
+                  header: {
+                    actions: "",
+                  },
+                  body: {
+                    emptyDataSourceMessage: (
+                      <Typography variant="body1">
+                        No project phases to display
+                      </Typography>
+                    ),
+                  },
                 }}
               />
             </div>
-            <Box pt={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<AddBoxIcon />}
-                onClick={() => addActionRefPhases.current.click()}
-              >
-                Add phase
-              </Button>
-            </Box>
           </Grid>
           <Grid item xs={12}>
             <div style={{ maxWidth: "100%" }}>
@@ -530,10 +552,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       return <MTableAction {...props} />;
                     } else {
                       return (
-                        <div
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          size="large"
+                          startIcon={<AddCircleIcon />}
                           ref={addActionRefMilestones}
                           onClick={props.action.onClick}
-                        />
+                        >
+                          Add milestone
+                        </Button>
                       );
                     }
                   },
@@ -610,22 +638,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     });
                   },
                 }}
+                title={
+                  <Typography variant="h2" color="primary">
+                    Project milestones
+                  </Typography>
+                }
                 options={{
+                  ...(data.moped_proj_milestones.length < 26 && {
+                    paging: false,
+                  }),
+                  search: false,
+                  rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
+                }}
+                localization={{
+                  header: {
+                    actions: "",
+                  },
+                  body: {
+                    emptyDataSourceMessage: (
+                      <Typography variant="body1">
+                        No project milestones to display
+                      </Typography>
+                    ),
+                  },
                 }}
               />
             </div>
-            <Box pt={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<AddBoxIcon />}
-                onClick={() => addActionRefMilestones.current.click()}
-              >
-                Add milestone
-              </Button>
-            </Box>
           </Grid>
         </Grid>
       </CardContent>
