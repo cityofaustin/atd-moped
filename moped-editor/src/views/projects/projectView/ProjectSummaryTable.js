@@ -51,7 +51,8 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
         multiline: true,
         multilineRows: 4,
-        widthSmallAndLarger: 12
+        widthSmallAndLarger: 12,
+        nullable: false,
       },
       start_date: {
         label: "Start date",

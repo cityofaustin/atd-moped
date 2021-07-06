@@ -96,6 +96,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
   const [editValue, setEditValue] = useState(null);
   const [editField, setEditField] = useState("");
+  // isEditing is True if any field is in edit state
   const [isEditing, setIsEditing] = useState(false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
@@ -159,7 +160,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Retrieves the value for a field
+   * Retrieves the label/name for a field
    * @param {string} field - The value of the string
    * @returns {string}
    */
@@ -170,7 +171,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   /**
    * Retrieves the value from the table object in memory
    * @param {string} field - The name of the field (column)
-   * @returns {*} - The value
+   * @returns {*} - The value or null if field not in table
    */
   const getValue = field => {
     const tableName = fieldConfiguration.table.name;
@@ -180,9 +181,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Retrieves the format value and returns a printable formatted string or JSX
+   * Retrieves the field's value and returns a printable formatted string or JSX
+   * Used if field does not have a custom format function
    * @param {string} field - The name of the field (column)
-   * @param {boolean} raw - Retrieve the value only
    * @returns {string|JSX}
    */
   const formatValue = field => {
@@ -214,9 +215,15 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return formattedValue;
   };
 
+  /**
+   * if editValue is not null, executes mutation, triggers Snackbar with mutation response and resets state
+   * @param field, optional. Provided when updating boolean field
+   * @param value, optional. Provided when updating boolean field
+   */
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
     const mutationValue = value !== null ? value : editValue; // where does editvalue come from? what is it initially
+    console.log(editValue, value) // <-- need to check also about empty not just null
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
     // this also prevents you from clicking yes when its not an initial value, just when its not updated
@@ -413,6 +420,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     );
   };
 
+  /**
+   * Updates state with which field is being edited and sets isEditing to true
+   * @param {string} field
+   */
   const handleFieldEdit = field => {
     setIsEditing(true);
     setEditField(field);
@@ -438,7 +449,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             return (
               <Grid
                 item
-                key={fieldConfiguration.fields[field]?.label} // should there be a default fallback here?
+                key={fieldConfiguration.fields[field]?.label}
                 className={classes.fieldGridItem}
                 xs={12}
                 sm={fieldConfiguration.fields[field]?.widthSmallAndLarger ?? 6}
@@ -469,6 +480,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           )}
                         </Grid>
                         {fieldType !== "boolean" && (
+                          // show icons to accept or cancel edit
                           <Grid
                             item
                             xs={12}
@@ -506,8 +518,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           )
                         : formatValue(field)}
                       {fieldConfiguration.fields[field].editable &&
-                        !isEditing &&
-                        fieldType !== "boolean" && (
+                        !isEditing && (
                           <div>
                             <Icon
                               className={classes.editIcon}
