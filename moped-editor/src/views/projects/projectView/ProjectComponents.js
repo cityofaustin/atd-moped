@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -61,6 +61,7 @@ const ProjectComponents = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
+  const [featureFullCollection, setFeatureFullCollection] = useState(null);
   const [selectedComp, setSelectedComp] = useState(0);
   const [mapError, setMapError] = useState(false);
   const [componentEditMode, setComponentEditMode] = useState(false);
@@ -71,29 +72,30 @@ const ProjectComponents = () => {
     },
   });
 
-  // Return loading if not in progress
-  if (loading) return <CircularProgress />;
-
-  if (error) return <div>{JSON.stringify(error)}</div>;
-
   /**
    * Retrieve and flatten a nested list of features:
    *  moped_proj_components -> moped_proj_features_components -> moped_proj_feature
    */
-  const projectFeatureRecords = data.moped_proj_components.reduce(
-    (accumulator, component) => [
-      ...accumulator,
-      // Append if current component is selected, or none are selected (0)
-      ...(selectedComp === component.project_component_id || selectedComp === 0
-        ? component.moped_proj_features_components.map(featureComponent => ({
-            ...featureComponent.moped_proj_feature,
-            project_features_components_id:
-              featureComponent.project_features_components_id,
-          }))
-        : []),
-    ],
-    []
-  );
+  const projectFeatureRecords =
+    data && data?.moped_proj_components
+      ? data.moped_proj_components.reduce(
+          (accumulator, component) => [
+            ...accumulator,
+            // Append if current component is selected, or none are selected (0)
+            ...(selectedComp === component.project_component_id ||
+            selectedComp === 0
+              ? component.moped_proj_features_components.map(
+                  featureComponent => ({
+                    ...featureComponent.moped_proj_feature,
+                    project_features_components_id:
+                      featureComponent.project_features_components_id,
+                  })
+                )
+              : []),
+          ],
+          []
+        )
+      : [];
 
   /**
    * Reuses this function to generate a collection for the map
@@ -145,6 +147,27 @@ const ProjectComponents = () => {
    */
   const componentsAvailable = data && data.moped_proj_components.length > 0;
 
+  /**
+   * Update the full collection
+   */
+  useEffect(() => {
+    // If we have features and our collection is empty, then update
+    if (
+      selectedComp === 0 &&
+      projectFeatureRecords.length > 0 &&
+      featureFullCollection === null
+    ) {
+      setFeatureFullCollection(
+        createFeatureCollectionFromProjectFeatures(projectFeatureRecords)
+      );
+    }
+  }, [selectedComp, projectFeatureRecords, featureFullCollection]);
+
+  // Return loading if not in progress
+  if (loading) return <CircularProgress />;
+
+  if (error) return <div>{JSON.stringify(error)}</div>;
+
   return (
     <ApolloErrorHandler errors={error}>
       <CardContent>
@@ -153,6 +176,7 @@ const ProjectComponents = () => {
             componentId={selectedComp}
             handleCancelEdit={handleCancelEdit}
             projectRefetchFeatures={refetch}
+            projectFeatureCollection={featureFullCollection}
           />
         )}
         {!componentEditMode && (
