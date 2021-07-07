@@ -695,6 +695,7 @@ export function useFeatureCollectionToFitBounds(
 
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
+        maxZoom: 16,
       });
 
       const { longitude, latitude, zoom } = newViewport;
