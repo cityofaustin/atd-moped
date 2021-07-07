@@ -331,7 +331,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Current phase",
+      title: "Current Phase",
       field: "is_current_phase",
       lookup: { true: "Yes", false: "No" },
       editComponent: props => (
