@@ -686,7 +686,8 @@ export function useFeatureCollectionToFitBounds(
      * @return {Object} Viewport object with updated attributes based on project's features
      */
     const fitViewportToBounds = viewport => {
-      if (featureCollection.features.length === 0) return viewport;
+      // Let's check if we have any features are all, otherwise return the state of viewport...
+      if ((featureCollection?.features?.length ?? 0) === 0) return viewport;
       const featureViewport = new WebMercatorViewport({
         viewport,
         width: currentMap?._width ?? window.innerWidth * 0.45,
@@ -695,6 +696,7 @@ export function useFeatureCollectionToFitBounds(
 
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
+        maxZoom: 16,
       });
 
       const { longitude, latitude, zoom } = newViewport;

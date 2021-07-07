@@ -61,12 +61,26 @@ export const useStyles = makeStyles({
   ...layerSelectStyles,
 });
 
+/**
+ * This the new project map editor component
+ * @param {Object} featureCollection - A feature collection GeoJSON object (state)
+ * @param {function} setFeatureCollection - The function to change the feature collection state
+ * @param {Number} projectId - The current project id (optional)
+ * @param {Object} projectFeatureCollection - A helper state containing a secondary feature collection (optional)
+ * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
+ * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
+ * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
+ * @return {JSX.Element}
+ * @constructor
+ */
 const NewProjectMap = ({
   featureCollection,
   setFeatureCollection,
   projectId = null,
+  projectFeatureCollection = null,
   refetchProjectDetails = null,
   noPadding = false,
+  newFeature = false,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -76,9 +90,13 @@ const NewProjectMap = ({
   );
   const mapControlContainerRef = useRef();
 
+  /**
+   * Generate a viewport configuration object
+   */
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
-    featureCollection,
+    // If this is a new feature, use the project feature collection to retrieve the area
+    newFeature ? projectFeatureCollection : featureCollection,
     false
   );
 

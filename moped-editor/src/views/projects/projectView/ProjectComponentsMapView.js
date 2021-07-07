@@ -36,6 +36,14 @@ const useStyles = makeStyles({
   },
 });
 
+/**
+ * THe project component map viewer
+ * @param {Object} projectFeatureCollection - The features collection GeoJSON
+ * @param {function} setIsEditing - A callback to change the state to edit mode
+ * @param {boolean} editEnabled - Ture when we are editing
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectComponentsMapView = ({
   projectFeatureCollection,
   setIsEditing,
