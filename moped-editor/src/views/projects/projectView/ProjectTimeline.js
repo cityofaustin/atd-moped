@@ -393,7 +393,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
               <MaterialTable
                 columns={phasesColumns}
                 data={data.moped_proj_phases}
-                title="Project Phases"
                 // Action component customized as described in this gh-issue:
                 // https://github.com/mbrn/material-table/issues/2133
                 components={{
@@ -540,7 +539,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
               <MaterialTable
                 columns={milestoneColumns}
                 data={data.moped_proj_milestones}
-                title="Project Milestones"
                 components={{
                   Action: props => {
                     // If isn't the add action
