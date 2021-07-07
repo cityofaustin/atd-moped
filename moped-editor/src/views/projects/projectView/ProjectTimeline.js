@@ -2,7 +2,6 @@ import React from "react";
 
 // Material
 import {
-  Box,
   Button,
   CardContent,
   CircularProgress,
