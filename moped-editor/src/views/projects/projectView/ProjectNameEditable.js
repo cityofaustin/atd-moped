@@ -143,7 +143,7 @@ const ProjectNameEditable = props => {
             <Grid item xs={12} sm={9}>
               <TextField
                 fullWidth
-                id="date" // id is date?
+                id="project name"
                 label={"Project Name"}
                 type="text"
                 defaultValue={projectName ?? props?.projectName}

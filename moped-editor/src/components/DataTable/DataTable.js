@@ -231,6 +231,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
     // Also prevents from executing migration if value has not changed
+    // And checks if field is allowed to be a blank string
     if (mutationValue !== null && (nullableField || mutationValue !== "")) {
       updateField({
         mutation: generateUpdateQuery(mutationField, mutationValue),
