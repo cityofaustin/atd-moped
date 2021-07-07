@@ -100,6 +100,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const [editField, setEditField] = useState("");
   // isEditing is True if any field is in edit state
   const [isEditing, setIsEditing] = useState(false);
+  // errorField, name of field that contains error
+  const [errorField, setErrorField] = useState("");
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   const [updateField] = useMutation(INITIAL_MUTATION);
@@ -264,8 +266,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           setEditValue(null);
           setEditField("");
           setIsEditing(false);
+          setErrorField("");
           setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         });
+    } else {
+      if (!nullableField && mutationValue === "") {
+        setErrorField(mutationField);
+      }
     }
   };
 
@@ -287,6 +294,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     setEditValue(null);
     setEditField("");
     setIsEditing(false);
+    setErrorField("");
   };
 
   /**
@@ -294,6 +302,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param value
    */
   const handleFieldValueUpdate = value => {
+    if (errorField !== "") {
+      setErrorField("")
+    }
     setEditValue(value.target.value);
   };
 
@@ -344,8 +355,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         label={fieldConfig.label}
         type="text"
         defaultValue={editValue ?? initialValue}
-        placeholder={fieldConfig?.placeholder}
+        placeholder={
+          errorField === field ? fieldConfig?.errorMessage : fieldConfig?.placeholder
+        }
         className={null}
+        error={errorField === field}
         multiline={fieldConfig?.multiline ?? false}
         rows={fieldConfig?.multilineRows ?? 1}
         onChange={e => handleFieldValueUpdate(e)}
@@ -524,9 +538,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           <div>
                             <Icon
                               className={classes.editIcon}
-                              onClick={() => { 
-                                console.log("onclicked ", field)
-                                handleFieldEdit(field)}}
+                              onClick={() => handleFieldEdit(field)}
                             >
                               create
                             </Icon>
