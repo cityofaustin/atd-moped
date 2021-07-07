@@ -78,8 +78,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
 
-  console.log(data);
-
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
    * expects.
