@@ -241,6 +241,7 @@ const ProjectFiles = props => {
                   <Button
                     variant="contained"
                     color="primary"
+                    size="large"
                     className={classes.uploadFileButton}
                     startIcon={<AddCircleIcon />}
                     ref={addActionRef}
