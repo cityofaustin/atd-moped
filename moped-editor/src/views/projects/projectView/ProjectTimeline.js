@@ -291,7 +291,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
   const phasesColumns = [
     {
-      title: "Phase Name",
+      title: "Phase name",
       field: "phase_name",
       lookup: phaseNameLookup,
       editComponent: props => (
@@ -299,7 +299,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Sub-Phase Name",
+      title: "Sub-phase name",
       field: "subphase_name",
       lookup: subphaseNameLookup,
       editComponent: props => (
@@ -311,7 +311,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Start Date",
+      title: "Start date",
       field: "phase_start",
       render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
       editComponent: props => (
@@ -323,7 +323,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "End Date",
+      title: "End date",
       field: "phase_end",
       render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
       editComponent: props => (
@@ -331,7 +331,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Current Phase",
+      title: "Current phase",
       field: "is_current_phase",
       lookup: { true: "Yes", false: "No" },
       editComponent: props => (
