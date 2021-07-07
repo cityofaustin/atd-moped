@@ -2549,6 +2549,7 @@
       - comm_id
       - project_id
       - status_id
+      - added_by_user_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2561,6 +2562,7 @@
       - status_id
       - comm_id
       - project_id
+      - added_by_user_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2573,6 +2575,7 @@
       - project_note
       - date_created
       - status_id
+      - added_by_user_id
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -2585,6 +2588,7 @@
       - project_note
       - date_created
       - status_id
+      - added_by_user_id
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -2597,6 +2601,7 @@
       - comm_id
       - project_id
       - status_id
+      - added_by_user_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -2610,6 +2615,7 @@
       - project_note
       - date_created
       - status_id
+      - added_by_user_id
       filter: {}
       check: null
   - role: moped-editor
@@ -2622,6 +2628,7 @@
       - project_note
       - date_created
       - status_id
+      - added_by_user_id
       filter: {}
       check: null
   event_triggers:
