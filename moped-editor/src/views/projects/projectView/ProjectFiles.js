@@ -188,11 +188,9 @@ const ProjectFiles = props => {
       render: record => (
         <span>
           {record?.create_date
-            ? new Date(record.create_date)
-                .toLocaleString("en-US", {
-                  timeZone: "UTC",
-                })
-                .format("MM/DD/YYYY")
+            ? new Date(record.create_date).toLocaleString("en-US", {
+                timeZone: "UTC",
+              })
             : "N/A"}
         </span>
       ),
