@@ -2,6 +2,7 @@ import React from "react";
 
 // Material
 import {
+  Box,
   Button,
   CardContent,
   CircularProgress,
@@ -13,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { AddCircle as AddCircleIcon } from "@material-ui/icons";
-import MaterialTable, { MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 
 import typography from "../../../theme/typography";
 
@@ -310,14 +311,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Active?",
-      field: "is_current_phase",
-      lookup: { true: "Yes", false: "No" },
-      editComponent: props => (
-        <ToggleEditComponent {...props} name="is_current_phase" />
-      ),
-    },
-    {
       title: "Start Date",
       field: "phase_start",
       render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
@@ -335,6 +328,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
       editComponent: props => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+      ),
+    },
+    {
+      title: "Active?",
+      field: "is_current_phase",
+      lookup: { true: "Yes", false: "No" },
+      editComponent: props => (
+        <ToggleEditComponent {...props} name="is_current_phase" />
       ),
     },
   ];
@@ -355,6 +356,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Completion estimate",
       field: "milestone_estimate",
+      render: rowData =>
+        moment(rowData.milestone_estimate).format("MM/DD/YYYY"),
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -366,6 +369,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Date completed",
       field: "milestone_end",
+      render: rowData => moment(rowData.milestone_end).format("MM/DD/YYYY"),
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -389,13 +393,24 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <div style={{ maxWidth: "100%" }}>
+            <Box mb={2} style={{ maxWidth: "100%" }}>
               <MaterialTable
                 columns={phasesColumns}
                 data={data.moped_proj_phases}
                 // Action component customized as described in this gh-issue:
                 // https://github.com/mbrn/material-table/issues/2133
                 components={{
+                  EditRow: props => (
+                    <MTableEditRow
+                      {...props}
+                      onKeyDown={e => {
+                        if (e.keyCode === 13) {
+                          // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                          // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                        }
+                      }}
+                    />
+                  ),
                   Action: props => {
                     // If isn't the add action
                     if (
@@ -532,14 +547,25 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   },
                 }}
               />
-            </div>
+            </Box>
           </Grid>
           <Grid item xs={12}>
-            <div style={{ maxWidth: "100%" }}>
+            <Box style={{ maxWidth: "100%" }}>
               <MaterialTable
                 columns={milestoneColumns}
                 data={data.moped_proj_milestones}
                 components={{
+                  EditRow: props => (
+                    <MTableEditRow
+                      {...props}
+                      onKeyDown={e => {
+                        if (e.keyCode === 13) {
+                          // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                          // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                        }
+                      }}
+                    />
+                  ),
                   Action: props => {
                     // If isn't the add action
                     if (
@@ -661,7 +687,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   },
                 }}
               />
-            </div>
+            </Box>
           </Grid>
         </Grid>
       </CardContent>

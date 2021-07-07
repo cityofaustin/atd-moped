@@ -12,7 +12,7 @@ import {
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import typography from "../../../theme/typography";
-import MaterialTable, { MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import {
   AddCircle as AddCircleIcon,
   Clear as ClearIcon,
@@ -188,9 +188,11 @@ const ProjectFiles = props => {
       render: record => (
         <span>
           {record?.create_date
-            ? new Date(record.create_date).toLocaleString("en-US", {
-                timeZone: "UTC",
-              })
+            ? new Date(record.create_date)
+                .toLocaleString("en-US", {
+                  timeZone: "UTC",
+                })
+                .format("MM/DD/YYYY")
             : "N/A"}
         </span>
       ),
@@ -218,8 +220,18 @@ const ProjectFiles = props => {
           // Action component customized as described in this gh-issue:
           // https://github.com/mbrn/material-table/issues/2133
           components={{
+            EditRow: props => (
+              <MTableEditRow
+                {...props}
+                onKeyDown={e => {
+                  if (e.keyCode === 13) {
+                    // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                    // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                  }
+                }}
+              />
+            ),
             Action: props => {
-              console.log(props);
               // If isn't the add action
               if (
                 typeof props.action === typeof Function ||
@@ -263,7 +275,7 @@ const ProjectFiles = props => {
           }}
           editable={{
             onRowAdd: () => {
-              handleClickUploadFile()
+              handleClickUploadFile();
             },
             onRowUpdate: (newData, oldData) =>
               updateProjectFileAttachment({
