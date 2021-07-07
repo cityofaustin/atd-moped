@@ -66,7 +66,6 @@ export const routes = [
         element: <ProjectView />,
       },
       { path: "logout", action: "logout:visit", element: <Logout /> },
-      { path: "settings", action: "settings:visit", element: <SettingsView /> },
       { path: "404", action: "404:visit", element: <NotFoundView /> },
       {
         path: "dev/devias",
