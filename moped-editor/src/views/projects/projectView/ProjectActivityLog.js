@@ -138,6 +138,11 @@ const ProjectActivityLog = () => {
       .toUpperCase();
   };
 
+  const getUserAvatar = moped_user => {
+    console.log(moped_user)
+    return "/moped/static/images/avatars/userAvatar.jpg"
+  }
+
   /**
    * Attempt to get the number of items we retrieved
    * @return {number}
@@ -234,7 +239,7 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <Avatar
                               alt={getInitials(change?.moped_user)}
-                              src="/moped/static/images/avatars/userAvatar.jpg"
+                              src={getUserAvatar(change?.moped_user)}
                               className={classes.avatarSmall}
                             >
                               {getInitials(change?.moped_user)}
