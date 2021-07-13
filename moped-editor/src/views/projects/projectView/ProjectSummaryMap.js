@@ -70,6 +70,12 @@ const ProjectSummaryMap = ({
    * Let's throw an error intentionally if there are no features for a project.
    */
   if (featureCount < 1) {
+    // If this is local, disable react error overlay
+    if (process.env.NODE_ENV === "local") {
+      const styleSheet = document.styleSheets[document.styleSheets.length - 1];
+      styleSheet.insertRule("body > iframe { display: none; }", 0);
+    }
+
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 

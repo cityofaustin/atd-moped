@@ -68,6 +68,8 @@ const ProjectComponentsMapView = ({
     projectFeatureCollection
   );
 
+  debugger;
+
   /**
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
@@ -78,6 +80,13 @@ const ProjectComponentsMapView = ({
    * Let's throw an error intentionally if there are no features for a project.
    */
   if (featureCount < 1) {
+    // If this is local, disable react error overlay
+    if (process.env.NODE_ENV === "local") {
+      const styleSheet = document.styleSheets[document.styleSheets.length - 1];
+      styleSheet.insertRule("body > iframe { display: none; }", 0);
+    }
+
+    // Now throw the error the error boundary can catch
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 
