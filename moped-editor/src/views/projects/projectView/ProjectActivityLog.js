@@ -33,8 +33,8 @@ import {
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
-import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
-import CDNAvatar from "../../../components/CDN/Avatar";
+// import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
+// import CDNAvatar from "../../../components/CDN/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
