@@ -33,6 +33,8 @@ import {
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
+// import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
+import CDNAvatar from "../../../components/CDN/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -138,6 +140,23 @@ const ProjectActivityLog = () => {
       .toUpperCase();
   };
 
+  const getUserAvatar = moped_user => {
+    const { loadingProfile, errorProfile, dataProfile } = useQuery(
+      ACCOUNT_USER_PROFILE_GET,
+      {
+        variables: {
+          userId:
+            config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
+        },
+      }
+    );
+    console.log("moped user");
+    console.log(moped_user);
+    console.log(moped_user.user_id);
+    console.log(dataProfile);
+    return "/moped/static/images/avatars/userAvatar.jpg";
+  };
+
   /**
    * Attempt to get the number of items we retrieved
    * @return {number}
@@ -234,7 +253,7 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <Avatar
                               alt={getInitials(change?.moped_user)}
-                              src="/moped/static/images/avatars/userAvatar.jpg"
+                              src={getUserAvatar(change?.moped_user)}
                               className={classes.avatarSmall}
                             >
                               {getInitials(change?.moped_user)}
