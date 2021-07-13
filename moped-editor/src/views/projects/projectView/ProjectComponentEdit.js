@@ -262,11 +262,11 @@ const ProjectComponentEdit = ({
     const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
 
     // Generates a list of available component subtypes given a component type
-    const availableSubTypes = getAvailableSubtypes(selectedType);
+    const newAvailableSubTypes = getAvailableSubtypes(selectedType);
 
     // Set The selected component type
     setSelectedComponentType(selectedType);
-    setAvailableSubtypes(availableSubTypes);
+    setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
   };
 
@@ -606,8 +606,8 @@ const ProjectComponentEdit = ({
     // If there is a componentId, then get subtypes
     if (componentId > 0) {
       // Now get the available subtypes
-      const availableSubTypes = getAvailableSubtypes(componentTypeDB);
-      setAvailableSubtypes(availableSubTypes);
+      const newStateAvailableSubTypes = getAvailableSubtypes(componentTypeDB);
+      setAvailableSubtypes(newStateAvailableSubTypes);
       // If the component type has subtypes, then fetch those and update state
       if (initialTypeCounts[componentTypeDB].count > 1) {
         const subtypeDB = (databaseComponent?.component_subtype ?? "")
@@ -694,10 +694,12 @@ const ProjectComponentEdit = ({
                 <Autocomplete
                   id="moped-project-subtype-select"
                   className={classes.formSelect}
-                  value={availableSubtypes.find(
-                    subtype =>
-                      subtype.toLowerCase() === selectedComponentSubtype
-                  )}
+                  value={
+                    availableSubtypes.find(
+                      subtype =>
+                        subtype.toLowerCase() === selectedComponentSubtype
+                    ) ?? null
+                  }
                   options={[...new Set(availableSubtypes)].sort()}
                   getOptionLabel={component => component}
                   renderInput={params => (

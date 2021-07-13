@@ -34,10 +34,56 @@ const ProjectComponentSubcomponents = ({
       </Alert>
     );
 
-  // Count the total number of available subcomponents we have for this component type
-  const availableSubcomponentsCount = (subcomponentList ?? []).filter(
+  /**
+   * We need to keep a list of the selected subcomponents with a hash map
+   * @type {Object}
+   */
+  const selectedSubcomponentIdsHash = {};
+
+  /**
+   * We need a list of objects that contains our available subcomponents for this component type
+   * @type {Object[]}
+   */
+  const availableSubcomponents = (subcomponentList ?? []).filter(
+    // Append any available subcomponents for the current type
     subComponent => subComponent.component_id === componentId
-  ).length;
+  );
+
+  /**
+   * We need to have a quick list of available subcomponent id's so we
+   * can determine if the selected subcomponents should be in our available options.
+   * @type {Number[]}
+   */
+  const availableSubcomponentIds = availableSubcomponents.map(
+    subComponent => subComponent.subcomponent_id
+  );
+
+  // Count the total number of available subcomponents we have for this component type
+  const availableSubcomponentsCount = (availableSubcomponents ?? []).length;
+
+  /**
+   * We need a list of elements that are currently selected, but we must clear
+   * any elements that do not belong for this component type or any duplicates
+   * @type {Object[]}
+   */
+  const uniqueSelectedSubcomponents = (selectedSubcomponents ?? []) // do not assume selectedSubcomponents is an array
+    // First, remove any subcomponents that do not belong in this type/subtype pair
+    .filter(subComponent =>
+      availableSubcomponentIds.includes(subComponent.subcomponent_id)
+    )
+    // Now let's remove duplicates, this can be tested using [...selectedSubcomponents,...selectedSubcomponents] above
+    .filter(subComponent => {
+      // Check if we already have the subcomponent id selected
+      if (selectedSubcomponentIdsHash[subComponent.subcomponent_id] ?? false) {
+        // We already have it, then exclude from output it by returning false
+        return false;
+      } else {
+        // We do not have it, then make it part of our list
+        selectedSubcomponentIdsHash[subComponent.subcomponent_id] = true;
+      }
+      // If we reach this point, we just added our subcomponent_id to the hash list
+      return true;
+    });
 
   // If we have zero, then no point to render the autocomplete react component
   if (availableSubcomponentsCount === 0)
@@ -54,17 +100,11 @@ const ProjectComponentSubcomponents = ({
           multiple
           fullWidth
           id="moped-subcomponents"
-          value={selectedSubcomponents}
+          value={uniqueSelectedSubcomponents}
           onChange={(event, newValue) => {
             setSelectedSubcomponents([...newValue]);
           }}
-          options={[
-            ...selectedSubcomponents, // We must show existing selected subcomponents, even if there is a mismatch
-            ...subcomponentList.filter(
-              // Then append any available subcomponents for the current type
-              subComponent => subComponent.component_id === componentId
-            ),
-          ]}
+          options={availableSubcomponents}
           // The list changes depending on available subcomponents for that specific type
           getOptionLabel={option => option.subcomponent_name}
           renderTags={(tagValue, getTagProps) =>
