@@ -34,7 +34,7 @@ import {
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
 // import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
-// import CDNAvatar from "../../../components/CDN/Avatar";
+import CDNAvatar from "../../../components/CDN/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -75,12 +75,6 @@ const ProjectActivityLog = () => {
     variables: { projectId },
     onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
-
-  // const { loadingProfile, errorProfile, dataProfile } = useQuery(ACCOUNT_USER_PROFILE_GET, {
-  //   variables: {
-  //     userId: config.env.APP_ENVIRONMENT === "local" ? 1 : getDatabaseId(user),
-  //   },
-  // });
 
   const [activityId, setActivityId] = useState(null);
 
@@ -147,10 +141,21 @@ const ProjectActivityLog = () => {
   };
 
   const getUserAvatar = moped_user => {
+    const { loadingProfile, errorProfile, dataProfile } = useQuery(
+      ACCOUNT_USER_PROFILE_GET,
+      {
+        variables: {
+          userId:
+            config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
+        },
+      }
+    );
     console.log("moped user");
-    console.log(moped_user)
-    return "/moped/static/images/avatars/userAvatar.jpg"
-  }
+    console.log(moped_user);
+    console.log(moped_user.user_id);
+    console.log(dataProfile);
+    return "/moped/static/images/avatars/userAvatar.jpg";
+  };
 
   /**
    * Attempt to get the number of items we retrieved

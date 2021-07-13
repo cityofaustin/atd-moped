@@ -146,6 +146,8 @@ const Profile = ({ className, ...rest }) => {
       : null
     : null;
 
+    console.log(userProfile);
+
   return (
     <>
       {loading && <CircularProgress />}
