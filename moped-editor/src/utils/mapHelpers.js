@@ -84,14 +84,16 @@ export const mapStyles = {
   toolTipStyles: {
     position: "absolute",
     margin: 8,
-    padding: 4,
-    background: theme.palette.text.primary,
+    padding: 6,
+    background: theme.palette.primary.main,
     color: theme.palette.background.default,
     maxWidth: 300,
     fontSize: "0.875rem",
     fontWeight: 500,
     zIndex: 9,
     pointerEvents: "none",
+    borderRadius: 6,
+    // boxShadow: 0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)
   },
 };
 
@@ -528,7 +530,6 @@ export const createSummaryMapLayers = geoJSON => {
       })
   );
 };
-
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
  * @summary The fill color key's value below is a Mapbox "case" expression whose cases are
@@ -565,8 +566,9 @@ export const createProjectViewLayerConfig = (
  * @param {Object} className - Styles from the classes object
  * @return {JSX} The populated tooltip JSX
  */
-export const renderTooltip = (tooltipText, hoveredCoords, className) =>
-  tooltipText && (
+export const renderTooltip = (tooltipText, hoveredCoords, className) => {
+  console.log(tooltipText)
+  return (tooltipText && (
     <div
       className={className}
       style={{
@@ -576,7 +578,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
     >
       <div>{tooltipText}</div>
     </div>
-  );
+  ))};
 
 /**
  * Build the JSX for the map feature count subtext
