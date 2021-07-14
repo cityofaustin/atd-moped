@@ -94,7 +94,7 @@ export const mapStyles = {
     zIndex: 9,
     pointerEvents: "none",
     borderRadius: 6,
-    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)"
+    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)",
   },
 };
 
@@ -567,8 +567,8 @@ export const createProjectViewLayerConfig = (
  * @param {Object} className - Styles from the classes object
  * @return {JSX} The populated tooltip JSX
  */
-export const renderTooltip = (tooltipText, hoveredCoords, className) => {
-  return (tooltipText && (
+export const renderTooltip = (tooltipText, hoveredCoords, className) =>
+  tooltipText && (
     <div
       className={className}
       style={{
@@ -578,7 +578,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) => {
     >
       <div>{stringToTitleCase(tooltipText)}</div>
     </div>
-  ))};
+  );
 
 /**
  * Build the JSX for the map feature count subtext
