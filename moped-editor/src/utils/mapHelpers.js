@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { get } from "lodash";
+import stringToTitleCase from "./stringToTitleCase";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -567,7 +568,6 @@ export const createProjectViewLayerConfig = (
  * @return {JSX} The populated tooltip JSX
  */
 export const renderTooltip = (tooltipText, hoveredCoords, className) => {
-  console.log(tooltipText)
   return (tooltipText && (
     <div
       className={className}
@@ -576,7 +576,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) => {
         top: hoveredCoords?.y,
       }}
     >
-      <div>{tooltipText}</div>
+      <div>{stringToTitleCase(tooltipText)}</div>
     </div>
   ))};
 
