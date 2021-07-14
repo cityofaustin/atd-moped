@@ -93,7 +93,7 @@ export const mapStyles = {
     zIndex: 9,
     pointerEvents: "none",
     borderRadius: 6,
-    // boxShadow: 0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)
+    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)"
   },
 };
 
