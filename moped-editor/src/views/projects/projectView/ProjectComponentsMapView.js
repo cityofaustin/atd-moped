@@ -3,6 +3,7 @@ import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, Button, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { stopReportingRuntimeErrors } from "react-error-overlay";
 
 import {
   createSummaryMapLayers,
@@ -81,10 +82,7 @@ const ProjectComponentsMapView = ({
    */
   if (featureCount < 1) {
     // If this is local, disable react error overlay
-    if (process.env.NODE_ENV === "local") {
-      const styleSheet = document.styleSheets[document.styleSheets.length - 1];
-      styleSheet.insertRule("body > iframe { display: none; }", 0);
-    }
+    stopReportingRuntimeErrors();
 
     // Now throw the error the error boundary can catch
     throw Error("Map error: Cannot render or edit maps with no features");
