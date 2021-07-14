@@ -11,7 +11,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import { get } from "lodash";
-import stringToTitleCase from "./stringToTitleCase";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -95,6 +94,7 @@ export const mapStyles = {
     pointerEvents: "none",
     borderRadius: 6,
     boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)",
+    textTransform: "capitalize",
   },
 };
 
@@ -576,7 +576,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
         top: hoveredCoords?.y,
       }}
     >
-      <div>{stringToTitleCase(tooltipText)}</div>
+      <div>{tooltipText.toLowerCase()}</div>
     </div>
   );
 
