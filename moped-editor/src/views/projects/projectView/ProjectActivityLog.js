@@ -155,6 +155,7 @@ const ProjectActivityLog = () => {
     console.log("moped user");
     console.log(moped_user);
     console.log(moped_user.user_id);
+    console.log("sup");
 
     getProfile({
       variables: {
