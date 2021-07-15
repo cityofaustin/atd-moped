@@ -155,20 +155,18 @@ const ProjectActivityLog = () => {
     console.log("moped user");
     console.log(moped_user);
     console.log(moped_user.user_id);
-    if (loadingProfile) return "/moped/static/images/avatars/userAvatar.jpg";
-    console.log(
-      getProfile({
-        variables: {
-          userId:
-            config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
-        },
-      })
-    );
-    return getProfile({
+
+    getProfile({
       variables: {
         userId: config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
       },
-    });
+    })
+
+    if (loadingProfile) return "/moped/static/images/avatars/userAvatar.jpg";
+
+    console.log(data.picture);
+
+    return dataProfile.picture;
   };
 
   /**
