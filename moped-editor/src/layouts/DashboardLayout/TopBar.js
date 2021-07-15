@@ -17,7 +17,9 @@ import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
 
 const useStyles = makeStyles(() => ({
-  root: {},
+  root: {
+    backgroundColor: "#fff", //theme.color.common.white,
+  },
   avatar: {
     marginRight: 8,
   },
