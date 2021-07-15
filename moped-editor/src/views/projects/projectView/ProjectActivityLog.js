@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
+import { useQuery, useLazyQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
@@ -16,7 +16,7 @@ import {
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
 
 import {
-  Avatar,
+  // Avatar,
   Box,
   Button,
   CardContent,
@@ -33,11 +33,12 @@ import {
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
-// import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
+import { ACCOUNT_USER_PROFILE_GET } from "../../../queries/account";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import config from "../../../config";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -75,6 +76,16 @@ const ProjectActivityLog = () => {
     variables: { projectId },
     onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
+
+  const [getProfile, { loadingProfile, dataProfile }] = useLazyQuery(
+    ACCOUNT_USER_PROFILE_GET
+  );
+
+  // const { loadingProfile, errorProfile, dataProfile } = useQuery(ACCOUNT_USER_PROFILE_GET, {
+  //   variables: {
+  //     userId: config.env.APP_ENVIRONMENT === "local" ? 1 : getDatabaseId(user),
+  //   },
+  // });
 
   const [activityId, setActivityId] = useState(null);
 
@@ -141,20 +152,23 @@ const ProjectActivityLog = () => {
   };
 
   const getUserAvatar = moped_user => {
-    const { loadingProfile, errorProfile, dataProfile } = useQuery(
-      ACCOUNT_USER_PROFILE_GET,
-      {
+    console.log("moped user");
+    console.log(moped_user);
+    console.log(moped_user.user_id);
+    if (loadingProfile) return "/moped/static/images/avatars/userAvatar.jpg";
+    console.log(
+      getProfile({
         variables: {
           userId:
             config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
         },
-      }
+      })
     );
-    console.log("moped user");
-    console.log(moped_user);
-    console.log(moped_user.user_id);
-    console.log(dataProfile);
-    return "/moped/static/images/avatars/userAvatar.jpg";
+    return getProfile({
+      variables: {
+        userId: config.env.APP_ENVIRONMENT === "local" ? 1 : moped_user.user_id,
+      },
+    });
   };
 
   /**
@@ -251,13 +265,18 @@ const ProjectActivityLog = () => {
                       >
                         <Box display="flex" p={0}>
                           <Box p={0}>
-                            <Avatar
+                            {/* <Avatar
                               alt={getInitials(change?.moped_user)}
                               src={getUserAvatar(change?.moped_user)}
                               className={classes.avatarSmall}
                             >
                               {getInitials(change?.moped_user)}
-                            </Avatar>
+                            </Avatar> */}
+                            <CDNAvatar
+                              src={getUserAvatar(change?.moped_user)}
+                              initials={getInitials(change?.moped_user)}
+                              // largeInitials={true}
+                            />
                           </Box>
                           <Box
                             p={0}
