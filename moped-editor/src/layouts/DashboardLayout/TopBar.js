@@ -8,6 +8,8 @@ import {
   Box,
   IconButton,
   Toolbar,
+  Tabs,
+  Tab,
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
@@ -16,14 +18,40 @@ import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: "#fff", //theme.color.common.white,
+  },
+  tabs : {
+    textTransform: "capitalize",
+    color: theme.palette.text.header,
+    fontSize: "1em",
+    minWidth: "100px",
+    fontWeight: 800,
   },
   avatar: {
     marginRight: 8,
   },
 }));
+
+const items = [
+  {
+    href: "/moped/dashboard",
+    title: "Dashboard",
+  },
+  {
+    href: "/moped/projects",
+    title: "Projects",
+  },
+  {
+    href: "/moped/staff",
+    title: "Staff",
+  },
+  {
+    href: "/moped/logout",
+    title: "Logout",
+  },
+];
 
 const TopBar = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
@@ -37,6 +65,13 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
+        <Box>
+          <Tabs>
+            {items.map(item => (
+              <Tab label={item.title} className={classes.tabs} component={RouterLink} to={item.href} />
+            ))}
+          </Tabs>
+        </Box>
         <Box flexGrow={1} />
         <Box>
           <div className={classes.root}>
