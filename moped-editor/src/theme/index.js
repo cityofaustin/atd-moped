@@ -20,7 +20,7 @@ const theme = createMuiTheme({
     text: {
       primary: "#000000",
       secondary: "#000000",
-      header: "#E1E2E1",
+      header: "#848484",
     },
     map: {
       transparent: "rgba(0,0,0,0)",

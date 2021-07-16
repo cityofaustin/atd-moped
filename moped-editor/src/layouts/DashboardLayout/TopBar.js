@@ -1,5 +1,5 @@
 import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, NavLink } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
@@ -18,11 +18,11 @@ import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: "#fff", //theme.color.common.white,
   },
-  tabs : {
+  tabs: {
     textTransform: "capitalize",
     color: theme.palette.text.header,
     fontSize: "1em",
@@ -31,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     marginRight: 8,
+  },
+  active: {
+    color: theme.palette.primary.main,
+    borderColor: theme.palette.primary.main,
+    borderBottomWidth: "2px",
+    borderStyle: "solid",
   },
 }));
 
@@ -58,6 +64,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   const { user } = useUser();
 
   const userDbData = getSessionDatabaseData();
+  console.log(userDbData);
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -68,7 +75,13 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         <Box>
           <Tabs>
             {items.map(item => (
-              <Tab label={item.title} className={classes.tabs} component={RouterLink} to={item.href} />
+              <Tab
+                label={item.title}
+                className={classes.tabs}
+                component={NavLink}
+                activeClassName={classes.active}
+                to={item.href}
+              />
             ))}
           </Tabs>
         </Box>
