@@ -128,7 +128,7 @@ function run_database_migration() {
   print_header "Delete Hasura Event Triggers";
   # Old Version: (3.3.2) yq d -i metadata/tables.yaml *.event_triggers;
   # New Version (4.x)
-  yq --inplace eval 'del(.. | select(has("event_triggers")))' metadata/tables.yaml;
+  # yq --inplace eval 'del(.. | select(has("event_triggers")))' metadata/tables.yaml;
 
   print_header "Contents of Configuration";
   cp config/hasura.local.yaml config.yaml;
