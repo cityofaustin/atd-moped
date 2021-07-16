@@ -63,8 +63,6 @@ jobs:
         run: |
           curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-          sudo apt update
-          sudo apt install yq=3.3.2 -y
       # Run the shell commands using the AWS environment variables
       - name: "Moped Database: Re-deploy"
         env:
@@ -84,8 +82,6 @@ jobs:
           echo "SHA: ${GITHUB_SHA}"
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
-          echo "PWD: $(pwd)"
-          echo "YQ Version: $(yq --version)"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           clone_hasura_repo
           build_database
