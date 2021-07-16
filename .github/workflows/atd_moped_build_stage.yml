@@ -63,10 +63,8 @@ jobs:
         run: |
           curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys CC86BB64
-          sudo add-apt-repository ppa:rmescandon/yq
           sudo apt update
-          sudo apt install yq -y
+          sudo apt install yq=3.3.2 -y
       # Run the shell commands using the AWS environment variables
       - name: "Moped Database: Re-deploy"
         env:
