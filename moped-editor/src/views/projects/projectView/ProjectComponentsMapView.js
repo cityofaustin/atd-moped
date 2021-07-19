@@ -69,8 +69,6 @@ const ProjectComponentsMapView = ({
     projectFeatureCollection
   );
 
-  debugger;
-
   /**
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
