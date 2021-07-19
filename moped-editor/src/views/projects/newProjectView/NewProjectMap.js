@@ -27,6 +27,7 @@ import {
   useHoverLayer,
   useLayerSelect,
   renderFeatureCount,
+  useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
@@ -110,6 +111,17 @@ const NewProjectMap = ({
   const { visibleLayerIds, renderLayerSelect, mapStyleConfig } = useLayerSelect(
     getLayerNames(),
     classes
+  );
+
+  /**
+   * Creates a geojson layer with all the other features of the project
+   * and converts the feature type into whatever we specify. In this case,
+   * we will use 'projectFeatures'.
+   * @type {Object} otherProjectFeaturesCollection - GeoJSON Collection
+   */
+  const otherProjectFeaturesCollection = useTransformProjectFeatures(
+    projectFeatureCollection,
+    "projectFeatures"
   );
 
   const {
@@ -257,7 +269,10 @@ const NewProjectMap = ({
               data={{
                 ...featureCollection,
                 features: [
-                  ...featureCollection.features.filter(
+                  ...[
+                    ...featureCollection.features,
+                    ...(otherProjectFeaturesCollection?.features ?? []),
+                  ].filter(
                     feature => feature.properties.sourceLayer === sourceName
                   ),
                 ],
