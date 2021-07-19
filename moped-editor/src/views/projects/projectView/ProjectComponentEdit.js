@@ -59,6 +59,7 @@ const useStyles = makeStyles(theme => ({
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {function} projectRefetchFeatures - Reload parent component's features
  * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
+ * @param {function} projectSetFeatureCollection - Allows us to clear the feature collection for reloading
  * @return {JSX.Element}
  * @constructor
  */
@@ -404,7 +405,6 @@ const ProjectComponentEdit = ({
    */
   const exitAndReload = () => {
     handleCancelEdit();
-    projectRefetchFeatures();
   };
 
   /**
