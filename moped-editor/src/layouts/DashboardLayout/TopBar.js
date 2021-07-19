@@ -121,7 +121,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             )}
           </div>
         </Box>
-        <IconButton onClick={onOpen}>
+        <IconButton onClick={onOpen} medium>
           <HelpOutlineIcon />
         </IconButton>
       </Toolbar>
