@@ -6,13 +6,15 @@ import {
   AppBar,
   Avatar,
   Box,
+  Button,
+  Icon,
   IconButton,
   Toolbar,
   Tabs,
   Tab,
   makeStyles,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 import Logo from "src/components/Logo";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
@@ -25,9 +27,10 @@ const useStyles = makeStyles(theme => ({
   tabs: {
     textTransform: "capitalize",
     color: theme.palette.text.header,
-    fontSize: "1em",
+    fontSize: "1.2em",
     minWidth: "100px",
     fontWeight: 800,
+    opacity: 1,
   },
   avatar: {
     marginRight: 8,
@@ -38,6 +41,9 @@ const useStyles = makeStyles(theme => ({
     borderBottomWidth: "2px",
     borderStyle: "solid",
   },
+  newProject: {
+    marginRight: 8,
+  }
 }));
 
 const items = [
@@ -52,10 +58,6 @@ const items = [
   {
     href: "/moped/staff",
     title: "Staff",
-  },
-  {
-    href: "/moped/logout",
-    title: "Logout",
   },
 ];
 
@@ -87,6 +89,18 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </Box>
         <Box flexGrow={1} />
         <Box>
+          <Button
+            color="primary"
+            variant="contained"
+            component={RouterLink}
+            to={'/moped/projects/new'}
+            startIcon={<Icon>add_circle</Icon>}
+            className={classes.newProject}
+          >
+            {"New project"}
+          </Button>
+        </Box>
+        <Box>
           <div className={classes.root}>
             {userDbData ? (
               <CDNAvatar
@@ -107,8 +121,8 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             )}
           </div>
         </Box>
-        <IconButton color="inherit" onClick={onOpen}>
-          <MenuIcon />
+        <IconButton onClick={onOpen}>
+          <HelpOutlineIcon />
         </IconButton>
       </Toolbar>
     </AppBar>
