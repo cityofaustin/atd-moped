@@ -3,12 +3,12 @@ import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import {
-  Box,
   Checkbox,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
   Typography,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Box,
 } from "@material-ui/core";
 import { get } from "lodash";
 
@@ -243,6 +243,52 @@ export const mapConfig = {
             paint: {
               "line-color": theme.palette.primary.main,
               "line-width": 4,
+            },
+          };
+        };
+      },
+    },
+    projectFeatures: {
+      layerLabel: "Project Features",
+      layerIdName: "projectFeatures",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 5,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function(hoveredId, layerIds) {
+          const isEditing = !!layerIds;
+
+          const editMapPaintStyles = {
+            "line-opacity": [
+              "case",
+              ["==", ["get", this.layerIdField], hoveredId],
+              mapStyles.statusOpacities.hovered,
+              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              mapStyles.statusOpacities.selected,
+              mapStyles.statusOpacities.unselected,
+            ],
+          };
+
+          return {
+            id: this.layerIdName,
+            type: "line",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                theme.palette.grey["800"],
+                this.layerColor,
+              ],
+              "line-width": mapStyles.lineWidthStops,
+              ...(isEditing && editMapPaintStyles),
             },
           };
         };
@@ -728,8 +774,14 @@ export function useFeatureCollectionToFitBounds(
  * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
  */
 export function useLayerSelect(initialSelectedLayerNames, classes) {
+  /**
+   * The initial state of visible ids is retrieved from the initialSelectedLayerNames
+   * then we filter out any of them by checking if it has an `isInitiallyVisible` property.
+   */
   const [visibleLayerIds, setVisibleLayerIds] = useState(
-    initialSelectedLayerNames
+    initialSelectedLayerNames.filter(
+      layerName => mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
+    )
   );
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
@@ -800,8 +852,8 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
 export const layerSelectStyles = {
   layerSelectBox: {
     position: "absolute",
-    top: 105,
-    left: 35,
+    top: 10,
+    left: 50,
     background: theme.palette.background.mapControls,
     boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
     borderRadius: 4,
@@ -825,3 +877,29 @@ export const layerSelectStyles = {
 export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
   .filter(([layerName, layer]) => layer.layerDrawn)
   .map(([layerName, layer]) => layer.layerIdName);
+
+/**
+ * Reconstructs a GeoJSON collection and renames all its features using
+ * a provided layer name id (as specified in the configuration settings).
+ * @param {Object} projectOtherFeaturesCollection - A GeoJSON collection
+ * @param {string} newLayerName - The name (layerIdName) of the destination layer
+ */
+export const useTransformProjectFeatures = (
+  projectOtherFeaturesCollection,
+  newLayerName // We need to generate a new collection
+) => ({
+  // First, enter the type (which never changes)
+  type: "FeatureCollection",
+  // Then, create the features attribute with the output of a map
+  features: projectOtherFeaturesCollection.features.map(feature => ({
+    // For every feature, first copy the element
+    ...feature,
+    // Then, overwrite the feature's 'properties' attribute
+    properties: {
+      // With a copy of the existing feature's properties
+      ...feature.properties,
+      // And with an overwritten sourceLayer attribute
+      sourceLayer: newLayerName,
+    },
+  })),
+});
