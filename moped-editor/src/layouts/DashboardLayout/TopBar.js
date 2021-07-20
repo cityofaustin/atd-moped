@@ -17,6 +17,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+// import Can from "../../auth/Can";
 import Logo from "src/components/Logo";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
@@ -68,19 +69,17 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   const navigate = useNavigate();
   const { user } = useUser();
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
 
-  const handleClick = event => {
-    console.log(event.currentTarget);
-    setAnchorEl(event.currentTarget);
+  const handleAvatarClick = event => {
+    setAvatarAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleAvatarClose = () => {
+    setAvatarAnchorEl(null);
   };
 
   const userDbData = getSessionDatabaseData();
-  console.log("userdbdata: ", userDbData);
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -115,7 +114,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           </Button>
         </Box>
         <Box>
-          <Button className={classes.root} onClick={handleClick}>
+          <Button className={classes.root} onClick={handleAvatarClick}>
             {userDbData ? (
               <CDNAvatar
                 className={classes.avatar}
@@ -125,35 +124,39 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             ) : (
               <Avatar
                 className={classes.avatar}
-                component={RouterLink}
-                src={null}
-                to="/moped/account"
                 style={{ backgroundColor: user ? user.userColor : null }}
               >
                 {emailToInitials(user?.idToken?.payload?.email)}
               </Avatar>
             )}
           </Button>
+          <Menu
+            id="avatarDropdown"
+            anchorEl={avatarAnchorEl}
+            keepMounted
+            open={Boolean(avatarAnchorEl)}
+            onClose={handleAvatarClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            getContentAnchorEl={null}
+          >
+            <MenuItem
+              onClick={() => {
+                handleAvatarClose();
+                navigate("/moped/account");
+              }}
+            >
+              Account
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/moped/logout")}>
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
-        <Menu
-          id="simple-menu"
-          anchorEl={anchorEl}
-          keepMounted
-          open={Boolean(anchorEl)}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-          getContentAnchorEl={null}
-        >
-          <MenuItem onClick={() => {
-            handleClose()
-            navigate("/moped/account")}}>
-            Account
-          </MenuItem>
-          <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
-        </Menu>
-        <IconButton onClick={() => console.log("hi")} size="medium">
-          <HelpOutlineIcon />
-        </IconButton>
+        <Box>
+          <IconButton onClick={() => console.log("This is in an upcoming issue")} size="medium">
+            <HelpOutlineIcon />
+          </IconButton>
+        </Box>
       </Toolbar>
     </AppBar>
   );
