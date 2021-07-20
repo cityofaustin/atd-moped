@@ -259,20 +259,7 @@ export const mapConfig = {
       isClickEditable: false,
       isInitiallyVisible: false,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
-          const isEditing = !!layerIds;
-
-          const editMapPaintStyles = {
-            "line-opacity": [
-              "case",
-              ["==", ["get", this.layerIdField], hoveredId],
-              mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
-              mapStyles.statusOpacities.selected,
-              mapStyles.statusOpacities.unselected,
-            ],
-          };
-
+        return function() {
           return {
             id: this.layerIdName,
             type: "line",
@@ -288,7 +275,6 @@ export const mapConfig = {
                 this.layerColor,
               ],
               "line-width": mapStyles.lineWidthStops,
-              ...(isEditing && editMapPaintStyles),
             },
           };
         };
