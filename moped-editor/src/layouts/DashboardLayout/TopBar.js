@@ -7,6 +7,7 @@ import {
   Avatar,
   Box,
   Button,
+  Hidden,
   Icon,
   IconButton,
   Toolbar,
@@ -16,8 +17,9 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
+import MenuIcon from "@material-ui/icons/Menu";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-// import Can from "../../auth/Can";
+import Can from "../../auth/Can";
 import Logo from "src/components/Logo";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
@@ -36,7 +38,11 @@ const useStyles = makeStyles(theme => ({
     opacity: 1,
   },
   avatar: {
-    marginRight: 8,
+    margin: 0,
+  },
+  avatarButton: {
+    borderRadius: "50%",
+    height: "64px",
   },
   active: {
     color: theme.palette.primary.main,
@@ -102,19 +108,24 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </Box>
         <Box flexGrow={1} />
         <Box>
-          <Button
-            color="primary"
-            variant="contained"
-            component={RouterLink}
-            to={"/moped/projects/new"}
-            startIcon={<Icon>add_circle</Icon>}
-            className={classes.newProject}
-          >
-            {"New project"}
-          </Button>
+          <Can
+            perform="newProjects:visit"
+            yes={
+              <Button
+                color="primary"
+                variant="contained"
+                component={RouterLink}
+                to={"/moped/projects/new"}
+                startIcon={<Icon>add_circle</Icon>}
+                className={classes.newProject}
+              >
+                {"New project"}
+              </Button>
+            }
+          />
         </Box>
         <Box>
-          <Button className={classes.root} onClick={handleAvatarClick}>
+          <Button className={classes.avatarButton} onClick={handleAvatarClick}>
             {userDbData ? (
               <CDNAvatar
                 className={classes.avatar}
@@ -153,10 +164,18 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           </Menu>
         </Box>
         <Box>
-          <IconButton onClick={() => console.log("This is in an upcoming issue")} size="medium">
+          <IconButton
+            onClick={() => console.log("This is in an upcoming issue")}
+            size="medium"
+          >
             <HelpOutlineIcon />
           </IconButton>
         </Box>
+        <Hidden smUp>
+          <IconButton color="inherit" onClick={onOpen}>
+            <MenuIcon />
+          </IconButton>
+        </Hidden>
       </Toolbar>
     </AppBar>
   );
