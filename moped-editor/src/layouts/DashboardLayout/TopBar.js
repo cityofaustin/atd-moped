@@ -1,5 +1,5 @@
-import React from "react";
-import { Link as RouterLink, NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
@@ -12,9 +12,11 @@ import {
   Toolbar,
   Tabs,
   Tab,
+  Menu,
+  MenuItem,
   makeStyles,
 } from "@material-ui/core";
-import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import Logo from "src/components/Logo";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
@@ -22,7 +24,7 @@ import CDNAvatar from "../../components/CDN/Avatar";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: "#fff", //theme.color.common.white,
+    backgroundColor: theme.palette.background.paper,
   },
   tabs: {
     textTransform: "capitalize",
@@ -43,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   newProject: {
     marginRight: 8,
-  }
+  },
 }));
 
 const items = [
@@ -63,10 +65,22 @@ const items = [
 
 const TopBar = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const { user } = useUser();
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = event => {
+    console.log(event.currentTarget);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const userDbData = getSessionDatabaseData();
-  console.log(userDbData);
+  console.log("userdbdata: ", userDbData);
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -93,7 +107,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             color="primary"
             variant="contained"
             component={RouterLink}
-            to={'/moped/projects/new'}
+            to={"/moped/projects/new"}
             startIcon={<Icon>add_circle</Icon>}
             className={classes.newProject}
           >
@@ -101,7 +115,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           </Button>
         </Box>
         <Box>
-          <div className={classes.root}>
+          <Button className={classes.root} onClick={handleClick}>
             {userDbData ? (
               <CDNAvatar
                 className={classes.avatar}
@@ -119,9 +133,25 @@ const TopBar = ({ className, onOpen, ...rest }) => {
                 {emailToInitials(user?.idToken?.payload?.email)}
               </Avatar>
             )}
-          </div>
+          </Button>
         </Box>
-        <IconButton onClick={onOpen} medium>
+        <Menu
+          id="simple-menu"
+          anchorEl={anchorEl}
+          keepMounted
+          open={Boolean(anchorEl)}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+          getContentAnchorEl={null}
+        >
+          <MenuItem onClick={() => {
+            handleClose()
+            navigate("/moped/account")}}>
+            Account
+          </MenuItem>
+          <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
+        </Menu>
+        <IconButton onClick={() => console.log("hi")} size="medium">
           <HelpOutlineIcon />
         </IconButton>
       </Toolbar>
