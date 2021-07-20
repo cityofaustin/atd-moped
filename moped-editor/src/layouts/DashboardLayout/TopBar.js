@@ -99,6 +99,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
 
   const handleMobileClose = () => {
     setMobileAnchorEl(null);
+    showSubMenu(false);
   };
 
   const setShowSubMenu = () => showSubMenu(subMenu => !subMenu);
@@ -143,6 +144,10 @@ const TopBar = ({ className, onOpen, ...rest }) => {
               }
             />
           </Box>
+          </Hidden>
+          <Hidden smUp>
+                    <Box flexGrow={1} />
+          </Hidden>
           <Box>
             <Button
               className={classes.avatarButton}
@@ -185,6 +190,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
               </MenuItem>
             </Menu>
           </Box>
+        <Hidden smDown>
           <Box>
             <IconButton
               onClick={() => console.log("This is in an upcoming issue")}
@@ -195,7 +201,6 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           </Box>
         </Hidden>
         <Hidden smUp>
-          <Box flexGrow={1} />
           <IconButton onClick={handleMobileClick}>
             <MenuIcon />
           </IconButton>
