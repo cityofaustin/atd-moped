@@ -286,7 +286,7 @@ export const mapConfig = {
       layerIdName: "projectFeaturePoints",
       layerIdField: "PROJECT_EXTENT_ID",
       layerIdGetPath: "properties.PROJECT_EXTENT_ID",
-      layerOrder: 3,
+      layerOrder: 6,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
       isClickEditable: false,
