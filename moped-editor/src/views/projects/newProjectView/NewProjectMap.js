@@ -121,7 +121,10 @@ const NewProjectMap = ({
    */
   const otherProjectFeaturesCollection = useTransformProjectFeatures(
     projectFeatureCollection,
-    "projectFeatures"
+    {
+      LineString: "projectFeatures",
+      Point: "projectFeaturePoints",
+    }
   );
 
   const {

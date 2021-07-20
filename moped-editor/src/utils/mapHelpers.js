@@ -280,6 +280,30 @@ export const mapConfig = {
         };
       },
     },
+    projectFeaturePoints: {
+      layerDrawn: false,
+      layerLabel: "Project Points",
+      layerIdName: "projectFeaturePoints",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 3,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "circle",
+            paint: {
+              "circle-color": this.layerColor,
+              "circle-radius": mapStyles.circleRadiusStops,
+            },
+          };
+        };
+      },
+    },
   },
 };
 
@@ -868,11 +892,11 @@ export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
  * Reconstructs a GeoJSON collection and renames all its features using
  * a provided layer name id (as specified in the configuration settings).
  * @param {Object} projectOtherFeaturesCollection - A GeoJSON collection
- * @param {string} newLayerName - The name (layerIdName) of the destination layer
+ * @param {Object} newLayerNameConfig - An object containing a key value pair of names based on feature type
  */
 export const useTransformProjectFeatures = (
   projectOtherFeaturesCollection,
-  newLayerName // We need to generate a new collection
+  newLayerNameConfig // We need to generate a new collection
 ) => ({
   // First, enter the type (which never changes)
   type: "FeatureCollection",
@@ -884,8 +908,12 @@ export const useTransformProjectFeatures = (
     properties: {
       // With a copy of the existing feature's properties
       ...feature.properties,
-      // And with an overwritten sourceLayer attribute
-      sourceLayer: newLayerName,
+      // And with an overwritten sourceLayer attribute (if it can find it)
+      sourceLayer:
+        // Try to find it in the configuration object
+        newLayerNameConfig[feature.geometry.type] ??
+        // or default to the original one if not found in the config
+        feature.properties.sourceLayer,
     },
   })),
 });
