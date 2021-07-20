@@ -155,8 +155,9 @@ const DefineProjectForm = ({
           <Switch
             type="checkbox"
             checked={projectDetails.capitally_funded}
+            color="primary"
             name="capitally_funded"
-            inputProps={{ "aria-label": "secondary checkbox" }}
+            inputProps={{ "aria-label": "primary checkbox" }}
             onChange={e => handleFieldChange(e.target.checked, e.target.name)}
           />
         </Grid>
