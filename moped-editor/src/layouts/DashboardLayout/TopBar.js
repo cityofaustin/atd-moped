@@ -50,6 +50,12 @@ const useStyles = makeStyles(theme => ({
     borderBottomWidth: "2px",
     borderStyle: "solid",
   },
+  mobileMenu: {
+    width: 300,
+  },
+  subMenu: {
+    marginLeft: "1em",
+  },
   newProject: {
     marginRight: 8,
   },
@@ -76,6 +82,8 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   const { user } = useUser();
 
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+  const [subMenu, showSubMenu] = useState(false);
 
   const handleAvatarClick = event => {
     setAvatarAnchorEl(event.currentTarget);
@@ -85,6 +93,16 @@ const TopBar = ({ className, onOpen, ...rest }) => {
     setAvatarAnchorEl(null);
   };
 
+  const handleMobileClick = event => {
+    setMobileAnchorEl(event.currentTarget);
+  };
+
+  const handleMobileClose = () => {
+    setMobileAnchorEl(null);
+  };
+
+  const setShowSubMenu = () => showSubMenu(subMenu => !subMenu);
+
   const userDbData = getSessionDatabaseData();
 
   return (
@@ -93,88 +111,158 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
-        <Box>
-          <Tabs>
-            {items.map(item => (
-              <Tab
-                label={item.title}
-                className={classes.tabs}
-                component={NavLink}
-                activeClassName={classes.active}
-                to={item.href}
-              />
-            ))}
-          </Tabs>
-        </Box>
-        <Box flexGrow={1} />
-        <Box>
-          <Can
-            perform="newProjects:visit"
-            yes={
-              <Button
-                color="primary"
-                variant="contained"
-                component={RouterLink}
-                to={"/moped/projects/new"}
-                startIcon={<Icon>add_circle</Icon>}
-                className={classes.newProject}
-              >
-                {"New project"}
-              </Button>
-            }
-          />
-        </Box>
-        <Box>
-          <Button className={classes.avatarButton} onClick={handleAvatarClick}>
-            {userDbData ? (
-              <CDNAvatar
-                className={classes.avatar}
-                src={userDbData.picture}
-                initials={userDbData.first_name[0] + userDbData.last_name[0]}
-              />
-            ) : (
-              <Avatar
-                className={classes.avatar}
-                style={{ backgroundColor: user ? user.userColor : null }}
-              >
-                {emailToInitials(user?.idToken?.payload?.email)}
-              </Avatar>
-            )}
-          </Button>
-          <Menu
-            id="avatarDropdown"
-            anchorEl={avatarAnchorEl}
-            keepMounted
-            open={Boolean(avatarAnchorEl)}
-            onClose={handleAvatarClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-            getContentAnchorEl={null}
-          >
-            <MenuItem
-              onClick={() => {
-                handleAvatarClose();
-                navigate("/moped/account");
-              }}
+        <Hidden smDown>
+          <Box>
+            <Tabs>
+              {items.map(item => (
+                <Tab
+                  label={item.title}
+                  className={classes.tabs}
+                  component={NavLink}
+                  activeClassName={classes.active}
+                  to={item.href}
+                />
+              ))}
+            </Tabs>
+          </Box>
+          <Box flexGrow={1} />
+          <Box>
+            <Can
+              perform="newProjects:visit"
+              yes={
+                <Button
+                  color="primary"
+                  variant="contained"
+                  component={RouterLink}
+                  to={"/moped/projects/new"}
+                  startIcon={<Icon>add_circle</Icon>}
+                  className={classes.newProject}
+                >
+                  {"New project"}
+                </Button>
+              }
+            />
+          </Box>
+          <Box>
+            <Button
+              className={classes.avatarButton}
+              onClick={handleAvatarClick}
             >
-              Account
-            </MenuItem>
-            <MenuItem onClick={() => navigate("/moped/logout")}>
-              Logout
-            </MenuItem>
-          </Menu>
-        </Box>
-        <Box>
-          <IconButton
-            onClick={() => console.log("This is in an upcoming issue")}
-            size="medium"
-          >
-            <HelpOutlineIcon />
-          </IconButton>
-        </Box>
+              {userDbData ? (
+                <CDNAvatar
+                  className={classes.avatar}
+                  src={userDbData.picture}
+                  initials={userDbData.first_name[0] + userDbData.last_name[0]}
+                />
+              ) : (
+                <Avatar
+                  className={classes.avatar}
+                  style={{ backgroundColor: user ? user.userColor : null }}
+                >
+                  {emailToInitials(user?.idToken?.payload?.email)}
+                </Avatar>
+              )}
+            </Button>
+            <Menu
+              id="avatarDropdown"
+              anchorEl={avatarAnchorEl}
+              keepMounted
+              open={Boolean(avatarAnchorEl)}
+              onClose={handleAvatarClose}
+              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+              getContentAnchorEl={null}
+            >
+              <MenuItem
+                onClick={() => {
+                  handleAvatarClose();
+                  navigate("/moped/account");
+                }}
+              >
+                Account
+              </MenuItem>
+              <MenuItem onClick={() => navigate("/moped/logout")}>
+                Logout
+              </MenuItem>
+            </Menu>
+          </Box>
+          <Box>
+            <IconButton
+              onClick={() => console.log("This is in an upcoming issue")}
+              size="medium"
+            >
+              <HelpOutlineIcon />
+            </IconButton>
+          </Box>
+        </Hidden>
         <Hidden smUp>
-          <IconButton color="inherit" onClick={onOpen}>
+          <Box flexGrow={1} />
+          <IconButton onClick={handleMobileClick}>
             <MenuIcon />
           </IconButton>
+          <Menu
+            id="mobileDropdown"
+            anchorEl={mobileAnchorEl}
+            // keepMounted
+            open={Boolean(mobileAnchorEl)}
+            onClose={handleMobileClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            getContentAnchorEl={null}
+            className={classes.mobileMenu}
+          >
+            {items.map(item => (
+              <MenuItem
+                onClick={() => {
+                  handleMobileClose();
+                  navigate(item.href);
+                }}
+              >
+                {item.title}
+              </MenuItem>
+            ))}
+            <MenuItem onClick={setShowSubMenu}>Help</MenuItem>
+            {subMenu && (
+              <div className={classes.subMenu}>
+                <MenuItem
+                  onClick={() => {
+                    handleMobileClose();
+                  }}
+                >
+                  Report a Bug
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleMobileClose();
+                  }}
+                >
+                  Request an Enhancement
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    handleMobileClose();
+                  }}
+                >
+                  Ask a Question
+                </MenuItem>
+              </div>
+            )}
+            <MenuItem>
+              <Can
+                perform="newProjects:visit"
+                yes={
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    component={RouterLink}
+                    to={"/moped/projects/new"}
+                    startIcon={<Icon>add_circle</Icon>}
+                    className={classes.newProject}
+                  >
+                    {"New project"}
+                  </Button>
+                }
+              />
+            </MenuItem>
+          </Menu>
         </Hidden>
       </Toolbar>
     </AppBar>
