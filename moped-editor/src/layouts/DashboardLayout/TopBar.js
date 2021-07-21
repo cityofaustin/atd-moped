@@ -21,6 +21,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import Can from "../../auth/Can";
 import Logo from "src/components/Logo";
+import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
@@ -127,69 +128,52 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             </Tabs>
           </Box>
           <Box flexGrow={1} />
-          <Box>
-            <Can
-              perform="newProjects:visit"
-              yes={
-                <Button
-                  color="primary"
-                  variant="contained"
-                  component={RouterLink}
-                  to={"/moped/projects/new"}
-                  startIcon={<Icon>add_circle</Icon>}
-                  className={classes.newProject}
-                >
-                  {"New project"}
-                </Button>
-              }
-            />
+          <Box className={classes.newProject}>
+            <CanAddProjectButton />
           </Box>
-          </Hidden>
-          <Hidden smUp>
-                    <Box flexGrow={1} />
-          </Hidden>
-          <Box>
-            <Button
-              className={classes.avatarButton}
-              onClick={handleAvatarClick}
-            >
-              {userDbData ? (
-                <CDNAvatar
-                  className={classes.avatar}
-                  src={userDbData.picture}
-                  initials={userDbData.first_name[0] + userDbData.last_name[0]}
-                />
-              ) : (
-                <Avatar
-                  className={classes.avatar}
-                  style={{ backgroundColor: user ? user.userColor : null }}
-                >
-                  {emailToInitials(user?.idToken?.payload?.email)}
-                </Avatar>
-              )}
-            </Button>
-            <Menu
-              id="avatarDropdown"
-              anchorEl={avatarAnchorEl}
-              keepMounted
-              open={Boolean(avatarAnchorEl)}
-              onClose={handleAvatarClose}
-              anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
-              getContentAnchorEl={null}
-            >
-              <MenuItem
-                onClick={() => {
-                  handleAvatarClose();
-                  navigate("/moped/account");
-                }}
+        </Hidden>
+        <Hidden smUp>
+          <Box flexGrow={1} />
+        </Hidden>
+        <Box>
+          <Button className={classes.avatarButton} onClick={handleAvatarClick}>
+            {userDbData ? (
+              <CDNAvatar
+                className={classes.avatar}
+                src={userDbData.picture}
+                initials={userDbData.first_name[0] + userDbData.last_name[0]}
+              />
+            ) : (
+              <Avatar
+                className={classes.avatar}
+                style={{ backgroundColor: user ? user.userColor : null }}
               >
-                Account
-              </MenuItem>
-              <MenuItem onClick={() => navigate("/moped/logout")}>
-                Logout
-              </MenuItem>
-            </Menu>
-          </Box>
+                {emailToInitials(user?.idToken?.payload?.email)}
+              </Avatar>
+            )}
+          </Button>
+          <Menu
+            id="avatarDropdown"
+            anchorEl={avatarAnchorEl}
+            keepMounted
+            open={Boolean(avatarAnchorEl)}
+            onClose={handleAvatarClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            getContentAnchorEl={null}
+          >
+            <MenuItem
+              onClick={() => {
+                handleAvatarClose();
+                navigate("/moped/account");
+              }}
+            >
+              Account
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/moped/logout")}>
+              Logout
+            </MenuItem>
+          </Menu>
+        </Box>
         <Hidden smDown>
           <Box>
             <IconButton
