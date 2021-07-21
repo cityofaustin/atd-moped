@@ -177,15 +177,15 @@ const ProjectComponents = () => {
 
   return (
     <ApolloErrorHandler errors={error}>
+      {componentEditMode && (
+        <ProjectComponentEdit
+          componentId={selectedComp}
+          handleCancelEdit={handleCancelEdit}
+          projectRefetchFeatures={refetch}
+          projectFeatureCollection={featureFullCollection}
+        />
+      )}
       <CardContent>
-        {componentEditMode && (
-          <ProjectComponentEdit
-            componentId={selectedComp}
-            handleCancelEdit={handleCancelEdit}
-            projectRefetchFeatures={refetch}
-            projectFeatureCollection={featureFullCollection}
-          />
-        )}
         {!componentEditMode && (
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>

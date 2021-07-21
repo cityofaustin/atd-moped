@@ -4,6 +4,7 @@ import Geocoder from "react-map-gl-geocoder";
 import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import "./NewProjectMap.css";
 
 import {
   createProjectSelectLayerConfig,
@@ -34,10 +35,16 @@ import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 export const useStyles = makeStyles({
   toolTip: mapStyles.toolTipStyles,
+  layerSelectButton: {
+    position: "absolute",
+    top: 100,
+    right: 100,
+    zIndex: 3,
+  },
   navStyle: {
     position: "absolute",
     top: 0,
-    left: 0,
+    right: 0,
     padding: "10px",
   },
   mapBox: {
@@ -53,7 +60,9 @@ export const useStyles = makeStyles({
     height: 50,
     position: "absolute",
     alignItems: "center",
-    right: 32,
+    width: "20rem",
+    left: "1rem",
+    top: ".5rem",
     // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
     "@media (max-width:640px)": {
       top: 32,
@@ -71,6 +80,7 @@ export const useStyles = makeStyles({
  * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
  * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
  * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
+ * @param {JSX.Element} componentEditorPanel - An editor panel component (optional)
  * @return {JSX.Element}
  * @constructor
  */
@@ -82,6 +92,7 @@ const NewProjectMap = ({
   refetchProjectDetails = null,
   noPadding = false,
   newFeature = false,
+  componentEditorPanel = null,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -218,6 +229,7 @@ const NewProjectMap = ({
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
+      {componentEditorPanel}
       <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
       {renderLayerSelect()}
       <ReactMapGL

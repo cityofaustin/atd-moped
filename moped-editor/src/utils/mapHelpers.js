@@ -820,40 +820,49 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     setMapStyle(basemapKey);
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const renderLayerSelect = () => (
-    <Box component="div" className={classes.layerSelectBox}>
-      <Typography className={classes.layerSelectTitle}>Layers</Typography>
-      {getLayerNames().map(name => (
-        <Typography key={name} className={classes.layerSelectText}>
-          <Checkbox
-            checked={visibleLayerIds.includes(name)}
-            onChange={handleLayerCheckboxClick}
-            name={name}
-            color="primary"
-          />
-          {mapConfig.layerConfigs[name].layerLabel}
-        </Typography>
-      ))}
-      <Typography className={classes.layerSelectTitle}>Basemap</Typography>
-      <RadioGroup
-        aria-label="basemap"
-        name="basemap"
-        className={classes.layerRadioGroup}
-        value={mapStyle}
-        onChange={handleBasemapChange}
+    <div>
+      <Button
+        aria-controls="simple-menu"
+        aria-haspopup="true"
+        onClick={handleClick}
+        variant="outlined"
+        className={classes.layerSelectButton}
       >
-        <FormControlLabel
-          value="streets"
-          control={<Radio color="primary" />}
-          label="Streets"
-        />
-        <FormControlLabel
-          value="aerial"
-          control={<Radio color="primary" />}
-          label="Aerial"
-        />
-      </RadioGroup>
-    </Box>
+        Open Menu
+      </Button>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleClose}
+      >
+        {getLayerNames().map(name => (
+          <MenuItem onClick={handleClose} value={name} key={name}>
+            <Typography className={classes.layerSelectText}>
+              <Checkbox
+                checked={visibleLayerIds.includes(name)}
+                onChange={handleLayerCheckboxClick}
+                name={name}
+                color="primary"
+              />
+              {mapConfig.layerConfigs[name].layerLabel}
+            </Typography>
+          </MenuItem>
+        ))}
+      </Menu>
+    </div>
   );
 
   return { visibleLayerIds, renderLayerSelect, mapStyleConfig };
