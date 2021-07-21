@@ -69,7 +69,7 @@ export const useStyles = makeStyles({
  * @param {Object} projectFeatureCollection - A helper state containing a secondary feature collection (optional)
  * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
  * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
- * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
+ * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional)
  * @return {JSX.Element}
  * @constructor
  */
