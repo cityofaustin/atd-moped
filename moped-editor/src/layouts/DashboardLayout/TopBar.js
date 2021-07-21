@@ -4,11 +4,9 @@ import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
   AppBar,
-  Avatar,
   Box,
   Button,
   Hidden,
-  IconButton,
   Toolbar,
   Tabs,
   Tab,
@@ -16,10 +14,10 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
-import MobileDropdownMenu from "./MobileDropdownMenu";
+import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
+import SupportMenu from "./NavBar/SupportMenu";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
@@ -60,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const items = [
+const navigationItems = [
   {
     href: "/moped/dashboard",
     title: "Dashboard",
@@ -91,6 +89,9 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   };
 
   const userDbData = getSessionDatabaseData();
+  const userInitials = userDbData
+    ? userDbData.first_name[0] + userDbData.last_name[0]
+    : emailToInitials(user?.idToken?.payload?.email);
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
@@ -101,7 +102,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         <Hidden smDown>
           <Box>
             <Tabs>
-              {items.map(item => (
+              {navigationItems.map(item => (
                 <Tab
                   label={item.title}
                   className={classes.tabs}
@@ -122,20 +123,11 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </Hidden>
         <Box>
           <Button className={classes.avatarButton} onClick={handleAvatarClick}>
-            {userDbData ? (
-              <CDNAvatar
-                className={classes.avatar}
-                src={userDbData.picture}
-                initials={userDbData.first_name[0] + userDbData.last_name[0]}
-              />
-            ) : (
-              <Avatar
-                className={classes.avatar}
-                style={{ backgroundColor: user ? user.userColor : null }}
-              >
-                {emailToInitials(user?.idToken?.payload?.email)}
-              </Avatar>
-            )}
+            <CDNAvatar
+              className={classes.avatar}
+              src={userDbData.picture}
+              initials={userInitials}
+            />
           </Button>
           <Menu
             id="avatarDropdown"
@@ -161,12 +153,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </Box>
         <Hidden smDown>
           <Box>
-            <IconButton
-              onClick={() => console.log("This is in an upcoming issue")}
-              size="medium"
-            >
-              <HelpOutlineIcon />
-            </IconButton>
+            <SupportMenu />
           </Box>
         </Hidden>
         <Hidden smUp>

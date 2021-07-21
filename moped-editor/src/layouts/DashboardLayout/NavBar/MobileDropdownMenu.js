@@ -7,7 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
-import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
+import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
 
 const useStyles = makeStyles(theme => ({
   root: {
