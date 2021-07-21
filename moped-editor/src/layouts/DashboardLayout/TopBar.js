@@ -58,7 +58,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const navigationItems = [
+export const navigationItems = [
   {
     href: "/moped/dashboard",
     title: "Dashboard",

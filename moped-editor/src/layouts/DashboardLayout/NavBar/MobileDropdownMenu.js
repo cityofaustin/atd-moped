@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   IconButton,
+  Link,
   Menu,
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import { helpItems } from "./SupportMenu";
+import { navigationItems } from "../TopBar"
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
 
 const useStyles = makeStyles(theme => ({
@@ -24,20 +27,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const items = [
-  {
-    href: "/moped/dashboard",
-    title: "Dashboard",
-  },
-  {
-    href: "/moped/projects",
-    title: "Projects",
-  },
-  {
-    href: "/moped/staff",
-    title: "Staff",
-  },
-];
 
 const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
@@ -65,14 +54,14 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
       <Menu
         id="mobileDropdown"
         anchorEl={mobileAnchorEl}
-        // keepMounted
+        keepMounted
         open={Boolean(mobileAnchorEl)}
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         getContentAnchorEl={null}
         className={classes.mobileMenu}
       >
-        {items.map(item => (
+        {navigationItems.map(item => (
           <MenuItem
             onClick={() => {
               handleMobileClose();
@@ -85,27 +74,23 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
         <MenuItem onClick={setShowSubMenu}>Help</MenuItem>
         {subMenu && (
           <div className={classes.subMenu}>
-            <MenuItem
-              onClick={() => {
-                handleMobileClose();
-              }}
-            >
-              Report a Bug
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleMobileClose();
-              }}
-            >
-              Request an Enhancement
-            </MenuItem>
-            <MenuItem
-              onClick={() => {
-                handleMobileClose();
-              }}
-            >
-              Ask a Question
-            </MenuItem>
+            {helpItems.map(item => (
+              <MenuItem
+                onClick={() => {
+                  handleMobileClose();
+                }}
+              >
+                <Link
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="inherit"
+                  underline="none"
+                >
+                  {item.title}
+                </Link>
+              </MenuItem>
+            ))}
           </div>
         )}
         <MenuItem>
