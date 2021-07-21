@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Hidden,
-  Icon,
   IconButton,
   Toolbar,
   Tabs,
@@ -17,11 +16,10 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import Can from "../../auth/Can";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
+import MobileDropdownMenu from "./MobileDropdownMenu";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
@@ -83,8 +81,6 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   const { user } = useUser();
 
   const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
-  const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
-  const [subMenu, showSubMenu] = useState(false);
 
   const handleAvatarClick = event => {
     setAvatarAnchorEl(event.currentTarget);
@@ -93,17 +89,6 @@ const TopBar = ({ className, onOpen, ...rest }) => {
   const handleAvatarClose = () => {
     setAvatarAnchorEl(null);
   };
-
-  const handleMobileClick = event => {
-    setMobileAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileClose = () => {
-    setMobileAnchorEl(null);
-    showSubMenu(false);
-  };
-
-  const setShowSubMenu = () => showSubMenu(subMenu => !subMenu);
 
   const userDbData = getSessionDatabaseData();
 
@@ -185,73 +170,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           </Box>
         </Hidden>
         <Hidden smUp>
-          <IconButton onClick={handleMobileClick}>
-            <MenuIcon />
-          </IconButton>
-          <Menu
-            id="mobileDropdown"
-            anchorEl={mobileAnchorEl}
-            // keepMounted
-            open={Boolean(mobileAnchorEl)}
-            onClose={handleMobileClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            getContentAnchorEl={null}
-            className={classes.mobileMenu}
-          >
-            {items.map(item => (
-              <MenuItem
-                onClick={() => {
-                  handleMobileClose();
-                  navigate(item.href);
-                }}
-              >
-                {item.title}
-              </MenuItem>
-            ))}
-            <MenuItem onClick={setShowSubMenu}>Help</MenuItem>
-            {subMenu && (
-              <div className={classes.subMenu}>
-                <MenuItem
-                  onClick={() => {
-                    handleMobileClose();
-                  }}
-                >
-                  Report a Bug
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMobileClose();
-                  }}
-                >
-                  Request an Enhancement
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    handleMobileClose();
-                  }}
-                >
-                  Ask a Question
-                </MenuItem>
-              </div>
-            )}
-            <MenuItem>
-              <Can
-                perform="newProjects:visit"
-                yes={
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    component={RouterLink}
-                    to={"/moped/projects/new"}
-                    startIcon={<Icon>add_circle</Icon>}
-                    className={classes.newProject}
-                  >
-                    {"New project"}
-                  </Button>
-                }
-              />
-            </MenuItem>
-          </Menu>
+          <MobileDropdownMenu />
         </Hidden>
       </Toolbar>
     </AppBar>
