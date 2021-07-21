@@ -3,12 +3,12 @@ import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import {
-  Box,
   Checkbox,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
   Typography,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Box,
 } from "@material-ui/core";
 import { get } from "lodash";
 
@@ -243,6 +243,62 @@ export const mapConfig = {
             paint: {
               "line-color": theme.palette.primary.main,
               "line-width": 4,
+            },
+          };
+        };
+      },
+    },
+    projectFeatures: {
+      layerLabel: "Project Features",
+      layerIdName: "projectFeatures",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 5,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "line",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                theme.palette.grey["800"],
+                this.layerColor,
+              ],
+              "line-width": mapStyles.lineWidthStops,
+            },
+          };
+        };
+      },
+    },
+    projectFeaturePoints: {
+      layerDrawn: false,
+      layerLabel: "Project Points",
+      layerIdName: "projectFeaturePoints",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 6,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "circle",
+            paint: {
+              "circle-color": this.layerColor,
+              "circle-radius": mapStyles.circleRadiusStops,
             },
           };
         };
@@ -728,8 +784,14 @@ export function useFeatureCollectionToFitBounds(
  * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
  */
 export function useLayerSelect(initialSelectedLayerNames, classes) {
+  /**
+   * The initial state of visible ids is retrieved from the initialSelectedLayerNames
+   * then we filter out any of them by checking if it has an `isInitiallyVisible` property.
+   */
   const [visibleLayerIds, setVisibleLayerIds] = useState(
-    initialSelectedLayerNames
+    initialSelectedLayerNames.filter(
+      layerName => mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
+    )
   );
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
@@ -825,3 +887,33 @@ export const layerSelectStyles = {
 export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
   .filter(([layerName, layer]) => layer.layerDrawn)
   .map(([layerName, layer]) => layer.layerIdName);
+
+/**
+ * Reconstructs a GeoJSON collection and renames all its features using
+ * a provided layer name id (as specified in the configuration settings).
+ * @param {Object} projectOtherFeaturesCollection - A GeoJSON collection
+ * @param {Object} newLayerNameConfig - An object containing a key value pair of names based on feature type
+ */
+export const useTransformProjectFeatures = (
+  projectOtherFeaturesCollection,
+  newLayerNameConfig // We need to generate a new collection
+) => ({
+  // First, enter the type (which never changes)
+  type: "FeatureCollection",
+  // Then, create the features attribute with the output of a map
+  features: projectOtherFeaturesCollection.features.map(feature => ({
+    // For every feature, first copy the element
+    ...feature,
+    // Then, overwrite the feature's 'properties' attribute
+    properties: {
+      // With a copy of the existing feature's properties
+      ...feature.properties,
+      // And with an overwritten sourceLayer attribute (if it can find it)
+      sourceLayer:
+        // Try to find it in the configuration object
+        newLayerNameConfig[feature.geometry.type] ??
+        // or default to the original one if not found in the config
+        feature.properties.sourceLayer,
+    },
+  })),
+});

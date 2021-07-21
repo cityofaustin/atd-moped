@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -61,7 +61,6 @@ const ProjectComponents = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [featureFullCollection, setFeatureFullCollection] = useState(null);
   const [selectedComp, setSelectedComp] = useState(0);
   const [mapError, setMapError] = useState(false);
   const [componentEditMode, setComponentEditMode] = useState(false);
@@ -94,6 +93,29 @@ const ProjectComponents = () => {
               : []),
           ],
           []
+        )
+      : [];
+
+  /**
+   * Build an all-inclusive list of components
+   * @type {Object[]}
+   */
+  const featureFullCollection =
+    data && data?.moped_proj_components
+      ? createFeatureCollectionFromProjectFeatures(
+          data.moped_proj_components.reduce(
+            (accumulator, component) => [
+              ...accumulator,
+              ...component.moped_proj_features_components.map(
+                featureComponent => ({
+                  ...featureComponent.moped_proj_feature,
+                  project_features_components_id:
+                    featureComponent.project_features_components_id,
+                })
+              ),
+            ],
+            []
+          )
         )
       : [];
 
@@ -136,6 +158,7 @@ const ProjectComponents = () => {
    * Takes the user back to the components list for a project
    */
   const handleCancelEdit = () => {
+    refetch();
     setComponentEditMode(false);
     setSelectedComp(0);
   };
@@ -146,22 +169,6 @@ const ProjectComponents = () => {
    * @type {boolean}
    */
   const componentsAvailable = data && data.moped_proj_components.length > 0;
-
-  /**
-   * Update the full collection
-   */
-  useEffect(() => {
-    // If we have features and our collection is empty, then update
-    if (
-      selectedComp === 0 &&
-      projectFeatureRecords.length > 0 &&
-      featureFullCollection === null
-    ) {
-      setFeatureFullCollection(
-        createFeatureCollectionFromProjectFeatures(projectFeatureRecords)
-      );
-    }
-  }, [selectedComp, projectFeatureRecords, featureFullCollection]);
 
   // Return loading if not in progress
   if (loading) return <CircularProgress />;
