@@ -16,9 +16,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
   },
-  mobileMenu: {
-    width: 300,
-  },
   subMenu: {
     marginLeft: "1em",
   },
@@ -58,7 +55,6 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         getContentAnchorEl={null}
-        className={classes.mobileMenu}
       >
         {navigationItems.map(item => (
           <MenuItem
