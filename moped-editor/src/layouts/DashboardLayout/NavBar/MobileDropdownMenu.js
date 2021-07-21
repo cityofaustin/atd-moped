@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
 import { helpItems } from "./SupportMenu";
-import { navigationItems } from "../TopBar"
+import { navigationItems } from "../TopBar";
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
 
 const useStyles = makeStyles(theme => ({
@@ -26,7 +26,6 @@ const useStyles = makeStyles(theme => ({
     marginRight: 8,
   },
 }));
-
 
 const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
@@ -75,11 +74,7 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
         {subMenu && (
           <div className={classes.subMenu}>
             {helpItems.map(item => (
-              <MenuItem
-                onClick={() => {
-                  handleMobileClose();
-                }}
-              >
+              <MenuItem onClick={handleMobileClose}>
                 <Link
                   href={item.href}
                   target="_blank"
