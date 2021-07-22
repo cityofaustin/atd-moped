@@ -1,13 +1,7 @@
 import React, { useState } from "react";
-import { IconButton, Menu, MenuItem, makeStyles } from "@material-ui/core";
+import { IconButton, Menu, MenuItem } from "@material-ui/core";
 import ExternalLink from "../../../components/ExternalLink";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-
-const useStyles = makeStyles(theme => ({
-  iconButton: {
-    // marginTop: "6px",
-  },
-}));
 
 export const helpItems = [
   {
@@ -32,7 +26,6 @@ export const helpItems = [
 ];
 
 const SupportMenu = ({ className, onOpen, ...rest }) => {
-  const classes = useStyles();
   const [supportAnchorEl, setSupportAnchorEl] = useState(null);
 
   const handleSupportClick = event => {
@@ -45,7 +38,7 @@ const SupportMenu = ({ className, onOpen, ...rest }) => {
 
   return (
     <>
-      <IconButton className={classes.iconButton} onClick={handleSupportClick}>
+      <IconButton onClick={handleSupportClick}>
         <HelpOutlineIcon />
       </IconButton>
       <Menu
