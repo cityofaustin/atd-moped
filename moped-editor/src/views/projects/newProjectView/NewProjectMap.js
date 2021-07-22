@@ -1,7 +1,15 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  ButtonGroup,
+  Icon,
+  makeStyles,
+  Switch,
+  Typography,
+} from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
@@ -32,20 +40,59 @@ import {
 } from "../../../utils/mapHelpers";
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
+import { PanTool } from "@material-ui/icons";
+import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 
-export const useStyles = makeStyles({
+export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
     position: "absolute",
-    top: 100,
-    right: 100,
-    zIndex: 3,
+    top: "1rem",
+    right: "1rem",
+    zIndex: 1,
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
+  mapBoxEditButtonGroup: {
+    position: "absolute",
+    top: "1rem",
+    right: "14rem",
+    zIndex: 1,
+  },
+  mapBoxEditButtonGroupButton: {
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
+  mapStyleToggle: {
+    position: "absolute",
+    top: "-10.45rem",
+    right: "-2.5rem;",
+  },
+  mapStyleToggleImage: {
+    width: "5rem",
+    borderRadius: ".5rem",
+  },
+  mapStyleToggleLabel: {
+    position: "relative",
+    bottom: "-1.5rem",
+    fontSize: ".8rem",
+    fontWeight: "bold",
+  },
+  mapStyleToggleLabelIcon: {
+    position: "relative",
+    bottom: "-1.8rem",
+    fontSize: ".8rem",
+    fontWeight: "bold",
+    marginRight: "4px",
   },
   navStyle: {
     position: "absolute",
-    top: 0,
-    right: 0,
-    padding: "10px",
+    bottom: "3rem",
+    right: "1rem",
   },
   mapBox: {
     padding: 25,
@@ -60,7 +107,7 @@ export const useStyles = makeStyles({
     height: 50,
     position: "absolute",
     alignItems: "center",
-    width: "20rem",
+    width: "21rem",
     left: "1rem",
     top: ".5rem",
     // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
@@ -68,8 +115,34 @@ export const useStyles = makeStyles({
       top: 32,
     },
   },
+  exampleWrapper: {
+    position: "relative",
+    marginTop: theme.spacing(3),
+    height: 380,
+  },
+  speedDial: {
+    right: "4rem !important",
+    bottom: "6.3rem !important",
+    position: "absolute",
+    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
+  },
+  speedDialStreets: {
+    color: "black",
+    backgroundImage: "url(/moped/static/images/mapStreets.jpg) !important",
+  },
+  speedDialAerial: {
+    color: "white",
+    backgroundImage: "url(/moped/static/images/mapAerial.jpg) !important",
+  },
   ...layerSelectStyles,
-});
+}));
 
 /**
  * This the new project map editor component
@@ -112,6 +185,11 @@ const NewProjectMap = ({
     false
   );
 
+  /**
+   * Basemap Speed Dial State
+   */
+  const [mapBasemapSpeedDialOpen, setBasemapSpeedDialOpen] = useState(false);
+
   const {
     handleLayerHover,
     featureText,
@@ -119,10 +197,13 @@ const NewProjectMap = ({
     hoveredCoords,
   } = useHoverLayer();
 
-  const { visibleLayerIds, renderLayerSelect, mapStyleConfig } = useLayerSelect(
-    getLayerNames(),
-    classes
-  );
+  const {
+    visibleLayerIds,
+    renderLayerSelect,
+    mapStyleConfig,
+    handleBasemapChange,
+    mapStyle,
+  } = useLayerSelect(getLayerNames(), classes);
 
   /**
    * Creates a geojson layer with all the other features of the project
@@ -226,6 +307,22 @@ const NewProjectMap = ({
       : "default";
   };
 
+  /**
+   * Changes the current basemap and closes the speed dial menu
+   * @param basemapName
+   */
+  const handleBasemapSpeedDialClose = basemapName => {
+    setBasemapSpeedDialOpen(false);
+    if (basemapName) handleBasemapChange(basemapName);
+  };
+
+  /**
+   * Opens the speed dial menu
+   */
+  const handleBasemapSpeedDialOpen = () => {
+    setBasemapSpeedDialOpen(true);
+  };
+
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
@@ -306,6 +403,71 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
+      <div className={classes.mapBoxEditButtonGroup}>
+        <ButtonGroup aria-label="small outlined button group">
+          <Button
+            className={classes.mapBoxEditButtonGroupButton}
+            startIcon={<PanTool />}
+          >
+            Select
+          </Button>
+          <Button
+            className={classes.mapBoxEditButtonGroupButton}
+            startIcon={<Icon>create</Icon>}
+          >
+            Draw
+          </Button>
+
+          <Button className={classes.mapBoxEditButtonGroupButton}>
+            Cancel
+          </Button>
+        </ButtonGroup>
+      </div>
+      <SpeedDial
+        ariaLabel="Layers SpeedDial"
+        className={classes.speedDial}
+        hidden={false}
+        icon={
+          <Typography>
+            <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
+            <span className={classes.mapStyleToggleLabel}>Layers</span>
+          </Typography>
+        }
+        onClose={() => handleBasemapSpeedDialClose(null)}
+        onOpen={handleBasemapSpeedDialOpen}
+        open={mapBasemapSpeedDialOpen}
+        direction={"left"}
+        FabProps={{
+          className:
+            mapStyle !== "streets"
+              ? classes.speedDialStreets
+              : classes.speedDialAerial,
+        }}
+      >
+        <SpeedDialAction
+          key={"streets"}
+          icon={
+            <Typography>
+              <span className={classes.mapStyleToggleLabel}>Streets</span>
+            </Typography>
+          }
+          tooltipTitle={"Streets Base Map"}
+          tooltipPlacement={"top"}
+          onClick={() => handleBasemapSpeedDialClose("streets")}
+        />
+        <SpeedDialAction
+          key={"aerial"}
+          icon={
+            <Typography>
+              <span className={classes.mapStyleToggleLabel}>Aerial</span>
+            </Typography>
+          }
+          tooltipTitle={"Aerial Base Map"}
+          tooltipPlacement={"top"}
+          onClick={() => handleBasemapSpeedDialClose("aerial")}
+        />
+      </SpeedDial>
+
       {renderFeatureCount(featureCount)}
       <Switch
         checked={isDrawing}
