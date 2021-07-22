@@ -8,6 +8,8 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import MenuIcon from "@material-ui/icons/Menu";
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { helpItems } from "./SupportMenu";
 import { navigationItems } from "../TopBar";
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
@@ -66,7 +68,10 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
             {item.title}
           </MenuItem>
         ))}
-        <MenuItem onClick={setShowSubMenu}>Help</MenuItem>
+        <MenuItem onClick={setShowSubMenu}>
+          Help
+          {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </MenuItem>
         {subMenu && (
           <div className={classes.subMenu}>
             {helpItems.map(item => (
