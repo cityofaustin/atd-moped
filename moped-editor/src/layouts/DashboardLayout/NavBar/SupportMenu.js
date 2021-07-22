@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { IconButton, Menu, MenuItem } from "@material-ui/core";
+import { IconButton, Menu, MenuItem, makeStyles } from "@material-ui/core";
 import ExternalLink from "../../../components/ExternalLink";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+
+const useStyles = makeStyles(theme => ({
+  iconButton: {
+    // marginTop: "6px",
+  },
+}));
 
 export const helpItems = [
   {
@@ -26,6 +32,7 @@ export const helpItems = [
 ];
 
 const SupportMenu = ({ className, onOpen, ...rest }) => {
+  const classes = useStyles();
   const [supportAnchorEl, setSupportAnchorEl] = useState(null);
 
   const handleSupportClick = event => {
@@ -38,7 +45,7 @@ const SupportMenu = ({ className, onOpen, ...rest }) => {
 
   return (
     <>
-      <IconButton onClick={handleSupportClick}>
+      <IconButton className={classes.iconButton} onClick={handleSupportClick}>
         <HelpOutlineIcon />
       </IconButton>
       <Menu
@@ -47,16 +54,17 @@ const SupportMenu = ({ className, onOpen, ...rest }) => {
         keepMounted
         open={Boolean(supportAnchorEl)}
         onClose={handleSupportClose}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        anchorOrigin={{ vertical: 56, horizontal: "right" }}
         getContentAnchorEl={null}
       >
         {helpItems.map(item => (
           <MenuItem onClick={handleSupportClose}>
-            <ExternalLink 
+            <ExternalLink
               url={item.href}
               text={item.title}
               linkColor="inherit"
-              underline="none" />
+              underline="none"
+            />
           </MenuItem>
         ))}
       </Menu>
