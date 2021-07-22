@@ -961,7 +961,7 @@ export const useTransformProjectFeatures = (
   // First, enter the type (which never changes)
   type: "FeatureCollection",
   // Then, create the features attribute with the output of a map
-  features: projectOtherFeaturesCollection.features.map(feature => ({
+  features: (projectOtherFeaturesCollection?.features ?? []).map(feature => ({
     // For every feature, first copy the element
     ...feature,
     // Then, overwrite the feature's 'properties' attribute
