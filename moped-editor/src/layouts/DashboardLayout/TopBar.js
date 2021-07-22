@@ -27,11 +27,14 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
   },
   tabs: {
+    marginLeft: "12px",
+  },
+  tab: {
     textTransform: "capitalize",
     color: theme.palette.text.header,
     fontSize: "1.2em",
-    minWidth: "100px",
-    fontWeight: 800,
+    minWidth: "75px",
+    height: "64px",
     opacity: 1,
   },
   avatar: {
@@ -46,6 +49,7 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.primary.main,
     borderBottomWidth: "2px",
     borderStyle: "solid",
+    fontWeight: 800,
   },
   mobileMenu: {
     width: 300,
@@ -101,11 +105,11 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </RouterLink>
         <Hidden smDown>
           <Box>
-            <Tabs>
+            <Tabs className={classes.tabs}>
               {navigationItems.map(item => (
                 <Tab
                   label={item.title}
-                  className={classes.tabs}
+                  className={classes.tab}
                   component={NavLink}
                   activeClassName={classes.active}
                   to={item.href}
