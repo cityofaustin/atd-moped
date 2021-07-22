@@ -6,16 +6,16 @@
   background: lightgray !important;
   border-radius: 4px !important;
   background-size: 100% 100% !important;
-  width: 5rem !important;
-  height: 5rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
 }
 
 .MuiFab-sizeSmall {
   background: lightgray !important;
   border-radius: 4px !important;
   background-size: 100% 100% !important;
-  width: 5rem !important;
-  height: 5rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
 }
 
 .MuiFab-sizeSmall:nth-of-type(1) {
@@ -29,6 +29,6 @@
 }
 
 .MuiFab-label {
-  font-size: 1rem !important;
+  font-size: .8rem !important;
   font-weight: bold !important;
 }

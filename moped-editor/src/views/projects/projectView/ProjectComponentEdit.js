@@ -78,6 +78,9 @@ const useStyles = makeStyles(theme => ({
       background: theme.palette.common.white,
     },
   },
+  mapToolsDivider: {
+    marginTop: ".5rem",
+  },
 }));
 
 /**
@@ -829,7 +832,7 @@ const ProjectComponentEdit = ({
                   )}
                 </Grid>
                 <Grid xs={12}>
-                  <Divider fullWidth />
+                  <Divider fullWidth className={classes.mapToolsDivider} />
                   <Button
                     onClick={() => setEditPanelCollapsed(false)}
                     startIcon={<KeyboardArrowUp />}

@@ -4,7 +4,6 @@ import Geocoder from "react-map-gl-geocoder";
 import {
   Box,
   Button,
-  ButtonGroup,
   Icon,
   makeStyles,
   Switch,
@@ -40,7 +39,6 @@ import {
 } from "../../../utils/mapHelpers";
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
-import { PanTool } from "@material-ui/icons";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 
 export const useStyles = makeStyles(theme => ({
@@ -78,16 +76,29 @@ export const useStyles = makeStyles(theme => ({
   },
   mapStyleToggleLabel: {
     position: "relative",
-    bottom: "-1.5rem",
+    bottom: "-1.3rem",
     fontSize: ".8rem",
     fontWeight: "bold",
   },
   mapStyleToggleLabelIcon: {
     position: "relative",
-    bottom: "-1.8rem",
+    bottom: "-1.5rem",
     fontSize: ".8rem",
     fontWeight: "bold",
     marginRight: "4px",
+  },
+  mapStyleToggleTypography: {
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    top: "0",
+  },
+  mapStyleToggleTypographyOpen: {
+    backgroundColor: "rgba(0,0,0,.25)",
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    top: "0",
   },
   navStyle: {
     position: "absolute",
@@ -122,7 +133,7 @@ export const useStyles = makeStyles(theme => ({
   },
   speedDial: {
     right: "4rem !important",
-    bottom: "6.3rem !important",
+    bottom: "7.3rem !important",
     position: "absolute",
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
       bottom: theme.spacing(2),
@@ -325,10 +336,22 @@ const NewProjectMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      {/* Render these controls outside ReactMapGL so mouse events don't propagate to the map */}
+      {/***************************************************************************
+        Render these controls outside ReactMapGL so mouse events don't propagate to the map
+       ***************************************************************************/}
+      {/*
+        The component editor panel is a JSX.Element that is null by default, it carries
+        the component editing UI and functionality.
+      */}
       {componentEditorPanel}
-      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+      {/* renderLayerSelect generates the layer select components */}
       {renderLayerSelect()}
+      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
+      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+
+      {/***************************************************************************
+                                       ReactMapGL
+       ***************************************************************************/}
       <ReactMapGL
         {...viewport}
         ref={mapRef}
@@ -401,36 +424,27 @@ const NewProjectMap = ({
           )
         )}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
+        {/* DRAW MAP TOOLS */}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
-      <div className={classes.mapBoxEditButtonGroup}>
-        <ButtonGroup aria-label="small outlined button group">
-          <Button
-            className={classes.mapBoxEditButtonGroupButton}
-            startIcon={<PanTool />}
-          >
-            Select
-          </Button>
-          <Button
-            className={classes.mapBoxEditButtonGroupButton}
-            startIcon={<Icon>create</Icon>}
-          >
-            Draw
-          </Button>
 
-          <Button className={classes.mapBoxEditButtonGroupButton}>
-            Cancel
-          </Button>
-        </ButtonGroup>
-      </div>
+      {/***************************************************************************
+       BaseMap Speed Dial
+       ***************************************************************************/}
       <SpeedDial
         ariaLabel="Layers SpeedDial"
         className={classes.speedDial}
         hidden={false}
         icon={
-          <Typography>
+          <Typography
+            className={
+              mapBasemapSpeedDialOpen
+                ? classes.mapStyleToggleTypographyOpen
+                : classes.mapStyleToggleTypography
+            }
+          >
             <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
-            <span className={classes.mapStyleToggleLabel}>Layers</span>
+            <span className={classes.mapStyleToggleLabel}>Map</span>
           </Typography>
         }
         onClose={() => handleBasemapSpeedDialClose(null)}
@@ -468,6 +482,9 @@ const NewProjectMap = ({
         />
       </SpeedDial>
 
+      {/***************************************************************************
+                        Feature Count & Draw Mode Controls
+       ***************************************************************************/}
       {renderFeatureCount(featureCount)}
       <Switch
         checked={isDrawing}
