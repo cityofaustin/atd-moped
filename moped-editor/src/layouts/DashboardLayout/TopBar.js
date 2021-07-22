@@ -135,7 +135,8 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             keepMounted
             open={Boolean(avatarAnchorEl)}
             onClose={handleAvatarClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right'}}
             getContentAnchorEl={null}
           >
             <MenuItem
