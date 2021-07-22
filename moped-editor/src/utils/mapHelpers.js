@@ -5,12 +5,15 @@ import theme from "../theme/index";
 import {
   Checkbox,
   Typography,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
-  Box,
+  Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  withStyles,
 } from "@material-ui/core";
 import { get } from "lodash";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -795,77 +798,125 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   );
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  /**
+   * Handles the click event on a menu item
+   * @param {Object} event - The click event
+   */
+  const handleMenuItemClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  /**
+   * Closes the menu
+   */
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Takes a click event and adds/removes a layer name from the visible layers array
-   * @param {Object} e - Mouse click event that supplies layer name
+   * @param {string} layerName - The name of the layer to enable
    */
-  const handleLayerCheckboxClick = e => {
-    const layerName = e.target.name;
-
+  const handleLayerCheckboxClick = layerName => {
     setVisibleLayerIds(prevLayers => {
       return prevLayers.includes(layerName)
         ? [...prevLayers.filter(name => name !== layerName)]
         : [...prevLayers, layerName];
     });
+
+    handleMenuClose();
   };
 
   /**
    * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
-   * @param {Object} e - Mouse click event that supplies basemaps object key from the radio button
+   * @param {string} basemapKey - The name of the base map: streets or aerial
    */
-  const handleBasemapChange = e => {
-    const basemapKey = e.target.value;
-
+  const handleBasemapChange = basemapKey => {
     setMapStyle(basemapKey);
   };
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const StyledMenu = withStyles({
+    paper: {
+      border: "1px solid #d3d4d5",
+    },
+  })(props => (
+    <Menu
+      elevation={0}
+      getContentAnchorEl={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      {...props}
+    />
+  ));
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const StyledMenuItem = withStyles(theme => ({
+    root: {
+      "&:focus": {
+        backgroundColor: theme.palette.grey["100"],
+        "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
+          color: theme.palette.common.black,
+        },
+      },
+    },
+  }))(MenuItem);
 
   const renderLayerSelect = () => (
     <div>
       <Button
-        aria-controls="simple-menu"
+        aria-controls="customized-menu"
         aria-haspopup="true"
-        onClick={handleClick}
         variant="outlined"
+        color="default"
+        onClick={handleMenuItemClick}
         className={classes.layerSelectButton}
+        startIcon={
+          Boolean(anchorEl) ? <KeyboardArrowUp /> : <KeyboardArrowDown />
+        }
       >
-        Open Menu
+        Map Features
       </Button>
-      <Menu
-        id="simple-menu"
+      <StyledMenu
+        id="customized-menu"
         anchorEl={anchorEl}
         keepMounted
         open={Boolean(anchorEl)}
-        onClose={handleClose}
+        onClose={handleMenuClose}
       >
         {getLayerNames().map(name => (
-          <MenuItem onClick={handleClose} value={name} key={name}>
-            <Typography className={classes.layerSelectText}>
+          <StyledMenuItem
+            onClick={() => handleLayerCheckboxClick(name)}
+            value={name}
+            key={name}
+          >
+            <ListItemIcon>
               <Checkbox
                 checked={visibleLayerIds.includes(name)}
-                onChange={handleLayerCheckboxClick}
                 name={name}
                 color="primary"
               />
-              {mapConfig.layerConfigs[name].layerLabel}
-            </Typography>
-          </MenuItem>
+            </ListItemIcon>
+            <ListItemText primary={mapConfig.layerConfigs[name].layerLabel} />
+          </StyledMenuItem>
         ))}
-      </Menu>
+      </StyledMenu>
     </div>
   );
 
-  return { visibleLayerIds, renderLayerSelect, mapStyleConfig };
+  return {
+    visibleLayerIds,
+    renderLayerSelect,
+    mapStyleConfig,
+    handleBasemapChange,
+    mapStyle,
+  };
 }
 
 export const layerSelectStyles = {
