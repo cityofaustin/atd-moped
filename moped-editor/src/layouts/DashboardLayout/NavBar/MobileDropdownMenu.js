@@ -26,11 +26,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
+/**
+ * Renders dropdown menu visible on small screens
+ * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
+ * @return {JSX.Element}
+ * @constructor
+ */
+const MobileDropdownMenu = () => {
   const classes = useStyles();
   const navigate = useNavigate();
 
+  // anchor element for menu to "attach" to
   const [mobileAnchorEl, setMobileAnchorEl] = useState(null);
+  // Boolean if Support Help menu should be visible or not
   const [subMenu, showSubMenu] = useState(false);
 
   const handleMobileClick = event => {
@@ -56,6 +64,7 @@ const MobileDropdownMenu = ({ className, onOpen, ...rest }) => {
         open={Boolean(mobileAnchorEl)}
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // getContentAnchorEl needs to be null for the positioning to work
         getContentAnchorEl={null}
       >
         {navigationItems.map(item => (

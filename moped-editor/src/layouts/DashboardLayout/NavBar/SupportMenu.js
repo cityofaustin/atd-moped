@@ -25,7 +25,14 @@ export const helpItems = [
   },
 ];
 
-const SupportMenu = ({ className, onOpen, ...rest }) => {
+/**
+ * Renders Support Menu on screens above Sm breakpoint
+ * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
+ * @return {JSX.Element}
+ * @constructor
+ */
+const SupportMenu = () => {
+  // anchor element for menu to "attach" to
   const [supportAnchorEl, setSupportAnchorEl] = useState(null);
 
   const handleSupportClick = event => {
@@ -47,7 +54,9 @@ const SupportMenu = ({ className, onOpen, ...rest }) => {
         keepMounted
         open={Boolean(supportAnchorEl)}
         onClose={handleSupportClose}
+        // vertical point set explicity to match AvatarMenu location
         anchorOrigin={{ vertical: 56, horizontal: "right" }}
+        // getContentAnchorEl needs to be null for the positioning to work
         getContentAnchorEl={null}
       >
         {helpItems.map(item => (
