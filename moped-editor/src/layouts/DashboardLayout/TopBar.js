@@ -103,7 +103,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
-        <Hidden mdDown>
+        <Hidden xsDown>
           <Box>
             <Tabs className={classes.tabs}>
               {navigationItems.map(item => (
@@ -122,7 +122,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             <CanAddProjectButton />
           </Box>
         </Hidden>
-        <Hidden mdUp>
+        <Hidden smUp>
           <Box flexGrow={1} />
         </Hidden>
         <Box>
@@ -156,12 +156,12 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             </MenuItem>
           </Menu>
         </Box>
-        <Hidden mdDown>
+        <Hidden xsDown>
           <Box>
             <SupportMenu />
           </Box>
         </Hidden>
-        <Hidden mdUp>
+        <Hidden smUp>
           <MobileDropdownMenu />
         </Hidden>
       </Toolbar>
