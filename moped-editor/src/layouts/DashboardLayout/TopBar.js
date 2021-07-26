@@ -1,65 +1,169 @@
-import React from "react";
-import { Link as RouterLink } from "react-router-dom";
+import React, { useState } from "react";
+import { Link as RouterLink, NavLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
   AppBar,
-  Avatar,
   Box,
-  IconButton,
+  Button,
+  Hidden,
   Toolbar,
+  Tabs,
+  Tab,
+  Menu,
+  MenuItem,
   makeStyles,
 } from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
 import Logo from "src/components/Logo";
+import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
+import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
+import SupportMenu from "./NavBar/SupportMenu";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
 
-const useStyles = makeStyles(() => ({
-  root: {},
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  tabs: {
+    marginLeft: "12px",
+  },
+  tab: {
+    textTransform: "capitalize",
+    color: theme.palette.text.header,
+    fontSize: "1.2em",
+    minWidth: "75px",
+    height: "64px",
+    opacity: 1,
+  },
   avatar: {
+    margin: 0,
+  },
+  avatarButton: {
+    borderRadius: "50%",
+    height: "64px",
+  },
+  active: {
+    color: theme.palette.primary.main,
+    borderColor: theme.palette.primary.main,
+    borderBottomWidth: "2px",
+    borderStyle: "solid",
+    fontWeight: 800,
+  },
+  mobileMenu: {
+    width: 300,
+  },
+  subMenu: {
+    marginLeft: "1em",
+  },
+  newProject: {
     marginRight: 8,
   },
 }));
 
+export const navigationItems = [
+  {
+    href: "/moped/dashboard",
+    title: "Dashboard",
+  },
+  {
+    href: "/moped/projects",
+    title: "Projects",
+  },
+  {
+    href: "/moped/staff",
+    title: "Staff",
+  },
+];
+
 const TopBar = ({ className, onOpen, ...rest }) => {
   const classes = useStyles();
+  const navigate = useNavigate();
   const { user } = useUser();
 
+  const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+
+  const handleAvatarClick = event => {
+    setAvatarAnchorEl(event.currentTarget);
+  };
+
+  const handleAvatarClose = () => {
+    setAvatarAnchorEl(null);
+  };
+
   const userDbData = getSessionDatabaseData();
+  const userInitials = userDbData
+    ? userDbData.first_name[0] + userDbData.last_name[0]
+    : emailToInitials(user?.idToken?.payload?.email);
 
   return (
-    <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
+    <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
       <Toolbar>
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
-        <Box flexGrow={1} />
+        <Hidden smDown>
+          <Box>
+            <Tabs className={classes.tabs}>
+              {navigationItems.map(item => (
+                <Tab
+                  label={item.title}
+                  className={classes.tab}
+                  component={NavLink}
+                  activeClassName={classes.active}
+                  to={item.href}
+                />
+              ))}
+            </Tabs>
+          </Box>
+          <Box flexGrow={1} />
+          <Box className={classes.newProject}>
+            <CanAddProjectButton />
+          </Box>
+        </Hidden>
+        <Hidden mdUp>
+          <Box flexGrow={1} />
+        </Hidden>
         <Box>
-          <div className={classes.root}>
-            {userDbData ? (
-              <CDNAvatar
-                className={classes.avatar}
-                src={userDbData.picture}
-                initials={userDbData.first_name[0] + userDbData.last_name[0]}
-              />
-            ) : (
-              <Avatar
-                className={classes.avatar}
-                component={RouterLink}
-                src={null}
-                to="/moped/account"
-                style={{ backgroundColor: user ? user.userColor : null }}
-              >
-                {emailToInitials(user?.idToken?.payload?.email)}
-              </Avatar>
-            )}
-          </div>
+          <Button className={classes.avatarButton} onClick={handleAvatarClick}>
+            <CDNAvatar
+              className={classes.avatar}
+              src={userDbData.picture}
+              initials={userInitials}
+            />
+          </Button>
+          <Menu
+            id="avatarDropdown"
+            anchorEl={avatarAnchorEl}
+            keepMounted
+            open={Boolean(avatarAnchorEl)}
+            onClose={handleAvatarClose}
+            anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+            transformOrigin={{ vertical: 'top', horizontal: 'right'}}
+            getContentAnchorEl={null}
+          >
+            <MenuItem
+              onClick={() => {
+                handleAvatarClose();
+                navigate("/moped/account");
+              }}
+            >
+              Account
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/moped/logout")}>
+              Logout
+            </MenuItem>
+          </Menu>
         </Box>
-        <IconButton color="inherit" onClick={onOpen}>
-          <MenuIcon />
-        </IconButton>
+        <Hidden smDown>
+          <Box>
+            <SupportMenu />
+          </Box>
+        </Hidden>
+        <Hidden mdUp>
+          <MobileDropdownMenu />
+        </Hidden>
       </Toolbar>
     </AppBar>
   );
