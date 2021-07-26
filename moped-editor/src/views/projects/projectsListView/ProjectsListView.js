@@ -12,7 +12,6 @@ import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 // Styles
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
     minHeight: "100%",
     paddingBottom: theme.spacing(1),
     paddingTop: theme.spacing(1),
@@ -35,10 +34,7 @@ const ProjectsListView = () => {
 
   return (
     <Page className={classes.root} title="Projects">
-      <GridTable
-        title={"Projects"}
-        query={projectsQuery}
-      />
+      <GridTable title={"Projects"} query={projectsQuery} />
     </Page>
   );
 };
