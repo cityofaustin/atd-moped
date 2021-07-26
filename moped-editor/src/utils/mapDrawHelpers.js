@@ -17,6 +17,12 @@ import { useMutation } from "@apollo/client";
 
 export const MODES = [
   {
+    id: "disableDrawMode",
+    text: "Select & Move",
+    handler: null,
+    icon: "icon-point.svg",
+  },
+  {
     id: "drawPoint",
     text: "Draw Point",
     handler: DrawPointMode,

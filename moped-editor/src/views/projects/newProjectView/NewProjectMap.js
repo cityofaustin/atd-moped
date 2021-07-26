@@ -132,8 +132,8 @@ export const useStyles = makeStyles(theme => ({
     height: 380,
   },
   speedDial: {
-    right: "4rem !important",
-    bottom: "7.3rem !important",
+    right: "3.5rem !important",
+    bottom: "2.2rem !important",
     position: "absolute",
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
       bottom: theme.spacing(2),
@@ -368,6 +368,59 @@ const NewProjectMap = ({
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} captureClick={false} />
         </div>
+        {/***************************************************************************
+         BaseMap Speed Dial
+         ***************************************************************************/}
+        <SpeedDial
+          ariaLabel="Layers SpeedDial"
+          className={classes.speedDial}
+          hidden={false}
+          icon={
+            <Typography
+              className={
+                mapBasemapSpeedDialOpen
+                  ? classes.mapStyleToggleTypographyOpen
+                  : classes.mapStyleToggleTypography
+              }
+            >
+              <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
+              <span className={classes.mapStyleToggleLabel}>Map</span>
+            </Typography>
+          }
+          onClose={() => handleBasemapSpeedDialClose(null)}
+          onOpen={handleBasemapSpeedDialOpen}
+          open={mapBasemapSpeedDialOpen}
+          direction={"left"}
+          FabProps={{
+            className:
+              mapStyle !== "streets"
+                ? classes.speedDialStreets
+                : classes.speedDialAerial,
+          }}
+        >
+          <SpeedDialAction
+            key={"streets"}
+            icon={
+              <Typography>
+                <span className={classes.mapStyleToggleLabel}>Streets</span>
+              </Typography>
+            }
+            tooltipTitle={"Streets Base Map"}
+            tooltipPlacement={"top"}
+            onClick={() => handleBasemapSpeedDialClose("streets")}
+          />
+          <SpeedDialAction
+            key={"aerial"}
+            icon={
+              <Typography>
+                <span className={classes.mapStyleToggleLabel}>Aerial</span>
+              </Typography>
+            }
+            tooltipTitle={"Aerial Base Map"}
+            tooltipPlacement={"top"}
+            onClick={() => handleBasemapSpeedDialClose("aerial")}
+          />
+        </SpeedDial>
         <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
@@ -404,13 +457,11 @@ const NewProjectMap = ({
               data={{
                 ...featureCollection,
                 features: [
-                  ...[
-                    ...featureCollection.features,
-                    ...(otherProjectFeaturesCollection?.features ?? []),
-                  ].filter(
-                    feature => feature.properties.sourceLayer === sourceName
-                  ),
-                ],
+                  ...featureCollection.features,
+                  ...(otherProjectFeaturesCollection?.features ?? []),
+                ].filter(
+                  feature => feature.properties.sourceLayer === sourceName
+                ),
               }}
             >
               <Layer
@@ -427,60 +478,6 @@ const NewProjectMap = ({
         {/* DRAW MAP TOOLS */}
         {isDrawing && renderMapDrawTools()}
       </ReactMapGL>
-
-      {/***************************************************************************
-       BaseMap Speed Dial
-       ***************************************************************************/}
-      <SpeedDial
-        ariaLabel="Layers SpeedDial"
-        className={classes.speedDial}
-        hidden={false}
-        icon={
-          <Typography
-            className={
-              mapBasemapSpeedDialOpen
-                ? classes.mapStyleToggleTypographyOpen
-                : classes.mapStyleToggleTypography
-            }
-          >
-            <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
-            <span className={classes.mapStyleToggleLabel}>Map</span>
-          </Typography>
-        }
-        onClose={() => handleBasemapSpeedDialClose(null)}
-        onOpen={handleBasemapSpeedDialOpen}
-        open={mapBasemapSpeedDialOpen}
-        direction={"left"}
-        FabProps={{
-          className:
-            mapStyle !== "streets"
-              ? classes.speedDialStreets
-              : classes.speedDialAerial,
-        }}
-      >
-        <SpeedDialAction
-          key={"streets"}
-          icon={
-            <Typography>
-              <span className={classes.mapStyleToggleLabel}>Streets</span>
-            </Typography>
-          }
-          tooltipTitle={"Streets Base Map"}
-          tooltipPlacement={"top"}
-          onClick={() => handleBasemapSpeedDialClose("streets")}
-        />
-        <SpeedDialAction
-          key={"aerial"}
-          icon={
-            <Typography>
-              <span className={classes.mapStyleToggleLabel}>Aerial</span>
-            </Typography>
-          }
-          tooltipTitle={"Aerial Base Map"}
-          tooltipPlacement={"top"}
-          onClick={() => handleBasemapSpeedDialClose("aerial")}
-        />
-      </SpeedDial>
 
       {/***************************************************************************
                         Feature Count & Draw Mode Controls

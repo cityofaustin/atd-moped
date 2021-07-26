@@ -4,26 +4,18 @@ import { makeStyles } from "@material-ui/core";
 import theme from "../../../theme/index";
 
 import { MODES } from "../../../utils/mapDrawHelpers";
+import { ToggleButtonGroup } from "@material-ui/lab";
 
 export const useToolbarStyles = makeStyles({
   controlContainer: {
     position: "absolute",
-    width: 34,
-    right: 10,
-    top: 56,
-    background: theme.palette.background.mapControls,
-    boxShadow: "0 0 0 2px rgb(0 0 0 / 10%);",
-    borderRadius: 4,
-    overflow: "hidden", // Keep the child button elements from poking outside the border radius
-    outline: "none",
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
+    right: "12rem",
+    top: "1rem",
     cursor: "pointer",
   },
 });
 
-const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
+const DrawToolbar = ({ disableDrawMode, selectedModeId, onSwitchMode, onDelete }) => {
   const classes = useToolbarStyles();
 
   /**
@@ -35,7 +27,13 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
   };
 
   return (
-    <div className={classes.controlContainer}>
+    <ToggleButtonGroup
+      value={selectedModeId}
+      exclusive
+      onChange={null}
+      aria-label=""
+      className={classes.controlContainer}
+    >
       {MODES.map(mode => {
         return (
           <MapDrawToolbarButton
@@ -46,7 +44,7 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
           />
         );
       })}
-    </div>
+    </ToggleButtonGroup>
   );
 };
 
