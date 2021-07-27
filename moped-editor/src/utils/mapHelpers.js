@@ -84,14 +84,18 @@ export const mapStyles = {
   toolTipStyles: {
     position: "absolute",
     margin: 8,
-    padding: 4,
-    background: theme.palette.text.primary,
+    padding: 6,
+    background: theme.palette.primary.main,
     color: theme.palette.background.default,
     maxWidth: 300,
     fontSize: "0.875rem",
     fontWeight: 500,
     zIndex: 9,
     pointerEvents: "none",
+    borderRadius: 6,
+    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)",
+    textTransform: "capitalize",
+    fontFamily: "Roboto",
   },
 };
 
@@ -528,7 +532,6 @@ export const createSummaryMapLayers = geoJSON => {
       })
   );
 };
-
 /**
  * Create a configuration to set the Mapbox spec styles for persisted layer features
  * @summary The fill color key's value below is a Mapbox "case" expression whose cases are
@@ -574,7 +577,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
         top: hoveredCoords?.y,
       }}
     >
-      <div>{tooltipText}</div>
+      <div>{tooltipText.toLowerCase()}</div>
     </div>
   );
 
@@ -686,7 +689,8 @@ export function useFeatureCollectionToFitBounds(
      * @return {Object} Viewport object with updated attributes based on project's features
      */
     const fitViewportToBounds = viewport => {
-      if (featureCollection.features.length === 0) return viewport;
+      // Let's check if we have any features are all, otherwise return the state of viewport...
+      if ((featureCollection?.features?.length ?? 0) === 0) return viewport;
       const featureViewport = new WebMercatorViewport({
         viewport,
         width: currentMap?._width ?? window.innerWidth * 0.45,
@@ -695,6 +699,7 @@ export function useFeatureCollectionToFitBounds(
 
       const newViewport = featureViewport.fitBounds(mapBounds, {
         padding: 100,
+        maxZoom: 16,
       });
 
       const { longitude, latitude, zoom } = newViewport;

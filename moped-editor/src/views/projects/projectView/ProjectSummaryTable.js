@@ -51,7 +51,9 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
         multiline: true,
         multilineRows: 4,
-        widthSmallAndLarger: 12
+        widthSmallAndLarger: 12,
+        nullable: false,
+        errorMessage: "Field cannot be blank",
       },
       start_date: {
         label: "Start date",

@@ -125,7 +125,6 @@ const ProjectView = () => {
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
 
-
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
   let activeTabIndex = !!query.get("tab")
@@ -241,9 +240,12 @@ const ProjectView = () => {
         Deleting this project will make it inaccessible to Moped users and only
         available to administrators. Users may request a deleted project be
         restored by{" "}
-        <a href={"https://atd.knack.com/dts#new-service-request/"} target="new">
+        <Link
+          href={"https://atd.knack.com/dts#new-service-request/"}
+          target="new"
+        >
           opening a support ticket
-        </a>
+        </Link>
         .
       </span>,
       <>

@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
  * @param {Number} componentId - The moped_proj_component id being edited
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {function} projectRefetchFeatures - Reload parent component's features
+ * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
  * @constructor
  */
@@ -65,9 +66,12 @@ const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
   projectRefetchFeatures,
+  projectFeatureCollection = null,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
+
+  // Template that should keep all features for this component
   const emptyFeatureCollection = {
     type: "FeatureCollection",
     features: [],
@@ -258,11 +262,11 @@ const ProjectComponentEdit = ({
     const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
 
     // Generates a list of available component subtypes given a component type
-    const availableSubTypes = getAvailableSubtypes(selectedType);
+    const newAvailableSubTypes = getAvailableSubtypes(selectedType);
 
     // Set The selected component type
     setSelectedComponentType(selectedType);
-    setAvailableSubtypes(availableSubTypes);
+    setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
   };
 
@@ -602,8 +606,8 @@ const ProjectComponentEdit = ({
     // If there is a componentId, then get subtypes
     if (componentId > 0) {
       // Now get the available subtypes
-      const availableSubTypes = getAvailableSubtypes(componentTypeDB);
-      setAvailableSubtypes(availableSubTypes);
+      const newStateAvailableSubTypes = getAvailableSubtypes(componentTypeDB);
+      setAvailableSubtypes(newStateAvailableSubTypes);
       // If the component type has subtypes, then fetch those and update state
       if (initialTypeCounts[componentTypeDB].count > 1) {
         const subtypeDB = (databaseComponent?.component_subtype ?? "")
@@ -690,10 +694,12 @@ const ProjectComponentEdit = ({
                 <Autocomplete
                   id="moped-project-subtype-select"
                   className={classes.formSelect}
-                  value={availableSubtypes.find(
-                    subtype =>
-                      subtype.toLowerCase() === selectedComponentSubtype
-                  )}
+                  value={
+                    availableSubtypes.find(
+                      subtype =>
+                        subtype.toLowerCase() === selectedComponentSubtype
+                    ) ?? null
+                  }
                   options={[...new Set(availableSubtypes)].sort()}
                   getOptionLabel={component => component}
                   renderInput={params => (
@@ -775,6 +781,8 @@ const ProjectComponentEdit = ({
           projectId={null}
           refetchProjectDetails={null}
           noPadding={true}
+          newFeature={componentId === 0}
+          projectFeatureCollection={projectFeatureCollection}
         />
         {error && (
           <Alert className={classes.mapAlert} severity="error">
