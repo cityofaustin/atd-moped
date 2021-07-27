@@ -19,7 +19,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import typography from "../../../theme/typography";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
-
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
