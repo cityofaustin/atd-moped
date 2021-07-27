@@ -30,6 +30,7 @@ import {
 } from "../../../queries/project";
 import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -255,7 +256,7 @@ const ProjectFiles = props => {
           }}
           icons={{ Delete: ClearIcon }}
           options={{
-            ...(data.moped_project_files.length < 26 && {
+            ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
               paging: false,
             }),
             search: false,

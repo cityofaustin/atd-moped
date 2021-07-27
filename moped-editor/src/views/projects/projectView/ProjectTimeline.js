@@ -28,6 +28,7 @@ import {
   DELETE_PROJECT_MILESTONE,
   ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -525,7 +526,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_phases.length < 26 && {
+                  ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
@@ -665,7 +666,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_milestones.length < 26 && {
+                  ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,

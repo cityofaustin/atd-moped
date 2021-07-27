@@ -17,6 +17,8 @@ import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -405,7 +407,7 @@ const ProjectTeamTable = ({
           </Typography>
         }
         options={{
-          ...(data.moped_proj_personnel.length < 26 && { paging: false }),
+          ...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && { paging: false }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
