@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
@@ -52,10 +52,11 @@ const useStyles = makeStyles(theme => ({
   },
   mapStyle: {
     position: "relative",
+    padding: 0,
   },
   mapTools: {
     position: "absolute",
-    top: "3.5rem",
+    top: "4rem",
     left: "1rem",
     zIndex: "1",
     width: "21rem",
@@ -66,7 +67,7 @@ const useStyles = makeStyles(theme => ({
   },
   mapToolsShowHidden: {
     position: "absolute",
-    top: "3.5rem",
+    top: "4rem",
     left: "1rem",
     zIndex: "1",
     width: "21rem",
@@ -150,6 +151,91 @@ const ProjectComponentEdit = ({
   const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
 
   const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
+
+  /* Save Action State Reducer */
+  const saveActionInitialState = () => ({
+    currentStep: 0,
+    initiateFeatureSave: false, // Tells the map to save all features
+    featuresSaved: false, // Tells the component editor to save the component
+    componentSaved: false, // Tells the world the component is saved
+    exit: false, // Tells the world it's time to exit
+    errors: null,
+    message: null,
+  });
+
+  /**
+   * Handles events across different components using a reducer
+   * @param state - The current state
+   * @param action - The action (signal) being received
+   * @return {Object} - The new state
+   */
+  const saveActionReducer = (state, action) => {
+    // If we have an error and not reset action, ignore updating the state
+    if (state.currentStep === -1 && action.type !== "reset") return;
+
+    // We are clear to test the action
+    switch (action.type) {
+      case "initiateFeatureSave": {
+        // If already initialized, ignore update
+        if (state.initiateFeatureSave) return;
+        return {
+          ...state,
+          currentStep: state.currentStep + 1, // 1
+          initiateFeatureSave: true,
+        };
+      }
+      case "featuresSaved": {
+        // If already saved features, ignore update
+        if (state.featuresSaved) return;
+        return {
+          ...state,
+          currentStep: state.currentStep + 1, // 2
+          featuresSaved: true,
+        };
+      }
+      case "componentSaved": {
+        // If already saved component, ignore update
+        if (state.componentSaved) return;
+        return {
+          ...state,
+          currentStep: state.currentStep + 1, // 3
+          componentSaved: true,
+        };
+      }
+      case "exit": {
+        // If already exited, ignore update
+        if (state.exit) return;
+        return {
+          ...state,
+          currentStep: state.currentStep + 1, // 4
+          exit: true,
+        };
+      }
+      case "error": {
+        return {
+          ...state,
+          errors: true,
+          currentStep: -1, // Error
+          message: action?.message,
+        };
+      }
+      case "reset":
+        return saveActionInitialState();
+      default: {
+        throw new Error(`Invalid action: ${action?.type}`);
+      }
+    }
+  };
+
+  /**
+   * useReducer gives us the name of our state, and a function
+   * to update the state via action (signal) dispatch.
+   */
+  const [saveActionState, saveActionDispatch] = useReducer(
+    saveActionReducer, // The reducer function handler
+    null, // Initializer argument
+    saveActionInitialState // Initial state
+  );
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -541,7 +627,7 @@ const ProjectComponentEdit = ({
       variables: {
         objects: variablePayload,
       },
-    }).then(() => exitAndReload());
+    }).then(() => saveActionDispatch({ type: "componentSaved" }));
   };
 
   /**
@@ -552,7 +638,9 @@ const ProjectComponentEdit = ({
       variables: {
         projComponentId: componentId,
       },
-    }).then(() => exitAndReload());
+    }).then(() => {
+      saveActionDispatch({ type: "componentSaved" });
+    });
   };
 
   /**
@@ -599,6 +687,30 @@ const ProjectComponentEdit = ({
 
     // eslint-disable-next-line
   }, [selectedComponentType, selectedComponentSubtype]);
+
+  /**
+   * We have to wait to hear from the map that it is finished saving
+   * the features it contains
+   * */
+  useEffect(() => {
+    if (
+      saveActionState?.currentStep === 2 && // Features are saved
+      saveActionState?.featuresSaved
+    )
+      handleSaveButtonClick();
+
+    if (
+      saveActionState?.currentStep === 3 && // Component is saved
+      saveActionState?.componentSaved
+    )
+      exitAndReload();
+    /**
+     * The 'handleSaveButtonClick' and 'exitAndReload' change on every render.
+     * We cannot add them to the list otherwise it would
+     * trigger an endless loop. Making eslint ignore it for now.
+     */
+    // eslint-disable-next-line
+  }, [saveActionState]);
 
   if (loading) return <CircularProgress />;
   if (error) return <div>Error: {JSON.stringify(error)}</div>;
@@ -698,8 +810,12 @@ const ProjectComponentEdit = ({
   }
 
   return (
-    <Grid className={classes.mapStyle}>
+    <Grid
+      data-name={"moped-component-editor-grid"}
+      className={classes.mapStyle}
+    >
       <NewProjectMap
+        data-name={"moped-component-editor-newprojectmap"}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
         projectId={null}
@@ -707,6 +823,8 @@ const ProjectComponentEdit = ({
         noPadding={true}
         newFeature={componentId === 0}
         projectFeatureCollection={projectFeatureCollection}
+        saveActionState={saveActionState}
+        saveActionDispatch={saveActionDispatch}
         componentEditorPanel={
           <>
             <Collapse
@@ -799,7 +917,10 @@ const ProjectComponentEdit = ({
                     className={classes.formButton}
                     variant="contained"
                     color="primary"
-                    onClick={handleSaveButtonClick}
+                    onClick={() =>
+                      saveActionDispatch({ type: "initiateFeatureSave" })
+                    }
+                    // onClick={handleSaveButtonClick}
                     disabled={
                       !areMinimumFeaturesSet || selectedComponentId === null
                     }
