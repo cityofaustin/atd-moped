@@ -20,19 +20,19 @@ export const MODES = [
     id: "disableDrawMode",
     text: "Select & Move",
     handler: null,
-    icon: "icon-point.svg",
+    icon: "icon-pointer.svg",
   },
   {
     id: "drawPoint",
     text: "Draw Point",
     handler: DrawPointMode,
-    icon: "icon-point.svg",
+    icon: "icon-draw-marker.svg",
   },
   {
     id: "drawLine",
     text: "Draw Line",
     handler: DrawLineStringMode,
-    icon: "icon-line-draw.svg",
+    icon: "icon-draw-lines.svg",
   },
   {
     id: "edit",
@@ -218,13 +218,15 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
+ * @property {function} saveActionDispatch - Function that helps us send signals to other components
  */
 export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
   projectId,
   refetchProjectDetails,
-  currentZoom
+  currentZoom,
+  saveActionDispatch
 ) {
   const isNewProject = projectId === null;
 
@@ -324,9 +326,8 @@ export function useMapDrawTools(
         refetchProjectDetails();
       });
     }
-
-    // Close UI for user
-    setIsDrawing(false);
+    // Dispatch featuresSaved action
+    saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
@@ -337,6 +338,9 @@ export function useMapDrawTools(
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
     const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
+
+    if (isDrawing && mode?.id === "disableDrawMode") setIsDrawing(false);
+    else setIsDrawing(true);
 
     setModeId(switchModeId);
     setModeHandler(currentModeHandler);
@@ -393,7 +397,6 @@ export function useMapDrawTools(
     };
 
     setFeatureCollection(updatedFeatureCollection);
-
     // Update modeId to momentarily change the background color of the delete icon on click
     const previousMode = modeId;
     setModeId("delete");
@@ -402,11 +405,13 @@ export function useMapDrawTools(
 
   /**
    * Renders the toolbar and buttons that control the map draw UI
-   * @return {JSX} The toolbar for the map draw UI
+   * @return {JSX.Element} The toolbar for the map draw UI
    */
-  const renderDrawToolbar = () => {
+  const renderDrawToolbar = (isDrawing, setIsDrawing) => {
     return (
       <MapDrawToolbar
+        isDrawing={isDrawing}
+        setIsDrawing={setIsDrawing}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
         onDelete={onDelete}
@@ -416,15 +421,16 @@ export function useMapDrawTools(
 
   /**
    * Renders the map editor and its toolbar
-   * @return {JSX} The whole map draw UI
+   * @return {JSX.Element} The whole map draw UI
    */
-  const renderMapDrawTools = () => (
+  const renderMapDrawTools = containerRef => (
     <>
       <Editor
         ref={ref => {
           initializeExistingDrawFeatures(ref);
           mapEditorRef.current = ref;
         }}
+        containerRef={containerRef}
         featureStyle={featureStyleObj =>
           getFeatureStyle({ ...featureStyleObj, currentZoom })
         }
@@ -432,7 +438,7 @@ export function useMapDrawTools(
         clickRadius={12}
         mode={modeHandler}
       />
-      {renderDrawToolbar()}
+      {renderDrawToolbar(isDrawing, setIsDrawing)}
     </>
   );
 
