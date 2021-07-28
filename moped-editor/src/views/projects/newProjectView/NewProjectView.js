@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {useEffect, useReducer, useRef, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -25,7 +25,7 @@ import {
   UPDATE_NEW_PROJ_FEATURES,
 } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import { countFeatures, mapErrors, mapConfig } from "../../../utils/mapHelpers";
+import {countFeatures, mapErrors, mapConfig, useSaveActionReducer} from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -157,8 +157,17 @@ const NewProjectView = () => {
       case 2:
         return (
           <NewProjectMap
+            data-name={"moped-newprojectview-newprojectmap"}
             featureCollection={featureCollection}
             setFeatureCollection={setFeatureCollection}
+            projectId={null}
+            refetchProjectDetails={null}
+            noPadding={true}
+            projectFeatureCollection={null}
+            newFeature={true}
+            saveActionState={null}
+            saveActionDispatch={null}
+            componentEditorPanel={null}
           />
         );
       default:
@@ -249,6 +258,16 @@ const NewProjectView = () => {
       clearTimeout(currentTimer);
     };
   }, []);
+
+  /**
+   * saveActionState contains the current save state
+   * saveActionDispatch allows us to update the state via action (signal) dispatch.
+   */
+  const {saveActionState, saveActionDispatch} = useSaveActionReducer();
+
+  const handleSubmitDispatch = () => {
+    // console.log(saveActionState);
+  };
 
   /**
    * Persists a new project into the database
@@ -415,7 +434,7 @@ const NewProjectView = () => {
                             label={"Finish"}
                             loading={loading}
                             success={success}
-                            handleButtonClick={handleSubmit}
+                            handleButtonClick={handleSubmitDispatch}
                           />
                         ) : (
                           <Button
