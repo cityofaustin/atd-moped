@@ -650,9 +650,11 @@ export const renderFeatureCount = (featureCount, isDrawing = false) => (
     style={{
       fontSize: "0.875rem",
       fontWeight: 500,
+      padding: ".5rem",
     }}
   >
-    {featureCount} location{featureCount === 1 ? "" : "s"} in this project - Draw Mode: {isDrawing ? "On" : "Off"}
+    {featureCount} location{featureCount === 1 ? "" : "s"} in this project -
+    Draw Mode: {isDrawing ? "On" : "Off"}
   </Typography>
 );
 

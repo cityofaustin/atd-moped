@@ -38,11 +38,6 @@ export const MODES = [
     id: "edit",
     text: "Select Point",
     handler: EditingMode,
-    icon: "icon-select.svg",
-  },
-  {
-    id: "delete",
-    text: "Delete",
     icon: "icon-delete.svg",
   },
 ];
@@ -352,56 +347,42 @@ export function useMapDrawTools(
    * @param {object} selected - Holds data about the selected feature
    */
   const onSelect = selected => {
-    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
-    setSelectedEditHandleIndexes(
-      selected && selected.selectedEditHandleIndexes
-    );
+    // Identify if we are drawing or if we are in fact selecting an item
+    if (
+      selected &&
+      selected.selectedFeature === null &&
+      selected.selectedFeatureIndex === null
+    ) {
+      // We are drawing a feature
+      setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
+      setSelectedEditHandleIndexes(
+        selected && selected.selectedEditHandleIndexes
+      );
+    } else {
+      // We are deleting a feature
+      const currentFeatures = mapEditorRef.current.getFeatures();
+      mapEditorRef.current.deleteFeatures(selected.selectedFeatureIndex);
+
+      // Then, remove the feature from the feature collection of the project extent
+      const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
+      const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
+      const featureIdToDelete = get(featureToDelete, featureIdGetPath);
+
+      const updatedFeatureCollection = {
+        ...featureCollection,
+        features: [
+          ...featureCollection.features.filter(
+            feature => get(feature, featureIdGetPath) !== featureIdToDelete
+          ),
+        ],
+      };
+
+      setFeatureCollection(updatedFeatureCollection);
+    }
   };
 
-  /**
-   * Finds the currently selected feature and removes it from the drawn features array and featureCollection state
-   */
-  const onDelete = () => {
-    const currentFeatures = mapEditorRef.current.getFeatures();
-    // Remove the feature from the draw UI feature list
-    if (selectedEditHandleIndexes.length) {
-      try {
-        mapEditorRef.current.deleteHandles(
-          selectedFeatureIndex,
-          selectedEditHandleIndexes
-        );
-      } catch (error) {
-        console.log(error.message);
-      }
-      return;
-    }
-
-    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
-      return;
-    }
-
-    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
-
-    // Then, remove the feature from the feature collection of the project extent
-    const featureToDelete = currentFeatures[selectedFeatureIndex];
-    const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
-    const featureIdToDelete = get(featureToDelete, featureIdGetPath);
-
-    const updatedFeatureCollection = {
-      ...featureCollection,
-      features: [
-        ...featureCollection.features.filter(
-          feature => get(feature, featureIdGetPath) !== featureIdToDelete
-        ),
-      ],
-    };
-
-    setFeatureCollection(updatedFeatureCollection);
-    // Update modeId to momentarily change the background color of the delete icon on click
-    const previousMode = modeId;
-    setModeId("delete");
-    setTimeout(() => setModeId(previousMode), 500);
-  };
+  // Null constant, onDelete is required by mapbox
+  const onDelete = null;
 
   /**
    * Renders the toolbar and buttons that control the map draw UI
