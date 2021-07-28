@@ -24,7 +24,7 @@ import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
-import { countFeatures, mapConfig, mapErrors } from "../../../utils/mapHelpers";
+import {countFeatures, mapConfig, mapErrors, useSaveActionReducer} from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
@@ -152,90 +152,11 @@ const ProjectComponentEdit = ({
 
   const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
 
-  /* Save Action State Reducer */
-  const saveActionInitialState = () => ({
-    currentStep: 0,
-    initiateFeatureSave: false, // Tells the map to save all features
-    featuresSaved: false, // Tells the component editor to save the component
-    componentSaved: false, // Tells the world the component is saved
-    exit: false, // Tells the world it's time to exit
-    errors: null,
-    message: null,
-  });
-
   /**
-   * Handles events across different components using a reducer
-   * @param state - The current state
-   * @param action - The action (signal) being received
-   * @return {Object} - The new state
+   * saveActionState contains the current save state
+   * saveActionDispatch allows us to update the state via action (signal) dispatch.
    */
-  const saveActionReducer = (state, action) => {
-    // If we have an error and not reset action, ignore updating the state
-    if (state.currentStep === -1 && action.type !== "reset") return;
-
-    // We are clear to test the action
-    switch (action.type) {
-      case "initiateFeatureSave": {
-        // If already initialized, ignore update
-        if (state.initiateFeatureSave) return;
-        return {
-          ...state,
-          currentStep: state.currentStep + 1, // 1
-          initiateFeatureSave: true,
-        };
-      }
-      case "featuresSaved": {
-        // If already saved features, ignore update
-        if (state.featuresSaved) return;
-        return {
-          ...state,
-          currentStep: state.currentStep + 1, // 2
-          featuresSaved: true,
-        };
-      }
-      case "componentSaved": {
-        // If already saved component, ignore update
-        if (state.componentSaved) return;
-        return {
-          ...state,
-          currentStep: state.currentStep + 1, // 3
-          componentSaved: true,
-        };
-      }
-      case "exit": {
-        // If already exited, ignore update
-        if (state.exit) return;
-        return {
-          ...state,
-          currentStep: state.currentStep + 1, // 4
-          exit: true,
-        };
-      }
-      case "error": {
-        return {
-          ...state,
-          errors: true,
-          currentStep: -1, // Error
-          message: action?.message,
-        };
-      }
-      case "reset":
-        return saveActionInitialState();
-      default: {
-        throw new Error(`Invalid action: ${action?.type}`);
-      }
-    }
-  };
-
-  /**
-   * useReducer gives us the name of our state, and a function
-   * to update the state via action (signal) dispatch.
-   */
-  const [saveActionState, saveActionDispatch] = useReducer(
-    saveActionReducer, // The reducer function handler
-    null, // Initializer argument
-    saveActionInitialState // Initial state
-  );
+  const {saveActionState, saveActionDispatch} = useSaveActionReducer();
 
   /**
    * Generates an initial list of component types, subtypes and counts
