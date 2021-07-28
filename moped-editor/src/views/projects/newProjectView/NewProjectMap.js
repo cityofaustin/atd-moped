@@ -339,10 +339,10 @@ const NewProjectMap = ({
    * Whenever a Save Action is initiated, save all drawn features
    * */
   useEffect(() => {
-    // If we don't have a current step, exit...
-    if (!saveActionState?.currentStep) return;
+    // Ignore empty states
+    if (!saveActionState) return;
     // If the process has been already initiated, we don't need to go any further
-    if (saveActionState.currentStep > 1) return;
+    if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
     // It looks like this is the first step
     if (
       saveActionState?.initiateFeatureSave &&
