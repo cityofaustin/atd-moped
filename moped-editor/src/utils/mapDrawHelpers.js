@@ -229,10 +229,6 @@ export function useMapDrawTools(
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
-  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
-  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
-    []
-  );
 
   /**
    * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
@@ -350,15 +346,9 @@ export function useMapDrawTools(
     // Identify if we are drawing or if we are in fact selecting an item
     if (
       selected &&
-      selected.selectedFeature === null &&
-      selected.selectedFeatureIndex === null
+      selected.selectedFeature !== null &&
+      selected.selectedFeatureIndex !== null
     ) {
-      // We are drawing a feature
-      setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
-      setSelectedEditHandleIndexes(
-        selected && selected.selectedEditHandleIndexes
-      );
-    } else {
       // We are deleting a feature
       const currentFeatures = mapEditorRef.current.getFeatures();
       mapEditorRef.current.deleteFeatures(selected.selectedFeatureIndex);
