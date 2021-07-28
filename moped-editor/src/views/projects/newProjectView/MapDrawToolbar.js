@@ -18,20 +18,14 @@ export const useToolbarStyles = makeStyles({
  * Generates a draw toolbar for the map
  * @param {Object} selectedModeId - The current object representation of the selected tool
  * @param {function} onSwitchMode - Handler that is run whenever we switch tools
- * @param {function} onDelete - Handler that determines how a feature is deleted
  * @return {JSX.Element}
  * @constructor
  */
-const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
+const DrawToolbar = ({
+  selectedModeId,
+  onSwitchMode,
+}) => {
   const classes = useToolbarStyles();
-
-  /**
-   * Calls onDelete function to delete a point feature from the draw UI
-   * @param {Object} e - Event object for click
-   */
-  const onDeleteClick = e => {
-    onDelete(e);
-  };
 
   return (
     <ToggleButtonGroup
@@ -45,7 +39,7 @@ const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
         return (
           <MapDrawToolbarButton
             selectedModeId={selectedModeId}
-            onClick={mode.id === "delete" ? onDeleteClick : onSwitchMode}
+            onClick={onSwitchMode}
             key={mode.id}
             mode={mode}
           />

@@ -330,7 +330,7 @@ export function useMapDrawTools(
     const mode = MODES.find(m => m.id === switchModeId);
     const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
 
-    if (isDrawing && mode?.id === "disableDrawMode") setIsDrawing(false);
+    if (mode?.id === "disableDrawMode") setIsDrawing(false);
     else setIsDrawing(true);
 
     setModeId(switchModeId);
@@ -371,9 +371,6 @@ export function useMapDrawTools(
     }
   };
 
-  // Null constant, onDelete is required by mapbox
-  const onDelete = null;
-
   /**
    * Renders the toolbar and buttons that control the map draw UI
    * @return {JSX.Element} The toolbar for the map draw UI
@@ -381,11 +378,8 @@ export function useMapDrawTools(
   const renderDrawToolbar = (isDrawing, setIsDrawing) => {
     return (
       <MapDrawToolbar
-        isDrawing={isDrawing}
-        setIsDrawing={setIsDrawing}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
-        onDelete={onDelete}
       />
     );
   };
