@@ -1,14 +1,7 @@
-import React, { useRef, useCallback, useState } from "react";
+import React, { useRef, useCallback, useState, useEffect } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import {
-  Box,
-  Button,
-  Icon,
-  makeStyles,
-  Switch,
-  Typography,
-} from "@material-ui/core";
+import { Box, Icon, makeStyles, Typography } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
@@ -45,9 +38,10 @@ export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
     position: "absolute",
-    top: "1rem",
+    top: ".5rem",
     right: "1rem",
     zIndex: 1,
+    height: "3rem",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
@@ -55,7 +49,7 @@ export const useStyles = makeStyles(theme => ({
   },
   mapBoxEditButtonGroup: {
     position: "absolute",
-    top: "1rem",
+    top: ".5rem",
     right: "14rem",
     zIndex: 1,
   },
@@ -164,6 +158,8 @@ export const useStyles = makeStyles(theme => ({
  * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
  * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
  * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
+ * @param {Object} saveActionState - The current state of save action
+ * @param {function} saveActionDispatch - Changes the state of save action
  * @param {JSX.Element} componentEditorPanel - An editor panel component (optional)
  * @return {JSX.Element}
  * @constructor
@@ -176,6 +172,8 @@ const NewProjectMap = ({
   refetchProjectDetails = null,
   noPadding = false,
   newFeature = false,
+  saveActionState = null,
+  saveActionDispatch = null,
   componentEditorPanel = null,
 }) => {
   const classes = useStyles();
@@ -185,6 +183,8 @@ const NewProjectMap = ({
     featureCollection
   );
   const mapControlContainerRef = useRef();
+  const mapEditControlContainerRef = useRef();
+  const mapBasemapContainerRef = useRef();
 
   /**
    * Generate a viewport configuration object
@@ -240,7 +240,8 @@ const NewProjectMap = ({
     setFeatureCollection,
     projectId,
     refetchProjectDetails,
-    viewport.zoom
+    viewport.zoom,
+    saveActionDispatch
   );
 
   /**
@@ -334,10 +335,31 @@ const NewProjectMap = ({
     setBasemapSpeedDialOpen(true);
   };
 
+  /**
+   * Whenever a Save Action is initiated, save all drawn features
+   * */
+  useEffect(() => {
+    // If the process has been already initiated, we don't need to go any further
+    if (saveActionState.currentStep > 1) return;
+
+    // It looks like this is the first step
+    if (
+      saveActionState?.initiateFeatureSave &&
+      saveActionState?.featuresSaved === false
+    ) {
+      saveDrawnPoints();
+    }
+  }, [saveActionState, saveDrawnPoints]);
+
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
+      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
+      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+      <div ref={mapEditControlContainerRef} className={classes.geocoderContainer} />
+      <div ref={mapBasemapContainerRef} className={classes.geocoderContainer} />
+
       {/***************************************************************************
-        Render these controls outside ReactMapGL so mouse events don't propagate to the map
+       Render these controls outside ReactMapGL so mouse events don't propagate to the map
        ***************************************************************************/}
       {/*
         The component editor panel is a JSX.Element that is null by default, it carries
@@ -345,9 +367,7 @@ const NewProjectMap = ({
       */}
       {componentEditorPanel}
       {/* renderLayerSelect generates the layer select components */}
-      {renderLayerSelect()}
-      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+      {renderLayerSelect(mapBasemapContainerRef)}
 
       {/***************************************************************************
                                        ReactMapGL
@@ -372,6 +392,7 @@ const NewProjectMap = ({
          BaseMap Speed Dial
          ***************************************************************************/}
         <SpeedDial
+          containerRef={mapBasemapContainerRef}
           ariaLabel="Layers SpeedDial"
           className={classes.speedDial}
           hidden={false}
@@ -421,6 +442,8 @@ const NewProjectMap = ({
             onClick={() => handleBasemapSpeedDialClose("aerial")}
           />
         </SpeedDial>
+
+        {/* GEOCODER */}
         <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
@@ -474,28 +497,18 @@ const NewProjectMap = ({
             </Source>
           )
         )}
+
+        {/* Street Tool Tip*/}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        {/* DRAW MAP TOOLS */}
-        {isDrawing && renderMapDrawTools()}
+
+        {/* Draw tools */}
+        {renderMapDrawTools(mapEditControlContainerRef)}
       </ReactMapGL>
 
       {/***************************************************************************
                         Feature Count & Draw Mode Controls
        ***************************************************************************/}
-      {renderFeatureCount(featureCount)}
-      <Switch
-        checked={isDrawing}
-        onChange={() => setIsDrawing(!isDrawing)}
-        color="primary"
-        name="mapDrawSwitch"
-        inputProps={{ "aria-label": "primary checkbox" }}
-      />
-      <Typography>Draw Mode</Typography>
-      {isDrawing && (
-        <Button variant="contained" color="primary" onClick={saveDrawnPoints}>
-          Save Drawn Points
-        </Button>
-      )}
+      {renderFeatureCount(featureCount, isDrawing)}
     </Box>
   );
 };
