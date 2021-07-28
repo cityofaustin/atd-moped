@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -25,7 +25,12 @@ import {
   UPDATE_NEW_PROJ_FEATURES,
 } from "../../../queries/project";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
-import {countFeatures, mapErrors, mapConfig, useSaveActionReducer} from "../../../utils/mapHelpers";
+import {
+  countFeatures,
+  mapErrors,
+  mapConfig,
+  useSaveActionReducer,
+} from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 
@@ -58,26 +63,6 @@ const NewProjectView = () => {
 
   // Redirect handlers
   const navigate = useNavigate();
-
-  /**
-   * Whenever we have a new project id, we can then set success
-   * and trigger the redirect.
-   */
-  useEffect(() => {
-    if (!!newProjectId) {
-      window.setTimeout(() => {
-        setSuccess(true);
-      }, 1500);
-    }
-  }, [newProjectId]);
-
-  useEffect(() => {
-    if (!!newProjectId && success) {
-      window.setTimeout(() => {
-        navigate("/moped/projects/" + newProjectId);
-      }, 800);
-    }
-  }, [success, newProjectId, navigate]);
 
   /**
    * Form State
@@ -165,8 +150,8 @@ const NewProjectView = () => {
             noPadding={true}
             projectFeatureCollection={null}
             newFeature={true}
-            saveActionState={null}
-            saveActionDispatch={null}
+            saveActionState={saveActionState}
+            saveActionDispatch={saveActionDispatch}
             componentEditorPanel={null}
           />
         );
@@ -251,22 +236,17 @@ const NewProjectView = () => {
    */
   const timer = useRef();
 
-  useEffect(() => {
-    const currentTimer = timer.current;
-
-    return () => {
-      clearTimeout(currentTimer);
-    };
-  }, []);
-
   /**
    * saveActionState contains the current save state
    * saveActionDispatch allows us to update the state via action (signal) dispatch.
    */
-  const {saveActionState, saveActionDispatch} = useSaveActionReducer();
+  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
 
   const handleSubmitDispatch = () => {
-    // console.log(saveActionState);
+    // Check this is not already done
+    if (saveActionState?.currentStep === 0) {
+      saveActionDispatch({ type: "initiateFeatureSave" });
+    }
   };
 
   /**
@@ -381,6 +361,42 @@ const NewProjectView = () => {
         setSuccess(false);
       });
   };
+
+  /**
+   * Whenever we have a new project id, we can then set success
+   * and trigger the redirect.
+   */
+
+  useEffect(() => {
+    const currentTimer = timer.current;
+
+    return () => {
+      clearTimeout(currentTimer);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!!newProjectId) {
+      window.setTimeout(() => {
+        setSuccess(true);
+      }, 1500);
+    }
+  }, [newProjectId]);
+
+  useEffect(() => {
+    if (!!newProjectId && success) {
+      window.setTimeout(() => {
+        navigate("/moped/projects/" + newProjectId);
+      }, 800);
+    }
+  }, [success, newProjectId, navigate]);
+
+  useEffect(() => {
+    // If the features are saved, then we are good to go!
+    if(saveActionState?.currentStep && saveActionState.currentStep === 2) {
+      handleSubmit();
+    }
+  }, [saveActionState]);
 
   return (
     <>
