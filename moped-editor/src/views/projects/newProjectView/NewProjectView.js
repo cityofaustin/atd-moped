@@ -396,6 +396,8 @@ const NewProjectView = () => {
     if(saveActionState?.currentStep && saveActionState.currentStep === 2) {
       handleSubmit();
     }
+    // handleSubmit changes on every render, cannot be a dependency
+    // eslint-disable-next-line
   }, [saveActionState]);
 
   return (

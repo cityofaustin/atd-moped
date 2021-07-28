@@ -177,14 +177,14 @@ const NewProjectMap = ({
   componentEditorPanel = null,
 }) => {
   const classes = useStyles();
-  const mapRef = useRef();
+
   const featureCount = countFeatures(featureCollection);
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
+
+  const mapRef = useRef();
   const mapControlContainerRef = useRef();
-  const mapEditControlContainerRef = useRef();
-  const mapBasemapContainerRef = useRef();
 
   /**
    * Generate a viewport configuration object
@@ -356,11 +356,6 @@ const NewProjectMap = ({
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
-      <div
-        ref={mapEditControlContainerRef}
-        className={classes.geocoderContainer}
-      />
-      <div ref={mapBasemapContainerRef} className={classes.geocoderContainer} />
 
       {/***************************************************************************
        Render these controls outside ReactMapGL so mouse events don't propagate to the map
@@ -396,7 +391,6 @@ const NewProjectMap = ({
          BaseMap Speed Dial
          ***************************************************************************/}
         <SpeedDial
-          containerRef={mapBasemapContainerRef}
           ariaLabel="Layers SpeedDial"
           className={classes.speedDial}
           hidden={false}
@@ -457,6 +451,8 @@ const NewProjectMap = ({
           marker={false}
           position="top-right"
         />
+
+        {/* RENDER LAYERS */}
         {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
           // If a config has a url, it is needs state to update selected/unselected layers
           config.layerUrl ? (
@@ -506,7 +502,7 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {renderMapDrawTools(mapEditControlContainerRef)}
+        {renderMapDrawTools()}
       </ReactMapGL>
 
       {/***************************************************************************
