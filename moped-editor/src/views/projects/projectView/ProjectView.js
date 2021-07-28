@@ -49,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  noPadding: {
+    padding: 0,
+  },
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
@@ -124,7 +127,6 @@ const ProjectView = () => {
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
@@ -401,7 +403,13 @@ const ProjectView = () => {
                 {TABS.map((tab, i) => {
                   const TabComponent = tab.Component;
                   return (
-                    <TabPanel key={tab.label} value={activeTab} index={i}>
+                    <TabPanel
+                      data-name={"moped-project-view-tabpanel"}
+                      key={tab.label}
+                      value={activeTab}
+                      index={i}
+                      className={tab.label === "Map" ? classes.noPadding : null}
+                    >
                       <TabComponent
                         loading={loading}
                         data={data}
