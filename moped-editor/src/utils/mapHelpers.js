@@ -878,6 +878,8 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     },
   }))(MenuItem);
 
+  const projectFeatureLayerNames = ["projectFeatures", "projectFeaturePoints"];
+
   /**
    * Renders the dropdown menu to select layers
    * @param {boolean} showProjectFeatures - When true, it hides other project features
@@ -906,10 +908,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         onClose={handleMenuClose}
       >
         {getLayerNames().map(name => {
-          if (
-            !showProjectFeatures &&
-            ["projectFeatures", "projectFeaturePoints"].includes(name)
-          )
+          if (!showProjectFeatures && projectFeatureLayerNames.includes(name))
             return null;
 
           return (
