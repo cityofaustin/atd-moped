@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
@@ -24,7 +24,12 @@ import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
-import {countFeatures, mapConfig, mapErrors, useSaveActionReducer} from "../../../utils/mapHelpers";
+import {
+  countFeatures,
+  mapConfig,
+  mapErrors,
+  useSaveActionReducer,
+} from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
@@ -156,7 +161,7 @@ const ProjectComponentEdit = ({
    * saveActionState contains the current save state
    * saveActionDispatch allows us to update the state via action (signal) dispatch.
    */
-  const {saveActionState, saveActionDispatch} = useSaveActionReducer();
+  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
 
   /**
    * Generates an initial list of component types, subtypes and counts
