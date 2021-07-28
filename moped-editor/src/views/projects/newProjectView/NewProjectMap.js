@@ -81,6 +81,7 @@ export const useStyles = makeStyles(theme => ({
     width: "21rem",
     left: "1rem",
     top: ".5rem",
+    zIndex: 9999,
     // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
     "@media (max-width:640px)": {
       top: 32,
