@@ -26,10 +26,6 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.secondary.main,
   },
   color3: {
-    backgroundColor: theme.palette.background.dark,
-    color: theme.palette.background.dark,
-  },
-  color4: {
     backgroundColor: theme.palette.background.mapControlsHover,
     color: theme.palette.background.mapControlsHover,
   },
@@ -60,8 +56,8 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color4)}>
-                4
+              <Avatar className={clsx(classes.colorCircles, classes.color3)}>
+                3
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Map Control Hover Color" />
