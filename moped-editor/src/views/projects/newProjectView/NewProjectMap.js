@@ -339,9 +339,10 @@ const NewProjectMap = ({
    * Whenever a Save Action is initiated, save all drawn features
    * */
   useEffect(() => {
+    // If we don't have a current step, exit...
+    if (!saveActionState?.currentStep) return;
     // If the process has been already initiated, we don't need to go any further
     if (saveActionState.currentStep > 1) return;
-
     // It looks like this is the first step
     if (
       saveActionState?.initiateFeatureSave &&
@@ -355,7 +356,10 @@ const NewProjectMap = ({
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
-      <div ref={mapEditControlContainerRef} className={classes.geocoderContainer} />
+      <div
+        ref={mapEditControlContainerRef}
+        className={classes.geocoderContainer}
+      />
       <div ref={mapBasemapContainerRef} className={classes.geocoderContainer} />
 
       {/***************************************************************************
@@ -367,7 +371,7 @@ const NewProjectMap = ({
       */}
       {componentEditorPanel}
       {/* renderLayerSelect generates the layer select components */}
-      {renderLayerSelect(mapBasemapContainerRef)}
+      {renderLayerSelect(projectFeatureCollection !== null)}
 
       {/***************************************************************************
                                        ReactMapGL
