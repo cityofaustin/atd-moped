@@ -1,7 +1,6 @@
 import React from "react";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
 import { makeStyles } from "@material-ui/core";
-import theme from "../../../theme/index";
 
 import { MODES } from "../../../utils/mapDrawHelpers";
 import { ToggleButtonGroup } from "@material-ui/lab";
@@ -10,12 +9,20 @@ export const useToolbarStyles = makeStyles({
   controlContainer: {
     position: "absolute",
     right: "12rem",
-    top: "1rem",
+    top: ".5rem",
     cursor: "pointer",
   },
 });
 
-const DrawToolbar = ({ disableDrawMode, selectedModeId, onSwitchMode, onDelete }) => {
+/**
+ * Generates a draw toolbar for the map
+ * @param {Object} selectedModeId - The current object representation of the selected tool
+ * @param {function} onSwitchMode - Handler that is run whenever we switch tools
+ * @param {function} onDelete - Handler that determines how a feature is deleted
+ * @return {JSX.Element}
+ * @constructor
+ */
+const DrawToolbar = ({ selectedModeId, onSwitchMode, onDelete }) => {
   const classes = useToolbarStyles();
 
   /**
