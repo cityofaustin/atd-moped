@@ -20,14 +20,13 @@ const CDNAvatar = props => {
   const classes = useStyles();
   const { user } = useUser();
 
-  const fileName = props?.src ?? null;
-  const src = `${config.env.APP_CLOUDFRONT}/${fileName ?? "na.png"}`;
+  const imageSrc = props?.src ? `${config.env.APP_CLOUDFRONT}/${props.src}` : null
 
   return (
     <Avatar
       className={props?.className ? props.className : classes.avatar}
-      src={fileName ? src : null}
-      style={{ backgroundColor: fileName ? "white" : user?.userColor }}
+      src={imageSrc}
+      style={{ backgroundColor: imageSrc ? "white" : user?.userColor }}
     >
       <Typography className={props?.largeInitials ? classes.userInitials : null}>
         {props?.initials ? props.initials : <Icon>user</Icon>}

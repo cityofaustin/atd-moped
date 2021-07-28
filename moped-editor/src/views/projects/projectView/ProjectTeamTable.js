@@ -17,6 +17,7 @@ import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -358,7 +359,7 @@ const ProjectTeamTable = ({
       <MaterialTable
         columns={columns}
         components={{
-          EditRow: (props, rowData) => (
+          EditRow: props => (
             <MTableEditRow
               {...props}
               onKeyDown={e => {
@@ -405,7 +406,7 @@ const ProjectTeamTable = ({
           </Typography>
         }
         options={{
-          ...(data.moped_proj_personnel.length < 26 && { paging: false }),
+          ...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && { paging: false }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
@@ -415,7 +416,11 @@ const ProjectTeamTable = ({
             actions: "",
           },
           body: {
-            emptyDataSourceMessage: <Typography variant="body1">No team members to display</Typography>,
+            emptyDataSourceMessage: (
+              <Typography variant="body1">
+                No team members to display
+              </Typography>
+            ),
           },
         }}
         icons={{ Delete: ClearIcon }}
