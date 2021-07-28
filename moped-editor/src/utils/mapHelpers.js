@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
@@ -14,6 +14,11 @@ import {
 } from "@material-ui/core";
 import { get } from "lodash";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+
+import {
+  mapSaveActionReducer,
+  mapSaveActionInitialState,
+} from "./mapSaveActionReducer";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -873,7 +878,12 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     },
   }))(MenuItem);
 
-  const renderLayerSelect = () => (
+  /**
+   * Renders the dropdown menu to select layers
+   * @param {boolean} showProjectFeatures - When true, it hides other project features
+   * @return {JSX.Element}
+   */
+  const renderLayerSelect = (showProjectFeatures = false) => (
     <div>
       <Button
         aria-controls="customized-menu"
@@ -895,22 +905,30 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
       >
-        {getLayerNames().map(name => (
-          <StyledMenuItem
-            onClick={() => handleLayerCheckboxClick(name)}
-            value={name}
-            key={name}
-          >
-            <ListItemIcon>
-              <Checkbox
-                checked={visibleLayerIds.includes(name)}
-                name={name}
-                color="primary"
-              />
-            </ListItemIcon>
-            <ListItemText primary={mapConfig.layerConfigs[name].layerLabel} />
-          </StyledMenuItem>
-        ))}
+        {getLayerNames().map(name => {
+          if (
+            !showProjectFeatures &&
+            ["projectFeatures", "projectFeaturePoints"].includes(name)
+          )
+            return null;
+
+          return (
+            <StyledMenuItem
+              onClick={() => handleLayerCheckboxClick(name)}
+              value={name}
+              key={name}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  checked={visibleLayerIds.includes(name)}
+                  name={name}
+                  color="primary"
+                />
+              </ListItemIcon>
+              <ListItemText primary={mapConfig.layerConfigs[name].layerLabel} />
+            </StyledMenuItem>
+          );
+        })}
       </StyledMenu>
     </div>
   );
@@ -982,3 +1000,17 @@ export const useTransformProjectFeatures = (
     },
   })),
 });
+
+/**
+ * Instantiates a saveActionState and a dispatch function
+ * @return {Object}
+ */
+export const useSaveActionReducer = () => {
+  const [saveActionState, saveActionDispatch] = useReducer(
+    mapSaveActionReducer, // The reducer function handler
+    null, // Initializer argument
+    mapSaveActionInitialState // Initial state
+  );
+
+  return { saveActionState, saveActionDispatch };
+};
