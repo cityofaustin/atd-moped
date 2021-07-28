@@ -642,14 +642,14 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
  * @param {Number} featureCount - The number of features in a project's feature collection
  * @return {JSX} The populated feature count text JSX
  */
-export const renderFeatureCount = featureCount => (
+export const renderFeatureCount = (featureCount, isDrawing = false) => (
   <Typography
     style={{
       fontSize: "0.875rem",
       fontWeight: 500,
     }}
   >
-    {featureCount} location{featureCount === 1 ? "" : "s"} in this project
+    {featureCount} location{featureCount === 1 ? "" : "s"} in this project - Draw Mode: {isDrawing ? "On" : "Off"}
   </Typography>
 );
 
