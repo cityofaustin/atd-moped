@@ -375,9 +375,10 @@ export function useMapDrawTools(
    * Renders the toolbar and buttons that control the map draw UI
    * @return {JSX.Element} The toolbar for the map draw UI
    */
-  const renderDrawToolbar = () => {
+  const renderDrawToolbar = containerRef => {
     return (
       <MapDrawToolbar
+        containerRef={containerRef}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
       />
@@ -386,9 +387,9 @@ export function useMapDrawTools(
 
   /**
    * Renders the map editor and its toolbar
-   * @return {JSX.Element} The whole map draw UI
+   * @return {React.ReactPortal} The whole map draw UI
    */
-  const renderMapDrawTools = () => (
+  const renderMapDrawTools = containerRef => (
     <>
       <Editor
         ref={ref => {
@@ -402,7 +403,7 @@ export function useMapDrawTools(
         clickRadius={12}
         mode={modeHandler}
       />
-      {renderDrawToolbar()}
+      {renderDrawToolbar(containerRef)}
     </>
   );
 

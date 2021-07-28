@@ -1,18 +1,9 @@
 import React from "react";
+import ReactDOM from "react-dom";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
-import { makeStyles } from "@material-ui/core";
 
 import { MODES } from "../../../utils/mapDrawHelpers";
 import { ToggleButtonGroup } from "@material-ui/lab";
-
-export const useToolbarStyles = makeStyles({
-  controlContainer: {
-    position: "absolute",
-    right: "12rem",
-    top: ".5rem",
-    cursor: "pointer",
-  },
-});
 
 /**
  * Generates a draw toolbar for the map
@@ -21,32 +12,29 @@ export const useToolbarStyles = makeStyles({
  * @return {JSX.Element}
  * @constructor
  */
-const DrawToolbar = ({
-  selectedModeId,
-  onSwitchMode,
-}) => {
-  const classes = useToolbarStyles();
-
-  return (
-    <ToggleButtonGroup
-      value={selectedModeId}
-      exclusive
-      onChange={null}
-      aria-label=""
-      className={classes.controlContainer}
-    >
-      {MODES.map(mode => {
-        return (
-          <MapDrawToolbarButton
-            selectedModeId={selectedModeId}
-            onClick={onSwitchMode}
-            key={mode.id}
-            mode={mode}
-          />
-        );
-      })}
-    </ToggleButtonGroup>
-  );
+const DrawToolbar = ({ selectedModeId, onSwitchMode, containerRef = null }) => {
+  return containerRef && containerRef.current
+    ? ReactDOM.createPortal(
+        <ToggleButtonGroup
+          value={selectedModeId}
+          exclusive
+          onChange={null}
+          aria-label=""
+        >
+          {MODES.map(mode => {
+            return (
+              <MapDrawToolbarButton
+                selectedModeId={selectedModeId}
+                onClick={onSwitchMode}
+                key={mode.id}
+                mode={mode}
+              />
+            );
+          })}
+        </ToggleButtonGroup>,
+        containerRef.current
+      )
+    : null;
 };
 
 export default DrawToolbar;

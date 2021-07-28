@@ -51,7 +51,7 @@ export const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: ".5rem",
     right: "14rem",
-    zIndex: 1,
+    zIndex: 999,
   },
   mapBoxEditButtonGroupButton: {
     backgroundColor: "white",
@@ -184,7 +184,8 @@ const NewProjectMap = ({
   );
 
   const mapRef = useRef();
-  const mapControlContainerRef = useRef();
+  const mapGeocoderContainerRef = useRef();
+  const mapEditToolsContainerRef = useRef();
 
   /**
    * Generate a viewport configuration object
@@ -355,7 +356,8 @@ const NewProjectMap = ({
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      <div ref={mapControlContainerRef} className={classes.geocoderContainer} />
+      <div ref={mapGeocoderContainerRef} className={classes.geocoderContainer} />
+      <div ref={mapEditToolsContainerRef} className={classes.mapBoxEditButtonGroup} />
 
       {/***************************************************************************
        Render these controls outside ReactMapGL so mouse events don't propagate to the map
@@ -447,7 +449,7 @@ const NewProjectMap = ({
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
           bbox={mapConfig.geocoderBbox}
-          containerRef={mapControlContainerRef}
+          containerRef={mapGeocoderContainerRef}
           marker={false}
           position="top-right"
         />
@@ -502,7 +504,7 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {renderMapDrawTools()}
+        {renderMapDrawTools(mapEditToolsContainerRef)}
       </ReactMapGL>
 
       {/***************************************************************************
