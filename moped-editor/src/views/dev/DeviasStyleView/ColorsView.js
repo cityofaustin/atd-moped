@@ -60,14 +60,6 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color3)}>
-                3
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary="Background Color" />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
               <Avatar className={clsx(classes.colorCircles, classes.color4)}>
                 4
               </Avatar>
