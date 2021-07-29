@@ -31,7 +31,11 @@ export const routes = [
     action: "moped:visit",
     element: <DashboardLayout />,
     children: [
-      { path: "/", action: "moped:visit", element: <ProjectsListView /> },
+      {
+        path: "/",
+        action: "moped:visit",
+        element: <Navigate to="/moped/projects" />,
+      },
       {
         path: "dashboard",
         action: "dashboard:visit",
