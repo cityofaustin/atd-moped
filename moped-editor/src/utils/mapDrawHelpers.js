@@ -38,6 +38,11 @@ export const MODES = [
     id: "edit",
     text: "Select Point",
     handler: EditingMode,
+    icon: "icon-select.svg",
+  },
+  {
+    id: "delete",
+    text: "Delete",
     icon: "icon-delete.svg",
   },
 ];
@@ -229,6 +234,10 @@ export function useMapDrawTools(
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
+  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
+  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
+    []
+  );
 
   /**
    * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
@@ -317,8 +326,11 @@ export function useMapDrawTools(
         refetchProjectDetails();
       });
     }
+
+    // Close UI for user
+    setIsDrawing(false);
     // Dispatch featuresSaved action
-    saveActionDispatch({ type: "featuresSaved" });
+    // saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
@@ -343,32 +355,56 @@ export function useMapDrawTools(
    * @param {object} selected - Holds data about the selected feature
    */
   const onSelect = selected => {
-    // Identify if we are drawing or if we are in fact selecting an item
-    if (
-      selected &&
-      selected.selectedFeature !== null &&
-      selected.selectedFeatureIndex !== null
-    ) {
-      // We are deleting a feature
-      const currentFeatures = mapEditorRef.current.getFeatures();
-      mapEditorRef.current.deleteFeatures(selected.selectedFeatureIndex);
+    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
+    setSelectedEditHandleIndexes(
+      selected && selected.selectedEditHandleIndexes
+    );
+  };
 
-      // Then, remove the feature from the feature collection of the project extent
-      const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
-      const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
-      const featureIdToDelete = get(featureToDelete, featureIdGetPath);
-
-      const updatedFeatureCollection = {
-        ...featureCollection,
-        features: [
-          ...featureCollection.features.filter(
-            feature => get(feature, featureIdGetPath) !== featureIdToDelete
-          ),
-        ],
-      };
-
-      setFeatureCollection(updatedFeatureCollection);
+  /**
+   * Finds the currently selected feature and removes it from the drawn features array and featureCollection state
+   */
+  const onDelete = () => {
+    const currentFeatures = mapEditorRef.current.getFeatures();
+    // Remove the feature from the draw UI feature list
+    if (selectedEditHandleIndexes.length) {
+      try {
+        mapEditorRef.current.deleteHandles(
+          selectedFeatureIndex,
+          selectedEditHandleIndexes
+        );
+      } catch (error) {
+        console.log(error.message);
+      }
+      return;
     }
+
+    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
+      return;
+    }
+
+    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+
+    // Then, remove the feature from the feature collection of the project extent
+    const featureToDelete = currentFeatures[selectedFeatureIndex];
+    const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
+    const featureIdToDelete = get(featureToDelete, featureIdGetPath);
+
+    const updatedFeatureCollection = {
+      ...featureCollection,
+      features: [
+        ...featureCollection.features.filter(
+          feature => get(feature, featureIdGetPath) !== featureIdToDelete
+        ),
+      ],
+    };
+
+    setFeatureCollection(updatedFeatureCollection);
+
+    // Update modeId to momentarily change the background color of the delete icon on click
+    const previousMode = modeId;
+    setModeId("delete");
+    setTimeout(() => setModeId(previousMode), 500);
   };
 
   /**
@@ -381,6 +417,7 @@ export function useMapDrawTools(
         containerRef={containerRef}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
+        onDelete={onDelete}
       />
     );
   };
