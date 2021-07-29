@@ -57,6 +57,9 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.mapControlsHover,
     color: theme.palette.background.mapControlsHover,
   },
+  avatar: {
+    boxShadow: theme.shadows[3],
+  },
 }));
 
 const TypographyView = () => {
@@ -68,7 +71,13 @@ const TypographyView = () => {
         <List>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color1)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color1,
+                  classes.avatar
+                )}
+              >
                 1
               </Avatar>
             </ListItemAvatar>
@@ -76,7 +85,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color2)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color2,
+                  classes.avatar
+                )}
+              >
                 2
               </Avatar>
             </ListItemAvatar>
@@ -84,7 +99,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color3)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color3,
+                  classes.avatar
+                )}
+              >
                 3
               </Avatar>
             </ListItemAvatar>
@@ -92,7 +113,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color4)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color4,
+                  classes.avatar
+                )}
+              >
                 4
               </Avatar>
             </ListItemAvatar>
@@ -100,7 +127,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color5)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color5,
+                  classes.avatar
+                )}
+              >
                 5
               </Avatar>
             </ListItemAvatar>
@@ -108,7 +141,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color6)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color6,
+                  classes.avatar
+                )}
+              >
                 6
               </Avatar>
             </ListItemAvatar>
@@ -116,7 +155,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color7)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color7,
+                  classes.avatar
+                )}
+              >
                 7
               </Avatar>
             </ListItemAvatar>
@@ -124,7 +169,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color8)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color8,
+                  classes.avatar
+                )}
+              >
                 8
               </Avatar>
             </ListItemAvatar>
@@ -132,7 +183,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color9)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color9,
+                  classes.avatar
+                )}
+              >
                 9
               </Avatar>
             </ListItemAvatar>
@@ -140,7 +197,13 @@ const TypographyView = () => {
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color10)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color10,
+                  classes.avatar
+                )}
+              >
                 10
               </Avatar>
             </ListItemAvatar>
