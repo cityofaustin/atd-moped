@@ -1,0 +1,1 @@
+export const PAGING_DEFAULT_COUNT = 25; 

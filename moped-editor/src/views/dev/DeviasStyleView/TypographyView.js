@@ -32,7 +32,7 @@ const TypographyView = () => {
           subtitle2. Lorem ipsum dolor sit amet, consectetur adipisicing elit.
           Quos blanditiis tenetur
         </Typography>
-        <NavLink to={"/moped/dev/devias"}>
+        <NavLink to={"/moped/dev/styles"}>
           <Typography color="primary">Link</Typography>
         </NavLink>
         <Typography variant="body1" gutterBottom>
