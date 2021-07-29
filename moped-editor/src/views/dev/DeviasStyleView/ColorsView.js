@@ -22,12 +22,43 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
   },
   color2: {
+    backgroundColor: theme.palette.primary.dark,
+    color: theme.palette.primary.dark,
+  },
+  color3: {
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.primary.light,
+  },
+  color4: {
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.secondary.main,
   },
-  color3: {
+  color5: {
+    backgroundColor: theme.palette.background.dark,
+    color: theme.palette.background.dark,
+  },
+  color6: {
+    backgroundColor: theme.palette.background.default,
+    color: theme.palette.background.default,
+  },
+  color7: {
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.background.paper,
+  },
+  color8: {
+    backgroundColor: theme.palette.text.primary,
+    color: theme.palette.text.primary,
+  },
+  color9: {
+    backgroundColor: theme.palette.text.secondary,
+    color: theme.palette.text.secondary,
+  },
+  color10: {
     backgroundColor: theme.palette.background.mapControlsHover,
     color: theme.palette.background.mapControlsHover,
+  },
+  avatar: {
+    boxShadow: theme.shadows[3],
   },
 }));
 
@@ -40,24 +71,140 @@ const TypographyView = () => {
         <List>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color1)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color1,
+                  classes.avatar
+                )}
+              >
                 1
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Primary Color" />
+            <ListItemText primary="Primary Main" />
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color2)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color2,
+                  classes.avatar
+                )}
+              >
                 2
               </Avatar>
             </ListItemAvatar>
-            <ListItemText primary="Secondary Color" />
+            <ListItemText primary="Primary Dark" />
           </ListItem>
           <ListItem>
             <ListItemAvatar>
-              <Avatar className={clsx(classes.colorCircles, classes.color3)}>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color3,
+                  classes.avatar
+                )}
+              >
                 3
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Primary Light" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color4,
+                  classes.avatar
+                )}
+              >
+                4
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Secondary Main" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color5,
+                  classes.avatar
+                )}
+              >
+                5
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Background Dark" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color6,
+                  classes.avatar
+                )}
+              >
+                6
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Background Default" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color7,
+                  classes.avatar
+                )}
+              >
+                7
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Background Paper" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color8,
+                  classes.avatar
+                )}
+              >
+                8
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Text Primary" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color9,
+                  classes.avatar
+                )}
+              >
+                9
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary="Text Secondary" />
+          </ListItem>
+          <ListItem>
+            <ListItemAvatar>
+              <Avatar
+                className={clsx(
+                  classes.colorCircles,
+                  classes.color10,
+                  classes.avatar
+                )}
+              >
+                10
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Map Control Hover Color" />
