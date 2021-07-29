@@ -16,7 +16,7 @@ const DeviasStyleView = () => {
   const classes = useStyles();
 
   return (
-    <Page className={classes.root} title="Devias Custom Styles">
+    <Page className={classes.root} title="Moped Styles">
       <Container maxWidth={"lg"}>
         <Grid container spacing={3}>
           <Grid item lg={12}>
