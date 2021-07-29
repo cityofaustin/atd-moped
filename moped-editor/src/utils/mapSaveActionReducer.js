@@ -16,8 +16,16 @@ export const mapSaveActionInitialState = () => ({
  * @return {Object} - The new state
  */
 export const mapSaveActionReducer = (state, action) => {
+
+  if(!state) return;
+
   // If we have an error and not reset action, ignore updating the state
-  if (state.currentStep === -1 && action.type !== "reset") return;
+  if (
+    !!state?.currentStep &&
+    state.currentStep === -1 &&
+    action.type !== "reset"
+  )
+    return;
 
   // We are clear to test the action
   switch (action.type) {
