@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton, Popover, Typography, makeStyles } from "@material-ui/core";
+import { IconButton, InputBase, Popover, Typography, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles(theme => ({
@@ -7,6 +7,23 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     marginRight: "1em",
   },
+  inputRoot: {
+    borderWidth: "1px",
+    borderRadius: "4px",
+    borderColor: theme.palette.text.secondary,
+    borderStyle: "solid",
+    padding: "2px",
+    width: "300px",
+    height: "36px",
+  },
+  inputInput: {
+    fontSize: "0.875rem",
+    paddingLeft: "1em",
+  },
+  adornedStart: {
+    color: theme.palette.text.secondary,
+    paddingLeft: "5px"
+  }
 }));
 
 /**
@@ -15,6 +32,7 @@ const useStyles = makeStyles(theme => ({
  */
 const NavigationSearchInput = () => {
   const classes = useStyles();
+  const divRef = React.useRef();
 
   const [searchInput, showSearchInput] = useState(false);
   // anchor element for menu to "attach" to
@@ -23,7 +41,8 @@ const NavigationSearchInput = () => {
   const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
 
   const handleMagClick = event => {
-    setSearchResultsAnchor(event.currentTarget); // this actually shouldnt happen until the input gets focus?
+    console.log(event.target)
+    // setSearchResultsAnchor(divRef.current); // this actually shouldnt happen until the input gets focus?
     showSearchInput(true);
   };
 
@@ -32,10 +51,25 @@ const NavigationSearchInput = () => {
   };
 
   return (
-    <div className={classes.root}>
-      <IconButton onClick={handleMagClick}>
-        <SearchIcon />
-      </IconButton>
+    <>
+    <div className={classes.root} ref={divRef}>
+      {!searchInput ? (
+        <IconButton onClick={handleMagClick}>
+          <SearchIcon />
+        </IconButton>
+      ) : (
+        <InputBase
+          placeholder="Project name, description or eCAPRIS ID"
+          classes={{
+            root: classes.inputRoot,
+            input: classes.inputInput,
+            adornedStart: classes.adornedStart,
+          }}
+          inputProps={{ "aria-label": "search" }}
+          startAdornment={<SearchIcon fontSize={"small"}/>}
+        />
+      )}
+    </div>
       <Popover
         id="searchResults"
         open={Boolean(searchResultsAnchor)}
@@ -52,7 +86,7 @@ const NavigationSearchInput = () => {
       >
         <Typography> Search Results </Typography>
       </Popover>
-    </div>
+    </>
   );
 };
 
