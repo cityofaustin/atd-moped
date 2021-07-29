@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
