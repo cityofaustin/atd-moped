@@ -1,7 +1,7 @@
 import React, { useRef, useCallback, useEffect } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box, Button, makeStyles, Switch, Typography } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
@@ -52,7 +52,7 @@ export const useStyles = makeStyles(theme => ({
     position: "absolute",
     top: ".5rem",
     right: "14rem",
-    zIndex: 9999,
+    zIndex: 1,
   },
   mapBoxEditButtonGroupButton: {
     backgroundColor: "white",
@@ -81,7 +81,7 @@ export const useStyles = makeStyles(theme => ({
     width: "21rem",
     left: "1rem",
     top: ".5rem",
-    zIndex: 9999,
+    zIndex: 2,
     // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
     "@media (max-width:640px)": {
       top: 32,
@@ -96,7 +96,7 @@ export const useStyles = makeStyles(theme => ({
     right: "3.5rem !important",
     bottom: "4.5rem !important",
     position: "absolute",
-    zIndex: 9999,
+    zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
       bottom: theme.spacing(2),
       right: theme.spacing(2),
@@ -413,6 +413,11 @@ const NewProjectMap = ({
                         Feature Count & Draw Mode Controls
        ***************************************************************************/}
       {renderFeatureCount(featureCount, isDrawing)}
+
+      {/* Temporary */}
+      <Button variant="contained" color="primary" onClick={saveDrawnPoints}>
+        Save Drawn Points
+      </Button>
     </Box>
   );
 };
