@@ -18,6 +18,7 @@ import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
 import SupportMenu from "./NavBar/SupportMenu";
+import NavigationSearchInput from "./NavBar/NavigationSearchInput";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
@@ -118,6 +119,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             </Tabs>
           </Box>
           <Box flexGrow={1} />
+          <NavigationSearchInput />
           <Box className={classes.newProject}>
             <CanAddProjectButton />
           </Box>
