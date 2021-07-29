@@ -31,7 +31,11 @@ export const routes = [
     action: "moped:visit",
     element: <DashboardLayout />,
     children: [
-      { path: "/", action: "moped:visit", element: <ProjectsListView /> },
+      {
+        path: "/",
+        action: "moped:visit",
+        element: <Navigate to="/moped/projects" />,
+      },
       {
         path: "dashboard",
         action: "dashboard:visit",
@@ -67,7 +71,7 @@ export const routes = [
       { path: "logout", action: "logout:visit", element: <Logout /> },
       { path: "404", action: "404:visit", element: <NotFoundView /> },
       {
-        path: "dev/devias",
+        path: "dev/styles",
         action: "style:visit",
         element: <DeviasStyleView />,
       },
