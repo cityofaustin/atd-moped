@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconButton, InputBase, Popover, Typography, makeStyles } from "@material-ui/core";
+import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
 const useStyles = makeStyles(theme => ({
@@ -23,6 +23,11 @@ const useStyles = makeStyles(theme => ({
   adornedStart: {
     color: theme.palette.text.secondary,
     paddingLeft: "5px"
+  },
+  searchResults: {
+    padding: "10px",
+    backgoundColor: "green",
+    zIndex:100,
   }
 }));
 
@@ -38,17 +43,19 @@ const NavigationSearchInput = () => {
   // anchor element for menu to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
 
-  const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
+  // const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
 
-  const handleMagClick = event => {
-    console.log(event.target)
-    // setSearchResultsAnchor(divRef.current); // this actually shouldnt happen until the input gets focus?
+  const handleMagClick = () => {
     showSearchInput(true);
   };
 
-  const handleMagClose = () => {
+  const handleMagClose = () => { // maybe this should be handle search blur
     setSearchResultsAnchor(null);
   };
+
+  const handleSearchFocus =() => {
+    setSearchResultsAnchor(divRef.current);
+  }
 
   return (
     <>
@@ -67,25 +74,26 @@ const NavigationSearchInput = () => {
           }}
           inputProps={{ "aria-label": "search" }}
           startAdornment={<SearchIcon fontSize={"small"}/>}
+          onFocus={handleSearchFocus}
         />
       )}
     </div>
-      <Popover
+      <Popper
         id="searchResults"
         open={Boolean(searchResultsAnchor)}
         anchorEl={searchResultsAnchor}
         onClose={handleMagClose}
-        anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
+        placement={"bottom-start"}
+        elevation={3}
       >
+      <Card
+        className={classes.searchResults}
+      >
+        <CardContent>
         <Typography> Search Results </Typography>
-      </Popover>
+        </CardContent>
+        </Card>
+      </Popper>
     </>
   );
 };
