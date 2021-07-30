@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-
 import { GQLAbstract } from "atd-kickstand";
-import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 import { useLazyQuery } from "@apollo/client";
+import { Link as RouterLink } from "react-router-dom";
+import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -185,7 +185,7 @@ const NavigationSearchInput = () => {
         <CardContent>
           {(called && !loading)
             ? data.project_list_view.map(result => (
-              <Typography> {result.project_name}</Typography>
+              <RouterLink to={`projects/${result.project_id}`}> <Typography> {result.project_name}</Typography> </RouterLink>
               )) 
             : <Typography> Search Results </Typography>
           }
