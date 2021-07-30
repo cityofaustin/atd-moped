@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import { GQLAbstract } from "atd-kickstand";
+import  GQLAbstract  from "./GQLAbstract.js";
 import { useLazyQuery } from "@apollo/client";
 import { Link as RouterLink } from "react-router-dom";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
@@ -35,11 +35,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-/**
- * Load Query Configuration as a mutable object
- * @type {GQLAbstract}
- */
-let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
 /**
  * @return {JSX.Element}
@@ -48,6 +43,8 @@ let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
+  console.log("conf:", ProjectsListViewQueryConf)
+  let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
   // should text input be shown or just magnifying glass
   const [searchInput, showSearchInput] = useState(false);
