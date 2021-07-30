@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
+import React, { useState, useRef, useCallback } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -12,8 +12,6 @@ import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
 import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
-import { UPSERT_PROJECT_EXTENT } from "../queries/project";
-import { useMutation } from "@apollo/client";
 
 export const MODES = [
   {
@@ -230,7 +228,6 @@ export function useMapDrawTools(
   visibleLayerIds,
   saveActionDispatch
 ) {
-  const isNewProject = projectId === null;
 
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -263,17 +260,19 @@ export function useMapDrawTools(
         );
 
         const featuresToDelete = featuresAlreadyInDrawMap.filter(
-            feature => !visibleLayerIds.includes(feature.properties.sourceLayer)
+          feature => !visibleLayerIds.includes(feature.properties.sourceLayer)
         );
 
-        console.log("Init: featuresAlreadyInDrawMap: ", featuresAlreadyInDrawMap);
+        console.log(
+          "Init: featuresAlreadyInDrawMap: ",
+          featuresAlreadyInDrawMap
+        );
         console.log("Init: featuresToAdd: ", featuresToAdd);
         console.log("Init: featuresToDelete: ", featuresToDelete);
 
-        if(featuresToAdd.length > 0)
-          ref.addFeatures(featuresToAdd);
+        if (featuresToAdd.length > 0) ref.addFeatures(featuresToAdd);
 
-        if(featuresToDelete.length > 0) {
+        if (featuresToDelete.length > 0) {
           console.log("Before delete: ", ref.getFeatures());
           ref.deleteFeatures([0]);
           console.log("After delete: ", ref.getFeatures());
@@ -282,8 +281,6 @@ export function useMapDrawTools(
     },
     [featureCollection, visibleLayerIds]
   );
-
-  const [updateProjectExtent] = useMutation(UPSERT_PROJECT_EXTENT);
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
