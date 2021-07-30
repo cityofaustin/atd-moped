@@ -81,8 +81,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query }) => {
-  // Style
+const GridTable = ({ title, query, searchValue }) => {
   const classes = useStyles();
 
   /**
@@ -122,7 +121,7 @@ const GridTable = ({ title, query }) => {
    * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
-    value: "",
+    value: searchValue ?? "",
     column: "",
   });
 
@@ -192,7 +191,8 @@ const GridTable = ({ title, query }) => {
     return value;
   };
 
-  // If we have a search, use the terms...
+  // If we have a search value in state, initiate search
+  // GridTableSearch > GridTableSearchBar updates search value
   if (search.value && search.value !== "") {
     /**
      * Iterate through all column keys, if they are searchable
@@ -214,6 +214,7 @@ const GridTable = ({ title, query }) => {
   }
 
   // For each filter added to state, add a where clause in GraphQL
+  // Advanced Search
   Object.keys(filters).forEach(filter => {
     let {
       envelope,

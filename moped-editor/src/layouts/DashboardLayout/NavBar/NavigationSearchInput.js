@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyles } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 
+import { GQLAbstract } from "atd-kickstand";
+import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
+import { useLazyQuery } from "@apollo/client";
+
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
@@ -32,6 +36,12 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
+ * Load Query Configuration as a mutable object
+ * @type {GQLAbstract}
+ */
+let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
+
+/**
  * @return {JSX.Element}
  * @constructor
  */
@@ -39,9 +49,16 @@ const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
 
+  // should text input be shown or just magnifying glass
   const [searchInput, showSearchInput] = useState(false);
-  // anchor element for menu to "attach" to
+  // anchor element for results popper to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [loadSearchResults, { called, loading, data }] = useLazyQuery(
+    projectsQuery.gql,
+    projectsQuery.config.options.useQuery
+  );
 
   // const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
 
@@ -55,6 +72,79 @@ const NavigationSearchInput = () => {
 
   const handleSearchFocus =() => {
     setSearchResultsAnchor(divRef.current);
+  }
+
+  /**
+   * Handles special keys typed in the search bar
+   * @param {string} key - The key name being typed
+   */
+  const handleKeyDown = key => {
+    switch (key) {
+      // On Escape key, clear the search
+      case "Escape":
+        setSearchTerm("");
+        setSearchResultsAnchor(null);
+        break;
+      // On Enter key, initialize the search
+      case "Enter":
+        handleSearchSubmission(null);
+        break;
+
+      default:
+        return;
+    }
+  };
+
+  // import from gridtable?
+  const getSearchValue = (column, value) => {
+    // Retrieve the type of field (string, float, int, etc)
+    const type = projectsQuery.config.columns[column].type.toLowerCase();
+    // Get the invalidValueDefault in the search config object
+    const invalidValueDefault =
+      projectsQuery.config.columns[column].search?.invalidValueDefault ?? null;
+    // If the type is number of float, attempt to parse as such
+    if (["number", "float", "double"].includes(type)) {
+      value = Number.parseFloat(value) || invalidValueDefault;
+    }
+    // If integer, attempt to parse as integer
+    if (["int", "integer"].includes(type)) {
+      value = Number.parseInt(value) || invalidValueDefault;
+    }
+    // Any other value types are pass-through for now
+    return value;
+  };
+
+  const handleSearchSubmission = event => {
+    // Stop if we don't have any value entered in the search field
+    if (searchTerm.length === 0) {
+      console.log("no search term")
+    }
+
+    // Prevent default behavior on any event
+    if (event) event.preventDefault();
+
+    // Update state if we are ready, triggers search.
+    console.log(`searching ${searchTerm}`)
+    Object.keys(projectsQuery.config.columns)
+      .filter(column => projectsQuery.config.columns[column]?.searchable)
+      .forEach(column => {
+        const { operator, quoted, envelope } = projectsQuery.config.columns[
+          column
+        ].search;
+        const searchValue = getSearchValue(column, searchTerm);
+        const graphqlSearchValue = quoted
+          ? `"${envelope.replace("{VALUE}", searchValue)}"`
+          : searchValue;
+
+        projectsQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
+      });
+    loadSearchResults();
+  };
+
+  if (called && !loading) {
+    console.log(data)
+  } else {
+    console.log(projectsQuery)
   }
 
   return (
@@ -75,6 +165,9 @@ const NavigationSearchInput = () => {
           inputProps={{ "aria-label": "search" }}
           startAdornment={<SearchIcon fontSize={"small"}/>}
           onFocus={handleSearchFocus}
+          onChange={e => setSearchTerm(e.target.value)}
+          onKeyDown={e => handleKeyDown(e.key)}
+          value={searchTerm}
         />
       )}
     </div>
@@ -90,8 +183,14 @@ const NavigationSearchInput = () => {
         className={classes.searchResults}
       >
         <CardContent>
-        <Typography> Search Results </Typography>
+          {(called && !loading)
+            ? data.project_list_view.map(result => (
+              <Typography> {result.project_name}</Typography>
+              )) 
+            : <Typography> Search Results </Typography>
+          }
         </CardContent>
+        <Typography> More Results </Typography> {/* a link with the search terms passed into it to the projects list page?*/}
         </Card>
       </Popper>
     </>
