@@ -2,6 +2,6 @@ CREATE TABLE "public"."moped_department"("department_id" serial NOT NULL, "depar
 
 INSERT INTO "public"."moped_department"(department_id, department_name)
 VALUES (0, 'None'),
-       (1, 'Austin Transporation'),
+       (1, 'Austin Transportation'),
        (2, 'Corridor Program Office'),
        (3, 'Public Works');
