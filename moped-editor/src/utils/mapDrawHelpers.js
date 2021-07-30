@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
 import { Editor } from "react-map-gl-draw";
 import {
@@ -218,6 +218,7 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
+ * @property {String[]} visibleLayerIds - A list of the current visible layer id names
  * @property {function} saveActionDispatch - Function that helps us send signals to other components
  */
 export function useMapDrawTools(
@@ -226,6 +227,7 @@ export function useMapDrawTools(
   projectId,
   refetchProjectDetails,
   currentZoom,
+  visibleLayerIds,
   saveActionDispatch
 ) {
   const isNewProject = projectId === null;
@@ -249,18 +251,36 @@ export function useMapDrawTools(
         const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
+
+        // Retrieve what's already in the map
         const featuresAlreadyInDrawMap = ref.getFeatures();
 
+        // See what needs to be included
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
           drawnFeatures,
           featuresAlreadyInDrawMap
         );
 
-        ref.addFeatures(featuresToAdd);
+        const featuresToDelete = featuresAlreadyInDrawMap.filter(
+            feature => !visibleLayerIds.includes(feature.properties.sourceLayer)
+        );
+
+        console.log("Init: featuresAlreadyInDrawMap: ", featuresAlreadyInDrawMap);
+        console.log("Init: featuresToAdd: ", featuresToAdd);
+        console.log("Init: featuresToDelete: ", featuresToDelete);
+
+        if(featuresToAdd.length > 0)
+          ref.addFeatures(featuresToAdd);
+
+        if(featuresToDelete.length > 0) {
+          console.log("Before delete: ", ref.getFeatures());
+          ref.deleteFeatures([0]);
+          console.log("After delete: ", ref.getFeatures());
+        }
       }
     },
-    [featureCollection]
+    [featureCollection, visibleLayerIds]
   );
 
   const [updateProjectExtent] = useMutation(UPSERT_PROJECT_EXTENT);
@@ -298,39 +318,22 @@ export function useMapDrawTools(
     });
 
     // If this is a new project, update state. If it exists, mutate existing project data
-    if (isNewProject) {
-      // Update existing featureCollection with new drawn features so they can be inserted in NewProjectView
-      const updatedFeatureCollection = {
-        ...featureCollection,
-        features: [
-          ...featureCollection.features,
-          ...drawnFeaturesWithSourceAndId,
-        ],
-      };
+    // Update existing featureCollection with new drawn features so they can be inserted in NewProjectView
+    const updatedFeatureCollection = {
+      ...featureCollection,
+      features: [
+        ...featureCollection.features,
+        ...drawnFeaturesWithSourceAndId,
+      ],
+    };
 
+    if (drawnFeaturesWithSourceAndId.length !== updatedFeatureCollection.length)
       setFeatureCollection(updatedFeatureCollection);
-    } else if (!isNewProject) {
-      // Create feature records for upsert
-      const drawnFeatureRecords = drawnFeaturesWithSourceAndId.map(feature => ({
-        location: feature,
-        project_id: projectId,
-        status_id: 1,
-      }));
-
-      // Upsert project feature records and refetch data
-      updateProjectExtent({
-        variables: {
-          upserts: drawnFeatureRecords,
-        },
-      }).then(() => {
-        refetchProjectDetails();
-      });
-    }
 
     // Close UI for user
-    setIsDrawing(false);
+    // setIsDrawing(false);
     // Dispatch featuresSaved action
-    // saveActionDispatch({ type: "featuresSaved" });
+    saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
@@ -424,7 +427,7 @@ export function useMapDrawTools(
 
   /**
    * Renders the map editor and its toolbar
-   * @return {React.ReactPortal} The whole map draw UI
+   * @return {JSX.Element} The whole map draw UI
    */
   const renderMapDrawTools = containerRef => (
     <>
@@ -444,5 +447,10 @@ export function useMapDrawTools(
     </>
   );
 
-  return { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints };
+  return {
+    isDrawing,
+    setIsDrawing,
+    renderMapDrawTools,
+    saveDrawnPoints,
+  };
 }
