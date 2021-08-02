@@ -55,7 +55,7 @@ const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
   console.log("conf:", ProjectsListViewQueryConf);
-  let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
+  let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
   // should text input be shown or just magnifying glass
   const [searchInput, showSearchInput] = useState(false);
@@ -64,8 +64,8 @@ const NavigationSearchInput = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
-    projectsQuery.gql,
-    projectsQuery.config.options.useQuery
+    projectSearchQuery.gql,
+    projectSearchQuery.config.options.useQuery
   );
 
   // const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
@@ -107,10 +107,10 @@ const NavigationSearchInput = () => {
   // todo: import function from gridtable
   const getSearchValue = (column, value) => {
     // Retrieve the type of field (string, float, int, etc)
-    const type = projectsQuery.config.columns[column].type.toLowerCase();
+    const type = projectSearchQuery.config.columns[column].type.toLowerCase();
     // Get the invalidValueDefault in the search config object
     const invalidValueDefault =
-      projectsQuery.config.columns[column].search?.invalidValueDefault ?? null;
+      projectSearchQuery.config.columns[column].search?.invalidValueDefault ?? null;
     // If the type is number of float, attempt to parse as such
     if (["number", "float", "double"].includes(type)) {
       value = Number.parseFloat(value) || invalidValueDefault;
@@ -135,10 +135,10 @@ const NavigationSearchInput = () => {
 
     // Update state if we are ready, triggers search.
     console.log(`searching ${searchTerm}`);
-    Object.keys(projectsQuery.config.columns)
-      .filter(column => projectsQuery.config.columns[column]?.searchable)
+    Object.keys(projectSearchQuery.config.columns)
+      .filter(column => projectSearchQuery.config.columns[column]?.searchable)
       .forEach(column => {
-        const { operator, quoted, envelope } = projectsQuery.config.columns[
+        const { operator, quoted, envelope } = projectSearchQuery.config.columns[
           column
         ].search;
         const searchValue = getSearchValue(column, searchTerm);
@@ -146,7 +146,7 @@ const NavigationSearchInput = () => {
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
 
-        projectsQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
+        projectSearchQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
       });
     loadSearchResults();
   };
@@ -154,7 +154,7 @@ const NavigationSearchInput = () => {
   if (called && !loading) {
     console.log(data);
   } else {
-    console.log(projectsQuery);
+    console.log(projectSearchQuery);
   }
 
   return (
