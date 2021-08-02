@@ -1,10 +1,18 @@
 import React, { useState } from "react";
-import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyles } from "@material-ui/core";
+import {
+  Box,
+  ClickAwayListener,
+  IconButton,
+  InputBase,
+  Popper,
+  Typography,
+  makeStyles,
+} from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import  GQLAbstract  from "./GQLAbstract.js";
+import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
-import NavigationSearchResults from "./NavigationSearchResults.js"
+import NavigationSearchResults from "./NavigationSearchResults.js";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -26,15 +34,18 @@ const useStyles = makeStyles(theme => ({
   },
   adornedStart: {
     color: theme.palette.text.secondary,
-    paddingLeft: "5px"
+    paddingLeft: "5px",
+  },
+  searchPopper: {
+    borderWidth: "1px",
+    borderRadius: "4px",
+    borderColor: theme.palette.text.secondary,
   },
   searchResults: {
     padding: "10px",
-    backgoundColor: "green",
-    zIndex:100,
-  }
+    backgroundColor: theme.palette.background.paper,
+  },
 }));
-
 
 /**
  * @return {JSX.Element}
@@ -43,7 +54,7 @@ const useStyles = makeStyles(theme => ({
 const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
-  console.log("conf:", ProjectsListViewQueryConf)
+  console.log("conf:", ProjectsListViewQueryConf);
   let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
   // should text input be shown or just magnifying glass
@@ -63,13 +74,14 @@ const NavigationSearchInput = () => {
     showSearchInput(true);
   };
 
-  const handleMagClose = () => { // maybe this should be handle search blur
+  const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
+    showSearchInput(false);
   };
 
-  const handleSearchFocus =() => {
+  const handleSearchFocus = () => {
     setSearchResultsAnchor(divRef.current);
-  }
+  };
 
   /**
    * Handles special keys typed in the search bar
@@ -92,7 +104,7 @@ const NavigationSearchInput = () => {
     }
   };
 
-  // import from gridtable?
+  // todo: import function from gridtable
   const getSearchValue = (column, value) => {
     // Retrieve the type of field (string, float, int, etc)
     const type = projectsQuery.config.columns[column].type.toLowerCase();
@@ -110,18 +122,19 @@ const NavigationSearchInput = () => {
     // Any other value types are pass-through for now
     return value;
   };
+  // end import from gridtable
 
   const handleSearchSubmission = event => {
     // Stop if we don't have any value entered in the search field
     if (searchTerm.length === 0) {
-      console.log("no search term")
+      console.log("no search term");
     }
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
     // Update state if we are ready, triggers search.
-    console.log(`searching ${searchTerm}`)
+    console.log(`searching ${searchTerm}`);
     Object.keys(projectsQuery.config.columns)
       .filter(column => projectsQuery.config.columns[column]?.searchable)
       .forEach(column => {
@@ -139,54 +152,54 @@ const NavigationSearchInput = () => {
   };
 
   if (called && !loading) {
-    console.log(data)
+    console.log(data);
   } else {
-    console.log(projectsQuery)
+    console.log(projectsQuery);
   }
 
   return (
     <>
-    <div className={classes.root} ref={divRef}>
-      {!searchInput ? (
-        <IconButton onClick={handleMagClick}>
-          <SearchIcon />
-        </IconButton>
-      ) : (
-        <InputBase
-          placeholder="Project name, description or eCAPRIS ID"
-          classes={{
-            root: classes.inputRoot,
-            input: classes.inputInput,
-            adornedStart: classes.adornedStart,
-          }}
-          inputProps={{ "aria-label": "search" }}
-          startAdornment={<SearchIcon fontSize={"small"}/>}
-          onFocus={handleSearchFocus}
-          onChange={e => setSearchTerm(e.target.value)}
-          onKeyDown={e => handleKeyDown(e.key)}
-          value={searchTerm}
-        />
-      )}
-    </div>
+      <div className={classes.root} ref={divRef}>
+        {!searchInput ? (
+          <IconButton onClick={handleMagClick}>
+            <SearchIcon />
+          </IconButton>
+        ) : (
+          <InputBase
+            placeholder="Project name, description or eCAPRIS ID"
+            classes={{
+              root: classes.inputRoot,
+              input: classes.inputInput,
+              adornedStart: classes.adornedStart,
+            }}
+            inputProps={{ "aria-label": "search" }}
+            startAdornment={<SearchIcon fontSize={"small"} />}
+            onFocus={handleSearchFocus}
+            onChange={e => setSearchTerm(e.target.value)}
+            onKeyDown={e => handleKeyDown(e.key)}
+            value={searchTerm}
+            autoFocus
+          />
+        )}
+      </div>
       <Popper
         id="searchResults"
         open={Boolean(searchResultsAnchor)}
         anchorEl={searchResultsAnchor}
-        onClose={handleMagClose}
+        onClose={handleDropdownClose}
         placement={"bottom-start"}
         elevation={3}
+        className={classes.searchPopper}
       >
-      <Card
-        className={classes.searchResults}
-      >
-        <CardContent>
-          {(called && !loading)
-            ? <NavigationSearchResults results={data.project_list_view}/>
-            : <Typography> Search Results </Typography>
-          }
-        </CardContent>
-        <Typography> More Results </Typography> {/* a link with the search terms passed into it to the projects list page?*/}
-        </Card>
+      <ClickAwayListener onClickAway={handleDropdownClose}>
+        <Box className={classes.searchResults}>
+          {called && !loading ? (
+            <NavigationSearchResults results={data.project_list_view} />
+          ) : (
+            <Typography> Search Results </Typography>
+          )}
+        </Box>
+      </ClickAwayListener>
       </Popper>
     </>
   );
