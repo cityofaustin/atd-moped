@@ -564,9 +564,7 @@ const ProjectComponentEdit = ({
       variables: {
         projComponentId: componentId,
       },
-    }).then(() => {
-      saveActionDispatch({ type: "componentSaved" });
-    });
+    }).then(() => exitAndReload());
   };
 
   /**
