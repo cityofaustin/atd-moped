@@ -16,8 +16,7 @@ export const mapSaveActionInitialState = () => ({
  * @return {Object} - The new state
  */
 export const mapSaveActionReducer = (state, action) => {
-
-  if(!state) return;
+  if (!state) return;
 
   // If we have an error and not reset action, ignore updating the state
   if (
