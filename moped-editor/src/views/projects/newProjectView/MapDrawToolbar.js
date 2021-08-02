@@ -9,24 +9,10 @@ import { ToggleButtonGroup } from "@material-ui/lab";
  * Generates a draw toolbar for the map
  * @param {Object} selectedModeId - The current object representation of the selected tool
  * @param {function} onSwitchMode - Handler that is run whenever we switch tools
- * @param {function} onDelete - Handler that is run whenever we delete an item
  * @return {JSX.Element}
  * @constructor
  */
-const DrawToolbar = ({
-  selectedModeId,
-  onSwitchMode,
-  onDelete,
-  containerRef = null,
-}) => {
-  /**
-   * Calls onDelete function to delete a point feature from the draw UI
-   * @param {Object} e - Event object for click
-   */
-  const onDeleteClick = e => {
-    onDelete(e);
-  };
-
+const MapDrawToolbar = ({ selectedModeId, onSwitchMode, containerRef = null }) => {
   return containerRef && containerRef.current
     ? ReactDOM.createPortal(
         <ToggleButtonGroup value={selectedModeId} exclusive>
@@ -34,7 +20,7 @@ const DrawToolbar = ({
             return (
               <MapDrawToolbarButton
                 selectedModeId={selectedModeId}
-                onClick={mode.id === "delete" ? onDeleteClick : onSwitchMode}
+                onClick={onSwitchMode}
                 key={mode.id}
                 mode={mode}
               />
@@ -46,4 +32,4 @@ const DrawToolbar = ({
     : null;
 };
 
-export default DrawToolbar;
+export default MapDrawToolbar;
