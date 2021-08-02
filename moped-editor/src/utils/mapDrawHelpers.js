@@ -216,7 +216,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
- * @property {String[]} visibleLayerIds - A list of the current visible layer id names
  * @property {function} saveActionDispatch - Function that helps us send signals to other components
  */
 export function useMapDrawTools(
@@ -225,10 +224,8 @@ export function useMapDrawTools(
   projectId,
   refetchProjectDetails,
   currentZoom,
-  visibleLayerIds,
   saveActionDispatch
 ) {
-
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
@@ -248,44 +245,24 @@ export function useMapDrawTools(
         const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
-
-        // Retrieve what's already in the map
         const featuresAlreadyInDrawMap = ref.getFeatures();
 
-        // See what needs to be included
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
           drawnFeatures,
           featuresAlreadyInDrawMap
         );
 
-        const featuresToDelete = featuresAlreadyInDrawMap.filter(
-          feature => !visibleLayerIds.includes(feature.properties.sourceLayer)
-        );
-
-        console.log(
-          "Init: featuresAlreadyInDrawMap: ",
-          featuresAlreadyInDrawMap
-        );
-        console.log("Init: featuresToAdd: ", featuresToAdd);
-        console.log("Init: featuresToDelete: ", featuresToDelete);
-
-        if (featuresToAdd.length > 0) ref.addFeatures(featuresToAdd);
-
-        if (featuresToDelete.length > 0) {
-          console.log("Before delete: ", ref.getFeatures());
-          ref.deleteFeatures([0]);
-          console.log("After delete: ", ref.getFeatures());
-        }
+        ref.addFeatures(featuresToAdd);
       }
     },
-    [featureCollection, visibleLayerIds]
+    [featureCollection]
   );
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
-  const saveDrawnPoints = () => {
+  const saveDrawnPoints = (runActionDispatch = true) => {
     const drawnFeatures = mapEditorRef.current
       ? mapEditorRef.current.getFeatures()
       : [];
@@ -330,7 +307,8 @@ export function useMapDrawTools(
     // Close UI for user
     // setIsDrawing(false);
     // Dispatch featuresSaved action
-    saveActionDispatch({ type: "featuresSaved" });
+    if (saveActionDispatch && runActionDispatch)
+      saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
