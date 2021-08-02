@@ -80,7 +80,8 @@ const staffValidationSchema = isNewUser =>
     email: yup
       .string()
       .required()
-      .email(),
+      .email()
+      .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
       is: () => isNewUser,
