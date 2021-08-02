@@ -36,11 +36,6 @@ export const MODES = [
     id: "edit",
     text: "Select Point",
     handler: EditingMode,
-    icon: "icon-select.svg",
-  },
-  {
-    id: "delete",
-    text: "Delete",
     icon: "icon-delete.svg",
   },
 ];
@@ -230,10 +225,6 @@ export function useMapDrawTools(
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
-  const [selectedFeatureIndex, setSelectedFeatureIndex] = useState(null);
-  const [selectedEditHandleIndexes, setSelectedEditHandleIndexes] = useState(
-    []
-  );
 
   /**
    * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
@@ -242,18 +233,38 @@ export function useMapDrawTools(
     ref => {
       if (ref) {
         // Only add features that are not already present in the draw UI to avoid duplicates
-        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
+        const drawnFeaturesInState = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
-        const featuresAlreadyInDrawMap = ref.getFeatures();
+        const drawnFeaturesInMap = ref.getFeatures();
 
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
-          drawnFeatures,
-          featuresAlreadyInDrawMap
+          drawnFeaturesInState,
+          drawnFeaturesInMap
         );
 
-        ref.addFeatures(featuresToAdd);
+        /**
+         * Gather a list of all features that do not have an id
+         * and return the index so we can clear them out of the map
+         * */
+        const featuresToClear = drawnFeaturesInMap.filter(
+          feature => feature?.id === undefined
+        );
+
+        if (featuresToClear.length > 0) {
+          console.log("Deleting: ", featuresToClear);
+          // Delete (clear) the features we no longer need...
+          ref.deleteFeatures(featuresToClear.map((feature, index) => index));
+          return;
+        }
+
+        if (featuresToAdd.length > 0) {
+          console.log("Adding Features: ", featuresToAdd);
+          // Add the new features we want to add
+          ref.addFeatures(featuresToAdd);
+          return;
+        }
       }
     },
     [featureCollection]
@@ -263,6 +274,8 @@ export function useMapDrawTools(
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
   const saveDrawnPoints = (runActionDispatch = true) => {
+    console.log("saveDrawnPoints: ", runActionDispatch);
+
     const drawnFeatures = mapEditorRef.current
       ? mapEditorRef.current.getFeatures()
       : [];
@@ -301,12 +314,14 @@ export function useMapDrawTools(
       ],
     };
 
+    
     if (drawnFeaturesWithSourceAndId.length !== updatedFeatureCollection.length)
       setFeatureCollection(updatedFeatureCollection);
 
     // Close UI for user
     // setIsDrawing(false);
     // Dispatch featuresSaved action
+
     if (saveActionDispatch && runActionDispatch)
       saveActionDispatch({ type: "featuresSaved" });
   };
@@ -333,23 +348,13 @@ export function useMapDrawTools(
    * @param {object} selected - Holds data about the selected feature
    */
   const onSelect = selected => {
-    setSelectedFeatureIndex(selected && selected.selectedFeatureIndex);
-    setSelectedEditHandleIndexes(
-      selected && selected.selectedEditHandleIndexes
-    );
-  };
-
-  /**
-   * Finds the currently selected feature and removes it from the drawn features array and featureCollection state
-   */
-  const onDelete = () => {
     const currentFeatures = mapEditorRef.current.getFeatures();
     // Remove the feature from the draw UI feature list
-    if (selectedEditHandleIndexes.length) {
+    if (selected.selectedEditHandleIndexes.length) {
       try {
         mapEditorRef.current.deleteHandles(
-          selectedFeatureIndex,
-          selectedEditHandleIndexes
+          selected.selectedFeatureIndex,
+          selected.selectedEditHandleIndexes
         );
       } catch (error) {
         console.log(error.message);
@@ -357,14 +362,17 @@ export function useMapDrawTools(
       return;
     }
 
-    if (selectedFeatureIndex === null || selectedFeatureIndex === undefined) {
+    if (
+      selected.selectedFeatureIndex === null ||
+      selected.selectedFeatureIndex === undefined
+    ) {
       return;
     }
 
-    mapEditorRef.current.deleteFeatures(selectedFeatureIndex);
+    mapEditorRef.current.deleteFeatures(selected.selectedFeatureIndex);
 
     // Then, remove the feature from the feature collection of the project extent
-    const featureToDelete = currentFeatures[selectedFeatureIndex];
+    const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
     const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
     const featureIdToDelete = get(featureToDelete, featureIdGetPath);
 
@@ -378,11 +386,12 @@ export function useMapDrawTools(
     };
 
     setFeatureCollection(updatedFeatureCollection);
+  };
 
-    // Update modeId to momentarily change the background color of the delete icon on click
-    const previousMode = modeId;
-    setModeId("delete");
-    setTimeout(() => setModeId(previousMode), 500);
+  const onUpdate = ({ editType }) => {
+    if (editType === "addFeature") {
+      saveDrawnPoints(false); // Save without running dispatch
+    }
   };
 
   /**
@@ -395,7 +404,6 @@ export function useMapDrawTools(
         containerRef={containerRef}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
-        onDelete={onDelete}
       />
     );
   };
@@ -415,6 +423,7 @@ export function useMapDrawTools(
           getFeatureStyle({ ...featureStyleObj, currentZoom })
         }
         onSelect={onSelect}
+        onUpdate={onUpdate}
         clickRadius={12}
         mode={modeHandler}
       />

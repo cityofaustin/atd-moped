@@ -420,11 +420,6 @@ const NewProjectMap = ({
                         Feature Count & Draw Mode Controls
        ***************************************************************************/}
       {renderFeatureCount(featureCount, isDrawing)}
-
-      {/* Temporary */}
-      <Button variant="contained" color="primary" onClick={saveDrawnPoints}>
-        Save Drawn Points
-      </Button>
     </Box>
   );
 };
