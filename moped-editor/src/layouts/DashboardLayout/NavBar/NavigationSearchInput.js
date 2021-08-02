@@ -3,8 +3,8 @@ import { Card, CardContent, IconButton, InputBase, Popper, Typography, makeStyle
 import SearchIcon from "@material-ui/icons/Search";
 import  GQLAbstract  from "./GQLAbstract.js";
 import { useLazyQuery } from "@apollo/client";
-import { Link as RouterLink } from "react-router-dom";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
+import NavigationSearchResults from "./NavigationSearchResults.js"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -181,9 +181,7 @@ const NavigationSearchInput = () => {
       >
         <CardContent>
           {(called && !loading)
-            ? data.project_list_view.map(result => (
-              <RouterLink to={`projects/${result.project_id}`}> <Typography> {result.project_name}</Typography> </RouterLink>
-              )) 
+            ? <NavigationSearchResults results={data.project_list_view}/>
             : <Typography> Search Results </Typography>
           }
         </CardContent>
