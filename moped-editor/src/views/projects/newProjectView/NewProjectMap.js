@@ -295,6 +295,13 @@ const NewProjectMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
+      <style>
+        {!visibleLayerIds.includes("drawnByUser") &&
+          `g > circle { display: none; }`}
+        {!visibleLayerIds.includes("drawnByUserLine") &&
+          `g > path { display: none; }`}
+      </style>
+
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div
         ref={mapGeocoderContainerRef}
