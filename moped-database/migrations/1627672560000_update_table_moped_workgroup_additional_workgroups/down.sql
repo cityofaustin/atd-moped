@@ -3,4 +3,4 @@
 */
 
 DELETE FROM public.moped_workgroup
-    WHERE workgroup_id IN (19,20,21,22,23);
+    WHERE workgroup_id IN (19,20,21,22,23,24);
