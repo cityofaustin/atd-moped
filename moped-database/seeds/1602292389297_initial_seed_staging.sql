@@ -846,7 +846,7 @@ INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, de
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Transportation Engineering', 15, '2020-12-04 16:53:02.752811+00', 1);
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Transportation Development Services', 16, '2020-12-04 16:53:02.752811+00', 1);
 INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Vision Zero', 17, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Other', 18, '2020-12-04 16:53:02.752811+00', 1);
+INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Other', 18, '2020-12-04 16:53:02.752811+00', 4);
 
 
 --
