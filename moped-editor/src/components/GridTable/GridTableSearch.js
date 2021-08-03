@@ -57,7 +57,7 @@ const history = createBrowserHistory();
  * @constructor
  */
 const GridTableSearch = ({
-  data: tableItems,
+  projectsList,
   query,
   searchState,
   filterState,
@@ -324,8 +324,8 @@ const GridTableSearch = ({
               {query.config.showExport && (
                 <Button
                   disabled={
-                    tableItems &&
-                    !tableItems["project_list_view"].length &&
+                    projectsList &&
+                    !projectsList["project_list_view"].length &&
                     true
                   }
                   className={classes.downloadCsvButton}

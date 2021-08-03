@@ -423,7 +423,7 @@ const GridTable = ({ title, query }) => {
         {/*Toolbar Space*/}
         <GridTableToolbar>
           <GridTableSearch
-            data={data}
+            projectsList={data}
             query={query}
             searchState={{
               searchParameters: search,
