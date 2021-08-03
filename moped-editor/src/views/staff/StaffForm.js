@@ -77,7 +77,11 @@ const staffValidationSchema = isNewUser =>
     title: yup.string().required(),
     workgroup: yup.string().required(),
     workgroup_id: yup.string().required(),
-    email: yup.string().required(),
+    email: yup
+      .string()
+      .required()
+      .email()
+      .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
       is: () => isNewUser,
