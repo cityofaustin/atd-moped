@@ -347,12 +347,8 @@ export function useMapDrawTools(
           featureCollection.features.every(
             currentFeatureInCollection =>
               // Check if this feature is a point and not equal
-              (isFeatureOfType("Point", drawnFeature) &&
-                isFeatureOfType("Point", currentFeatureInCollection) &&
-                !pointEqual(drawnFeature, currentFeatureInCollection)) ||
-              (isFeatureOfType("LineString", drawnFeature) &&
-                isFeatureOfType("LineString", currentFeatureInCollection) &&
-                !lineStringEqual(drawnFeature, currentFeatureInCollection))
+              isFeatureOfType("Point", currentFeatureInCollection) &&
+              !pointEqual(drawnFeature, currentFeatureInCollection)
           )
       );
     // Add a UUID and layer name to the new features for retrieval and styling
