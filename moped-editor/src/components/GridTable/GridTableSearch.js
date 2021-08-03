@@ -273,7 +273,7 @@ const GridTableSearch = ({
     // eslint-disable-next-line
     [dialogOpen, downloading, loading, query.limit, getExport]
   );
-  console.log(tableItems);
+
   return (
     <div>
       <GridTableExport query={query} />
