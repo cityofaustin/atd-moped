@@ -1,5 +1,5 @@
 import React from "react";
-import { Chip, Grid, TextField, Typography } from "@material-ui/core";
+import { Chip, Grid, TextField } from "@material-ui/core";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
@@ -86,19 +86,7 @@ const ProjectComponentSubcomponents = ({
     });
 
   // If we have zero, then no point to render the autocomplete react component
-  if (availableSubcomponentsCount === 0)
-    return (
-      <Alert
-        className={classes.alert}
-        severity="success"
-        color="info"
-        size={"small"}
-      >
-        <Typography variant="caption">
-          There are no available subcomponents for this component type.
-        </Typography>
-      </Alert>
-    );
+  if (availableSubcomponentsCount === 0) return null;
 
   return (
     <Grid item xs={12}>
