@@ -57,6 +57,7 @@ const history = createBrowserHistory();
  * @constructor
  */
 const GridTableSearch = ({
+  data: tableItems,
   query,
   searchState,
   filterState,
@@ -272,7 +273,7 @@ const GridTableSearch = ({
     // eslint-disable-next-line
     [dialogOpen, downloading, loading, query.limit, getExport]
   );
-
+  console.log(tableItems);
   return (
     <div>
       <GridTableExport query={query} />
@@ -322,6 +323,11 @@ const GridTableSearch = ({
             >
               {query.config.showExport && (
                 <Button
+                  disabled={
+                    tableItems &&
+                    !tableItems["project_list_view"].length &&
+                    true
+                  }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
                   startIcon={<Icon>save</Icon>}
