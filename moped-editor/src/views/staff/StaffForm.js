@@ -200,7 +200,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    */
   const handleDeleteConfirm = () => {
     const requestPath = "/users/" + userCognitoId;
-    const deleteCallback = () => setIsDeleteModalOpen(false);
+    const deleteCallback = () => {
+      setIsDeleteModalOpen(false);
+      navigate("/moped/staff/");
+    };
 
     requestApi({
       method: "delete",
