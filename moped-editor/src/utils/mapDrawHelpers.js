@@ -280,6 +280,15 @@ export function useMapDrawTools(
   };
 
   /**
+   * Compares the type for two features, returns true if they are both equal
+   * @param {Object} featureA - A feature object
+   * @param {Object} featureB - The feature object to compare against
+   * @return {boolean}
+   */
+  const featureTypesEqual = (featureA, featureB) =>
+    (featureA?.geometry?.type ?? 1) === (featureB?.geometry?.type ?? 0);
+
+  /**
    * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
@@ -343,14 +352,20 @@ export function useMapDrawTools(
       .filter(
         // Filter anything that already exists in the collection by its coordinates
         drawnFeature =>
-          // Test every element in feature collection to not be equal
-          featureCollection.features.every(
-            currentFeatureInCollection =>
-              // Check if this feature is a point and not equal
-              isFeatureOfType("Point", currentFeatureInCollection) &&
-              !pointEqual(drawnFeature, currentFeatureInCollection)
-          )
-      );
+          // For every new drawn feature, check against every feature in featureCollection
+          featureCollection.features
+            // First remove any features that are not of the current type
+            .filter(fcFeatures => featureTypesEqual(fcFeatures, drawnFeature))
+            // Then check every element left
+            .every(
+              currentFeatureInCollection =>
+                // Verify they are the same type and that they are not equal!
+                featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
+                (!pointEqual(drawnFeature, currentFeatureInCollection) ||
+                  !lineStringEqual(drawnFeature, currentFeatureInCollection))
+            ) // If so, return false meaning the filter will exclude them
+      ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
+
     // Add a UUID and layer name to the new features for retrieval and styling
 
     /**
