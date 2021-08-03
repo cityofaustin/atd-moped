@@ -287,6 +287,9 @@
       check: {}
 - table:
     schema: public
+    name: moped_department
+- table:
+    schema: public
     name: moped_entity
   insert_permissions:
   - role: moped-admin
@@ -4463,6 +4466,10 @@
 - table:
     schema: public
     name: moped_users
+  object_relationships:
+  - name: moped_workgroup
+    using:
+      foreign_key_constraint_on: workgroup_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -4586,6 +4593,10 @@
 - table:
     schema: public
     name: moped_workgroup
+  object_relationships:
+  - name: moped_department
+    using:
+      foreign_key_constraint_on: department_id
   insert_permissions:
   - role: moped-admin
     permission:
