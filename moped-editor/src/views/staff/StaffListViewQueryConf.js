@@ -42,7 +42,7 @@ export const StaffListViewQueryConf = {
         name: "edit_user",
         color: "primary",
       },
-      width: "5%",
+      width: "*",
       type: "Int",
     },
     first_name: {
@@ -55,7 +55,7 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "10%",
+      width: "15%",
       type: "String",
     },
     last_name: {
@@ -68,7 +68,7 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "10%",
+      width: "15%",
       type: "String",
     },
     email: {
@@ -95,11 +95,11 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "10%",
+      width: "20%",
       type: "String",
     },
     workgroup: {
-      width: "*",
+      width: "20%",
       searchable: true,
       sortable: true,
       label: "Workgroup",
