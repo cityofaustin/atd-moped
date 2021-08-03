@@ -227,44 +227,81 @@ export function useMapDrawTools(
   const [modeHandler, setModeHandler] = useState(null);
 
   /**
+   * Returns true if lineStringA has the same coordinates as lineStringB
+   * @param {Object} lineStringA - A line string feature object to compare
+   * @param {Object} lineStringB - Another line string feature object to compare against
+   * @return {boolean}
+   */
+  const lineStringEqual = (lineStringA, lineStringB) => {
+    const lineStringCoordinatesA = lineStringA?.geometry?.coordinates ?? [];
+    const lineStringCoordinatesB = lineStringB?.geometry?.coordinates ?? [];
+
+    return (
+      // Test both have more than one pair of coordinates
+      lineStringCoordinatesA.length > 1 &&
+      lineStringCoordinatesB.length > 1 &&
+      // Test they both have the same length
+      lineStringCoordinatesA.length === lineStringCoordinatesB.length &&
+      // Test every element in both lines is equivalent
+      lineStringCoordinatesA.every(
+        (coordinatePair, currentIndex) =>
+          coordinatePair[0] === lineStringCoordinatesB[currentIndex][0] &&
+          coordinatePair[1] === lineStringCoordinatesB[currentIndex][1]
+      ) // 'every' returns true if every comparison (the predicate) in the array returns true
+    );
+  };
+
+  /**
+   * Returns true if lineStringA has the same coordinates as lineStringB
+   * @param featurePointA - A point to compare
+   * @param featurePointB - Another point to compare against
+   * @return {boolean}
+   */
+  const pointEqual = (featurePointA, featurePointB) => {
+    return (
+      featurePointA?.geometry?.coordinates[0] ===
+        featurePointB?.geometry?.coordinates[0] &&
+      featurePointA?.geometry?.coordinates[1] ===
+        featurePointB?.geometry?.coordinates[1]
+    );
+  };
+
+  /**
+   * Returns true if the 'feature' is of indicated 'type'
+   * @param {String} type - The type as a string (ie. Point, LineString)
+   * @param {Object} feature - The object feature to evaluate
+   * @return {boolean}
+   */
+  const isFeatureOfType = (type, feature) => {
+    return (
+      (feature?.geometry?.type ?? "no type found").toLowerCase() ===
+      (type ?? "type not provided").toLowerCase()
+    );
+  };
+
+  /**
    * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
     ref => {
       if (ref) {
         // Only add features that are not already present in the draw UI to avoid duplicates
-        const drawnFeaturesInState = getDrawnFeaturesFromFeatureCollection(
+        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
           featureCollection
         );
-        const drawnFeaturesInMap = ref.getFeatures();
 
+        // Collect all the features in the map
+        const featuresAlreadyInDrawMap = ref.getFeatures();
+
+        // Retrieve only the features that are present in state, but not the map
         const featuresToAdd = findDifferenceByFeatureProperty(
           "PROJECT_EXTENT_ID",
-          drawnFeaturesInState,
-          drawnFeaturesInMap
+          drawnFeatures,
+          featuresAlreadyInDrawMap
         );
 
-        /**
-         * Gather a list of all features that do not have an id
-         * and return the index so we can clear them out of the map
-         * */
-        const featuresToClear = drawnFeaturesInMap.filter(
-          feature => feature?.id === undefined
-        );
-
-        if (featuresToClear.length > 0) {
-          console.log("Deleting: ", featuresToClear);
-          // Delete (clear) the features we no longer need...
-          ref.deleteFeatures(featuresToClear.map((feature, index) => index));
-          return;
-        }
-
-        if (featuresToAdd.length > 0) {
-          console.log("Adding Features: ", featuresToAdd);
-          // Add the new features we want to add
-          ref.addFeatures(featuresToAdd);
-          return;
-        }
+        // Draw the features
+        ref.addFeatures(featuresToAdd);
       }
     },
     [featureCollection]
@@ -274,38 +311,57 @@ export function useMapDrawTools(
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
   const saveDrawnPoints = (runActionDispatch = true) => {
-    console.log("saveDrawnPoints: ", runActionDispatch);
-
+    // If there is a map reference, get it's features or assume empty array
     const drawnFeatures = mapEditorRef.current
       ? mapEditorRef.current.getFeatures()
       : [];
 
-    // Track existing drawn features so that we don't duplicate them on each save
+    // Filter out anything without a source layer
     const newDrawnFeatures = drawnFeatures.filter(
       feature => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
     );
 
+    const drawnFeaturesWithSourceAndId = newDrawnFeatures
+      .map(feature => {
+        const featureUUID = uuidv4();
+
+        return {
+          ...feature,
+          id: featureUUID,
+          properties: {
+            ...feature.properties,
+            renderType: feature.geometry.type,
+            PROJECT_EXTENT_ID: featureUUID,
+            sourceLayer:
+              feature.geometry.type === "LineString"
+                ? "drawnByUserLine"
+                : "drawnByUser",
+          },
+        };
+      })
+      .reverse() // Reverse the order so the new get removed first
+      .filter(
+        // Filter anything that already exists in the collection by its coordinates
+        drawnFeature =>
+          // Test every element in feature collection to not be equal
+          featureCollection.features.every(
+            currentFeatureInCollection =>
+              // Check if this feature is a point and not equal
+              (isFeatureOfType("Point", drawnFeature) &&
+                isFeatureOfType("Point", currentFeatureInCollection) &&
+                !pointEqual(drawnFeature, currentFeatureInCollection)) ||
+              (isFeatureOfType("LineString", drawnFeature) &&
+                isFeatureOfType("LineString", currentFeatureInCollection) &&
+                !lineStringEqual(drawnFeature, currentFeatureInCollection))
+          )
+      );
     // Add a UUID and layer name to the new features for retrieval and styling
-    const drawnFeaturesWithSourceAndId = newDrawnFeatures.map(feature => {
-      const featureUUID = uuidv4();
 
-      return {
-        ...feature,
-        id: featureUUID,
-        properties: {
-          ...feature.properties,
-          renderType: feature.geometry.type,
-          PROJECT_EXTENT_ID: featureUUID,
-          sourceLayer:
-            feature.geometry.type === "LineString"
-              ? "drawnByUserLine"
-              : "drawnByUser",
-        },
-      };
-    });
+    /**
+     * Generate a new state including the existing data and any
+     * new features with source and id.
+     */
 
-    // If this is a new project, update state. If it exists, mutate existing project data
-    // Update existing featureCollection with new drawn features so they can be inserted in NewProjectView
     const updatedFeatureCollection = {
       ...featureCollection,
       features: [
@@ -314,28 +370,26 @@ export function useMapDrawTools(
       ],
     };
 
-    
-    if (drawnFeaturesWithSourceAndId.length !== updatedFeatureCollection.length)
-      setFeatureCollection(updatedFeatureCollection);
+    // Update the new state
+    setFeatureCollection(updatedFeatureCollection);
 
-    // Close UI for user
-    // setIsDrawing(false);
     // Dispatch featuresSaved action
-
     if (saveActionDispatch && runActionDispatch)
       saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
    * Takes the click event and sets the draw mode handler and selected mode ID
-   * @param {object} e - A click event from a draw toolbar button
+   * @param {Object} e - A click event from a draw toolbar button
    */
   const switchMode = e => {
     const switchModeId = e.target.id === modeId ? null : e.target.id;
     const mode = MODES.find(m => m.id === switchModeId);
     const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
 
+    // If the button clicked is disableDrawMode, disable drawing...
     if (mode?.id === "disableDrawMode") setIsDrawing(false);
+    // Else, enable it!
     else setIsDrawing(true);
 
     setModeId(switchModeId);
@@ -343,11 +397,12 @@ export function useMapDrawTools(
   };
 
   /**
-   * Takes a selected object and sets data about it in state
+   * Deletes whatever object is selected
    * https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#options
    * @param {object} selected - Holds data about the selected feature
    */
   const onSelect = selected => {
+    // Retrieve a list of all features in the map
     const currentFeatures = mapEditorRef.current.getFeatures();
     // Remove the feature from the draw UI feature list
     if (selected.selectedEditHandleIndexes.length) {
@@ -369,28 +424,60 @@ export function useMapDrawTools(
       return;
     }
 
-    mapEditorRef.current.deleteFeatures(selected.selectedFeatureIndex);
-
     // Then, remove the feature from the feature collection of the project extent
     const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
     const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
     const featureIdToDelete = get(featureToDelete, featureIdGetPath);
 
+    /**
+     * There are duplicates, we need to delete all occurrences of a point.
+     * It's not ideal but the code works. Hopefully in the future we can optimize.
+     */
+    const featuresToDelete = currentFeatures
+      // From the currentFeatures, find any duplicates by their coordinates and return the index
+      .map((feature, index) =>
+        pointEqual(feature, featureToDelete) ? index : -1
+      )
+      // Keep positive integers only
+      .filter(i => i >= 0);
+
+    // Delete the selected feature from the map (including duplicates)...
+    mapEditorRef.current.deleteFeatures(featuresToDelete);
+
+    // Regenerate a new feature collection without the selected feature
     const updatedFeatureCollection = {
       ...featureCollection,
       features: [
-        ...featureCollection.features.filter(
-          feature => get(feature, featureIdGetPath) !== featureIdToDelete
-        ),
+        ...featureCollection.features
+          .filter(
+            // Keep the features that are not equal to featureIdToDelete
+            feature => get(feature, featureIdGetPath) !== featureIdToDelete
+          )
+          .filter(
+            // Keep the features (points or lines) that are not duplicates
+            featureInCollection =>
+              (isFeatureOfType("Point", featureInCollection) &&
+                !pointEqual(featureToDelete, featureInCollection)) ||
+              (isFeatureOfType("LineString", featureInCollection) &&
+                !lineStringEqual(featureToDelete, featureInCollection))
+          ),
       ],
     };
 
+    // Update our state
     setFeatureCollection(updatedFeatureCollection);
   };
 
+  /**
+   * This function gets called on any update coming from the map.
+   * https://nebula.gl/docs/api-reference/react-map-gl-draw/react-map-gl-draw
+   * @param {String} editType - The name of the event type
+   */
   const onUpdate = ({ editType }) => {
+    // If the current event is a new feature (point or line)
     if (editType === "addFeature") {
-      saveDrawnPoints(false); // Save without running dispatch
+      // Save without running dispatch
+      saveDrawnPoints(false); // False = no dispatch
     }
   };
 
