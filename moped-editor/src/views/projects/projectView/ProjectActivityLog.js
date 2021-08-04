@@ -36,6 +36,7 @@ import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import CDNAvatar from "../../../components/CDN/Avatar";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -232,13 +233,13 @@ const ProjectActivityLog = () => {
                       >
                         <Box display="flex" p={0}>
                           <Box p={0}>
-                            <Avatar
-                              alt={getInitials(change?.moped_user)}
-                              src="/moped/static/images/avatars/userAvatar.jpg"
+                            <CDNAvatar
                               className={classes.avatarSmall}
-                            >
-                              {getInitials(change?.moped_user)}
-                            </Avatar>
+                              src={change?.moped_user?.picture}
+                              initials={getInitials(change?.moped_user)}
+                              userColor={null}
+                              useGenericAvatar={true}
+                            />
                           </Box>
                           <Box
                             p={0}
