@@ -16,7 +16,6 @@ import {
 import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
 
 import {
-  Avatar,
   Box,
   Button,
   CardContent,
