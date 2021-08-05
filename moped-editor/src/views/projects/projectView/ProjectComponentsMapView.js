@@ -10,7 +10,6 @@ import {
 } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import { stopReportingRuntimeErrors } from "react-error-overlay";
 
 import {
   createSummaryMapLayers,
