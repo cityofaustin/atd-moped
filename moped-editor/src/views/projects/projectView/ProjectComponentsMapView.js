@@ -22,6 +22,8 @@ import {
   useHoverLayer,
   useFeatureCollectionToFitBounds,
   mapConfig,
+  useLayerSelect,
+  getLayerNames,
 } from "../../../utils/mapHelpers";
 import {
   EditLocation as EditLocationIcon,
@@ -29,11 +31,23 @@ import {
   KeyboardArrowUp,
 } from "@material-ui/icons";
 import Geocoder from "react-map-gl-geocoder";
+import NewProjectMapBaseMap from "../newProjectView/NewProjectMapBaseMap";
 
 const useStyles = makeStyles(theme => ({
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
+  },
+  layerSelectButton: {
+    position: "absolute",
+    top: ".5rem",
+    right: "1rem",
+    zIndex: 1,
+    height: "3rem",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
   },
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
@@ -100,6 +114,20 @@ const useStyles = makeStyles(theme => ({
   mapToolsDivider: {
     marginTop: ".5rem",
   },
+  speedDial: {
+    right: "3.5rem !important",
+    bottom: "4.5rem !important",
+    position: "absolute",
+    zIndex: 1,
+    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
+  },
 }));
 
 /**
@@ -126,8 +154,17 @@ const ProjectComponentsMapView = ({
 
   const mapRef = useRef();
   const mapGeocoderContainerRef = useRef();
+  const mapBasemapContainerRef = useRef();
 
   const featureCount = countFeatures(projectFeatureCollection);
+
+  const {
+    visibleLayerIds,
+    renderLayerSelect,
+    mapStyleConfig,
+    handleBasemapChange,
+    mapStyle,
+  } = useLayerSelect(getLayerNames(), classes);
 
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler
@@ -179,6 +216,7 @@ const ProjectComponentsMapView = ({
         ref={mapGeocoderContainerRef}
         className={classes.geocoderContainer}
       />
+      <div ref={mapBasemapContainerRef} className={classes.speedDial} />
       <Collapse
         in={editPanelCollapsedShow}
         onExit={() => setEditPanelCollapsed(true)}
@@ -212,6 +250,8 @@ const ProjectComponentsMapView = ({
         </Grid>
       </Collapse>
 
+      {renderLayerSelect(false)}
+
       <ReactMapGL
         /* Current state of viewport */
         {...viewport}
@@ -231,11 +271,13 @@ const ProjectComponentsMapView = ({
         onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
         onViewportChange={handleViewportChange}
+        mapStyle={mapStyleConfig}
       >
         {/* Draw Navigation controls with specific styles */}
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} />
         </div>
+
         {/* GEOCODER */}
         <Geocoder
           mapRef={mapRef}
@@ -251,7 +293,13 @@ const ProjectComponentsMapView = ({
           each source layer in the project's GeoJSON FeatureCollection
         */}
         {projectFeatureCollection &&
-          createSummaryMapLayers(projectFeatureCollection)}
+          createSummaryMapLayers({
+            type: "FeatureCollection",
+            features: projectFeatureCollection.features.filter(feature =>
+              visibleLayerIds.includes(feature?.properties?.sourceLayer)
+            ),
+          })}
+
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         {editEnabled && (
@@ -265,6 +313,11 @@ const ProjectComponentsMapView = ({
             Edit
           </Button>
         )}
+        <NewProjectMapBaseMap
+          containerRef={mapBasemapContainerRef}
+          handleBasemapChange={handleBasemapChange}
+          mapStyle={mapStyle}
+        />
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>
