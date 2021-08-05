@@ -17,6 +17,13 @@ import {
   ClickAwayListener,
   Icon,
   Button,
+  List,
+  ListItem,
+  ListItemIcon,
+  Checkbox,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
 } from "@material-ui/core";
 
 import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
@@ -27,11 +34,15 @@ import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHe
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
 import Alert from "@material-ui/lab/Alert";
+import { ArrowForwardIos } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
+  },
+  listItemCheckbox: {
+    color: "black !important",
   },
   componentItem: {
     cursor: "pointer",
@@ -47,10 +58,12 @@ const useStyles = makeStyles(theme => ({
       background: "#b3e5fc", // Lightblue 100
     },
   },
-  componentButtonAddNew: {
-    marginTop: theme.spacing(2),
-  },
+  componentButtonAddNew: {},
 }));
+
+function CommentIcon() {
+  return null;
+}
 
 /**
  * Project Component Page
@@ -185,124 +198,104 @@ const ProjectComponents = () => {
           projectFeatureCollection={featureFullCollection}
         />
       )}
-      <CardContent>
-        {!componentEditMode && (
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              {componentsAvailable && (
-                <Paper className={classes.root}>
-                  <ClickAwayListener onClickAway={handleComponentClickAway}>
-                    <TableContainer className={classes.container}>
-                      <Table stickyHeader aria-label="sticky table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Type</TableCell>
-                            <TableCell>Subtype</TableCell>
-                            <TableCell>Sub-Components</TableCell>
-                            <TableCell>Details</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {data.moped_proj_components.map(
-                            (component, compIndex) => {
-                              const projComponentId =
-                                component.project_component_id;
-                              return (
-                                <TableRow
-                                  role="checkbox"
-                                  tabIndex={compIndex}
-                                  key={"mcTableRow-" + projComponentId}
-                                  onClick={() =>
-                                    handleComponentClick(projComponentId)
-                                  }
-                                  className={
-                                    projComponentId === selectedComp
-                                      ? classes.componentItemBlue
-                                      : classes.componentItem
-                                  }
-                                >
-                                  <TableCell>
-                                    {
-                                      component?.moped_components
-                                        ?.component_type
-                                    }
-                                  </TableCell>
-                                  <TableCell>
-                                    {
-                                      component?.moped_components
-                                        ?.component_subtype
-                                    }
-                                  </TableCell>
-                                  <TableCell>
-                                    {[
-                                      ...new Set(
-                                        component.moped_proj_components_subcomponents.map(
-                                          mpcs =>
-                                            mpcs.moped_subcomponent
-                                              .subcomponent_name
-                                        )
-                                      ),
-                                    ]
-                                      .sort()
-                                      .join(", ")}
-                                  </TableCell>
-                                  <TableCell align={"center"}>
-                                    <DoubleArrowIcon
-                                      onClick={handleComponentDetailsClick}
-                                    />
-                                  </TableCell>
-                                </TableRow>
-                              );
-                            }
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </ClickAwayListener>
-                </Paper>
-              )}
-              {!componentsAvailable && (
-                <Alert severity="info">
-                  There aren't any components for this project.
-                </Alert>
-              )}
-              <Button
-                className={classes.componentButtonAddNew}
-                onClick={handleAddNewComponentClick}
-                variant="outlined"
-                color="default"
-                size={"large"}
-                startIcon={<Icon>add</Icon>}
-              >
-                Add new component
-              </Button>
-            </Grid>
+      {!componentEditMode && (
+        <ErrorBoundary
+          FallbackComponent={({ error, resetErrorBoundary }) => (
+            <ProjectSummaryMapFallback
+              error={error}
+              resetErrorBoundary={resetErrorBoundary}
+              projectId={projectId}
+              setIsEditing={null}
+              refetchProjectDetails={refetch}
+              mapData={projectFeatureCollection}
+            />
+          )}
+          onReset={() => setMapError(false)}
+          resetKeys={[mapError]}
+        >
+          <ProjectComponentsMapView
+            projectFeatureCollection={projectFeatureCollection}
+            setIsEditing={false}
+            noPadding
+          >
+            <Button
+              className={classes.componentButtonAddNew}
+              onClick={handleAddNewComponentClick}
+              variant="outlined"
+              color="default"
+              size={"large"}
+              startIcon={<Icon>add</Icon>}
+              fullWidth
+            >
+              Add new component
+            </Button>
             {componentsAvailable && (
-              <Grid item xs={12} md={6}>
-                <ErrorBoundary
-                  FallbackComponent={({ error, resetErrorBoundary }) => (
-                    <ProjectSummaryMapFallback
-                      error={error}
-                      resetErrorBoundary={resetErrorBoundary}
-                      projectId={projectId}
-                      setIsEditing={null}
-                      refetchProjectDetails={refetch}
-                      mapData={projectFeatureCollection}
-                    />
-                  )}
-                  onReset={() => setMapError(false)}
-                  resetKeys={[mapError]}
-                >
-                  <ProjectComponentsMapView
-                    projectFeatureCollection={projectFeatureCollection}
-                    setIsEditing={false}
-                  />
-                </ErrorBoundary>
-              </Grid>
+              <ClickAwayListener onClickAway={handleComponentClickAway}>
+                <List className={classes.root}>
+                  {data.moped_proj_components.map((component, compIndex) => {
+                    const projComponentId = component.project_component_id;
+                    return (
+                      <ListItem
+                        key={"mcListItem-" + projComponentId}
+                        role={undefined}
+                        dense
+                        button
+                        onClick={() => handleComponentClick(projComponentId)}
+                        className={
+                          projComponentId === selectedComp
+                            ? classes.componentItemBlue
+                            : classes.componentItem
+                        }
+                      >
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            className={classes.listItemCheckbox}
+                            checked={projComponentId === selectedComp}
+                            tabIndex={-1}
+                            disableRipple
+                            inputProps={{ "aria-labelledby": null }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText
+                          id={"mcListItemText-" + projComponentId}
+                          primary={component?.moped_components?.component_type}
+                          secondary={
+                            (component?.moped_components?.component_subtype ??
+                              "") +
+                            [
+                              ...new Set(
+                                component.moped_proj_components_subcomponents.map(
+                                  mpcs =>
+                                    mpcs.moped_subcomponent.subcomponent_name
+                                )
+                              ),
+                            ]
+                              .sort()
+                              .join(", ")
+                          }
+                        />
+                        <ListItemSecondaryAction
+                          onClick={handleComponentDetailsClick}
+                        >
+                          <IconButton edge="end" aria-label="comments">
+                            <ArrowForwardIos />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                    );
+                  })}
+                </List>
+              </ClickAwayListener>
             )}
-          </Grid>
-        )}
-      </CardContent>
+            {!componentsAvailable && (
+              <Alert severity="info">
+                There aren't any components for this project.
+              </Alert>
+            )}
+          </ProjectComponentsMapView>
+        </ErrorBoundary>
+      )}
     </ApolloErrorHandler>
   );
 };
