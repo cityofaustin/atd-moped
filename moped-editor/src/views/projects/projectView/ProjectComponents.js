@@ -4,15 +4,6 @@ import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import { COMPONENTS_QUERY } from "../../../queries/project";
 import {
-  CardContent,
-  Grid,
-  Paper,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
   CircularProgress,
   ClickAwayListener,
   Icon,
@@ -26,7 +17,6 @@ import {
   IconButton,
 } from "@material-ui/core";
 
-import DoubleArrowIcon from "@material-ui/icons/DoubleArrow";
 import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMapView from "./ProjectComponentsMapView";
@@ -60,10 +50,6 @@ const useStyles = makeStyles(theme => ({
   },
   componentButtonAddNew: {},
 }));
-
-function CommentIcon() {
-  return null;
-}
 
 /**
  * Project Component Page
