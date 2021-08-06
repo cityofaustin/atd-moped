@@ -82,6 +82,10 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.common.white,
     },
   },
+  appBar: {
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.header,
+  },
 }));
 
 function a11yProps(index) {
