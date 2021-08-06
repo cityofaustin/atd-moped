@@ -387,7 +387,7 @@ const ProjectView = () => {
                   </Grid>
                 </Box>
                 <Divider />
-                <AppBar position="static">
+                <AppBar className={classes.appBar} position="static">
                   <Tabs
                     value={activeTab}
                     onChange={handleChange}
