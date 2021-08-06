@@ -131,6 +131,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
               className={classes.avatar}
               src={userDbData.picture}
               initials={userInitials}
+              userColor={user?.userColor}
             />
           </Button>
           <Menu
