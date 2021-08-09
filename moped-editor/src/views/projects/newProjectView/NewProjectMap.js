@@ -87,11 +87,6 @@ export const useStyles = makeStyles(theme => ({
       top: 32,
     },
   },
-  exampleWrapper: {
-    position: "relative",
-    marginTop: theme.spacing(3),
-    height: 380,
-  },
   speedDial: {
     right: "3.5rem !important",
     bottom: "4.5rem !important",
