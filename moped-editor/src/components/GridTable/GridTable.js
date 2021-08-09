@@ -451,7 +451,11 @@ const GridTable = ({ title, query }) => {
             ) : data ? (
               <Card className={classes.root}>
                 <TableContainer className={classes.container}>
-                  <Table stickyHeader aria-label="sticky table">
+                  <Table
+                    className={classes.stickyHeader}
+                    stickyHeader
+                    aria-label="sticky table"
+                  >
                     <GridTableListHeader
                       query={query}
                       sortOrder={sort.order}
