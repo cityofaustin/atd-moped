@@ -91,6 +91,9 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.text.primary,
     },
   },
+  indicatorColor: {
+    backgroundColor: theme.palette.primary.light,
+  },
 }));
 
 function a11yProps(index) {
