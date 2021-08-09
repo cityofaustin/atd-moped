@@ -72,6 +72,9 @@ const useStyles = makeStyles(theme => ({
   tableChip: {
     "text-transform": "capitalize",
   },
+  stickyHeader: {
+    backgroundColor: theme.palette.background.paper,
+  },
 }));
 
 /**
