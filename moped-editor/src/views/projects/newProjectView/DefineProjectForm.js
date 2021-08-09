@@ -114,25 +114,6 @@ const DefineProjectForm = ({
         </Grid>
 
         <Grid item xs={3}>
-          <InputLabel>Fiscal year</InputLabel>
-          <Select
-            name="fiscal_year"
-            style={{ width: 150, paddingLeft: 10 }}
-            value={projectDetails.fiscal_year}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
-          >
-            {fiscal.moped_city_fiscal_years.map(fiscal => (
-              <MenuItem
-                key={fiscal.fiscal_year_value}
-                value={fiscal.fiscal_year_value}
-              >
-                {fiscal.fiscal_year_value}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
-
-        <Grid item xs={3}>
           <InputLabel>Current status</InputLabel>
           <Select
             name="current_status"
