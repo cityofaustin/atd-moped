@@ -401,6 +401,7 @@ const ProjectView = () => {
                     {TABS.map((tab, i) => {
                       return (
                         <Tab
+                          className={classes.selectedTab}
                           key={tab.label}
                           label={tab.label}
                           {...a11yProps(i)}
