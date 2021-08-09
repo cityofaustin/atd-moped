@@ -97,22 +97,6 @@ const DefineProjectForm = ({
             }}
           />
         </Grid>
-
-        <Grid item xs={3}>
-          <InputLabel>Current status</InputLabel>
-          <Select
-            name="current_status"
-            style={{ width: 150, paddingLeft: 10 }}
-            value={projectDetails.current_status}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
-          >
-            {statuses.moped_status.map(status => (
-              <MenuItem key={status.status_name} value={status.status_name}>
-                {capitalize(status.status_name)}
-              </MenuItem>
-            ))}
-          </Select>
-        </Grid>
       </Grid>
 
       <Grid container spacing={3} style={{ margin: 20 }}>
