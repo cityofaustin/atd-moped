@@ -86,6 +86,11 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.header,
   },
+  selectedTab: {
+    "&.Mui-selected": {
+      color: theme.palette.text.primary,
+    },
+  },
 }));
 
 function a11yProps(index) {
