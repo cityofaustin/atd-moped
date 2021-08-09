@@ -22,27 +22,7 @@ const DefineProjectForm = ({
     setProjectDetails(updatedProjectDetails);
   };
 
-  const STATUS_QUERY = gql`
-    query Status {
-      moped_status(
-        order_by: { status_order: asc }
-        where: { status_id: { _gt: 0 } }
-      ) {
-        status_name
-      }
-    }
-  `;
-
-  const {
-    loading: statusLoading,
-    error: statusError,
-    data: statuses,
-  } = useQuery(STATUS_QUERY);
-
   const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
-
-  if (statusLoading) return <CircularProgress />;
-  if (statusError) return `Error! ${statusError.message}`;
 
   return (
     <form style={{ padding: 25 }}>
