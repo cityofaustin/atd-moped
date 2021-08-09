@@ -290,6 +290,9 @@ const NewProjectMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
+      {/* These are four lines that govern hiding/showing drawn points and lines
+      in the user drop-down menu. These act as a conditional global override of MapBox.
+      Definitely not the best code, there needs to be a way to do this in standard React. */}
       <style>
         {!visibleLayerIds.includes("drawnByUser") &&
           `g > circle { display: none; }`}
