@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  TextField,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Switch,
-  CircularProgress,
-} from "@material-ui/core";
-import { useQuery, gql } from "@apollo/client";
+import { TextField, Grid, InputLabel, Switch } from "@material-ui/core";
 
 const DefineProjectForm = ({
   projectDetails,
@@ -21,8 +12,6 @@ const DefineProjectForm = ({
 
     setProjectDetails(updatedProjectDetails);
   };
-
-  const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 
   return (
     <form style={{ padding: 25 }}>
