@@ -33,31 +33,16 @@ const DefineProjectForm = ({
     }
   `;
 
-  const FISCAL_QUERY = gql`
-    query Fiscal {
-      moped_city_fiscal_years(order_by: { fiscal_year_value: asc }) {
-        fiscal_year_value
-      }
-    }
-  `;
-
   const {
     loading: statusLoading,
     error: statusError,
     data: statuses,
   } = useQuery(STATUS_QUERY);
 
-  const { loading: fiscalLoading, error: fiscalError, data: fiscal } = useQuery(
-    FISCAL_QUERY
-  );
-
   const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1);
 
   if (statusLoading) return <CircularProgress />;
   if (statusError) return `Error! ${statusError.message}`;
-
-  if (fiscalLoading) return <CircularProgress />;
-  if (fiscalError) return `Error! ${fiscalError.message}`;
 
   return (
     <form style={{ padding: 25 }}>
