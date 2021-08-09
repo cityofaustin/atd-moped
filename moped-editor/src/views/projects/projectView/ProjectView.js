@@ -397,6 +397,7 @@ const ProjectView = () => {
                 <Divider />
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
+                    classes={{ indicator: classes.indicatorColor }}
                     value={activeTab}
                     onChange={handleChange}
                     aria-label="Project Details Tabs"
