@@ -1,0 +1,48 @@
+.mapboxgl-ctrl-geocoder {
+  width: 100%;
+}
+
+.MuiSpeedDial-fab {
+  background: lightgray !important;
+  border-radius: 4px !important;
+  background-size: 100% 100% !important;
+  width: 4rem !important;
+  height: 4rem !important;
+}
+
+.MuiFab-sizeSmall {
+  background: lightgray !important;
+  border-radius: 4px !important;
+  background-size: 100% 100% !important;
+  width: 4rem !important;
+  height: 4rem !important;
+}
+
+.MuiFab-sizeSmall:nth-of-type(1) {
+  background-image: url(/moped/static/images/mapStreets.jpg) !important;
+  color: black;
+}
+
+.MuiFab-sizeSmall:nth-of-type(2) {
+  background-image: url(/moped/static/images/mapAerial.jpg) !important;
+  color: white;
+}
+
+.MuiFab-label {
+  font-size: 0.8rem !important;
+  font-weight: bold !important;
+}
+
+@media screen and (min-width: 640px) {
+  .mapboxgl-ctrl-geocoder--icon-search {
+    top: 0.9rem;
+  }
+
+  .mapboxgl-ctrl-geocoder--input {
+    height: 3rem;
+  }
+
+  .mapboxgl-ctrl-geocoder--icon-close {
+    margin-top: 8px;
+  }
+}

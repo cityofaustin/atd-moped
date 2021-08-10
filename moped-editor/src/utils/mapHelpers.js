@@ -1,16 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import theme from "../theme/index";
 import {
-  Box,
   Checkbox,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
   Typography,
+  Button,
+  Menu,
+  MenuItem,
+  ListItemIcon,
+  ListItemText,
+  withStyles,
 } from "@material-ui/core";
 import { get } from "lodash";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+
+import {
+  mapSaveActionReducer,
+  mapSaveActionInitialState,
+} from "./mapSaveActionReducer";
 
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -247,6 +255,62 @@ export const mapConfig = {
             paint: {
               "line-color": theme.palette.primary.main,
               "line-width": 4,
+            },
+          };
+        };
+      },
+    },
+    projectFeatures: {
+      layerLabel: "Project Features",
+      layerIdName: "projectFeatures",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 5,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "line",
+            layout: {
+              "line-join": "round",
+              "line-cap": "round",
+            },
+            paint: {
+              "line-color": [
+                "case",
+                ["==", ["get", "LINE_TYPE"], TRAIL_LINE_TYPE],
+                theme.palette.grey["800"],
+                this.layerColor,
+              ],
+              "line-width": mapStyles.lineWidthStops,
+            },
+          };
+        };
+      },
+    },
+    projectFeaturePoints: {
+      layerDrawn: false,
+      layerLabel: "Project Points",
+      layerIdName: "projectFeaturePoints",
+      layerIdField: "PROJECT_EXTENT_ID",
+      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      layerOrder: 6,
+      layerColor: theme.palette.grey["800"],
+      layerMaxLOD: 12,
+      isClickEditable: false,
+      isInitiallyVisible: false,
+      get layerStyleSpec() {
+        return function() {
+          return {
+            id: this.layerIdName,
+            type: "circle",
+            paint: {
+              "circle-color": this.layerColor,
+              "circle-radius": mapStyles.circleRadiusStops,
             },
           };
         };
@@ -586,14 +650,16 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
  * @param {Number} featureCount - The number of features in a project's feature collection
  * @return {JSX} The populated feature count text JSX
  */
-export const renderFeatureCount = featureCount => (
+export const renderFeatureCount = (featureCount, isDrawing = false) => (
   <Typography
     style={{
       fontSize: "0.875rem",
       fontWeight: 500,
+      padding: ".5rem",
     }}
   >
-    {featureCount} location{featureCount === 1 ? "" : "s"} in this project
+    {featureCount} location{featureCount === 1 ? "" : "s"} in this project -
+    Draw Mode: {isDrawing ? "On" : "Off"}
   </Typography>
 );
 
@@ -731,73 +797,148 @@ export function useFeatureCollectionToFitBounds(
  * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
  */
 export function useLayerSelect(initialSelectedLayerNames, classes) {
+  /**
+   * The initial state of visible ids is retrieved from the initialSelectedLayerNames
+   * then we filter out any of them by checking if it has an `isInitiallyVisible` property.
+   */
   const [visibleLayerIds, setVisibleLayerIds] = useState(
-    initialSelectedLayerNames
+    initialSelectedLayerNames.filter(
+      layerName => mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
+    )
   );
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  /**
+   * Handles the click event on a menu item
+   * @param {Object} event - The click event
+   */
+  const handleMenuItemClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  /**
+   * Closes the menu
+   */
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   /**
    * Takes a click event and adds/removes a layer name from the visible layers array
-   * @param {Object} e - Mouse click event that supplies layer name
+   * @param {string} layerName - The name of the layer to enable
    */
-  const handleLayerCheckboxClick = e => {
-    const layerName = e.target.name;
-
+  const handleLayerCheckboxClick = layerName => {
     setVisibleLayerIds(prevLayers => {
       return prevLayers.includes(layerName)
         ? [...prevLayers.filter(name => name !== layerName)]
         : [...prevLayers, layerName];
     });
+
+    handleMenuClose();
   };
 
   /**
    * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
-   * @param {Object} e - Mouse click event that supplies basemaps object key from the radio button
+   * @param {string} basemapKey - The name of the base map: streets or aerial
    */
-  const handleBasemapChange = e => {
-    const basemapKey = e.target.value;
-
+  const handleBasemapChange = basemapKey => {
     setMapStyle(basemapKey);
   };
 
-  const renderLayerSelect = () => (
-    <Box component="div" className={classes.layerSelectBox}>
-      <Typography className={classes.layerSelectTitle}>Layers</Typography>
-      {getLayerNames().map(name => (
-        <Typography key={name} className={classes.layerSelectText}>
-          <Checkbox
-            checked={visibleLayerIds.includes(name)}
-            onChange={handleLayerCheckboxClick}
-            name={name}
-            color="primary"
-          />
-          {mapConfig.layerConfigs[name].layerLabel}
-        </Typography>
-      ))}
-      <Typography className={classes.layerSelectTitle}>Basemap</Typography>
-      <RadioGroup
-        aria-label="basemap"
-        name="basemap"
-        className={classes.layerRadioGroup}
-        value={mapStyle}
-        onChange={handleBasemapChange}
+  const StyledMenu = withStyles({
+    paper: {
+      border: "1px solid #d3d4d5",
+    },
+  })(props => (
+    <Menu
+      elevation={0}
+      getContentAnchorEl={null}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      {...props}
+    />
+  ));
+
+  const StyledMenuItem = withStyles(theme => ({
+    root: {
+      "&:focus": {
+        backgroundColor: theme.palette.grey["100"],
+        "& .MuiListItemIcon-root, & .MuiListItemText-primary": {
+          color: theme.palette.common.black,
+        },
+      },
+    },
+  }))(MenuItem);
+
+  const projectFeatureLayerNames = ["projectFeatures", "projectFeaturePoints"];
+
+  /**
+   * Renders the dropdown menu to select layers
+   * @param {boolean} showProjectFeatures - When true, it hides other project features
+   * @return {JSX.Element}
+   */
+  const renderLayerSelect = (showProjectFeatures = false) => (
+    <div>
+      <Button
+        aria-controls="customized-menu"
+        aria-haspopup="true"
+        variant="outlined"
+        color="default"
+        onClick={handleMenuItemClick}
+        className={classes.layerSelectButton}
+        startIcon={
+          Boolean(anchorEl) ? <KeyboardArrowUp /> : <KeyboardArrowDown />
+        }
       >
-        <FormControlLabel
-          value="streets"
-          control={<Radio color="primary" />}
-          label="Streets"
-        />
-        <FormControlLabel
-          value="aerial"
-          control={<Radio color="primary" />}
-          label="Aerial"
-        />
-      </RadioGroup>
-    </Box>
+        Map Features
+      </Button>
+      <StyledMenu
+        id="customized-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+      >
+        {getLayerNames().map(name => {
+          if (!showProjectFeatures && projectFeatureLayerNames.includes(name))
+            return null;
+
+          return (
+            <StyledMenuItem
+              onClick={() => handleLayerCheckboxClick(name)}
+              value={name}
+              key={name}
+            >
+              <ListItemIcon>
+                <Checkbox
+                  checked={visibleLayerIds.includes(name)}
+                  name={name}
+                  color="primary"
+                />
+              </ListItemIcon>
+              <ListItemText primary={mapConfig.layerConfigs[name].layerLabel} />
+            </StyledMenuItem>
+          );
+        })}
+      </StyledMenu>
+    </div>
   );
 
-  return { visibleLayerIds, renderLayerSelect, mapStyleConfig };
+  return {
+    visibleLayerIds,
+    renderLayerSelect,
+    mapStyleConfig,
+    handleBasemapChange,
+    mapStyle,
+  };
 }
 
 export const layerSelectStyles = {
@@ -828,3 +969,47 @@ export const layerSelectStyles = {
 export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
   .filter(([layerName, layer]) => layer.layerDrawn)
   .map(([layerName, layer]) => layer.layerIdName);
+
+/**
+ * Reconstructs a GeoJSON collection and renames all its features using
+ * a provided layer name id (as specified in the configuration settings).
+ * @param {Object} projectOtherFeaturesCollection - A GeoJSON collection
+ * @param {Object} newLayerNameConfig - An object containing a key value pair of names based on feature type
+ */
+export const useTransformProjectFeatures = (
+  projectOtherFeaturesCollection,
+  newLayerNameConfig // We need to generate a new collection
+) => ({
+  // First, enter the type (which never changes)
+  type: "FeatureCollection",
+  // Then, create the features attribute with the output of a map
+  features: (projectOtherFeaturesCollection?.features ?? []).map(feature => ({
+    // For every feature, first copy the element
+    ...feature,
+    // Then, overwrite the feature's 'properties' attribute
+    properties: {
+      // With a copy of the existing feature's properties
+      ...feature.properties,
+      // And with an overwritten sourceLayer attribute (if it can find it)
+      sourceLayer:
+        // Try to find it in the configuration object
+        newLayerNameConfig[feature.geometry.type] ??
+        // or default to the original one if not found in the config
+        feature.properties.sourceLayer,
+    },
+  })),
+});
+
+/**
+ * Instantiates a saveActionState and a dispatch function
+ * @return {Object}
+ */
+export const useSaveActionReducer = () => {
+  const [saveActionState, saveActionDispatch] = useReducer(
+    mapSaveActionReducer, // The reducer function handler
+    null, // Initializer argument
+    mapSaveActionInitialState // Initial state
+  );
+
+  return { saveActionState, saveActionDispatch };
+};

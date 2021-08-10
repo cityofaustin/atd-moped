@@ -1,11 +1,11 @@
 import React from "react";
-import { Chip, FormControl, Grid, TextField } from "@material-ui/core";
+import { Chip, Grid, TextField } from "@material-ui/core";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
   alert: {
-    margin: theme.spacing(2),
+    margin: "4px",
   },
 }));
 
@@ -86,45 +86,38 @@ const ProjectComponentSubcomponents = ({
     });
 
   // If we have zero, then no point to render the autocomplete react component
-  if (availableSubcomponentsCount === 0)
-    return (
-      <Alert className={classes.alert} severity="info">
-        There are no available subcomponents for this component type.
-      </Alert>
-    );
+  if (availableSubcomponentsCount === 0) return null;
 
   return (
     <Grid item xs={12}>
-      <FormControl variant="filled" fullWidth>
-        <Autocomplete
-          multiple
-          fullWidth
-          id="moped-subcomponents"
-          value={uniqueSelectedSubcomponents}
-          onChange={(event, newValue) => {
-            setSelectedSubcomponents([...newValue]);
-          }}
-          options={availableSubcomponents}
-          // The list changes depending on available subcomponents for that specific type
-          getOptionLabel={option => option.subcomponent_name}
-          renderTags={(tagValue, getTagProps) =>
-            tagValue.map((option, index) => (
-              <Chip
-                label={option.subcomponent_name}
-                {...getTagProps({ index })}
-              />
-            ))
-          }
-          renderInput={params => (
-            <TextField
-              {...params}
-              label="Subcomponents"
-              variant="outlined"
-              placeholder={null}
+      <Autocomplete
+        multiple
+        fullWidth
+        id="moped-subcomponents"
+        value={uniqueSelectedSubcomponents}
+        onChange={(event, newValue) => {
+          setSelectedSubcomponents([...newValue]);
+        }}
+        options={availableSubcomponents}
+        // The list changes depending on available subcomponents for that specific type
+        getOptionLabel={option => option.subcomponent_name}
+        renderTags={(tagValue, getTagProps) =>
+          tagValue.map((option, index) => (
+            <Chip
+              label={option.subcomponent_name}
+              {...getTagProps({ index })}
             />
-          )}
-        />
-      </FormControl>
+          ))
+        }
+        renderInput={params => (
+          <TextField
+            {...params}
+            label="Subcomponents"
+            variant="outlined"
+            placeholder={null}
+          />
+        )}
+      />
     </Grid>
   );
 };
