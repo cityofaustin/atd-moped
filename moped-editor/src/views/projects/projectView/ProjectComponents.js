@@ -37,8 +37,7 @@ const useStyles = makeStyles(theme => ({
     color: "black !important",
   },
   listItemSecondaryAction: {
-    fontSize: "1.125rem !important",
-    color: "red",
+    fontSize: "1.125rem",
   },
   componentItem: {
     cursor: "pointer",
@@ -268,14 +267,15 @@ const ProjectComponents = () => {
                           }
                         />
                         <ListItemSecondaryAction
-                          className={classes.listItemSecondaryAction}
                           onClick={() => {
                             handleComponentClick(projComponentId);
                             handleComponentDetailsClick();
                           }}
                         >
                           <IconButton edge="end" aria-label="comments">
-                            <ArrowForwardIos />
+                            <ArrowForwardIos
+                              className={classes.listItemSecondaryAction}
+                            />
                           </IconButton>
                         </ListItemSecondaryAction>
                       </ListItem>
