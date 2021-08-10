@@ -48,6 +48,7 @@ export const useStyles = makeStyles(theme => ({
     right: "1rem",
     zIndex: 1,
     height: "3rem",
+    width: "205px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
@@ -56,7 +57,7 @@ export const useStyles = makeStyles(theme => ({
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
-    right: "14rem",
+    right: "16rem",
     zIndex: 1,
   },
   mapBoxEditButtonGroupButton: {
