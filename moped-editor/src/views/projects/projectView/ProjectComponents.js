@@ -36,6 +36,10 @@ const useStyles = makeStyles(theme => ({
   listItemCheckbox: {
     color: "black !important",
   },
+  listItemSecondaryAction: {
+    fontSize: "1.125rem !important",
+    color: "red",
+  },
   componentItem: {
     cursor: "pointer",
     backgroundColor: theme.palette.background.paper,
@@ -264,6 +268,7 @@ const ProjectComponents = () => {
                           }
                         />
                         <ListItemSecondaryAction
+                          className={classes.listItemSecondaryAction}
                           onClick={() => {
                             handleComponentClick(projComponentId);
                             handleComponentDetailsClick();
