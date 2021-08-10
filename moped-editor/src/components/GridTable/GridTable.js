@@ -72,9 +72,6 @@ const useStyles = makeStyles(theme => ({
   tableChip: {
     "text-transform": "capitalize",
   },
-  stickyHeader: {
-    backgroundColor: theme.palette.background.paper,
-  },
 }));
 
 /**
@@ -451,11 +448,7 @@ const GridTable = ({ title, query }) => {
             ) : data ? (
               <Card className={classes.root}>
                 <TableContainer className={classes.container}>
-                  <Table
-                    className={`hello ${classes.stickyHeader}`}
-                    stickyHeader
-                    aria-label="sticky table"
-                  >
+                  <Table stickyHeader aria-label="sticky table">
                     <GridTableListHeader
                       query={query}
                       sortOrder={sort.order}
