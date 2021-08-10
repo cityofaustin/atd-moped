@@ -44,6 +44,7 @@ const useStyles = makeStyles(theme => ({
     right: "1rem",
     zIndex: 1,
     height: "3rem",
+    width: "184px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
