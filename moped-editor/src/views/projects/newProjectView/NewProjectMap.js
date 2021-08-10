@@ -7,6 +7,11 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
 
 import {
+  NewProjectDrawnLinesInvisibleStyle,
+  NewProjectDrawnPointsInvisibleStyle
+} from "../../../styles/NewProjectDrawnFeatures";
+
+import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -290,15 +295,9 @@ const NewProjectMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      {/* These are four lines that govern hiding/showing drawn points and lines
-      in the user drop-down menu. These act as a conditional global override of MapBox.
-      Definitely not the best code, there needs to be a way to do this in standard React. */}
-      <style>
-        {!visibleLayerIds.includes("drawnByUser") &&
-          `g > circle { display: none; }`}
-        {!visibleLayerIds.includes("drawnByUserLine") &&
-          `g > path { display: none; }`}
-      </style>
+      {/* These two lines act as a conditional global override of MapBox. */}
+      {!visibleLayerIds.includes("drawnByUser") && <NewProjectDrawnPointsInvisibleStyle/>}
+      {!visibleLayerIds.includes("drawnByUserLine") && <NewProjectDrawnLinesInvisibleStyle/>}
 
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div
