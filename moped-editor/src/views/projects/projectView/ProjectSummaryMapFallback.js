@@ -10,7 +10,6 @@ const useStyles = makeStyles(theme => ({
     fontWeight: 500,
   },
   card: {
-    backgroundColor: theme.palette.background.dark,
     minHeight: "12rem",
     textAlign: "center",
     padding: "1rem",

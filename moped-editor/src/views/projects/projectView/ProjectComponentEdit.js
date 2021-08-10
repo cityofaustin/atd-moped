@@ -769,114 +769,128 @@ const ProjectComponentEdit = ({
               in={editPanelCollapsed}
               onExited={() => setEditPanelCollapsedShow(true)}
             >
-              <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
-                <Grid item xs={12}>
-                  <Autocomplete
-                    id="moped-project-select"
-                    className={classes.formSelect}
-                    value={availableTypes.find(
-                      type => type.toLowerCase() === selectedComponentType
-                    )}
-                    options={availableTypes}
-                    getOptionLabel={component => component}
-                    renderInput={params => (
-                      <TextField {...params} label="Type" variant="outlined" />
-                    )}
-                    onChange={handleComponentTypeSelect}
-                  />
-                </Grid>
-                {availableSubtypes.length > 0 && (
-                  <Grid item xs={12}>
-                    <Autocomplete
-                      id="moped-project-subtype-select"
-                      className={classes.formSelect}
-                      value={
-                        availableSubtypes.find(
-                          subtype =>
-                            subtype.toLowerCase() === selectedComponentSubtype
-                        ) ?? null
-                      }
-                      options={[...new Set(availableSubtypes)].sort()}
-                      getOptionLabel={component => component}
-                      renderInput={params => (
-                        <TextField
-                          {...params}
-                          label="Subtype"
-                          variant="outlined"
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  style={{ maxHeight: "35vh", overflow: "scroll" }}
+                >
+                  <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        id="moped-project-select"
+                        className={classes.formSelect}
+                        value={availableTypes.find(
+                          type => type.toLowerCase() === selectedComponentType
+                        )}
+                        options={availableTypes}
+                        getOptionLabel={component => component}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            label="Type"
+                            variant="outlined"
+                          />
+                        )}
+                        onChange={handleComponentTypeSelect}
+                      />
+                    </Grid>
+                    {availableSubtypes.length > 0 && (
+                      <Grid item xs={12}>
+                        <Autocomplete
+                          id="moped-project-subtype-select"
+                          className={classes.formSelect}
+                          value={
+                            availableSubtypes.find(
+                              subtype =>
+                                subtype.toLowerCase() ===
+                                selectedComponentSubtype
+                            ) ?? null
+                          }
+                          options={[...new Set(availableSubtypes)].sort()}
+                          getOptionLabel={component => component}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="Subtype"
+                              variant="outlined"
+                            />
+                          )}
+                          onChange={handleComponentSubtypeSelect}
                         />
-                      )}
-                      onChange={handleComponentSubtypeSelect}
+                      </Grid>
+                    )}
+                    <ProjectComponentSubcomponents
+                      componentId={selectedComponentId}
+                      subcomponentList={data?.moped_subcomponents}
+                      selectedSubcomponents={selectedSubcomponents}
+                      setSelectedSubcomponents={setSelectedSubcomponents}
                     />
+                    <Grid xs={12}>
+                      <TextField
+                        className={classes.formTextField}
+                        id="moped-component-description"
+                        label="Description"
+                        multiline
+                        rows={4}
+                        defaultValue=""
+                        variant="filled"
+                        value={componentDescription}
+                        onChange={e => handleDescriptionKeyDown(e)}
+                        fullWidth
+                      />
+                    </Grid>
+                    {!areMinimumFeaturesSet && (
+                      <Grid xs={12}>
+                        <Alert className={classes.mapAlert} severity="error">
+                          You must select at least one feature for this
+                          component.
+                        </Alert>
+                      </Grid>
+                    )}
+                    <Grid xs={12} spacing={0}>
+                      <Button
+                        className={classes.formButton}
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          saveActionDispatch({ type: "initiateFeatureSave" })
+                        }
+                        // onClick={handleSaveButtonClick}
+                        disabled={
+                          !areMinimumFeaturesSet || selectedComponentId === null
+                        }
+                        startIcon={<Icon>save</Icon>}
+                        size="small"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        className={classes.formButton}
+                        onClick={handleCancelEdit}
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<Icon>cancel</Icon>}
+                        size="small"
+                      >
+                        Cancel
+                      </Button>
+                      {componentId > 0 && (
+                        <Button
+                          className={classes.formButton}
+                          onClick={handleDeleteDialogClickOpen}
+                          variant="outlined"
+                          color="default"
+                          startIcon={<Icon>delete</Icon>}
+                          size="small"
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </Grid>
                   </Grid>
-                )}
-                <ProjectComponentSubcomponents
-                  componentId={selectedComponentId}
-                  subcomponentList={data?.moped_subcomponents}
-                  selectedSubcomponents={selectedSubcomponents}
-                  setSelectedSubcomponents={setSelectedSubcomponents}
-                />
-                <Grid xs={12}>
-                  <TextField
-                    className={classes.formTextField}
-                    id="moped-component-description"
-                    label="Description"
-                    multiline
-                    rows={4}
-                    defaultValue=""
-                    variant="filled"
-                    value={componentDescription}
-                    onChange={e => handleDescriptionKeyDown(e)}
-                    fullWidth
-                  />
                 </Grid>
-                {!areMinimumFeaturesSet && (
-                  <Grid xs={12}>
-                    <Alert className={classes.mapAlert} severity="error">
-                      You must select at least one feature for this component.
-                    </Alert>
-                  </Grid>
-                )}
-                <Grid xs={12} spacing={0}>
-                  <Button
-                    className={classes.formButton}
-                    variant="contained"
-                    color="primary"
-                    onClick={() =>
-                      saveActionDispatch({ type: "initiateFeatureSave" })
-                    }
-                    // onClick={handleSaveButtonClick}
-                    disabled={
-                      !areMinimumFeaturesSet || selectedComponentId === null
-                    }
-                    startIcon={<Icon>save</Icon>}
-                    size="small"
-                  >
-                    Save
-                  </Button>
-                  <Button
-                    className={classes.formButton}
-                    onClick={handleCancelEdit}
-                    variant="contained"
-                    color="secondary"
-                    startIcon={<Icon>cancel</Icon>}
-                    size="small"
-                  >
-                    Cancel
-                  </Button>
-                  {componentId > 0 && (
-                    <Button
-                      className={classes.formButton}
-                      onClick={handleDeleteDialogClickOpen}
-                      variant="outlined"
-                      color="default"
-                      startIcon={<Icon>delete</Icon>}
-                      size="small"
-                    >
-                      Delete
-                    </Button>
-                  )}
-                </Grid>
-                <Grid xs={12}>
+                <Grid item xs={12}>
                   <Divider fullWidth className={classes.mapToolsDivider} />
                   <Button
                     onClick={() => setEditPanelCollapsed(false)}

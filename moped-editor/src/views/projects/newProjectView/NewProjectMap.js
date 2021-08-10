@@ -7,6 +7,11 @@ import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
 
 import {
+  NewProjectDrawnLinesInvisibleStyle,
+  NewProjectDrawnPointsInvisibleStyle
+} from "../../../styles/NewProjectDrawnFeatures";
+
+import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -43,6 +48,7 @@ export const useStyles = makeStyles(theme => ({
     right: "1rem",
     zIndex: 1,
     height: "3rem",
+    width: "205px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",
@@ -51,7 +57,7 @@ export const useStyles = makeStyles(theme => ({
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
-    right: "14rem",
+    right: "16rem",
     zIndex: 1,
   },
   mapBoxEditButtonGroupButton: {
@@ -86,11 +92,6 @@ export const useStyles = makeStyles(theme => ({
     "@media (max-width:640px)": {
       top: 32,
     },
-  },
-  exampleWrapper: {
-    position: "relative",
-    marginTop: theme.spacing(3),
-    height: 380,
   },
   speedDial: {
     right: "3.5rem !important",
@@ -295,12 +296,9 @@ const NewProjectMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      <style>
-        {!visibleLayerIds.includes("drawnByUser") &&
-          `g > circle { display: none; }`}
-        {!visibleLayerIds.includes("drawnByUserLine") &&
-          `g > path { display: none; }`}
-      </style>
+      {/* These two lines act as a conditional global override of MapBox. */}
+      {!visibleLayerIds.includes("drawnByUser") && <NewProjectDrawnPointsInvisibleStyle/>}
+      {!visibleLayerIds.includes("drawnByUserLine") && <NewProjectDrawnLinesInvisibleStyle/>}
 
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div
