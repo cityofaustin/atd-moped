@@ -452,7 +452,7 @@ const GridTable = ({ title, query }) => {
               <Card className={classes.root}>
                 <TableContainer className={classes.container}>
                   <Table
-                    className={classes.stickyHeader}
+                    className={`hello ${classes.stickyHeader}`}
                     stickyHeader
                     aria-label="sticky table"
                   >
