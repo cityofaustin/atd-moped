@@ -16,10 +16,12 @@ const useStyles = makeStyles(theme => ({
   },
   columnCell: {
     "user-select": "none",
+    backgroundColor: theme.palette.background.paper,
   },
   columnCellCursor: {
     cursor: "pointer",
     "user-select": "none",
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 

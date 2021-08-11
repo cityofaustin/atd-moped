@@ -11,9 +11,9 @@ const theme = createMuiTheme({
       mapControlsHover: "#e6e6e6",
     },
     primary: {
-      main: "#1e88e5",
+      main: "#1276D1",
       dark: "#005cb2",
-      light: "#61b5ff",
+      light: "#55ACF8",
     },
     secondary: {
       main: "#ff6549",
