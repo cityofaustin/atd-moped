@@ -25,7 +25,7 @@ import GridTableExport from "./GridTableExport";
 import TabPanel from "../../views/projects/projectView/TabPanel";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
-import moment from "moment";
+import { format } from "date-fns";
 import { get } from "lodash";
 
 const useStyles = makeStyles(theme => ({
@@ -150,7 +150,8 @@ const GridTableSearch = ({
    * @param {string} fileContents
    */
   const downloadFile = fileContents => {
-    const exportFileName = query.table + moment(Date.now()).format();
+    const exportFileName =
+      query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
     const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     if (link.download !== undefined) {
