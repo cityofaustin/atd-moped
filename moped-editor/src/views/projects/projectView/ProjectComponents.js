@@ -30,8 +30,6 @@ const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
-    maxHeight: "35vh",
-    overflow: "scroll",
   },
   listItemCheckbox: {
     color: "black !important",

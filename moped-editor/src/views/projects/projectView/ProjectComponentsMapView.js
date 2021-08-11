@@ -38,6 +38,10 @@ const useStyles = makeStyles(theme => ({
     fontSize: "0.875rem",
     fontWeight: 500,
   },
+  layerSelectBox: {
+    maxHeight: "35vh",
+    overflow: "scroll",
+  },
   layerSelectButton: {
     position: "absolute",
     top: ".5rem",
@@ -237,7 +241,7 @@ const ProjectComponentsMapView = ({
         onExited={() => setEditPanelCollapsedShow(true)}
       >
         <Grid>
-          <Grid>{children}</Grid>
+          <Grid className={classes.layerSelectBox}>{children}</Grid>
           <Grid xs={12}>
             <Divider fullWidth className={classes.mapToolsDivider} />
             <Button

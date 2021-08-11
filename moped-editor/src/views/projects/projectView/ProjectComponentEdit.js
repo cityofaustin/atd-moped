@@ -87,6 +87,10 @@ const useStyles = makeStyles(theme => ({
   mapToolsDivider: {
     marginTop: ".5rem",
   },
+  layerSelectBox: {
+    maxHeight: "35vh",
+    overflow: "scroll"
+  },
 }));
 
 /**
@@ -773,7 +777,7 @@ const ProjectComponentEdit = ({
                 <Grid
                   item
                   xs={12}
-                  style={{ maxHeight: "35vh", overflow: "scroll" }}
+                  className={classes.layerSelectBox}
                 >
                   <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
                     <Grid item xs={12}>
