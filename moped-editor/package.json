@@ -64,7 +64,6 @@
     "lodash.get": "^4.4.2",
     "lodash.toarray": "^4.4.0",
     "material-table": "^1.69.2",
-    "moment": "^2.29.1",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
