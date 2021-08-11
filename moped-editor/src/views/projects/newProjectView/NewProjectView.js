@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import moment from "moment";
+import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
@@ -95,7 +95,7 @@ const NewProjectView = () => {
     current_phase: "",
     project_description: "",
     project_name: "",
-    start_date: moment().format("YYYY-MM-DD"),
+    start_date: format(Date.now(), "yyyy-MM-dd"),
     current_status: "",
     capitally_funded: false,
     ecapris_subproject_id: null,
