@@ -38,9 +38,7 @@ const MainLayout = () => {
   return user ? (
     <Navigate to="/moped" />
   ) : (
-    <div
-      className={classes.root}
-    >
+    <div className={classes.root}>
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>

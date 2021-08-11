@@ -85,6 +85,18 @@ const useStyles = makeStyles(theme => ({
       color: theme.palette.common.white,
     },
   },
+  appBar: {
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.header,
+  },
+  selectedTab: {
+    "&.Mui-selected": {
+      color: theme.palette.text.primary,
+    },
+  },
+  indicatorColor: {
+    backgroundColor: theme.palette.primary.light,
+  },
 }));
 
 function a11yProps(index) {
@@ -386,8 +398,9 @@ const ProjectView = () => {
                   </Grid>
                 </Box>
                 <Divider />
-                <AppBar position="static">
+                <AppBar className={classes.appBar} position="static">
                   <Tabs
+                    classes={{ indicator: classes.indicatorColor }}
                     value={activeTab}
                     onChange={handleChange}
                     aria-label="Project Details Tabs"
@@ -395,6 +408,7 @@ const ProjectView = () => {
                     {TABS.map((tab, i) => {
                       return (
                         <Tab
+                          className={classes.selectedTab}
                           key={tab.label}
                           label={tab.label}
                           {...a11yProps(i)}
