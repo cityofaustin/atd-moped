@@ -17,6 +17,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
         with:
+          key: ${{ runner.os }}-nocache-${{ secrets.CACHE_VERSION }}-${{ github.sha }}
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
@@ -53,6 +54,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
         with:
+          key: ${{ runner.os }}-nocache-${{ secrets.CACHE_VERSION }}-${{ github.sha }}
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
@@ -92,6 +94,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
         with:
+          key: ${{ runner.os }}-nocache-${{ secrets.CACHE_VERSION }}-${{ github.sha }}
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
@@ -126,6 +129,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v2
         with:
+          key: ${{ runner.os }}-nocache-${{ secrets.CACHE_VERSION }}-${{ github.sha }}
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
