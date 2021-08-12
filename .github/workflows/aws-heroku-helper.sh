@@ -126,6 +126,15 @@ function run_database_migration() {
   echo "Endpoint: ${HASURA_SERVER_ENDPOINT}";
   sleep 5;
 
+  # For the time being, we need to remove PostGIS from Heroku, it's not helping
+  print_header "Removing PostGIS from extensions";
+  sed --in-place '/create extension if not exists postgis/d' ./migrations/1599856186244_init/up.sql;
+  {
+    grep -rIno "create extension if not exists postgis" ./migrations/1599856186244_init/up.sql;
+  } || {
+    echo "PostGIS removed successfully.";
+  }
+
   print_header "Checking the server is online";
   wait_server_ready;
 
