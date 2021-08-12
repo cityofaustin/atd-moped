@@ -835,8 +835,6 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         ? [...prevLayers.filter(name => name !== layerName)]
         : [...prevLayers, layerName];
     });
-
-    handleMenuClose();
   };
 
   /**
@@ -906,6 +904,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        transitionDuration={0}
       >
         {getLayerNames().map(name => {
           if (!showProjectFeatures && projectFeatureLayerNames.includes(name))
