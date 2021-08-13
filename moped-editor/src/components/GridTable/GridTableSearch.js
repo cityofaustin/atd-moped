@@ -323,11 +323,7 @@ const GridTableSearch = ({
             >
               {query.config.showExport && (
                 <Button
-                  disabled={
-                    projectsList &&
-                    !(projectsList?.project_list_view ?? []).length &&
-                    true
-                  }
+                  disabled={(projectsList?.project_list_view ?? []).length > 0}
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
                   startIcon={<Icon>save</Icon>}
