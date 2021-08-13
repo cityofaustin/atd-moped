@@ -53,16 +53,17 @@ const history = createBrowserHistory();
  * @param {Object} searchState - The current state/state-modifier bundle for search
  * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @param {JSX.Element} children - Any components to be rendered above the search bar
+ * @param {Object} parentData - Response data (if any) from the parent component
  * @return {JSX.Element}
  * @constructor
  */
 const GridTableSearch = ({
-  projectsList,
   query,
   searchState,
   filterState,
   children,
   filterQuery,
+  parentData = null,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -323,7 +324,9 @@ const GridTableSearch = ({
             >
               {query.config.showExport && (
                 <Button
-                  disabled={(projectsList?.project_list_view ?? []).length > 0}
+                  disabled={
+                    (parentData?.[query.config.table] ?? []).length === 0
+                  }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
                   startIcon={<Icon>save</Icon>}
