@@ -325,7 +325,7 @@ const GridTableSearch = ({
                 <Button
                   disabled={
                     projectsList &&
-                    !projectsList["project_list_view"].length &&
+                    !(projectsList?.project_list_view ?? []).length &&
                     true
                   }
                   className={classes.downloadCsvButton}
