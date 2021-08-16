@@ -328,6 +328,7 @@ const NewProjectMap = ({
       <ReactMapGL
         {...viewport}
         ref={mapRef}
+        maxZoom={20}
         width="100%"
         height="60vh"
         interactiveLayerIds={!isDrawing && getEditMapInteractiveIds()}
