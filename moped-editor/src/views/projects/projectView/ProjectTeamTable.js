@@ -42,7 +42,7 @@ const ProjectTeamTable = ({
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
-    variables: { projectId },
+    variables: { projectId: projectId ?? 0 },
     fetchPolicy: "no-cache",
   });
 
