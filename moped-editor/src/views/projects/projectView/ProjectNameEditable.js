@@ -183,7 +183,7 @@ const ProjectNameEditable = props => {
         !isEditing && (
         <Typography
           color="textPrimary"
-          variant="h2"
+          variant="h1"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
