@@ -526,7 +526,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_phases.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
@@ -625,7 +626,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     differences.forEach(diff => {
                       let shouldCoerceEmptyStringToNull =
                         newData[diff] === "" &&
-                        (diff === "phase_start" || diff === "phase_end");
+                        (diff === "milestone_estimate" ||
+                          diff === "milestone_end");
 
                       if (shouldCoerceEmptyStringToNull) {
                         updatedMilestoneObject[diff] = null;
@@ -666,7 +668,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_milestones.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
