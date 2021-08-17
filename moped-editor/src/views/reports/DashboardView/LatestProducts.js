@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { v4 as uuid } from "uuid";
-import moment from "moment";
+import subHours from "date-fns/subHours";
+import formatDistanceToNow from "date-fns/formatDistanceToNow";
 import {
   Box,
   Button,
@@ -27,32 +28,32 @@ const data = [
   {
     id: uuid(),
     name: "Finance Data",
-    updatedAt: moment().subtract(2, "hours"),
+    updatedAt: subHours(Date.now(), 2),
     imageUrl: <MonetizationOnIcon />,
   },
   {
     id: uuid(),
     name: "ATD Data Tracker",
     imageUrl: <StorageIcon />,
-    updatedAt: moment().subtract(2, "hours"),
+    updatedAt: subHours(Date.now(), 2),
   },
   {
     id: uuid(),
     name: "TXDOT Systems",
     imageUrl: <BusinessIcon />,
-    updatedAt: moment().subtract(3, "hours"),
+    updatedAt: subHours(Date.now(), 3),
   },
   {
     id: uuid(),
     name: "Finance Data",
     imageUrl: <MonetizationOnIcon />,
-    updatedAt: moment().subtract(5, "hours"),
+    updatedAt: subHours(Date.now(), 5),
   },
   {
     id: uuid(),
     name: "eCapris Project Reporting",
     imageUrl: <BuildIcon />,
-    updatedAt: moment().subtract(9, "hours"),
+    updatedAt: subHours(Date.now(), 9),
   },
 ];
 
@@ -78,18 +79,25 @@ const LatestProducts = ({ className, ...rest }) => {
       />
       <Divider />
       <List>
-        {products.map((product, i) => (
-          <ListItem divider={i < products.length - 1} key={product.id}>
-            <ListItemAvatar>{product.imageUrl}</ListItemAvatar>
-            <ListItemText
-              primary={product.name}
-              secondary={`Updated ${product.updatedAt.fromNow()}`}
-            />
-            <IconButton edge="end" size="small">
-              <MoreVertIcon />
-            </IconButton>
-          </ListItem>
-        ))}
+        {products.map((product, i) => {
+          return (
+            <ListItem divider={i < products.length - 1} key={product.id}>
+              <ListItemAvatar>{product.imageUrl}</ListItemAvatar>
+              <ListItemText
+                primary={product.name}
+                secondary={`Updated ${formatDistanceToNow(
+                  new Date(product.updatedAt),
+                  {
+                    addSufix: true,
+                  }
+                )} ago`}
+              />
+              <IconButton edge="end" size="small">
+                <MoreVertIcon />
+              </IconButton>
+            </ListItem>
+          );
+        })}
       </List>
       <Divider />
       <Box display="flex" justifyContent="flex-end" p={2}>
