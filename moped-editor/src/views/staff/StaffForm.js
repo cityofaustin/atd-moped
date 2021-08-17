@@ -77,7 +77,11 @@ const staffValidationSchema = isNewUser =>
     title: yup.string().required(),
     workgroup: yup.string().required(),
     workgroup_id: yup.string().required(),
-    email: yup.string().required(),
+    email: yup
+      .string()
+      .required()
+      .email()
+      .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
       is: () => isNewUser,
@@ -196,7 +200,10 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    */
   const handleDeleteConfirm = () => {
     const requestPath = "/users/" + userCognitoId;
-    const deleteCallback = () => setIsDeleteModalOpen(false);
+    const deleteCallback = () => {
+      setIsDeleteModalOpen(false);
+      navigate("/moped/staff/");
+    };
 
     requestApi({
       method: "delete",

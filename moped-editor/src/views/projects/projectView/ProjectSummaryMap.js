@@ -4,6 +4,7 @@ import { Box, Button, makeStyles } from "@material-ui/core";
 import { EditLocation as EditLocationIcon } from "@material-ui/icons";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import { stopReportingRuntimeErrors } from "react-error-overlay";
 
 import {
   createSummaryMapLayers,
@@ -69,9 +70,11 @@ const ProjectSummaryMap = ({
   /**
    * Let's throw an error intentionally if there are no features for a project.
    */
-  // if (featureCount < 1) {
-  //   throw Error("Map error: Cannot render or edit maps with no features");
-  // }
+  if (featureCount < 1) {
+    stopReportingRuntimeErrors();
+
+    throw Error("Map error: Cannot render or edit maps with no features");
+  }
 
   /**
    * If we do have features, proceed to render map.
