@@ -25,7 +25,7 @@ export const ProjectsListViewQueryConf = {
   showSearchBar: true,
   showFilters: false,
   showExport: true,
-  showNewItemButton: true,
+  showNewItemButton: false,
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],

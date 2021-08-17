@@ -77,7 +77,11 @@ function build_database() {
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
     HASURA_GRAPHQL_ADMIN_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
-    HASURA_GRAPHQL_JWT_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET}" &> /dev/null;
+    HASURA_GRAPHQL_JWT_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET}" \
+    MOPED_API_APIKEY="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_API_KEY}" \
+    MOPED_API_EVENTS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_EVENTS_URL}" \
+    MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" &> /dev/null;
+
   echo "Done (muted result)";
 
   print_header "Create add-ons";
@@ -122,11 +126,17 @@ function run_database_migration() {
   echo "Endpoint: ${HASURA_SERVER_ENDPOINT}";
   sleep 5;
 
+  # For the time being, we need to remove PostGIS from Heroku, it's not helping
+  print_header "Removing PostGIS from extensions";
+  sed --in-place '/create extension if not exists postgis/d' ./migrations/1599856186244_init/up.sql;
+  {
+    grep -rIno "create extension if not exists postgis" ./migrations/1599856186244_init/up.sql;
+  } || {
+    echo "PostGIS removed successfully.";
+  }
+
   print_header "Checking the server is online";
   wait_server_ready;
-
-  print_header "Delete Hasura Event Triggers";
-  yq d -i metadata/tables.yaml *.event_triggers;
 
   print_header "Contents of Configuration";
   cp config/hasura.local.yaml config.yaml;

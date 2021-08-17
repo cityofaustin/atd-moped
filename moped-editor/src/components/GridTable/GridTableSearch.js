@@ -25,7 +25,7 @@ import GridTableExport from "./GridTableExport";
 import TabPanel from "../../views/projects/projectView/TabPanel";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
-import moment from "moment";
+import { format } from "date-fns";
 import { get } from "lodash";
 
 const useStyles = makeStyles(theme => ({
@@ -53,6 +53,7 @@ const history = createBrowserHistory();
  * @param {Object} searchState - The current state/state-modifier bundle for search
  * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @param {JSX.Element} children - Any components to be rendered above the search bar
+ * @param {Object} parentData - Response data (if any) from the parent component
  * @return {JSX.Element}
  * @constructor
  */
@@ -62,6 +63,7 @@ const GridTableSearch = ({
   filterState,
   children,
   filterQuery,
+  parentData = null,
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -150,7 +152,8 @@ const GridTableSearch = ({
    * @param {string} fileContents
    */
   const downloadFile = fileContents => {
-    const exportFileName = query.table + moment(Date.now()).format();
+    const exportFileName =
+      query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
     const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     if (link.download !== undefined) {
@@ -322,6 +325,9 @@ const GridTableSearch = ({
             >
               {query.config.showExport && (
                 <Button
+                  disabled={
+                    (parentData?.[query.config.table] ?? []).length === 0
+                  }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
                   startIcon={<Icon>save</Icon>}

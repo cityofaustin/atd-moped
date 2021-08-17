@@ -49,6 +49,9 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
   },
+  noPadding: {
+    padding: 0,
+  },
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
@@ -81,6 +84,18 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       color: theme.palette.common.white,
     },
+  },
+  appBar: {
+    backgroundColor: theme.palette.background.paper,
+    color: theme.palette.text.header,
+  },
+  selectedTab: {
+    "&.Mui-selected": {
+      color: theme.palette.text.primary,
+    },
+  },
+  indicatorColor: {
+    backgroundColor: theme.palette.primary.light,
   },
 }));
 
@@ -124,7 +139,6 @@ const ProjectView = () => {
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
@@ -241,9 +255,12 @@ const ProjectView = () => {
         Deleting this project will make it inaccessible to Moped users and only
         available to administrators. Users may request a deleted project be
         restored by{" "}
-        <a href={"https://atd.knack.com/dts#new-service-request/"} target="new">
+        <Link
+          href={"https://atd.knack.com/dts#new-service-request/"}
+          target="new"
+        >
           opening a support ticket
-        </a>
+        </Link>
         .
       </span>,
       <>
@@ -381,8 +398,9 @@ const ProjectView = () => {
                   </Grid>
                 </Box>
                 <Divider />
-                <AppBar position="static">
+                <AppBar className={classes.appBar} position="static">
                   <Tabs
+                    classes={{ indicator: classes.indicatorColor }}
                     value={activeTab}
                     onChange={handleChange}
                     aria-label="Project Details Tabs"
@@ -390,6 +408,7 @@ const ProjectView = () => {
                     {TABS.map((tab, i) => {
                       return (
                         <Tab
+                          className={classes.selectedTab}
                           key={tab.label}
                           label={tab.label}
                           {...a11yProps(i)}
@@ -401,7 +420,13 @@ const ProjectView = () => {
                 {TABS.map((tab, i) => {
                   const TabComponent = tab.Component;
                   return (
-                    <TabPanel key={tab.label} value={activeTab} index={i}>
+                    <TabPanel
+                      data-name={"moped-project-view-tabpanel"}
+                      key={tab.label}
+                      value={activeTab}
+                      index={i}
+                      className={tab.label === "Map" ? classes.noPadding : null}
+                    >
                       <TabComponent
                         loading={loading}
                         data={data}

@@ -1,37 +1,72 @@
 import React from "react";
 import { Avatar, Icon, makeStyles, Typography } from "@material-ui/core";
-import { useUser } from "../../auth/user";
 
 import config from "../../config";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   root: {},
   avatar: {
     height: 100,
     width: 100,
     marginBottom: 8,
+    backgroundColor: theme.palette.grey["300"],
   },
   userInitials: {
     fontSize: "2rem",
   },
 }));
 
-const CDNAvatar = props => {
+/**
+ * A wrapper for Material's Avatar component.
+ * @param {Object} className - The class name override
+ * @param {String} src - The image in the CDN
+ * @param {String} initials - The initials to render within the avatar (when no image is present).
+ * @param {boolean} largeInitials - If true, it makes the initials a little larger.
+ * @param {String} userColor - The background color to render under the initials.
+ * @param {boolean} useGenericAvatar - If true, whenever src is not provided it uses a generic avatar as opposed to initials.
+ * @return {JSX.Element}
+ * @constructor
+ */
+const CDNAvatar = ({
+  className,
+  src,
+  initials,
+  largeInitials,
+  userColor,
+  useGenericAvatar,
+}) => {
   const classes = useStyles();
-  const { user } = useUser();
 
-  const fileName = props?.src ?? null;
-  const src = `${config.env.APP_CLOUDFRONT}/${fileName ?? "na.png"}`;
+  /**
+   * The image source from CloudFront CDN
+   * @type {string|null}
+   */
+  const imageSource = !!src ? `${config.env.APP_CLOUDFRONT}/${src}` : null;
+
+  /**
+   * Overrides the default background color if provided.
+   * @type {{backgroundColor: (string)}|null}
+   */
+  const imageStyleOverride = !!userColor
+    ? {
+        backgroundColor: userColor,
+      }
+    : null;
 
   return (
     <Avatar
-      className={props?.className ? props.className : classes.avatar}
-      src={fileName ? src : null}
-      style={{ backgroundColor: fileName ? "white" : user?.userColor }}
+      alt={initials}
+      className={className ? className : classes.avatar}
+      src={imageSource}
+      style={imageStyleOverride}
     >
-      <Typography className={props?.largeInitials ? classes.userInitials : null}>
-        {props?.initials ? props.initials : <Icon>user</Icon>}
-      </Typography>
+      {!!!useGenericAvatar && initials && initials.length > 0 ? (
+        <Typography className={largeInitials ? classes.userInitials : null}>
+          {initials}
+        </Typography>
+      ) : (
+        <Icon>person</Icon>
+      )}
     </Avatar>
   );
 };

@@ -47,6 +47,7 @@ const ProjectNameEditable = props => {
   );
   const [isEditing, setIsEditing] = useState(props?.isEditing ?? false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [titleError, setTitleError] = useState(false);
 
   if (props?.isEditing && !isEditing) {
     setIsEditing(true);
@@ -74,6 +75,9 @@ const ProjectNameEditable = props => {
   };
 
   const handleProjectNameChange = e => {
+    if (titleError) {
+      setTitleError(false)
+    }
     setProjectName(e.target.value);
   };
 
@@ -82,6 +86,7 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
+    if (!projectName.trim()==="") {
     updateProjectName({
       variables: {
         projectId: props?.projectId,
@@ -110,6 +115,9 @@ const ProjectNameEditable = props => {
         setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
       });
+    } else {
+      setTitleError(true);
+    }
   };
 
   /**
@@ -135,11 +143,12 @@ const ProjectNameEditable = props => {
             <Grid item xs={12} sm={9}>
               <TextField
                 fullWidth
-                id="date"
+                id="project name"
                 label={"Project Name"}
                 type="text"
                 defaultValue={projectName ?? props?.projectName}
-                placeholder={"Enter project name"}
+                error={titleError}
+                placeholder={titleError ? "Title cannot be blank" : "Enter project name"}
                 multiline={false}
                 rows={1}
                 onChange={e => handleProjectNameChange(e)}
@@ -170,7 +179,8 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      {!isEditing && (
+      { // if not Editing Project Name, show edit icon on mouse over of title
+        !isEditing && (
         <Typography
           color="textPrimary"
           variant="h2"

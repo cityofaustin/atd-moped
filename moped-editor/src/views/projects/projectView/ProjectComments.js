@@ -19,7 +19,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { getSessionDatabaseData } from "src/auth/user";
+import { getSessionDatabaseData, getHighestRole, useUser } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
@@ -53,6 +53,8 @@ const useStyles = makeStyles(theme => ({
 
 const ProjectComments = () => {
   const { projectId } = useParams();
+  const { user } = useUser();
+  const userHighestRole = getHighestRole(user);
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
@@ -112,6 +114,7 @@ const ProjectComments = () => {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             status_id: 1,
+            added_by_user_id: Number(userSessionData.user_id),
           },
         ],
       },
@@ -203,28 +206,33 @@ const ProjectComments = () => {
                               )
                             }
                           />
-                          <ListItemSecondaryAction>
-                            {commentId !== item.project_note_id && (
+                          {// show edit/delete icons if comment authored by logged in user
+                          // or user is admin
+                          (userSessionData.user_id === item.added_by_user_id ||
+                            userHighestRole === "moped-admin") && (
+                            <ListItemSecondaryAction>
+                              {commentId !== item.project_note_id && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="edit"
+                                  onClick={() =>
+                                    editComment(i, item.project_note_id)
+                                  }
+                                >
+                                  <EditIcon />
+                                </IconButton>
+                              )}
                               <IconButton
                                 edge="end"
-                                aria-label="edit"
+                                aria-label="delete"
                                 onClick={() =>
-                                  editComment(i, item.project_note_id)
+                                  submitDeleteComment(item.project_note_id)
                                 }
                               >
-                                <EditIcon />
+                                <DeleteIcon />
                               </IconButton>
-                            )}
-                            <IconButton
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() =>
-                                submitDeleteComment(item.project_note_id)
-                              }
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </ListItemSecondaryAction>
+                            </ListItemSecondaryAction>
+                          )}
                         </ListItem>
                         {isNotLastItem && <Divider component="li" />}
                       </>

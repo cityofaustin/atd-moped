@@ -22,7 +22,7 @@ export const StaffListViewQueryConf = {
   showExport: true,
   showNewItemButton: true,
   customNewItemButton: newItemButton,
-  showPagination: true,
+  showPagination: false, // False disables pagination entirely
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
   },
@@ -55,6 +55,7 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
+      width: "15%",
       type: "String",
     },
     last_name: {
@@ -67,6 +68,7 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
+      width: "15%",
       type: "String",
     },
     email: {
@@ -80,15 +82,8 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
+      width: "20%",
       type: "String",
-    },
-    date_added: {
-      searchable: false,
-      sortable: true,
-      label: "Date added",
-      width: "10%",
-      filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
-      type: "date_iso",
     },
     title: {
       searchable: true,
@@ -100,9 +95,11 @@ export const StaffListViewQueryConf = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
+      width: "20%",
       type: "String",
     },
     workgroup: {
+      width: "20%",
       searchable: true,
       sortable: true,
       label: "Workgroup",
@@ -114,22 +111,20 @@ export const StaffListViewQueryConf = {
       },
       type: "String",
     },
-    cognito_user_id: {
+    roles: {
       searchable: false,
       sortable: false,
-      label: "Cognito user ID",
-      search: {
-        label: "Search by Cognito User ID",
-        operator: "_eq",
-        quoted: true,
-        envelope: "{VALUE}",
-      },
+      label: "Role",
+      filter: value => (value ?? "N/A").replaceAll("moped-", ""),
+      width: "10%",
       type: "String",
     },
   },
-  order_by: {},
+  order_by: {
+    first_name: "asc",
+  },
   where: {
-    status_id: "_eq: 1"
+    status_id: "_eq: 1",
   },
   limit: 25,
   offset: 0,

@@ -94,9 +94,14 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     data: lookupTablesData,
   } = useQuery(LOOKUP_TABLE_QUERY);
 
+  // editValue, value of field being edited
   const [editValue, setEditValue] = useState(null);
+  // editField: string, name of field being edited
   const [editField, setEditField] = useState("");
+  // isEditing is True if any field is in edit state
   const [isEditing, setIsEditing] = useState(false);
+  // errorField, name of field that contains error
+  const [errorField, setErrorField] = useState("");
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   const [updateField] = useMutation(INITIAL_MUTATION);
@@ -159,7 +164,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Retrieves the value for a field
+   * Retrieves the label/name for a field
    * @param {string} field - The value of the string
    * @returns {string}
    */
@@ -170,7 +175,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   /**
    * Retrieves the value from the table object in memory
    * @param {string} field - The name of the field (column)
-   * @returns {*} - The value
+   * @returns {*} - The value or null if field not in table
    */
   const getValue = field => {
     const tableName = fieldConfiguration.table.name;
@@ -180,9 +185,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   };
 
   /**
-   * Retrieves the format value and returns a printable formatted string or JSX
+   * Retrieves the field's value and returns a printable formatted string or JSX
+   * Used if field does not have a custom format function
    * @param {string} field - The name of the field (column)
-   * @param {boolean} raw - Retrieve the value only
    * @returns {string|JSX}
    */
   const formatValue = field => {
@@ -214,12 +219,20 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return formattedValue;
   };
 
+  /**
+   * if editValue is not null, executes mutation, triggers Snackbar with mutation response and resets state
+   * @param field, optional. Provided when updating boolean field
+   * @param value, optional. Provided when updating boolean field
+   */
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
     const mutationValue = value !== null ? value : editValue;
+    const nullableField = fieldConfiguration.fields[mutationField].nullable ?? true;
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
-    if (mutationValue !== null) {
+    // Also prevents from executing migration if value has not changed
+    // And checks if field is allowed to be a blank string
+    if (mutationValue !== null && (nullableField || mutationValue !== "")) {
       updateField({
         mutation: generateUpdateQuery(mutationField, mutationValue),
       })
@@ -254,8 +267,13 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
           setEditValue(null);
           setEditField("");
           setIsEditing(false);
+          setErrorField("");
           setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         });
+    } else {
+      if (!nullableField && mutationValue === "") {
+        setErrorField(mutationField);
+      }
     }
   };
 
@@ -277,6 +295,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     setEditValue(null);
     setEditField("");
     setIsEditing(false);
+    setErrorField("");
   };
 
   /**
@@ -284,6 +303,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    * @param value
    */
   const handleFieldValueUpdate = value => {
+    if (errorField !== "") {
+      setErrorField("")
+    }
     setEditValue(value.target.value);
   };
 
@@ -334,8 +356,11 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         label={fieldConfig.label}
         type="text"
         defaultValue={editValue ?? initialValue}
-        placeholder={fieldConfig?.placeholder}
+        placeholder={
+          errorField === field ? fieldConfig?.errorMessage : fieldConfig?.placeholder
+        }
         className={null}
+        error={errorField === field}
         multiline={fieldConfig?.multiline ?? false}
         rows={fieldConfig?.multilineRows ?? 1}
         onChange={e => handleFieldValueUpdate(e)}
@@ -412,6 +437,10 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     );
   };
 
+  /**
+   * Updates state with which field is being edited and sets isEditing to true
+   * @param {string} field
+   */
   const handleFieldEdit = field => {
     setIsEditing(true);
     setEditField(field);
@@ -429,7 +458,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         <CircularProgress />
       ) : (
         <Grid container>
-          {Object.keys(fieldConfiguration.fields).map(field => {
+          { // map through fields from field configuration
+            Object.keys(fieldConfiguration.fields).map(field => {
             const fieldType =
               fieldConfiguration.fields[field]?.type ?? "string";
 
@@ -449,6 +479,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                   )}
                   {(isEditing && editField === field) ||
                   fieldType === "boolean" ? (
+                    // boolean type fields are always rendered using function, regardless of editing status
                     <form onSubmit={e => handleAcceptClick(e)}>
                       <Grid container fullWidth>
                         <Grid item xs={12} sm={9}>
@@ -466,6 +497,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           )}
                         </Grid>
                         {fieldType !== "boolean" && (
+                          // show icons to accept or cancel edit
                           <Grid
                             item
                             xs={12}
@@ -489,6 +521,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                       </Grid>
                     </form>
                   ) : (
+                    // if not currently editing field and field is not Boolean
                     <Typography
                       id={"label-" + field}
                       className={
@@ -502,8 +535,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                           )
                         : formatValue(field)}
                       {fieldConfiguration.fields[field].editable &&
-                        !isEditing &&
-                        fieldType !== "boolean" && (
+                        !isEditing && (
                           <div>
                             <Icon
                               className={classes.editIcon}

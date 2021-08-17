@@ -2,7 +2,7 @@ import React from "react";
 
 import DataTable from "../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Box, Grid } from '@material-ui/core';
+import { Box, Grid } from "@material-ui/core";
 
 import ExternalLink from "../../../components/ExternalLink";
 
@@ -38,7 +38,8 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           table: "moped_status",
           fieldLabel: "status_name",
           fieldValue: "status_name",
-          relationship: "where: {status_id: {_gt: 0}}, order_by: {status_order: asc}",
+          relationship:
+            "where: {status_id: {_gt: 0}}, order_by: {status_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },
@@ -51,7 +52,9 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         editable: true,
         multiline: true,
         multilineRows: 4,
-        widthSmallAndLarger: 12
+        widthSmallAndLarger: 12,
+        nullable: false,
+        errorMessage: "Field cannot be blank",
       },
       start_date: {
         label: "Start date",
@@ -59,23 +62,12 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         placeholder: "Select date",
         editable: true,
       },
-      fiscal_year: {
-        label: "Fiscal year",
-        type: "select",
-        placeholder: "Select fiscal year",
-        lookup: {
-          table: "moped_city_fiscal_years",
-          fieldLabel: "fiscal_year_value",
-          fieldValue: "fiscal_year_value",
-        },
-        editable: true,
-      },
       capitally_funded: {
         label: "Capital funding",
         type: "boolean",
         placeholder: "Select capitally funded",
         editable: true,
-        dependentField: "ecapris_subproject_id"
+        dependentField: "ecapris_subproject_id",
       },
       ...(capitallyFunded && {
         ecapris_subproject_id: {
@@ -110,7 +102,8 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
           table: "moped_phases",
           fieldLabel: "phase_name",
           fieldValue: "phase_name",
-          relationship: "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
+          relationship:
+            "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
           style: classes.fieldSelectCapitalize,
           format: value => String(value).toLowerCase(),
         },

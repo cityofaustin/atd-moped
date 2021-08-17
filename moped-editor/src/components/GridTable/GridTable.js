@@ -162,8 +162,13 @@ const GridTable = ({ title, query }) => {
   }
 
   // Set limit, offset and clear any 'Where' filters
-  query.limit = pagination.limit;
-  query.offset = pagination.offset;
+  if (query.config.showPagination) {
+    query.limit = pagination.limit;
+    query.offset = pagination.offset;
+  } else {
+    query.limit = 0;
+  }
+
   query.cleanWhere();
 
   /**
@@ -423,6 +428,7 @@ const GridTable = ({ title, query }) => {
         {/*Toolbar Space*/}
         <GridTableToolbar>
           <GridTableSearch
+            parentData={data}
             query={query}
             searchState={{
               searchParameters: search,
@@ -542,12 +548,14 @@ const GridTable = ({ title, query }) => {
                 </TableContainer>
 
                 {/*Pagination Management*/}
-                <GridTablePagination
-                  query={query}
-                  data={data}
-                  pagination={pagination}
-                  setPagination={setPagination}
-                />
+                {query.config.showPagination && (
+                  <GridTablePagination
+                    query={query}
+                    data={data}
+                    pagination={pagination}
+                    setPagination={setPagination}
+                  />
+                )}
               </Card>
             ) : (
               <span>{error ? error : "Could not fetch data"}</span>

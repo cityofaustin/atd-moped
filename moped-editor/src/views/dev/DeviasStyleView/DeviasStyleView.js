@@ -6,7 +6,6 @@ import ColorsView from "./ColorsView";
 
 const useStyles = makeStyles(theme => ({
   root: {
-    backgroundColor: theme.palette.background.dark,
     minHeight: "100%",
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
@@ -17,7 +16,7 @@ const DeviasStyleView = () => {
   const classes = useStyles();
 
   return (
-    <Page className={classes.root} title="Devias Custom Styles">
+    <Page className={classes.root} title="Moped Styles">
       <Container maxWidth={"lg"}>
         <Grid container spacing={3}>
           <Grid item lg={12}>

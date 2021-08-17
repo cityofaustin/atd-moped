@@ -3,12 +3,13 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
+  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControl,
+  Divider,
   Grid,
   Icon,
   TextField,
@@ -23,33 +24,72 @@ import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
-import { countFeatures, mapConfig, mapErrors } from "../../../utils/mapHelpers";
+import {
+  countFeatures,
+  mapConfig,
+  mapErrors,
+  useSaveActionReducer,
+} from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
 const useStyles = makeStyles(theme => ({
   title: {
-    marginLeft: theme.spacing(2),
+    marginLeft: theme.spacing(1),
     flex: 1,
   },
   selectEmpty: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   formSelect: {
-    width: "60%",
+    width: "100%",
   },
   formButton: {
-    margin: theme.spacing(2),
-  },
-  formButtonDelete: {
-    float: "right",
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
   },
   formTextField: {
-    margin: theme.spacing(2),
+    width: "97%",
+    margin: "4px",
   },
   mapAlert: {
-    margin: theme.spacing(2),
+    margin: theme.spacing(1),
+  },
+  mapStyle: {
+    position: "relative",
+    padding: 0,
+  },
+  mapTools: {
+    position: "absolute",
+    top: "4rem",
+    left: "1rem",
+    zIndex: "1",
+    width: "21rem",
+    background: theme.palette.common.white,
+    border: "lightgray 1px solid",
+    borderRadius: ".5rem",
+    padding: ".5rem",
+  },
+  mapToolsShowHidden: {
+    position: "absolute",
+    top: "4rem",
+    left: "1rem",
+    zIndex: "1",
+    width: "21rem",
+    background: theme.palette.common.white,
+    border: "lightgray 1px solid",
+    borderRadius: ".5rem",
+    padding: ".5rem",
+    "&:hover": {
+      background: theme.palette.common.white,
+    },
+  },
+  mapToolsDivider: {
+    marginTop: ".5rem",
+  },
+  layerSelectBox: {
+    maxHeight: "35vh",
+    overflow: "scroll"
   },
 }));
 
@@ -57,17 +97,19 @@ const useStyles = makeStyles(theme => ({
  * The project component editor
  * @param {Number} componentId - The moped_proj_component id being edited
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
- * @param {function} projectRefetchFeatures - Reload parent component's features
+ * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
  * @constructor
  */
 const ProjectComponentEdit = ({
   componentId,
   handleCancelEdit,
-  projectRefetchFeatures,
+  projectFeatureCollection = null,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
+
+  // Template that should keep all features for this component
   const emptyFeatureCollection = {
     type: "FeatureCollection",
     features: [],
@@ -102,6 +144,9 @@ const ProjectComponentEdit = ({
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
+  const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
+  const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
+
   /**
    * Apollo hook functions
    */
@@ -115,6 +160,12 @@ const ProjectComponentEdit = ({
   const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
 
   const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
+
+  /**
+   * saveActionState contains the current save state
+   * saveActionDispatch allows us to update the state via action (signal) dispatch.
+   */
+  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
 
   /**
    * Generates an initial list of component types, subtypes and counts
@@ -229,7 +280,7 @@ const ProjectComponentEdit = ({
     initialTypeCounts[selectedComponentType].subcomponents;
 
   /**
-   * Returns the current project componetn id
+   * Returns the current project component id
    * @return {number|null}
    */
   const getProjectComponentId = () =>
@@ -258,11 +309,11 @@ const ProjectComponentEdit = ({
     const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
 
     // Generates a list of available component subtypes given a component type
-    const availableSubTypes = getAvailableSubtypes(selectedType);
+    const newAvailableSubTypes = getAvailableSubtypes(selectedType);
 
     // Set The selected component type
     setSelectedComponentType(selectedType);
-    setAvailableSubtypes(availableSubTypes);
+    setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
   };
 
@@ -400,7 +451,6 @@ const ProjectComponentEdit = ({
    */
   const exitAndReload = () => {
     handleCancelEdit();
-    projectRefetchFeatures();
   };
 
   /**
@@ -507,7 +557,7 @@ const ProjectComponentEdit = ({
       variables: {
         objects: variablePayload,
       },
-    }).then(() => exitAndReload());
+    }).then(() => saveActionDispatch({ type: "componentSaved" }));
   };
 
   /**
@@ -566,6 +616,30 @@ const ProjectComponentEdit = ({
     // eslint-disable-next-line
   }, [selectedComponentType, selectedComponentSubtype]);
 
+  /**
+   * We have to wait to hear from the map that it is finished saving
+   * the features it contains
+   * */
+  useEffect(() => {
+    if (
+      saveActionState?.currentStep === 2 && // Features are saved
+      saveActionState?.featuresSaved
+    )
+      handleSaveButtonClick();
+
+    if (
+      saveActionState?.currentStep === 3 && // Component is saved
+      saveActionState?.componentSaved
+    )
+      exitAndReload();
+    /**
+     * The 'handleSaveButtonClick' and 'exitAndReload' change on every render.
+     * We cannot add them to the list otherwise it would
+     * trigger an endless loop. Making eslint ignore it for now.
+     */
+    // eslint-disable-next-line
+  }, [saveActionState]);
+
   if (loading) return <CircularProgress />;
   if (error) return <div>Error: {JSON.stringify(error)}</div>;
 
@@ -602,8 +676,8 @@ const ProjectComponentEdit = ({
     // If there is a componentId, then get subtypes
     if (componentId > 0) {
       // Now get the available subtypes
-      const availableSubTypes = getAvailableSubtypes(componentTypeDB);
-      setAvailableSubtypes(availableSubTypes);
+      const newStateAvailableSubTypes = getAvailableSubtypes(componentTypeDB);
+      setAvailableSubtypes(newStateAvailableSubTypes);
       // If the component type has subtypes, then fetch those and update state
       if (initialTypeCounts[componentTypeDB].count > 1) {
         const subtypeDB = (databaseComponent?.component_subtype ?? "")
@@ -664,157 +738,216 @@ const ProjectComponentEdit = ({
   }
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <FormControl variant="filled" fullWidth>
-              <Autocomplete
-                id="moped-project-select"
-                className={classes.formSelect}
-                value={availableTypes.find(
-                  type => type.toLowerCase() === selectedComponentType
-                )}
-                options={availableTypes}
-                getOptionLabel={component => component}
-                renderInput={params => (
-                  <TextField {...params} label="Type" variant="outlined" />
-                )}
-                onChange={handleComponentTypeSelect}
-              />
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            {availableSubtypes.length > 0 && (
-              <FormControl variant="filled" fullWidth>
-                <Autocomplete
-                  id="moped-project-subtype-select"
-                  className={classes.formSelect}
-                  value={availableSubtypes.find(
-                    subtype =>
-                      subtype.toLowerCase() === selectedComponentSubtype
-                  )}
-                  options={[...new Set(availableSubtypes)].sort()}
-                  getOptionLabel={component => component}
-                  renderInput={params => (
-                    <TextField {...params} label="Subtype" variant="outlined" />
-                  )}
-                  onChange={handleComponentSubtypeSelect}
-                />
-              </FormControl>
-            )}
-          </Grid>
-          <ProjectComponentSubcomponents
-            componentId={selectedComponentId}
-            subcomponentList={data?.moped_subcomponents}
-            selectedSubcomponents={selectedSubcomponents}
-            setSelectedSubcomponents={setSelectedSubcomponents}
-          />
-          <Grid xs={12}>
-            <FormControl variant="filled" fullWidth>
-              <TextField
-                className={classes.formTextField}
-                id="moped-component-description"
-                label="Description"
-                multiline
-                rows={4}
-                defaultValue=""
-                variant="filled"
-                value={componentDescription}
-                onChange={e => handleDescriptionKeyDown(e)}
-              />
-            </FormControl>
-          </Grid>
-          {!areMinimumFeaturesSet && (
-            <Grid xs={12}>
-              <Alert className={classes.mapAlert} severity="error">
-                You must select at least one feature for this component.
-              </Alert>
-            </Grid>
-          )}
-          <Grid xs={8}>
-            <Button
-              className={classes.formButton}
-              variant="contained"
-              color="primary"
-              onClick={handleSaveButtonClick}
-              disabled={!areMinimumFeaturesSet || selectedComponentId === null}
-              startIcon={<Icon>save</Icon>}
+    <Grid
+      data-name={"moped-component-editor-grid"}
+      className={classes.mapStyle}
+    >
+      <NewProjectMap
+        data-name={"moped-component-editor-newprojectmap"}
+        featureCollection={editFeatureCollection}
+        setFeatureCollection={setEditFeatureCollection}
+        projectId={null}
+        refetchProjectDetails={null}
+        noPadding={true}
+        newFeature={componentId === 0}
+        projectFeatureCollection={projectFeatureCollection}
+        saveActionState={saveActionState}
+        saveActionDispatch={saveActionDispatch}
+        componentEditorPanel={
+          <>
+            <Collapse
+              in={editPanelCollapsedShow}
+              onExit={() => setEditPanelCollapsed(true)}
             >
-              Save
-            </Button>
-            <Button
-              className={classes.formButton}
-              onClick={handleCancelEdit}
-              variant="contained"
-              color="secondary"
-              startIcon={<Icon>cancel</Icon>}
-            >
-              Cancel
-            </Button>
-          </Grid>
-          <Grid xs={4} alignItems="right">
-            {componentId > 0 && (
               <Button
-                className={classes.formButtonDelete}
-                onClick={handleDeleteDialogClickOpen}
-                variant="outlined"
-                color="default"
-                startIcon={<Icon>delete</Icon>}
+                className={classes.mapToolsShowHidden}
+                size={"small"}
+                onClick={() => setEditPanelCollapsedShow(false)}
+                startIcon={<KeyboardArrowDown />}
               >
-                Delete
+                Show Component Details
               </Button>
-            )}
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={12} md={8}>
-        <NewProjectMap
-          featureCollection={editFeatureCollection}
-          setFeatureCollection={setEditFeatureCollection}
-          projectId={null}
-          refetchProjectDetails={null}
-          noPadding={true}
-        />
-        {error && (
-          <Alert className={classes.mapAlert} severity="error">
-            {mapErrors.failedToSave}
-          </Alert>
-        )}
-      </Grid>
-      <Dialog
-        open={deleteDialogOpen}
-        onClose={handleDeleteDialogClickClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          <h2>{"Delete Component?"}</h2>
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            You cannot undo this operation, any subcomponents and features will
-            be lost.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={handleComponentDelete}
-            color="primary"
-            startIcon={<Icon>delete</Icon>}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={handleDeleteDialogClickClose}
-            color="default"
-            autoFocus
-            startIcon={<Icon>cancel</Icon>}
-          >
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
+            </Collapse>
+            <Collapse
+              className={classes.mapTools}
+              in={editPanelCollapsed}
+              onExited={() => setEditPanelCollapsedShow(true)}
+            >
+              <Grid container>
+                <Grid
+                  item
+                  xs={12}
+                  className={classes.layerSelectBox}
+                >
+                  <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
+                    <Grid item xs={12}>
+                      <Autocomplete
+                        id="moped-project-select"
+                        className={classes.formSelect}
+                        value={availableTypes.find(
+                          type => type.toLowerCase() === selectedComponentType
+                        )}
+                        options={availableTypes}
+                        getOptionLabel={component => component}
+                        renderInput={params => (
+                          <TextField
+                            {...params}
+                            label="Type"
+                            variant="outlined"
+                          />
+                        )}
+                        onChange={handleComponentTypeSelect}
+                      />
+                    </Grid>
+                    {availableSubtypes.length > 0 && (
+                      <Grid item xs={12}>
+                        <Autocomplete
+                          id="moped-project-subtype-select"
+                          className={classes.formSelect}
+                          value={
+                            availableSubtypes.find(
+                              subtype =>
+                                subtype.toLowerCase() ===
+                                selectedComponentSubtype
+                            ) ?? null
+                          }
+                          options={[...new Set(availableSubtypes)].sort()}
+                          getOptionLabel={component => component}
+                          renderInput={params => (
+                            <TextField
+                              {...params}
+                              label="Subtype"
+                              variant="outlined"
+                            />
+                          )}
+                          onChange={handleComponentSubtypeSelect}
+                        />
+                      </Grid>
+                    )}
+                    <ProjectComponentSubcomponents
+                      componentId={selectedComponentId}
+                      subcomponentList={data?.moped_subcomponents}
+                      selectedSubcomponents={selectedSubcomponents}
+                      setSelectedSubcomponents={setSelectedSubcomponents}
+                    />
+                    <Grid xs={12}>
+                      <TextField
+                        className={classes.formTextField}
+                        id="moped-component-description"
+                        label="Description"
+                        multiline
+                        rows={4}
+                        defaultValue=""
+                        variant="filled"
+                        value={componentDescription}
+                        onChange={e => handleDescriptionKeyDown(e)}
+                        fullWidth
+                      />
+                    </Grid>
+                    {!areMinimumFeaturesSet && (
+                      <Grid xs={12}>
+                        <Alert className={classes.mapAlert} severity="error">
+                          You must select at least one feature for this
+                          component.
+                        </Alert>
+                      </Grid>
+                    )}
+                    <Grid xs={12} spacing={0}>
+                      <Button
+                        className={classes.formButton}
+                        variant="contained"
+                        color="primary"
+                        onClick={() =>
+                          saveActionDispatch({ type: "initiateFeatureSave" })
+                        }
+                        // onClick={handleSaveButtonClick}
+                        disabled={
+                          !areMinimumFeaturesSet || selectedComponentId === null
+                        }
+                        startIcon={<Icon>save</Icon>}
+                        size="small"
+                      >
+                        Save
+                      </Button>
+                      <Button
+                        className={classes.formButton}
+                        onClick={handleCancelEdit}
+                        variant="contained"
+                        color="secondary"
+                        startIcon={<Icon>cancel</Icon>}
+                        size="small"
+                      >
+                        Cancel
+                      </Button>
+                      {componentId > 0 && (
+                        <Button
+                          className={classes.formButton}
+                          onClick={handleDeleteDialogClickOpen}
+                          variant="outlined"
+                          color="default"
+                          startIcon={<Icon>delete</Icon>}
+                          size="small"
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </Grid>
+                  </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                  <Divider fullWidth className={classes.mapToolsDivider} />
+                  <Button
+                    onClick={() => setEditPanelCollapsed(false)}
+                    startIcon={<KeyboardArrowUp />}
+                    fullWidth
+                  >
+                    Hide All
+                  </Button>
+                </Grid>
+              </Grid>
+
+              <Dialog
+                open={deleteDialogOpen}
+                onClose={handleDeleteDialogClickClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">
+                  <h2>{"Delete Component?"}</h2>
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    You cannot undo this operation, any subcomponents and
+                    features will be lost.
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    onClick={handleComponentDelete}
+                    color="primary"
+                    startIcon={<Icon>delete</Icon>}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    onClick={handleDeleteDialogClickClose}
+                    color="default"
+                    autoFocus
+                    startIcon={<Icon>cancel</Icon>}
+                  >
+                    Cancel
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </Collapse>
+          </>
+        }
+      />
+      {error && (
+        <Alert className={classes.mapAlert} severity="error">
+          {mapErrors.failedToSave}
+        </Alert>
+      )}
     </Grid>
   );
 };
