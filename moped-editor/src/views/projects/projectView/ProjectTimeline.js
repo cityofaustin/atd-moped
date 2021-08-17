@@ -186,9 +186,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = (props, name, label) => {
-    console.log(props)
-    return (
+  const DateFieldEditComponent = (props, name, label) => (
     <TextField
       name={name}
       label={label}
@@ -201,7 +199,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         shrink: true,
       }}
     />
-  )};
+  );
 
   /**
    * ToggleEditComponent - renders a toggle for True/False edit fields
@@ -314,7 +312,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start date",
       field: "phase_start",
-      render: rowData => rowData.phase_start ? moment(rowData.phase_start).format("MM/DD/YYYY") : '',
+      render: rowData =>
+        rowData.phase_start
+          ? moment(rowData.phase_start).format("MM/DD/YYYY")
+          : "",
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -326,7 +327,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "End date",
       field: "phase_end",
-      render: rowData => rowData.phase_end ? moment(rowData.phase_end).format("MM/DD/YYYY"): '',
+      render: rowData =>
+        rowData.phase_end ? moment(rowData.phase_end).format("MM/DD/YYYY") : "",
       editComponent: props => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
@@ -358,7 +360,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Completion estimate",
       field: "milestone_estimate",
       render: rowData =>
-        rowData.milestone_estimate ? moment(rowData.milestone_estimate).format("MM/DD/YYYY"):'',
+        rowData.milestone_estimate
+          ? moment(rowData.milestone_estimate).format("MM/DD/YYYY")
+          : "",
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -370,7 +374,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Date completed",
       field: "milestone_end",
-      render: rowData => rowData.milestone_end ? moment(rowData.milestone_end).format("MM/DD/YYYY") :'',
+      render: rowData =>
+        rowData.milestone_end
+          ? moment(rowData.milestone_end).format("MM/DD/YYYY")
+          : "",
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -528,7 +535,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_phases.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
@@ -668,7 +676,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_milestones.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
