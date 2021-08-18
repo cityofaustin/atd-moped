@@ -207,7 +207,11 @@ const NavigationSearchInput = () => {
           >
             <Box className={classes.searchResults}>
               {called && !loading ? (
-                <NavigationSearchResults results={data.project_list_view} />
+                <NavigationSearchResults
+                  results={data.project_list_view}
+                  handleDropdownClose={handleDropdownClose}
+                  searchTerm={searchTerm}
+                />
               ) : (
                 <Typography>
                   {" "}

@@ -18,7 +18,7 @@ const ListItemLink = props => (
   <ListItem button component={RouterLink} {...props} />
 );
 
-const NavigationSearchResults = ({ results }) => {
+const NavigationSearchResults = ({ results, handleDropdownClose, searchTerm }) => {
   // const classes = useStyles();
   console.log(results);
   const firstResults = results.slice(0, 5);
@@ -36,14 +36,14 @@ const NavigationSearchResults = ({ results }) => {
   return (
     <List>
       {firstResults.map(result => (
-        <ListItemLink to={`projects/${result.project_id}`}>
+        <ListItemLink to={`projects/${result.project_id}`} onClick={handleDropdownClose}>
           <ListItemText primary={result.project_name} />
         </ListItemLink>
       ))}
       {results.length > 5 && (
         <>
           <Divider />
-          <ListItemLink to={`projects/`}>
+          <ListItemLink to={`projects/`} state={{searchTerm:searchTerm}}>
             <ListItemText primary="More Results" />
           </ListItemLink>
         </>

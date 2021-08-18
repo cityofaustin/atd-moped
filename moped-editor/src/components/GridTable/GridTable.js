@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query, searchValue }) => {
+const GridTable = ({ title, query, searchTerm }) => {
   const classes = useStyles();
 
   /**
@@ -121,7 +121,7 @@ const GridTable = ({ title, query, searchValue }) => {
    * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
-    value: searchValue ?? "",
+    value: searchTerm ?? "",
     column: "",
   });
 

@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 // Material
 import { makeStyles } from "@material-ui/core";
@@ -31,10 +32,11 @@ let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
  */
 const ProjectsListView = () => {
   const classes = useStyles();
+  const navSearchTerm = useLocation()?.state?.searchTerm;
 
   return (
     <Page className={classes.root} title="Projects">
-      <GridTable title={"Projects"} query={projectsQuery} />
+      <GridTable title={"Projects"} query={projectsQuery} searchTerm={navSearchTerm}/>
     </Page>
   );
 };
