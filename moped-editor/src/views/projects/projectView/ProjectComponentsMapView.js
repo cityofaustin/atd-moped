@@ -262,6 +262,7 @@ const ProjectComponentsMapView = ({
         {...viewport}
         /* Object reference to this object */
         ref={mapRef}
+        maxZoom={20}
         width="100%"
         height="60vh"
         /* Access Key */

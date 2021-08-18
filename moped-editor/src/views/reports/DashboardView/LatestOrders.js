@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import moment from "moment";
 import { v4 as uuid } from "uuid";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -21,6 +20,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import { format } from "date-fns";
 
 const data = [
   {
@@ -122,9 +122,7 @@ const LatestOrders = ({ className, ...rest }) => {
                 <TableRow hover key={order.id}>
                   <TableCell>{order.ref}</TableCell>
                   <TableCell>{order.customer.name}</TableCell>
-                  <TableCell>
-                    {moment(order.createdAt).format("DD/MM/YYYY")}
-                  </TableCell>
+                  <TableCell>{format(order.createdAt, "dd/MM/yyyy")}</TableCell>
                   <TableCell>
                     <Chip color="primary" label={order.status} size="small" />
                   </TableCell>

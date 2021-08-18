@@ -32,7 +32,8 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import moment from "moment";
+import { format } from "date-fns";
+import parseISO from "date-fns/parseISO";
 import ClearIcon from "@material-ui/icons/Clear";
 import { IconButton } from "@material-ui/core";
 
@@ -327,7 +328,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start date",
       field: "phase_start",
-      render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.phase_start
+          ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -340,7 +344,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "End date",
       field: "phase_end",
-      render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.phase_end
+          ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -377,7 +384,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Completion estimate",
       field: "milestone_estimate",
       render: rowData =>
-        moment(rowData.milestone_estimate).format("MM/DD/YYYY"),
+        rowData.milestone_estimate
+          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -390,7 +399,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Date completed",
       field: "milestone_end",
-      render: rowData => moment(rowData.milestone_end).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.milestone_end
+          ? format(parseISO(rowData.milestone_end), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
