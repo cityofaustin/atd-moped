@@ -13,6 +13,7 @@ import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
+import { getSearchValue } from "../../../components/GridTable/GridTable.js"
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -70,8 +71,6 @@ const NavigationSearchInput = () => {
     projectSearchQuery.config.options.useQuery
   );
 
-  // const setShowSearchInput = () => showSearchInput(searchInput => !searchInput);
-
   const handleMagClick = () => {
     showSearchInput(true);
   };
@@ -106,27 +105,6 @@ const NavigationSearchInput = () => {
     }
   };
 
-  // todo: import function from gridtable
-  const getSearchValue = (column, value) => {
-    // Retrieve the type of field (string, float, int, etc)
-    const type = projectSearchQuery.config.columns[column].type.toLowerCase();
-    // Get the invalidValueDefault in the search config object
-    const invalidValueDefault =
-      projectSearchQuery.config.columns[column].search?.invalidValueDefault ??
-      null;
-    // If the type is number of float, attempt to parse as such
-    if (["number", "float", "double"].includes(type)) {
-      value = Number.parseFloat(value) || invalidValueDefault;
-    }
-    // If integer, attempt to parse as integer
-    if (["int", "integer"].includes(type)) {
-      value = Number.parseInt(value) || invalidValueDefault;
-    }
-    // Any other value types are pass-through for now
-    return value;
-  };
-  // end import from gridtable
-
   const handleSearchSubmission = event => {
     // Stop if we don't have any value entered in the search field
     if (searchTerm.length === 0) {
@@ -146,7 +124,7 @@ const NavigationSearchInput = () => {
           quoted,
           envelope,
         } = projectSearchQuery.config.columns[column].search;
-        const searchValue = getSearchValue(column, searchTerm);
+        const searchValue = getSearchValue(projectSearchQuery, column, searchTerm);
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
