@@ -39,11 +39,14 @@ const useStyles = makeStyles(theme => ({
   searchPopper: {
     borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: theme.palette.text.secondary,
+    borderColor: "red", // theme.palette.text.secondary,
   },
   searchResults: {
     padding: "10px",
     backgroundColor: theme.palette.background.paper,
+    borderWidth: "1px",
+    borderRadius: "4px",
+    borderColor: "#ff1345",
   },
 }));
 
@@ -54,10 +57,9 @@ const useStyles = makeStyles(theme => ({
 const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
-  console.log("conf:", ProjectsListViewQueryConf);
   let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
-  // should text input be shown or just magnifying glass
+  // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
   // anchor element for results popper to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
@@ -110,7 +112,8 @@ const NavigationSearchInput = () => {
     const type = projectSearchQuery.config.columns[column].type.toLowerCase();
     // Get the invalidValueDefault in the search config object
     const invalidValueDefault =
-      projectSearchQuery.config.columns[column].search?.invalidValueDefault ?? null;
+      projectSearchQuery.config.columns[column].search?.invalidValueDefault ??
+      null;
     // If the type is number of float, attempt to parse as such
     if (["number", "float", "double"].includes(type)) {
       value = Number.parseFloat(value) || invalidValueDefault;
@@ -138,9 +141,11 @@ const NavigationSearchInput = () => {
     Object.keys(projectSearchQuery.config.columns)
       .filter(column => projectSearchQuery.config.columns[column]?.searchable)
       .forEach(column => {
-        const { operator, quoted, envelope } = projectSearchQuery.config.columns[
-          column
-        ].search;
+        const {
+          operator,
+          quoted,
+          envelope,
+        } = projectSearchQuery.config.columns[column].search;
         const searchValue = getSearchValue(column, searchTerm);
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
@@ -158,50 +163,62 @@ const NavigationSearchInput = () => {
   }
 
   return (
-    <>
-      <div className={classes.root} ref={divRef}>
-        {!searchInput ? (
-          <IconButton onClick={handleMagClick}>
-            <SearchIcon />
-          </IconButton>
-        ) : (
-          <InputBase
-            placeholder="Project name, description or eCAPRIS ID"
-            classes={{
-              root: classes.inputRoot,
-              input: classes.inputInput,
-              adornedStart: classes.adornedStart,
-            }}
-            inputProps={{ "aria-label": "search" }}
-            startAdornment={<SearchIcon fontSize={"small"} />}
-            onFocus={handleSearchFocus}
-            onChange={e => setSearchTerm(e.target.value)}
-            onKeyDown={e => handleKeyDown(e.key)}
-            value={searchTerm}
-            autoFocus
-          />
-        )}
-      </div>
-      <Popper
-        id="searchResults"
-        open={Boolean(searchResultsAnchor)}
-        anchorEl={searchResultsAnchor}
-        onClose={handleDropdownClose}
-        placement={"bottom-start"}
-        elevation={3}
-        className={classes.searchPopper}
-      >
+    <div>
       <ClickAwayListener onClickAway={handleDropdownClose}>
-        <Box className={classes.searchResults}>
-          {called && !loading ? (
-            <NavigationSearchResults results={data.project_list_view} />
+        <div className={classes.root} ref={divRef}>
+          {!searchInput ? (
+            <IconButton onClick={handleMagClick}>
+              <SearchIcon />
+            </IconButton>
           ) : (
-            <Typography> Search Results </Typography>
+            <InputBase
+              placeholder="Project name, description or eCAPRIS ID"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+                adornedStart: classes.adornedStart,
+              }}
+              inputProps={{ "aria-label": "search" }}
+              startAdornment={<SearchIcon fontSize={"small"} />}
+              onFocus={handleSearchFocus}
+              onChange={e => setSearchTerm(e.target.value)}
+              onKeyDown={e => handleKeyDown(e.key)}
+              value={searchTerm}
+              autoFocus
+            />
           )}
-        </Box>
+          <Popper
+            id="searchResults"
+            open={Boolean(searchResultsAnchor)}
+            anchorEl={searchResultsAnchor}
+            onClose={handleDropdownClose}
+            placement={"bottom-start"}
+            modifiers={{
+              offset: {
+                enabled: true,
+                offset: "0, 15",
+              },
+              applyStyle: {
+                enabled: true,
+              },
+            }}
+            elevation={8}
+            className={classes.searchPopper}
+          >
+            <Box className={classes.searchResults}>
+              {called && !loading ? (
+                <NavigationSearchResults results={data.project_list_view} />
+              ) : (
+                <Typography>
+                  {" "}
+                  Search Results {/*todo: eventually be the previous results*/}
+                </Typography>
+              )}
+            </Box>
+          </Popper>
+        </div>
       </ClickAwayListener>
-      </Popper>
-    </>
+    </div>
   );
 };
 

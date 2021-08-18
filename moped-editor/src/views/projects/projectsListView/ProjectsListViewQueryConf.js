@@ -184,6 +184,8 @@ export const ProjectsListViewQueryConf = {
   where: {
     is_retired: "_eq: false",
   },
+  or: null,
+  and: null,
   limit: 25,
   offset: 0,
 };
