@@ -33,6 +33,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import moment from "moment";
+import ClearIcon from "@material-ui/icons/Clear";
+import { IconButton } from "@material-ui/core";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -186,20 +188,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = (props, name, label) => (
-    <TextField
-      name={name}
-      label={label}
-      type="date"
-      variant="standard"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      onKeyDown={e => handleKeyEvent(e)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-  );
+
+  const DateFieldEditComponent = (props, name, label) => {
+    return (
+      <TextField
+        name={name}
+        label={label}
+        type="date"
+        variant="standard"
+        value={props.value}
+        onChange={e => props.onChange(e.target.value)}
+        onKeyDown={e => handleKeyEvent(e)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => props.onChange(() => null)}>
+              <ClearIcon />
+            </IconButton>
+          ),
+        }}
+        InputAdornmentProps={{
+          position: "start",
+        }}
+      />
+    );
+  };
 
   /**
    * ToggleEditComponent - renders a toggle for True/False edit fields
@@ -316,6 +331,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
+          tableType="Phase"
           name="phase_start"
           label="Start Date"
         />
@@ -326,7 +342,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       field: "phase_end",
       render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
       editComponent: props => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent
+          {...props}
+          tableType="Phase"
+          name="phase_end"
+          label="End Date"
+        />
       ),
     },
     {
@@ -360,6 +381,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
+          tableType="Milestone"
           name="milestone_estimate"
           label="Completion estimate"
         />
@@ -372,6 +394,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
+          tableType="Milestone"
           name="milestone_end"
           label="Date completed"
         />
@@ -462,7 +485,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     const updatedPhaseObject = {
                       ...oldData,
                     };
-
                     // Array of differences between new and old data
                     let differences = Object.keys(oldData).filter(
                       key => oldData[key] !== newData[key]
@@ -488,7 +510,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.tableData;
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
-
                     updateExistingPhases(updatedPhaseObject);
 
                     // Execute update mutation, returns promise
