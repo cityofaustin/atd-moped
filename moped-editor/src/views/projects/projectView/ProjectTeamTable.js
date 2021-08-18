@@ -42,7 +42,9 @@ const ProjectTeamTable = ({
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
-    variables: { projectId },
+    // sending a null projectId will cause a graphql error
+    // id 0 used when creating a new project, no project personnel will be returned
+    variables: { projectId: projectId ?? 0 },
     fetchPolicy: "no-cache",
   });
 
