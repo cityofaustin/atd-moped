@@ -7,6 +7,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -51,7 +52,7 @@ const NavigationSearchResults = ({
           <ListItemText primary={result.project_name} />
         </ListItemLink>
       ))}
-      {results.length > 5 && (
+      {results.length > 2 && (
         <>
           <Divider />
           <ListItemLink
@@ -60,6 +61,7 @@ const NavigationSearchResults = ({
             onClick={handleDropdownClose}
           >
             <ListItemText primary="More Results" />
+            <ArrowForwardIosIcon />
           </ListItemLink>
         </>
       )}
