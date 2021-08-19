@@ -1021,9 +1021,8 @@ export const useSaveActionReducer = () => {
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
  * In our most common use case—these are mapbox feature instances, which look like geojson's
  * but have some added props we can ignore.
- * @param {String} layerName - The name which uniquely identifies the features'source layer
  */
-export const combineLineFeatures = (features, layerName) => {
+export const combineLineFeatures = (features) => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1035,7 +1034,5 @@ export const combineLineFeatures = (features, layerName) => {
   // turf does not cleanly handle the combining of properties (which in our case are identical for
   // every split feature) - so we'll just grab the props from one of the input features
   combinedFeature.properties = features[0].properties;
-  // i believe this property is normally created by a side-effect, but i'm honsetly not sure
-  combinedFeature.properties.sourceLayer = layerName;
   return combinedFeature;
 };
