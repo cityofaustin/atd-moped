@@ -41,6 +41,10 @@ import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
 
+const setSourceLayer = feature => {
+  feature.properties.sourceLayer = feature.sourceLayer;
+  return feature;
+};
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
@@ -217,9 +221,10 @@ const NewProjectMap = ({
     }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
-    const clickedFeatureId = getFeatureId(e.features[0], layerName);
-    let selectedFeature = getGeoJSON(e);
 
+    let selectedFeature = getGeoJSON(e);
+    const selectedFeatureId = getFeatureId(selectedFeature, layerName);
+    
     if (
       selectedFeature.geometry.type === "LineString" ||
       selectedFeature.geometry.type === "MultiLineString"
@@ -227,20 +232,24 @@ const NewProjectMap = ({
       // Query features in the current viewport to identify any that have the same
       // ID has the selected feature. This is an artifact of the tiling process.
       // Split features must be re-combined before saving to state (and DB).
-      // We are making the assumption that any split features would be visible in the 
+      // We are making the assumption that any split features would be visible in the
       // map viewport when the feature is clicked. This may not be a safe assumption?
       // The alternative is to supply our own search geometry bbox
       const renderedFeatures = mapRef.current.queryRenderedFeatures();
+
       // It's possible to pass a filter function to queryRenderedFeatures. We
-      // could theoretically filter for features that match the ID of interest, but 
+      // could theoretically filter for features that match the ID of interest, but
       // I could not get the expression to work. I doubt the performance gain would
       // be significant vs our own filter call.
-      const splitFeatures = renderedFeatures.filter(
-        feature => getFeatureId(feature, layerName) === clickedFeatureId
-      );
+      const splitFeatures = renderedFeatures
+        .filter(
+          feature => getFeatureId(feature, layerName) === selectedFeatureId
+        )
 
       if (splitFeatures.length > 1) {
-        selectedFeature = combineLineFeatures(splitFeatures, layerName);
+        selectedFeature = combineLineFeatures(splitFeatures);
+        // sourceLayer is needed for later processesing - otherwise set via getGeoJSON()
+        selectedFeature.properties.sourceLayer = layerName;
       }
     }
 
@@ -252,7 +261,7 @@ const NewProjectMap = ({
       ? {
           ...featureCollection,
           features: featureCollection.features.filter(
-            feature => getFeatureId(feature, layerName) !== clickedFeatureId
+            feature => getFeatureId(feature, layerName) !== selectedFeatureId
           ),
         }
       : {
@@ -367,7 +376,6 @@ const NewProjectMap = ({
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
-        showTileBoundaries={true}
       >
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} captureClick={false} />
