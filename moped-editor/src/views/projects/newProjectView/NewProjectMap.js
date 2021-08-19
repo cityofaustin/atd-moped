@@ -41,11 +41,6 @@ import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
 
-const setSourceLayer = feature => {
-  feature.properties.sourceLayer = feature.sourceLayer;
-  return feature;
-};
-
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
@@ -224,7 +219,7 @@ const NewProjectMap = ({
 
     let selectedFeature = getGeoJSON(e);
     const selectedFeatureId = getFeatureId(selectedFeature, layerName);
-    
+
     if (
       selectedFeature.geometry.type === "LineString" ||
       selectedFeature.geometry.type === "MultiLineString"
@@ -241,10 +236,9 @@ const NewProjectMap = ({
       // could theoretically filter for features that match the ID of interest, but
       // I could not get the expression to work. I doubt the performance gain would
       // be significant vs our own filter call.
-      const splitFeatures = renderedFeatures
-        .filter(
-          feature => getFeatureId(feature, layerName) === selectedFeatureId
-        )
+      const splitFeatures = renderedFeatures.filter(
+        feature => getFeatureId(feature, layerName) === selectedFeatureId
+      );
 
       if (splitFeatures.length > 1) {
         selectedFeature = combineLineFeatures(splitFeatures);
