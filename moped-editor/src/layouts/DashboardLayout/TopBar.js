@@ -99,7 +99,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
     : emailToInitials(user?.idToken?.payload?.email);
 
   return (
-    <AppBar className={clsx(classes.root, className)} elevation={0} {...rest}>
+    <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
       <Toolbar>
         <RouterLink to="/moped">
           <Logo />

@@ -13,7 +13,7 @@ import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
-import { getSearchValue } from "../../../components/GridTable/GridTable.js"
+import { getSearchValue } from "../../../components/GridTable/GridTable.js";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -40,15 +40,19 @@ const useStyles = makeStyles(theme => ({
   searchPopper: {
     borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: "red", // theme.palette.text.secondary,
+    borderStyle: "solid",
+    borderColor: theme.palette.background.default,
+    width: "300px",
+    boxShadow:"0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)"
   },
   searchResults: {
-    padding: "10px",
     backgroundColor: theme.palette.background.paper,
-    borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: "#ff1345",
+    color: theme.palette.text.primary,
   },
+  tempResults: {
+    padding: "16px",
+  }
 }));
 
 /**
@@ -124,7 +128,11 @@ const NavigationSearchInput = () => {
           quoted,
           envelope,
         } = projectSearchQuery.config.columns[column].search;
-        const searchValue = getSearchValue(projectSearchQuery, column, searchTerm);
+        const searchValue = getSearchValue(
+          projectSearchQuery,
+          column,
+          searchTerm
+        );
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
@@ -175,12 +183,10 @@ const NavigationSearchInput = () => {
               offset: {
                 enabled: true,
                 offset: "0, 15",
-              },
-              applyStyle: {
-                enabled: true,
-              },
+              }
             }}
-            elevation={8}
+            // disablePortal=true ensures the popper wont slip behind the material tables
+            disablePortal
             className={classes.searchPopper}
           >
             <Box className={classes.searchResults}>
@@ -191,7 +197,7 @@ const NavigationSearchInput = () => {
                   searchTerm={searchTerm}
                 />
               ) : (
-                <Typography>
+                <Typography className={classes.tempResults}>
                   {" "}
                   Search Results {/*todo: eventually be the previous results*/}
                 </Typography>

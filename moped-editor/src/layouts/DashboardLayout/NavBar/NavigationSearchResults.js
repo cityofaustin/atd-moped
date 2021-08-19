@@ -3,29 +3,37 @@ import {
   Divider,
   List,
   ListItem,
-  ListItemText /*makeStyles*/,
+  ListItemText,
+  makeStyles,
 } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 
-// const useStyles = makeStyles(theme => ({
-//   root: {
-//     backgroundColor: theme.palette.background.paper,
-//     marginRight: "1em",
-//   },
-// }));
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    marginRight: "1em",
+  },
+  padding: {
+    paddingTop: "0px",
+    paddingBottom: "0px",
+  }
+}));
 
 const ListItemLink = props => (
   <ListItem button component={RouterLink} {...props} />
 );
 
-const NavigationSearchResults = ({ results, handleDropdownClose, searchTerm }) => {
-  // const classes = useStyles();
-  console.log(results);
+const NavigationSearchResults = ({
+  results,
+  handleDropdownClose,
+  searchTerm,
+}) => {
+  const classes = useStyles();
   const firstResults = results.slice(0, 5);
 
   if (results.length === 0) {
     return (
-      <List>
+      <List className={classes.padding}>
         <ListItem>
           <ListItemText primary="No Results found" />
         </ListItem>
@@ -36,14 +44,21 @@ const NavigationSearchResults = ({ results, handleDropdownClose, searchTerm }) =
   return (
     <List>
       {firstResults.map(result => (
-        <ListItemLink to={`projects/${result.project_id}`} onClick={handleDropdownClose}>
+        <ListItemLink
+          to={`projects/${result.project_id}`}
+          onClick={handleDropdownClose}
+        >
           <ListItemText primary={result.project_name} />
         </ListItemLink>
       ))}
       {results.length > 5 && (
         <>
           <Divider />
-          <ListItemLink to={`projects/`} state={{searchTerm:searchTerm}}>
+          <ListItemLink
+            to={`projects/`}
+            state={{ searchTerm: searchTerm }}
+            onClick={handleDropdownClose}
+          >
             <ListItemText primary="More Results" />
           </ListItemLink>
         </>
