@@ -11,8 +11,8 @@ Web application for intereacting with Moped data.
 
 3. Make sure your NodeJS and npm versions are up to date for `React 16.8.6`
 
-4. Install dependencies: `npm install` or `yarn`
+4. Install dependencies: `npm install`
 
-5. Start the server: `npm run start` or `yarn start`
+5. Start the server: `npm run start`
 
 6. Open `localhost:3000`
