@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
+import combine from "@turf/combine";
 import theme from "../theme/index";
 import {
   Checkbox,
@@ -383,8 +384,12 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (feature, layerName) =>
-  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
+export const getFeatureId = (feature, layerName, info) => {
+  if (info) { 
+    console.log("GETID: ", feature, layerName)
+  }
+  return get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath)
+}
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -1011,4 +1016,30 @@ export const useSaveActionReducer = () => {
   );
 
   return { saveActionState, saveActionDispatch };
+};
+
+/**
+ * Combines an array of `LineString` or `MultiLineSting` geoJSON features into a single
+ * feature. Specifically used as helper to reconstruct line features which have been
+ * split through mapbox's vector tiling
+ * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
+ * In our most common use case—these are mapbox feature instances, which look like geojson's
+ * but have some added props we can ignore.
+ * @param {String} layerName - The name which uniquely identifies the features'source layer
+ */
+export const combineLineFeatures = (features, layerName) => {
+  // assemble features into a collection, which turf requires
+  let dummyFeatureCollection = {
+    type: "FeatureCollection",
+    features: features,
+  };
+  // combined returns a featureCollection with one (and only one) feature with combined geometries
+  const combinedFeaturesCollection = combine(dummyFeatureCollection);
+  let combinedFeature = combinedFeaturesCollection.features[0];
+  // turf does not cleanly handle the combining of properties (which in our case are identical for 
+  // every split feature) - so we'll just grab the props from one of the input features
+  combinedFeature.properties = features[0].properties;
+  // i believe this property is normally created by a side-effect, but i'm honsetly not sure
+  combinedFeature.properties.sourceLayer = layerName;
+  return combinedFeature;
 };
