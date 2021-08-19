@@ -335,7 +335,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
-          tableType="Phase"
           name="phase_start"
           label="Start Date"
         />
@@ -349,12 +348,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
           : undefined,
       editComponent: props => (
-        <DateFieldEditComponent
-          {...props}
-          tableType="Phase"
-          name="phase_end"
-          label="End Date"
-        />
+        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
     },
     {
@@ -390,7 +384,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
-          tableType="Milestone"
           name="milestone_estimate"
           label="Completion estimate"
         />
@@ -406,7 +399,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
-          tableType="Milestone"
           name="milestone_end"
           label="Date completed"
         />
