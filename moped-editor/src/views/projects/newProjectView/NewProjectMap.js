@@ -5,10 +5,11 @@ import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
+import combine from "@turf/combine";
 
 import {
   NewProjectDrawnLinesInvisibleStyle,
-  NewProjectDrawnPointsInvisibleStyle
+  NewProjectDrawnPointsInvisibleStyle,
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
@@ -39,6 +40,19 @@ import {
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
+
+const combineLineFeatures = (features, layerName) => {
+  let dummyFeatureCollection = {
+    type: "FeatureCollection",
+    features: features,
+  };
+  const combinedFeaturesCollection = combine(dummyFeatureCollection);
+  let combinedFeature = combinedFeaturesCollection.features[0];
+  combinedFeature.properties = features[0].properties;
+  // todo: this layerName prop is required but I don't fully understand why
+  combinedFeature.properties.sourceLayer = layerName;
+  return combinedFeature;
+};
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
@@ -215,9 +229,26 @@ const NewProjectMap = ({
     }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
-
     const clickedFeatureId = getFeatureId(e.features[0], layerName);
-    const selectedFeature = getGeoJSON(e);
+    let selectedFeature = getGeoJSON(e);
+
+    if (
+      selectedFeature.geometry.type === "LineString" ||
+      selectedFeature.geometry.type === "MultiLineString"
+    ) {
+      // must check if line features have been split
+      // todo: use filter param. only query CTN layer by specifying layer name
+      const renderedFeatures = mapRef.current.queryRenderedFeatures();
+      // todo: we only need to query features if dealing with lines (points are never split)
+      // todo: hard-coding of project_extent_id is not ideal
+      const subFeatures = renderedFeatures.filter(
+        feature => feature.properties.PROJECT_EXTENT_ID === clickedFeatureId
+      );
+
+      if (subFeatures.length > 1) {
+        selectedFeature = combineLineFeatures(subFeatures, layerName);
+      }
+    }
 
     const updatedFeatureCollection = isFeaturePresent(
       selectedFeature,
@@ -297,8 +328,12 @@ const NewProjectMap = ({
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
-      {!visibleLayerIds.includes("drawnByUser") && <NewProjectDrawnPointsInvisibleStyle/>}
-      {!visibleLayerIds.includes("drawnByUserLine") && <NewProjectDrawnLinesInvisibleStyle/>}
+      {!visibleLayerIds.includes("drawnByUser") && (
+        <NewProjectDrawnPointsInvisibleStyle />
+      )}
+      {!visibleLayerIds.includes("drawnByUserLine") && (
+        <NewProjectDrawnLinesInvisibleStyle />
+      )}
 
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div
@@ -338,6 +373,7 @@ const NewProjectMap = ({
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
+        showTileBoundaries={true}
       >
         <div className={classes.navStyle}>
           <NavigationControl showCompass={false} captureClick={false} />
@@ -370,7 +406,7 @@ const NewProjectMap = ({
               key={config.layerIdName}
               type="vector"
               tiles={[config.layerUrl]}
-              maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+              maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
             >
               <Layer
                 key={config.layerIdName}
