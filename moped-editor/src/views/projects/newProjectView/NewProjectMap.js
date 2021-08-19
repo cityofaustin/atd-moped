@@ -5,7 +5,6 @@ import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
-import combine from "@turf/combine";
 
 import {
   NewProjectDrawnLinesInvisibleStyle,
@@ -13,6 +12,7 @@ import {
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
+  combineLineFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -41,18 +41,6 @@ import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
 
-const combineLineFeatures = (features, layerName) => {
-  let dummyFeatureCollection = {
-    type: "FeatureCollection",
-    features: features,
-  };
-  const combinedFeaturesCollection = combine(dummyFeatureCollection);
-  let combinedFeature = combinedFeaturesCollection.features[0];
-  combinedFeature.properties = features[0].properties;
-  // todo: this layerName prop is required but I don't fully understand why
-  combinedFeature.properties.sourceLayer = layerName;
-  return combinedFeature;
-};
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
@@ -236,17 +224,23 @@ const NewProjectMap = ({
       selectedFeature.geometry.type === "LineString" ||
       selectedFeature.geometry.type === "MultiLineString"
     ) {
-      // must check if line features have been split
-      // todo: use filter param. only query CTN layer by specifying layer name
+      // Query features in the current viewport to identify any that have the same
+      // ID has the selected feature. This is an artifact of the tiling process.
+      // Split features must be re-combined before saving to state (and DB).
+      // We are making the assumption that any split features would be visible in the 
+      // map viewport when the feature is clicked. This may not be a safe assumption?
+      // The alternative is to supply our own search geometry bbox
       const renderedFeatures = mapRef.current.queryRenderedFeatures();
-      // todo: we only need to query features if dealing with lines (points are never split)
-      // todo: hard-coding of project_extent_id is not ideal
-      const subFeatures = renderedFeatures.filter(
-        feature => feature.properties.PROJECT_EXTENT_ID === clickedFeatureId
+      // It's possible to pass a filter function to queryRenderedFeatures. We
+      // could theoretically filter for features that match the ID of interest, but 
+      // I could not get the expression to work. I doubt the performance gain would
+      // be significant vs our own filter call.
+      const splitFeatures = renderedFeatures.filter(
+        feature => getFeatureId(feature, layerName) === clickedFeatureId
       );
 
-      if (subFeatures.length > 1) {
-        selectedFeature = combineLineFeatures(subFeatures, layerName);
+      if (splitFeatures.length > 1) {
+        selectedFeature = combineLineFeatures(splitFeatures, layerName);
       }
     }
 
