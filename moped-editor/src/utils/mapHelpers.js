@@ -384,12 +384,8 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (feature, layerName, info) => {
-  if (info) { 
-    console.log("GETID: ", feature, layerName)
-  }
-  return get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath)
-}
+export const getFeatureId = (feature, layerName) =>
+  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -1036,7 +1032,7 @@ export const combineLineFeatures = (features, layerName) => {
   // combined returns a featureCollection with one (and only one) feature with combined geometries
   const combinedFeaturesCollection = combine(dummyFeatureCollection);
   let combinedFeature = combinedFeaturesCollection.features[0];
-  // turf does not cleanly handle the combining of properties (which in our case are identical for 
+  // turf does not cleanly handle the combining of properties (which in our case are identical for
   // every split feature) - so we'll just grab the props from one of the input features
   combinedFeature.properties = features[0].properties;
   // i believe this property is normally created by a side-effect, but i'm honsetly not sure
