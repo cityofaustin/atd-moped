@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   ClickAwayListener,
@@ -82,6 +82,7 @@ const NavigationSearchInput = () => {
   const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
+    setSearchTerm("");
   };
 
   const handleSearchFocus = () => {
@@ -142,11 +143,14 @@ const NavigationSearchInput = () => {
     loadSearchResults();
   };
 
-  if (called && !loading) {
-    console.log(data);
-  } else {
-    console.log(projectSearchQuery);
-  }
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      handleSearchSubmission(null);
+    }, 500)
+
+    return () => clearTimeout(delayDebounceFn)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm])
 
   return (
     <div>
