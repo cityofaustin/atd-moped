@@ -28,9 +28,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
   },
-  filterButton: {
-    height: "3.4rem",
-  },
   filterButtonFilters: {
     marginTop: theme.spacing(1),
     height: "3.4rem",
@@ -189,6 +186,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
       <Grid item xs={12} sm={8} lg={10}>
         <TextField
           fullWidth
+          size="small"
           onChange={e => handleSearchValueChange(e.target.value)}
           onKeyDown={e => handleKeyDown(e.key)}
           InputProps={{
@@ -207,7 +205,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
       </Grid>
       <Grid item xs={12} sm={4} lg={2}>
         <Button
-          className={classes.filterButton}
           fullWidth
           variant="contained"
           color="primary"
