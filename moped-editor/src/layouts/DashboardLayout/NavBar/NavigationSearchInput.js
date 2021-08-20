@@ -25,7 +25,10 @@ const useStyles = makeStyles(theme => ({
   inputRoot: {
     borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: theme.palette.text.secondary,
+    borderColor: 'rgba(0,0,0, .23)',//theme.palette.text.secondary,
+    '&:hover': {
+      borderColor: theme.palette.text.secondary,
+    },
     borderStyle: "solid",
     padding: "2px",
     [theme.breakpoints.up("sm")]: {
