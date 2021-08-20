@@ -6,7 +6,6 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles,
   Icon,
   Grid,
   DialogTitle,
@@ -16,30 +15,6 @@ import {
   Dialog,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
-
-/**
- * The styling for the search bar components
- * @type {Object}
- * @constant
- */
-const useStyles = makeStyles(theme => ({
-  root: {},
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  filterButtonFilters: {
-    marginTop: theme.spacing(1),
-    height: "3.4rem",
-    backgroundColor: "#464646",
-    "&:hover, &:focus": {
-      backgroundColor: "#2b2b2b",
-    },
-    "&:active": {
-      backgroundColor: "#464646",
-    },
-  },
-}));
 
 /**
  * Renders a search bar with optional filters
@@ -54,7 +29,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
    * @constant
    * @default
    */
-  const classes = useStyles();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
