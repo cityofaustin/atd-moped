@@ -8,7 +8,7 @@ import "./NewProjectMap.css";
 
 import {
   NewProjectDrawnLinesInvisibleStyle,
-  NewProjectDrawnPointsInvisibleStyle
+  NewProjectDrawnPointsInvisibleStyle,
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
@@ -297,8 +297,12 @@ const NewProjectMap = ({
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
-      {!visibleLayerIds.includes("drawnByUser") && <NewProjectDrawnPointsInvisibleStyle/>}
-      {!visibleLayerIds.includes("drawnByUserLine") && <NewProjectDrawnLinesInvisibleStyle/>}
+      {!visibleLayerIds.includes("drawnByUser") && (
+        <NewProjectDrawnPointsInvisibleStyle />
+      )}
+      {!visibleLayerIds.includes("drawnByUserLine") && (
+        <NewProjectDrawnLinesInvisibleStyle />
+      )}
 
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
       <div
