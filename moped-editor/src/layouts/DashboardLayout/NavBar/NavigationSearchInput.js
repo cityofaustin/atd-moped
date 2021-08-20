@@ -49,6 +49,12 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.text.secondary,
     paddingLeft: "5px",
   },
+  inputFocused: {
+    borderWidth: "2px",
+    borderRadius: "4px",
+    borderStyle: "solid",
+    borderColor: theme.palette.primary.main,
+  },
   searchPopper: {
     borderWidth: "1px",
     borderRadius: "4px",
@@ -137,7 +143,6 @@ const NavigationSearchInput = () => {
     if (event) event.preventDefault();
 
     // Update state if we are ready, triggers search.
-    console.log(`searching ${searchTerm}`);
     Object.keys(projectSearchQuery.config.columns)
       .filter(column => projectSearchQuery.config.columns[column]?.searchable)
       .forEach(column => {
@@ -184,6 +189,7 @@ const NavigationSearchInput = () => {
                 root: classes.inputRoot,
                 input: classes.inputInput,
                 adornedStart: classes.adornedStart,
+                focused: classes.inputFocused,
               }}
               inputProps={{ "aria-label": "search" }}
               startAdornment={<SearchIcon fontSize={"small"} />}
@@ -191,7 +197,6 @@ const NavigationSearchInput = () => {
               onChange={e => setSearchTerm(e.target.value)}
               onKeyDown={e => handleKeyDown(e.key)}
               value={searchTerm}
-              autoFocus
             />
           )}
           <Popper
