@@ -62,9 +62,6 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
-  container: {
-    maxHeight: "55vh",
-  },
   tableCell: {
     "text-transform": "capitalize",
     "white-space": "pre-wrap",
@@ -448,7 +445,7 @@ const GridTable = ({ title, query }) => {
               <CircularProgress />
             ) : data ? (
               <Card className={classes.root}>
-                <TableContainer className={classes.container}>
+                <TableContainer>
                   <Table stickyHeader aria-label="sticky table">
                     <GridTableListHeader
                       query={query}
