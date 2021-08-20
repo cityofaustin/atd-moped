@@ -185,7 +185,7 @@ const GridTable = ({ title, query, searchTerm }) => {
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
-  // GridTableSearch > GridTableSearchBar updates search value
+  // GridTableSearchBar in GridTableSearch updates search value
   if (search.value && search.value !== "") {
     /**
      * Iterate through all column keys, if they are searchable

@@ -18,7 +18,7 @@ import { getSearchValue } from "../../../components/GridTable/GridTable.js";
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       marginRight: "1em",
     },
   },
@@ -28,19 +28,19 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.text.secondary,
     borderStyle: "solid",
     padding: "2px",
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       width: "200px",
     },
     height: "36px",
   },
   inputInput: {
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       fontSize: "0.875rem",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       fontSize: "0.75rem",
     },
     paddingLeft: "1em",
@@ -60,13 +60,13 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "4px",
     borderStyle: "solid",
     borderColor: theme.palette.background.default,
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down('sm')]: {
+    [theme.breakpoints.down("sm")]: {
       width: "200px",
     },
-    boxShadow:"0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)"
+    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
   },
   searchResults: {
     backgroundColor: theme.palette.background.paper,
@@ -75,7 +75,7 @@ const useStyles = makeStyles(theme => ({
   },
   tempResults: {
     padding: "16px",
-  }
+  },
 }));
 
 /**
@@ -133,6 +133,10 @@ const NavigationSearchInput = () => {
     }
   };
 
+  /**
+   * Formats search term and triggers lazy query to load search results
+   * @param {event} - Event that triggered submission
+   */
   const handleSearchSubmission = event => {
     // Stop if we don't have any value entered in the search field
     if (searchTerm.length === 0) {
@@ -142,7 +146,7 @@ const NavigationSearchInput = () => {
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
-    // Update state if we are ready, triggers search.
+    // Formats search query based on project search columns and config
     Object.keys(projectSearchQuery.config.columns)
       .filter(column => projectSearchQuery.config.columns[column]?.searchable)
       .forEach(column => {
@@ -162,17 +166,20 @@ const NavigationSearchInput = () => {
 
         projectSearchQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
       });
+
+    // Initiate Lazy Query to get search results
     loadSearchResults();
   };
 
+  // Search as user updates searchTerm
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       handleSearchSubmission(null);
-    }, 500)
+    }, 500);
 
-    return () => clearTimeout(delayDebounceFn)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm])
+    return () => clearTimeout(delayDebounceFn);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchTerm]);
 
   return (
     <div>
@@ -209,7 +216,7 @@ const NavigationSearchInput = () => {
               offset: {
                 enabled: true,
                 offset: "0, 15",
-              }
+              },
             }}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
