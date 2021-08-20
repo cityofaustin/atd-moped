@@ -18,7 +18,9 @@ import { getSearchValue } from "../../../components/GridTable/GridTable.js";
 const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
-    marginRight: "1em",
+    [theme.breakpoints.up('sm')]: {
+      marginRight: "1em",
+    },
   },
   inputRoot: {
     borderWidth: "1px",
@@ -26,11 +28,21 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.text.secondary,
     borderStyle: "solid",
     padding: "2px",
-    width: "300px",
+    [theme.breakpoints.up('sm')]: {
+      width: "300px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: "200px",
+    },
     height: "36px",
   },
   inputInput: {
-    fontSize: "0.875rem",
+    [theme.breakpoints.up('sm')]: {
+      fontSize: "0.875rem",
+    },
+    [theme.breakpoints.down('sm')]: {
+      fontSize: "0.75rem",
+    },
     paddingLeft: "1em",
   },
   adornedStart: {
@@ -42,7 +54,12 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "4px",
     borderStyle: "solid",
     borderColor: theme.palette.background.default,
-    width: "300px",
+    [theme.breakpoints.up('sm')]: {
+      width: "300px",
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: "200px",
+    },
     boxShadow:"0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)"
   },
   searchResults: {
@@ -203,7 +220,7 @@ const NavigationSearchInput = () => {
               ) : (
                 <Typography className={classes.tempResults}>
                   {" "}
-                  Search Results {/*todo: eventually be the previous results*/}
+                  Search Results
                 </Typography>
               )}
             </Box>

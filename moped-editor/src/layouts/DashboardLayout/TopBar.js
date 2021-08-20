@@ -126,6 +126,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </Hidden>
         <Hidden mdUp>
           <Box flexGrow={1} />
+          <NavigationSearchInput />
         </Hidden>
         <Box>
           <Button className={classes.avatarButton} onClick={handleAvatarClick}>
