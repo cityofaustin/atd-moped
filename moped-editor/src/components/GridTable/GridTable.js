@@ -62,9 +62,6 @@ const useStyles = makeStyles(theme => ({
     top: 20,
     width: 1,
   },
-  container: {
-    maxHeight: "55vh",
-  },
   tableCell: {
     "text-transform": "capitalize",
     "white-space": "pre-wrap",
