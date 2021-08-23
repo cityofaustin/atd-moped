@@ -86,7 +86,7 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (!projectName.trim()==="") {
+    if (!(projectName.trim()==="")) {
     updateProjectName({
       variables: {
         projectId: props?.projectId,
