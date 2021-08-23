@@ -4,6 +4,7 @@ import {
   ClickAwayListener,
   IconButton,
   InputBase,
+  Fade,
   Popper,
   Typography,
   makeStyles,
@@ -25,8 +26,8 @@ const useStyles = makeStyles(theme => ({
   inputRoot: {
     borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: 'rgba(0,0,0, .23)',
-    '&:hover': {
+    borderColor: "rgba(0,0,0, .23)",
+    "&:hover": {
       borderColor: theme.palette.text.secondary,
     },
     borderStyle: "solid",
@@ -225,21 +226,27 @@ const NavigationSearchInput = () => {
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             className={classes.searchPopper}
+            transition
           >
-            <Box className={classes.searchResults}>
-              {called && !loading ? (
-                <NavigationSearchResults
-                  results={data.project_list_view}
-                  handleDropdownClose={handleDropdownClose}
-                  searchTerm={searchTerm}
-                />
-              ) : (
-                <Typography className={classes.tempResults}>
-                  {" "}
-                  Search Results
-                </Typography>
-              )}
-            </Box>
+            { // https://material-ui.com/components/popper/#transitions
+              ({ TransitionProps }) => (
+              <Fade {...TransitionProps} timeout={250}>
+                <Box className={classes.searchResults}>
+                  {called && !loading ? (
+                    <NavigationSearchResults
+                      results={data.project_list_view}
+                      handleDropdownClose={handleDropdownClose}
+                      searchTerm={searchTerm}
+                    />
+                  ) : (
+                    <Typography className={classes.tempResults}>
+                      {" "}
+                      Search Results
+                    </Typography>
+                  )}
+                </Box>
+              </Fade>
+            )}
           </Popper>
         </div>
       </ClickAwayListener>
