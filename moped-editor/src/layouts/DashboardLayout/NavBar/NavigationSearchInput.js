@@ -19,13 +19,13 @@ const useStyles = makeStyles(theme => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     [theme.breakpoints.up("sm")]: {
-      marginRight: "1em",
+      marginRight: "20px",
     },
   },
   inputRoot: {
     borderWidth: "1px",
     borderRadius: "4px",
-    borderColor: 'rgba(0,0,0, .23)',//theme.palette.text.secondary,
+    borderColor: 'rgba(0,0,0, .23)',
     '&:hover': {
       borderColor: theme.palette.text.secondary,
     },
@@ -47,6 +47,7 @@ const useStyles = makeStyles(theme => ({
       fontSize: "0.75rem",
     },
     paddingLeft: "1em",
+    color: theme.palette.text.primary,
   },
   adornedStart: {
     color: theme.palette.text.secondary,
