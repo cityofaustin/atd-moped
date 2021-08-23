@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   ClickAwayListener,
+  Fade,
+  Grow,
   IconButton,
   InputBase,
-  Fade,
   Popper,
   Typography,
   makeStyles,
@@ -195,21 +196,23 @@ const NavigationSearchInput = () => {
               <SearchIcon />
             </IconButton>
           ) : (
-            <InputBase
-              placeholder="Project name, description or eCAPRIS ID"
-              classes={{
-                root: classes.inputRoot,
-                input: classes.inputInput,
-                adornedStart: classes.adornedStart,
-                focused: classes.inputFocused,
-              }}
-              inputProps={{ "aria-label": "search" }}
-              startAdornment={<SearchIcon fontSize={"small"} />}
-              onFocus={handleSearchFocus}
-              onChange={e => setSearchTerm(e.target.value)}
-              onKeyDown={e => handleKeyDown(e.key)}
-              value={searchTerm}
-            />
+            <Grow in={searchInput}>
+              <InputBase
+                placeholder="Project name, description or eCAPRIS ID"
+                classes={{
+                  root: classes.inputRoot,
+                  input: classes.inputInput,
+                  adornedStart: classes.adornedStart,
+                  focused: classes.inputFocused,
+                }}
+                inputProps={{ "aria-label": "search" }}
+                startAdornment={<SearchIcon fontSize={"small"} />}
+                onFocus={handleSearchFocus}
+                onChange={e => setSearchTerm(e.target.value)}
+                onKeyDown={e => handleKeyDown(e.key)}
+                value={searchTerm}
+              />
+            </Grow>
           )}
           <Popper
             id="searchResults"
@@ -228,8 +231,8 @@ const NavigationSearchInput = () => {
             className={classes.searchPopper}
             transition
           >
-            { // https://material-ui.com/components/popper/#transitions
-              ({ TransitionProps }) => (
+            {// https://material-ui.com/components/popper/#transitions
+            ({ TransitionProps }) => (
               <Fade {...TransitionProps} timeout={250}>
                 <Box className={classes.searchResults}>
                   {called && !loading ? (
