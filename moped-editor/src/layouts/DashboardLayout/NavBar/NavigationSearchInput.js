@@ -60,6 +60,9 @@ const useStyles = makeStyles(theme => ({
     borderRadius: "4px",
     borderStyle: "solid",
     borderColor: theme.palette.primary.main,
+    "&:hover": {
+      borderColor: theme.palette.primary.main,
+    },
   },
   searchPopper: {
     borderWidth: "1px",
@@ -146,7 +149,7 @@ const NavigationSearchInput = () => {
   const handleSearchSubmission = event => {
     // Stop if we don't have any value entered in the search field
     if (searchTerm.length === 0) {
-      console.log("no search term");
+      return;
     }
 
     // Prevent default behavior on any event
@@ -211,6 +214,7 @@ const NavigationSearchInput = () => {
                 onChange={e => setSearchTerm(e.target.value)}
                 onKeyDown={e => handleKeyDown(e.key)}
                 value={searchTerm}
+                autoFocus
               />
             </Grow>
           )}
