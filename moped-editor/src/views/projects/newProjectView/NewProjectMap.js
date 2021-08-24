@@ -114,8 +114,6 @@ export const useStyles = makeStyles(theme => ({
   ...layerSelectStyles,
 }));
 
-// todo: document
-
 const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
   return {
     ...featureCollection,
@@ -134,6 +132,14 @@ const addFeatureToCollection = (selectedFeature, featureCollection) => {
   };
 };
 
+/**
+ * Add or remove a feature from the current component featureCollection state
+ * @param {Object} selectedFeature - The geojson feature to be added/removed
+ * @param {Object} featureCollection - Current geojson featureCollection (state)
+ * @param {function} setFeatureCollection - The function to change the feature collection state
+ * @param {boolean} isPresent - If the selected feature currntly exists in the feature collection state
+ * @return {undefined} Side effect of calling setFeatureCollection with new state
+ */
 const commitFeatureCollectionUpdate = (
   selectedFeature,
   featureCollection,
@@ -241,17 +247,17 @@ const NewProjectMap = ({
     saveActionDispatch
   );
 
-  // todo: document
+  /**
+   * Handles when a new map feature is selected and updates feature collection state
+   * @param {Object} selectedFeature - The selected feature geojson
+   * @return {undefined} Side effect of calling setFeatureCollection with new state
+   */
   const handleSelectedFeatureUpdate = selectedFeature => {
     const isPresent = isFeaturePresent(
       selectedFeature,
       featureCollection.features,
       selectedFeature.properties.sourceLayer
     );
-
-    if (isPresent) {
-      console.log("REMEMBER TO IMPLEMENT");
-    }
 
     if (selectedFeature.properties.sourceLayer !== "CTN" || isPresent) {
       // we are only concerned with CTN (aka line) features that are being added to the feature collection
@@ -300,8 +306,10 @@ const NewProjectMap = ({
       //    1. fetch error: queriedFeatureCollection is null
       //    2. feature is not found (queriedFeatureCollection.features is empty)
       // In both cases we simply use the geometry of the selectedFeature which may be
-      // fragemented but is better than nothing. 
-      selectedFeature.geometry = queriedFeatureCollection?.features?.[0]?.geometry || selectedFeature.geometry
+      // fragemented but is better than nothing.
+      selectedFeature.geometry =
+        queriedFeatureCollection?.features?.[0]?.geometry ||
+        selectedFeature.geometry;
 
       commitFeatureCollectionUpdate(
         selectedFeature,
