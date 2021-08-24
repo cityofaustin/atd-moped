@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
-import combine from "@turf/combine";
 import theme from "../theme/index";
 import {
   Checkbox,
