@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import {
   Box,
   ClickAwayListener,
-  Fade,
-  Grow,
   IconButton,
   InputBase,
   Popper,
@@ -11,6 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
+import { Transition } from "react-transition-group";
 import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
@@ -37,7 +36,7 @@ const useStyles = makeStyles(theme => ({
       width: "300px",
     },
     [theme.breakpoints.down("sm")]: {
-      width: "200px",
+      maxWidth: "200px",
     },
     height: "36px",
   },
@@ -94,6 +93,19 @@ const useStyles = makeStyles(theme => ({
 const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
+  const duration = 1000;
+  const defaultStyle = {
+    transition: `width ${duration}ms ease-in-out`,
+    width: "0px",
+    border: "2px solid red"
+  }
+
+  const transitionStyles ={
+    entering: {width: "300px"},
+    entered: {width: "300px"},
+    exiting: {width: "0px"},
+    exited: {width: "0px"},
+  }
   let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
   // Toggle Text Input or magnifying glass
@@ -199,7 +211,9 @@ const NavigationSearchInput = () => {
               <SearchIcon />
             </IconButton>
           ) : (
-            <Grow in={searchInput}>
+            <Transition in={searchInput} appear timeout={duration}>
+            {state => (
+              <div style={{...defaultStyle, ...transitionStyles[state]}}>
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
@@ -215,8 +229,8 @@ const NavigationSearchInput = () => {
                 onKeyDown={e => handleKeyDown(e.key)}
                 value={searchTerm}
                 autoFocus
-              />
-            </Grow>
+              /> </div>)}
+            </Transition>
           )}
           <Popper
             id="searchResults"
@@ -235,9 +249,6 @@ const NavigationSearchInput = () => {
             className={classes.searchPopper}
             transition
           >
-            {// https://material-ui.com/components/popper/#transitions
-            ({ TransitionProps }) => (
-              <Fade {...TransitionProps} timeout={250}>
                 <Box className={classes.searchResults}>
                   {called && !loading ? (
                     <NavigationSearchResults
@@ -252,8 +263,6 @@ const NavigationSearchInput = () => {
                     </Typography>
                   )}
                 </Box>
-              </Fade>
-            )}
           </Popper>
         </div>
       </ClickAwayListener>
