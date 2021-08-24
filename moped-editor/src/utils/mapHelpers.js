@@ -1025,6 +1025,7 @@ export const useSaveActionReducer = () => {
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
  * In our most common use case—these are mapbox feature instances, which look like geojson's
  * but have some added props we can ignore.
+ * @return {Object} Geojson feature with combined geometries
  */
 export const combineLineFeatures = features => {
   // assemble features into a collection, which turf requires
@@ -1041,11 +1042,16 @@ export const combineLineFeatures = features => {
   return combinedFeature;
 };
 
-// todo: document; catch errors :/
+/**
+ * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
+ * @param {String} projectExtentId - The unique ID of the feature to be queried
+ * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
+ * @return {Object} Geojson featureCollection of the queried feature - or null if fetch error
+ */
 export const queryCtnFeatureService = async function(projectExtentId) {
   const params = {
     where: `PROJECT_EXTENT_ID=${projectExtentId}`,
-    outFields: "*",
+    outFields: "PROJECT_EXTENT_ID",
     geometryPrecision: 6,
     f: "pgeojson",
   };
