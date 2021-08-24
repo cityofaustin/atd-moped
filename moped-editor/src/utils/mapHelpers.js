@@ -1041,6 +1041,7 @@ export const combineLineFeatures = features => {
   return combinedFeature;
 };
 
+// todo: document; catch errors :/
 export const queryCtnFeatureService = async function(projectExtentId) {
   const params = {
     where: `PROJECT_EXTENT_ID=${projectExtentId}`,
@@ -1052,7 +1053,7 @@ export const queryCtnFeatureService = async function(projectExtentId) {
   const paramString = Object.entries(params)
     .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
     .join("&");
-
+  console.log("QUERY AGOL")
   const url = `${ctnAGOLEndpoint}/query?${paramString}`;
   return await fetch(url).then(response => response.json());
 };
