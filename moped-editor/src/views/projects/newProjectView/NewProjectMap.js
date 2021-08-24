@@ -12,7 +12,6 @@ import {
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
-  combineLineFeatures,
   countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
@@ -171,8 +170,6 @@ const NewProjectMap = ({
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
-  const [selectedFeature, setSelectedFeature] = useState(null);
-
   const mapRef = useRef();
   const mapGeocoderContainerRef = useRef();
   const mapEditToolsContainerRef = useRef();
@@ -231,12 +228,8 @@ const NewProjectMap = ({
     saveActionDispatch
   );
 
-  useEffect(() => {
-    if (!selectedFeature) {
-      // this case only matches on init
-      return;
-    }
-
+  // todo: document
+  const handleSelectedFeatureUpdate = selectedFeature => {
     const selectedFeatureId = getFeatureId(
       selectedFeature,
       selectedFeature.sourceLayer
@@ -264,7 +257,7 @@ const NewProjectMap = ({
         setFeatureCollection
       );
     }
-  }, [selectedFeature]);
+  };
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -283,7 +276,7 @@ const NewProjectMap = ({
     let selectedFeature = getGeoJSON(e);
     // we need sourceLayer for many side effects!
     selectedFeature.sourceLayer = layerName;
-    setSelectedFeature(selectedFeature);
+    handleSelectedFeatureUpdate(selectedFeature);
   };
 
   /**
