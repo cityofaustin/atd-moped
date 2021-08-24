@@ -134,7 +134,6 @@ export const mapConfig = {
     CTN: {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
-      layerIdField: "PROJECT_EXTENT_ID",
       tooltipTextProperty: "FULL_STREET_NAME",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 1,
@@ -150,9 +149,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "line-opacity": [
               "case",
-              ["==", ["get", this.layerIdField], hoveredId],
+              ["==", ["get", this.featureIdProperty], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              ["in", ["get", this.featureIdProperty], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
@@ -182,7 +181,6 @@ export const mapConfig = {
     Project_Component_Points_prototype: {
       layerLabel: "Points",
       layerIdName: "project-component-points",
-      layerIdField: "PROJECT_EXTENT_ID",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
@@ -197,9 +195,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "circle-opacity": [
               "case",
-              ["==", ["get", this.layerIdField], hoveredId],
+              ["==", ["get", this.featureIdProperty], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              ["in", ["get", this.featureIdProperty], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
@@ -221,7 +219,6 @@ export const mapConfig = {
       layerDrawn: true,
       layerLabel: "Drawn Points",
       layerIdName: "drawnByUser",
-      layerIdField: "PROJECT_EXTENT_ID",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 3,
       layerColor: theme.palette.secondary.main,
@@ -244,7 +241,6 @@ export const mapConfig = {
       layerDrawn: true,
       layerLabel: "Drawn Lines",
       layerIdName: "drawnByUserLine",
-      layerIdField: "PROJECT_EXTENT_ID",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 4,
       layerColor: theme.palette.primary.main,
@@ -270,7 +266,6 @@ export const mapConfig = {
     projectFeatures: {
       layerLabel: "Project Features",
       layerIdName: "projectFeatures",
-      layerIdField: "PROJECT_EXTENT_ID",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 5,
       layerColor: theme.palette.grey["800"],
@@ -303,7 +298,6 @@ export const mapConfig = {
       layerDrawn: false,
       layerLabel: "Project Points",
       layerIdName: "projectFeaturePoints",
-      layerIdField: "PROJECT_EXTENT_ID",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 6,
       layerColor: theme.palette.grey["800"],
