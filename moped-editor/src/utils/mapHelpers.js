@@ -639,15 +639,15 @@ export const createProjectViewLayerConfig = (
  */
 export const renderTooltip = (tooltipText, hoveredCoords, className) =>
   tooltipText && (
-    <div
+    <span
       className={className}
       style={{
         left: hoveredCoords?.x,
         top: hoveredCoords?.y,
       }}
     >
-      <div>{tooltipText.toLowerCase()}</div>
-    </div>
+      <span>{tooltipText.toLowerCase()}</span>
+    </span>
   );
 
 /**
