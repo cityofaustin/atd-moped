@@ -9,6 +9,7 @@ import {
   Typography,
   makeStyles,
 } from "@material-ui/core";
+import clsx from "clsx";
 import SearchIcon from "@material-ui/icons/Search";
 import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
@@ -73,7 +74,9 @@ const useStyles = makeStyles(theme => ({
     },
     overflow: "hidden",
     borderRadius: "4px",
-    // boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
+  },
+  searchPopperShadow: {
+    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
   },
   searchResults: {
     borderWidth: "1px",
@@ -102,6 +105,7 @@ const NavigationSearchInput = () => {
   // anchor element for results popper to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [popperEnterComplete, setPopperEntered] = useState(false);
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
     projectSearchQuery.gql,
@@ -233,10 +237,16 @@ const NavigationSearchInput = () => {
             }}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
-            className={classes.searchPopper}
+            className={clsx(classes.searchPopper, {
+              [classes.searchPopperShadow]: popperEnterComplete,
+            })}
             transition
           >
-            <Slide direction="left" in={Boolean(searchResultsAnchor)}>
+            <Slide
+              direction="left"
+              in={Boolean(searchResultsAnchor)}
+              onEntered={() => setPopperEntered(true)}
+            >
               <Box className={classes.searchResults}>
                 {called && !loading ? (
                   <NavigationSearchResults
