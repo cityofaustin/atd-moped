@@ -2,6 +2,9 @@ import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
+import bboxPolygon from "@turf/bbox-polygon";
+import booleanIntersects from "@turf/boolean-intersects";
+import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
@@ -115,19 +118,19 @@ export const useStyles = makeStyles(theme => ({
 const handleFeatureCollectionUpdate = (
   selectedFeature,
   featureCollection,
-  setFeatureCollection
+  setFeatureCollection,
+  isPresent
 ) => {
-  const updatedFeatureCollection = isFeaturePresent(
-    selectedFeature,
-    featureCollection.features,
-    selectedFeature.sourceLayer
-  )
+  const updatedFeatureCollection = isPresent
     ? {
         ...featureCollection,
         features: featureCollection.features.filter(
           feature =>
-            getFeatureId(feature, selectedFeature.sourceLayer) !==
-            getFeatureId(selectedFeature, selectedFeature.sourceLayer)
+            getFeatureId(feature, selectedFeature.properties.sourceLayer) !==
+            getFeatureId(
+              selectedFeature,
+              selectedFeature.properties.sourceLayer
+            )
         ),
       }
     : {
@@ -229,26 +232,50 @@ const NewProjectMap = ({
   );
 
   // todo: document
+  // todo: you should determind if feature is present elsewhere to avoid api calls—duh
   const handleSelectedFeatureUpdate = selectedFeature => {
-    console.log("VIEWPORT", viewport)
-    debugger;
-    const selectedFeatureId = getFeatureId(
+    const isPresent = isFeaturePresent(
       selectedFeature,
-      selectedFeature.sourceLayer
+      featureCollection.features,
+      selectedFeature.properties.sourceLayer
     );
 
+    if (isPresent) {
+      console.log("REMEMBER TO IMPLEMENT");
+    }
+
+    const map = mapRef.current.getMap();
+    // get the current map bounds (LngLatBounds instance) and convert it to a simple array
+    const bbox = map
+      .getBounds()
+      .toArray()
+      .flat();
+    // convert the bbox to a geojson
+    const polygon = polygonToLine(bboxPolygon(bbox));
+    // const isContained = booleanContains(polygon, selectedFeature);
+    // const within = booleanWithin(selectedFeature, polygon);
+    const intersectsWithBounds = booleanIntersects(polygon, selectedFeature);
+
     if (
-      selectedFeature.geometry.type === "LineString" ||
-      selectedFeature.geometry.type === "MultiLineString"
+      selectedFeature.properties.sourceLayer === "CTN" &&
+      intersectsWithBounds &&
+      !isPresent
     ) {
+      const selectedFeatureId = getFeatureId(
+        selectedFeature,
+        selectedFeature.properties.sourceLayer
+      );
+
       queryCtnFeatureService(selectedFeatureId).then(
         queriedFeatureCollection => {
+          console.log("HANDLE AGOL RESULT");
           selectedFeature.geometry =
             queriedFeatureCollection.features[0].geometry;
           handleFeatureCollectionUpdate(
             selectedFeature,
             featureCollection,
-            setFeatureCollection
+            setFeatureCollection,
+            isPresent
           );
         }
       );
@@ -256,7 +283,8 @@ const NewProjectMap = ({
       handleFeatureCollectionUpdate(
         selectedFeature,
         featureCollection,
-        setFeatureCollection
+        setFeatureCollection,
+        isPresent
       );
     }
   };
@@ -277,7 +305,7 @@ const NewProjectMap = ({
 
     let selectedFeature = getGeoJSON(e);
     // we need sourceLayer for many side effects!
-    selectedFeature.sourceLayer = layerName;
+    selectedFeature.properties.sourceLayer = layerName;
     handleSelectedFeatureUpdate(selectedFeature);
   };
 
