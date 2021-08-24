@@ -1013,30 +1013,6 @@ export const useSaveActionReducer = () => {
 };
 
 /**
- * Combines an array of `LineString` or `MultiLineSting` geoJSON features into a single
- * feature. Specifically used as helper to reconstruct line features which have been
- * split through mapbox's vector tiling
- * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
- * In our most common use case—these are mapbox feature instances, which look like geojson's
- * but have some added props we can ignore.
- * @return {Object} Geojson feature with combined geometries
- */
-export const combineLineFeatures = features => {
-  // assemble features into a collection, which turf requires
-  let dummyFeatureCollection = {
-    type: "FeatureCollection",
-    features: features,
-  };
-  // combined returns a featureCollection with one (and only one) feature with combined geometries
-  const combinedFeaturesCollection = combine(dummyFeatureCollection);
-  let combinedFeature = combinedFeaturesCollection.features[0];
-  // turf does not cleanly handle the combining of properties (which in our case are identical for
-  // every split feature) - so we'll just grab the props from one of the input features
-  combinedFeature.properties = features[0].properties;
-  return combinedFeature;
-};
-
-/**
  * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
  * @param {String} projectExtentId - The unique ID of the feature to be queried
  * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
