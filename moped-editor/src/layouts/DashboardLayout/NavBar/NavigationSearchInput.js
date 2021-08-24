@@ -5,11 +5,11 @@ import {
   IconButton,
   InputBase,
   Popper,
+  Slide,
   Typography,
   makeStyles,
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
-import { Transition } from "react-transition-group";
 import { GQLAbstract } from "atd-kickstand";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
@@ -22,6 +22,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       marginRight: "20px",
     },
+    overflow: "hidden",
   },
   inputRoot: {
     borderWidth: "1px",
@@ -64,21 +65,22 @@ const useStyles = makeStyles(theme => ({
     },
   },
   searchPopper: {
-    borderWidth: "1px",
-    borderRadius: "4px",
-    borderStyle: "solid",
-    borderColor: theme.palette.background.default,
     [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
     [theme.breakpoints.down("sm")]: {
       width: "200px",
     },
-    boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
+    overflow: "hidden",
+    borderRadius: "4px",
+    // boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
   },
   searchResults: {
-    backgroundColor: theme.palette.background.paper,
+    borderWidth: "1px",
     borderRadius: "4px",
+    borderStyle: "solid",
+    borderColor: theme.palette.background.default,
+    backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
   },
   tempResults: {
@@ -93,19 +95,6 @@ const useStyles = makeStyles(theme => ({
 const NavigationSearchInput = () => {
   const classes = useStyles();
   const divRef = React.useRef();
-  const duration = 1000;
-  const defaultStyle = {
-    transition: `width ${duration}ms ease-in-out`,
-    width: "0px",
-    border: "2px solid red"
-  }
-
-  const transitionStyles ={
-    entering: {width: "300px"},
-    entered: {width: "300px"},
-    exiting: {width: "0px"},
-    exited: {width: "0px"},
-  }
   let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
 
   // Toggle Text Input or magnifying glass
@@ -211,9 +200,7 @@ const NavigationSearchInput = () => {
               <SearchIcon />
             </IconButton>
           ) : (
-            <Transition in={searchInput} appear timeout={duration}>
-            {state => (
-              <div style={{...defaultStyle, ...transitionStyles[state]}}>
+            <Slide direction="left" in={searchInput}>
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
@@ -229,8 +216,8 @@ const NavigationSearchInput = () => {
                 onKeyDown={e => handleKeyDown(e.key)}
                 value={searchTerm}
                 autoFocus
-              /> </div>)}
-            </Transition>
+              />
+            </Slide>
           )}
           <Popper
             id="searchResults"
@@ -249,20 +236,22 @@ const NavigationSearchInput = () => {
             className={classes.searchPopper}
             transition
           >
-                <Box className={classes.searchResults}>
-                  {called && !loading ? (
-                    <NavigationSearchResults
-                      results={data.project_list_view}
-                      handleDropdownClose={handleDropdownClose}
-                      searchTerm={searchTerm}
-                    />
-                  ) : (
-                    <Typography className={classes.tempResults}>
-                      {" "}
-                      Search Results
-                    </Typography>
-                  )}
-                </Box>
+            <Slide direction="left" in={Boolean(searchResultsAnchor)}>
+              <Box className={classes.searchResults}>
+                {called && !loading ? (
+                  <NavigationSearchResults
+                    results={data.project_list_view}
+                    handleDropdownClose={handleDropdownClose}
+                    searchTerm={searchTerm}
+                  />
+                ) : (
+                  <Typography className={classes.tempResults}>
+                    {" "}
+                    Search Results
+                  </Typography>
+                )}
+              </Box>
+            </Slide>
           </Popper>
         </div>
       </ClickAwayListener>
