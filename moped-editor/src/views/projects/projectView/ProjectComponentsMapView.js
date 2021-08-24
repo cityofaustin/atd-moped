@@ -280,9 +280,9 @@ const ProjectComponentsMapView = ({
         mapStyle={mapStyleConfig}
       >
         {/* Draw Navigation controls with specific styles */}
-        <div className={classes.navStyle}>
+        <span className={classes.navStyle}>
           <NavigationControl showCompass={false} />
-        </div>
+        </span>
 
         {/* GEOCODER */}
         <Geocoder
