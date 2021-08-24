@@ -1053,7 +1053,12 @@ export const queryCtnFeatureService = async function(projectExtentId) {
   const paramString = Object.entries(params)
     .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
     .join("&");
-  console.log("QUERY AGOL")
   const url = `${ctnAGOLEndpoint}/query?${paramString}`;
-  return await fetch(url).then(response => response.json());
+
+  return await fetch(url)
+    .then(response => response.json())
+    .catch(err => {
+      console.log("Error fetching geometry: " + JSON.stringify(err));
+      return null;
+    });
 };
