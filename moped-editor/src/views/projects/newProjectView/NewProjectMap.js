@@ -295,9 +295,14 @@ const NewProjectMap = ({
     );
 
     queryCtnFeatureService(selectedFeatureId).then(queriedFeatureCollection => {
-      console.log("HANDLE AGOL RESULT");
-      // todo: fallback to selected feature geometry if query fails/returns none
-      selectedFeature.geometry = queriedFeatureCollection.features[0].geometry;
+      // Update the selectedFeature geometry if a feature has been found. To potential
+      // error cases are handled here:
+      //    1. fetch error: queriedFeatureCollection is null
+      //    2. feature is not found (queriedFeatureCollection.features is empty)
+      // In both cases we simply use the geometry of the selectedFeature which may be
+      // fragemented but is better than nothing. 
+      selectedFeature.geometry = queriedFeatureCollection?.features?.[0]?.geometry || selectedFeature.geometry
+
       commitFeatureCollectionUpdate(
         selectedFeature,
         featureCollection,
@@ -305,6 +310,8 @@ const NewProjectMap = ({
         isPresent
       );
     });
+
+    return;
   };
 
   /**
