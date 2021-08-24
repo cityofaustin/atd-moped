@@ -1042,7 +1042,6 @@ export const combineLineFeatures = features => {
 };
 
 export const queryCtnFeatureService = async function(projectExtentId) {
-  // 606931
   const params = {
     where: `PROJECT_EXTENT_ID=${projectExtentId}`,
     outFields: "*",
@@ -1055,6 +1054,5 @@ export const queryCtnFeatureService = async function(projectExtentId) {
     .join("&");
 
   const url = `${ctnAGOLEndpoint}/query?${paramString}`;
-  const response = await fetch(url).then(response => response.json());
-  return response;
+  return await fetch(url).then(response => response.json());
 };
