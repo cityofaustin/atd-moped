@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -13,6 +13,7 @@ import {
 
 import {
   combineLineFeatures,
+  countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -29,7 +30,7 @@ import {
   mapConfig,
   mapStyles,
   renderTooltip,
-  countFeatures,
+  queryCtnFeatureService,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
@@ -111,6 +112,32 @@ export const useStyles = makeStyles(theme => ({
   ...layerSelectStyles,
 }));
 
+// todo: document
+const handleFeatureCollectionUpdate = (
+  selectedFeature,
+  featureCollection,
+  setFeatureCollection
+) => {
+  const updatedFeatureCollection = isFeaturePresent(
+    selectedFeature,
+    featureCollection.features,
+    selectedFeature.sourceLayer
+  )
+    ? {
+        ...featureCollection,
+        features: featureCollection.features.filter(
+          feature =>
+            getFeatureId(feature, selectedFeature.sourceLayer) !==
+            getFeatureId(selectedFeature, selectedFeature.sourceLayer)
+        ),
+      }
+    : {
+        ...featureCollection,
+        features: [...featureCollection.features, selectedFeature],
+      };
+  setFeatureCollection(updatedFeatureCollection);
+};
+
 /**
  * This the new project map editor component
  * @param {Object} featureCollection - A feature collection GeoJSON object (state)
@@ -144,6 +171,7 @@ const NewProjectMap = ({
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
+  const [selectedFeature, setSelectedFeature] = useState(null);
 
   const mapRef = useRef();
   const mapGeocoderContainerRef = useRef();
@@ -203,6 +231,41 @@ const NewProjectMap = ({
     saveActionDispatch
   );
 
+  useEffect(() => {
+    if (!selectedFeature) {
+      // this case only matches on init
+      return;
+    }
+
+    const selectedFeatureId = getFeatureId(
+      selectedFeature,
+      selectedFeature.sourceLayer
+    );
+
+    if (
+      selectedFeature.geometry.type === "LineString" ||
+      selectedFeature.geometry.type === "MultiLineString"
+    ) {
+      queryCtnFeatureService(selectedFeatureId).then(
+        queriedFeatureCollection => {
+          selectedFeature.geometry =
+            queriedFeatureCollection.features[0].geometry;
+          handleFeatureCollectionUpdate(
+            selectedFeature,
+            featureCollection,
+            setFeatureCollection
+          );
+        }
+      );
+    } else {
+      handleFeatureCollectionUpdate(
+        selectedFeature,
+        featureCollection,
+        setFeatureCollection
+      );
+    }
+  }, [selectedFeature]);
+
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
@@ -218,52 +281,9 @@ const NewProjectMap = ({
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
     let selectedFeature = getGeoJSON(e);
-    const selectedFeatureId = getFeatureId(selectedFeature, layerName);
-
-    if (
-      selectedFeature.geometry.type === "LineString" ||
-      selectedFeature.geometry.type === "MultiLineString"
-    ) {
-      // Query features in the current viewport to identify any that have the same
-      // ID has the selected feature. This is an artifact of the tiling process.
-      // Split features must be re-combined before saving to state (and DB).
-      // We are making the assumption that any split features would be visible in the
-      // map viewport when the feature is clicked. This may not be a safe assumption?
-      // The alternative is to supply our own search geometry bbox
-      const renderedFeatures = mapRef.current.queryRenderedFeatures();
-
-      // It's possible to pass a filter function to queryRenderedFeatures. We
-      // could theoretically filter for features that match the ID of interest, but
-      // I could not get the expression to work. I doubt the performance gain would
-      // be significant vs our own filter call.
-      const splitFeatures = renderedFeatures.filter(
-        feature => getFeatureId(feature, layerName) === selectedFeatureId
-      );
-
-      if (splitFeatures.length > 1) {
-        selectedFeature = combineLineFeatures(splitFeatures);
-        // sourceLayer is needed for later processesing - otherwise set via getGeoJSON()
-        selectedFeature.properties.sourceLayer = layerName;
-      }
-    }
-
-    const updatedFeatureCollection = isFeaturePresent(
-      selectedFeature,
-      featureCollection.features,
-      layerName
-    )
-      ? {
-          ...featureCollection,
-          features: featureCollection.features.filter(
-            feature => getFeatureId(feature, layerName) !== selectedFeatureId
-          ),
-        }
-      : {
-          ...featureCollection,
-          features: [...featureCollection.features, selectedFeature],
-        };
-
-    setFeatureCollection(updatedFeatureCollection);
+    // we need sourceLayer for many side effects!
+    selectedFeature.sourceLayer = layerName;
+    setSelectedFeature(selectedFeature);
   };
 
   /**
