@@ -115,28 +115,38 @@ export const useStyles = makeStyles(theme => ({
 }));
 
 // todo: document
-const handleFeatureCollectionUpdate = (
+
+const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
+  return {
+    ...featureCollection,
+    features: featureCollection.features.filter(
+      feature =>
+        getFeatureId(feature, selectedFeature.properties.sourceLayer) !==
+        getFeatureId(selectedFeature, selectedFeature.properties.sourceLayer)
+    ),
+  };
+};
+
+const addFeatureToCollection = (selectedFeature, featureCollection) => {
+  return {
+    ...featureCollection,
+    features: [...featureCollection.features, selectedFeature],
+  };
+};
+
+const commitFeatureCollectionUpdate = (
   selectedFeature,
   featureCollection,
   setFeatureCollection,
   isPresent
 ) => {
-  const updatedFeatureCollection = isPresent
-    ? {
-        ...featureCollection,
-        features: featureCollection.features.filter(
-          feature =>
-            getFeatureId(feature, selectedFeature.properties.sourceLayer) !==
-            getFeatureId(
-              selectedFeature,
-              selectedFeature.properties.sourceLayer
-            )
-        ),
-      }
-    : {
-        ...featureCollection,
-        features: [...featureCollection.features, selectedFeature],
-      };
+  const handlerFunc = isPresent
+    ? removeFeatureFromCollection
+    : addFeatureToCollection;
+  const updatedFeatureCollection = handlerFunc(
+    selectedFeature,
+    featureCollection
+  );
   setFeatureCollection(updatedFeatureCollection);
 };
 
@@ -232,7 +242,6 @@ const NewProjectMap = ({
   );
 
   // todo: document
-  // todo: you should determind if feature is present elsewhere to avoid api calls—duh
   const handleSelectedFeatureUpdate = selectedFeature => {
     const isPresent = isFeaturePresent(
       selectedFeature,
@@ -247,7 +256,7 @@ const NewProjectMap = ({
     if (selectedFeature.properties.sourceLayer !== "CTN" || isPresent) {
       // we are only concerned with CTN (aka line) features that are being added to the feature collection
       // otherwise handle normally
-      handleFeatureCollectionUpdate(
+      commitFeatureCollectionUpdate(
         selectedFeature,
         featureCollection,
         setFeatureCollection,
@@ -269,17 +278,17 @@ const NewProjectMap = ({
 
     if (!intersectsWithBounds) {
       // feature is entirely contained—we have it's complete geometry
-      handleFeatureCollectionUpdate(
+      commitFeatureCollectionUpdate(
         selectedFeature,
         featureCollection,
         setFeatureCollection,
         isPresent
       );
-      return
+      return;
     }
-    // this feature is rendered to the edge of the viewport and may be fragmented. we cannot 
+    // this feature is rendered to the edge of the viewport and may be fragmented. we cannot
     // know with certainty, so we fetch it's complete geometry from AGOL to be safe.
-    // also considered: turf.booleanWithin() and turf.booleanContains - not reliable.
+    // also considered turf.booleanWithin() and turf.booleanContains - not reliable.
     const selectedFeatureId = getFeatureId(
       selectedFeature,
       selectedFeature.properties.sourceLayer
@@ -289,7 +298,7 @@ const NewProjectMap = ({
       console.log("HANDLE AGOL RESULT");
       // todo: fallback to selected feature geometry if query fails/returns none
       selectedFeature.geometry = queriedFeatureCollection.features[0].geometry;
-      handleFeatureCollectionUpdate(
+      commitFeatureCollectionUpdate(
         selectedFeature,
         featureCollection,
         setFeatureCollection,
