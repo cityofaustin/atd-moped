@@ -66,6 +66,12 @@ const basemaps = {
   },
 };
 
+/**
+ * ArcGIS Online feature service endpoint of the CTN line segments. Managed by DTS GIS team.
+ */
+const ctnAGOLEndpoint =
+  "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/Moped_CTN_Segments_08_23_2021/FeatureServer/0";
+
 export const mapStyles = {
   statusOpacities: {
     selected: 0.75,
@@ -130,7 +136,7 @@ export const mapConfig = {
       layerIdName: "ctn-lines",
       layerIdField: "PROJECT_EXTENT_ID",
       tooltipTextProperty: "FULL_STREET_NAME",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
@@ -177,7 +183,7 @@ export const mapConfig = {
       layerLabel: "Points",
       layerIdName: "project-component-points",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
@@ -216,7 +222,7 @@ export const mapConfig = {
       layerLabel: "Drawn Points",
       layerIdName: "drawnByUser",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 3,
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
@@ -239,7 +245,7 @@ export const mapConfig = {
       layerLabel: "Drawn Lines",
       layerIdName: "drawnByUserLine",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 4,
       layerColor: theme.palette.primary.main,
       layerMaxLOD: 12,
@@ -265,7 +271,7 @@ export const mapConfig = {
       layerLabel: "Project Features",
       layerIdName: "projectFeatures",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 5,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -298,7 +304,7 @@ export const mapConfig = {
       layerLabel: "Project Points",
       layerIdName: "projectFeaturePoints",
       layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 6,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -385,7 +391,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>
-  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
+  get(feature.properties, mapConfig.layerConfigs[layerName].featureIdProperty);
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -441,20 +447,17 @@ export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords 
 export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
-      const featureSourceLayerName = feature.properties.sourceLayer;
-      const featureId = getFeatureId(feature, featureSourceLayerName);
+      const sourceLayer = feature.properties.sourceLayer;
+      const featureId = getFeatureId(feature, sourceLayer);
 
-      return acc[featureSourceLayerName]
+      return acc[sourceLayer]
         ? {
             ...acc,
             ...{
-              [featureSourceLayerName]: [
-                ...acc[featureSourceLayerName],
-                featureId,
-              ],
+              [sourceLayer]: [...acc[sourceLayer], featureId],
             },
           }
-        : { ...acc, [featureSourceLayerName]: [featureId] };
+        : { ...acc, [sourceLayer]: [featureId] };
     },
     {}
   );
@@ -487,11 +490,12 @@ export const getGeoJSON = e =>
  * @return {Boolean} Is feature present in features of feature collection in state
  */
 export const isFeaturePresent = (selectedFeature, features, layerName) => {
-  const featureGetPath = mapConfig.layerConfigs[layerName].layerIdGetPath;
+  const featureIdProperty = mapConfig.layerConfigs[layerName].featureIdProperty;
 
   return features.some(
     feature =>
-      get(selectedFeature, featureGetPath) === get(feature, featureGetPath)
+      get(selectedFeature.properties, featureIdProperty) ===
+      get(feature.properties, featureIdProperty)
   );
 };
 
@@ -542,7 +546,7 @@ export const createSummaryMapLayers = geoJSON => {
    */
   const geoJSONBySource = geoJSON.features.reduce((acc, feature) => {
     // Copy the sourceLayerName
-    const sourceLayerName = feature.properties.sourceLayer;
+    const sourceLayer = feature.properties.sourceLayer;
 
     /**
      * Build a new state that copies the current state of the accumulator
@@ -552,10 +556,10 @@ export const createSummaryMapLayers = geoJSON => {
      */
     return {
       ...acc,
-      [sourceLayerName]: {
+      [sourceLayer]: {
         ...geoJSON,
         features: [
-          ...(acc[sourceLayerName] ? acc[sourceLayerName].features : []),
+          ...(acc[sourceLayer] ? acc[sourceLayer].features : []),
           feature,
         ],
       },
@@ -567,11 +571,11 @@ export const createSummaryMapLayers = geoJSON => {
    */
   return (
     Object.entries(geoJSONBySource)
-      .map(([sourceLayerName, sourceLayerGeoJSON]) => (
+      .map(([sourceLayer, sourceLayerGeoJSON]) => (
         // Build a source component, and pass attributes
         <Source
-          key={sourceLayerName}
-          id={sourceLayerName}
+          key={sourceLayer}
+          id={sourceLayer}
           type="geojson"
           data={sourceLayerGeoJSON}
         >
@@ -580,8 +584,8 @@ export const createSummaryMapLayers = geoJSON => {
           Mapbox spec styles for persisted layer features
         */}
           <Layer
-            key={sourceLayerName}
-            {...createProjectViewLayerConfig(sourceLayerName)}
+            key={sourceLayer}
+            {...createProjectViewLayerConfig(sourceLayer)}
           />
         </Source>
       ))
@@ -1022,7 +1026,7 @@ export const useSaveActionReducer = () => {
  * In our most common use case—these are mapbox feature instances, which look like geojson's
  * but have some added props we can ignore.
  */
-export const combineLineFeatures = (features) => {
+export const combineLineFeatures = features => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1035,4 +1039,22 @@ export const combineLineFeatures = (features) => {
   // every split feature) - so we'll just grab the props from one of the input features
   combinedFeature.properties = features[0].properties;
   return combinedFeature;
+};
+
+export const queryCtnFeatureService = async function(projectExtentId) {
+  // 606931
+  const params = {
+    where: `PROJECT_EXTENT_ID=${projectExtentId}`,
+    outFields: "*",
+    geometryPrecision: 6,
+    f: "pgeojson",
+  };
+
+  const paramString = Object.entries(params)
+    .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
+    .join("&");
+
+  const url = `${ctnAGOLEndpoint}/query?${paramString}`;
+  const response = await fetch(url).then(response => response.json());
+  return response;
 };
