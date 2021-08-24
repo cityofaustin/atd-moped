@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
@@ -230,6 +230,8 @@ const NewProjectMap = ({
 
   // todo: document
   const handleSelectedFeatureUpdate = selectedFeature => {
+    console.log("VIEWPORT", viewport)
+    debugger;
     const selectedFeatureId = getFeatureId(
       selectedFeature,
       selectedFeature.sourceLayer
