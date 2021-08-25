@@ -106,6 +106,7 @@ const NavigationSearchInput = () => {
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [popperEnterComplete, setPopperEntered] = useState(false);
+  const [showSlideIn, toggleSlideIn] = useState(false);
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
     projectSearchQuery.gql,
@@ -114,16 +115,30 @@ const NavigationSearchInput = () => {
 
   const handleMagClick = () => {
     showSearchInput(true);
+    toggleSlideIn(true);
   };
 
   const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
     setSearchTerm("");
+    setPopperEntered(false);
   };
 
   const handleSearchFocus = () => {
     setSearchResultsAnchor(divRef.current);
+    toggleSlideIn(true);
+  };
+
+  const startSlideAway = () => {
+    setSearchTerm("");
+    setPopperEntered(false);
+    toggleSlideIn(false);
+  };
+
+  const resetSearchInput = () => {
+    setSearchResultsAnchor(null);
+    showSearchInput(false);
   };
 
   /**
@@ -197,14 +212,21 @@ const NavigationSearchInput = () => {
 
   return (
     <div>
-      <ClickAwayListener onClickAway={handleDropdownClose}>
+      <ClickAwayListener
+        onClickAway={startSlideAway} /* onClickAway={handleDropdownClose}*/
+      >
         <div className={classes.root} ref={divRef}>
           {!searchInput ? (
             <IconButton onClick={handleMagClick}>
               <SearchIcon />
             </IconButton>
           ) : (
-            <Slide direction="left" in={searchInput}>
+            <Slide
+              direction="left"
+              in={showSlideIn}
+              timeout={300}
+              onExited={resetSearchInput}
+            >
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
@@ -238,13 +260,15 @@ const NavigationSearchInput = () => {
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             className={clsx(classes.searchPopper, {
+              // only apply dropshadow after component has fully slid into position
               [classes.searchPopperShadow]: popperEnterComplete,
             })}
             transition
           >
             <Slide
               direction="left"
-              in={Boolean(searchResultsAnchor)}
+              in={showSlideIn}
+              timeout={300}
               onEntered={() => setPopperEntered(true)}
             >
               <Box className={classes.searchResults}>
