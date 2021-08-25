@@ -6,7 +6,6 @@ import {
   InputBase,
   Popper,
   Slide,
-  // Typography,
   makeStyles,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -288,12 +287,7 @@ const NavigationSearchInput = () => {
                     handleDropdownClose={handleDropdownClose}
                     searchTerm={searchTerm}
                   />
-                ) /*: (
-                  <Typography className={classes.searchResultsPlaceholder}>
-                    {" "}
-                    Search Results
-                  </Typography>
-                )*/}
+                )}
               </Box>
             </Slide>
           </Popper>
