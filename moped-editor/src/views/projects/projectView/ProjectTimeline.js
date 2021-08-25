@@ -32,7 +32,10 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import moment from "moment";
+import { format } from "date-fns";
+import parseISO from "date-fns/parseISO";
+import ClearIcon from "@material-ui/icons/Clear";
+import { IconButton } from "@material-ui/core";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -186,20 +189,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = (props, name, label) => (
-    <TextField
-      name={name}
-      label={label}
-      type="date"
-      variant="standard"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      onKeyDown={e => handleKeyEvent(e)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-  );
+
+  const DateFieldEditComponent = (props, name, label) => {
+    return (
+      <TextField
+        name={name}
+        label={label}
+        type="date"
+        variant="standard"
+        value={props.value}
+        onChange={e => props.onChange(e.target.value)}
+        onKeyDown={e => handleKeyEvent(e)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => props.onChange(() => null)}>
+              <ClearIcon />
+            </IconButton>
+          ),
+        }}
+        InputAdornmentProps={{
+          position: "start",
+        }}
+      />
+    );
+  };
 
   /**
    * ToggleEditComponent - renders a toggle for True/False edit fields
@@ -312,7 +328,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start date",
       field: "phase_start",
-      render: rowData => moment(rowData.phase_start).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.phase_start
+          ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -324,7 +343,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "End date",
       field: "phase_end",
-      render: rowData => moment(rowData.phase_end).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.phase_end
+          ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
@@ -356,7 +378,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Completion estimate",
       field: "milestone_estimate",
       render: rowData =>
-        moment(rowData.milestone_estimate).format("MM/DD/YYYY"),
+        rowData.milestone_estimate
+          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -368,7 +392,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Date completed",
       field: "milestone_end",
-      render: rowData => moment(rowData.milestone_end).format("MM/DD/YYYY"),
+      render: rowData =>
+        rowData.milestone_end
+          ? format(parseISO(rowData.milestone_end), "MM/dd/yyyy")
+          : undefined,
       editComponent: props => (
         <DateFieldEditComponent
           {...props}
@@ -462,7 +489,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     const updatedPhaseObject = {
                       ...oldData,
                     };
-
                     // Array of differences between new and old data
                     let differences = Object.keys(oldData).filter(
                       key => oldData[key] !== newData[key]
@@ -488,7 +514,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.tableData;
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
-
                     updateExistingPhases(updatedPhaseObject);
 
                     // Execute update mutation, returns promise
@@ -526,7 +551,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_phases.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,
@@ -625,7 +651,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     differences.forEach(diff => {
                       let shouldCoerceEmptyStringToNull =
                         newData[diff] === "" &&
-                        (diff === "phase_start" || diff === "phase_end");
+                        (diff === "milestone_estimate" ||
+                          diff === "milestone_end");
 
                       if (shouldCoerceEmptyStringToNull) {
                         updatedMilestoneObject[diff] = null;
@@ -666,7 +693,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   </Typography>
                 }
                 options={{
-                  ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
+                  ...(data.moped_proj_milestones.length <
+                    PAGING_DEFAULT_COUNT + 1 && {
                     paging: false,
                   }),
                   search: false,

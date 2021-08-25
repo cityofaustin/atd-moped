@@ -42,7 +42,9 @@ const ProjectTeamTable = ({
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
-    variables: { projectId },
+    // sending a null projectId will cause a graphql error
+    // id 0 used when creating a new project, no project personnel will be returned
+    variables: { projectId: projectId ?? 0 },
     fetchPolicy: "no-cache",
   });
 
@@ -406,7 +408,9 @@ const ProjectTeamTable = ({
           </Typography>
         }
         options={{
-          ...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && { paging: false }),
+          ...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && {
+            paging: false,
+          }),
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
