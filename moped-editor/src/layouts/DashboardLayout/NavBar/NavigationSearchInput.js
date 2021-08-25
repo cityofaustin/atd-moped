@@ -6,7 +6,7 @@ import {
   InputBase,
   Popper,
   Slide,
-  Typography,
+  // Typography,
   makeStyles,
 } from "@material-ui/core";
 import clsx from "clsx";
@@ -282,18 +282,18 @@ const NavigationSearchInput = () => {
               onEntered={() => setPopperEntered(true)}
             >
               <Box className={classes.searchResults}>
-                {called && !loading ? (
+                {called && !loading && (
                   <NavigationSearchResults
                     results={data.project_list_view}
                     handleDropdownClose={handleDropdownClose}
                     searchTerm={searchTerm}
                   />
-                ) : (
+                ) /*: (
                   <Typography className={classes.searchResultsPlaceholder}>
                     {" "}
                     Search Results
                   </Typography>
-                )}
+                )*/}
               </Box>
             </Slide>
           </Popper>
