@@ -61,14 +61,41 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
+ * Note: also used in NavigationSearchInput
+ * Attempts to retrieve a valid graphql search value, for example when searching on an
+ * integer/float field but providing it a string, this function returns the value configured
+ * in the invalidValueDefault field in the search object, or null.
+ * @param {Object} query - The GraphQL query configuration
+ * @param {string} column - The name of the column to search
+ * @param {*} value - The value in question
+ * @returns {*} - The value output
+ */
+export const getSearchValue = (query, column, value) => {
+  // Retrieve the type of field (string, float, int, etc)
+  const type = query.config.columns[column].type.toLowerCase();
+  // Get the invalidValueDefault in the search config object
+  const invalidValueDefault =
+    query.config.columns[column].search?.invalidValueDefault ?? null;
+  // If the type is number of float, attempt to parse as such
+  if (["number", "float", "double"].includes(type)) {
+    value = Number.parseFloat(value) || invalidValueDefault;
+  }
+  // If integer, attempt to parse as integer
+  if (["int", "integer"].includes(type)) {
+    value = Number.parseInt(value) || invalidValueDefault;
+  }
+  // Any other value types are pass-through for now
+  return value;
+};
+
+/**
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query }) => {
-  // Style
+const GridTable = ({ title, query, searchTerm }) => {
   const classes = useStyles();
 
   /**
@@ -108,7 +135,7 @@ const GridTable = ({ title, query }) => {
    * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
-    value: "",
+    value: searchTerm ?? "",
     column: "",
   });
 
@@ -157,33 +184,8 @@ const GridTable = ({ title, query }) => {
 
   query.cleanWhere();
 
-  /**
-   * Attempts to retrieve a valid graphql search value, for example when searching on an
-   * integer/float field but providing it a string, this function returns the value configured
-   * in the invalidValueDefault field in the search object, or null.
-   * @param {string} column - The name of the column to search
-   * @param {*} value - The value in question
-   * @returns {*} - The value output
-   */
-  const getSearchValue = (column, value) => {
-    // Retrieve the type of field (string, float, int, etc)
-    const type = query.config.columns[column].type.toLowerCase();
-    // Get the invalidValueDefault in the search config object
-    const invalidValueDefault =
-      query.config.columns[column].search?.invalidValueDefault ?? null;
-    // If the type is number of float, attempt to parse as such
-    if (["number", "float", "double"].includes(type)) {
-      value = Number.parseFloat(value) || invalidValueDefault;
-    }
-    // If integer, attempt to parse as integer
-    if (["int", "integer"].includes(type)) {
-      value = Number.parseInt(value) || invalidValueDefault;
-    }
-    // Any other value types are pass-through for now
-    return value;
-  };
-
-  // If we have a search, use the terms...
+  // If we have a search value in state, initiate search
+  // GridTableSearchBar in GridTableSearch updates search value
   if (search.value && search.value !== "") {
     /**
      * Iterate through all column keys, if they are searchable
@@ -195,7 +197,7 @@ const GridTable = ({ title, query }) => {
         const { operator, quoted, envelope } = query.config.columns[
           column
         ].search;
-        const searchValue = getSearchValue(column, search.value);
+        const searchValue = getSearchValue(query, column, search.value);
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
@@ -205,6 +207,7 @@ const GridTable = ({ title, query }) => {
   }
 
   // For each filter added to state, add a where clause in GraphQL
+  // Advanced Search
   Object.keys(filters).forEach(filter => {
     let {
       envelope,
