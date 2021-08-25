@@ -43,7 +43,7 @@ const NavigationSearchResults = ({
   }
 
   return (
-    <List>
+    <List className={classes.padding}>
       {firstResults.map(result => (
         <ListItemLink
           to={`projects/${result.project_id}`}
@@ -61,7 +61,7 @@ const NavigationSearchResults = ({
             state={{ searchTerm: searchTerm }}
             onClick={handleDropdownClose}
           >
-            <ListItemText primary="More Results" />
+            <ListItemText primary="More results" />
             <ArrowForwardIosIcon />
           </ListItemLink>
         </>
