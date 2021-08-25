@@ -23,6 +23,8 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       marginRight: "20px",
     },
+    // overflow hidden makes it so the popper does not slide in from edge of screen
+    // but instead appears to come in from edge of div
     overflow: "hidden",
   },
   inputRoot: {
@@ -75,6 +77,7 @@ const useStyles = makeStyles(theme => ({
     overflow: "hidden",
     borderRadius: "4px",
   },
+  // separate style so it can be applied after animation completes
   searchPopperShadow: {
     boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
   },
@@ -86,7 +89,7 @@ const useStyles = makeStyles(theme => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
   },
-  tempResults: {
+  searchResultsPlaceholder: {
     padding: "16px",
   },
 }));
@@ -105,7 +108,9 @@ const NavigationSearchInput = () => {
   // anchor element for results popper to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  // keep track if popper animation has completed so border can be applied
   const [popperEnterComplete, setPopperEntered] = useState(false);
+  // boolean used to initiate slide animation
   const [showSlideIn, toggleSlideIn] = useState(false);
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
@@ -113,11 +118,13 @@ const NavigationSearchInput = () => {
     projectSearchQuery.config.options.useQuery
   );
 
+  // when magnifying glass icon is clicked, show search bar and initiate animation
   const handleMagClick = () => {
     showSearchInput(true);
     toggleSlideIn(true);
   };
 
+  // reset state when popper is closed or search result is clicked
   const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
@@ -125,17 +132,21 @@ const NavigationSearchInput = () => {
     setPopperEntered(false);
   };
 
+  // show popper results when search input gets focus
   const handleSearchFocus = () => {
     setSearchResultsAnchor(divRef.current);
     toggleSlideIn(true);
   };
 
+  // initiate exiting animation when clicking outside of search bar / popper results
   const startSlideAway = () => {
     setSearchTerm("");
     setPopperEntered(false);
     toggleSlideIn(false);
   };
 
+  // reset/remove search input and popper
+  // triggered once exiting animation is completed
   const resetSearchInput = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
@@ -212,9 +223,7 @@ const NavigationSearchInput = () => {
 
   return (
     <div>
-      <ClickAwayListener
-        onClickAway={startSlideAway} /* onClickAway={handleDropdownClose}*/
-      >
+      <ClickAwayListener onClickAway={startSlideAway}>
         <div className={classes.root} ref={divRef}>
           {!searchInput ? (
             <IconButton onClick={handleMagClick}>
@@ -263,6 +272,7 @@ const NavigationSearchInput = () => {
               // only apply dropshadow after component has fully slid into position
               [classes.searchPopperShadow]: popperEnterComplete,
             })}
+            // need transition prop since child components include Slide
             transition
           >
             <Slide
@@ -279,7 +289,7 @@ const NavigationSearchInput = () => {
                     searchTerm={searchTerm}
                   />
                 ) : (
-                  <Typography className={classes.tempResults}>
+                  <Typography className={classes.searchResultsPlaceholder}>
                     {" "}
                     Search Results
                   </Typography>
