@@ -18,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     paddingTop: "0px",
     paddingBottom: "0px",
   },
+  listItemSecondaryAction: {
+    fontSize: "1.125rem",
+  },
 }));
 
 const ListItemLink = props => (
@@ -62,7 +65,7 @@ const NavigationSearchResults = ({
             onClick={handleDropdownClose}
           >
             <ListItemText primary="More results" />
-            <ArrowForwardIosIcon />
+            <ArrowForwardIosIcon className={classes.listItemSecondaryAction} />
           </ListItemLink>
         </>
       )}
