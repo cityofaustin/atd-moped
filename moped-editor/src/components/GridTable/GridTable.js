@@ -408,7 +408,7 @@ const GridTable = ({ title, query, searchTerm }) => {
         {/*Title*/}
         <Typography
           variant="h1"
-          component="h2"
+          component="h1"
           align="left"
           className={classes.title}
         >
