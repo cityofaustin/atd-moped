@@ -137,16 +137,14 @@ const addFeatureToCollection = (selectedFeature, featureCollection) => {
  * @param {Object} selectedFeature - The geojson feature to be added/removed
  * @param {Object} featureCollection - Current geojson featureCollection (state)
  * @param {function} setFeatureCollection - The function to change the feature collection state
- * @param {boolean} isPresent - If the selected feature currntly exists in the feature collection state
  * @return {undefined} Side effect of calling setFeatureCollection with new state
  */
 const commitFeatureCollectionUpdate = (
   selectedFeature,
   featureCollection,
-  setFeatureCollection,
-  isPresent
+  setFeatureCollection
 ) => {
-  const handlerFunc = isPresent
+  const handlerFunc = selectedFeature._isPresent
     ? removeFeatureFromCollection
     : addFeatureToCollection;
   const updatedFeatureCollection = handlerFunc(
@@ -154,6 +152,67 @@ const commitFeatureCollectionUpdate = (
     featureCollection
   );
   setFeatureCollection(updatedFeatureCollection);
+};
+
+/**
+ * Handles when a new map feature is selected and updates feature collection state.
+ * Determines if the feature can be safely added directly to feature collection state,
+ * or if the feature geometry may be clipped from tiling, in which case a copy of
+ * the complete feature geometry is fetch from ArcGIS Online.
+ * @param {Object} selectedFeature - The selected feature geojson
+ * @param {Object} map - the Mapbox Map instance
+ * @param {Object} featureCollection - A feature collection GeoJSON object (state)
+ * @param {function} setFeatureCollection - The function to change the feature collection state
+ * @return {undefined} Side effect of setting FeatureCollection with new state
+ */
+const handleSelectedFeatureUpdate = (
+  selectedFeature,
+  map,
+  featureCollection,
+  setFeatureCollection
+) => {
+  if (
+    selectedFeature.properties.sourceLayer === "CTN" &&
+    !selectedFeature._isPresent
+  ) {
+    // CTN (aka line) features that are being added to the feature collection may be clipped.
+    const bbox = map
+      .getBounds()
+      .toArray()
+      .flat();
+    const bboxLine = polygonToLine(bboxPolygon(bbox));
+    const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
+
+    if (intersectsWithBounds) {
+      // this feature is rendered to the edge of the viewport and may be fragmented. we
+      // cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
+      // safe. also considered turf.booleanWithin() and turf.booleanContains - not reliable.
+      const selectedFeatureId = getFeatureId(
+        selectedFeature,
+        selectedFeature.properties.sourceLayer
+      );
+
+      queryCtnFeatureService(selectedFeatureId).then(
+        queriedFeatureCollection => {
+          // Update the selectedFeature geometry if a feature has been found. To potential
+          // error cases are handled here:
+          //    1. fetch error: queriedFeatureCollection is null
+          //    2. feature is not found (queriedFeatureCollection.features is empty)
+          // In both cases we simply use the geometry of the selectedFeature which may be
+          // fragemented but is better than nothing.
+          selectedFeature.geometry =
+            queriedFeatureCollection?.features?.[0]?.geometry ||
+            selectedFeature.geometry;
+        }
+      );
+    }
+  }
+  commitFeatureCollectionUpdate(
+    selectedFeature,
+    featureCollection,
+    setFeatureCollection
+  );
+  return;
 };
 
 /**
@@ -248,81 +307,6 @@ const NewProjectMap = ({
   );
 
   /**
-   * Handles when a new map feature is selected and updates feature collection state
-   * @param {Object} selectedFeature - The selected feature geojson
-   * @return {undefined} Side effect of calling setFeatureCollection with new state
-   */
-  const handleSelectedFeatureUpdate = selectedFeature => {
-    const isPresent = isFeaturePresent(
-      selectedFeature,
-      featureCollection.features,
-      selectedFeature.properties.sourceLayer
-    );
-
-    if (selectedFeature.properties.sourceLayer !== "CTN" || isPresent) {
-      // we are only concerned with CTN (aka line) features that are being added to the feature collection
-      // otherwise handle normally
-      commitFeatureCollectionUpdate(
-        selectedFeature,
-        featureCollection,
-        setFeatureCollection,
-        isPresent
-      );
-      return;
-    }
-
-    // we must decide if the line the feature may be fragmented from tiling
-    const map = mapRef.current.getMap();
-    // get the current map bounds (LngLatBounds instance) and convert it to a simple array
-    const bbox = map
-      .getBounds()
-      .toArray()
-      .flat();
-    // convert the bbox array to a geojson line
-    const bboxLine = polygonToLine(bboxPolygon(bbox));
-    const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
-
-    if (!intersectsWithBounds) {
-      // feature is entirely contained—we have it's complete geometry
-      commitFeatureCollectionUpdate(
-        selectedFeature,
-        featureCollection,
-        setFeatureCollection,
-        isPresent
-      );
-      return;
-    }
-    // this feature is rendered to the edge of the viewport and may be fragmented. we cannot
-    // know with certainty, so we fetch it's complete geometry from AGOL to be safe.
-    // also considered turf.booleanWithin() and turf.booleanContains - not reliable.
-    const selectedFeatureId = getFeatureId(
-      selectedFeature,
-      selectedFeature.properties.sourceLayer
-    );
-
-    queryCtnFeatureService(selectedFeatureId).then(queriedFeatureCollection => {
-      // Update the selectedFeature geometry if a feature has been found. To potential
-      // error cases are handled here:
-      //    1. fetch error: queriedFeatureCollection is null
-      //    2. feature is not found (queriedFeatureCollection.features is empty)
-      // In both cases we simply use the geometry of the selectedFeature which may be
-      // fragemented but is better than nothing.
-      selectedFeature.geometry =
-        queriedFeatureCollection?.features?.[0]?.geometry ||
-        selectedFeature.geometry;
-
-      commitFeatureCollectionUpdate(
-        selectedFeature,
-        featureCollection,
-        setFeatureCollection,
-        isPresent
-      );
-    });
-
-    return;
-  };
-
-  /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
    */
@@ -336,10 +320,24 @@ const NewProjectMap = ({
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
-    let selectedFeature = getGeoJSON(e);
+    let feature = getGeoJSON(e);
     // we need sourceLayer for many side effects!
-    selectedFeature.properties.sourceLayer = layerName;
-    handleSelectedFeatureUpdate(selectedFeature);
+    feature.properties.sourceLayer = layerName;
+
+    feature._isPresent = isFeaturePresent(
+      feature,
+      featureCollection.features,
+      feature.properties.sourceLayer
+    );
+
+    const map = mapRef.current.getMap();
+
+    handleSelectedFeatureUpdate(
+      feature,
+      map,
+      featureCollection,
+      setFeatureCollection
+    );
   };
 
   /**
