@@ -15,6 +15,7 @@ import {
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
+  combineLineGeometries,
   countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
@@ -176,6 +177,27 @@ const handleSelectedFeatureUpdate = (
     !selectedFeature._isPresent
   ) {
     // CTN (aka line) features that are being added to the feature collection may be clipped.
+
+    // Query features in the current viewport
+    const renderedFeatures = map.queryRenderedFeatures();
+
+    const selectedFeatureId = getFeatureId(
+      selectedFeature,
+      selectedFeature.properties.sourceLayer
+    );
+
+    // Identify feature fragements by filtering for their common ID
+    const splitFeatures = renderedFeatures.filter(
+      feature =>
+        getFeatureId(feature, selectedFeature.properties.sourceLayer) ===
+        selectedFeatureId
+    );
+
+    if (splitFeatures.length > 1) {
+      // Merge the split feature geometries together
+      selectedFeature.geometry = combineLineGeometries(splitFeatures);
+    }
+
     const bbox = map
       .getBounds()
       .toArray()
@@ -184,14 +206,9 @@ const handleSelectedFeatureUpdate = (
     const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
 
     if (intersectsWithBounds) {
-      // this feature is rendered to the edge of the viewport and may be fragmented. we
-      // cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
+      // this feature is rendered to the edge of the viewport and may (still) be fragmented.
+      // we cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
       // safe. also considered turf.booleanWithin() and turf.booleanContains - not reliable.
-      const selectedFeatureId = getFeatureId(
-        selectedFeature,
-        selectedFeature.properties.sourceLayer
-      );
-
       queryCtnFeatureService(selectedFeatureId).then(
         queriedFeatureCollection => {
           // Update the selectedFeature geometry if a feature has been found. To potential
