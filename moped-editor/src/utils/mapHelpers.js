@@ -12,7 +12,6 @@ import {
   ListItemText,
   withStyles,
 } from "@material-ui/core";
-import { get } from "lodash";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
 import {
@@ -384,7 +383,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>
-  get(feature.properties, mapConfig.layerConfigs[layerName].featureIdProperty);
+  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -487,8 +486,8 @@ export const isFeaturePresent = (selectedFeature, features, layerName) => {
 
   return features.some(
     feature =>
-      get(selectedFeature.properties, featureIdProperty) ===
-      get(feature.properties, featureIdProperty)
+      selectedFeature.properties[featureIdProperty] ===
+      feature.properties[featureIdProperty]
   );
 };
 
