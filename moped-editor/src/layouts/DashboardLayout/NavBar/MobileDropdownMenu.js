@@ -69,6 +69,7 @@ const MobileDropdownMenu = () => {
       >
         {navigationItems.map(item => (
           <MenuItem
+            key={item.href}
             onClick={() => {
               handleMobileClose();
               navigate(item.href);
@@ -77,14 +78,14 @@ const MobileDropdownMenu = () => {
             {item.title}
           </MenuItem>
         ))}
-        <MenuItem onClick={setShowSubMenu}>
+        <MenuItem key="help" onClick={setShowSubMenu}>
           Help
           {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
         </MenuItem>
         {subMenu && (
           <div className={classes.subMenu}>
             {helpItems.map(item => (
-              <MenuItem onClick={handleMobileClose}>
+              <MenuItem key={item.href} onClick={handleMobileClose}>
                 <Link
                   href={item.href}
                   target="_blank"

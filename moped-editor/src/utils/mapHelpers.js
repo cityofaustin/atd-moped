@@ -13,7 +13,6 @@ import {
   ListItemText,
   withStyles,
 } from "@material-ui/core";
-import { get } from "lodash";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
 import {
@@ -65,6 +64,12 @@ const basemaps = {
     ],
   },
 };
+
+/**
+ * ArcGIS Online feature service endpoint of the CTN line segments. Managed by DTS GIS team.
+ */
+const ctnAGOLEndpoint =
+  "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/Moped_CTN_Segments_08_23_2021/FeatureServer/0";
 
 export const mapStyles = {
   statusOpacities: {
@@ -128,9 +133,8 @@ export const mapConfig = {
     CTN: {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
-      layerIdField: "PROJECT_EXTENT_ID",
       tooltipTextProperty: "FULL_STREET_NAME",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
@@ -144,9 +148,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "line-opacity": [
               "case",
-              ["==", ["get", this.layerIdField], hoveredId],
+              ["==", ["get", this.featureIdProperty], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              ["in", ["get", this.featureIdProperty], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
@@ -176,8 +180,7 @@ export const mapConfig = {
     Project_Component_Points_prototype: {
       layerLabel: "Points",
       layerIdName: "project-component-points",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
@@ -191,9 +194,9 @@ export const mapConfig = {
           const editMapPaintStyles = {
             "circle-opacity": [
               "case",
-              ["==", ["get", this.layerIdField], hoveredId],
+              ["==", ["get", this.featureIdProperty], hoveredId],
               mapStyles.statusOpacities.hovered,
-              ["in", ["get", this.layerIdField], ["literal", layerIds]],
+              ["in", ["get", this.featureIdProperty], ["literal", layerIds]],
               mapStyles.statusOpacities.selected,
               mapStyles.statusOpacities.unselected,
             ],
@@ -215,8 +218,7 @@ export const mapConfig = {
       layerDrawn: true,
       layerLabel: "Drawn Points",
       layerIdName: "drawnByUser",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 3,
       layerColor: theme.palette.secondary.main,
       layerMaxLOD: 12,
@@ -238,8 +240,7 @@ export const mapConfig = {
       layerDrawn: true,
       layerLabel: "Drawn Lines",
       layerIdName: "drawnByUserLine",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 4,
       layerColor: theme.palette.primary.main,
       layerMaxLOD: 12,
@@ -264,8 +265,7 @@ export const mapConfig = {
     projectFeatures: {
       layerLabel: "Project Features",
       layerIdName: "projectFeatures",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 5,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -297,8 +297,7 @@ export const mapConfig = {
       layerDrawn: false,
       layerLabel: "Project Points",
       layerIdName: "projectFeaturePoints",
-      layerIdField: "PROJECT_EXTENT_ID",
-      layerIdGetPath: "properties.PROJECT_EXTENT_ID",
+      featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 6,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -385,7 +384,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>
-  get(feature, mapConfig.layerConfigs[layerName].layerIdGetPath);
+  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -441,20 +440,17 @@ export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords 
 export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
-      const featureSourceLayerName = feature.properties.sourceLayer;
-      const featureId = getFeatureId(feature, featureSourceLayerName);
+      const sourceLayer = feature.properties.sourceLayer;
+      const featureId = getFeatureId(feature, sourceLayer);
 
-      return acc[featureSourceLayerName]
+      return acc[sourceLayer]
         ? {
             ...acc,
             ...{
-              [featureSourceLayerName]: [
-                ...acc[featureSourceLayerName],
-                featureId,
-              ],
+              [sourceLayer]: [...acc[sourceLayer], featureId],
             },
           }
-        : { ...acc, [featureSourceLayerName]: [featureId] };
+        : { ...acc, [sourceLayer]: [featureId] };
     },
     {}
   );
@@ -487,11 +483,12 @@ export const getGeoJSON = e =>
  * @return {Boolean} Is feature present in features of feature collection in state
  */
 export const isFeaturePresent = (selectedFeature, features, layerName) => {
-  const featureGetPath = mapConfig.layerConfigs[layerName].layerIdGetPath;
+  const featureIdProperty = mapConfig.layerConfigs[layerName].featureIdProperty;
 
   return features.some(
     feature =>
-      get(selectedFeature, featureGetPath) === get(feature, featureGetPath)
+      selectedFeature.properties[featureIdProperty] ===
+      feature.properties[featureIdProperty]
   );
 };
 
@@ -542,7 +539,7 @@ export const createSummaryMapLayers = geoJSON => {
    */
   const geoJSONBySource = geoJSON.features.reduce((acc, feature) => {
     // Copy the sourceLayerName
-    const sourceLayerName = feature.properties.sourceLayer;
+    const sourceLayer = feature.properties.sourceLayer;
 
     /**
      * Build a new state that copies the current state of the accumulator
@@ -552,10 +549,10 @@ export const createSummaryMapLayers = geoJSON => {
      */
     return {
       ...acc,
-      [sourceLayerName]: {
+      [sourceLayer]: {
         ...geoJSON,
         features: [
-          ...(acc[sourceLayerName] ? acc[sourceLayerName].features : []),
+          ...(acc[sourceLayer] ? acc[sourceLayer].features : []),
           feature,
         ],
       },
@@ -567,11 +564,11 @@ export const createSummaryMapLayers = geoJSON => {
    */
   return (
     Object.entries(geoJSONBySource)
-      .map(([sourceLayerName, sourceLayerGeoJSON]) => (
+      .map(([sourceLayer, sourceLayerGeoJSON]) => (
         // Build a source component, and pass attributes
         <Source
-          key={sourceLayerName}
-          id={sourceLayerName}
+          key={sourceLayer}
+          id={sourceLayer}
           type="geojson"
           data={sourceLayerGeoJSON}
         >
@@ -580,8 +577,8 @@ export const createSummaryMapLayers = geoJSON => {
           Mapbox spec styles for persisted layer features
         */}
           <Layer
-            key={sourceLayerName}
-            {...createProjectViewLayerConfig(sourceLayerName)}
+            key={sourceLayer}
+            {...createProjectViewLayerConfig(sourceLayer)}
           />
         </Source>
       ))
@@ -635,15 +632,15 @@ export const createProjectViewLayerConfig = (
  */
 export const renderTooltip = (tooltipText, hoveredCoords, className) =>
   tooltipText && (
-    <div
+    <span
       className={className}
       style={{
         left: hoveredCoords?.x,
         top: hoveredCoords?.y,
       }}
     >
-      <div>{tooltipText.toLowerCase()}</div>
-    </div>
+      <span>{tooltipText.toLowerCase()}</span>
+    </span>
   );
 
 /**
@@ -1016,13 +1013,12 @@ export const useSaveActionReducer = () => {
 
 /**
  * Combines an array of `LineString` or `MultiLineSting` geoJSON features into a single
- * feature. Specifically used as helper to reconstruct line features which have been
+ * geometry. Specifically used as helper to reconstruct line features which have been
  * split through mapbox's vector tiling
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
- * In our most common use case—these are mapbox feature instances, which look like geojson's
- * but have some added props we can ignore.
+ * @return {Object} The combined GeoJSON geometry object
  */
-export const combineLineFeatures = (features) => {
+ export const combineLineGeometries = (features) => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1030,9 +1026,33 @@ export const combineLineFeatures = (features) => {
   };
   // combined returns a featureCollection with one (and only one) feature with combined geometries
   const combinedFeaturesCollection = combine(dummyFeatureCollection);
-  let combinedFeature = combinedFeaturesCollection.features[0];
-  // turf does not cleanly handle the combining of properties (which in our case are identical for
-  // every split feature) - so we'll just grab the props from one of the input features
-  combinedFeature.properties = features[0].properties;
-  return combinedFeature;
+  return combinedFeaturesCollection.features[0].geometry;
+};
+
+
+/**
+ * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
+ * @param {String} projectExtentId - The unique ID of the feature to be queried
+ * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
+ * @return {Object} Geojson featureCollection of the queried feature - or null if fetch error
+ */
+export const queryCtnFeatureService = async function(projectExtentId) {
+  const params = {
+    where: `PROJECT_EXTENT_ID=${projectExtentId}`,
+    outFields: "PROJECT_EXTENT_ID",
+    geometryPrecision: 6,
+    f: "pgeojson",
+  };
+
+  const paramString = Object.entries(params)
+    .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
+    .join("&");
+  const url = `${ctnAGOLEndpoint}/query?${paramString}`;
+
+  return await fetch(url)
+    .then(response => response.json())
+    .catch(err => {
+      console.log("Error fetching geometry: " + JSON.stringify(err));
+      return null;
+    });
 };
