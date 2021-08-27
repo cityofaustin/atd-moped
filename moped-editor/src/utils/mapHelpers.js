@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
+import combine from "@turf/combine";
 import theme from "../theme/index";
 import {
   Checkbox,
@@ -1009,6 +1010,25 @@ export const useSaveActionReducer = () => {
 
   return { saveActionState, saveActionDispatch };
 };
+
+/**
+ * Combines an array of `LineString` or `MultiLineSting` geoJSON features into a single
+ * geometry. Specifically used as helper to reconstruct line features which have been
+ * split through mapbox's vector tiling
+ * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
+ * @return {Object} The combined GeoJSON geometry object
+ */
+ export const combineLineGeometries = (features) => {
+  // assemble features into a collection, which turf requires
+  let dummyFeatureCollection = {
+    type: "FeatureCollection",
+    features: features,
+  };
+  // combined returns a featureCollection with one (and only one) feature with combined geometries
+  const combinedFeaturesCollection = combine(dummyFeatureCollection);
+  return combinedFeaturesCollection.features[0].geometry;
+};
+
 
 /**
  * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
