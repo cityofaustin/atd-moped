@@ -106,16 +106,6 @@ const SignalAutocomplete = ({
           {...params}
           error={nameError}
           helperText="Required"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="primary" size={20} />
-                ) : null}
-              </>
-            ),
-          }}
           InputLabelProps={{ required: false }}
           label="Signal"
           required
