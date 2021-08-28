@@ -36,6 +36,7 @@ const SignalAutocomplete = ({
   projectDetails,
   setProjectDetails,
   setFeatureCollection,
+  nameError,
 }) => {
   const [data, setData] = React.useState(null);
   const [error, setError] = React.useState(null);
@@ -97,7 +98,15 @@ const SignalAutocomplete = ({
           : ""
       }
       renderInput={params => (
-        <TextField {...params} label="Signal" variant="standard" />
+        <TextField
+          {...params}
+          label="Signal"
+          variant="standard"
+          helperText="Required"
+          InputLabelProps={{ required: false }}
+          required
+          error={nameError}
+        />
       )}
     />
   );
