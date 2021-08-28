@@ -8,8 +8,8 @@ const DefineProjectForm = ({
   nameError,
   descriptionError,
   setFeatureCollection,
-  useSignalId,
-  setUseSignalId,
+  fromSignalAsset,
+  setFromSignalAsset,
   signal,
   setSignal,
 }) => {
@@ -23,7 +23,7 @@ const DefineProjectForm = ({
     <form style={{ padding: 25 }}>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
-          {!useSignalId && (
+          {!fromSignalAsset && (
             <TextField
               required
               label="Project name"
@@ -38,7 +38,7 @@ const DefineProjectForm = ({
               onChange={e => handleFieldChange(e.target.value, e.target.name)}
             />
           )}
-          {useSignalId && (
+          {fromSignalAsset && (
             <SignalAutocomplete
               signal={signal}
               setSignal={setSignal}
@@ -53,11 +53,11 @@ const DefineProjectForm = ({
           <InputLabel>From signal</InputLabel>
           <Switch
             type="checkbox"
-            checked={useSignalId}
+            checked={fromSignalAsset}
             color="primary"
             name="use_signal_id"
             inputProps={{ "aria-label": "primary checkbox" }}
-            onChange={e => setUseSignalId(e.target.checked)}
+            onChange={e => setFromSignalAsset(e.target.checked)}
           />
         </Grid>
       </Grid>

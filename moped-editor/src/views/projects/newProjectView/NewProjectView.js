@@ -51,7 +51,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
 // todo: move elsewhere?
 const COMPONENT_DEFINITIONS = {
   generic: {
@@ -72,8 +71,8 @@ const COMPONENT_DEFINITIONS = {
 };
 
 // todo: move to mapHelpers?
-const getComponentDef = (featureCollection, useSignalId) => {
-  const signalType = useSignalId
+const getComponentDef = (featureCollection, fromSignalAsset) => {
+  const signalType = fromSignalAsset
     ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
     : null;
   return signalType
@@ -81,8 +80,8 @@ const getComponentDef = (featureCollection, useSignalId) => {
     : COMPONENT_DEFINITIONS.generic;
 };
 
-const generateProjectComponent = (featureCollection, useSignalId) => {
-  const componentDef = getComponentDef(featureCollection, useSignalId);
+const generateProjectComponent = (featureCollection, fromSignalAsset) => {
+  const componentDef = getComponentDef(featureCollection, fromSignalAsset);
   return {
     name: "Extent",
     description: "Project full extent",
@@ -104,8 +103,21 @@ const generateProjectComponent = (featureCollection, useSignalId) => {
   };
 };
 
-// TODO
-console.log("Use a useSignal hook to ensure featurecollection is cleared");
+const useSignalAsset = setFeatureCollection => {
+  // Reset featureCollection when fromSignalAsset toggle is disabled
+  // ensures we clear selected signal feature from state
+  const [fromSignalAsset, setFromSignalAsset] = useState(false);
+  useEffect(() => {
+    if (!fromSignalAsset) {
+      setFeatureCollection({
+        type: "FeatureCollection",
+        features: [],
+      });
+    }
+  }, [fromSignalAsset, setFeatureCollection]);
+  return [fromSignalAsset, setFromSignalAsset];
+};
+
 /**
  * New Project View
  * @return {JSX.Element}
@@ -150,8 +162,10 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
-  const [useSignalId, setUseSignalId] = React.useState(false);
-  const [signal, setSignal] = React.useState("");
+  const [signal, setSignal] = useState("");
+  const [fromSignalAsset, setFromSignalAsset] = useSignalAsset(
+    setFeatureCollection
+  );
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
@@ -193,8 +207,8 @@ const NewProjectView = () => {
             nameError={nameError}
             descriptionError={descriptionError}
             setFeatureCollection={setFeatureCollection}
-            useSignalId={useSignalId}
-            setUseSignalId={setUseSignalId}
+            fromSignalAsset={fromSignalAsset}
+            setFromSignalAsset={setFromSignalAsset}
             signal={signal}
             setSignal={setSignal}
           />
@@ -207,10 +221,10 @@ const NewProjectView = () => {
         return (
           <>
             {/* render static/not editable map if using signal */}
-            {useSignalId && (
+            {fromSignalAsset && (
               <ProjectSummaryMap projectExtentGeoJSON={featureCollection} />
             )}
-            {!useSignalId && (
+            {!fromSignalAsset && (
               <NewProjectMap
                 data-name={"moped-newprojectview-newprojectmap"}
                 featureCollection={featureCollection}
@@ -367,7 +381,7 @@ const NewProjectView = () => {
         ...projectDetails,
         // Next we generate the project extent component
         moped_proj_components: {
-          data: [generateProjectComponent(featureCollection, useSignalId)],
+          data: [generateProjectComponent(featureCollection, fromSignalAsset)],
         },
         // Finally we provide the project personnel
         moped_proj_personnel: { data: cleanedPersonnel },
@@ -444,10 +458,10 @@ const NewProjectView = () => {
   }, [success, newProjectId, navigate]);
 
   useEffect(() => {
-    // If the features are saved, then we are good to go!
+    // If the features are saved or we picked from signal list, then we are good to go!
     if (
       (saveActionState?.currentStep && saveActionState.currentStep === 2) ||
-      (useSignalId && signal)
+      (fromSignalAsset && signal)
     ) {
       handleSubmit();
     }
