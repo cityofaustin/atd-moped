@@ -18,6 +18,7 @@ const signalToFeatureCollection = signal => {
     const feature = {
       type: "Feature",
       properties: {
+        ...signal.properties,
         renderType: "Point",
         PROJECT_EXTENT_ID: featureUUID,
         sourceLayer: "drawnByUser",
@@ -55,7 +56,7 @@ const SignalAutocomplete = ({
 
   React.useEffect(() => {
     const url =
-      "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location&$order=signal_id asc&$limit=9999";
+      "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
     fetch(url)
       .then(response => response.json())
       .then(
