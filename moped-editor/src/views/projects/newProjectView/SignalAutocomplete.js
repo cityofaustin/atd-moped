@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
+import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { v4 as uuidv4 } from "uuid";
 
@@ -53,6 +53,7 @@ const SignalAutocomplete = ({
     const featureCollection = signalToFeatureCollection(signal);
     setFeatureCollection(featureCollection);
   };
+  const loading = !data && !error;
 
   React.useEffect(() => {
     const url =
@@ -79,12 +80,6 @@ const SignalAutocomplete = ({
   return (
     <Autocomplete
       id="signal-id"
-      options={data || []}
-      loading={!data && !error}
-      value={signal}
-      onChange={(e, signal) => {
-        handleFieldChange(signal);
-      }}
       // func to match the value from props to the selected option we should display
       getOptionSelected={(option, value) => {
         // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
@@ -98,17 +93,33 @@ const SignalAutocomplete = ({
           ? `${option.properties.signal_id}: ${option.properties.location_name}`
           : ""
       }
+      onChange={(e, signal) => {
+        handleFieldChange(signal);
+      }}
+      loading={loading}
+      options={data || []}
       renderInput={params => (
         <TextField
           {...params}
-          label="Signal"
-          variant="standard"
-          helperText="Required"
-          InputLabelProps={{ required: false }}
-          required
           error={nameError}
+          helperText="Required"
+          InputProps={{
+            ...params.InputProps,
+            endAdornment: (
+              <>
+                {loading ? (
+                  <CircularProgress color="primary" size={20} />
+                ) : null}
+              </>
+            ),
+          }}
+          InputLabelProps={{ required: false }}
+          label="Signal"
+          required
+          variant="standard"
         />
       )}
+      value={signal}
     />
   );
 };
