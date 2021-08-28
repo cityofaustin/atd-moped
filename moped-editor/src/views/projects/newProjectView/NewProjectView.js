@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
+import ProjectSummaryMap from "../projectView/ProjectSummaryMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import {
@@ -179,19 +180,28 @@ const NewProjectView = () => {
         );
       case 2:
         return (
-          <NewProjectMap
-            data-name={"moped-newprojectview-newprojectmap"}
-            featureCollection={featureCollection}
-            setFeatureCollection={setFeatureCollection}
-            projectId={null}
-            refetchProjectDetails={null}
-            noPadding={true}
-            projectFeatureCollection={null}
-            newFeature={false}
-            saveActionState={saveActionState}
-            saveActionDispatch={saveActionDispatch}
-            componentEditorPanel={null}
-          />
+          <>
+            {useSignalId && (
+              <ProjectSummaryMap
+                projectExtentGeoJSON={featureCollection}
+              />
+            )}
+            {!useSignalId && (
+              <NewProjectMap
+                data-name={"moped-newprojectview-newprojectmap"}
+                featureCollection={featureCollection}
+                setFeatureCollection={setFeatureCollection}
+                projectId={null}
+                refetchProjectDetails={null}
+                noPadding={true}
+                projectFeatureCollection={null}
+                newFeature={false}
+                saveActionState={saveActionState}
+                saveActionDispatch={saveActionDispatch}
+                componentEditorPanel={null}
+              />
+            )}
+          </>
         );
       default:
         return "Unknown step";
