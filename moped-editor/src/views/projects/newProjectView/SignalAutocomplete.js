@@ -54,7 +54,7 @@ const SignalAutocomplete = ({
 
   React.useEffect(() => {
     const url =
-      "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location&$limit=9999";
+      "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location&$order=location_name asc&$limit=9999";
     fetch(url)
       .then(response => response.json())
       .then(
