@@ -151,7 +151,7 @@ const NewProjectView = () => {
             refetchProjectDetails={null}
             noPadding={true}
             projectFeatureCollection={null}
-            newFeature={true}
+            newFeature={false}
             saveActionState={saveActionState}
             saveActionDispatch={saveActionDispatch}
             componentEditorPanel={null}
