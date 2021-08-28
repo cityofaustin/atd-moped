@@ -50,6 +50,36 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+// todo: move to mapHelpers (avoiding merge conflicts atm)
+const SIGNAL_COMPONENT_INDEX = {};
+
+const generateProjectComponent = (featureCollection, useSignalId) => {
+  const component_id = useSignalId ? 18 : 0;
+  const description = useSignalId
+    ? "Traffic signal"
+    : "New Project Feature Extent";
+  return {
+    name: "Extent",
+    description: "Project full extent",
+    component_id: component_id,
+    status_id: 1,
+    moped_proj_features_components: {
+      data: featureCollection.features.map(feature => ({
+        name: "Feature Extent Component",
+        description: description,
+        status_id: 1,
+        moped_proj_feature_object: {
+          data: {
+            status_id: 1,
+            location: feature,
+          },
+        },
+      })),
+    },
+  };
+};
+
+console.log("Use a useSignal hook to ensure featurecollection is cleared");
 /**
  * New Project View
  * @return {JSX.Element}
@@ -303,27 +333,7 @@ const NewProjectView = () => {
         ...projectDetails,
         // Next we generate the project extent component
         moped_proj_components: {
-          data: [
-            {
-              name: "Extent",
-              description: "Project full extent",
-              component_id: 0,
-              status_id: 1,
-              moped_proj_features_components: {
-                data: featureCollection.features.map(feature => ({
-                  name: "Feature Extent Component",
-                  description: "New Project Feature Extent",
-                  status_id: 1,
-                  moped_proj_feature_object: {
-                    data: {
-                      status_id: 1,
-                      location: feature,
-                    },
-                  },
-                })),
-              },
-            },
-          ],
+          data: [generateProjectComponent(featureCollection, useSignalId)],
         },
         // Finally we provide the project personnel
         moped_proj_personnel: { data: cleanedPersonnel },
