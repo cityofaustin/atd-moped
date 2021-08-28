@@ -8,10 +8,11 @@ const DefineProjectForm = ({
   nameError,
   descriptionError,
   setFeatureCollection,
+  useSignalId,
+  setUseSignalId,
+  signal,
+  setSignal,
 }) => {
-  const [useSignalId, setUseSignalId] = React.useState(false)
-  const [signal, setSignal] = React.useState("")
-
   const handleFieldChange = (value, name) => {
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
