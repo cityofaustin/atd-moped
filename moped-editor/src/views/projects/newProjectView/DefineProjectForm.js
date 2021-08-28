@@ -7,7 +7,7 @@ const DefineProjectForm = ({
   setProjectDetails,
   nameError,
   descriptionError,
-  setFeatureCollection
+  setFeatureCollection,
 }) => {
   const [useSignalId, setUseSignalId] = React.useState(false)
   const [signal, setSignal] = React.useState("")
@@ -44,6 +44,7 @@ const DefineProjectForm = ({
               projectDetails={projectDetails}
               setProjectDetails={setProjectDetails}
               setFeatureCollection={setFeatureCollection}
+              nameError={nameError}
             />
           )}
         </Grid>
