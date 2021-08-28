@@ -94,8 +94,8 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
-  const [useSignalId, setUseSignalId] = React.useState(false)
-  const [signal, setSignal] = React.useState("")
+  const [useSignalId, setUseSignalId] = React.useState(false);
+  const [signal, setSignal] = React.useState("");
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
