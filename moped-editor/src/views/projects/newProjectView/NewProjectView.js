@@ -51,23 +51,47 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// todo: move to mapHelpers (avoiding merge conflicts atm)
-const SIGNAL_COMPONENT_INDEX = {};
+
+// todo: move elsewhere?
+const COMPONENT_DEFINITIONS = {
+  generic: {
+    name: "Extent",
+    description: "New Project Feature Extent",
+    component_id: 0,
+  },
+  phb: {
+    name: "PHB",
+    description: "Pedestrian ssignal",
+    component_id: 16,
+  },
+  traffic: {
+    name: "Traffic signal",
+    description: "Traffic signal",
+    component_id: 18,
+  },
+};
+
+// todo: move to mapHelpers?
+const getComponentDef = (featureCollection, useSignalId) => {
+  const signalType = useSignalId
+    ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
+    : null;
+  return signalType
+    ? COMPONENT_DEFINITIONS[signalType]
+    : COMPONENT_DEFINITIONS.generic;
+};
 
 const generateProjectComponent = (featureCollection, useSignalId) => {
-  const component_id = useSignalId ? 18 : 0;
-  const description = useSignalId
-    ? "Traffic signal"
-    : "New Project Feature Extent";
+  const componentDef = getComponentDef(featureCollection, useSignalId);
   return {
     name: "Extent",
     description: "Project full extent",
-    component_id: component_id,
+    component_id: componentDef.component_id,
     status_id: 1,
     moped_proj_features_components: {
       data: featureCollection.features.map(feature => ({
-        name: "Feature Extent Component",
-        description: description,
+        name: componentDef.name,
+        description: componentDef.description,
         status_id: 1,
         moped_proj_feature_object: {
           data: {
@@ -80,6 +104,7 @@ const generateProjectComponent = (featureCollection, useSignalId) => {
   };
 };
 
+// TODO
 console.log("Use a useSignal hook to ensure featurecollection is cleared");
 /**
  * New Project View
@@ -181,10 +206,9 @@ const NewProjectView = () => {
       case 2:
         return (
           <>
+            {/* render static/not editable map if using signal */}
             {useSignalId && (
-              <ProjectSummaryMap
-                projectExtentGeoJSON={featureCollection}
-              />
+              <ProjectSummaryMap projectExtentGeoJSON={featureCollection} />
             )}
             {!useSignalId && (
               <NewProjectMap
@@ -421,7 +445,10 @@ const NewProjectView = () => {
 
   useEffect(() => {
     // If the features are saved, then we are good to go!
-    if (saveActionState?.currentStep && saveActionState.currentStep === 2) {
+    if (
+      (saveActionState?.currentStep && saveActionState.currentStep === 2) ||
+      (useSignalId && signal)
+    ) {
       handleSubmit();
     }
     // handleSubmit changes on every render, cannot be a dependency
