@@ -93,6 +93,9 @@ const SignalAutocomplete = ({
           ? `${option.properties.signal_id}: ${option.properties.location_name}`
           : ""
       }
+      endAdornment={
+        loading ? <CircularProgress color="primary" size={20} /> : null
+      }
       onChange={(e, signal) => {
         handleFieldChange(signal);
       }}
