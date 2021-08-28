@@ -85,6 +85,7 @@ const NewProjectView = () => {
     capitally_funded: false,
     ecapris_subproject_id: null,
   });
+
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [personnel, setPersonnel] = useState([]);
@@ -133,6 +134,7 @@ const NewProjectView = () => {
             setProjectDetails={setProjectDetails}
             nameError={nameError}
             descriptionError={descriptionError}
+            setFeatureCollection={setFeatureCollection}
           />
         );
       case 1:

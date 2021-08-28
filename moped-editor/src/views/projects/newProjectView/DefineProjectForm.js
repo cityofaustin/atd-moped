@@ -1,12 +1,17 @@
 import React from "react";
 import { TextField, Grid, InputLabel, Switch } from "@material-ui/core";
+import SignalAutocomplete from "./SignalAutocomplete";
 
 const DefineProjectForm = ({
   projectDetails,
   setProjectDetails,
   nameError,
   descriptionError,
+  setFeatureCollection
 }) => {
+  const [useSignalId, setUseSignalId] = React.useState(false)
+  const [signal, setSignal] = React.useState("")
+
   const handleFieldChange = (value, name) => {
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
@@ -17,18 +22,40 @@ const DefineProjectForm = ({
     <form style={{ padding: 25 }}>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
-          <TextField
-            required
-            label="Project name"
-            name="project_name"
-            variant="standard"
-            type="text"
-            fullWidth
-            value={projectDetails.project_name}
-            error={nameError}
-            helperText="Required"
-            InputLabelProps={{ required: false }}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
+          {!useSignalId && (
+            <TextField
+              required
+              label="Project name"
+              name="project_name"
+              variant="standard"
+              type="text"
+              fullWidth
+              value={projectDetails.project_name}
+              error={nameError}
+              helperText="Required"
+              InputLabelProps={{ required: false }}
+              onChange={e => handleFieldChange(e.target.value, e.target.name)}
+            />
+          )}
+          {useSignalId && (
+            <SignalAutocomplete
+              signal={signal}
+              setSignal={setSignal}
+              projectDetails={projectDetails}
+              setProjectDetails={setProjectDetails}
+              setFeatureCollection={setFeatureCollection}
+            />
+          )}
+        </Grid>
+        <Grid item xs={3}>
+          <InputLabel>From signal</InputLabel>
+          <Switch
+            type="checkbox"
+            checked={useSignalId}
+            color="primary"
+            name="use_signal_id"
+            inputProps={{ "aria-label": "primary checkbox" }}
+            onChange={e => setUseSignalId(e.target.checked)}
           />
         </Grid>
       </Grid>
