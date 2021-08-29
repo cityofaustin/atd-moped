@@ -66,6 +66,9 @@ const SignalAutocomplete = ({
             // on query error, socrata returns status 200 with {"error": true, "message": <message>} in body
             setError(result.message.toString());
           } else {
+            // insert an empty option for the initialized (empty) state this creates a weird
+            // blank list option in the autocomplete menu. i have not found an alternative
+            // that avoids material linter errors
             result.features.unshift("");
             setData(result.features);
           }
