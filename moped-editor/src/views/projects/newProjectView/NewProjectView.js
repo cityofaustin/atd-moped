@@ -51,7 +51,10 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-// todo: move elsewhere?
+/**
+ * Component definitions. The component_id must match a valid component in the
+ * moped_components DB lookup table.
+ */
 const COMPONENT_DEFINITIONS = {
   generic: {
     name: "Extent",
@@ -70,7 +73,12 @@ const COMPONENT_DEFINITIONS = {
   },
 };
 
-// todo: move to mapHelpers?
+/**
+ * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component definition pboject
+ */
 const getComponentDef = (featureCollection, fromSignalAsset) => {
   const signalType = fromSignalAsset
     ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
@@ -80,6 +88,12 @@ const getComponentDef = (featureCollection, fromSignalAsset) => {
     : COMPONENT_DEFINITIONS.generic;
 };
 
+/**
+ * Generates a project component object that can be used in mutation.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component mutation object
+ */
 const generateProjectComponent = (featureCollection, fromSignalAsset) => {
   const componentDef = getComponentDef(featureCollection, fromSignalAsset);
   return {
@@ -103,15 +117,20 @@ const generateProjectComponent = (featureCollection, fromSignalAsset) => {
   };
 };
 
+/**
+ * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
+ * form state clean.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {func} setSignal - signal state setter
+ * @param {Object} setFeatureCollection - featureCollection state setter
+ */
 const useSignalStateManager = (fromSignal, setSignal, setFeatureCollection) => {
-  // Reset featureCollection and signal when fromSignalAsset toggle changes
-  // ensures we keep state clean
   useEffect(() => {
     setFeatureCollection({
       type: "FeatureCollection",
       features: [],
     });
-    setSignal("")
+    setSignal("");
   }, [setFeatureCollection, fromSignal, setSignal]);
 };
 
@@ -138,6 +157,10 @@ const NewProjectView = () => {
    * @type {Object[]} personnel - An array of objects containing the personnel data
    * @type {Object} featureCollection - The final GeoJSON to be inserted into a component
    * @type {boolean} areNoFeaturesSelected - True when no features are selected
+   * @type {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
+   * @type {Boolean} signalError - If the current signal value is in validation error
+   * @type {Boolean} fromSignalAsset - if signal autocomplete switch is active. If true,
+   *    the project name and featureCollection will be set from the `signal` value.
    */
   const [activeStep, setActiveStep] = useState(0);
   const [projectDetails, setProjectDetails] = useState({
@@ -159,12 +182,9 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
-  
   const [signal, setSignal] = useState("");
   const [fromSignalAsset, setFromSignalAsset] = useState(false);
   useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
-
-  // const signalError = useSignalError(fromSignalAsset, signal);
   const [signalError, setSignalError] = useState(false);
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
@@ -261,7 +281,7 @@ const NewProjectView = () => {
   const handleNext = () => {
     let nameError = projectDetails.project_name.length === 0;
     let descriptionError = projectDetails.project_description.length === 0;
-    let signalError = fromSignalAsset && !Boolean(signal)
+    let signalError = fromSignalAsset && !Boolean(signal);
     let canContinue = false;
 
     if (!nameError && !descriptionError && !signalError) {
@@ -282,7 +302,7 @@ const NewProjectView = () => {
     if (canContinue) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
-    
+
     setNameError(nameError);
     setDescriptionError(descriptionError);
     setSignalError(signalError);
