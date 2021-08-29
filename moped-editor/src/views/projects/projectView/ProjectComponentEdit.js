@@ -21,7 +21,7 @@ import {
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
-
+import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   },
   layerSelectBox: {
     maxHeight: "35vh",
-    overflow: "scroll"
+    overflow: "scroll",
   },
 }));
 
@@ -736,6 +736,9 @@ const ProjectComponentEdit = ({
       setEditFeatureCollection(featureCollectionFromComponents);
     }
   }
+  const isSignalComponent = selectedComponentType
+    ? selectedComponentType.toLowerCase() === "signal"
+    : false;
 
   return (
     <Grid
@@ -774,11 +777,7 @@ const ProjectComponentEdit = ({
               onExited={() => setEditPanelCollapsedShow(true)}
             >
               <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  className={classes.layerSelectBox}
-                >
+                <Grid item xs={12} className={classes.layerSelectBox}>
                   <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
                     <Grid item xs={12}>
                       <Autocomplete
@@ -799,29 +798,33 @@ const ProjectComponentEdit = ({
                         onChange={handleComponentTypeSelect}
                       />
                     </Grid>
+
                     {availableSubtypes.length > 0 && (
                       <Grid item xs={12}>
-                        <Autocomplete
-                          id="moped-project-subtype-select"
-                          className={classes.formSelect}
-                          value={
-                            availableSubtypes.find(
-                              subtype =>
-                                subtype.toLowerCase() ===
-                                selectedComponentSubtype
-                            ) ?? null
-                          }
-                          options={[...new Set(availableSubtypes)].sort()}
-                          getOptionLabel={component => component}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="Subtype"
-                              variant="outlined"
-                            />
-                          )}
-                          onChange={handleComponentSubtypeSelect}
-                        />
+                        {!isSignalComponent && (
+                          <Autocomplete
+                            id="moped-project-subtype-select"
+                            className={classes.formSelect}
+                            value={
+                              availableSubtypes.find(
+                                subtype =>
+                                  subtype.toLowerCase() ===
+                                  selectedComponentSubtype
+                              ) ?? null
+                            }
+                            options={[...new Set(availableSubtypes)].sort()}
+                            getOptionLabel={component => component}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                label="Subtype"
+                                variant="outlined"
+                              />
+                            )}
+                            onChange={handleComponentSubtypeSelect}
+                          />
+                        )}
+                        {isSignalComponent && <SignalComponentAutocomplete className={classes.formSelect} />}
                       </Grid>
                     )}
                     <ProjectComponentSubcomponents
