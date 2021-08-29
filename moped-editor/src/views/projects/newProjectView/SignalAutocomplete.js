@@ -37,7 +37,7 @@ const SignalAutocomplete = ({
   projectDetails,
   setProjectDetails,
   setFeatureCollection,
-  nameError,
+  signalError,
 }) => {
   const [data, setData] = React.useState(null);
   const [error, setError] = React.useState(null);
@@ -66,7 +66,7 @@ const SignalAutocomplete = ({
             // on query error, socrata returns status 200 with {"error": true, "message": <message>} in body
             setError(result.message.toString());
           } else {
-            // remember: socrata geojson request returns a featureCollection
+            result.features.unshift("");
             setData(result.features);
           }
         },
@@ -79,6 +79,17 @@ const SignalAutocomplete = ({
   return (
     <Autocomplete
       id="signal-id"
+      // limit to 40 options to ensure fast rendering
+      filterOptions={(options, { inputValue, getOptionLabel }) => {
+        const limit = 40;
+        const filteredOptions = options.filter(
+          (option, i) =>
+            getOptionLabel(option)
+              .toLowerCase()
+              .includes(inputValue.toLowerCase()) && i < limit
+        );
+        return filteredOptions;
+      }}
       // func to match the value from props to the selected option we should display
       getOptionSelected={(option, value) => {
         // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
@@ -100,7 +111,7 @@ const SignalAutocomplete = ({
       renderInput={params => (
         <TextField
           {...params}
-          error={nameError}
+          error={signalError}
           helperText="Required"
           InputProps={{
             ...params.InputProps,
