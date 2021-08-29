@@ -103,19 +103,16 @@ const generateProjectComponent = (featureCollection, fromSignalAsset) => {
   };
 };
 
-const useSignalAsset = setFeatureCollection => {
-  // Reset featureCollection when fromSignalAsset toggle is disabled
-  // ensures we clear selected signal feature from state
-  const [fromSignalAsset, setFromSignalAsset] = useState(false);
+const useSignalStateManager = (fromSignal, setSignal, setFeatureCollection) => {
+  // Reset featureCollection and signal when fromSignalAsset toggle changes
+  // ensures we keep state clean
   useEffect(() => {
-    if (!fromSignalAsset) {
-      setFeatureCollection({
-        type: "FeatureCollection",
-        features: [],
-      });
-    }
-  }, [fromSignalAsset, setFeatureCollection]);
-  return [fromSignalAsset, setFromSignalAsset];
+    setFeatureCollection({
+      type: "FeatureCollection",
+      features: [],
+    });
+    setSignal("")
+  }, [setFeatureCollection, fromSignal, setSignal]);
 };
 
 /**
@@ -162,10 +159,13 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+  
   const [signal, setSignal] = useState("");
-  const [fromSignalAsset, setFromSignalAsset] = useSignalAsset(
-    setFeatureCollection
-  );
+  const [fromSignalAsset, setFromSignalAsset] = useState(false);
+  useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
+
+  // const signalError = useSignalError(fromSignalAsset, signal);
+  const [signalError, setSignalError] = useState(false);
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
@@ -210,6 +210,7 @@ const NewProjectView = () => {
             fromSignalAsset={fromSignalAsset}
             setFromSignalAsset={setFromSignalAsset}
             signal={signal}
+            signalError={signalError}
             setSignal={setSignal}
           />
         );
@@ -260,9 +261,10 @@ const NewProjectView = () => {
   const handleNext = () => {
     let nameError = projectDetails.project_name.length === 0;
     let descriptionError = projectDetails.project_description.length === 0;
+    let signalError = fromSignalAsset && !Boolean(signal)
     let canContinue = false;
 
-    if (!nameError && !descriptionError) {
+    if (!nameError && !descriptionError && !signalError) {
       switch (activeStep) {
         case 0:
           canContinue = true;
@@ -280,9 +282,10 @@ const NewProjectView = () => {
     if (canContinue) {
       setActiveStep(prevActiveStep => prevActiveStep + 1);
     }
-
+    
     setNameError(nameError);
     setDescriptionError(descriptionError);
+    setSignalError(signalError);
   };
 
   /**
