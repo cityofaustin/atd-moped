@@ -12,6 +12,7 @@ const DefineProjectForm = ({
   setFromSignalAsset,
   signal,
   setSignal,
+  signalError,
 }) => {
   const handleFieldChange = (value, name) => {
     const updatedProjectDetails = { ...projectDetails, [name]: value };
@@ -45,7 +46,7 @@ const DefineProjectForm = ({
               projectDetails={projectDetails}
               setProjectDetails={setProjectDetails}
               setFeatureCollection={setFeatureCollection}
-              nameError={nameError}
+              signalError={signalError}
             />
           )}
         </Grid>
