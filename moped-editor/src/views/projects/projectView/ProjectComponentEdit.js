@@ -322,10 +322,12 @@ const ProjectComponentEdit = ({
    * @param {Object} e - The event object
    * @param {String} newValue - The new value from the autocomplete selector
    */
-  const handleComponentSubtypeSelect = (e, newValue) =>
+  const handleComponentSubtypeSelect = (e, newValue) => {
+    console.log("SUBTYPE", newValue);
     setSelectedComponentSubtype(
       (newValue ?? e.target.value ?? "").toLowerCase()
     );
+  };
 
   /**
    * Retrieves the component_id based on the type and subtype names
@@ -824,7 +826,16 @@ const ProjectComponentEdit = ({
                             onChange={handleComponentSubtypeSelect}
                           />
                         )}
-                        {isSignalComponent && <SignalComponentAutocomplete className={classes.formSelect} />}
+                        {isSignalComponent && (
+                          <SignalComponentAutocomplete
+                            setComponentDescription={setComponentDescription}
+                            setEditFeatureCollection={setEditFeatureCollection}
+                            setSelectedComponentSubtype={
+                              setSelectedComponentSubtype
+                            }
+                            className={classes.formSelect}
+                          />
+                        )}
                       </Grid>
                     )}
                     <ProjectComponentSubcomponents

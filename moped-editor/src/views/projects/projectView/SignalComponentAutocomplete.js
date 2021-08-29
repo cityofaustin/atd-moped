@@ -32,21 +32,27 @@ const signalToFeatureCollection = signal => {
   return featureCollection;
 };
 
-/**
- * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a 
- * Socrata dataset. Data is fetched once when the component mounts.
- * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
- * * @param {func} setSignal - signal state setter
- * * @param {Object} projectDetails - The parent view's project details object
- * * @param {Object} setProjectDetails - The projectDetails state setter
- * * @param {Object} setFeatureCollection - The parent view's featureCollection state setter
- * * @param {Boolean} signalError - If the current signal value is in validation error
- *  @return {JSX.Element}
- */
-const SignalComponentAutocomplete = ({classes}) => {
+const SignalComponentAutocomplete = ({
+  classes,
+  setSelectedComponentSubtype,
+  setEditFeatureCollection,
+  setComponentDescription,
+}) => {
   const [data, setData] = React.useState(null);
   const [error, setError] = React.useState(null);
   const loading = !data && !error;
+
+  const handleFieldChange = signal => {
+    const signalSubtype = signal
+      ? signal.properties.signal_type.toLowerCase()
+      : "";
+    const description = signal ? signal.properties.location_name.trim() : "";
+    const featureCollection = signalToFeatureCollection(signal);
+
+    setSelectedComponentSubtype(signalSubtype);
+    setEditFeatureCollection(featureCollection);
+    setComponentDescription(description);
+  };
 
   React.useEffect(() => {
     const url =
@@ -102,7 +108,7 @@ const SignalComponentAutocomplete = ({classes}) => {
           : ""
       }
       onChange={(e, signal) => {
-        console.log("SIGNAL", signal)
+        handleFieldChange(signal);
       }}
       loading={loading}
       options={data || []}
