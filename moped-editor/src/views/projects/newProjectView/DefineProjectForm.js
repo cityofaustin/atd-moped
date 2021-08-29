@@ -50,7 +50,7 @@ const DefineProjectForm = ({
           )}
         </Grid>
         <Grid item xs={3}>
-          <InputLabel>From signal</InputLabel>
+          <InputLabel>Use signal asset</InputLabel>
           <Switch
             type="checkbox"
             checked={fromSignalAsset}
