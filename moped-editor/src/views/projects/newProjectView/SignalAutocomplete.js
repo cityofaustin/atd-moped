@@ -43,7 +43,7 @@ const SignalAutocomplete = ({
   const [error, setError] = React.useState(null);
 
   const handleFieldChange = signal => {
-    const projectName = signal?.properties.location_name || "";
+    const projectName = signal?.properties?.location_name || "";
     const updatedProjectDetails = {
       ...projectDetails,
       ...{ project_name: projectName },
@@ -67,7 +67,6 @@ const SignalAutocomplete = ({
             setError(result.message.toString());
           } else {
             // remember: socrata geojson request returns a featureCollection
-            result.features.unshift("");
             setData(result.features);
           }
         },
