@@ -102,9 +102,9 @@ const SignalAutocomplete = ({
           (option, i) =>
             getOptionLabel(option)
               .toLowerCase()
-              .includes(inputValue.toLowerCase()) && i < limit
+              .includes(inputValue.toLowerCase())
         );
-        return filteredOptions;
+        return filteredOptions.slice(0, limit);
       }}
       getOptionSelected={(option, value) => {
         // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
