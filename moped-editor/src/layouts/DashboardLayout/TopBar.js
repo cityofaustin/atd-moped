@@ -109,6 +109,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             <Tabs className={classes.tabs}>
               {navigationItems.map(item => (
                 <Tab
+                  key={item.href}
                   label={item.title}
                   className={classes.tab}
                   component={NavLink}
