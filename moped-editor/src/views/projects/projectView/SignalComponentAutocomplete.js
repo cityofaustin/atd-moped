@@ -2,6 +2,7 @@ import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from "react";
 
 /**
  * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
@@ -32,17 +33,31 @@ const signalToFeatureCollection = signal => {
   return featureCollection;
 };
 
-const SignalComponentAutocomplete = ({
-  classes,
+const useInitialComponentValue = (editFeatureCollection, setSignal) => {
+  // initializes the selected signal value - handles case of editing existing component
+  useEffect(() => {
+    if (!editFeatureCollection || editFeatureCollection.features.length === 0) {
+      setSignal("");
+      return;
+    } else if (editFeatureCollection.features.length > 1) {
+      // todo: prevent this from happening by locking down map editing for signal components :/
+      console.warn(
+        "Found signal component with multiple feature geometriess—all but one feature will be removed."
+      );
+    }
+    setSignal(editFeatureCollection.features[0]);
+    // only fire on init
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+};
+
+const useSignalChangeEffect = (
+  signal,
   setSelectedComponentSubtype,
   setEditFeatureCollection,
-  setComponentDescription,
-}) => {
-  const [data, setData] = React.useState(null);
-  const [error, setError] = React.useState(null);
-  const loading = !data && !error;
-
-  const handleFieldChange = signal => {
+  setComponentDescription
+) => {
+  useEffect(() => {
     const signalSubtype = signal
       ? signal.properties.signal_type.toLowerCase()
       : "";
@@ -52,9 +67,36 @@ const SignalComponentAutocomplete = ({
     setSelectedComponentSubtype(signalSubtype);
     setEditFeatureCollection(featureCollection);
     setComponentDescription(description);
-  };
+  }, [
+    signal,
+    setSelectedComponentSubtype,
+    setEditFeatureCollection,
+    setComponentDescription,
+  ]);
+};
 
-  React.useEffect(() => {
+const SignalComponentAutocomplete = ({
+  classes,
+  setSelectedComponentSubtype,
+  setEditFeatureCollection,
+  setComponentDescription,
+  editFeatureCollection,
+}) => {
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const loading = !data && !error;
+  const [signal, setSignal] = useState("");
+
+  useInitialComponentValue(editFeatureCollection, setSignal);
+
+  useSignalChangeEffect(
+    signal,
+    setSelectedComponentSubtype,
+    setEditFeatureCollection,
+    setComponentDescription
+  );
+
+  useEffect(() => {
     const url =
       "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
     fetch(url)
@@ -94,13 +136,13 @@ const SignalComponentAutocomplete = ({
         );
         return filteredOptions;
       }}
-      // getOptionSelected={(option, value) => {
-      //   // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
-      //   // seemingly calling the first condition when value was ""
-      //   return value
-      //     ? option.properties?.signal_id === value.properties?.signal_id
-      //     : option === "";
-      // }}
+      getOptionSelected={(option, value) => {
+        // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
+        // seemingly calling the first condition when value was ""
+        return value
+          ? option.properties?.signal_id === value.properties?.signal_id
+          : option === "";
+      }}
       // this label formatting mirrors the Data Tracker formatting
       getOptionLabel={option =>
         option
@@ -108,7 +150,7 @@ const SignalComponentAutocomplete = ({
           : ""
       }
       onChange={(e, signal) => {
-        handleFieldChange(signal);
+        setSignal(signal);
       }}
       loading={loading}
       options={data || []}
@@ -130,6 +172,7 @@ const SignalComponentAutocomplete = ({
           variant="outlined"
         />
       )}
+      value={signal || ""}
     />
   );
 };
