@@ -830,6 +830,7 @@ const ProjectComponentEdit = ({
                           <SignalComponentAutocomplete
                             setComponentDescription={setComponentDescription}
                             setEditFeatureCollection={setEditFeatureCollection}
+                            editFeatureCollection={editFeatureCollection}
                             setSelectedComponentSubtype={
                               setSelectedComponentSubtype
                             }
