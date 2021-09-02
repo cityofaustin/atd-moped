@@ -13,7 +13,10 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import { AddCircle as AddCircleIcon } from "@material-ui/icons";
+import {
+  AddCircle as AddCircleIcon,
+  DeleteOutline as DeleteOutlineIcon
+} from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 
 import typography from "../../../theme/typography";
@@ -34,7 +37,6 @@ import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import ClearIcon from "@material-ui/icons/Clear";
 import { IconButton } from "@material-ui/core";
 
 /**
@@ -206,7 +208,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         InputProps={{
           endAdornment: (
             <IconButton onClick={() => props.onChange(() => null)}>
-              <ClearIcon />
+              <DeleteOutlineIcon />
             </IconButton>
           ),
         }}
