@@ -16,7 +16,13 @@ const signalToFeatureCollection = signal => {
     features: [],
   };
   if (signal) {
-    const featureUUID = uuidv4();
+    // preserve the feature's previous UUID if it's being edited. i don't think
+    // this matters since we don't rely on these feature IDs for anything at the moment,
+    // this seems like reasonable expected behavior. we are **not** preserving any other
+    // feature properties when the feature is edited. so, for example, if the user edits
+    // a signal component and the signal geometry in socrata has since changed, the new
+    // geometry will be saved.
+    const featureUUID = signal.id || uuidv4();
     const feature = {
       type: "Feature",
       properties: {
@@ -63,7 +69,6 @@ const useSignalChangeEffect = (
       : "";
     const description = signal ? signal.properties.location_name.trim() : "";
     const featureCollection = signalToFeatureCollection(signal);
-
     setSelectedComponentSubtype(signalSubtype);
     setEditFeatureCollection(featureCollection);
     setComponentDescription(description);
