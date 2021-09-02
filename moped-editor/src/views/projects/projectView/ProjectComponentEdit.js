@@ -758,6 +758,7 @@ const ProjectComponentEdit = ({
         projectFeatureCollection={projectFeatureCollection}
         saveActionState={saveActionState}
         saveActionDispatch={saveActionDispatch}
+        isSignalComponent={isSignalComponent}
         componentEditorPanel={
           <>
             <Collapse
@@ -800,7 +801,6 @@ const ProjectComponentEdit = ({
                         onChange={handleComponentTypeSelect}
                       />
                     </Grid>
-
                     {availableSubtypes.length > 0 && (
                       <Grid item xs={12}>
                         {!isSignalComponent && (
