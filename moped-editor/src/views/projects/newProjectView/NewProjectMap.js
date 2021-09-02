@@ -258,6 +258,7 @@ const NewProjectMap = ({
   saveActionState = null,
   saveActionDispatch = null,
   componentEditorPanel = null,
+  isSignalComponent = false,
 }) => {
   const classes = useStyles();
 
@@ -269,7 +270,6 @@ const NewProjectMap = ({
   const mapGeocoderContainerRef = useRef();
   const mapEditToolsContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
-
   /**
    * Generate a viewport configuration object
    */
@@ -277,7 +277,7 @@ const NewProjectMap = ({
     mapRef,
     // If this is a new feature, use the project feature collection to retrieve the area
     newFeature ? projectFeatureCollection : featureCollection,
-    false
+    isSignalComponent
   );
 
   const {
@@ -320,7 +320,7 @@ const NewProjectMap = ({
     projectId,
     refetchProjectDetails,
     viewport.zoom,
-    saveActionDispatch
+    saveActionDispatch,
   );
 
   /**
@@ -454,9 +454,9 @@ const NewProjectMap = ({
         maxZoom={20}
         width="100%"
         height="60vh"
-        interactiveLayerIds={!isDrawing && getEditMapInteractiveIds()}
-        onHover={!isDrawing ? handleLayerHover : null}
-        onClick={!isDrawing ? handleLayerClick : null}
+        interactiveLayerIds={!isDrawing && !isSignalComponent && getEditMapInteractiveIds()}
+        onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
+        onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -535,7 +535,7 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {renderMapDrawTools(mapEditToolsContainerRef)}
+        {!isSignalComponent && renderMapDrawTools(mapEditToolsContainerRef)}
       </ReactMapGL>
 
       {/***************************************************************************
