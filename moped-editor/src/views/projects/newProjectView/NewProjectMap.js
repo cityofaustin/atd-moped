@@ -320,7 +320,7 @@ const NewProjectMap = ({
     projectId,
     refetchProjectDetails,
     viewport.zoom,
-    saveActionDispatch,
+    saveActionDispatch
   );
 
   /**
@@ -454,7 +454,9 @@ const NewProjectMap = ({
         maxZoom={20}
         width="100%"
         height="60vh"
-        interactiveLayerIds={!isDrawing && !isSignalComponent && getEditMapInteractiveIds()}
+        interactiveLayerIds={
+          !isDrawing && !isSignalComponent && getEditMapInteractiveIds()
+        }
         onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
         onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
         getCursor={getCursor}
@@ -486,9 +488,13 @@ const NewProjectMap = ({
         />
 
         {/* RENDER LAYERS */}
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
-          // If a config has a url, it is needs state to update selected/unselected layers
-          config.layerUrl ? (
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
+          if (isSignalComponent && sourceName !== "drawnByUser") {
+            // hides feature selecting and drawing layers when when component is a signal
+            return null;
+          }
+          return config.layerUrl ? (
+            // If a config has a url, it is needs state to update selected/unselected layers
             <Source
               key={config.layerIdName}
               type="vector"
@@ -528,8 +534,8 @@ const NewProjectMap = ({
                 )}
               />
             </Source>
-          )
-        )}
+          );
+        })}
 
         {/* Street Tool Tip*/}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
