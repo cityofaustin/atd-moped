@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-  /**
+/**
  * Fetch data from a socrata endpoint. Actually will fetch from any JSON endpoint, but has
  *  a special error catch for Socrata API errors.
  * @param {String} url - The url endpoint
