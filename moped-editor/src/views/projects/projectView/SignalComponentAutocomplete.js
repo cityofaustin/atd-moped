@@ -3,11 +3,10 @@ import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
-import { useSocrata } from "src/utils/socrataHelpers";
+import { useSocrataGeojson } from "src/utils/socrataHelpers";
 
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
-
 
 /**
  * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
@@ -21,12 +20,12 @@ const signalToFeatureCollection = signal => {
     features: [],
   };
   if (signal) {
-    // preserve the feature's previous UUID if it's being edited. i don't think
-    // this matters since we don't rely on these feature IDs for anything at the moment,
-    // this seems like reasonable expected behavior. we are **not** preserving any other
-    // feature properties when the feature is edited. so, for example, if the user edits
-    // a signal component and the signal geometry in socrata has since changed, the new
-    // geometry will be saved.
+    /* 
+    / preserves the feature's previous UUID if it's being edited. we are **not** preserving
+    / any other feature properties when the feature is edited. so, for example, if the user
+    / edits a signal component and the signal geometry in socrata has since changed, the new
+    / geometry will be saved.
+    */
     const featureUUID = signal.id || uuidv4();
     const feature = {
       type: "Feature",
@@ -91,6 +90,7 @@ const useSignalChangeEffect = (
   ]);
 };
 
+
 const SignalComponentAutocomplete = ({
   classes,
   setSelectedComponentSubtype,
@@ -99,7 +99,8 @@ const SignalComponentAutocomplete = ({
   editFeatureCollection,
 }) => {
   const [signal, setSignal] = useState("");
-  const { data, loading } = useSocrata(SOCRATA_ENDPOINT);
+  const { features, loading } = useSocrataGeojson(SOCRATA_ENDPOINT);
+  const options = features ? [...features, ""] : [""]
 
   useInitialComponentValue(editFeatureCollection, setSignal);
 
@@ -109,7 +110,7 @@ const SignalComponentAutocomplete = ({
     setEditFeatureCollection,
     setComponentDescription
   );
-  
+
   return (
     <Autocomplete
       className={classes}
@@ -143,7 +144,7 @@ const SignalComponentAutocomplete = ({
         setSignal(signal);
       }}
       loading={loading}
-      options={data || []}
+      options={options}
       renderInput={params => (
         <TextField
           {...params}

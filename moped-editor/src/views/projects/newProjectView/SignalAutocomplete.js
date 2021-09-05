@@ -2,6 +2,10 @@ import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { v4 as uuidv4 } from "uuid";
+import { useSocrataGeojson } from "src/utils/socrataHelpers";
+
+const SOCRATA_ENDPOINT =
+  "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
 
 /**
  * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
@@ -33,7 +37,7 @@ const signalToFeatureCollection = signal => {
 };
 
 /**
- * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a 
+ * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
  * Socrata dataset. Data is fetched once when the component mounts.
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * * @param {func} setSignal - signal state setter
@@ -51,9 +55,6 @@ const SignalAutocomplete = ({
   setFeatureCollection,
   signalError,
 }) => {
-  const [data, setData] = React.useState(null);
-  const [error, setError] = React.useState(null);
-
   const handleFieldChange = signal => {
     const projectName = signal?.properties?.location_name || "";
     const updatedProjectDetails = {
@@ -65,32 +66,10 @@ const SignalAutocomplete = ({
     const featureCollection = signalToFeatureCollection(signal);
     setFeatureCollection(featureCollection);
   };
-  const loading = !data && !error;
 
-  React.useEffect(() => {
-    const url =
-      "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
-    fetch(url)
-      .then(response => response.json())
-      .then(
-        result => {
-          if (result.error) {
-            // on query error, socrata returns status 200 with {"error": true, "message": <message>} in body
-            setError(result.message.toString());
-          } else {
-            // insert an empty option for the initialized (empty) state this creates a weird
-            // blank list option in the autocomplete menu. i have not found an alternative
-            // that avoids material linter errors
-            result.features.unshift("");
-            setData(result.features);
-          }
-        },
-        error => {
-          setError(error.toString());
-        }
-      );
-  }, []);
+  const { features, loading } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
+  const options = features ? [...features, ""] : [""]
   return (
     <Autocomplete
       id="signal-id"
@@ -98,11 +77,10 @@ const SignalAutocomplete = ({
         // limits options to ensure fast rendering
         const limit = 40;
         // applies the default autcomplete matching behavior plus our limit filter
-        const filteredOptions = options.filter(
-          (option, i) =>
-            getOptionLabel(option)
-              .toLowerCase()
-              .includes(inputValue.toLowerCase())
+        const filteredOptions = options.filter((option, i) =>
+          getOptionLabel(option)
+            .toLowerCase()
+            .includes(inputValue.toLowerCase())
         );
         return filteredOptions.slice(0, limit);
       }}
@@ -123,7 +101,7 @@ const SignalAutocomplete = ({
         handleFieldChange(signal);
       }}
       loading={loading}
-      options={data || []}
+      options={options}
       renderInput={params => (
         <TextField
           {...params}
