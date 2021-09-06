@@ -13,8 +13,8 @@ export const useSocrataGeojson = url => {
       .then(response => response.json())
       .then(
         result => {
-          if (result.error) {
-            // on query error, socrata returns status 200 with {"error": true, "message": <message>} in body
+          if (result.message) {
+            // on query error, socrata returns status 200 with {"message": <message>} in body
             setError(result.message.toString());
           } else {
             // result is a geojson feature collection
@@ -26,8 +26,6 @@ export const useSocrataGeojson = url => {
         }
       );
   }, [url]);
-
   error && console.error(error);
-
   return { features, error, loading: !features && !error };
 };
