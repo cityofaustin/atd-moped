@@ -499,7 +499,7 @@ const NewProjectView = () => {
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title="New project" />
+                <CardHeader title={projectDetails.project_name || "Project name"} />
               </Box>
               <Divider />
               <CardContent>

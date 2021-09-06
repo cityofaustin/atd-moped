@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
-import ProjectSummaryEditMap from "./ProjectSummaryEditMap";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
@@ -19,7 +18,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [mapError, setMapError] = useState(false);
 
   if (loading) return <CircularProgress />;
@@ -54,7 +52,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                     error={error}
                     resetErrorBoundary={resetErrorBoundary}
                     projectId={projectId}
-                    setIsEditing={setIsEditing}
                     refetchProjectDetails={refetch}
                     mapData={projectFeatureCollection}
                   />
@@ -64,19 +61,8 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               >
                 <ProjectSummaryMap
                   projectExtentGeoJSON={projectFeatureCollection}
-                  setIsEditing={setIsEditing}
                 />
               </ErrorBoundary>
-            )}
-            {isEditing && (
-              <ProjectSummaryEditMap
-                projectId={projectId}
-                projectFeatureRecords={projectFeatureRecords}
-                projectFeatureCollection={projectFeatureCollection}
-                isEditing={isEditing}
-                setIsEditing={setIsEditing}
-                refetchProjectDetails={refetch}
-              />
             )}
           </Grid>
         </Grid>

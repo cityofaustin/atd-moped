@@ -1,7 +1,10 @@
-import React, { useRef, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
+import bboxPolygon from "@turf/bbox-polygon";
+import booleanIntersects from "@turf/boolean-intersects";
+import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./NewProjectMap.css";
@@ -12,6 +15,8 @@ import {
 } from "../../../styles/NewProjectDrawnFeatures";
 
 import {
+  combineLineGeometries,
+  countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -28,7 +33,7 @@ import {
   mapConfig,
   mapStyles,
   renderTooltip,
-  countFeatures,
+  queryCtnFeatureService,
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
@@ -110,6 +115,123 @@ export const useStyles = makeStyles(theme => ({
   ...layerSelectStyles,
 }));
 
+const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
+  return {
+    ...featureCollection,
+    features: featureCollection.features.filter(
+      feature =>
+        getFeatureId(feature, selectedFeature.properties.sourceLayer) !==
+        getFeatureId(selectedFeature, selectedFeature.properties.sourceLayer)
+    ),
+  };
+};
+
+const addFeatureToCollection = (selectedFeature, featureCollection) => {
+  return {
+    ...featureCollection,
+    features: [...featureCollection.features, selectedFeature],
+  };
+};
+
+/**
+ * Add or remove a feature from the current component featureCollection state
+ * @param {Object} selectedFeature - The geojson feature to be added/removed
+ * @param {Object} featureCollection - Current geojson featureCollection (state)
+ * @param {function} setFeatureCollection - The function to change the feature collection state
+ * @return {undefined} Side effect of calling setFeatureCollection with new state
+ */
+const commitFeatureCollectionUpdate = (
+  selectedFeature,
+  featureCollection,
+  setFeatureCollection
+) => {
+  const handlerFunc = selectedFeature._isPresent
+    ? removeFeatureFromCollection
+    : addFeatureToCollection;
+  const updatedFeatureCollection = handlerFunc(
+    selectedFeature,
+    featureCollection
+  );
+  setFeatureCollection(updatedFeatureCollection);
+};
+
+/**
+ * Handles when a new map feature is selected and updates feature collection state.
+ * Determines if the feature can be safely added directly to feature collection state,
+ * or if the feature geometry may be clipped from tiling, in which case a copy of
+ * the complete feature geometry is fetch from ArcGIS Online.
+ * @param {Object} selectedFeature - The selected feature geojson
+ * @param {Object} map - the Mapbox Map instance
+ * @param {Object} featureCollection - A feature collection GeoJSON object (state)
+ * @param {function} setFeatureCollection - The function to change the feature collection state
+ * @return {undefined} Side effect of setting FeatureCollection with new state
+ */
+const handleSelectedFeatureUpdate = (
+  selectedFeature,
+  map,
+  featureCollection,
+  setFeatureCollection
+) => {
+  if (
+    selectedFeature.properties.sourceLayer === "CTN" &&
+    !selectedFeature._isPresent
+  ) {
+    // CTN (aka line) features that are being added to the feature collection may be clipped.
+
+    // Query features in the current viewport
+    const renderedFeatures = map.queryRenderedFeatures();
+
+    const selectedFeatureId = getFeatureId(
+      selectedFeature,
+      selectedFeature.properties.sourceLayer
+    );
+
+    // Identify feature fragements by filtering for their common ID
+    const splitFeatures = renderedFeatures.filter(
+      feature =>
+        getFeatureId(feature, selectedFeature.properties.sourceLayer) ===
+        selectedFeatureId
+    );
+
+    if (splitFeatures.length > 1) {
+      // Merge the split feature geometries together
+      selectedFeature.geometry = combineLineGeometries(splitFeatures);
+    }
+
+    const bbox = map
+      .getBounds()
+      .toArray()
+      .flat();
+    const bboxLine = polygonToLine(bboxPolygon(bbox));
+    const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
+
+    if (intersectsWithBounds) {
+      // this feature is rendered to the edge of the viewport and may (still) be fragmented.
+      // we cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
+      // safe. also considered turf.booleanWithin() and turf.booleanContains - not reliable.
+      queryCtnFeatureService(selectedFeatureId).then(
+        queriedFeatureCollection => {
+          // Update the selectedFeature geometry if a feature has been found. To potential
+          // error cases are handled here:
+          //    1. fetch error: queriedFeatureCollection is null
+          //    2. feature is not found (queriedFeatureCollection.features is empty)
+          // In both cases we simply use the geometry of the selectedFeature which may be
+          // fragemented but is better than nothing.
+          selectedFeature.geometry =
+            queriedFeatureCollection?.features?.[0]?.geometry ||
+            selectedFeature.geometry;
+        }
+      );
+    }
+  }
+  commitFeatureCollectionUpdate(
+    selectedFeature,
+    featureCollection,
+    setFeatureCollection
+  );
+  return;
+};
+
 /**
  * This the new project map editor component
  * @param {Object} featureCollection - A feature collection GeoJSON object (state)
@@ -136,6 +258,7 @@ const NewProjectMap = ({
   saveActionState = null,
   saveActionDispatch = null,
   componentEditorPanel = null,
+  isSignalComponent = false,
 }) => {
   const classes = useStyles();
 
@@ -143,12 +266,10 @@ const NewProjectMap = ({
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
-
   const mapRef = useRef();
   const mapGeocoderContainerRef = useRef();
   const mapEditToolsContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
-
   /**
    * Generate a viewport configuration object
    */
@@ -156,7 +277,7 @@ const NewProjectMap = ({
     mapRef,
     // If this is a new feature, use the project feature collection to retrieve the area
     newFeature ? projectFeatureCollection : featureCollection,
-    false
+    isSignalComponent
   );
 
   const {
@@ -216,26 +337,24 @@ const NewProjectMap = ({
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
-    const clickedFeatureId = getFeatureId(e.features[0], layerName);
-    const selectedFeature = getGeoJSON(e);
+    let feature = getGeoJSON(e);
+    // we need sourceLayer for many side effects!
+    feature.properties.sourceLayer = layerName;
 
-    const updatedFeatureCollection = isFeaturePresent(
-      selectedFeature,
+    feature._isPresent = isFeaturePresent(
+      feature,
       featureCollection.features,
-      layerName
-    )
-      ? {
-          ...featureCollection,
-          features: featureCollection.features.filter(
-            feature => getFeatureId(feature, layerName) !== clickedFeatureId
-          ),
-        }
-      : {
-          ...featureCollection,
-          features: [...featureCollection.features, selectedFeature],
-        };
+      feature.properties.sourceLayer
+    );
 
-    setFeatureCollection(updatedFeatureCollection);
+    const map = mapRef.current.getMap();
+
+    handleSelectedFeatureUpdate(
+      feature,
+      map,
+      featureCollection,
+      setFeatureCollection
+    );
   };
 
   /**
@@ -335,9 +454,11 @@ const NewProjectMap = ({
         maxZoom={20}
         width="100%"
         height="60vh"
-        interactiveLayerIds={!isDrawing && getEditMapInteractiveIds()}
-        onHover={!isDrawing ? handleLayerHover : null}
-        onClick={!isDrawing ? handleLayerClick : null}
+        interactiveLayerIds={
+          !isDrawing && !isSignalComponent && getEditMapInteractiveIds()
+        }
+        onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
+        onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -367,14 +488,18 @@ const NewProjectMap = ({
         />
 
         {/* RENDER LAYERS */}
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) =>
-          // If a config has a url, it is needs state to update selected/unselected layers
-          config.layerUrl ? (
+        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
+          if (isSignalComponent && sourceName !== "drawnByUser") {
+            // hides feature selecting and drawing layers when when component is a signal
+            return null;
+          }
+          return config.layerUrl ? (
+            // If a config has a url, it is needs state to update selected/unselected layers
             <Source
               key={config.layerIdName}
               type="vector"
               tiles={[config.layerUrl]}
-              maxzoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+              maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
             >
               <Layer
                 key={config.layerIdName}
@@ -409,14 +534,14 @@ const NewProjectMap = ({
                 )}
               />
             </Source>
-          )
-        )}
+          );
+        })}
 
         {/* Street Tool Tip*/}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {renderMapDrawTools(mapEditToolsContainerRef)}
+        {!isSignalComponent && renderMapDrawTools(mapEditToolsContainerRef)}
       </ReactMapGL>
 
       {/***************************************************************************

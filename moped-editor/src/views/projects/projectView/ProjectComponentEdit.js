@@ -21,7 +21,7 @@ import {
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
-
+import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import NewProjectMap from "../newProjectView/NewProjectMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
@@ -89,7 +89,7 @@ const useStyles = makeStyles(theme => ({
   },
   layerSelectBox: {
     maxHeight: "35vh",
-    overflow: "scroll"
+    overflow: "scroll",
   },
 }));
 
@@ -180,9 +180,23 @@ const ProjectComponentEdit = ({
           component?.component_subtype ?? ""
         ).toLowerCase();
 
-        // Then, retrieve the subcomponents associated to this component_id by filtering
+        /**
+         * Then, retrieve the subcomponents associated to this component. We must preserve
+         * known subcomponents for other subtypes of the same component name.
+         * TODO: refactor "initialTypeCounts" and form inputs to key on component_id
+         * throughout. Gulp!
+         */
+        const currentSubcomponents =
+          accumulator[componentName]?.subcomponents || [];
+
+        const currentSubcomponentNames = currentSubcomponents.map(
+          subcomponent => subcomponent.subcomponent_name
+        );
+
         const componentSubcomponents = data.moped_subcomponents.filter(
-          subcomponent => subcomponent.component_id === componentId
+          subcomponent =>
+            subcomponent.component_id === componentId &&
+            !currentSubcomponentNames.includes(subcomponent.subcomponent_name)
         );
 
         // Get the total count for this component name
@@ -221,7 +235,7 @@ const ProjectComponentEdit = ({
                 component_subtype: component?.component_subtype ?? null,
               },
             },
-            subcomponents: componentSubcomponents,
+            subcomponents: [...currentSubcomponents, ...componentSubcomponents],
           },
         };
       }, {})
@@ -307,7 +321,6 @@ const ProjectComponentEdit = ({
    */
   const handleComponentTypeSelect = (e, newValue) => {
     const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
-
     // Generates a list of available component subtypes given a component type
     const newAvailableSubTypes = getAvailableSubtypes(selectedType);
 
@@ -322,10 +335,11 @@ const ProjectComponentEdit = ({
    * @param {Object} e - The event object
    * @param {String} newValue - The new value from the autocomplete selector
    */
-  const handleComponentSubtypeSelect = (e, newValue) =>
+  const handleComponentSubtypeSelect = (e, newValue) => {
     setSelectedComponentSubtype(
       (newValue ?? e.target.value ?? "").toLowerCase()
     );
+  };
 
   /**
    * Retrieves the component_id based on the type and subtype names
@@ -736,6 +750,9 @@ const ProjectComponentEdit = ({
       setEditFeatureCollection(featureCollectionFromComponents);
     }
   }
+  const isSignalComponent = selectedComponentType
+    ? selectedComponentType.toLowerCase() === "signal"
+    : false;
 
   return (
     <Grid
@@ -753,6 +770,7 @@ const ProjectComponentEdit = ({
         projectFeatureCollection={projectFeatureCollection}
         saveActionState={saveActionState}
         saveActionDispatch={saveActionDispatch}
+        isSignalComponent={isSignalComponent}
         componentEditorPanel={
           <>
             <Collapse
@@ -774,20 +792,18 @@ const ProjectComponentEdit = ({
               onExited={() => setEditPanelCollapsedShow(true)}
             >
               <Grid container>
-                <Grid
-                  item
-                  xs={12}
-                  className={classes.layerSelectBox}
-                >
+                <Grid item xs={12} className={classes.layerSelectBox}>
                   <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
                     <Grid item xs={12}>
                       <Autocomplete
                         id="moped-project-select"
                         className={classes.formSelect}
-                        value={availableTypes.find(
-                          type => type.toLowerCase() === selectedComponentType
-                        )}
-                        options={availableTypes}
+                        value={
+                          availableTypes.find(
+                            type => type.toLowerCase() === selectedComponentType
+                          ) || ""
+                        }
+                        options={[...availableTypes, ""]}
                         getOptionLabel={component => component}
                         renderInput={params => (
                           <TextField
@@ -801,27 +817,39 @@ const ProjectComponentEdit = ({
                     </Grid>
                     {availableSubtypes.length > 0 && (
                       <Grid item xs={12}>
-                        <Autocomplete
-                          id="moped-project-subtype-select"
-                          className={classes.formSelect}
-                          value={
-                            availableSubtypes.find(
-                              subtype =>
-                                subtype.toLowerCase() ===
-                                selectedComponentSubtype
-                            ) ?? null
-                          }
-                          options={[...new Set(availableSubtypes)].sort()}
-                          getOptionLabel={component => component}
-                          renderInput={params => (
-                            <TextField
-                              {...params}
-                              label="Subtype"
-                              variant="outlined"
-                            />
-                          )}
-                          onChange={handleComponentSubtypeSelect}
-                        />
+                        {!isSignalComponent && (
+                          <Autocomplete
+                            id="moped-project-subtype-select"
+                            className={classes.formSelect}
+                            value={
+                              availableSubtypes.find(
+                                subtype =>
+                                  subtype.toLowerCase() ===
+                                  selectedComponentSubtype
+                              ) ?? null
+                            }
+                            options={[...new Set(availableSubtypes)].sort()}
+                            getOptionLabel={component => component}
+                            renderInput={params => (
+                              <TextField
+                                {...params}
+                                label="Subtype"
+                                variant="outlined"
+                              />
+                            )}
+                            onChange={handleComponentSubtypeSelect}
+                          />
+                        )}
+                        {isSignalComponent && (
+                          <SignalComponentAutocomplete
+                            setEditFeatureCollection={setEditFeatureCollection}
+                            editFeatureCollection={editFeatureCollection}
+                            setSelectedComponentSubtype={
+                              setSelectedComponentSubtype
+                            }
+                            className={classes.formSelect}
+                          />
+                        )}
                       </Grid>
                     )}
                     <ProjectComponentSubcomponents

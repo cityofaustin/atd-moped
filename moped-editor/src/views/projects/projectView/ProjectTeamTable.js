@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
-  Clear as ClearIcon,
+  DeleteOutline as DeleteOutlineIcon
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -427,7 +427,7 @@ const ProjectTeamTable = ({
             ),
           },
         }}
-        icons={{ Delete: ClearIcon }}
+        icons={{ Delete: DeleteOutlineIcon }}
         editable={{
           onRowAdd: newData =>
             new Promise((resolve, reject) => {
