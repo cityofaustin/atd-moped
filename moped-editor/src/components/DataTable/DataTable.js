@@ -156,8 +156,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
       }
     `;
 
-    console.log("Update Mutation", mutation);
-
     return gql`
       ${mutation}
     `;
