@@ -60,9 +60,8 @@ const SupportMenu = () => {
         getContentAnchorEl={null}
       >
         {helpItems.map(item => (
-          <MenuItem onClick={handleSupportClose}>
+          <MenuItem key={item.href} onClick={handleSupportClose}>
             <ExternalLink
-              key={item.href}
               url={item.href}
               text={item.title}
               linkColor="inherit"
