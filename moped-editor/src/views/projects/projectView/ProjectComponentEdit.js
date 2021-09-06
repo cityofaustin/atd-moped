@@ -307,7 +307,6 @@ const ProjectComponentEdit = ({
    */
   const handleComponentTypeSelect = (e, newValue) => {
     const selectedType = (newValue ?? e.target.value ?? "").toLowerCase();
-
     // Generates a list of available component subtypes given a component type
     const newAvailableSubTypes = getAvailableSubtypes(selectedType);
 
@@ -788,8 +787,8 @@ const ProjectComponentEdit = ({
                         className={classes.formSelect}
                         value={availableTypes.find(
                           type => type.toLowerCase() === selectedComponentType
-                        )}
-                        options={availableTypes}
+                        ) || ""}
+                        options={[...availableTypes, ""]}
                         getOptionLabel={component => component}
                         renderInput={params => (
                           <TextField
