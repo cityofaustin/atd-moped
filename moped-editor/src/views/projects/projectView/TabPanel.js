@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@material-ui/core";
+import { Box } from "@material-ui/core";
 import PropTypes from "prop-types";
 
 function TabPanel(props) {
@@ -15,7 +15,7 @@ function TabPanel(props) {
     >
       {value === index && (
         <Box p={3} className={props.className}>
-          <Typography>{children}</Typography>
+          {children}
         </Box>
       )}
     </div>
