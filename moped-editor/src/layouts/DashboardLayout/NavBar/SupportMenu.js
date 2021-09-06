@@ -62,6 +62,7 @@ const SupportMenu = () => {
         {helpItems.map(item => (
           <MenuItem onClick={handleSupportClose}>
             <ExternalLink
+              key={item.href}
               url={item.href}
               text={item.title}
               linkColor="inherit"
