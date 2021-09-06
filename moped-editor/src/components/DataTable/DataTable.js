@@ -227,7 +227,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
   const executeMutation = (field = null, value = null) => {
     const mutationField = field || editField;
     const mutationValue = value !== null ? value : editValue;
-    const nullableField = fieldConfiguration.fields[mutationField].nullable ?? true;
+    const nullableField =
+      fieldConfiguration.fields[mutationField].nullable ?? true;
     // Execute mutation only if there is a new value selected, prevents user
     // from attempting to save initial value, which would be null
     // Also prevents from executing migration if value has not changed
@@ -304,7 +305,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
    */
   const handleFieldValueUpdate = value => {
     if (errorField !== "") {
-      setErrorField("")
+      setErrorField("");
     }
     setEditValue(value.target.value);
   };
@@ -357,7 +358,9 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         type="text"
         defaultValue={editValue ?? initialValue}
         placeholder={
-          errorField === field ? fieldConfig?.errorMessage : fieldConfig?.placeholder
+          errorField === field
+            ? fieldConfig?.errorMessage
+            : fieldConfig?.placeholder
         }
         className={null}
         error={errorField === field}
@@ -426,8 +429,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     return (
       <FormControl fullWidth className={classes.formControl}>
         <Switch
-          fullWidth
-          labelId={"boolean-" + field}
           id={field}
           checked={!isEditing && editValue ? editValue : initialValue}
           color="primary"
@@ -458,8 +459,8 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
         <CircularProgress />
       ) : (
         <Grid container>
-          { // map through fields from field configuration
-            Object.keys(fieldConfiguration.fields).map(field => {
+          {// map through fields from field configuration
+          Object.keys(fieldConfiguration.fields).map(field => {
             const fieldType =
               fieldConfiguration.fields[field]?.type ?? "string";
 
@@ -473,15 +474,15 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
               >
                 <Box>
                   {((isEditing && editField !== field) || !isEditing) && (
-                    <h4>
+                    <Typography variant="h4">
                       {fieldConfiguration.fields[field]?.label ?? "Unknown"}
-                    </h4>
+                    </Typography>
                   )}
                   {(isEditing && editField === field) ||
                   fieldType === "boolean" ? (
                     // boolean type fields are always rendered using function, regardless of editing status
                     <form onSubmit={e => handleAcceptClick(e)}>
-                      <Grid container fullWidth>
+                      <Grid container>
                         <Grid item xs={12} sm={9}>
                           {fieldType === "select" && (
                             <>{renderSelectEdit(field, getValue(field))}</>
@@ -534,17 +535,16 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
                             getValue(field)
                           )
                         : formatValue(field)}
-                      {fieldConfiguration.fields[field].editable &&
-                        !isEditing && (
-                          <div>
-                            <Icon
-                              className={classes.editIcon}
-                              onClick={() => handleFieldEdit(field)}
-                            >
-                              create
-                            </Icon>
-                          </div>
-                        )}
+                      {fieldConfiguration.fields[field].editable && !isEditing && (
+                        <span>
+                          <Icon
+                            className={classes.editIcon}
+                            onClick={() => handleFieldEdit(field)}
+                          >
+                            create
+                          </Icon>
+                        </span>
+                      )}
                     </Typography>
                   )}
                 </Box>
