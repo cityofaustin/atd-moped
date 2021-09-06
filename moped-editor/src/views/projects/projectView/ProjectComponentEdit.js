@@ -180,9 +180,23 @@ const ProjectComponentEdit = ({
           component?.component_subtype ?? ""
         ).toLowerCase();
 
-        // Then, retrieve the subcomponents associated to this component_id by filtering
+        /**
+         * Then, retrieve the subcomponents associated to this component. We must preserve
+         * known subcomponents for other subtypes of the same component name.
+         * TODO: refactor "initialTypeCounts" and form inputs to key on component_id
+         * throughout. Gulp!
+         */
+        const currentSubcomponents =
+          accumulator[componentName]?.subcomponents || [];
+
+        const currentSubcomponentNames = currentSubcomponents.map(
+          subcomponent => subcomponent.subcomponent_name
+        );
+
         const componentSubcomponents = data.moped_subcomponents.filter(
-          subcomponent => subcomponent.component_id === componentId
+          subcomponent =>
+            subcomponent.component_id === componentId &&
+            !currentSubcomponentNames.includes(subcomponent.subcomponent_name)
         );
 
         // Get the total count for this component name
@@ -221,7 +235,7 @@ const ProjectComponentEdit = ({
                 component_subtype: component?.component_subtype ?? null,
               },
             },
-            subcomponents: componentSubcomponents,
+            subcomponents: [...currentSubcomponents, ...componentSubcomponents],
           },
         };
       }, {})
@@ -322,7 +336,6 @@ const ProjectComponentEdit = ({
    * @param {String} newValue - The new value from the autocomplete selector
    */
   const handleComponentSubtypeSelect = (e, newValue) => {
-    console.log("SUBTYPE", newValue);
     setSelectedComponentSubtype(
       (newValue ?? e.target.value ?? "").toLowerCase()
     );
@@ -785,11 +798,13 @@ const ProjectComponentEdit = ({
                       <Autocomplete
                         id="moped-project-select"
                         className={classes.formSelect}
-                        value={availableTypes.find(
-                          type => type.toLowerCase() === selectedComponentType
-                        ) || ""}
+                        value={
+                          availableTypes.find(
+                            type => type.toLowerCase() === selectedComponentType
+                          ) || ""
+                        }
                         options={[...availableTypes, ""]}
-                        getOptionLabel={component => component} 
+                        getOptionLabel={component => component}
                         renderInput={params => (
                           <TextField
                             {...params}
