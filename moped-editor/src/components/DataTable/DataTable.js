@@ -431,7 +431,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
       <FormControl fullWidth className={classes.formControl}>
         <Switch
           id={field}
-          checked={!isEditing && editValue ? editValue : initialValue}
+          checked={!isEditing && editValue ? !!editValue : !!initialValue}
           color="primary"
           onChange={event => handleBooleanValueUpdate(event, field)}
         ></Switch>
