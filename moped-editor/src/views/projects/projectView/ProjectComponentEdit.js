@@ -789,7 +789,7 @@ const ProjectComponentEdit = ({
                           type => type.toLowerCase() === selectedComponentType
                         ) || ""}
                         options={[...availableTypes, ""]}
-                        getOptionLabel={component => component}
+                        getOptionLabel={component => component} 
                         renderInput={params => (
                           <TextField
                             {...params}
@@ -827,7 +827,6 @@ const ProjectComponentEdit = ({
                         )}
                         {isSignalComponent && (
                           <SignalComponentAutocomplete
-                            setComponentDescription={setComponentDescription}
                             setEditFeatureCollection={setEditFeatureCollection}
                             editFeatureCollection={editFeatureCollection}
                             setSelectedComponentSubtype={

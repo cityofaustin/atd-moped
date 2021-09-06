@@ -71,22 +71,18 @@ const useSignalChangeEffect = (
   signal,
   setSelectedComponentSubtype,
   setEditFeatureCollection,
-  setComponentDescription
 ) => {
   useEffect(() => {
     const signalSubtype = signal
       ? signal.properties.signal_type.toLowerCase()
       : "";
-    const description = signal ? signal.properties.location_name.trim() : "";
     const featureCollection = signalToFeatureCollection(signal);
     setSelectedComponentSubtype(signalSubtype);
     setEditFeatureCollection(featureCollection);
-    setComponentDescription(description);
   }, [
     signal,
     setSelectedComponentSubtype,
     setEditFeatureCollection,
-    setComponentDescription,
   ]);
 };
 
@@ -94,7 +90,6 @@ const SignalComponentAutocomplete = ({
   classes,
   setSelectedComponentSubtype,
   setEditFeatureCollection,
-  setComponentDescription,
   editFeatureCollection,
 }) => {
   const [signal, setSignal] = useState("");
@@ -107,7 +102,6 @@ const SignalComponentAutocomplete = ({
     signal,
     setSelectedComponentSubtype,
     setEditFeatureCollection,
-    setComponentDescription
   );
 
   if (loading) {
