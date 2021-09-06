@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete, Alert } from "@material-ui/lab";
 import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
@@ -90,7 +90,6 @@ const useSignalChangeEffect = (
   ]);
 };
 
-
 const SignalComponentAutocomplete = ({
   classes,
   setSelectedComponentSubtype,
@@ -99,8 +98,8 @@ const SignalComponentAutocomplete = ({
   editFeatureCollection,
 }) => {
   const [signal, setSignal] = useState("");
-  const { features, loading } = useSocrataGeojson(SOCRATA_ENDPOINT);
-  const options = features ? [...features, ""] : [""]
+  const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+  const options = features ? [...features, ""] : [""];
 
   useInitialComponentValue(editFeatureCollection, setSignal);
 
@@ -110,6 +109,14 @@ const SignalComponentAutocomplete = ({
     setEditFeatureCollection,
     setComponentDescription
   );
+
+  if (loading) {
+    return <CircularProgress color="primary" size={20} />;
+  } else if (error) {
+    return (
+      <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+    );
+  }
 
   return (
     <Autocomplete
@@ -128,8 +135,6 @@ const SignalComponentAutocomplete = ({
         return filteredOptions;
       }}
       getOptionSelected={(option, value) => {
-        // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
-        // seemingly calling the first condition when value was ""
         return value
           ? option.properties?.signal_id === value.properties?.signal_id
           : option === "";
@@ -149,16 +154,6 @@ const SignalComponentAutocomplete = ({
         <TextField
           {...params}
           helperText="Required"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="primary" size={20} />
-                ) : null}
-              </>
-            ),
-          }}
           label="Signal"
           variant="outlined"
         />
