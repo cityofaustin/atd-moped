@@ -43,7 +43,7 @@ const useInitialComponentValue = (editFeatureCollection, setSignal) => {
 const useSignalChangeEffect = (
   signal,
   setSelectedComponentSubtype,
-  setEditFeatureCollection,
+  setEditFeatureCollection
 ) => {
   useEffect(() => {
     const signalSubtype = signal
@@ -52,11 +52,7 @@ const useSignalChangeEffect = (
     const featureCollection = signalToFeatureCollection(signal);
     setSelectedComponentSubtype(signalSubtype);
     setEditFeatureCollection(featureCollection);
-  }, [
-    signal,
-    setSelectedComponentSubtype,
-    setEditFeatureCollection,
-  ]);
+  }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
 };
 
 /**
@@ -83,7 +79,7 @@ const SignalComponentAutocomplete = ({
   useSignalChangeEffect(
     signal,
     setSelectedComponentSubtype,
-    setEditFeatureCollection,
+    setEditFeatureCollection
   );
 
   if (loading) {
@@ -99,16 +95,16 @@ const SignalComponentAutocomplete = ({
       className={classes}
       id="signal-id"
       filterOptions={(options, { inputValue, getOptionLabel }) => {
-       // limits options to ensure fast rendering
-       const limit = 40;
-       // applies the default autcomplete matching behavior plus our limit filter
-       const filteredOptions = options.filter(option =>
-         getOptionLabel(option)
-           .toLowerCase()
-           .includes(inputValue.toLowerCase())
-       );
-       return filteredOptions.slice(0, limit);
-     }}
+        // limits options to ensure fast rendering
+        const limit = 40;
+        // applies the default autcomplete matching behavior plus our limit filter
+        const filteredOptions = options.filter(option =>
+          getOptionLabel(option)
+            .toLowerCase()
+            .includes(inputValue.toLowerCase())
+        );
+        return filteredOptions.slice(0, limit);
+      }}
       getOptionSelected={(option, value) => {
         return value
           ? option.properties?.signal_id === value.properties?.signal_id
