@@ -408,7 +408,6 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
             const value = String(menuItem.fieldValue).toLowerCase();
             return (
               <MenuItem
-                fullWidth
                 key={value}
                 value={value}
                 className={fieldConfig?.lookup?.style ?? null}
