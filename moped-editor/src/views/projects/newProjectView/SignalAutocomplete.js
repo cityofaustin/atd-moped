@@ -40,10 +40,10 @@ const SignalAutocomplete = ({
 
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  const options = features ? [...features, ""] : [""]
+  const options = features ? [...features, ""] : [""];
 
   if (loading) {
-    // we don't want to render the autocomplete without options, because getOptionSelected 
+    // we don't want to render the autocomplete without options, because getOptionSelected
     // will error if we're editing an existing component
     return <CircularProgress color="primary" size={20} />;
   } else if (error) {
@@ -59,7 +59,7 @@ const SignalAutocomplete = ({
         // limits options to ensure fast rendering
         const limit = 40;
         // applies the default autcomplete matching behavior plus our limit filter
-        const filteredOptions = options.filter((option, i) =>
+        const filteredOptions = options.filter(option =>
           getOptionLabel(option)
             .toLowerCase()
             .includes(inputValue.toLowerCase())
