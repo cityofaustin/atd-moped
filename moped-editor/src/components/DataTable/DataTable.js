@@ -181,7 +181,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
     const tableName = fieldConfiguration.table.name;
     return data[tableName].length > 0 && data[tableName][0][field]
       ? data[tableName][0][field]
-      : "";
+      : null;
   };
 
   /**
@@ -391,7 +391,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
       ? lookupTablesData[lookupTable] ?? []
       : fieldConfig?.options ?? [];
 
-    const currentValue = editValue ?? initialValue;
+    const currentValue = editValue ?? (initialValue || "");
 
     return (
       <FormControl fullWidth className={classes.formControl}>
