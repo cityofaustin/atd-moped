@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
-import { Box, Button, makeStyles } from "@material-ui/core";
-import { EditLocation as EditLocationIcon } from "@material-ui/icons";
+import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import { stopReportingRuntimeErrors } from "react-error-overlay";
@@ -30,17 +29,10 @@ const useStyles = makeStyles({
     left: 0,
     padding: "10px",
   },
-  editButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-  },
 });
 
 const ProjectSummaryMap = ({
   projectExtentGeoJSON,
-  setIsEditing,
-  isEditable = false,
 }) => {
   const classes = useStyles();
   const mapRef = useRef();
@@ -72,7 +64,6 @@ const ProjectSummaryMap = ({
    */
   if (featureCount < 1) {
     stopReportingRuntimeErrors();
-
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 
@@ -111,18 +102,6 @@ const ProjectSummaryMap = ({
         {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        {/* Draw edit button controls with specific styles */}
-        {isEditable && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setIsEditing(true)}
-            startIcon={<EditLocationIcon />}
-            className={classes.editButton}
-          >
-            Edit
-          </Button>
-        )}
       </ReactMapGL>
       {renderFeatureCount(featureCount)}
     </Box>

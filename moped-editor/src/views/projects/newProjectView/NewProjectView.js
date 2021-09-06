@@ -393,7 +393,7 @@ const NewProjectView = () => {
 
   useEffect(() => {
     // If the features are saved, then we are good to go!
-    if(saveActionState?.currentStep && saveActionState.currentStep === 2) {
+    if (saveActionState?.currentStep && saveActionState.currentStep === 2) {
       handleSubmit();
     }
     // handleSubmit changes on every render, cannot be a dependency
@@ -407,7 +407,7 @@ const NewProjectView = () => {
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title="New project" />
+                <CardHeader title={projectDetails.project_name || "Project name"} />
               </Box>
               <Divider />
               <CardContent>

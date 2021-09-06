@@ -86,7 +86,7 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (!projectName.trim()==="") {
+    if (!(projectName.trim()==="")) {
     updateProjectName({
       variables: {
         projectId: props?.projectId,
@@ -183,7 +183,7 @@ const ProjectNameEditable = props => {
         !isEditing && (
         <Typography
           color="textPrimary"
-          variant="h2"
+          variant="h1"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >

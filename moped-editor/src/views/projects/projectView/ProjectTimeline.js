@@ -13,7 +13,10 @@ import {
   MenuItem,
   Typography,
 } from "@material-ui/core";
-import { AddCircle as AddCircleIcon } from "@material-ui/icons";
+import {
+  AddCircle as AddCircleIcon,
+  DeleteOutline as DeleteOutlineIcon
+} from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 
 import typography from "../../../theme/typography";
@@ -34,6 +37,7 @@ import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
+import { IconButton } from "@material-ui/core";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -187,20 +191,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = (props, name, label) => (
-    <TextField
-      name={name}
-      label={label}
-      type="date"
-      variant="standard"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      onKeyDown={e => handleKeyEvent(e)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-  );
+
+  const DateFieldEditComponent = (props, name, label) => {
+    return (
+      <TextField
+        name={name}
+        label={label}
+        type="date"
+        variant="standard"
+        value={props.value}
+        onChange={e => props.onChange(e.target.value)}
+        onKeyDown={e => handleKeyEvent(e)}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={() => props.onChange(() => null)}>
+              <DeleteOutlineIcon />
+            </IconButton>
+          ),
+        }}
+        InputAdornmentProps={{
+          position: "start",
+        }}
+      />
+    );
+  };
 
   /**
    * ToggleEditComponent - renders a toggle for True/False edit fields
@@ -474,7 +491,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     const updatedPhaseObject = {
                       ...oldData,
                     };
-
                     // Array of differences between new and old data
                     let differences = Object.keys(oldData).filter(
                       key => oldData[key] !== newData[key]
@@ -500,7 +516,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.tableData;
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
-
                     updateExistingPhases(updatedPhaseObject);
 
                     // Execute update mutation, returns promise
@@ -638,7 +653,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     differences.forEach(diff => {
                       let shouldCoerceEmptyStringToNull =
                         newData[diff] === "" &&
-                        (diff === "phase_start" || diff === "phase_end");
+                        (diff === "milestone_estimate" ||
+                          diff === "milestone_end");
 
                       if (shouldCoerceEmptyStringToNull) {
                         updatedMilestoneObject[diff] = null;
