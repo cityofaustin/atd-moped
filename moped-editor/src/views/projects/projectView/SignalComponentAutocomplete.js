@@ -99,17 +99,16 @@ const SignalComponentAutocomplete = ({
       className={classes}
       id="signal-id"
       filterOptions={(options, { inputValue, getOptionLabel }) => {
-        // limits options to ensure fast rendering
-        const limit = 40;
-        // applies the default autcomplete matching behavior plus our limit filter
-        const filteredOptions = options.filter(
-          (option, i) =>
-            getOptionLabel(option)
-              .toLowerCase()
-              .includes(inputValue.toLowerCase()) && i < limit
-        );
-        return filteredOptions;
-      }}
+       // limits options to ensure fast rendering
+       const limit = 40;
+       // applies the default autcomplete matching behavior plus our limit filter
+       const filteredOptions = options.filter(option =>
+         getOptionLabel(option)
+           .toLowerCase()
+           .includes(inputValue.toLowerCase())
+       );
+       return filteredOptions.slice(0, limit);
+     }}
       getOptionSelected={(option, value) => {
         return value
           ? option.properties?.signal_id === value.properties?.signal_id
