@@ -1,40 +1,11 @@
 import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
-import { v4 as uuidv4 } from "uuid";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
+import { signalToFeatureCollection } from "src/utils/mapHelpers";
 
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
-
-/**
- * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
- * fields so that featureCollection can be used in the DB mutation on submit
- * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
- * @return {Object} A geojson feature collection with the signal feature or 0 features
- */
-const signalToFeatureCollection = signal => {
-  let featureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
-  if (signal) {
-    const featureUUID = uuidv4();
-    const feature = {
-      type: "Feature",
-      properties: {
-        ...signal.properties,
-        renderType: "Point",
-        PROJECT_EXTENT_ID: featureUUID,
-        sourceLayer: "drawnByUser",
-      },
-      geometry: signal.geometry,
-      id: featureUUID,
-    };
-    featureCollection.features.push(feature);
-  }
-  return featureCollection;
-};
 
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a

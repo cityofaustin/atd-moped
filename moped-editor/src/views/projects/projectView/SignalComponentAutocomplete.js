@@ -1,52 +1,19 @@
 import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
-import { v4 as uuidv4 } from "uuid";
 import { useEffect, useState } from "react";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
+import { signalToFeatureCollection } from "src/utils/mapHelpers";
 
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
 
-/**
- * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
- * fields so that featureCollection can be used in the DB mutation on submit
- * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
- * @return {Object} A geojson feature collection with the signal feature or 0 features
- */
-const signalToFeatureCollection = signal => {
-  let featureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
-  if (signal) {
-    /* 
-    / preserves the feature's previous UUID if it's being edited. we are **not** preserving
-    / any other feature properties when the feature is edited. so, for example, if the user
-    / edits a signal component and the signal geometry in socrata has since changed, the new
-    / geometry will be saved.
-    */
-    const featureUUID = signal.id || uuidv4();
-    const feature = {
-      type: "Feature",
-      properties: {
-        ...signal.properties,
-        renderType: "Point",
-        PROJECT_EXTENT_ID: featureUUID,
-        sourceLayer: "drawnByUser",
-      },
-      geometry: signal.geometry,
-      id: featureUUID,
-    };
-    featureCollection.features.push(feature);
-  }
-  return featureCollection;
-};
-
 const useInitialComponentValue = (editFeatureCollection, setSignal) => {
-  // initializes the selected signal value - handles case of editing existing component
-  // tests for signal_id prop to ensure we're not handing a non-signal component (which happens e.g. when an existing
-  // component's type is changed)
+  /*
+  / initializes the selected signal value - handles case of editing existing component
+  / tests for signal_id prop to ensure we're not handing a non-signal component (which happens
+  / e.g. when an existing component's type is changed)
+  */
   useEffect(() => {
     if (
       !editFeatureCollection ||
@@ -56,9 +23,12 @@ const useInitialComponentValue = (editFeatureCollection, setSignal) => {
       setSignal("");
       return;
     } else if (editFeatureCollection.features.length > 1) {
-      // todo: prevent this from happening by locking down map editing for signal components :/
+      /*
+      / If a non-signal component is edited, all previously-defined feature geometries
+      / will be dropped.
+      */
       console.warn(
-        "Found signal component with multiple feature geometriess—all but one feature will be removed."
+        "Found signal component with multiple feature geometries. All but one feature will be removed."
       );
     }
     setSignal(editFeatureCollection.features[0]);
@@ -67,6 +37,9 @@ const useInitialComponentValue = (editFeatureCollection, setSignal) => {
   }, []);
 };
 
+/*
+/ Hook which updates the component editor state based on the selected signal
+*/
 const useSignalChangeEffect = (
   signal,
   setSelectedComponentSubtype,
@@ -86,6 +59,15 @@ const useSignalChangeEffect = (
   ]);
 };
 
+/**
+ * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
+ * Socrata dataset and setting it as a project component.
+ * * @param {Object} setSelectedComponentSubtype - sets the selectedComponentSubtype from parent state
+ * * @param {Object} setEditFeatureCollection - sets the editFeatureCollection from parent state
+ * * @param {Boolean} editFeatureCollection - the geoJSON generated for all the the features in this component
+ * * @param {Object} classes - MaterialUI style object
+ *  @return {JSX.Element}
+ */
 const SignalComponentAutocomplete = ({
   classes,
   setSelectedComponentSubtype,
