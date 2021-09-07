@@ -30,6 +30,7 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
+      project_website
       start_date
       current_phase
       current_status

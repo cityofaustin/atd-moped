@@ -13,7 +13,7 @@ const ExternalLink = ({ url, text, linkColor, underline }) => {
           color={linkColor ?? "primary"}
           underline={underline ?? "hover"}
         >
-          {text}
+          {text.length > 25 ? `${text.slice(0, 25)}...` : text }
           <OpenInNewIcon style={{ fontSize: 16 }} />
         </Link>
       ) : (

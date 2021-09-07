@@ -56,6 +56,19 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         nullable: false,
         errorMessage: "Field cannot be blank",
       },
+      project_website: {
+        label: "Website",
+        type: "string",
+        placeholder: "Enter website URL",
+        editable: true,
+        widthSmallAndLarger: 12,
+        format: value => (
+          <ExternalLink
+            text={value}
+            url={( value.includes("https://") || value.includes("http://") ) ? value : `https://${value}`}
+          />
+        ),
+      },
       start_date: {
         label: "Start date",
         type: "date",
