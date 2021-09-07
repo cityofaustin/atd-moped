@@ -106,7 +106,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
         </RouterLink>
         <Hidden smDown>
           <Box>
-            <Tabs className={classes.tabs}>
+            <Tabs className={classes.tabs} value={false}>
               {navigationItems.map(item => (
                 <Tab
                   key={item.href}
