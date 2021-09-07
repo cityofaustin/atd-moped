@@ -3781,9 +3781,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   - role: moped-editor
     permission:
@@ -3808,9 +3810,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -3835,9 +3839,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3862,9 +3868,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3889,9 +3897,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -3917,9 +3927,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   - role: moped-editor
@@ -3944,9 +3956,11 @@
       - project_order
       - project_priority
       - project_uuid
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   event_triggers:
