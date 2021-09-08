@@ -1,3 +1,5 @@
+import { filterProjectTeamMembers } from "./helpers.js"
+
 /**
  * The ProjectsListView export settings
  * @constant
@@ -22,6 +24,7 @@ export const ProjectsListViewExportConf = {
   },
   project_team_members: {
     label: "project_team_members",
+    filter: filterProjectTeamMembers,
   },
   ecapris_subproject_id: {
     label: "ecapris_id"
