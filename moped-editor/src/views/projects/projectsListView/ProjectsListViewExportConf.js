@@ -17,6 +17,15 @@ export const ProjectsListViewExportConf = {
   current_status: {
     label: "current_status",
   },
+  current_phase: {
+    label: "current_phase",
+  },
+  project_team_members: {
+    label: "project_team_members",
+  },
+  ecapris_subproject_id: {
+    label: "ecapris_id"
+  },
   start_date: {
     label: "start_date",
     filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
