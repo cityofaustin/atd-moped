@@ -3,6 +3,7 @@ import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
+import { filterProjectTeamMembers } from "./helpers.js"
 
 /**
  * The Query configuration (now also including filters)
@@ -121,26 +122,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Team members",
       width: "20%",
-      filter: value => {
-        if (value === " :") {
-          return "";
-        }
-        const namesArray = value.split(",");
-        const uniqueNames = {};
-        namesArray.forEach(person => {
-          const [fullName, projectRole] = person.split(":");
-          if (uniqueNames[fullName]) {
-            uniqueNames[fullName] = uniqueNames[fullName] + `, ${projectRole}`;
-          } else {
-            uniqueNames[fullName] = projectRole;
-          }
-        });
-        const personnel = Object.keys(uniqueNames).map(
-          key => `${key} - ${uniqueNames[key]}`
-        );
-
-        return personnel.join("\n");
-      },
+      filter: filterProjectTeamMembers,
     },
     start_date: {
       searchable: false,
