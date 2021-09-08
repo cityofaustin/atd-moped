@@ -18,6 +18,7 @@ import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
+import ProjectSummaryMap from "../projectView/ProjectSummaryMap";
 import Page from "src/components/Page";
 import { useMutation } from "@apollo/client";
 import {
@@ -51,6 +52,89 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
+ * Component definitions. The component_id must match a valid component in the
+ * moped_components DB lookup table.
+ */
+const COMPONENT_DEFINITIONS = {
+  generic: {
+    name: "Extent",
+    description: "New Project Feature Extent",
+    component_id: 0,
+  },
+  phb: {
+    name: "PHB",
+    description: "Pedestrian ssignal",
+    component_id: 16,
+  },
+  traffic: {
+    name: "Traffic signal",
+    description: "Traffic signal",
+    component_id: 18,
+  },
+};
+
+/**
+ * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component definition pboject
+ */
+const getComponentDef = (featureCollection, fromSignalAsset) => {
+  const signalType = fromSignalAsset
+    ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
+    : null;
+  return signalType
+    ? COMPONENT_DEFINITIONS[signalType]
+    : COMPONENT_DEFINITIONS.generic;
+};
+
+/**
+ * Generates a project component object that can be used in mutation.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component mutation object
+ */
+const generateProjectComponent = (featureCollection, fromSignalAsset) => {
+  const componentDef = getComponentDef(featureCollection, fromSignalAsset);
+  return {
+    name: "Extent",
+    description: "Project full extent",
+    component_id: componentDef.component_id,
+    status_id: 1,
+    moped_proj_features_components: {
+      data: featureCollection.features.map(feature => ({
+        name: componentDef.name,
+        description: componentDef.description,
+        status_id: 1,
+        moped_proj_feature_object: {
+          data: {
+            status_id: 1,
+            location: feature,
+          },
+        },
+      })),
+    },
+  };
+};
+
+/**
+ * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
+ * form state clean.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {func} setSignal - signal state setter
+ * @param {Object} setFeatureCollection - featureCollection state setter
+ */
+const useSignalStateManager = (fromSignal, setSignal, setFeatureCollection) => {
+  useEffect(() => {
+    setFeatureCollection({
+      type: "FeatureCollection",
+      features: [],
+    });
+    setSignal("");
+  }, [setFeatureCollection, fromSignal, setSignal]);
+};
+
+/**
  * New Project View
  * @return {JSX.Element}
  * @constructor
@@ -73,6 +157,10 @@ const NewProjectView = () => {
    * @type {Object[]} personnel - An array of objects containing the personnel data
    * @type {Object} featureCollection - The final GeoJSON to be inserted into a component
    * @type {boolean} areNoFeaturesSelected - True when no features are selected
+   * @type {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
+   * @type {Boolean} signalError - If the current signal value is in validation error
+   * @type {Boolean} fromSignalAsset - if signal autocomplete switch is active. If true,
+   *    the project name and featureCollection will be set from the `signal` value.
    */
   const [activeStep, setActiveStep] = useState(0);
   const [projectDetails, setProjectDetails] = useState({
@@ -85,6 +173,7 @@ const NewProjectView = () => {
     capitally_funded: false,
     ecapris_subproject_id: null,
   });
+
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [personnel, setPersonnel] = useState([]);
@@ -93,6 +182,10 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+  const [signal, setSignal] = useState("");
+  const [fromSignalAsset, setFromSignalAsset] = useState(false);
+  useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
+  const [signalError, setSignalError] = useState(false);
 
   // Reset areNoFeaturesSelected once a feature is selected to remove error message
   useEffect(() => {
@@ -133,6 +226,12 @@ const NewProjectView = () => {
             setProjectDetails={setProjectDetails}
             nameError={nameError}
             descriptionError={descriptionError}
+            setFeatureCollection={setFeatureCollection}
+            fromSignalAsset={fromSignalAsset}
+            setFromSignalAsset={setFromSignalAsset}
+            signal={signal}
+            signalError={signalError}
+            setSignal={setSignal}
           />
         );
       case 1:
@@ -141,19 +240,27 @@ const NewProjectView = () => {
         );
       case 2:
         return (
-          <NewProjectMap
-            data-name={"moped-newprojectview-newprojectmap"}
-            featureCollection={featureCollection}
-            setFeatureCollection={setFeatureCollection}
-            projectId={null}
-            refetchProjectDetails={null}
-            noPadding={true}
-            projectFeatureCollection={null}
-            newFeature={true}
-            saveActionState={saveActionState}
-            saveActionDispatch={saveActionDispatch}
-            componentEditorPanel={null}
-          />
+          <>
+            {/* render static/not editable map if using signal */}
+            {fromSignalAsset && (
+              <ProjectSummaryMap projectExtentGeoJSON={featureCollection} />
+            )}
+            {!fromSignalAsset && (
+              <NewProjectMap
+                data-name={"moped-newprojectview-newprojectmap"}
+                featureCollection={featureCollection}
+                setFeatureCollection={setFeatureCollection}
+                projectId={null}
+                refetchProjectDetails={null}
+                noPadding={true}
+                projectFeatureCollection={null}
+                newFeature={false}
+                saveActionState={saveActionState}
+                saveActionDispatch={saveActionDispatch}
+                componentEditorPanel={null}
+              />
+            )}
+          </>
         );
       default:
         return "Unknown step";
@@ -174,9 +281,10 @@ const NewProjectView = () => {
   const handleNext = () => {
     let nameError = projectDetails.project_name.length === 0;
     let descriptionError = projectDetails.project_description.length === 0;
+    let signalError = fromSignalAsset && !Boolean(signal);
     let canContinue = false;
 
-    if (!nameError && !descriptionError) {
+    if (!nameError && !descriptionError && !signalError) {
       switch (activeStep) {
         case 0:
           canContinue = true;
@@ -197,6 +305,7 @@ const NewProjectView = () => {
 
     setNameError(nameError);
     setDescriptionError(descriptionError);
+    setSignalError(signalError);
   };
 
   /**
@@ -295,27 +404,7 @@ const NewProjectView = () => {
         ...projectDetails,
         // Next we generate the project extent component
         moped_proj_components: {
-          data: [
-            {
-              name: "Extent",
-              description: "Project full extent",
-              component_id: 0,
-              status_id: 1,
-              moped_proj_features_components: {
-                data: featureCollection.features.map(feature => ({
-                  name: "Feature Extent Component",
-                  description: "New Project Feature Extent",
-                  status_id: 1,
-                  moped_proj_feature_object: {
-                    data: {
-                      status_id: 1,
-                      location: feature,
-                    },
-                  },
-                })),
-              },
-            },
-          ],
+          data: [generateProjectComponent(featureCollection, fromSignalAsset)],
         },
         // Finally we provide the project personnel
         moped_proj_personnel: { data: cleanedPersonnel },
@@ -392,8 +481,11 @@ const NewProjectView = () => {
   }, [success, newProjectId, navigate]);
 
   useEffect(() => {
-    // If the features are saved, then we are good to go!
-    if (saveActionState?.currentStep && saveActionState.currentStep === 2) {
+    // If the features are saved or we picked from signal list, then we are good to go!
+    if (
+      (saveActionState?.currentStep && saveActionState.currentStep === 2) ||
+      (fromSignalAsset && signal)
+    ) {
       handleSubmit();
     }
     // handleSubmit changes on every render, cannot be a dependency

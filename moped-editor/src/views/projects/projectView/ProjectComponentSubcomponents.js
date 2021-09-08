@@ -101,6 +101,9 @@ const ProjectComponentSubcomponents = ({
         options={availableSubcomponents}
         // The list changes depending on available subcomponents for that specific type
         getOptionLabel={option => option.subcomponent_name}
+        getOptionSelected={(option, value) =>
+          option.subcomponent_id === value.subcomponent_id
+        }
         renderTags={(tagValue, getTagProps) =>
           tagValue.map((option, index) => (
             <Chip
