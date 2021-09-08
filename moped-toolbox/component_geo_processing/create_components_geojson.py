@@ -38,11 +38,9 @@ def uniform_geometry(features):
 
 def merge_geoms(features):
 	is_uniform, geom_type = uniform_geometry(features)
-	if not geom_type:
-		breakpoint()
-		print("whi")
 	if not is_uniform:
 		return None
+
 	geometry = {"type": geom_type, "coordinates": []}
 	
 	for f in features:
