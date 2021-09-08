@@ -1,4 +1,5 @@
--- each row is a component
+-- features can be joined to components based on moped_proj_component.project_component_id = moped_proj_features_components.moped_proj_component_id
+-- each row is an active (status = 1) component
 SELECT
 	*
 FROM
@@ -11,6 +12,7 @@ WHERE
 	and moped_proj_components.status_id = 1
 
 
+-- each row is an active (status = 1) feature
 SELECT
 	*
 FROM
