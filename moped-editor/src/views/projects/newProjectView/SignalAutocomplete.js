@@ -4,10 +4,10 @@ import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   filterSignalOptions,
+  signalToFeatureCollection,
   getSignalOptionLabel,
   getSignalOptionSelected,
   renderSignalInput,
-  signalToFeatureCollection,
 } from "src/utils/signalComponentHelpers";
 
 const SOCRATA_ENDPOINT =
