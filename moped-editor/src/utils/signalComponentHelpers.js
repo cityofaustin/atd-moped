@@ -7,23 +7,23 @@ import { v4 as uuidv4 } from "uuid";
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
- export const signalToFeatureCollection = signal => {
+export const signalToFeatureCollection = signal => {
   let featureCollection = {
     type: "FeatureCollection",
     features: [],
   };
-  if (signal) {
+  if (signal && signal?.properties && signal?.geometry) {
     /* 
     / preserves the feature's previous UUID if it's being edited. we are **not** preserving
     / any other feature properties when the feature is edited. so, for example, if the user
     / edits a signal component and the signal geometry in socrata has since changed, the new
     / geometry will be saved.
     */
-    const featureUUID = signal.id || uuidv4();
+    const featureUUID = signal?.id || uuidv4();
     const feature = {
       type: "Feature",
       properties: {
-        ...signal.properties,
+        ...signal?.properties,
         renderType: "Point",
         PROJECT_EXTENT_ID: featureUUID,
         sourceLayer: "drawnByUser",
@@ -36,7 +36,10 @@ import { v4 as uuidv4 } from "uuid";
   return featureCollection;
 };
 
-export const useInitialSignalComponentValue = (editFeatureCollection, setSignal) => {
+export const useInitialSignalComponentValue = (
+  editFeatureCollection,
+  setSignal
+) => {
   /*
   / initializes the selected signal value - handles case of editing existing component
   / tests for signal_id prop to ensure we're not handing a non-signal component (which happens
