@@ -1,11 +1,13 @@
 import React from "react";
-import { TextField, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
-  signalToFeatureCollection,
+  filterSignalOptions,
   getSignalOptionLabel,
   getSignalOptionSelected,
+  renderSignalInput,
+  signalToFeatureCollection,
 } from "src/utils/signalComponentHelpers";
 
 const SOCRATA_ENDPOINT =
@@ -57,17 +59,7 @@ const SignalAutocomplete = ({
   return (
     <Autocomplete
       id="signal-id"
-      filterOptions={(options, { inputValue, getOptionLabel }) => {
-        // limits options to ensure fast rendering
-        const limit = 40;
-        // applies the default autcomplete matching behavior plus our limit filter
-        const filteredOptions = options.filter(option =>
-          getOptionLabel(option)
-            .toLowerCase()
-            .includes(inputValue.toLowerCase())
-        );
-        return filteredOptions.slice(0, limit);
-      }}
+      filterOptions={filterSignalOptions}
       getOptionSelected={getSignalOptionSelected}
       getOptionLabel={getSignalOptionLabel}
       onChange={(e, signal) => {
@@ -75,27 +67,7 @@ const SignalAutocomplete = ({
       }}
       loading={loading}
       options={features}
-      renderInput={params => (
-        <TextField
-          {...params}
-          error={signalError}
-          helperText="Required"
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <>
-                {loading ? (
-                  <CircularProgress color="primary" size={20} />
-                ) : null}
-              </>
-            ),
-          }}
-          InputLabelProps={{ required: false }}
-          label="Signal"
-          required
-          variant="standard"
-        />
-      )}
+      renderInput={renderSignalInput}
       value={signal || null}
     />
   );

@@ -1,13 +1,15 @@
 import React from "react";
 import { useState } from "react";
-import { TextField, CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
+  filterSignalOptions,
   useSignalChangeEffect,
-  useInitialSignalComponentValue,
   getSignalOptionLabel,
   getSignalOptionSelected,
+  useInitialSignalComponentValue,
+  renderSignalInput,
 } from "src/utils/signalComponentHelpers";
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
@@ -50,17 +52,7 @@ const SignalComponentAutocomplete = ({
     <Autocomplete
       className={classes}
       id="signal-id"
-      filterOptions={(options, { inputValue, getOptionLabel }) => {
-        // limits options to ensure fast rendering
-        const limit = 40;
-        // applies the default autcomplete matching behavior plus our limit filter
-        const filteredOptions = options.filter(option =>
-          getOptionLabel(option)
-            .toLowerCase()
-            .includes(inputValue.toLowerCase())
-        );
-        return filteredOptions.slice(0, limit);
-      }}
+      filterOptions={filterSignalOptions}
       getOptionSelected={getSignalOptionSelected}
       // this label formatting mirrors the Data Tracker formatting
       getOptionLabel={getSignalOptionLabel}
@@ -69,14 +61,7 @@ const SignalComponentAutocomplete = ({
       }}
       loading={loading}
       options={features}
-      renderInput={params => (
-        <TextField
-          {...params}
-          helperText="Required"
-          label="Signal"
-          variant="outlined"
-        />
-      )}
+      renderInput={renderSignalInput}
       value={signal || null}
     />
   );

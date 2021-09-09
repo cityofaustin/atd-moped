@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { TextField } from "@material-ui/core";
 
-/**
- * Function to pass to MUI Autocomplete `filterOptions` prop which filters signal select
- * options.
- */
+/*
+/ MUI autocomplete filter function which limits number of options rendered in select menu
+*/
 export const filterSignalOptions = (
   options,
   { inputValue, getOptionLabel }
@@ -119,3 +119,15 @@ export const useSignalChangeEffect = (
     setEditFeatureCollection(featureCollection);
   }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
 };
+
+/*
+/ Defines text input to render in MUI autocomplete
+*/
+export const renderSignalInput = params => (
+  <TextField
+    {...params}
+    helperText="Required"
+    label="Signal"
+    variant="outlined"
+  />
+);
