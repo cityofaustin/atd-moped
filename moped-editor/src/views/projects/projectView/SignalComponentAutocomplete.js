@@ -1,59 +1,12 @@
 import React from "react";
+import { useState } from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
-import { useEffect, useState } from "react";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
-import { signalToFeatureCollection } from "src/utils/mapHelpers";
-
+import { useSignalChangeEffect, useInitialSignalComponentValue } from "src/utils/signalComponentHelpers";
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
 
-const useInitialComponentValue = (editFeatureCollection, setSignal) => {
-  /*
-  / initializes the selected signal value - handles case of editing existing component
-  / tests for signal_id prop to ensure we're not handing a non-signal component (which happens
-  / e.g. when an existing component's type is changed)
-  */
-  useEffect(() => {
-    if (
-      !editFeatureCollection ||
-      editFeatureCollection.features.length === 0 ||
-      !editFeatureCollection.features[0].properties.signal_id
-    ) {
-      setSignal(null);
-      return;
-    } else if (editFeatureCollection.features.length > 1) {
-      /*
-      / If a non-signal component is edited, all previously-defined feature geometries
-      / will be dropped.
-      */
-      console.warn(
-        "Found signal component with multiple feature geometries. All but one feature will be removed."
-      );
-    }
-    setSignal(editFeatureCollection.features[0]);
-    // only fire on init
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-};
-
-/*
-/ Hook which updates the component editor state based on the selected signal
-*/
-const useSignalChangeEffect = (
-  signal,
-  setSelectedComponentSubtype,
-  setEditFeatureCollection
-) => {
-  useEffect(() => {
-    const signalSubtype = signal
-      ? signal.properties.signal_type.toLowerCase()
-      : "";
-    const featureCollection = signalToFeatureCollection(signal);
-    setSelectedComponentSubtype(signalSubtype);
-    setEditFeatureCollection(featureCollection);
-  }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
-};
 
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
@@ -73,7 +26,7 @@ const SignalComponentAutocomplete = ({
   const [signal, setSignal] = useState(null);
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  useInitialComponentValue(editFeatureCollection, setSignal);
+  useInitialSignalComponentValue(editFeatureCollection, setSignal);
 
   useSignalChangeEffect(
     signal,
