@@ -3,10 +3,14 @@ import { useState } from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
-import { useSignalChangeEffect, useInitialSignalComponentValue } from "src/utils/signalComponentHelpers";
+import {
+  useSignalChangeEffect,
+  useInitialSignalComponentValue,
+  getSignalOptionLabel,
+  getSignalOptionSelected,
+} from "src/utils/signalComponentHelpers";
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
-
 
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
@@ -41,7 +45,7 @@ const SignalComponentAutocomplete = ({
       <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
     );
   }
-  
+
   return (
     <Autocomplete
       className={classes}
@@ -57,13 +61,9 @@ const SignalComponentAutocomplete = ({
         );
         return filteredOptions.slice(0, limit);
       }}
-      getOptionSelected={(option, value) =>
-        option.properties?.signal_id === value.properties?.signal_id
-      }
+      getOptionSelected={getSignalOptionSelected}
       // this label formatting mirrors the Data Tracker formatting
-      getOptionLabel={option =>
-        `${option.properties.signal_id}: ${option.properties.location_name}`
-      }
+      getOptionLabel={getSignalOptionLabel}
       onChange={(e, signal) => {
         setSignal(signal ? signal : null);
       }}

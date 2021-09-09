@@ -2,6 +2,40 @@ import { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 /**
+ * Function to pass to MUI Autocomplete `filterOptions` prop which filters signal select
+ * options.
+ */
+export const filterSignalOptions = (
+  options,
+  { inputValue, getOptionLabel }
+) => {
+  // limits options to ensure fast rendering
+  const limit = 40;
+  // applies the default autcomplete matching behavior plus our limit filter
+  const filteredOptions = options.filter(option =>
+    getOptionLabel(option)
+      .toLowerCase()
+      .includes(inputValue.toLowerCase())
+  );
+  return filteredOptions.slice(0, limit);
+};
+
+/**
+ * MUI autocomplete getOptionSelected function to which matches input signal value to
+ * select options.
+ */
+export const getSignalOptionSelected = (option, value) =>
+  option.properties?.signal_id === value.properties?.signal_id;
+
+/**
+ * MUI autocomplete getOptionLabel function to which formats the value rendered in
+ * the select option menu
+ */
+export const getSignalOptionLabel = option =>
+  // this label formatting mirrors the Data Tracker formatting
+  `${option.properties.signal_id}: ${option.properties.location_name}`;
+
+/**
  * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
  * fields so that featureCollection can be used in the DB mutation on submit
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
