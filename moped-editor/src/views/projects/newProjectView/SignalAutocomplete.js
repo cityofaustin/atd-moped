@@ -11,11 +11,11 @@ const SOCRATA_ENDPOINT =
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
  * Socrata dataset. Data is fetched once when the component mounts.
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
- * * @param {func} setSignal - signal state setter
- * * @param {Object} projectDetails - The parent view's project details object
- * * @param {Object} setProjectDetails - The projectDetails state setter
- * * @param {Object} setFeatureCollection - The parent view's featureCollection state setter
- * * @param {Boolean} signalError - If the current signal value is in validation error
+ * @param {func} setSignal - signal state setter
+ * @param {Object} projectDetails - The parent view's project details object
+ * @param {Object} setProjectDetails - The projectDetails state setter
+ * @param {Object} setFeatureCollection - The parent view's featureCollection state setter
+ * @param {Boolean} signalError - If the current signal value is in validation error
  *  @return {JSX.Element}
  */
 const SignalAutocomplete = ({
