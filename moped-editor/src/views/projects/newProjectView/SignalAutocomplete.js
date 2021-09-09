@@ -40,8 +40,6 @@ const SignalAutocomplete = ({
 
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  const options = features ? [...features, ""] : [""];
-
   if (loading) {
     // we don't want to render the autocomplete without options, because getOptionSelected
     // will error if we're editing an existing component
@@ -66,24 +64,18 @@ const SignalAutocomplete = ({
         );
         return filteredOptions.slice(0, limit);
       }}
-      getOptionSelected={(option, value) => {
-        // todo: i had to use optional chaning here, but i'm not sure why. the `value` test was
-        // seemingly calling the first condition when value was ""
-        return value
-          ? option.properties?.signal_id === value.properties?.signal_id
-          : option === "";
-      }}
-      // this label formatting mirrors the Data Tracker formatting
+      getOptionSelected={(option, value) =>
+        option.properties?.signal_id === value.properties?.signal_id
+      }
       getOptionLabel={option =>
-        option
-          ? `${option.properties.signal_id}: ${option.properties.location_name}`
-          : ""
+        // this label formatting mirrors the Data Tracker formatting
+        `${option.properties.signal_id}: ${option.properties.location_name}`
       }
       onChange={(e, signal) => {
         handleFieldChange(signal);
       }}
       loading={loading}
-      options={options}
+      options={features}
       renderInput={params => (
         <TextField
           {...params}
@@ -105,7 +97,7 @@ const SignalAutocomplete = ({
           variant="standard"
         />
       )}
-      value={signal}
+      value={signal || null}
     />
   );
 };

@@ -41,7 +41,7 @@ const SignalComponentAutocomplete = ({
       <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
     );
   }
-
+  
   return (
     <Autocomplete
       className={classes}
@@ -77,7 +77,7 @@ const SignalComponentAutocomplete = ({
           variant="outlined"
         />
       )}
-      value={signal}
+      value={signal || null}
     />
   );
 };
