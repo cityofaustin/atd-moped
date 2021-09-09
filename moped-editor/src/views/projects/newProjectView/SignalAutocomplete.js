@@ -2,7 +2,7 @@ import React from "react";
 import { TextField, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
-import { signalToFeatureCollection } from "src/utils/mapHelpers";
+import { signalToFeatureCollection } from "src/utils/signalComponentHelpers";
 
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
