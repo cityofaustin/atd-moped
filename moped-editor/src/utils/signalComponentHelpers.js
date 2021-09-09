@@ -131,3 +131,93 @@ export const renderSignalInput = params => (
     variant="outlined"
   />
 );
+
+/**
+ * Component definitions. The component_id must match a valid component in the
+ * moped_components DB lookup table.
+ */
+export const COMPONENT_DEFINITIONS = {
+  generic: {
+    name: "Extent",
+    description: "New Project Feature Extent",
+    component_id: 0,
+  },
+  phb: {
+    name: "PHB",
+    description: "Pedestrian ssignal",
+    component_id: 16,
+  },
+  traffic: {
+    name: "Traffic signal",
+    description: "Traffic signal",
+    component_id: 18,
+  },
+};
+
+/**
+ * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component definition pboject
+ */
+export const getComponentDef = (featureCollection, fromSignalAsset) => {
+  const signalType = fromSignalAsset
+    ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
+    : null;
+  return signalType
+    ? COMPONENT_DEFINITIONS[signalType]
+    : COMPONENT_DEFINITIONS.generic;
+};
+
+/**
+ * Generates a project component object that can be used in mutation.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component mutation object
+ */
+export const generateProjectComponent = (
+  featureCollection,
+  fromSignalAsset
+) => {
+  const componentDef = getComponentDef(featureCollection, fromSignalAsset);
+  return {
+    name: "Extent",
+    description: "Project full extent",
+    component_id: componentDef.component_id,
+    status_id: 1,
+    moped_proj_features_components: {
+      data: featureCollection.features.map(feature => ({
+        name: componentDef.name,
+        description: componentDef.description,
+        status_id: 1,
+        moped_proj_feature_object: {
+          data: {
+            status_id: 1,
+            location: feature,
+          },
+        },
+      })),
+    },
+  };
+};
+
+/**
+ * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
+ * form state clean in new project view.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {func} setSignal - signal state setter
+ * @param {Object} setFeatureCollection - featureCollection state setter
+ */
+export const useSignalStateManager = (
+  fromSignal,
+  setSignal,
+  setFeatureCollection
+) => {
+  useEffect(() => {
+    setFeatureCollection({
+      type: "FeatureCollection",
+      features: [],
+    });
+    setSignal("");
+  }, [setFeatureCollection, fromSignal, setSignal]);
+};
