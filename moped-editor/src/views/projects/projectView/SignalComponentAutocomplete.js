@@ -20,7 +20,7 @@ const useInitialComponentValue = (editFeatureCollection, setSignal) => {
       editFeatureCollection.features.length === 0 ||
       !editFeatureCollection.features[0].properties.signal_id
     ) {
-      setSignal("");
+      setSignal(null);
       return;
     } else if (editFeatureCollection.features.length > 1) {
       /*
@@ -70,9 +70,8 @@ const SignalComponentAutocomplete = ({
   setEditFeatureCollection,
   editFeatureCollection,
 }) => {
-  const [signal, setSignal] = useState("");
+  const [signal, setSignal] = useState(null);
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
-  const options = features ? [...features, ""] : [""];
 
   useInitialComponentValue(editFeatureCollection, setSignal);
 
@@ -105,22 +104,18 @@ const SignalComponentAutocomplete = ({
         );
         return filteredOptions.slice(0, limit);
       }}
-      getOptionSelected={(option, value) => {
-        return value
-          ? option.properties?.signal_id === value.properties?.signal_id
-          : option === "";
-      }}
+      getOptionSelected={(option, value) =>
+        option.properties?.signal_id === value.properties?.signal_id
+      }
       // this label formatting mirrors the Data Tracker formatting
       getOptionLabel={option =>
-        option
-          ? `${option.properties.signal_id}: ${option.properties.location_name}`
-          : ""
+        `${option.properties.signal_id}: ${option.properties.location_name}`
       }
       onChange={(e, signal) => {
-        setSignal(signal);
+        setSignal(signal ? signal : null);
       }}
       loading={loading}
-      options={options}
+      options={features}
       renderInput={params => (
         <TextField
           {...params}
@@ -129,7 +124,7 @@ const SignalComponentAutocomplete = ({
           variant="outlined"
         />
       )}
-      value={signal || ""}
+      value={signal}
     />
   );
 };
