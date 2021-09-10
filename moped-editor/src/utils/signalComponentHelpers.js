@@ -133,71 +133,45 @@ export const renderSignalInput = params => (
 );
 
 /**
- * Component definitions. The component_id must match a valid component in the
- * moped_components DB lookup table.
- */
-export const COMPONENT_DEFINITIONS = {
-  generic: {
-    name: "Extent",
-    description: "New Project Feature Extent",
-    component_id: 0,
-  },
-  phb: {
-    name: "PHB",
-    description: "Pedestrian ssignal",
-    component_id: 16,
-  },
-  traffic: {
-    name: "Traffic signal",
-    description: "Traffic signal",
-    component_id: 18,
-  },
-};
-
-/**
  * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
- * @return {Object} - The component definition pboject
+ * @param {Object[]} componentData - Array of moped_components from DB
+ * @return {Object} - The component definition of the component
  */
-export const getComponentDef = (featureCollection, fromSignalAsset) => {
-  const signalType = fromSignalAsset
-    ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
-    : null;
-  return signalType
-    ? COMPONENT_DEFINITIONS[signalType]
-    : COMPONENT_DEFINITIONS.generic;
-};
-
-/**
- * Generates a project component object that can be used in mutation.
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
- * @return {Object} - The component mutation object
- */
-export const generateProjectComponent = (
+export const getComponentDef = (
   featureCollection,
-  fromSignalAsset
+  fromSignalAsset,
+  componentData
 ) => {
-  const componentDef = getComponentDef(featureCollection, fromSignalAsset);
+  // try to extract a signal_type from the component
+  const signalType = fromSignalAsset
+    ? featureCollection?.features?.[0].properties?.signal_type
+    : null;
+
+  let componentDef;
+
+  if (signalType) {
+    // try to locate a matching component def
+    componentDef = componentData.find(
+      component =>
+        component.component_subtype.toLowerCase() === signalType.toLowerCase()
+    );
+    // we must destructure to append a description prop
+    componentDef = componentDef
+      ? {
+          ...componentDef,
+          description: `Signal - ${componentDef.component_subtype}`,
+        }
+      : componentDef;
+  }
+  if (componentDef) return componentDef;
+
+  // otherwise use generic extent
   return {
-    name: "Extent",
-    description: "Project full extent",
-    component_id: componentDef.component_id,
-    status_id: 1,
-    moped_proj_features_components: {
-      data: featureCollection.features.map(feature => ({
-        name: componentDef.name,
-        description: componentDef.description,
-        status_id: 1,
-        moped_proj_feature_object: {
-          data: {
-            status_id: 1,
-            location: feature,
-          },
-        },
-      })),
-    },
+    component_name: "Project Extent - Generic",
+    description: "Project Extent - Generic",
+    component_id: 0,
   };
 };
 
@@ -220,4 +194,42 @@ export const useSignalStateManager = (
     });
     setSignal("");
   }, [setFeatureCollection, fromSignal, setSignal]);
+};
+
+/**
+ * Generates a project component object that can be used in mutation.
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @return {Object} - The component mutation object
+ */
+export const generateProjectComponent = (
+  featureCollection,
+  fromSignalAsset,
+  componentData
+) => {
+  const componentDef = getComponentDef(
+    featureCollection,
+    fromSignalAsset,
+    componentData
+  );
+
+  return {
+    name: componentDef.component_name,
+    description: componentDef.description,
+    component_id: componentDef.component_id,
+    status_id: 1,
+    moped_proj_features_components: {
+      data: featureCollection.features.map(feature => ({
+        name: componentDef.component_name,
+        description: componentDef.description,
+        status_id: 1,
+        moped_proj_feature_object: {
+          data: {
+            status_id: 1,
+            location: feature,
+          },
+        },
+      })),
+    },
+  };
 };
