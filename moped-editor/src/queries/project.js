@@ -586,6 +586,17 @@ export const COMPONENT_DETAILS_QUERY = gql`
   }
 `;
 
+export const SIGNAL_COMPONENTS_QUERY = gql`
+  query GetSignalComponents {
+    moped_components(where: {component_name: {_ilike: "signal"}}) {
+      component_name
+      component_subtype
+      component_id
+      line_representation
+    }
+  }
+`;
+
 export const UPDATE_MOPED_COMPONENT = gql`
   mutation UpdateMopedComponent(
     $objects: [moped_proj_components_insert_input!]!
