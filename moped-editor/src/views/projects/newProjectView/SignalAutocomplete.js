@@ -67,7 +67,7 @@ const SignalAutocomplete = ({
       }}
       loading={loading}
       options={features}
-      renderInput={renderSignalInput}
+      renderInput={params => renderSignalInput(params, signalError)}
       value={signal || null}
     />
   );

@@ -123,11 +123,14 @@ export const useSignalChangeEffect = (
 /*
 / Defines text input to render in MUI autocomplete
 */
-export const renderSignalInput = params => (
+export const renderSignalInput = (params, signalError = false) => (
   <TextField
     {...params}
-    helperText="Required"
+    error={signalError}
+    InputLabelProps={{ required: false }}
     label="Signal"
+    required
+    helperText="Required"
     variant="outlined"
   />
 );
