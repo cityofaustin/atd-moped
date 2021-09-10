@@ -242,8 +242,8 @@ const ProjectComponentsMapView = ({
       >
         <Grid>
           <Grid className={classes.layerSelectBox}>{children}</Grid>
-          <Grid xs={12}>
-            <Divider fullWidth className={classes.mapToolsDivider} />
+          <Grid item xs={12}>
+            <Divider className={classes.mapToolsDivider} />
             <Button
               onClick={() => setEditPanelCollapsed(false)}
               startIcon={<KeyboardArrowUp />}

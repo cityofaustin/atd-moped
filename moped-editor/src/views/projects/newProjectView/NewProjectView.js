@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Box,
+  CircularProgress,
   Container,
   Card,
   CardHeader,
@@ -20,7 +21,9 @@ import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import ProjectSummaryMap from "../projectView/ProjectSummaryMap";
 import Page from "src/components/Page";
-import { useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
+import { SIGNAL_COMPONENTS_QUERY } from "../../../queries/project";
+
 import {
   ADD_PROJECT,
   UPDATE_NEW_PROJ_FEATURES,
@@ -34,6 +37,10 @@ import {
 } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
+import {
+  useSignalStateManager,
+  generateProjectComponent,
+} from "src/utils/signalComponentHelpers";
 
 /**
  * Styles
@@ -50,89 +57,6 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
   },
 }));
-
-/**
- * Component definitions. The component_id must match a valid component in the
- * moped_components DB lookup table.
- */
-const COMPONENT_DEFINITIONS = {
-  generic: {
-    name: "Extent",
-    description: "New Project Feature Extent",
-    component_id: 0,
-  },
-  phb: {
-    name: "PHB",
-    description: "Pedestrian ssignal",
-    component_id: 16,
-  },
-  traffic: {
-    name: "Traffic signal",
-    description: "Traffic signal",
-    component_id: 18,
-  },
-};
-
-/**
- * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
- * @return {Object} - The component definition pboject
- */
-const getComponentDef = (featureCollection, fromSignalAsset) => {
-  const signalType = fromSignalAsset
-    ? featureCollection.features[0].properties?.signal_type?.toLowerCase()
-    : null;
-  return signalType
-    ? COMPONENT_DEFINITIONS[signalType]
-    : COMPONENT_DEFINITIONS.generic;
-};
-
-/**
- * Generates a project component object that can be used in mutation.
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
- * @return {Object} - The component mutation object
- */
-const generateProjectComponent = (featureCollection, fromSignalAsset) => {
-  const componentDef = getComponentDef(featureCollection, fromSignalAsset);
-  return {
-    name: "Extent",
-    description: "Project full extent",
-    component_id: componentDef.component_id,
-    status_id: 1,
-    moped_proj_features_components: {
-      data: featureCollection.features.map(feature => ({
-        name: componentDef.name,
-        description: componentDef.description,
-        status_id: 1,
-        moped_proj_feature_object: {
-          data: {
-            status_id: 1,
-            location: feature,
-          },
-        },
-      })),
-    },
-  };
-};
-
-/**
- * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
- * form state clean.
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {func} setSignal - signal state setter
- * @param {Object} setFeatureCollection - featureCollection state setter
- */
-const useSignalStateManager = (fromSignal, setSignal, setFeatureCollection) => {
-  useEffect(() => {
-    setFeatureCollection({
-      type: "FeatureCollection",
-      features: [],
-    });
-    setSignal("");
-  }, [setFeatureCollection, fromSignal, setSignal]);
-};
 
 /**
  * New Project View
@@ -174,6 +98,12 @@ const NewProjectView = () => {
     ecapris_subproject_id: null,
   });
 
+  const {
+    error: componentQueryError,
+    loading: componentQueryloading,
+    data: componentData,
+  } = useQuery(SIGNAL_COMPONENTS_QUERY);
+
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [personnel, setPersonnel] = useState([]);
@@ -182,6 +112,10 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+
+  /**
+   * Signal component state management
+   */
   const [signal, setSignal] = useState("");
   const [fromSignalAsset, setFromSignalAsset] = useState(false);
   useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
@@ -404,7 +338,13 @@ const NewProjectView = () => {
         ...projectDetails,
         // Next we generate the project extent component
         moped_proj_components: {
-          data: [generateProjectComponent(featureCollection, fromSignalAsset)],
+          data: [
+            generateProjectComponent(
+              featureCollection,
+              fromSignalAsset,
+              componentData["moped_components"]
+            ),
+          ],
         },
         // Finally we provide the project personnel
         moped_proj_personnel: { data: cleanedPersonnel },
@@ -492,6 +432,11 @@ const NewProjectView = () => {
     // eslint-disable-next-line
   }, [saveActionState]);
 
+  if (componentQueryloading) {
+    return <CircularProgress />;
+  }
+  if (componentQueryError) return `Error! ${componentQueryError.message}`;
+
   return (
     <>
       {
@@ -499,7 +444,9 @@ const NewProjectView = () => {
           <Container>
             <Card className={classes.cardWrapper}>
               <Box pt={2} pl={2}>
-                <CardHeader title={projectDetails.project_name || "Project name"} />
+                <CardHeader
+                  title={projectDetails.project_name || "Project name"}
+                />
               </Box>
               <Divider />
               <CardContent>
