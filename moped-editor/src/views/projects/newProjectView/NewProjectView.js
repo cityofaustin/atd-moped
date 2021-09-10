@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   Button,
   Box,
+  CircularProgress,
   Container,
   Card,
   CardHeader,
@@ -20,7 +21,9 @@ import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import ProjectSummaryMap from "../projectView/ProjectSummaryMap";
 import Page from "src/components/Page";
-import { useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
+import { SIGNAL_COMPONENTS_QUERY } from "../../../queries/project";
+
 import {
   ADD_PROJECT,
   UPDATE_NEW_PROJ_FEATURES,
@@ -34,7 +37,6 @@ import {
 } from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
-
 import {
   useSignalStateManager,
   generateProjectComponent,
@@ -96,6 +98,12 @@ const NewProjectView = () => {
     ecapris_subproject_id: null,
   });
 
+  const {
+    error: componentQueryError,
+    loading: componentQueryloading,
+    data: componentData,
+  } = useQuery(SIGNAL_COMPONENTS_QUERY);
+
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [personnel, setPersonnel] = useState([]);
@@ -104,6 +112,10 @@ const NewProjectView = () => {
     features: [],
   });
   const [areNoFeaturesSelected, setAreNoFeaturesSelected] = useState(false);
+
+  /**
+   * Signal component state management
+   */
   const [signal, setSignal] = useState("");
   const [fromSignalAsset, setFromSignalAsset] = useState(false);
   useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
@@ -326,7 +338,13 @@ const NewProjectView = () => {
         ...projectDetails,
         // Next we generate the project extent component
         moped_proj_components: {
-          data: [generateProjectComponent(featureCollection, fromSignalAsset)],
+          data: [
+            generateProjectComponent(
+              featureCollection,
+              fromSignalAsset,
+              componentData["moped_components"]
+            ),
+          ],
         },
         // Finally we provide the project personnel
         moped_proj_personnel: { data: cleanedPersonnel },
@@ -413,6 +431,11 @@ const NewProjectView = () => {
     // handleSubmit changes on every render, cannot be a dependency
     // eslint-disable-next-line
   }, [saveActionState]);
+
+  if (componentQueryloading) {
+    return <CircularProgress />;
+  }
+  if (componentQueryError) return `Error! ${componentQueryError.message}`;
 
   return (
     <>
