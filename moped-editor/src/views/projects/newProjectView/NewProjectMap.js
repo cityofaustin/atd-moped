@@ -259,6 +259,7 @@ const NewProjectMap = ({
   saveActionDispatch = null,
   componentEditorPanel = null,
   isSignalComponent = false,
+  drawLines = null,
 }) => {
   const classes = useStyles();
 

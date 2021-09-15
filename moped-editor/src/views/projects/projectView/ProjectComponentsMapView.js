@@ -147,8 +147,8 @@ const useStyles = makeStyles(theme => ({
  */
 const ProjectComponentsMapView = ({
   projectFeatureCollection,
-  setIsEditing,
-  editEnabled,
+  setIsEditing, // being passed in as a boolean, not a function
+  editEnabled, // i think this is deprecated?
   children,
   noPadding,
 }) => {
@@ -306,7 +306,8 @@ const ProjectComponentsMapView = ({
             ),
           })}
 
-        {/* Draw tooltip on feature hover */}
+        {/* Draw tooltip on feature hover
+            todo chia: confirm how to trigger this tooltip */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         {editEnabled && (
           <Button

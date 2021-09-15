@@ -146,6 +146,7 @@ const ProjectComponentEdit = ({
 
   const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
+  const [drawLines, setDrawLines] = useState(null);
 
   /**
    * Apollo hook functions
@@ -273,8 +274,21 @@ const ProjectComponentEdit = ({
       ].sort()
     : [];
 
+  // list of components that are represented by lines ** note: highway can be either
+  const lineRepresentable = data
+    ? [
+        ...new Set(
+          data.moped_components.map(moped_component =>
+            moped_component?.line_representation
+              ? moped_component.component_name.toLowerCase()
+              : null
+          )
+        ),
+      ].filter(item => item)
+    : [];
+
   /**
-   * Generates a list of available subtypes for a fiven type name
+   * Generates a list of available subtypes for a given type name
    * @param {String} type - The type name
    * @return {String[]} - A string array with the available subtypes
    */
@@ -328,6 +342,7 @@ const ProjectComponentEdit = ({
     setSelectedComponentType(selectedType);
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
+    setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
   };
 
   /**
@@ -771,6 +786,7 @@ const ProjectComponentEdit = ({
         saveActionState={saveActionState}
         saveActionDispatch={saveActionDispatch}
         isSignalComponent={isSignalComponent}
+        drawLines={drawLines}
         componentEditorPanel={
           <>
             <Collapse
