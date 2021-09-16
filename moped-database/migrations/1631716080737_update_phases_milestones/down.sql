@@ -1,4 +1,5 @@
 -- Restore Phases
+DELETE FROM public.moped_phases WHERE phase_id > 11;
 UPDATE public.moped_phases SET phase_name = 'Unknown', phase_description = 'Unknown - Default', phase_order = 999, phase_average_length = null, required_phase = null, subphases = null WHERE phase_id = 0;
 UPDATE public.moped_phases SET phase_name = 'Potential', phase_description = 'Project has not been funded or prioritized; often part of needs assessment', phase_order = 1, phase_average_length = null, required_phase = null, subphases = '{4,5,9,10}' WHERE phase_id = 1;
 UPDATE public.moped_phases SET phase_name = 'Planned', phase_description = 'Project is planned but has yet to move into additional phases', phase_order = 2, phase_average_length = null, required_phase = null, subphases = '{4,9}' WHERE phase_id = 2;
@@ -11,9 +12,10 @@ UPDATE public.moped_phases SET phase_name = 'Construction-ready', phase_descript
 UPDATE public.moped_phases SET phase_name = 'Construction', phase_description = 'Project is in construction', phase_order = 9, phase_average_length = null, required_phase = null, subphases = '{6,7}' WHERE phase_id = 9;
 UPDATE public.moped_phases SET phase_name = 'Post-construction', phase_description = 'Project is fully complete but pending actions or items to close it out', phase_order = 10, phase_average_length = null, required_phase = null, subphases = '{1}' WHERE phase_id = 10;
 UPDATE public.moped_phases SET phase_name = 'Complete', phase_description = 'Project is fully complete and fully closed out', phase_order = 11, phase_average_length = null, required_phase = null, subphases = '{10}' WHERE phase_id = 11;
-DELETE FROM public.moped_phases WHERE phase_id > 11;
 
 -- Restore subphases
+alter table public.moped_subphases drop constraint if exists moped_subphases_subphase_name_key;
+DELETE FROM public.moped_subphases WHERE subphase_id > 11;
 UPDATE public.moped_subphases SET subphase_name = 'Unknown', subphase_description = null, subphase_order = 999, subphase_average_length = null, required_subphase = null, related_phase_id = 0 WHERE subphase_id = 0;
 UPDATE public.moped_subphases SET subphase_name = 'Post-inst. study', subphase_description = null, subphase_order = 1, subphase_average_length = null, required_subphase = null, related_phase_id = 10 WHERE subphase_id = 1;
 UPDATE public.moped_subphases SET subphase_name = 'Procurement', subphase_description = null, subphase_order = 2, subphase_average_length = null, required_subphase = null, related_phase_id = 7 WHERE subphase_id = 2;
@@ -26,9 +28,12 @@ UPDATE public.moped_subphases SET subphase_name = 'Design by others', subphase_d
 UPDATE public.moped_subphases SET subphase_name = 'Environmental study in progress', subphase_description = null, subphase_order = 9, subphase_average_length = null, required_subphase = null, related_phase_id = 2 WHERE subphase_id = 9;
 UPDATE public.moped_subphases SET subphase_name = 'Minor modifications in progress', subphase_description = null, subphase_order = 10, subphase_average_length = null, required_subphase = null, related_phase_id = 11 WHERE subphase_id = 10;
 UPDATE public.moped_subphases SET subphase_name = 'Feasibility study', subphase_description = null, subphase_order = 11, subphase_average_length = null, required_subphase = null, related_phase_id = 1 WHERE subphase_id = 11;
-DELETE FROM public.moped_subphases WHERE subphase_id > 11;
+alter table public.moped_subphases add constraint moped_subphases_subphase_name_key unique (subphase_name);
+
 
 -- Restore Milestones
+DELETE FROM public.moped_milestones WHERE milestone_id > 15;
+alter table moped_milestones drop constraint if exists moped_milestones_milestone_name_key;
 UPDATE public.moped_milestones SET milestone_name = 'Unknown', milestone_description = null, milestone_order = 999, milestone_average_length = null, required_milestone = null, related_phase_id = 0 WHERE milestone_id = 0;
 UPDATE public.moped_milestones SET milestone_name = 'Environmentally cleared', milestone_description = null, milestone_order = 1, milestone_average_length = null, required_milestone = null, related_phase_id = 10 WHERE milestone_id = 1;
 UPDATE public.moped_milestones SET milestone_name = 'Initial field visit complete', milestone_description = null, milestone_order = 2, milestone_average_length = null, required_milestone = null, related_phase_id = 7 WHERE milestone_id = 2;
@@ -45,16 +50,5 @@ UPDATE public.moped_milestones SET milestone_name = 'Resurfacing deferred', mile
 UPDATE public.moped_milestones SET milestone_name = 'Resurfacing requested', milestone_description = null, milestone_order = 13, milestone_average_length = null, required_milestone = null, related_phase_id = 1 WHERE milestone_id = 13;
 UPDATE public.moped_milestones SET milestone_name = 'Need to request resurfacing', milestone_description = null, milestone_order = 14, milestone_average_length = null, required_milestone = null, related_phase_id = 1 WHERE milestone_id = 14;
 UPDATE public.moped_milestones SET milestone_name = 'Already resurfaced', milestone_description = null, milestone_order = 15, milestone_average_length = null, required_milestone = null, related_phase_id = 1 WHERE milestone_id = 15;
-DELETE FROM public.moped_milestones WHERE milestone_id > 15;
-
-
-
--- Restore subphase unique constraint
-alter table moped_subphases
-    drop constraint if exists moped_subphases_subphase_name_key;
-
-alter table moped_subphases
-    add constraint moped_subphases_subphase_name_key
-        unique (subphase_name);
-
+alter table public.moped_milestones add constraint moped_milestones_milestone_name_key unique (milestone_name);
 
