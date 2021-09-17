@@ -40,6 +40,49 @@ export const MODES = [
   },
 ];
 
+export const POINT_MODES = [
+  {
+    id: "disableDrawMode",
+    text: "Select & Move",
+    handler: null,
+    icon: "icon-pointer.svg",
+  },
+  {
+    id: "drawPoint",
+    text: "Draw Point",
+    handler: DrawPointMode,
+    icon: "icon-draw-marker.svg",
+  },
+  {
+    id: "edit",
+    text: "Select Point",
+    handler: EditingMode,
+    icon: "icon-delete.svg",
+  },
+];
+
+export const LINE_MODES = [
+  {
+    id: "disableDrawMode",
+    text: "Select & Move",
+    handler: null,
+    icon: "icon-pointer.svg",
+  },
+  {
+    id: "drawLine",
+    text: "Draw Line",
+    handler: DrawLineStringMode,
+    icon: "icon-draw-lines.svg",
+  },
+  {
+    id: "edit",
+    text: "Select Point",
+    handler: EditingMode,
+    icon: "icon-delete.svg",
+  },
+];
+
+
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
 
@@ -496,12 +539,13 @@ export function useMapDrawTools(
    * Renders the toolbar and buttons that control the map draw UI
    * @return {JSX.Element} The toolbar for the map draw UI
    */
-  const renderDrawToolbar = containerRef => {
+  const renderDrawToolbar = (containerRef, drawLines) => {
     return (
       <MapDrawToolbar
         containerRef={containerRef}
         selectedModeId={modeId}
         onSwitchMode={switchMode}
+        drawLines={drawLines}
       />
     );
   };
@@ -510,7 +554,7 @@ export function useMapDrawTools(
    * Renders the map editor and its toolbar
    * @return {JSX.Element} The whole map draw UI
    */
-  const renderMapDrawTools = containerRef => (
+  const renderMapDrawTools = (containerRef, drawLines) => (
     <>
       <Editor
         ref={ref => {
@@ -525,7 +569,7 @@ export function useMapDrawTools(
         clickRadius={12}
         mode={modeHandler}
       />
-      {renderDrawToolbar(containerRef)}
+      {renderDrawToolbar(containerRef, drawLines)}
     </>
   );
 

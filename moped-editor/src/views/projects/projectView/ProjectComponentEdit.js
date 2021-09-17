@@ -117,6 +117,7 @@ const ProjectComponentEdit = ({
 
   /**
    * The State
+   * @type selectedComponentId - 
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
    * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
@@ -126,6 +127,8 @@ const ProjectComponentEdit = ({
    * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
    * @type {String} componentDescription - The description of this component
    * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
+   * @type editPanelCollapsed
+   * @type editPanelCollapsedShow
    * @constant
    */
   const [selectedComponentId, setSelectedComponentId] = useState(null);
@@ -139,6 +142,7 @@ const ProjectComponentEdit = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     emptyFeatureCollection
   );
+  const [drawLines, setDrawLines] = useState(null);
 
   const [componentDescription, setComponentDescription] = useState(null);
 
@@ -146,7 +150,6 @@ const ProjectComponentEdit = ({
 
   const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
-  const [drawLines, setDrawLines] = useState(null);
 
   /**
    * Apollo hook functions
@@ -590,7 +593,7 @@ const ProjectComponentEdit = ({
   };
 
   /**
-   * Handles the deletion of the component
+   * Handles the deletion of the component from database
    */
   const handleComponentDelete = () => {
     deleteProjectComponent({

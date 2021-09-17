@@ -129,7 +129,6 @@ export const mapConfig = {
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   // List of layer configurations
   layerConfigs: {
-    // and this is what we hide for when we want it to be a point
     CTN: {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
@@ -177,7 +176,6 @@ export const mapConfig = {
         };
       },
     },
-    // this is what we want to hide if it must be a line
     Project_Component_Points_prototype: {
       layerLabel: "Points",
       layerIdName: "project-component-points",

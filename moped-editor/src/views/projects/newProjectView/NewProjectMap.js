@@ -494,6 +494,12 @@ const NewProjectMap = ({
             // hides feature selecting and drawing layers when when component is a signal
             return null;
           }
+          if (drawLines === true && sourceName === "Project_Component_Points_prototype") {
+            return null;
+          }
+          if (drawLines === false && sourceName === "CTN") {
+            return null;
+          }
           return config.layerUrl ? (
             // If a config has a url, it is needs state to update selected/unselected layers
             <Source
@@ -542,7 +548,7 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent && renderMapDrawTools(mapEditToolsContainerRef)}
+        {!isSignalComponent && renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
 
       {/***************************************************************************
