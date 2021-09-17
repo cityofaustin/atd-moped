@@ -1,12 +1,13 @@
 /**
   Phases
  */
+UPDATE public.moped_phases SET phase_name = 'Potential', phase_description = 'Project is planned but has yet to move into additional phases', phase_order = 1, phase_average_length = null, required_phase = null, subphases = '{5,11,12,13,14}' WHERE phase_id = 1;
 UPDATE public.moped_phases SET phase_name = 'Planned', phase_description = 'Project is planned but has yet to move into additional phases', phase_order = 2, phase_average_length = null, required_phase = null, subphases = '{4,9,15}' WHERE phase_id = 2;
 UPDATE public.moped_phases SET phase_name = 'Design', phase_description = 'Project is undergoing a traditional 30%, 60%, 90%, 100% design phase', phase_order = 6, phase_average_length = null, required_phase = null, subphases = '{16,17,18,19}' WHERE phase_id = 6;
 UPDATE public.moped_phases SET phase_name = 'Construction-ready', phase_description = 'Project is ready for construction pending schedules, work orders, etc', phase_order = 9, phase_average_length = null, required_phase = null, subphases = null WHERE phase_id = 8;
 UPDATE public.moped_phases SET phase_name = 'Construction', phase_description = 'Project is in construction', phase_order = 10, phase_average_length = null, required_phase = null, subphases = '{6,7}' WHERE phase_id = 9;
 UPDATE public.moped_phases SET phase_name = 'Post-construction', phase_description = 'Project is fully complete but pending actions or items to close it out', phase_order = 11, phase_average_length = null, required_phase = null, subphases = '{1,21}' WHERE phase_id = 10;
-UPDATE public.moped_phases SET phase_name = 'Complete', phase_description = 'Project is fully complete and fully closed out', phase_order = 12, phase_average_length = null, required_phase = null, subphases = '{10}' WHERE phase_id = 11;
+UPDATE public.moped_phases SET phase_name = 'Complete', phase_description = 'Project is fully complete and fully closed out', phase_order = 12, phase_average_length = null, required_phase = null, subphases = '{}' WHERE phase_id = 11;
 -- Now insert the new phase
 INSERT INTO public.moped_phases (phase_name, phase_description, phase_order, phase_average_length, required_phase, phase_id, subphases) VALUES ('Bid/Award/Execution', 'Project is under bidding, awarding, or execution state. ', 8, null, null, 12, '{20}');
 
