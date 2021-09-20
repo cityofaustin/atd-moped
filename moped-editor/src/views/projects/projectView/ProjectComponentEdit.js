@@ -117,7 +117,7 @@ const ProjectComponentEdit = ({
 
   /**
    * The State
-   * @type selectedComponentId - 
+   * @type selectedComponentId -
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
    * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
@@ -172,7 +172,8 @@ const ProjectComponentEdit = ({
   const { saveActionState, saveActionDispatch } = useSaveActionReducer();
 
   /**
-   * Generates an initial list of component types, subtypes and counts
+   * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
+   * todo chia: ask if this initial list ever changes? or is it our constant list of component types, subtypes
    */
   const initialTypeCounts = data // Do we have data?
     ? // Yes, let's get the counts by using reduce
@@ -345,7 +346,9 @@ const ProjectComponentEdit = ({
     setSelectedComponentType(selectedType);
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
-    setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
+    !!selectedType
+      ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
+      : setDrawLines(null);
   };
 
   /**
