@@ -1,1 +1,0 @@
-alter table "public"."moped_fund_sources" add foreign key ("funding_source_category") references "public"."moped_fund_source_cat"("funding_source_category_name") on update restrict on delete restrict;
