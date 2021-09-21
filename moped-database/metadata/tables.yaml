@@ -2030,13 +2030,13 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
-    name: moped_proj_fund_source
+    name: moped_proj_funding
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - proj_fund_source_id
+      - proj_funding_id
       - funding_source_name
       - funding_source_category
       - project_id
@@ -2048,7 +2048,7 @@
     permission:
       check: {}
       columns:
-      - proj_fund_source_id
+      - proj_funding_id
       - funding_source_name
       - funding_source_category
       - project_id
@@ -2062,7 +2062,7 @@
       columns:
       - funding_source_other
       - added_by
-      - proj_fund_source_id
+      - proj_funding_id
       - project_id
       - funding_source_category
       - funding_source_name
@@ -2074,7 +2074,7 @@
       columns:
       - funding_source_other
       - added_by
-      - proj_fund_source_id
+      - proj_funding_id
       - project_id
       - funding_source_category
       - funding_source_name
@@ -2084,7 +2084,7 @@
   - role: moped-viewer
     permission:
       columns:
-      - proj_fund_source_id
+      - proj_funding_id
       - funding_source_name
       - funding_source_category
       - project_id
@@ -2099,7 +2099,7 @@
       columns:
       - funding_source_other
       - added_by
-      - proj_fund_source_id
+      - proj_funding_id
       - project_id
       - funding_source_category
       - funding_source_name
@@ -2111,7 +2111,7 @@
       columns:
       - funding_source_other
       - added_by
-      - proj_fund_source_id
+      - proj_funding_id
       - project_id
       - funding_source_category
       - funding_source_name
@@ -2131,7 +2131,7 @@
         - funding_source_other
         - added_by
         - project_id
-        - proj_fund_source_id
+        - proj_funding_id
         - funding_source_category
         - funding_source_name
         - date_added
