@@ -122,8 +122,6 @@ const ProjectComponents = () => {
         )
       : [];
 
-  console.log(featureFullCollection)
-
   /**
    * Build an all-inclusive list of components associated with this project
    * Used in the static map view

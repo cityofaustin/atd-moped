@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
 
 /**
  * The project component editor
- * @param {Number} componentId - The moped_proj_component id being edited
+ * @param {Number} componentId - The moped_proj_component id being edited. If adding new component, componentId is 0
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
@@ -117,7 +117,7 @@ const ProjectComponentEdit = ({
 
   /**
    * The State
-   * @type selectedComponentId -
+   * @type {Number} selectedComponentId - id of component chosen in dropdown
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
    * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
@@ -127,8 +127,8 @@ const ProjectComponentEdit = ({
    * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
    * @type {String} componentDescription - The description of this component
    * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
-   * @type editPanelCollapsed
-   * @type editPanelCollapsedShow
+   * @type {boolean} editPanelCollapsed - If true, component picking panel is collapsed
+   * @type {boolean} editPanelCollapsedShow - If true, component picking panel is showing
    * @constant
    */
   const [selectedComponentId, setSelectedComponentId] = useState(null);
@@ -173,7 +173,7 @@ const ProjectComponentEdit = ({
 
   /**
    * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
-   * todo chia: ask if this initial list ever changes? or is it our constant list of component types, subtypes
+   * todo chia: ask if this initial list ever changes? or is this a constant list of component types, subtypes
    */
   const initialTypeCounts = data // Do we have data?
     ? // Yes, let's get the counts by using reduce
@@ -720,6 +720,8 @@ const ProjectComponentEdit = ({
           .toLowerCase();
         setSelectedComponentSubtype(subtypeDB);
       }
+      // check if this component is drawn with lines or points
+      setDrawLines(data.moped_proj_components[0].moped_components.line_representation)
     }
   }
 
