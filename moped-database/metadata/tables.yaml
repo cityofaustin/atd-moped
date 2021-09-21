@@ -552,6 +552,9 @@
       check: null
 - table:
     schema: public
+    name: moped_fund_status
+- table:
+    schema: public
     name: moped_group
   insert_permissions:
   - role: moped-admin
