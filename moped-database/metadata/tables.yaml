@@ -2149,12 +2149,15 @@
         columns: '*'
       update:
         columns:
-        - funding_source_other
         - added_by
+        - funding_amount
+        - funding_program_id
+        - funding_source_id
+        - funding_status_id
         - project_id
         - proj_funding_id
-        - funding_source_category
-        - funding_source_name
+        - fund_dept_unit
+        - funding_description
         - date_added
     retry_conf:
       num_retries: 0
