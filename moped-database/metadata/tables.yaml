@@ -435,57 +435,57 @@
       check: null
 - table:
     schema: public
-    name: moped_fund_source_cat
+    name: moped_fund_programs
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       check: null
 - table:
