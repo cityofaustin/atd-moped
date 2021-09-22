@@ -14,6 +14,7 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
+  Button,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -49,6 +50,9 @@ const useStyles = makeStyles(theme => ({
   emptyState: {
     margin: theme.spacing(3),
   },
+  showButtonItem: {
+    margin: theme.spacing(2),
+  },
 }));
 
 const ProjectComments = () => {
@@ -62,9 +66,16 @@ const ProjectComments = () => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
-    variables: { projectId },
+    variables: {
+      projectNoteConditions: {
+        project_id: { _eq: Number(projectId) },
+        status_id: { _eq: Number(1) },
+        ...noteTypeConditions,
+      },
+    },
   });
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
@@ -115,6 +126,7 @@ const ProjectComments = () => {
             project_id: projectId,
             status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
+            project_note_type: 0,
           },
         ],
       },
@@ -154,10 +166,59 @@ const ProjectComments = () => {
     });
   };
 
+  /**
+   * Updates the type based on conditions
+   * @param {Number} typeId
+   */
+  const filterNoteType = typeId => {
+    if (typeId === 0) {
+      setNoteTypeConditions({});
+    } else {
+      setNoteTypeConditions({
+        project_note_type: { _eq: Number(typeId) },
+      });
+    }
+  };
+
   return (
     <Page title="Project Notes">
       <Container>
         <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <span className={classes.showButtonItem}>Show</span>
+            <Button
+              className={classes.showButtonItem}
+              variant="outlined"
+              color="primary"
+              onClick={() => filterNoteType(0)}
+            >
+              All
+            </Button>
+            <Button
+              className={classes.showButtonItem}
+              variant="outlined"
+              color="primary"
+              onClick={() => filterNoteType(1)}
+            >
+              Internal Notes
+            </Button>
+            <Button
+              className={classes.showButtonItem}
+              variant="outlined"
+              color="primary"
+              onClick={() => filterNoteType(2)}
+            >
+              Status Updates
+            </Button>
+            <Button
+              className={classes.showButtonItem}
+              variant="outlined"
+              color="primary"
+              onClick={() => filterNoteType(3)}
+            >
+              Timeline Notes
+            </Button>
+          </Grid>
           <Grid item xs={12}>
             <Card>
               {data.moped_proj_notes.length > 0 ? (
