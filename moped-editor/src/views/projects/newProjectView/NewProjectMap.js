@@ -456,7 +456,7 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          !isDrawing && !isSignalComponent ? getEditMapInteractiveIds() : []
+          !isDrawing && !isSignalComponent ? getEditMapInteractiveIds(drawLines) : []
         }
         onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
         onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
