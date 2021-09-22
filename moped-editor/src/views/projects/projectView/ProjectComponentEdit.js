@@ -720,8 +720,10 @@ const ProjectComponentEdit = ({
           .toLowerCase();
         setSelectedComponentSubtype(subtypeDB);
       }
-      // check if this component is drawn with lines or points
-      setDrawLines(data.moped_proj_components[0].moped_components.line_representation)
+      // check if selected component is represented by lines or points
+      setDrawLines(
+        data.moped_proj_components[0].moped_components.line_representation
+      );
     }
   }
 
