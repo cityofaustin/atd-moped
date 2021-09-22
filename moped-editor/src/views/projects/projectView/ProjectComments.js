@@ -180,7 +180,7 @@ const ProjectComments = () => {
       });
     }
     refetch();
-  }, [noteType, setNoteTypeConditions]);
+  }, [noteType, setNoteTypeConditions, refetch]);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
