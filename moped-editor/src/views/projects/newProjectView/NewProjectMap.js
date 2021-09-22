@@ -456,7 +456,9 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          !isDrawing && !isSignalComponent ? getEditMapInteractiveIds(drawLines) : []
+          !isDrawing && !isSignalComponent
+            ? getEditMapInteractiveIds(drawLines)
+            : []
         }
         onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
         onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
@@ -494,7 +496,10 @@ const NewProjectMap = ({
             // hides feature selecting and drawing layers when when component is a signal
             return null;
           }
-          if (drawLines === true && sourceName === "Project_Component_Points_prototype") {
+          if (
+            drawLines === true &&
+            sourceName === "Project_Component_Points_prototype"
+          ) {
             return null;
           }
           if (drawLines === false && sourceName === "CTN") {
@@ -548,7 +553,8 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent && renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
+        {!isSignalComponent &&
+          renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
 
       {/***************************************************************************

@@ -173,7 +173,6 @@ const ProjectComponentEdit = ({
 
   /**
    * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
-   * todo chia: ask if this initial list ever changes? or is this a constant list of component types, subtypes
    */
   const initialTypeCounts = data // Do we have data?
     ? // Yes, let's get the counts by using reduce
@@ -344,6 +343,7 @@ const ProjectComponentEdit = ({
     setSelectedComponentType(selectedType);
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
+    // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
     !!selectedType
       ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
       : setDrawLines(null);
