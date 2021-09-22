@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "src/components/Page";
 import {
   Avatar,
@@ -15,6 +15,7 @@ import {
   ListItemText,
   Typography,
   Button,
+  FormControlLabel,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -66,6 +67,7 @@ const ProjectComments = () => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [noteType, setNoteType] = useState(0);
   const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
@@ -109,12 +111,6 @@ const ProjectComments = () => {
     },
   });
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
-
-  if (error) return console.log(error);
-
   const submitNewComment = () => {
     setCommentAddLoading(true);
     addNewComment({
@@ -126,7 +122,7 @@ const ProjectComments = () => {
             project_id: projectId,
             status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
-            project_note_type: 0,
+            project_note_type: 1,
           },
         ],
       },
@@ -170,55 +166,89 @@ const ProjectComments = () => {
    * Updates the type based on conditions
    * @param {Number} typeId
    */
-  const filterNoteType = typeId => {
-    if (typeId === 0) {
+  const filterNoteType = typeId => setNoteType(Number(typeId));
+
+  /**
+   * Whenever noteType changes, we change the query conditions
+   */
+  useEffect(() => {
+    if (noteType === 0) {
       setNoteTypeConditions({});
     } else {
       setNoteTypeConditions({
-        project_note_type: { _eq: Number(typeId) },
+        project_note_type: { _eq: noteType },
       });
     }
-  };
+    refetch();
+  }, [noteType, setNoteTypeConditions]);
+
+  // If the query is loading or data object is undefined,
+  // stop here and just render the spinner.
+  if (loading || !data) return <CircularProgress />;
+  if (error) return console.log(error);
 
   return (
     <Page title="Project Notes">
       <Container>
         <Grid container spacing={2}>
+          {/*New Note Form*/}
+          {!editingComment && (
+            <Grid item xs={12}>
+              <Card>
+                <CommentInputQuill
+                  noteText={noteText}
+                  setNoteText={setNoteText}
+                  editingComment={editingComment}
+                  commentAddLoading={commentAddLoading}
+                  commentAddSuccess={commentAddSuccess}
+                  submitNewComment={submitNewComment}
+                  submitEditComment={submitEditComment}
+                  cancelCommentEdit={cancelCommentEdit}
+                />
+              </Card>
+            </Grid>
+          )}
+          {/*First the Filter Buttons*/}
           <Grid item xs={12}>
-            <span className={classes.showButtonItem}>Show</span>
+            <FormControlLabel
+                className={classes.showButtonItem}
+                label="Show"
+                control={<span />}
+            />
             <Button
-              className={classes.showButtonItem}
-              variant="outlined"
-              color="primary"
-              onClick={() => filterNoteType(0)}
+                className={classes.showButtonItem}
+                variant={noteType === 0 ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => filterNoteType(0)}
             >
               All
             </Button>
             <Button
-              className={classes.showButtonItem}
-              variant="outlined"
-              color="primary"
-              onClick={() => filterNoteType(1)}
+                className={classes.showButtonItem}
+                variant={noteType === 1 ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => filterNoteType(1)}
             >
               Internal Notes
             </Button>
             <Button
-              className={classes.showButtonItem}
-              variant="outlined"
-              color="primary"
-              onClick={() => filterNoteType(2)}
+                className={classes.showButtonItem}
+                variant={noteType === 2 ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => filterNoteType(2)}
             >
               Status Updates
             </Button>
             <Button
-              className={classes.showButtonItem}
-              variant="outlined"
-              color="primary"
-              onClick={() => filterNoteType(3)}
+                className={classes.showButtonItem}
+                variant={noteType === 3 ? "contained" : "outlined"}
+                color="primary"
+                onClick={() => filterNoteType(3)}
             >
               Timeline Notes
             </Button>
           </Grid>
+          {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
               {data.moped_proj_notes.length > 0 ? (
@@ -307,22 +337,7 @@ const ProjectComments = () => {
               )}
             </Card>
           </Grid>
-          {!editingComment && (
-            <Grid item xs={12}>
-              <Card>
-                <CommentInputQuill
-                  noteText={noteText}
-                  setNoteText={setNoteText}
-                  editingComment={editingComment}
-                  commentAddLoading={commentAddLoading}
-                  commentAddSuccess={commentAddSuccess}
-                  submitNewComment={submitNewComment}
-                  submitEditComment={submitEditComment}
-                  cancelCommentEdit={cancelCommentEdit}
-                />
-              </Card>
-            </Grid>
-          )}
+
         </Grid>
       </Container>
     </Page>
