@@ -283,12 +283,10 @@ const ProjectComponentEdit = ({
     ? [
         ...new Set(
           data.moped_components.map(moped_component =>
-            moped_component?.line_representation
-              ? moped_component.component_name.toLowerCase()
-              : null
+            moped_component.component_name.toLowerCase()
           )
         ),
-      ].filter(item => item)
+      ]
     : [];
 
   /**
