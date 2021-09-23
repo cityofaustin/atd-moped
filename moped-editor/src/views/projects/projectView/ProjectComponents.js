@@ -196,7 +196,6 @@ const ProjectComponents = () => {
               error={error}
               resetErrorBoundary={resetErrorBoundary}
               projectId={projectId}
-              setIsEditing={null}
               refetchProjectDetails={refetch}
               mapData={projectFeatureCollection}
             />
@@ -206,7 +205,6 @@ const ProjectComponents = () => {
         >
           <ProjectComponentsMapView
             projectFeatureCollection={projectFeatureCollection}
-            setIsEditing={false}
             noPadding
           >
             <Button

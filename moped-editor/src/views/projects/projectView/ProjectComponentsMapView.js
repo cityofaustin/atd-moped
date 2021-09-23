@@ -26,7 +26,6 @@ import {
   getLayerNames,
 } from "../../../utils/mapHelpers";
 import {
-  EditLocation as EditLocationIcon,
   KeyboardArrowDown,
   KeyboardArrowUp,
 } from "@material-ui/icons";
@@ -138,8 +137,6 @@ const useStyles = makeStyles(theme => ({
 /**
  * THe project component map viewer
  * @param {Object} projectFeatureCollection - The features collection GeoJSON
- * @param {function} setIsEditing - A callback to change the state to edit mode
- * @param {boolean} editEnabled - Ture when we are editing
  * @param {JSX.Element} children - Any components we want to render around the map
  * @param {boolean} noPadding - If true, we use no padding style in the map
  * @return {JSX.Element}
@@ -147,8 +144,6 @@ const useStyles = makeStyles(theme => ({
  */
 const ProjectComponentsMapView = ({
   projectFeatureCollection,
-  setIsEditing, // being passed in as a boolean, not a function
-  editEnabled, // deprecated? not being passed in
   children,
   noPadding,
 }) => {
@@ -306,21 +301,8 @@ const ProjectComponentsMapView = ({
             ),
           })}
 
-        {/* Draw tooltip on feature hover
-            todo chia: confirm how to trigger this tooltip */}
+        {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        {// okay to delete button? editEnabled is not being passed in
-          editEnabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setIsEditing(true)}
-            startIcon={<EditLocationIcon />}
-            className={classes.editButton}
-          >
-            Edit
-          </Button>
-        )}
         <NewProjectMapBaseMap
           containerRef={mapBasemapContainerRef}
           handleBasemapChange={handleBasemapChange}
