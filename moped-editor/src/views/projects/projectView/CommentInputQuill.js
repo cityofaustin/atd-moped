@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid
-} from "@material-ui/core";
+import { Box, Button, Container, Grid } from "@material-ui/core";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import AddBoxIcon from "@material-ui/icons/AddBox";
@@ -46,7 +41,7 @@ const CommentInputQuill = ({
 
   return (
     <Container>
-      <Grid xs={12} sm={10} container direction="column" spacing={1}>
+      <Grid xs={12} sm={12} container direction="column" spacing={1}>
         <Grid item>
           <Box pt={2}>
             <ReactQuill
