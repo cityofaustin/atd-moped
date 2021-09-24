@@ -42,8 +42,15 @@ export const SUMMARY_QUERY = gql`
         project_id
         location
       }
+      moped_proj_notes(
+        where: { project_note_type: { _eq: 2 } }
+        order_by: { date_created: asc }
+      ) {
+        project_note_id
+        project_note
+      }
     }
-    moped_phases(order_by: {phase_order: asc}) {
+    moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
       phase_order
@@ -157,7 +164,10 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases(where: { phase_id: { _gt: 0 } }, order_by: {phase_order: asc}) {
+    moped_phases(
+      where: { phase_id: { _gt: 0 } }
+      order_by: { phase_order: asc }
+    ) {
       phase_id
       phase_name
       phase_order
@@ -590,7 +600,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
 
 export const SIGNAL_COMPONENTS_QUERY = gql`
   query GetSignalComponents {
-    moped_components(where: {component_name: {_ilike: "signal"}}) {
+    moped_components(where: { component_name: { _ilike: "signal" } }) {
       component_name
       component_subtype
       component_id
