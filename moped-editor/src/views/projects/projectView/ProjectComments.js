@@ -187,6 +187,24 @@ const ProjectComments = () => {
   if (loading || !data) return <CircularProgress />;
   if (error) return console.log(error);
 
+  /**
+   * Defines the CommentButton with a toggle style-change behavior.
+   * @param {Object} props
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const CommentButton = props => (
+    <Button
+      {...props}
+      color="primary"
+      className={classes.showButtonItem}
+      variant={noteType === props.noteTypeId ? "contained" : "outlined"}
+      onClick={() => filterNoteType(props.noteTypeId)}
+    >
+      {props.children}
+    </Button>
+  );
+
   return (
     <Page title="Project Notes">
       <Container>
@@ -211,42 +229,14 @@ const ProjectComments = () => {
           {/*First the Filter Buttons*/}
           <Grid item xs={12}>
             <FormControlLabel
-                className={classes.showButtonItem}
-                label="Show"
-                control={<span />}
+              className={classes.showButtonItem}
+              label="Show"
+              control={<span />}
             />
-            <Button
-                className={classes.showButtonItem}
-                variant={noteType === 0 ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => filterNoteType(0)}
-            >
-              All
-            </Button>
-            <Button
-                className={classes.showButtonItem}
-                variant={noteType === 1 ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => filterNoteType(1)}
-            >
-              Internal Notes
-            </Button>
-            <Button
-                className={classes.showButtonItem}
-                variant={noteType === 2 ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => filterNoteType(2)}
-            >
-              Status Updates
-            </Button>
-            <Button
-                className={classes.showButtonItem}
-                variant={noteType === 3 ? "contained" : "outlined"}
-                color="primary"
-                onClick={() => filterNoteType(3)}
-            >
-              Timeline Notes
-            </Button>
+            <CommentButton noteTypeId={0}>All</CommentButton>
+            <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
+            <CommentButton noteTypeId={2}>Status Updates</CommentButton>
+            <CommentButton noteTypeId={3}>Timeline Notes</CommentButton>
           </Grid>
           {/*Now the notes*/}
           <Grid item xs={12}>
@@ -337,7 +327,6 @@ const ProjectComments = () => {
               )}
             </Card>
           </Grid>
-
         </Grid>
       </Container>
     </Page>
