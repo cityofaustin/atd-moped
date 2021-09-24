@@ -282,10 +282,12 @@ const ProjectComponentEdit = ({
     ? [
         ...new Set(
           data.moped_components.map(moped_component =>
-            moped_component.component_name.toLowerCase()
+            moped_component?.line_representation
+              ? moped_component.component_name.toLowerCase()
+              : null
           )
         ),
-      ]
+      ].filter(item => item)
     : [];
 
   /**
@@ -344,6 +346,8 @@ const ProjectComponentEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
+    console.log(selectedType)
+    console.log(lineRepresentable, lineRepresentable.indexOf(selectedType))
     !!selectedType
       ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
       : setDrawLines(null);
