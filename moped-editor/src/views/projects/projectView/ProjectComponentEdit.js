@@ -346,8 +346,6 @@ const ProjectComponentEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
-    console.log(selectedType)
-    console.log(lineRepresentable, lineRepresentable.indexOf(selectedType))
     !!selectedType
       ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
       : setDrawLines(null);
@@ -790,7 +788,7 @@ const ProjectComponentEdit = ({
         data-name={"moped-component-editor-newprojectmap"}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
-        projectId={null}
+        projectId={null} // this isnt used in NewProjectMap or mapDrawHelpers
         refetchProjectDetails={null}
         noPadding={true}
         newFeature={componentId === 0}

@@ -244,6 +244,8 @@ const handleSelectedFeatureUpdate = (
  * @param {Object} saveActionState - The current state of save action
  * @param {function} saveActionDispatch - Changes the state of save action
  * @param {JSX.Element} componentEditorPanel - An editor panel component (optional)
+ * @param {boolean} isSignalComponent - if component selected is a signal
+ * @param {boolean} drawLines - if component selected should be represented by lines
  * @return {JSX.Element}
  * @constructor
  */
@@ -414,6 +416,9 @@ const NewProjectMap = ({
     }
   }, [saveActionState, saveDrawnPoints]);
 
+  const mapDrawable = (!isDrawing && !isSignalComponent && (drawLines !== null))
+  console.log("isdrawing ", isDrawing)
+
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
@@ -456,12 +461,12 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          !isDrawing && !isSignalComponent
+          mapDrawable
             ? getEditMapInteractiveIds(drawLines)
             : []
         }
-        onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
-        onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
+        onHover={mapDrawable ? handleLayerHover : null}
+        onClick={mapDrawable ? handleLayerClick : null}
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -491,7 +496,8 @@ const NewProjectMap = ({
         />
 
         {/* RENDER LAYERS */}
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
+        { (drawLines !== null) &&
+          Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
           if (isSignalComponent && sourceName !== "drawnByUser") {
             // hides feature selecting and drawing layers when when component is a signal
             return null;
