@@ -303,15 +303,17 @@ const ProjectComments = () => {
                                   <EditIcon />
                                 </IconButton>
                               )}
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() =>
-                                  submitDeleteComment(item.project_note_id)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
+                              {!editingComment && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() =>
+                                    submitDeleteComment(item.project_note_id)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              )}
                             </ListItemSecondaryAction>
                           )}
                         </ListItem>
