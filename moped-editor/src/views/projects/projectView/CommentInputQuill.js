@@ -24,6 +24,7 @@ const useStyles = makeStyles(theme => ({
   cancelButton: {
     margin: theme.spacing(1),
     position: "relative",
+    color: theme.palette.secondary.dark,
   },
 }));
 
@@ -53,14 +54,18 @@ const CommentInputQuill = ({
           </Box>
         </Grid>
         <Grid item>
-          <Box pb={2} display="flex">
+          <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
+            {editingComment && (
+              <div className={classes.cancelButton}>
+                <Button variant="text" onClick={cancelCommentEdit}>
+                  Cancel
+                </Button>
+              </div>
+            )}
             <ProjectSaveButton
               label={
                 <>
-                  <AddBoxIcon />
-                  <Box ml={1}>
-                    {editingComment ? "Update comment" : "Add comment"}
-                  </Box>
+                  Save
                 </>
               }
               loading={commentAddLoading}
@@ -69,19 +74,6 @@ const CommentInputQuill = ({
                 editingComment ? submitEditComment : submitNewComment
               }
             />
-            {editingComment && (
-              <div className={classes.cancelButton}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={cancelCommentEdit}
-                >
-                  <>
-                    <CancelIcon /> <Box ml={1}>Cancel</Box>
-                  </>
-                </Button>
-              </div>
-            )}
           </Box>
         </Grid>
       </Grid>
