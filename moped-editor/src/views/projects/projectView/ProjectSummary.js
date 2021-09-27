@@ -120,6 +120,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const handleStatusUpdateCancel = () => {
     setStatusUpdate(getStatusUpdate());
     setStatusUpdateEditable(false);
+    setStatusUpdateAddNew(false);
   };
 
   if (projectFeatureRecords.length === 0 && !makeSureRefresh)
