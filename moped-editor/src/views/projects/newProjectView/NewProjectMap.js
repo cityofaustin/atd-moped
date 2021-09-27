@@ -312,7 +312,12 @@ const NewProjectMap = ({
     }
   );
 
-  // isDrawing  * @property {boolean} isDrawing - Are draw tools enabled or disabled
+  /*
+   * {boolean} isDrawing - Are draw tools enabled or disabled
+   * {function} setIsDrawing - Toggle isdrawing
+   * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
+   * {function} saveDrawnPoints - Function that saves features drawn in the UI
+   */
   const {
     isDrawing,
     setIsDrawing,
@@ -418,7 +423,8 @@ const NewProjectMap = ({
   }, [saveActionState, saveDrawnPoints]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
-  const renderDrawLayers = (!isDrawing && !isSignalComponent && (drawLines !== null))
+  const renderDrawLayers =
+    !isDrawing && !isSignalComponent && drawLines !== null;
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -462,9 +468,7 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          renderDrawLayers
-            ? getEditMapInteractiveIds(drawLines)
-            : []
+          renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         }
         onHover={renderDrawLayers ? handleLayerHover : null}
         onClick={renderDrawLayers ? handleLayerClick : null}
@@ -497,64 +501,64 @@ const NewProjectMap = ({
         />
 
         {/* RENDER LAYERS */}
-        { (drawLines !== null) &&
+        {drawLines !== null &&
           Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
-          if (isSignalComponent && sourceName !== "drawnByUser") {
-            // hides feature selecting and drawing layers when when component is a signal
-            return null;
-          }
-          if (
-            drawLines === true &&
-            sourceName === "Project_Component_Points_prototype"
-          ) {
-            return null;
-          }
-          if (drawLines === false && sourceName === "CTN") {
-            return null;
-          }
-          return config.layerUrl ? (
-            // If a config has a url, it is needs state to update selected/unselected layers
-            <Source
-              key={config.layerIdName}
-              type="vector"
-              tiles={[config.layerUrl]}
-              maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
-            >
-              <Layer
+            if (isSignalComponent && sourceName !== "drawnByUser") {
+              // hides feature selecting and drawing layers when when component is a signal
+              return null;
+            }
+            if (
+              drawLines === true &&
+              sourceName === "Project_Component_Points_prototype"
+            ) {
+              return null;
+            }
+            if (drawLines === false && sourceName === "CTN") {
+              return null;
+            }
+            return config.layerUrl ? (
+              // If a config has a url, it is needs state to update selected/unselected layers
+              <Source
                 key={config.layerIdName}
-                {...createProjectSelectLayerConfig(
-                  featureId,
-                  sourceName,
-                  selectedLayerIds,
-                  visibleLayerIds
-                )}
-              />
-            </Source>
-          ) : (
-            <Source
-              key={config.layerIdName}
-              id={config.layerIdName}
-              type="geojson"
-              data={{
-                ...featureCollection,
-                features: [
-                  ...featureCollection.features,
-                  ...(otherProjectFeaturesCollection?.features ?? []),
-                ].filter(
-                  feature => feature.properties.sourceLayer === sourceName
-                ),
-              }}
-            >
-              <Layer
+                type="vector"
+                tiles={[config.layerUrl]}
+                maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+              >
+                <Layer
+                  key={config.layerIdName}
+                  {...createProjectSelectLayerConfig(
+                    featureId,
+                    sourceName,
+                    selectedLayerIds,
+                    visibleLayerIds
+                  )}
+                />
+              </Source>
+            ) : (
+              <Source
                 key={config.layerIdName}
-                {...createProjectViewLayerConfig(
-                  config.layerIdName,
-                  visibleLayerIds
-                )}
-              />
-            </Source>
-          );
-        })}
+                id={config.layerIdName}
+                type="geojson"
+                data={{
+                  ...featureCollection,
+                  features: [
+                    ...featureCollection.features,
+                    ...(otherProjectFeaturesCollection?.features ?? []),
+                  ].filter(
+                    feature => feature.properties.sourceLayer === sourceName
+                  ),
+                }}
+              >
+                <Layer
+                  key={config.layerIdName}
+                  {...createProjectViewLayerConfig(
+                    config.layerIdName,
+                    visibleLayerIds
+                  )}
+                />
+              </Source>
+            );
+          })}
 
         {/* Street Tool Tip*/}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
