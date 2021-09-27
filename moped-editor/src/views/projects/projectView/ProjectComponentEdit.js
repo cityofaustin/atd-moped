@@ -788,7 +788,7 @@ const ProjectComponentEdit = ({
         data-name={"moped-component-editor-newprojectmap"}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
-        projectId={null} // this isnt used in NewProjectMap or mapDrawHelpers
+        projectId={null}
         refetchProjectDetails={null}
         noPadding={true}
         newFeature={componentId === 0}
