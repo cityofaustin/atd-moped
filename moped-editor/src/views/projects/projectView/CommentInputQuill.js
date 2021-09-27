@@ -2,8 +2,6 @@ import React from "react";
 import { Box, Button, Container, Grid } from "@material-ui/core";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import AddBoxIcon from "@material-ui/icons/AddBox";
-import CancelIcon from "@material-ui/icons/Cancel";
 import { makeStyles } from "@material-ui/core/styles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
@@ -63,11 +61,7 @@ const CommentInputQuill = ({
               </div>
             )}
             <ProjectSaveButton
-              label={
-                <>
-                  Save
-                </>
-              }
+              label={<>Save</>}
               loading={commentAddLoading}
               success={commentAddSuccess}
               handleButtonClick={
