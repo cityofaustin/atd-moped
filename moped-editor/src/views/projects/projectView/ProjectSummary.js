@@ -78,9 +78,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     projectFeatureRecords
   );
 
-  const handleStatusUpdateChange = e => {
-    setStatusUpdate(e.target.value);
-  };
+  /**
+   * Handles updating the state for "status update"
+   * @param {Object} event
+   */
+  const handleStatusUpdateChange = event => setStatusUpdate(event.target.value);
 
   /**
    * Handles the edit click for status update
