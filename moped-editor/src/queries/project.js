@@ -43,9 +43,10 @@ export const SUMMARY_QUERY = gql`
         location
       }
     }
-    moped_phases {
+    moped_phases(order_by: {phase_order: asc}) {
       phase_id
       phase_name
+      phase_order
     }
     moped_proj_phases(
       where: {
@@ -156,9 +157,10 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases(where: { phase_id: { _gt: 0 } }) {
+    moped_phases(where: { phase_id: { _gt: 0 } }, order_by: {phase_order: asc}) {
       phase_id
       phase_name
+      phase_order
       subphases
     }
     moped_subphases(
