@@ -893,7 +893,7 @@ const ProjectComponentEdit = ({
                         rows={4}
                         defaultValue=""
                         variant="filled"
-                        value={componentDescription}
+                        value={componentDescription ?? ""}
                         onChange={e => handleDescriptionKeyDown(e)}
                         fullWidth
                       />

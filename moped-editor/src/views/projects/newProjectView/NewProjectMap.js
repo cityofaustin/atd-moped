@@ -312,6 +312,7 @@ const NewProjectMap = ({
     }
   );
 
+  // isDrawing  * @property {boolean} isDrawing - Are draw tools enabled or disabled
   const {
     isDrawing,
     setIsDrawing,
@@ -416,8 +417,8 @@ const NewProjectMap = ({
     }
   }, [saveActionState, saveDrawnPoints]);
 
-  const mapDrawable = (!isDrawing && !isSignalComponent && (drawLines !== null))
-  console.log("isdrawing ", isDrawing)
+  // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
+  const renderDrawLayers = (!isDrawing && !isSignalComponent && (drawLines !== null))
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -461,12 +462,12 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          mapDrawable
+          renderDrawLayers
             ? getEditMapInteractiveIds(drawLines)
             : []
         }
-        onHover={mapDrawable ? handleLayerHover : null}
-        onClick={mapDrawable ? handleLayerClick : null}
+        onHover={renderDrawLayers ? handleLayerHover : null}
+        onClick={renderDrawLayers ? handleLayerClick : null}
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -559,13 +560,11 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent &&
+        {renderDrawLayers &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
 
-      {/***************************************************************************
-                        Feature Count & Draw Mode Controls
-       ***************************************************************************/}
+      {/* Feature Count */}
       {renderFeatureCount(featureCount, isDrawing)}
     </Box>
   );
