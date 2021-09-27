@@ -118,7 +118,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
    * Handle canceling the status update
    */
   const handleStatusUpdateCancel = () => {
+    // Retrieve original value
     setStatusUpdate(getStatusUpdate());
+    // Reset edit-mode state
     setStatusUpdateEditable(false);
     setStatusUpdateAddNew(false);
   };
