@@ -149,5 +149,5 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-moped-api-helper.sh
-          deploy_moped_api
+          source $(pwd)/.github/workflows/aws-moped-test-api-helper.sh
+          deploy_moped_test_api
