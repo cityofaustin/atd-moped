@@ -73,7 +73,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   );
 
   /**
-   * Retrieve the last note made as a status update (by date)
+   * Retrieve the last note made as a status update (which are ordered by date)
+   * @param {String} fieldName - The name of the field to retrieve in the moped_proj_note object
+   * @return {string|null}
    */
   const getStatusUpdate = (fieldName = "project_note") => {
     const lastItem =
