@@ -10,7 +10,7 @@ cfn-flip==1.2.3
 chardet==4.0.0
 click==7.1.2
 cognitojwt==1.2.2
-cryptography==3.3.2
+cryptography==3.4.4
 durationpy==0.5
 ecdsa==0.14.1
 Flask==1.1.2
