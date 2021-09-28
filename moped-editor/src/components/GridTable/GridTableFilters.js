@@ -13,11 +13,6 @@ import {
   Icon,
   Grow,
   makeStyles,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
@@ -54,7 +49,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
- * Filter Search Component
+ * Filter Search Component aka Advanced Search
  * @param {Object} query - The main query object
  * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @return {JSX.Element}
@@ -78,26 +73,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   const [filterParameters, setFilterParameters] = useState(
     filterState.filterParameters
   );
-
-  /**
-   * Confirm dialog state.
-   * @type {boolean} confirmDialogOpen - True to show, False to hide
-   * @function setConfirmDialogOpen - Update the state of confirmDialogOpen
-   * @default false
-   */
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-
-  /**
-   * The current local filter parameters
-   * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
-   * @function setDialogSettings - Updates the state of confirmDialogOpen
-   * @default false
-   */
-  const [dialogSettings, setDialogSettings] = useState({
-    title: null,
-    message: null,
-    actions: null,
-  });
 
   /**
    * The default structure of an empty field
@@ -146,20 +121,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
       dt = Math.floor(dt / 16);
       return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
-  };
-
-  /**
-   * Updates the dialog settings
-   * @param {string} title - The title for the dialog
-   * @param {string|string[]} message - The message within the dialog
-   * @param {JSX.Element} actions - Any buttons you would like to add
-   */
-  const updateDialog = (title = null, message = null, actions = null) => {
-    let newDialogState = { ...dialogSettings };
-    newDialogState.title = title;
-    newDialogState.message = message;
-    newDialogState.actions = actions;
-    setDialogSettings(newDialogState);
   };
 
   /**
@@ -330,18 +291,9 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   };
 
   /**
-   * Closes the dialog
-   */
-  const handleDialogClose = () => {
-    updateDialog();
-    setConfirmDialogOpen(false);
-  };
-
-  /**
-   * Clears the filters, closes the dialog
+   * Clears the filters
    */
   const handleClearFilters = () => {
-    handleDialogClose();
     setFilterParameters({});
     filterState.setFilterParameters({});
   };
@@ -596,33 +548,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
           )}
         </Grid>
       </Grid>
-      <Dialog
-        open={confirmDialogOpen}
-        onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {dialogSettings.title}
-        </DialogTitle>
-        <DialogContent>
-          {typeof dialogSettings.message === "string" ? (
-            <DialogContentText id="alert-dialog-description">
-              {dialogSettings.message}
-            </DialogContentText>
-          ) : (
-            dialogSettings.message &&
-            dialogSettings.message.map((message, messageIndex) => {
-              return (
-                <DialogContentText key={messageIndex}>
-                  {message}
-                </DialogContentText>
-              );
-            })
-          )}
-        </DialogContent>
-        <DialogActions>{dialogSettings.actions}</DialogActions>
-      </Dialog>
     </Grid>
   );
 };
