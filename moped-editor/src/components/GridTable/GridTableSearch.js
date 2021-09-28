@@ -19,6 +19,8 @@ import {
   Tabs,
   useTheme,
 } from "@material-ui/core";
+// import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 import GridTableExport from "./GridTableExport";
@@ -330,7 +332,7 @@ const GridTableSearch = ({
                   }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
-                  startIcon={<Icon>save</Icon>}
+                  startIcon={<SaveAltIcon />}
                   variant="outlined"
                   color="primary"
                   fullWidth
