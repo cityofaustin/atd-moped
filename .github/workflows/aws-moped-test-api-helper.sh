@@ -5,7 +5,7 @@
 #
 export WORKING_STAGE="moped_test";
 export BUILD_TYPE="moped_test";
-export MOEPD_API_DOCKER_IMAGE = "python:3.9-alpine";
+export MOEPD_API_DOCKER_IMAGE="python:3.9-alpine";
 
 echo "BUILD_TYPE: ${BUILD_TYPE}";
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}";
