@@ -6,10 +6,8 @@ import {
   TextField,
   InputAdornment,
   SvgIcon,
-  makeStyles,
   Icon,
   IconButton,
-  Grid,
   DialogTitle,
   DialogContent,
   DialogContentText,
@@ -17,33 +15,6 @@ import {
   Dialog,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
-
-/**
- * The styling for the search bar components
- * @type {Object}
- * @constant
- */
-const useStyles = makeStyles(theme => ({
-  root: {},
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  filterButton: {
-    height: "3.4rem",
-  },
-  filterButtonFilters: {
-    marginTop: theme.spacing(1),
-    height: "3.4rem",
-    backgroundColor: "#464646",
-    "&:hover, &:focus": {
-      backgroundColor: "#2b2b2b",
-    },
-    "&:active": {
-      backgroundColor: "#464646",
-    },
-  },
-}));
 
 /**
  * Renders a search bar with optional filters
@@ -58,7 +29,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
    * @constant
    * @default
    */
-  const classes = useStyles();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
@@ -73,7 +43,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
   };
 
   /**
-   * Dialog Open State
+   * Error Message Dialog Open State
    * @type {boolean} dialogOpen - True to show, False to hide
    * @function setDialogOpen - Update the state of confirmDialogOpen
    * @default false
@@ -81,7 +51,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
-   * The current local filter parameters
+   * Dialog contents
    * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
    * @function setDialogSettings - Updates the state of confirmDialogOpen
    * @default false
@@ -188,8 +158,9 @@ const GridTableSearchBar = ({ query, searchState }) => {
   console.log(dialogOpen)
 
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12} sm={8} lg={10}>
+    /* <Grid container spacing={3}>
+      <Grid item xs={12} sm={8} lg={10}>*/
+      <>
         <TextField
           fullWidth
           onChange={e => handleSearchValueChange(e.target.value)}
@@ -217,19 +188,7 @@ const GridTableSearchBar = ({ query, searchState }) => {
           variant="outlined"
           value={searchFieldValue}
         />
-      </Grid>
-      <Grid item xs={12} sm={4} lg={2}>
-        <Button
-          className={classes.filterButton}
-          fullWidth
-          variant="contained"
-          color="primary"
-          startIcon={<Icon>search</Icon>}
-          onClick={handleSearchSubmission}
-        >
-          Search
-        </Button>
-      </Grid>
+      {/*</Grid>*/}
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
@@ -257,7 +216,8 @@ const GridTableSearchBar = ({ query, searchState }) => {
         </DialogContent>
         <DialogActions>{dialogSettings.actions}</DialogActions>
       </Dialog>
-    </Grid>
+      </>
+    /*</Grid>*/
   );
 };
 

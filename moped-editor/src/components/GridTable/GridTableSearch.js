@@ -15,6 +15,7 @@ import {
   Grid,
   Icon,
   Paper,
+  Popper,
   Tab,
   Tabs,
   useTheme,
@@ -45,6 +46,9 @@ const useStyles = makeStyles(theme => ({
   tabStyle: {
     margin: ".5rem",
   },
+  searchBarContainer: {
+    padding: "24px"
+  }
 }));
 
 const history = createBrowserHistory();
@@ -82,7 +86,7 @@ const GridTableSearch = ({
   );
 
   /**
-   * When True, the dialog is open.
+   * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
    * @function setDialogOpen - Sets the state of dialogOpen
    * @default false
@@ -210,7 +214,7 @@ const GridTableSearch = ({
   };
 
   /**
-   * Handles export button (to open the dialog)
+   * Handles export button (to open the csv download dialog)
    */
   const handleExportButtonClick = () => {
     setDialogOpen(true);
@@ -285,7 +289,7 @@ const GridTableSearch = ({
 
       <Box mt={3}>
         <Paper>
-          <Grid container>
+{/*          <Grid container>
             <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
               <Tabs
                 value={tabValue}
@@ -316,7 +320,12 @@ const GridTableSearch = ({
                 />
               </Tabs>
             </Grid>
-            <Grid
+          </Grid>*/}
+          <Grid container spacing={3} className={classes.searchBarContainer}>
+            <Grid item xs={12} sm={8} lg={10}>
+              <GridTableSearchBar query={query} searchState={searchState} />
+            </Grid>
+                        <Grid
               item
               xs={12}
               sm={6}
@@ -343,7 +352,35 @@ const GridTableSearch = ({
             </Grid>
           </Grid>
 
-          <TabPanel value={tabValue} index={0} dir={theme.direction}>
+{/*  this button needs to be here on mobile      
+     <Button
+          className={classes.filterButton}
+          fullWidth
+          variant="contained"
+          color="primary"
+          startIcon={<Icon>search</Icon>}
+          onClick={handleSearchSubmission}
+        >
+          Search
+        </Button>
+      */}
+      <Popper
+        id="advancedSearch"
+        open={Boolean(searchResultsAnchor)}
+        anchorEl={searchResultsAnchor}
+        onClose={handleDropdownClose}
+        placement={"bottom-start"}
+        // disablePortal=true ensures the popper wont slip behind the material tables
+        disablePortal
+      >
+        <GridTableFilters
+          query={query}
+          filterState={filterState}
+          filterQuery={filterQuery}
+          history={history}
+        />
+      </Popper>
+{/*          <TabPanel value={tabValue} index={0} dir={theme.direction}>
             <GridTableSearchBar query={query} searchState={searchState} />
           </TabPanel>
           <TabPanel value={tabValue} index={1} dir={theme.direction}>
@@ -353,7 +390,7 @@ const GridTableSearch = ({
               filterQuery={filterQuery}
               history={history}
             />
-          </TabPanel>
+          </TabPanel>*/}
         </Paper>
       </Box>
       <Dialog
