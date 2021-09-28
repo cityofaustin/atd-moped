@@ -29,6 +29,7 @@ import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useMutation } from "@apollo/client";
+import { getSessionDatabaseData } from "../../../auth/user";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -58,6 +59,7 @@ const useStyles = makeStyles(theme => ({
 const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
+  const userSessionData = getSessionDatabaseData();
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
@@ -129,7 +131,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const handleStatusUpdateSave = () => {
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
-
+    const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
     (statusUpdateAddNew
       ? updateProjectStatusUpdateInsert
       : updateProjectStatusUpdateUpdate)({
@@ -138,7 +140,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           ? {
               statusUpdate: {
                 project_id: Number(projectId),
-                added_by: "yo-mama",
+                added_by: addedBy,
                 project_note: statusUpdate,
                 status_id: 1,
                 project_note_type: 2,
@@ -146,7 +148,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             }
           : {
               project_note_id: { _eq: Number(commentId) },
-              added_by: "yo-mama",
+              added_by: addedBy,
               project_note: statusUpdate,
             }),
       },
