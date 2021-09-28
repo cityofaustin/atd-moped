@@ -672,3 +672,35 @@ export const UPDATE_NEW_PROJ_FEATURES = gql`
     }
   }
 `;
+
+/**
+ * Inserts a project summary status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
+  mutation ProjectStatusUpdateInsert(
+    $statusUpdate: [moped_proj_notes_insert_input!]!
+  ) {
+    insert_moped_proj_notes(objects: $statusUpdate) {
+      affected_rows
+      __typename
+    }
+  }
+`;
+
+/**
+ * Updates the status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
+  mutation ProjectStatusUpdateUpdate(
+    $project_note_id: Int_comparison_exp = {}
+    $project_note: String = ""
+    $added_by: bpchar = ""
+  ) {
+    update_moped_proj_notes(
+      where: { project_note_id: $project_note_id }
+      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
+    ) {
+      affected_rows
+    }
+  }
+`;
