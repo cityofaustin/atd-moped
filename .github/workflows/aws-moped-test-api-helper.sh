@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-set -o errexit;
+#set -o errexit;
 
 #
 # Determine working stage based on branch name
 #
 export WORKING_STAGE="moped_test";
 export BUILD_TYPE="moped_test";
-export MOEPD_API_DOCKER_IMAGE="python:3.9-alpine";
+export MOEPD_API_DOCKER_IMAGE="python:3.8-alpine";
 
 echo "BUILD_TYPE: ${BUILD_TYPE}";
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}";
@@ -23,20 +23,18 @@ function deploy_moped_test_api() {
   cd ./moped-api;
   echo "New current working directory: ${PWD}";
 
-  echo "Downloading Zappa Settings";
-  aws secretsmanager get-secret-value \
-    --secret-id "${AWS_MOPED_API_ZAPPA_CONFIGURAITON_FILE}" | \
-    jq -rc ".SecretString" > zappa_settings.json;
-
   # Now use the docker image to install the requirements and update the deployment
   echo "Deploying to AWS"
-  docker run --rm -v "$(pwd):/app" MOEPD_API_DOCKER_IMAGE \
-    echo "Changing Directory to /app" \
+  docker run --rm -v "$(pwd):/app" \
+    --env AWS_DEFAULT_REGION --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
+    $MOEPD_API_DOCKER_IMAGE sh -c "\
+    echo \"Changing Directory to /app\" \
     && cd /app \
-    && echo "Installing Requirements Including Zappa" \
-    && pip install -r "/app/requirements/${WORKING_STAGE}.txt" \
-    && echo "Updating stage: ${WORKING_STAGE}" \
-    && zappa update $WORKING_STAGE;
+    && apk add --no-cache pkgconfig gcc libcurl python3-dev gpgme-dev libc-dev \
+    && echo \"Installing Requirements Including Zappa\" \
+    && pip install -r \"/app/requirements/${WORKING_STAGE}.txt\" \
+    && echo \"Updating stage: ${WORKING_STAGE}\" \
+    && zappa update ${WORKING_STAGE}";
 
   echo "Finished Updating MOPED API: ${WORKING_STAGE^^}";
 }
