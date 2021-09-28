@@ -296,11 +296,14 @@ const ProjectView = () => {
       });
   };
 
+  if (loading) return <CircularProgress />;
+  if (error) return `Error! ${error.message}`;
+
   return (
     <ApolloErrorHandler error={error}>
       <Page
         title={
-          loading ? "Project Summary Page" : data.moped_project[0].project_name
+          loading ? "Project Summary Page" : data?.moped_project[0].project_name ?? ""
         }
       >
         <Container maxWidth="xl">
@@ -322,7 +325,7 @@ const ProjectView = () => {
                     </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
                       <ProjectNameEditable
-                        projectName={data.moped_project[0].project_name}
+                        projectName={data?.moped_project[0]?.project_name ?? ""}
                         projectId={projectId}
                         editable={true}
                         isEditing={isEditing}
