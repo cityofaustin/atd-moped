@@ -82,8 +82,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
       // Get the data from the note
-      const note =
-        data.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? "";
+      const note = data
+        ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
+        : null;
       // Remove any HTML tags
       return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
     }
