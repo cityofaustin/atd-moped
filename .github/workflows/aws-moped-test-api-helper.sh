@@ -28,7 +28,7 @@ function deploy_moped_test_api() {
 
   # Now use the docker image to install the requirements and update the deployment
   echo "Deploying to AWS"
-  docker run -it --rm -v "$(pwd):/app" MOEPD_API_DOCKER_IMAGE \
+  docker run --rm -v "$(pwd):/app" MOEPD_API_DOCKER_IMAGE \
     echo "Changing Directory to /app" \
     && cd /app \
     && echo "Installing Requirements Including Zappa" \
