@@ -17,12 +17,18 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
+import {
+  PROJECT_SUMMARY_STATUS_UPDATE_INSERT,
+  PROJECT_SUMMARY_STATUS_UPDATE_UPDATE,
+} from "../../../queries/project";
+
 /*
   Error Handler and Fallback Component
 */
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { useMutation } from "@apollo/client";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -40,12 +46,29 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+/**
+ * Project Summary Component
+ * @param {boolean} loading - True if it is loading
+ * @param {Object} error - Error content if provided
+ * @param {Object} data - THe query data
+ * @param {function} refetch - A function to reload the data
+ * @return {JSX.Element}
+ * @constructor
+ */
 const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
+
+  const [updateProjectStatusUpdateInsert] = useMutation(
+    PROJECT_SUMMARY_STATUS_UPDATE_INSERT
+  );
+
+  const [updateProjectStatusUpdateUpdate] = useMutation(
+    PROJECT_SUMMARY_STATUS_UPDATE_UPDATE
+  );
 
   /**
    * Retrieve the last note made as a status update (by date)
@@ -104,14 +127,37 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
    * Handles saving the status update
    */
   const handleStatusUpdateSave = () => {
-    if (statusUpdateAddNew) {
-      // Create a new status update
-      console.log("Create a new status update");
-    } else {
-      // Update the existing status update
-      console.log("Update the existing status update");
-    }
-    setStatusUpdateEditable(false);
+    // Retrieve a commentId or get a null
+    const commentId = getStatusUpdate("project_note_id");
+
+    (statusUpdateAddNew
+      ? updateProjectStatusUpdateInsert
+      : updateProjectStatusUpdateUpdate)({
+      variables: {
+        ...(statusUpdateAddNew
+          ? {
+              statusUpdate: {
+                project_id: Number(projectId),
+                added_by: "yo-mama",
+                project_note: statusUpdate,
+                status_id: 1,
+                project_note_type: 2,
+              },
+            }
+          : {
+              project_note_id: { _eq: Number(commentId) },
+              added_by: "yo-mama",
+              project_note: statusUpdate,
+            }),
+      },
+    })
+      .then(() => {
+        console.log((commentId ? "Updated" : "Created") + " project note");
+        setStatusUpdateEditable(false);
+      })
+      .catch(err => {
+        console.log("Error: " + err);
+      });
   };
 
   /**
@@ -137,13 +183,13 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid item xs={12} className={classes.fieldGridItem}>
               <Box display="flex" justifyContent="flex-end">
                 {/*The text field is only an input/output component only,
-                it does not track or change the state.*/}
+                it does not track or change the state. If nothing shows,
+                make sure your comments are type id = 2*/}
                 <TextField
                   fullWidth
                   {...(statusUpdateEditable ? { variant: "filled" } : {})}
                   id="project_note_id"
                   label="Status Update"
-                  data-id={getStatusUpdate("project_note_id")}
                   value={statusUpdate}
                   onChange={handleStatusUpdateChange}
                   InputProps={{
