@@ -160,7 +160,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     })
       .then(() => {
         console.log((commentId ? "Updated" : "Created") + " project note");
-        setStatusUpdateEditable(false);
+        refetch().then(() => {
+          setStatusUpdateEditable(false);
+          setStatusUpdateAddNew(false);
+        });
       })
       .catch(err => {
         console.log("Error: " + err);
