@@ -5,13 +5,12 @@ import { Box, Button, Icon } from "@material-ui/core";
 import { NavLink as RouterLink } from "react-router-dom";
 
 /**
- * Renders the GridTableExport functionality
+ * Based on GQLAbstract configuration, renders add new Item button
  * @param {GQLAbstract} query - The GQLAbstract query object that provides the configuration
- * @param {Object} showFilterState - The state/state-change bundle object
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableExport = ({ query }) => {
+const GridTableNewItem = ({ query }) => {
   return (
     <Box display="flex" justifyContent="flex-end">
       {(query.config.showNewItemButton && query.config.customNewItemButton) ||
@@ -30,8 +29,8 @@ const GridTableExport = ({ query }) => {
   );
 };
 
-GridTableExport.propTypes = {
+GridTableNewItem.propTypes = {
   className: PropTypes.string,
 };
 
-export default GridTableExport;
+export default GridTableNewItem;

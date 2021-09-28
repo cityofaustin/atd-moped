@@ -8,6 +8,7 @@ import {
   SvgIcon,
   makeStyles,
   Icon,
+  IconButton,
   Grid,
   DialogTitle,
   DialogContent,
@@ -184,6 +185,8 @@ const GridTableSearchBar = ({ query, searchState }) => {
     }
   };
 
+  console.log(dialogOpen)
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12} sm={8} lg={10}>
@@ -199,6 +202,16 @@ const GridTableSearchBar = ({ query, searchState }) => {
                 </SvgIcon>
               </InputAdornment>
             ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={()=>console.log("hi")}
+                  // onMouseDown={handleMouseDownPassword}
+                >
+                  <Icon style={{ verticalAlign: "middle" }}>rule</Icon>
+                </IconButton>
+              </InputAdornment>
+            )
           }}
           placeholder={getSearchPlaceholder()}
           variant="outlined"

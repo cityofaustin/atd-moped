@@ -23,7 +23,7 @@ import {
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
-import GridTableExport from "./GridTableExport";
+import GridTableNewItem from "./GridTableNewItem";
 import TabPanel from "../../views/projects/projectView/TabPanel";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
@@ -280,7 +280,7 @@ const GridTableSearch = ({
 
   return (
     <div>
-      <GridTableExport query={query} />
+      <GridTableNewItem query={query} />
       {children}
 
       <Box mt={3}>
