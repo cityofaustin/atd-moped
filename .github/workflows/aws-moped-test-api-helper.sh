@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -o errexit;
+
 #
 # Determine working stage based on branch name
 #
