@@ -135,11 +135,13 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
     const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
-    (statusUpdateAddNew
+    const isStatusUpdateInsert = statusUpdateAddNew || !commentId;
+
+    (isStatusUpdateInsert
       ? updateProjectStatusUpdateInsert
       : updateProjectStatusUpdateUpdate)({
       variables: {
-        ...(statusUpdateAddNew
+        ...(isStatusUpdateInsert
           ? {
               statusUpdate: {
                 project_id: Number(projectId),
