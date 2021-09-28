@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#set -o errexit;
+set -o errexit;
 
 #
 # Determine working stage based on branch name
@@ -24,13 +24,12 @@ function deploy_moped_test_api() {
   echo "New current working directory: ${PWD}";
 
   # Now use the docker image to install the requirements and update the deployment
-  echo "Deploying to AWS"
+  echo "Deploying to AWS";
   docker run --rm -v "$(pwd):/app" \
-    --env AWS_DEFAULT_REGION --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY \
-    $MOEPD_API_DOCKER_IMAGE sh -c "\
+   	--env AWS_DEFAULT_REGION --env AWS_ACCESS_KEY_ID --env AWS_SECRET_ACCESS_KEY $MOEPD_API_DOCKER_IMAGE sh -c "\
     echo \"Changing Directory to /app\" \
     && cd /app \
-    && apk add --no-cache pkgconfig gcc libcurl python3-dev gpgme-dev libc-dev \
+    && apk add --no-cache pkgconfig gcc libcurl python3-dev gpgme-dev libc-dev libffi-dev openssl-dev cargo \
     && echo \"Installing Requirements Including Zappa\" \
     && pip install -r \"/app/requirements/${WORKING_STAGE}.txt\" \
     && echo \"Updating stage: ${WORKING_STAGE}\" \
