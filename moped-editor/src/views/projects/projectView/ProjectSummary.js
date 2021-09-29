@@ -206,7 +206,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   <TextField
                     fullWidth
                     id="project_note_id"
-                    label="Status Update"
+                    label="Status update"
                     value={statusUpdate}
                     onChange={handleStatusUpdateChange}
                     multiline={true}
@@ -218,7 +218,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 )}
                 {!statusUpdateEditable && (
                   <Box className={classes.fieldBox}>
-                    <Typography variant="h4">Status Update</Typography>
+                    <Typography variant="h4">Status update</Typography>
                     <Typography className={classes.fieldBoxTypography}>
                       {statusUpdate}
                     </Typography>
