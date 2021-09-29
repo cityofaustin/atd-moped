@@ -12,6 +12,7 @@ import {
   TextField,
   Icon,
   Box,
+  Typography,
 } from "@material-ui/core";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
@@ -44,6 +45,12 @@ const useStyles = makeStyles(theme => ({
     cursor: "pointer",
     margin: "28px 0 0 8px",
     fontSize: "24px",
+  },
+  fieldBox: {
+    width: "100%",
+  },
+  fieldBoxTypography: {
+    width: "100%",
   },
 }));
 
@@ -191,21 +198,32 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             {/*Status Update*/}
             <Grid item xs={12} className={classes.fieldGridItem}>
-              <Box display="flex" justifyContent="flex-end">
+              <Box display="flex" justifyContent="flex-start">
                 {/*The text field is only an input/output component only,
                 it does not track or change the state. If nothing shows,
                 make sure your comments are type id = 2*/}
-                <TextField
-                  fullWidth
-                  {...(statusUpdateEditable ? { variant: "filled" } : {})}
-                  id="project_note_id"
-                  label="Status Update"
-                  value={statusUpdate}
-                  onChange={handleStatusUpdateChange}
-                  InputProps={{
-                    readOnly: !statusUpdateEditable,
-                  }}
-                />
+                {statusUpdateEditable && (
+                  <TextField
+                    fullWidth
+                    id="project_note_id"
+                    label="Status Update"
+                    value={statusUpdate}
+                    onChange={handleStatusUpdateChange}
+                    multiline={true}
+                    rows={3}
+                    InputProps={{
+                      readOnly: !statusUpdateEditable,
+                    }}
+                  />
+                )}
+                {!statusUpdateEditable && (
+                  <Box className={classes.fieldBox}>
+                    <Typography variant="h4">Status Update</Typography>
+                    <Typography className={classes.fieldBoxTypography}>
+                      {statusUpdate}
+                    </Typography>
+                  </Box>
+                )}
                 {/*Edit Button*/}
                 {!statusUpdateEditable && (
                   <Icon
