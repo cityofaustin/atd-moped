@@ -45,12 +45,12 @@ const useStyles = makeStyles(theme => ({
     padding: "24px",
   },
   advancedSearchRoot: {
-    width: "96.5%", 
+    width: "96%",
     zIndex: "3",
-  }, 
+  },
   advancedSearchPaper: {
-    padding: theme.spacing(1)
-  }
+    padding: theme.spacing(1),
+  },
 }));
 
 const history = createBrowserHistory();
@@ -290,7 +290,7 @@ const GridTableSearch = ({
 
       <Box mt={3}>
         <Paper ref={divRef}>
-          <Grid container spacing={3} className={classes.searchBarContainer} > {/* or this is box p 3 */}
+          <Grid container spacing={3} className={classes.searchBarContainer}>
             <Grid item xs={12} sm={8} lg={10}>
               <GridTableSearchBar
                 query={query}
@@ -339,25 +339,26 @@ const GridTableSearch = ({
       */}
         </Paper>
       </Box>
-                <Popper
-            id="advancedSearch"
-            open={Boolean(advancedSearchAnchor)}
-            anchorEl={advancedSearchAnchor}
-            onClose={handleAdvancedSearchClose}
-            placement={"bottom-start"}
-            // disablePortal=true ensures the popper wont slip behind the material tables
-            disablePortal
-            className={classes.advancedSearchRoot}
-          >
-            <Paper className={classes.advancedSearchPaper}>
-              <GridTableFilters
-                query={query}
-                filterState={filterState}
-                filterQuery={filterQuery}
-                history={history}
-              />
-            </Paper>
-          </Popper>
+      <Popper
+        id="advancedSearch"
+        open={Boolean(advancedSearchAnchor)}
+        anchorEl={advancedSearchAnchor}
+        onClose={handleAdvancedSearchClose}
+        placement={"bottom-start"}
+        // disablePortal=true ensures the popper wont slip behind the material tables
+        disablePortal
+        className={classes.advancedSearchRoot}
+      >
+        <Paper className={classes.advancedSearchPaper}>
+          <GridTableFilters
+            query={query}
+            filterState={filterState}
+            filterQuery={filterQuery}
+            history={history}
+            handleAdvancedSearchClose={handleAdvancedSearchClose}
+          />
+        </Paper>
+      </Popper>
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}

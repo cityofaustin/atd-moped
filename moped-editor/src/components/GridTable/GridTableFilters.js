@@ -55,7 +55,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
+const GridTableFilters = ({ query, filterState, filterQuery, history, handleAdvancedSearchClose }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -337,6 +337,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     filterState.setFilterParameters(filterParameters);
+    handleAdvancedSearchClose();
   };
 
   /**
