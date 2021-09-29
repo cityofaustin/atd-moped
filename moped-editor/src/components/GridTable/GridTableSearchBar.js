@@ -2,17 +2,11 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
-  Button,
   TextField,
   InputAdornment,
   SvgIcon,
   Icon,
   IconButton,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Dialog,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 
@@ -23,7 +17,7 @@ import { Search as SearchIcon } from "react-feather";
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({ query, searchState }) => {
+const GridTableSearchBar = ({ query, searchState, toggleAdvancedSearch }) => {
   /**
    * The styling of the search bar
    * @constant
@@ -43,26 +37,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
   };
 
   /**
-   * Error Message Dialog Open State
-   * @type {boolean} dialogOpen - True to show, False to hide
-   * @function setDialogOpen - Update the state of confirmDialogOpen
-   * @default false
-   */
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  /**
-   * Dialog contents
-   * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
-   * @function setDialogSettings - Updates the state of confirmDialogOpen
-   * @default false
-   */
-  const [dialogSettings, setDialogSettings] = useState({
-    title: null,
-    message: null,
-    actions: null,
-  });
-
-  /**
    * The contents of the search box
    * @type {string} searchFieldValue
    * @function setSearchFieldValue - Sets the state of the field
@@ -70,23 +44,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
    */
   const [searchFieldValue, setSearchFieldValue] = useState(
     (searchState.searchParameters && searchState.searchParameters.value) || ""
-  );
-
-  /**
-   * Closes the dialog
-   */
-  const handleDialogClose = () => setDialogOpen(false);
-
-  /**
-   * The default acknowledge button
-   * @type {JSX.Element}
-   * @constant
-   * @default
-   */
-  const closeDialogActions = (
-    <Button onClick={handleDialogClose} color="primary" autoFocus>
-      OK
-    </Button>
   );
 
   const handleSearchValueChange = value => {
@@ -104,13 +61,6 @@ const GridTableSearchBar = ({ query, searchState }) => {
   const handleSearchSubmission = event => {
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
-      setDialogSettings({
-        title: "Empty Search Value",
-        message: "Enter a valid search value, do not leave empty.",
-        actions: closeDialogActions,
-      });
-
-      setDialogOpen(true);
       return;
     }
 
@@ -155,69 +105,33 @@ const GridTableSearchBar = ({ query, searchState }) => {
     }
   };
 
-  console.log(dialogOpen)
-
   return (
-    /* <Grid container spacing={3}>
-      <Grid item xs={12} sm={8} lg={10}>*/
-      <>
-        <TextField
-          fullWidth
-          onChange={e => handleSearchValueChange(e.target.value)}
-          onKeyDown={e => handleKeyDown(e.key)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SvgIcon fontSize="small" color="action">
-                  <SearchIcon />
-                </SvgIcon>
-              </InputAdornment>
-            ),
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  onClick={()=>console.log("hi")}
-                  // onMouseDown={handleMouseDownPassword}
-                >
-                  <Icon style={{ verticalAlign: "middle" }}>rule</Icon>
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-          placeholder={getSearchPlaceholder()}
-          variant="outlined"
-          value={searchFieldValue}
-        />
-      {/*</Grid>*/}
-      <Dialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {dialogSettings.title}
-        </DialogTitle>
-        <DialogContent>
-          {typeof dialogSettings.message === "string" ? (
-            <DialogContentText id="alert-dialog-description">
-              {dialogSettings.message}
-            </DialogContentText>
-          ) : (
-            dialogSettings.message &&
-            dialogSettings.message.map((message, messageIndex) => {
-              return (
-                <DialogContentText key={messageIndex}>
-                  {message}
-                </DialogContentText>
-              );
-            })
-          )}
-        </DialogContent>
-        <DialogActions>{dialogSettings.actions}</DialogActions>
-      </Dialog>
-      </>
-    /*</Grid>*/
+    <TextField
+      fullWidth
+      onChange={e => handleSearchValueChange(e.target.value)}
+      onKeyDown={e => handleKeyDown(e.key)}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SvgIcon fontSize="small" color="action">
+              <SearchIcon />
+            </SvgIcon>
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={toggleAdvancedSearch}
+            >
+              <Icon style={{ verticalAlign: "middle" }}>rule</Icon>
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      placeholder={getSearchPlaceholder()}
+      variant="outlined"
+      value={searchFieldValue}
+    />
   );
 };
 

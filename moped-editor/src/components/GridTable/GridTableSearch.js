@@ -13,19 +13,14 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  Icon,
   Paper,
   Popper,
-  Tab,
-  Tabs,
-  useTheme,
 } from "@material-ui/core";
 // import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 import GridTableNewItem from "./GridTableNewItem";
-import TabPanel from "../../views/projects/projectView/TabPanel";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
@@ -47,7 +42,14 @@ const useStyles = makeStyles(theme => ({
     margin: ".5rem",
   },
   searchBarContainer: {
-    padding: "24px"
+    padding: "24px",
+  },
+  advancedSearchRoot: {
+    width: "96.5%", 
+    zIndex: "3",
+  }, 
+  advancedSearchPaper: {
+    padding: theme.spacing(1)
   }
 }));
 
@@ -72,18 +74,11 @@ const GridTableSearch = ({
   parentData = null,
 }) => {
   const classes = useStyles();
-  const theme = useTheme();
   const queryPath = useLocation().pathname;
+  const divRef = React.useRef();
 
-  /**
-   * Controls what tab is being displayed
-   * @type {boolean} tabValue
-   * @function setTabValue - Sets the state of tabValue
-   * @default if filter exists in url, 1. Otherwise 0.
-   */
-  const [tabValue, setTabValue] = React.useState(
-    Array.from(filterQuery).length
-  );
+  // anchor element for advanced search popper to "attach" to
+  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   /**
    * When True, the download csv dialog is open.
@@ -247,13 +242,19 @@ const GridTableSearch = ({
     });
   };
 
-  /**
-   * Handles the click on a tab to switch between tabs
-   * @param {Object} event - The tab being clicked event
-   * @param {number} newTabValue - The clicked tab value
-   */
-  const handleTabChange = (event, newTabValue) => {
-    setTabValue(newTabValue);
+  const toggleAdvancedSearch = () => {
+    console.log("toggling advanced search", advancedSearchAnchor);
+    if (advancedSearchAnchor) {
+      setAdvancedSearchAnchor(null);
+      handleSwitchToSearch();
+    } else {
+      setAdvancedSearchAnchor(divRef.current);
+      handleSwitchToAdvancedSearch();
+    }
+  };
+
+  const handleAdvancedSearchClose = () => {
+    setAdvancedSearchAnchor(null);
   };
 
   /**
@@ -288,44 +289,16 @@ const GridTableSearch = ({
       {children}
 
       <Box mt={3}>
-        <Paper>
-{/*          <Grid container>
-            <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                indicatorColor="primary"
-                textColor="primary"
-                aria-label="Search Data Table"
-              >
-                <Tab
-                  className={classes.tabStyle}
-                  onClick={handleSwitchToSearch}
-                  label={
-                    <div>
-                      <Icon style={{ verticalAlign: "middle" }}>search</Icon>{" "}
-                      Search{" "}
-                    </div>
-                  }
-                />
-                <Tab
-                  className={classes.tabStyle}
-                  onClick={handleSwitchToAdvancedSearch}
-                  label={
-                    <div>
-                      <Icon style={{ verticalAlign: "middle" }}>rule</Icon>{" "}
-                      Advanced Search{" "}
-                    </div>
-                  }
-                />
-              </Tabs>
-            </Grid>
-          </Grid>*/}
-          <Grid container spacing={3} className={classes.searchBarContainer}>
+        <Paper ref={divRef}>
+          <Grid container spacing={3} className={classes.searchBarContainer} > {/* or this is box p 3 */}
             <Grid item xs={12} sm={8} lg={10}>
-              <GridTableSearchBar query={query} searchState={searchState} />
+              <GridTableSearchBar
+                query={query}
+                searchState={searchState}
+                toggleAdvancedSearch={toggleAdvancedSearch}
+              />
             </Grid>
-                        <Grid
+            <Grid
               item
               xs={12}
               sm={6}
@@ -352,7 +325,7 @@ const GridTableSearch = ({
             </Grid>
           </Grid>
 
-{/*  this button needs to be here on mobile      
+          {/*  this button needs to be here on mobile      
      <Button
           className={classes.filterButton}
           fullWidth
@@ -364,35 +337,27 @@ const GridTableSearch = ({
           Search
         </Button>
       */}
-      <Popper
-        id="advancedSearch"
-        open={Boolean(searchResultsAnchor)}
-        anchorEl={searchResultsAnchor}
-        onClose={handleDropdownClose}
-        placement={"bottom-start"}
-        // disablePortal=true ensures the popper wont slip behind the material tables
-        disablePortal
-      >
-        <GridTableFilters
-          query={query}
-          filterState={filterState}
-          filterQuery={filterQuery}
-          history={history}
-        />
-      </Popper>
-{/*          <TabPanel value={tabValue} index={0} dir={theme.direction}>
-            <GridTableSearchBar query={query} searchState={searchState} />
-          </TabPanel>
-          <TabPanel value={tabValue} index={1} dir={theme.direction}>
-            <GridTableFilters
-              query={query}
-              filterState={filterState}
-              filterQuery={filterQuery}
-              history={history}
-            />
-          </TabPanel>*/}
         </Paper>
       </Box>
+                <Popper
+            id="advancedSearch"
+            open={Boolean(advancedSearchAnchor)}
+            anchorEl={advancedSearchAnchor}
+            onClose={handleAdvancedSearchClose}
+            placement={"bottom-start"}
+            // disablePortal=true ensures the popper wont slip behind the material tables
+            disablePortal
+            className={classes.advancedSearchRoot}
+          >
+            <Paper className={classes.advancedSearchPaper}>
+              <GridTableFilters
+                query={query}
+                filterState={filterState}
+                filterQuery={filterQuery}
+                history={history}
+              />
+            </Paper>
+          </Popper>
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}
