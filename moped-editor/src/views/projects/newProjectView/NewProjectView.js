@@ -109,68 +109,82 @@ const NewProjectView = () => {
    * Persists a new project into the database
    */
   const handleSubmit = () => {
-    // Change the initial state...
-    setLoading(true);
+    let signalError = fromSignalAsset && !Boolean(signal);
+    setSignalError(signalError);
 
-    /**
-     * We now must generate the payload with variables for our GraphQL query.
-     * @type {Object}
-     */
-    const variablePayload = {
-      object: {
-        // First we need to copy the project details
-        ...projectDetails,
-        // Next we generate the project extent component
-        moped_proj_components: {
-          data: [
-            generateProjectComponent(
-              featureCollection,
-              fromSignalAsset,
-              componentData["moped_components"]
-            ),
-          ],
-        },
-      },
-    };
+    if (projectDetails.project_name.trim().length === 0) {
+      setNameError(true);
+    }
+    if (projectDetails.project_description.trim().length === 0) {
+      setDescriptionError(true);
+    }
 
-    /**
-     * Persist the new project to database
-     */
-    addProject({
-      variables: variablePayload,
-    })
-      // On success
-      .then(response => {
-        // Destructure the data we need from the response
-        const {
-          project_id,
-          moped_proj_components,
-        } = response.data.insert_moped_project_one;
+    if (
+      projectDetails.project_name.trim().length > 0 &&
+      projectDetails.project_description.trim().length > 0
+    ) {
+      setLoading(true);
 
-        // Retrieve the feature_ids that need to be updated
-        const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
-          featureComponent => featureComponent.moped_proj_feature.feature_id
-        );
-
-        // Persist the feature updates, we must.
-        updateFeatures({
-          variables: {
-            featureList: featuresToUpdate,
-            projectId: project_id,
+      /**
+       * We now must generate the payload with variables for our GraphQL query.
+       * @type {Object}
+       */
+      const variablePayload = {
+        object: {
+          // First we need to copy the project details
+          ...projectDetails,
+          // Next we generate the project extent component
+          moped_proj_components: {
+            data: [
+              generateProjectComponent(
+                featureCollection,
+                fromSignalAsset,
+                componentData["moped_components"]
+              ),
+            ],
           },
-        })
-          .then(() => setNewProjectId(project_id))
-          .catch(err => {
-            alert(err);
-            setNewProjectId(project_id);
-          });
+        },
+      };
+
+      /**
+       * Persist the new project to database
+       */
+      addProject({
+        variables: variablePayload,
       })
-      // If there is an error, we must show it...
-      .catch(err => {
-        alert(err);
-        setLoading(false);
-        setSuccess(false);
-      });
+        // On success
+        .then(response => {
+          // Destructure the data we need from the response
+          const {
+            project_id,
+            moped_proj_components,
+          } = response.data.insert_moped_project_one;
+
+          // Retrieve the feature_ids that need to be updated
+          const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
+            featureComponent => featureComponent.moped_proj_feature.feature_id
+          );
+
+          // Persist the feature updates, we must.
+          updateFeatures({
+            variables: {
+              featureList: featuresToUpdate,
+              projectId: project_id,
+            },
+          })
+            .then(() => setNewProjectId(project_id))
+            .catch(err => {
+              alert(err);
+              setNewProjectId(project_id);
+            });
+        })
+        // If there is an error, we must show it...
+        .catch(err => {
+          alert(err);
+          setLoading(false);
+          setSuccess(false);
+        });
+    }
   };
 
   /**
@@ -231,7 +245,6 @@ const NewProjectView = () => {
                   loading={loading}
                   success={success}
                   handleButtonClick={handleSubmit}
-                  disabled={false}
                 />
               </Box>
             </div>
