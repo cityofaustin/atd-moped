@@ -17,7 +17,6 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
-import NewProjectTeam from "./NewProjectTeam";
 import NewProjectMap from "./NewProjectMap";
 import ProjectSummaryMap from "../projectView/ProjectSummaryMap";
 import Page from "src/components/Page";
@@ -144,61 +143,6 @@ const NewProjectView = () => {
         isError: areNoFeaturesSelected,
       },
     ];
-  };
-
-  /**
-   * Returns a component for a specific step number
-   * @param {Number} step - The step number component to render
-   * @return {JSX.Element|string}
-   */
-  const getStepContent = step => {
-    switch (step) {
-      case 0:
-        return (
-          <DefineProjectForm
-            projectDetails={projectDetails}
-            setProjectDetails={setProjectDetails}
-            nameError={nameError}
-            descriptionError={descriptionError}
-            setFeatureCollection={setFeatureCollection}
-            fromSignalAsset={fromSignalAsset}
-            setFromSignalAsset={setFromSignalAsset}
-            signal={signal}
-            signalError={signalError}
-            setSignal={setSignal}
-          />
-        );
-      case 1:
-        return (
-          <NewProjectTeam personnel={personnel} setPersonnel={setPersonnel} />
-        );
-      case 2:
-        return (
-          <>
-            {/* render static/not editable map if using signal */}
-            {fromSignalAsset && (
-              <ProjectSummaryMap projectExtentGeoJSON={featureCollection} />
-            )}
-            {!fromSignalAsset && (
-              <NewProjectMap
-                data-name={"moped-newprojectview-newprojectmap"}
-                featureCollection={featureCollection}
-                setFeatureCollection={setFeatureCollection}
-                projectId={null}
-                refetchProjectDetails={null}
-                noPadding={true}
-                projectFeatureCollection={null}
-                newFeature={false}
-                saveActionState={saveActionState}
-                saveActionDispatch={saveActionDispatch}
-                componentEditorPanel={null}
-              />
-            )}
-          </>
-        );
-      default:
-        return "Unknown step";
-    }
   };
 
   /**
@@ -466,46 +410,27 @@ const NewProjectView = () => {
                   })}
                 </Stepper>
                 <div>
-                  {activeStep === steps.length ? (
-                    <div>
-                      <>
-                        <Typography>Completed</Typography>
-                        <Button onClick={handleReset}>Close</Button>
-                      </>
-                    </div>
-                  ) : (
-                    <div>
-                      {getStepContent(activeStep)}
-                      <Divider />
-                      <Box pt={2} pl={2} className={classes.buttons}>
-                        {activeStep > 0 && (
-                          <Button
-                            onClick={handleBack}
-                            className={classes.button}
-                          >
-                            Back
-                          </Button>
-                        )}
-                        {activeStep === steps.length - 1 ? (
-                          <ProjectSaveButton
-                            label={"Finish"}
-                            loading={loading}
-                            success={success}
-                            handleButtonClick={handleSubmitDispatch}
-                          />
-                        ) : (
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={handleNext}
-                            className={classes.button}
-                          >
-                            Next
-                          </Button>
-                        )}
-                      </Box>
-                    </div>
-                  )}
+                  <DefineProjectForm
+                    projectDetails={projectDetails}
+                    setProjectDetails={setProjectDetails}
+                    nameError={nameError}
+                    descriptionError={descriptionError}
+                    setFeatureCollection={setFeatureCollection}
+                    fromSignalAsset={fromSignalAsset}
+                    setFromSignalAsset={setFromSignalAsset}
+                    signal={signal}
+                    signalError={signalError}
+                    setSignal={setSignal}
+                  />
+                  <Divider />
+                  <Box pt={2} pl={2} className={classes.buttons}>
+                    <ProjectSaveButton
+                      label={"Create"}
+                      loading={loading}
+                      success={success}
+                      handleButtonClick={handleSubmitDispatch}
+                    />
+                  </Box>
                 </div>
               </CardContent>
             </Card>
