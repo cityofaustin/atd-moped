@@ -5,9 +5,7 @@ import {
   CircularProgress,
   Container,
   Card,
-  CardHeader,
   CardContent,
-  Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { format } from "date-fns";
@@ -20,9 +18,6 @@ import {
   ADD_PROJECT,
   UPDATE_NEW_PROJ_FEATURES,
 } from "../../../queries/project";
-import {
-  useSaveActionReducer,
-} from "../../../utils/mapHelpers";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 import {
@@ -72,14 +67,9 @@ const NewProjectView = () => {
    *    the project name and featureCollection will be set from the `signal` value.
    */
   const [projectDetails, setProjectDetails] = useState({
-    fiscal_year: "",
-    current_phase: "",
     project_description: "",
     project_name: "",
     start_date: format(Date.now(), "yyyy-MM-dd"),
-    current_status: "",
-    capitally_funded: false,
-    ecapris_subproject_id: null,
   });
 
   const {
@@ -104,24 +94,6 @@ const NewProjectView = () => {
   const [signalError, setSignalError] = useState(false);
 
   /**
-   * Handles the logic for the "Next" button
-   * @return {string}
-   */
-  // const handleNext = () => {
-  //   let nameError = projectDetails.project_name.length === 0;
-  //   let descriptionError = projectDetails.project_description.length === 0;
-  //   let signalError = fromSignalAsset && !Boolean(signal);
-  //   let canContinue = false;
-
-  //   // canContinue = handleSubmit();
-
-
-  //   setNameError(nameError);
-  //   setDescriptionError(descriptionError);
-  //   setSignalError(signalError);
-  // };
-
-  /**
    * Add Project Apollo Mutation
    */
   const [addProject] = useMutation(ADD_PROJECT);
@@ -132,19 +104,6 @@ const NewProjectView = () => {
    * @type {React.MutableRefObject}
    */
   const timer = useRef();
-
-  /**
-   * saveActionState contains the current save state
-   * saveActionDispatch allows us to update the state via action (signal) dispatch.
-   */
-  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
-
-  const handleSubmitDispatch = () => {
-    // Check this is not already done
-    if (saveActionState?.currentStep === 0) {
-      saveActionDispatch({ type: "initiateFeatureSave" });
-    }
-  };
 
   /**
    * Persists a new project into the database
@@ -243,65 +202,43 @@ const NewProjectView = () => {
     }
   }, [success, newProjectId, navigate]);
 
-  useEffect(() => {
-    // If the features are saved or we picked from signal list, then we are good to go!
-    if (
-      (saveActionState?.currentStep && saveActionState.currentStep === 2) ||
-      (fromSignalAsset && signal)
-    ) {
-      handleSubmit();
-    }
-    // handleSubmit changes on every render, cannot be a dependency
-    // eslint-disable-next-line
-  }, [saveActionState]);
-
   if (componentQueryloading) {
     return <CircularProgress />;
   }
   if (componentQueryError) return `Error! ${componentQueryError.message}`;
 
   return (
-    <>
-      {
-        <Page title="New project">
-          <Container>
-            <Card className={classes.cardWrapper}>
-              <Box pt={2} pl={2}>
-                <CardHeader
-                  title={projectDetails.project_name || "Project name"}
+    <Page title="New project">
+      <Container>
+        <Card className={classes.cardWrapper}>
+          <CardContent>
+            <div>
+              <DefineProjectForm
+                projectDetails={projectDetails}
+                setProjectDetails={setProjectDetails}
+                nameError={nameError}
+                descriptionError={descriptionError}
+                setFeatureCollection={setFeatureCollection}
+                fromSignalAsset={fromSignalAsset}
+                setFromSignalAsset={setFromSignalAsset}
+                signal={signal}
+                signalError={signalError}
+                setSignal={setSignal}
+              />
+              <Box pt={2} pl={2} className={classes.buttons}>
+                <ProjectSaveButton
+                  label={"Create"}
+                  loading={loading}
+                  success={success}
+                  handleButtonClick={handleSubmit}
+                  disabled={false}
                 />
               </Box>
-              <Divider />
-              <CardContent>
-                <div>
-                  <DefineProjectForm
-                    projectDetails={projectDetails}
-                    setProjectDetails={setProjectDetails}
-                    nameError={nameError}
-                    descriptionError={descriptionError}
-                    setFeatureCollection={setFeatureCollection}
-                    fromSignalAsset={fromSignalAsset}
-                    setFromSignalAsset={setFromSignalAsset}
-                    signal={signal}
-                    signalError={signalError}
-                    setSignal={setSignal}
-                  />
-                  <Divider />
-                  <Box pt={2} pl={2} className={classes.buttons}>
-                    <ProjectSaveButton
-                      label={"Create"}
-                      loading={loading}
-                      success={success}
-                      handleButtonClick={handleSubmitDispatch}
-                    />
-                  </Box>
-                </div>
-              </CardContent>
-            </Card>
-          </Container>
-        </Page>
-      }
-    </>
+            </div>
+          </CardContent>
+        </Card>
+      </Container>
+    </Page>
   );
 };
 
