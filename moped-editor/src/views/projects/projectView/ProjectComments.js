@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "src/components/Page";
 import {
   Avatar,
@@ -14,6 +14,8 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
+  Button,
+  FormControlLabel,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
@@ -49,6 +51,9 @@ const useStyles = makeStyles(theme => ({
   emptyState: {
     margin: theme.spacing(3),
   },
+  showButtonItem: {
+    margin: theme.spacing(2),
+  },
 }));
 
 const ProjectComments = () => {
@@ -62,9 +67,17 @@ const ProjectComments = () => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [noteType, setNoteType] = useState(0);
+  const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
-    variables: { projectId },
+    variables: {
+      projectNoteConditions: {
+        project_id: { _eq: Number(projectId) },
+        status_id: { _eq: Number(1) },
+        ...noteTypeConditions,
+      },
+    },
   });
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
@@ -98,12 +111,6 @@ const ProjectComments = () => {
     },
   });
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
-
-  if (error) return console.log(error);
-
   const submitNewComment = () => {
     setCommentAddLoading(true);
     addNewComment({
@@ -115,6 +122,7 @@ const ProjectComments = () => {
             project_id: projectId,
             status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
+            project_note_type: 1,
           },
         ],
       },
@@ -154,10 +162,83 @@ const ProjectComments = () => {
     });
   };
 
+  /**
+   * Updates the type based on conditions
+   * @param {Number} typeId
+   */
+  const filterNoteType = typeId => setNoteType(Number(typeId));
+
+  /**
+   * Whenever noteType changes, we change the query conditions
+   */
+  useEffect(() => {
+    if (noteType === 0) {
+      setNoteTypeConditions({});
+    } else {
+      setNoteTypeConditions({
+        project_note_type: { _eq: noteType },
+      });
+    }
+    refetch();
+  }, [noteType, setNoteTypeConditions, refetch]);
+
+  // If the query is loading or data object is undefined,
+  // stop here and just render the spinner.
+  if (loading || !data) return <CircularProgress />;
+  if (error) return console.log(error);
+
+  /**
+   * Defines the CommentButton with a toggle style-change behavior.
+   * @param {Object} props
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const CommentButton = props => (
+    <Button
+      {...props}
+      color="primary"
+      className={classes.showButtonItem}
+      variant={noteType === props.noteTypeId ? "contained" : "outlined"}
+      onClick={() => filterNoteType(props.noteTypeId)}
+    >
+      {props.children}
+    </Button>
+  );
+
   return (
     <Page title="Project Notes">
       <Container>
         <Grid container spacing={2}>
+          {/*New Note Form*/}
+          {!editingComment && (
+            <Grid item xs={12}>
+              <Card>
+                <CommentInputQuill
+                  noteText={noteText}
+                  setNoteText={setNoteText}
+                  editingComment={editingComment}
+                  commentAddLoading={commentAddLoading}
+                  commentAddSuccess={commentAddSuccess}
+                  submitNewComment={submitNewComment}
+                  submitEditComment={submitEditComment}
+                  cancelCommentEdit={cancelCommentEdit}
+                />
+              </Card>
+            </Grid>
+          )}
+          {/*First the Filter Buttons*/}
+          <Grid item xs={12}>
+            <FormControlLabel
+              className={classes.showButtonItem}
+              label="Show"
+              control={<span />}
+            />
+            <CommentButton noteTypeId={0}>All</CommentButton>
+            <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
+            <CommentButton noteTypeId={2}>Status Updates</CommentButton>
+            <CommentButton noteTypeId={3}>Timeline Notes</CommentButton>
+          </Grid>
+          {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
               {data.moped_proj_notes.length > 0 ? (
@@ -222,15 +303,17 @@ const ProjectComments = () => {
                                   <EditIcon />
                                 </IconButton>
                               )}
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() =>
-                                  submitDeleteComment(item.project_note_id)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
+                              {!editingComment && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() =>
+                                    submitDeleteComment(item.project_note_id)
+                                  }
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              )}
                             </ListItemSecondaryAction>
                           )}
                         </ListItem>
@@ -246,22 +329,6 @@ const ProjectComments = () => {
               )}
             </Card>
           </Grid>
-          {!editingComment && (
-            <Grid item xs={12}>
-              <Card>
-                <CommentInputQuill
-                  noteText={noteText}
-                  setNoteText={setNoteText}
-                  editingComment={editingComment}
-                  commentAddLoading={commentAddLoading}
-                  commentAddSuccess={commentAddSuccess}
-                  submitNewComment={submitNewComment}
-                  submitEditComment={submitEditComment}
-                  cancelCommentEdit={cancelCommentEdit}
-                />
-              </Card>
-            </Grid>
-          )}
         </Grid>
       </Container>
     </Page>
