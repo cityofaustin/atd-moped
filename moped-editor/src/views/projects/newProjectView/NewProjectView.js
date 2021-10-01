@@ -67,6 +67,7 @@ const NewProjectView = () => {
    *    the project name and featureCollection will be set from the `signal` value.
    */
   const [projectDetails, setProjectDetails] = useState({
+    current_phase: "",
     project_description: "",
     project_name: "",
     start_date: format(Date.now(), "yyyy-MM-dd"),
@@ -128,6 +129,7 @@ const NewProjectView = () => {
 
       /**
        * We now must generate the payload with variables for our GraphQL query.
+       * If it is a signal asset, include moped_proj_components, otherwise only the project details
        * @type {Object}
        */
       const variablePayload = fromSignalAsset
@@ -149,7 +151,6 @@ const NewProjectView = () => {
           }
         : {
             object: {
-              // First we need to copy the project details
               ...projectDetails,
             },
           };
@@ -167,6 +168,7 @@ const NewProjectView = () => {
             moped_proj_components,
           } = response.data.insert_moped_project_one;
 
+          // if moped_proj_components exist, update features before setting project id
           if (moped_proj_components[0]) {
             // Retrieve the feature_ids that need to be updated
             const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
@@ -180,13 +182,13 @@ const NewProjectView = () => {
                 projectId: project_id,
               },
             })
-            .then(() => setNewProjectId(project_id))
-            .catch(err => {
-              alert(err);
-              setNewProjectId(project_id);
-            });
+              .then(() => setNewProjectId(project_id))
+              .catch(err => {
+                alert(err);
+                setNewProjectId(project_id);
+              });
           } else {
-            setNewProjectId(project_id)
+            setNewProjectId(project_id);
           }
         })
         // If there is an error, we must show it...
@@ -202,7 +204,6 @@ const NewProjectView = () => {
    * Whenever we have a new project id, we can then set success
    * and trigger the redirect.
    */
-
   useEffect(() => {
     const currentTimer = timer.current;
 
