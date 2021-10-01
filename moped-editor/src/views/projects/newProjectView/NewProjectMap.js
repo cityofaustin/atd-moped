@@ -564,7 +564,8 @@ const NewProjectMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {renderDrawLayers &&
+        {!isSignalComponent &&
+          drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
 
