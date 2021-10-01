@@ -7,8 +7,21 @@ import {
   SvgIcon,
   Icon,
   IconButton,
+  makeStyles,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
+import clsx from "clsx";
+
+/**
+ * The styling for the search bar components
+ * @type {Object}
+ * @constant
+ */
+const useStyles = makeStyles(theme => ({
+  advancedSearchSelected: {
+    backgroundColor: "rgba(0, 0, 0, 0.04)",
+  },
+}));
 
 /**
  * Renders a search bar with optional filters
@@ -17,12 +30,13 @@ import { Search as SearchIcon } from "react-feather";
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({ query, searchState, toggleAdvancedSearch }) => {
-  /**
-   * The styling of the search bar
-   * @constant
-   * @default
-   */
+const GridTableSearchBar = ({
+  query,
+  searchState,
+  toggleAdvancedSearch,
+  advancedSearchAnchor,
+}) => {
+  const classes = useStyles();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
@@ -122,6 +136,9 @@ const GridTableSearchBar = ({ query, searchState, toggleAdvancedSearch }) => {
           <InputAdornment position="end">
             <IconButton
               onClick={toggleAdvancedSearch}
+              className={clsx({
+                [classes.advancedSearchSelected]: advancedSearchAnchor,
+              })}
             >
               <Icon style={{ verticalAlign: "middle" }}>rule</Icon>
             </IconButton>

@@ -16,7 +16,6 @@ import {
   Paper,
   Popper,
 } from "@material-ui/core";
-// import SaveAltIcon from '@mui/icons-material/SaveAlt';
 import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
@@ -296,6 +295,7 @@ const GridTableSearch = ({
                 query={query}
                 searchState={searchState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
+                advancedSearchAnchor={advancedSearchAnchor}
               />
             </Grid>
             <Grid
