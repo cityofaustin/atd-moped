@@ -70,6 +70,7 @@ const NewProjectView = () => {
     project_description: "",
     project_name: "",
     start_date: format(Date.now(), "yyyy-MM-dd"),
+    current_status: "",
   });
 
   const {
@@ -129,23 +130,29 @@ const NewProjectView = () => {
        * We now must generate the payload with variables for our GraphQL query.
        * @type {Object}
        */
-      const variablePayload = {
-        object: {
-          // First we need to copy the project details
-          ...projectDetails,
-          // Next we generate the project extent component
-          moped_proj_components: {
-            data: [
-              generateProjectComponent(
-                featureCollection,
-                fromSignalAsset,
-                componentData["moped_components"]
-              ),
-            ],
-          },
-        },
-      };
-
+      const variablePayload = fromSignalAsset
+        ? {
+            object: {
+              // First we need to copy the project details
+              ...projectDetails,
+              // Next we generate the project extent component
+              moped_proj_components: {
+                data: [
+                  generateProjectComponent(
+                    featureCollection,
+                    fromSignalAsset,
+                    componentData["moped_components"]
+                  ),
+                ],
+              },
+            },
+          }
+        : {
+            object: {
+              // First we need to copy the project details
+              ...projectDetails,
+            },
+          };
       /**
        * Persist the new project to database
        */
@@ -160,23 +167,27 @@ const NewProjectView = () => {
             moped_proj_components,
           } = response.data.insert_moped_project_one;
 
-          // Retrieve the feature_ids that need to be updated
-          const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
-            featureComponent => featureComponent.moped_proj_feature.feature_id
-          );
+          if (moped_proj_components[0]) {
+            // Retrieve the feature_ids that need to be updated
+            const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
+              featureComponent => featureComponent.moped_proj_feature.feature_id
+            );
 
-          // Persist the feature updates, we must.
-          updateFeatures({
-            variables: {
-              featureList: featuresToUpdate,
-              projectId: project_id,
-            },
-          })
+            // Persist the feature updates, we must.
+            updateFeatures({
+              variables: {
+                featureList: featuresToUpdate,
+                projectId: project_id,
+              },
+            })
             .then(() => setNewProjectId(project_id))
             .catch(err => {
               alert(err);
               setNewProjectId(project_id);
             });
+          } else {
+            setNewProjectId(project_id)
+          }
         })
         // If there is an error, we must show it...
         .catch(err => {
