@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid
-} from "@material-ui/core";
+import { Box, Button, Container, Grid } from "@material-ui/core";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import AddBoxIcon from "@material-ui/icons/AddBox";
-import CancelIcon from "@material-ui/icons/Cancel";
 import { makeStyles } from "@material-ui/core/styles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
@@ -29,6 +22,7 @@ const useStyles = makeStyles(theme => ({
   cancelButton: {
     margin: theme.spacing(1),
     position: "relative",
+    color: theme.palette.secondary.dark,
   },
 }));
 
@@ -46,7 +40,7 @@ const CommentInputQuill = ({
 
   return (
     <Container>
-      <Grid xs={12} sm={10} container direction="column" spacing={1}>
+      <Grid xs={12} sm={12} container direction="column" spacing={1}>
         <Grid item>
           <Box pt={2}>
             <ReactQuill
@@ -58,35 +52,22 @@ const CommentInputQuill = ({
           </Box>
         </Grid>
         <Grid item>
-          <Box pb={2} display="flex">
+          <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
+            {editingComment && (
+              <div className={classes.cancelButton}>
+                <Button variant="text" onClick={cancelCommentEdit}>
+                  Cancel
+                </Button>
+              </div>
+            )}
             <ProjectSaveButton
-              label={
-                <>
-                  <AddBoxIcon />
-                  <Box ml={1}>
-                    {editingComment ? "Update comment" : "Add comment"}
-                  </Box>
-                </>
-              }
+              label={<>Save</>}
               loading={commentAddLoading}
               success={commentAddSuccess}
               handleButtonClick={
                 editingComment ? submitEditComment : submitNewComment
               }
             />
-            {editingComment && (
-              <div className={classes.cancelButton}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  onClick={cancelCommentEdit}
-                >
-                  <>
-                    <CancelIcon /> <Box ml={1}>Cancel</Box>
-                  </>
-                </Button>
-              </div>
-            )}
           </Box>
         </Grid>
       </Grid>
