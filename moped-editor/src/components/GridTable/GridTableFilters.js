@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
+import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
 
 /**
  * The styling for the filter components
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   filterButton: {
     marginTop: theme.spacing(1),
-    height: "3.4rem",
+    color: theme.palette.text.primary
   },
   bottomButton: {
     margin: theme.spacing(1),
@@ -506,22 +507,19 @@ const GridTableFilters = ({
                 </FormControl>
               </Grid>
               <Grid item xs={12} lg={1}>
-                <Button
-                  fullWidth
+                <IconButton
                   className={classes.filterButton}
-                  variant="contained"
-                  color="secondary"
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
                 >
-                  <Icon>delete_outline</Icon>
-                </Button>
+                  <Icon fontSize="large">delete_outline</Icon>
+                </IconButton>
               </Grid>
             </Grid>
           </Grow>
         );
       })}
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={2}>
           <Button
             className={classes.bottomButton}
             fullWidth
@@ -533,14 +531,13 @@ const GridTableFilters = ({
             Add Filter
           </Button>
         </Grid>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={1}>
           {Object.keys(filterParameters).length > 0 && (
             <Button
               className={classes.bottomButton}
               fullWidth
               variant="outlined"
-              color="secondary"
-              startIcon={<Icon>backspace</Icon>}
+              startIcon={<BackspaceOutlinedIcon />}
               onClick={handleClearFilters}
             >
               Reset

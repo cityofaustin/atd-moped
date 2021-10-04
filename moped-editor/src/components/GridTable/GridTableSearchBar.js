@@ -140,7 +140,7 @@ const GridTableSearchBar = ({
                 [classes.advancedSearchSelected]: advancedSearchAnchor,
               })}
             >
-              <Icon style={{ verticalAlign: "middle" }}>rule</Icon>
+              <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
             </IconButton>
           </InputAdornment>
         ),
