@@ -42,8 +42,15 @@ export const SUMMARY_QUERY = gql`
         project_id
         location
       }
+      moped_proj_notes(
+        where: { project_note_type: { _eq: 2 } }
+        order_by: { date_created: asc }
+      ) {
+        project_note_id
+        project_note
+      }
     }
-    moped_phases(order_by: {phase_order: asc}) {
+    moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
       phase_order
@@ -157,7 +164,10 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases(where: { phase_id: { _gt: 0 } }, order_by: {phase_order: asc}) {
+    moped_phases(
+      where: { phase_id: { _gt: 0 } }
+      order_by: { phase_order: asc }
+    ) {
       phase_id
       phase_name
       phase_order
@@ -592,7 +602,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
 
 export const SIGNAL_COMPONENTS_QUERY = gql`
   query GetSignalComponents {
-    moped_components(where: {component_name: {_ilike: "signal"}}) {
+    moped_components(where: { component_name: { _ilike: "signal" } }) {
       component_name
       component_subtype
       component_id
@@ -659,6 +669,38 @@ export const UPDATE_NEW_PROJ_FEATURES = gql`
     update_moped_proj_features(
       where: { feature_id: { _in: $featureList } }
       _set: { project_id: $projectId }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+/**
+ * Inserts a project summary status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
+  mutation ProjectStatusUpdateInsert(
+    $statusUpdate: [moped_proj_notes_insert_input!]!
+  ) {
+    insert_moped_proj_notes(objects: $statusUpdate) {
+      affected_rows
+      __typename
+    }
+  }
+`;
+
+/**
+ * Updates the status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
+  mutation ProjectStatusUpdateUpdate(
+    $project_note_id: Int_comparison_exp = {}
+    $project_note: String = ""
+    $added_by: bpchar = ""
+  ) {
+    update_moped_proj_notes(
+      where: { project_note_id: $project_note_id }
+      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
     ) {
       affected_rows
     }
