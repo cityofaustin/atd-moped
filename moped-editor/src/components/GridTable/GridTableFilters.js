@@ -11,6 +11,7 @@ import {
   MenuItem,
   Grid,
   Icon,
+  IconButton,
   Grow,
   makeStyles,
 } from "@material-ui/core";
@@ -46,6 +47,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  closeButton: {
+    padding: "9px",
+  },
 }));
 
 /**
@@ -55,7 +59,13 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query, filterState, filterQuery, history, handleAdvancedSearchClose }) => {
+const GridTableFilters = ({
+  query,
+  filterState,
+  filterQuery,
+  history,
+  handleAdvancedSearchClose,
+}) => {
   /**
    * The styling of the search bar
    * @constant
@@ -331,7 +341,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history, handleAdva
   };
 
   /**
-   * Applies the current local state and updates the parent's
+   * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
@@ -361,6 +371,14 @@ const GridTableFilters = ({ query, filterState, filterQuery, history, handleAdva
 
   return (
     <Grid>
+      <Grid container justify={"flex-end"}>
+        <IconButton
+          onClick={handleAdvancedSearchClose}
+          className={classes.closeButton}
+        >
+          <Icon fontSize={"small"}>close</Icon>
+        </IconButton>
+      </Grid>
       {Object.keys(filterParameters).length === 0 && (
         <Alert className={classes.filterAlert} severity="info">
           You don't have any search filters, add one below.
