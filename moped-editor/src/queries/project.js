@@ -514,6 +514,7 @@ export const COMPONENTS_QUERY = gql`
       moped_components {
         component_type: component_name
         component_subtype
+        line_representation
       }
       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
         status_id
@@ -551,6 +552,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_name
         component_id
         component_subtype
+        line_representation
       }
       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
         project_features_components_id
