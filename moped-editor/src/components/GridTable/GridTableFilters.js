@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
-import BackspaceOutlinedIcon from '@material-ui/icons/BackspaceOutlined';
+import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
 
 /**
  * The styling for the filter components
@@ -28,7 +28,6 @@ const useStyles = makeStyles(theme => ({
   root: {},
   filterAlert: {
     margin: theme.spacing(1),
-    marginRight: theme.spacing(0),
   },
   formControl: {
     margin: theme.spacing(1),
@@ -37,9 +36,9 @@ const useStyles = makeStyles(theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  filterButton: {
+  deleteButton: {
     marginTop: theme.spacing(1),
-    color: theme.palette.text.primary
+    color: theme.palette.text.primary,
   },
   bottomButton: {
     margin: theme.spacing(1),
@@ -396,11 +395,7 @@ const GridTableFilters = ({
             >
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} lg={4}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
+                <FormControl fullWidth className={classes.formControl}>
                   <InputLabel
                     id={`filter-field-select-${filterId}-label`}
                     key={`filter-field-select-${filterId}-label`}
@@ -441,11 +436,7 @@ const GridTableFilters = ({
 
               {/*Select the operator from drop-down menu*/}
               <Grid item xs={12} lg={3}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
+                <FormControl fullWidth className={classes.formControl}>
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
                   </InputLabel>
@@ -506,9 +497,9 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={1}>
+              <Grid item xs={12} lg={1} style={{textAlign: "center"}}>
                 <IconButton
-                  className={classes.filterButton}
+                  className={classes.deleteButton}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
                 >
                   <Icon fontSize="large">delete_outline</Icon>
@@ -544,10 +535,10 @@ const GridTableFilters = ({
             </Button>
           )}
         </Grid>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={7}>
           {""}
         </Grid>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={2}>
           {Object.keys(filterParameters).length > 0 && (
             <Grow in={handleApplyValidation() === null}>
               <Button

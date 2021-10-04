@@ -122,6 +122,12 @@ const GridTableSearchBar = ({
   return (
     <TextField
       fullWidth
+      inputProps={{
+       style: {
+         paddingTop: 12,
+         paddingBottom: 12
+       }
+      }}
       onChange={e => handleSearchValueChange(e.target.value)}
       onKeyDown={e => handleKeyDown(e.key)}
       InputProps={{

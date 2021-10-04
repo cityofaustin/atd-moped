@@ -44,8 +44,10 @@ const useStyles = makeStyles(theme => ({
     padding: "24px",
   },
   advancedSearchRoot: {
-    width: "96%",
+    width: "100%",
     zIndex: "3",
+    paddingLeft: "43px",
+    paddingRight: "17px",
   },
   advancedSearchPaper: {
     padding: theme.spacing(1),
@@ -345,6 +347,12 @@ const GridTableSearch = ({
         anchorEl={advancedSearchAnchor}
         onClose={handleAdvancedSearchClose}
         placement={"bottom-start"}
+        modifiers={{
+          offset: {
+            enabled: true,
+            offset: "15, 0",
+          },
+        }}
         // disablePortal=true ensures the popper wont slip behind the material tables
         disablePortal
         className={classes.advancedSearchRoot}
