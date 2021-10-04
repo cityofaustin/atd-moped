@@ -246,6 +246,7 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @param {string} projectId - ID of the project associated with the extent being edited
  * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
  * @param {number} currentZoom - Current zoom level of the map
+ * @property {function} saveActionDispatch - Function that helps us send signals to other components
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -254,7 +255,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
  * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
- * @property {function} saveActionDispatch - Function that helps us send signals to other components
  */
 export function useMapDrawTools(
   featureCollection,

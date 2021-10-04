@@ -244,6 +244,8 @@ const handleSelectedFeatureUpdate = (
  * @param {Object} saveActionState - The current state of save action
  * @param {function} saveActionDispatch - Changes the state of save action
  * @param {JSX.Element} componentEditorPanel - An editor panel component (optional)
+ * @param {boolean} isSignalComponent - if component selected is a signal
+ * @param {boolean} drawLines - if component selected should be represented by lines
  * @return {JSX.Element}
  * @constructor
  */
@@ -310,6 +312,12 @@ const NewProjectMap = ({
     }
   );
 
+  /*
+   * {boolean} isDrawing - Are draw tools enabled or disabled
+   * {function} setIsDrawing - Toggle isdrawing
+   * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
+   * {function} saveDrawnPoints - Function that saves features drawn in the UI
+   */
   const {
     isDrawing,
     setIsDrawing,
@@ -414,6 +422,10 @@ const NewProjectMap = ({
     }
   }, [saveActionState, saveDrawnPoints]);
 
+  // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
+  const renderDrawLayers =
+    !isDrawing && !isSignalComponent && drawLines !== null;
+
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
@@ -456,12 +468,10 @@ const NewProjectMap = ({
         width="100%"
         height="60vh"
         interactiveLayerIds={
-          !isDrawing && !isSignalComponent
-            ? getEditMapInteractiveIds(drawLines)
-            : []
+          renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         }
-        onHover={!isDrawing && !isSignalComponent ? handleLayerHover : null}
-        onClick={!isDrawing && !isSignalComponent ? handleLayerClick : null}
+        onHover={renderDrawLayers ? handleLayerHover : null}
+        onClick={renderDrawLayers ? handleLayerClick : null}
         getCursor={getCursor}
         mapboxApiAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
@@ -491,75 +501,75 @@ const NewProjectMap = ({
         />
 
         {/* RENDER LAYERS */}
-        {Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
-          if (isSignalComponent && sourceName !== "drawnByUser") {
-            // hides feature selecting and drawing layers when when component is a signal
-            return null;
-          }
-          if (
-            drawLines === true &&
-            sourceName === "Project_Component_Points_prototype"
-          ) {
-            return null;
-          }
-          if (drawLines === false && sourceName === "CTN") {
-            return null;
-          }
-          return config.layerUrl ? (
-            // If a config has a url, it is needs state to update selected/unselected layers
-            <Source
-              key={config.layerIdName}
-              type="vector"
-              tiles={[config.layerUrl]}
-              maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
-            >
-              <Layer
+        {drawLines !== null &&
+          Object.entries(mapConfig.layerConfigs).map(([sourceName, config]) => {
+            if (isSignalComponent && sourceName !== "drawnByUser") {
+              // hides feature selecting and drawing layers when when component is a signal
+              return null;
+            }
+            if (
+              drawLines === true &&
+              sourceName === "Project_Component_Points_prototype"
+            ) {
+              return null;
+            }
+            if (drawLines === false && sourceName === "CTN") {
+              return null;
+            }
+            return config.layerUrl ? (
+              // If a config has a url, it is needs state to update selected/unselected layers
+              <Source
                 key={config.layerIdName}
-                {...createProjectSelectLayerConfig(
-                  featureId,
-                  sourceName,
-                  selectedLayerIds,
-                  visibleLayerIds
-                )}
-              />
-            </Source>
-          ) : (
-            <Source
-              key={config.layerIdName}
-              id={config.layerIdName}
-              type="geojson"
-              data={{
-                ...featureCollection,
-                features: [
-                  ...featureCollection.features,
-                  ...(otherProjectFeaturesCollection?.features ?? []),
-                ].filter(
-                  feature => feature.properties.sourceLayer === sourceName
-                ),
-              }}
-            >
-              <Layer
+                type="vector"
+                tiles={[config.layerUrl]}
+                maxZoom={config.layerMaxLOD || mapConfig.mapboxDefaultMaxZoom} // maxLOD found in vector tile layer metadata
+              >
+                <Layer
+                  key={config.layerIdName}
+                  {...createProjectSelectLayerConfig(
+                    featureId,
+                    sourceName,
+                    selectedLayerIds,
+                    visibleLayerIds
+                  )}
+                />
+              </Source>
+            ) : (
+              <Source
                 key={config.layerIdName}
-                {...createProjectViewLayerConfig(
-                  config.layerIdName,
-                  visibleLayerIds
-                )}
-              />
-            </Source>
-          );
-        })}
+                id={config.layerIdName}
+                type="geojson"
+                data={{
+                  ...featureCollection,
+                  features: [
+                    ...featureCollection.features,
+                    ...(otherProjectFeaturesCollection?.features ?? []),
+                  ].filter(
+                    feature => feature.properties.sourceLayer === sourceName
+                  ),
+                }}
+              >
+                <Layer
+                  key={config.layerIdName}
+                  {...createProjectViewLayerConfig(
+                    config.layerIdName,
+                    visibleLayerIds
+                  )}
+                />
+              </Source>
+            );
+          })}
 
         {/* Street Tool Tip*/}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
         {!isSignalComponent &&
+          drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
 
-      {/***************************************************************************
-                        Feature Count & Draw Mode Controls
-       ***************************************************************************/}
+      {/* Feature Count */}
       {renderFeatureCount(featureCount, isDrawing)}
     </Box>
   );

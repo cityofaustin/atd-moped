@@ -346,8 +346,6 @@ const ProjectComponentEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
-    console.log(selectedType)
-    console.log(lineRepresentable, lineRepresentable.indexOf(selectedType))
     !!selectedType
       ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
       : setDrawLines(null);
@@ -895,7 +893,7 @@ const ProjectComponentEdit = ({
                         rows={4}
                         defaultValue=""
                         variant="filled"
-                        value={componentDescription}
+                        value={componentDescription ?? ""}
                         onChange={e => handleDescriptionKeyDown(e)}
                         fullWidth
                       />
