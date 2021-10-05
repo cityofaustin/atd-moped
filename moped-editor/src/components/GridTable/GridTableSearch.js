@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
   },
   downloadButtonGrid: {
     padding: "12px",
+    [theme.breakpoints.between("sm", "md")]: {
+      padding: 0,
+    },
   },
   downloadCsvButton: {
     height: "2.5rem",
@@ -42,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   searchBarContainer: {
     padding: "24px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       paddingBottom: "12px",
     },
   },
@@ -51,6 +54,10 @@ const useStyles = makeStyles(theme => ({
     zIndex: "3",
     paddingLeft: "43px",
     paddingRight: "17px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: "23px",
+      paddingRight: "14px",
+    },
   },
   advancedSearchPaper: {
     paddingTop: "0px",

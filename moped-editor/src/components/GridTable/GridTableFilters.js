@@ -10,6 +10,7 @@ import {
   FormControl,
   MenuItem,
   Grid,
+  Hidden,
   Icon,
   IconButton,
   Grow,
@@ -48,9 +49,15 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: "2px",
     paddingRight: "16px",
     paddingLeft: "16px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft:0,
+    },
   },
   bottomButton: {
     margin: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      margin: 0,
+    },
   },
   applyButton: {
     marginTop: theme.spacing(1),
@@ -59,6 +66,13 @@ const useStyles = makeStyles(theme => ({
   closeButton: {
     padding: "9px",
   },
+  filtersContainer: {
+    paddingLeft: "8px",
+    marginBottom: "8px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    },
+  }
 }));
 
 /**
@@ -398,10 +412,9 @@ const GridTableFilters = ({
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
               container
-              // spacing={4}
               id={`filter-${filterId}`}
               key={`filter-${filterId}`}
-              style={{ paddingLeft: "8px", marginBottom: "8px" }}
+              className={classes.filtersContainer}
             >
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
@@ -507,7 +520,8 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={1}  style={{ textAlign: "center" }}>
+              <Hidden lgDown>
+              <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
                 <IconButton
                   className={classes.deleteButton}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
@@ -515,6 +529,19 @@ const GridTableFilters = ({
                   <Icon className={classes.deleteIcon}>delete_outline</Icon>
                 </IconButton>
               </Grid>
+              </Hidden>
+              <Hidden mdUp>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    className={classes.filterButton}
+                    variant="outlined"
+                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                  >
+                    <Icon>delete_outline</Icon>
+                  </Button>
+                </Grid>
+              </Hidden>
             </Grid>
           </Grow>
         );
@@ -545,9 +572,11 @@ const GridTableFilters = ({
             </Button>
           )}
         </Grid>
-        <Grid item xs={12} lg={7}>
-          {""}
-        </Grid>
+        <Hidden mdDown>
+          <Grid item xs={12} lg={7}>
+            {""}
+          </Grid>
+        </Hidden>
         <Grid item xs={12} lg={2}>
           {Object.keys(filterParameters).length > 0 && (
             <Grow in={handleApplyValidation() === null}>
