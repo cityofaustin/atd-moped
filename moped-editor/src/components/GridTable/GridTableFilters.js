@@ -546,10 +546,10 @@ const GridTableFilters = ({
                 className={classes.applyButton}
                 variant="contained"
                 color="primary"
-                startIcon={<Icon>check</Icon>}
+                startIcon={<Icon>search</Icon>}
                 onClick={handleApplyButtonClick}
               >
-                Apply
+                Search
               </Button>
             </Grow>
           )}
