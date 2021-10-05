@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 
 import {
+  Button,
   TextField,
   InputAdornment,
   SvgIcon,
+  Hidden,
   Icon,
   IconButton,
   makeStyles,
@@ -20,6 +22,9 @@ import clsx from "clsx";
 const useStyles = makeStyles(theme => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
+  },
+  searchButton: {
+    marginTop: "12px",
   },
 }));
 
@@ -120,41 +125,55 @@ const GridTableSearchBar = ({
   };
 
   return (
-    <TextField
-      fullWidth
-      inputProps={{
-       style: {
-         paddingTop: 12,
-         paddingBottom: 12
-       }
-      }}
-      onChange={e => handleSearchValueChange(e.target.value)}
-      onKeyDown={e => handleKeyDown(e.key)}
-      InputProps={{
-        startAdornment: (
-          <InputAdornment position="start">
-            <SvgIcon fontSize="small" color="action">
-              <SearchIcon />
-            </SvgIcon>
-          </InputAdornment>
-        ),
-        endAdornment: (
-          <InputAdornment position="end">
-            <IconButton
-              onClick={toggleAdvancedSearch}
-              className={clsx({
-                [classes.advancedSearchSelected]: advancedSearchAnchor,
-              })}
-            >
-              <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
-            </IconButton>
-          </InputAdornment>
-        ),
-      }}
-      placeholder={getSearchPlaceholder()}
-      variant="outlined"
-      value={searchFieldValue}
-    />
+    <>
+      <TextField
+        fullWidth
+        inputProps={{
+          style: {
+            paddingTop: 12,
+            paddingBottom: 12,
+          },
+        }}
+        onChange={e => handleSearchValueChange(e.target.value)}
+        onKeyDown={e => handleKeyDown(e.key)}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <SvgIcon fontSize="small" color="action">
+                <SearchIcon />
+              </SvgIcon>
+            </InputAdornment>
+          ),
+          endAdornment: (
+            <InputAdornment position="end">
+              <IconButton
+                onClick={toggleAdvancedSearch}
+                className={clsx({
+                  [classes.advancedSearchSelected]: advancedSearchAnchor,
+                })}
+              >
+                <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
+              </IconButton>
+            </InputAdornment>
+          ),
+        }}
+        placeholder={getSearchPlaceholder()}
+        variant="outlined"
+        value={searchFieldValue}
+      />
+      <Hidden smUp>
+        <Button
+          className={classes.searchButton}
+          fullWidth
+          variant="contained"
+          color="primary"
+          startIcon={<Icon>search</Icon>}
+          onClick={handleSearchSubmission}
+        >
+          Search
+        </Button>
+      </Hidden>
+    </>
   );
 };
 

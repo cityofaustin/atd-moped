@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   },
   deleteButton: {
     marginTop: theme.spacing(1),
-    color: theme.palette.text.primary,
+    // color: theme.palette.text.primary,
   },
   deleteIcon: {
     fontSize: "2rem",
@@ -507,7 +507,7 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={1}  /*style={{ textAlign: "center" }}*/>
+              <Grid item xs={12} lg={1}  style={{ textAlign: "center" }}>
                 <IconButton
                   className={classes.deleteButton}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}

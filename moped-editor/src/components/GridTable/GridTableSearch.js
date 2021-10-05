@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   downloadButtonGrid: {
-    padding: "1rem 1rem 0 1rem",
+    padding: "12px",
   },
   downloadCsvButton: {
     height: "2.5rem",
@@ -42,6 +42,9 @@ const useStyles = makeStyles(theme => ({
   },
   searchBarContainer: {
     padding: "24px",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: "12px",
+    },
   },
   advancedSearchRoot: {
     width: "100%",
@@ -55,6 +58,13 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(2),
   },
+  gridSearchPadding: {
+    padding: "12px",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: "0px",
+      paddingTop: "0px"
+    },
+  }
 }));
 
 const history = createBrowserHistory();
@@ -294,8 +304,8 @@ const GridTableSearch = ({
 
       <Box mt={3}>
         <Paper ref={divRef}>
-          <Grid container spacing={3} className={classes.searchBarContainer}>
-            <Grid item xs={12} sm={8} lg={10}>
+          <Grid container className={classes.searchBarContainer}>
+            <Grid item xs={12} sm={8} lg={10} className={classes.gridSearchPadding}>
               <GridTableSearchBar
                 query={query}
                 searchState={searchState}
@@ -306,10 +316,9 @@ const GridTableSearch = ({
             <Grid
               item
               xs={12}
-              sm={6}
+              sm={4}
               md={4}
               lg={2}
-              xl={2}
               className={classes.downloadButtonGrid}
             >
               {query.config.showExport && (
@@ -329,19 +338,6 @@ const GridTableSearch = ({
               )}
             </Grid>
           </Grid>
-
-          {/*  this button needs to be here on mobile      
-     <Button
-          className={classes.filterButton}
-          fullWidth
-          variant="contained"
-          color="primary"
-          startIcon={<Icon>search</Icon>}
-          onClick={handleSearchSubmission}
-        >
-          Search
-        </Button>
-      */}
         </Paper>
       </Box>
       <Popper
