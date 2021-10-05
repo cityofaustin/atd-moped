@@ -50,7 +50,10 @@ const useStyles = makeStyles(theme => ({
     paddingRight: "17px",
   },
   advancedSearchPaper: {
-    padding: theme.spacing(1),
+    paddingTop: "0px",
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
   },
 }));
 

@@ -40,6 +40,15 @@ const useStyles = makeStyles(theme => ({
     marginTop: theme.spacing(1),
     color: theme.palette.text.primary,
   },
+  deleteIcon: {
+    fontSize: "2rem",
+  },
+  gridItemPadding: {
+    paddingTop: "2px",
+    paddingBottom: "2px",
+    paddingRight: "16px",
+    paddingLeft: "16px",
+  },
   bottomButton: {
     margin: theme.spacing(1),
   },
@@ -389,12 +398,13 @@ const GridTableFilters = ({
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
               container
-              spacing={3}
+              // spacing={4}
               id={`filter-${filterId}`}
               key={`filter-${filterId}`}
+              style={{ paddingLeft: "8px", marginBottom: "8px" }}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} lg={4}>
+              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <InputLabel
                     id={`filter-field-select-${filterId}-label`}
@@ -435,7 +445,7 @@ const GridTableFilters = ({
               </Grid>
 
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} lg={3}>
+              <Grid item xs={12} lg={3} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
@@ -473,7 +483,7 @@ const GridTableFilters = ({
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={4}>
+              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -497,12 +507,12 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={1} style={{textAlign: "center"}}>
+              <Grid item xs={12} lg={1}  /*style={{ textAlign: "center" }}*/>
                 <IconButton
                   className={classes.deleteButton}
                   onClick={() => handleDeleteFilterButtonClick(filterId)}
                 >
-                  <Icon fontSize="large">delete_outline</Icon>
+                  <Icon className={classes.deleteIcon}>delete_outline</Icon>
                 </IconButton>
               </Grid>
             </Grid>
