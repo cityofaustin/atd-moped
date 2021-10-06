@@ -25,8 +25,10 @@ const GridTableNewItem = ({ query }) => {
             {query.config.new_item_label}
           </Button>
         ))}
-        { // add padding if there is no button to match styles
-          !query.config.showNewItemButton && <div style={{height: "36.5px"}}></div>}
+      {// add empty div of equal height if there is no button to match styles
+      !query.config.showNewItemButton && (
+        <div style={{ height: "36.5px" }}></div>
+      )}
     </Box>
   );
 };

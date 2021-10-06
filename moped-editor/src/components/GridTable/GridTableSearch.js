@@ -64,14 +64,16 @@ const useStyles = makeStyles(theme => ({
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(2),
+    boxShadow:
+      "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
   },
   gridSearchPadding: {
     padding: "12px",
     [theme.breakpoints.down("sm")]: {
       paddingBottom: "0px",
-      paddingTop: "0px"
+      paddingTop: "0px",
     },
-  }
+  },
 }));
 
 const history = createBrowserHistory();
@@ -264,7 +266,6 @@ const GridTableSearch = ({
   };
 
   const toggleAdvancedSearch = () => {
-    console.log("toggling advanced search", advancedSearchAnchor);
     if (advancedSearchAnchor) {
       setAdvancedSearchAnchor(null);
       handleSwitchToSearch();
@@ -312,7 +313,13 @@ const GridTableSearch = ({
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
-            <Grid item xs={12} sm={8} lg={10} className={classes.gridSearchPadding}>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              lg={10}
+              className={classes.gridSearchPadding}
+            >
               <GridTableSearchBar
                 query={query}
                 searchState={searchState}

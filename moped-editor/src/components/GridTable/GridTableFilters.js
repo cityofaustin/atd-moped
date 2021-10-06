@@ -39,7 +39,6 @@ const useStyles = makeStyles(theme => ({
   },
   deleteButton: {
     marginTop: theme.spacing(1),
-    // color: theme.palette.text.primary,
   },
   deleteIcon: {
     fontSize: "2rem",
@@ -50,7 +49,7 @@ const useStyles = makeStyles(theme => ({
     paddingRight: "16px",
     paddingLeft: "16px",
     [theme.breakpoints.down("sm")]: {
-      paddingLeft:0,
+      paddingLeft: 0,
     },
   },
   bottomButton: {
@@ -72,7 +71,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
     },
-  }
+  },
 }));
 
 /**
@@ -521,14 +520,14 @@ const GridTableFilters = ({
                 </FormControl>
               </Grid>
               <Hidden lgDown>
-              <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
-                <IconButton
-                  className={classes.deleteButton}
-                  onClick={() => handleDeleteFilterButtonClick(filterId)}
-                >
-                  <Icon className={classes.deleteIcon}>delete_outline</Icon>
-                </IconButton>
-              </Grid>
+                <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
+                  <IconButton
+                    className={classes.deleteButton}
+                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                  >
+                    <Icon className={classes.deleteIcon}>delete_outline</Icon>
+                  </IconButton>
+                </Grid>
               </Hidden>
               <Hidden mdUp>
                 <Grid item xs={12}>
