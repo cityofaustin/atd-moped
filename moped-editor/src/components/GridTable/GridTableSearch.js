@@ -58,6 +58,7 @@ const useStyles = makeStyles(theme => ({
       paddingLeft: "23px",
       paddingRight: "14px",
     },
+    transform: "translate3d(-20px, 281px, 0px)"
   },
   advancedSearchPaper: {
     paddingTop: "0px",
