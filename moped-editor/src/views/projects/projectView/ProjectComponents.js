@@ -74,8 +74,8 @@ const ProjectComponents = () => {
   });
 
   /**
-   * Retrieve and flatten a nested list of features:
-   *  moped_proj_components -> moped_proj_features_components -> moped_proj_feature
+   * Retrieve and flatten a nested list of features that are associated with this project
+   * moped_proj_components -> moped_proj_features_components -> moped_proj_feature
    */
   const projectFeatureRecords =
     data && data?.moped_proj_components
@@ -99,8 +99,9 @@ const ProjectComponents = () => {
       : [];
 
   /**
-   * Build an all-inclusive list of components
-   * @type {Object[]}
+   * Build an all-inclusive list of components associated with this project
+   * Used in the edit component / editable map view
+   * @type FeatureCollection {Object[]}
    */
   const featureFullCollection =
     data && data?.moped_proj_components
@@ -122,8 +123,9 @@ const ProjectComponents = () => {
       : [];
 
   /**
-   * Reuses this function to generate a collection for the map
-   * @type {Object}
+   * Build an all-inclusive list of components associated with this project
+   * Used in the static map view
+   * @type FeatureCollection {Object}
    */
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
@@ -142,7 +144,7 @@ const ProjectComponents = () => {
   const handleComponentClickAway = () => setSelectedComp(0);
 
   /**
-   * Takes the user to the components details page
+   * Takes the user to the components details page / map edit mode
    */
   const handleComponentDetailsClick = () => {
     setComponentEditMode(true);
@@ -157,7 +159,7 @@ const ProjectComponents = () => {
   };
 
   /**
-   * Takes the user back to the components list for a project
+   * Takes the user back to the components list for a project / map view only mode
    */
   const handleCancelEdit = () => {
     refetch();
@@ -166,13 +168,13 @@ const ProjectComponents = () => {
   };
 
   /**
-   * This is a helper variable that stores true if we have components, false otherwise.
+   * This is a helper variable that stores true if we have components associated with project, false otherwise.
    * @constant
    * @type {boolean}
    */
   const componentsAvailable = data && data.moped_proj_components.length > 0;
 
-  // Return loading if not in progress
+  // If loading, return loading icon
   if (loading) return <CircularProgress />;
 
   if (error) return <div>{JSON.stringify(error)}</div>;
@@ -194,7 +196,6 @@ const ProjectComponents = () => {
               error={error}
               resetErrorBoundary={resetErrorBoundary}
               projectId={projectId}
-              setIsEditing={null}
               refetchProjectDetails={refetch}
               mapData={projectFeatureCollection}
             />
@@ -204,7 +205,6 @@ const ProjectComponents = () => {
         >
           <ProjectComponentsMapView
             projectFeatureCollection={projectFeatureCollection}
-            setIsEditing={false}
             noPadding
           >
             <Button

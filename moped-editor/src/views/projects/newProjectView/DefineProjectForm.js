@@ -81,48 +81,6 @@ const DefineProjectForm = ({
           />
         </Grid>
       </Grid>
-
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={3}>
-          <TextField
-            name="start_date"
-            label="Start date"
-            type="date"
-            variant="standard"
-            value={projectDetails.start_date}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
-            InputLabelProps={{
-              shrink: true,
-            }}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={3}>
-          <InputLabel>Capital funding?</InputLabel>
-          <Switch
-            type="checkbox"
-            checked={projectDetails.capitally_funded}
-            color="primary"
-            name="capitally_funded"
-            inputProps={{ "aria-label": "primary checkbox" }}
-            onChange={e => handleFieldChange(e.target.checked, e.target.name)}
-          />
-        </Grid>
-        {projectDetails.capitally_funded && (
-          <Grid item xs={3}>
-            <TextField
-              label="eCAPRIS subproject ID"
-              name="ecapris_subproject_id"
-              variant="standard"
-              type="text"
-              value={projectDetails.ecapris_subproject_id}
-              onChange={e => handleFieldChange(e.target.value, e.target.name)}
-            />
-          </Grid>
-        )}
-      </Grid>
     </form>
   );
 };
