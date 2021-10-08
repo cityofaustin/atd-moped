@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
   downloadButtonGrid: {
     padding: "12px",
-    [theme.breakpoints.between("sm", "md")]: {
+    [theme.breakpoints.only("sm")]: {
       padding: 0,
     },
   },
@@ -359,15 +359,7 @@ const GridTableSearch = ({
         open={Boolean(advancedSearchAnchor)}
         anchorEl={advancedSearchAnchor}
         onClose={handleAdvancedSearchClose}
-        placement={"bottom-start"}
-        modifiers={{
-          offset: {
-            enabled: true,
-            offset: "15, 0",
-          },
-        }}
-        // disablePortal=true ensures the popper wont slip behind the material tables
-        disablePortal
+        placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
         <Paper className={classes.advancedSearchPaper}>
