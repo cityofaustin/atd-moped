@@ -519,7 +519,7 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Hidden lgDown>
+              <Hidden mdDown>
                 <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
                   <IconButton
                     className={classes.deleteButton}
@@ -529,7 +529,7 @@ const GridTableFilters = ({
                   </IconButton>
                 </Grid>
               </Hidden>
-              <Hidden mdUp>
+              <Hidden lgUp>
                 <Grid item xs={12}>
                   <Button
                     fullWidth

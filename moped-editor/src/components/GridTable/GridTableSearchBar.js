@@ -22,6 +22,12 @@ import clsx from "clsx";
 const useStyles = makeStyles(theme => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
+    height: "44px",
+    width: "44px",
+  },
+  tuneIcon: {
+    height: "44px",
+    width: "44px",
   },
   searchButton: {
     marginTop: "12px",
@@ -148,7 +154,7 @@ const GridTableSearchBar = ({
             <InputAdornment position="end">
               <IconButton
                 onClick={toggleAdvancedSearch}
-                className={clsx({
+                className={clsx(classes.tuneIcon, {
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
                 })}
               >
