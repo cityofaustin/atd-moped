@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Button, Card, Icon, makeStyles, Typography} from "@material-ui/core";
+import { Box, Button, Card, makeStyles } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 
