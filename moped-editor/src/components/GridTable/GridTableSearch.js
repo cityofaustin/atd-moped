@@ -50,15 +50,14 @@ const useStyles = makeStyles(theme => ({
     },
   },
   advancedSearchRoot: {
-    width: "100%",
+    width: "calc(100% - 32px)",
     zIndex: "3",
-    paddingLeft: "43px",
-    paddingRight: "17px",
+    paddingLeft: "16px",
+    paddingRight: "16px",
     [theme.breakpoints.down("sm")]: {
       paddingLeft: "23px",
       paddingRight: "14px",
     },
-    transform: "translate3d(-20px, 281px, 0px)"
   },
   advancedSearchPaper: {
     paddingTop: "0px",
