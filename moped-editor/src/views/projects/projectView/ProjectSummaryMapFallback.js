@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     minHeight: "12rem",
     textAlign: "center",
-    padding: "1rem",
+    padding: "2rem",
   },
   mapIcon: {
     maxWidth: "9rem",
@@ -22,10 +22,14 @@ const useStyles = makeStyles(theme => ({
     margin: "1rem 0",
   },
   mapPlaceholder: {
-    color: "#848484",
+    color: theme.palette.text.secondary,
     fontFamily: "Roboto",
     fontWeight: 500,
     fontSize: "18px",
+  },
+  mapPlaceholderImg: {
+    width: "40%",
+    marginBottom: "2%",
   },
   button: {
     margin: "1rem",
@@ -55,6 +59,7 @@ const ProjectSummaryMapFallback = ({ error, mapData }) => {
     <Box>
       <Card className={classes.card} color="secondary">
         <img 
+          className={classes.mapPlaceholderImg}
           alt="Map Unavailable"
           src={`${process.env.PUBLIC_URL}/static/images/map_unavailable.png`}
         />
