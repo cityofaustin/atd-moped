@@ -12,5 +12,18 @@ export const FUNDING_QUERY = gql`
       funding_source_id
       funding_status_id
     }
+    moped_fund_sources {
+      funding_source_id
+      funding_source_name
+      funding_source_category
+    }
+    moped_fund_programs {
+      funding_program_id
+      funding_program_name
+    }
+    moped_fund_status {
+      funding_status_id
+      funding_status_name
+    }
   }
 `;

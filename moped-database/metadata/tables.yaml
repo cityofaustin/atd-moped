@@ -553,6 +553,62 @@
 - table:
     schema: public
     name: moped_fund_status
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - funding_status_id
+      - funding_status_name
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - funding_status_id
+      - funding_status_name
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+      check: {}
+  delete_permissions:
+  - role: moped-admin
+    permission:
+      filter: {}
+  - role: moped-editor
+    permission:
+      filter: {}
 - table:
     schema: public
     name: moped_group
