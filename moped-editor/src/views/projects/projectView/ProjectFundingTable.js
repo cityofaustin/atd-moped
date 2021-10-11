@@ -41,11 +41,15 @@ const ProjectFundingTable = ({ projectId = null }) => {
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project personnel will be returned
-    variables: { projectId: projectId ?? 0 },
+    variables: {
+      projectId: projectId ?? 0,
+    },
     fetchPolicy: "no-cache",
   });
 
   if (loading || !data) return <CircularProgress />;
+
+  console.log(data);
 
   // Get data from the FUNDING_QUERY payload
   let fundingSources = {};
@@ -56,16 +60,41 @@ const ProjectFundingTable = ({ projectId = null }) => {
   });
 
   /**
+   * Get lookup value for a given table using a row ID and returning a name
+   * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
+   * @param {string} attribute - Prefix version of attribute name relying on the pattern of _id and _name
+   * @param {number} id - ID used to find target row in lookup table
+   * @return {string} - Name of attribute in the given row.
+   */
+  const getLookupValueByID = (lookupTable, attribute, id) => {
+    return data[lookupTable].find(item => item[`${attribute}_id`] === id)[
+      `${attribute}_name`
+    ];
+  };
+
+  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
     {
       title: "Source",
       field: "funding_source_id",
+      render: row =>
+        getLookupValueByID(
+          "moped_fund_sources",
+          "funding_source",
+          row.funding_source_id
+        ),
     },
     {
       title: "Program",
       field: "funding_program_id",
+      render: row =>
+        getLookupValueByID(
+          "moped_fund_programs",
+          "funding_program",
+          row.funding_source_id
+        ),
     },
     {
       title: "Description",
@@ -74,6 +103,12 @@ const ProjectFundingTable = ({ projectId = null }) => {
     {
       title: "Status",
       field: "funding_status_id",
+      render: row =>
+        getLookupValueByID(
+          "moped_fund_status",
+          "funding_status",
+          row.funding_source_id
+        ),
     },
     {
       title: "FDU",
@@ -82,6 +117,12 @@ const ProjectFundingTable = ({ projectId = null }) => {
     {
       title: "Amount",
       field: "funding_amount",
+      render: row => {
+        return row.funding_amount.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        });
+      },
     },
   ];
 
@@ -101,7 +142,9 @@ const ProjectFundingTable = ({ projectId = null }) => {
             paging: false,
           }),
           search: false,
-          rowStyle: { fontFamily: typography.fontFamily },
+          rowStyle: {
+            fontFamily: typography.fontFamily,
+          },
           actionsColumnIndex: -1,
         }}
         localization={{
@@ -116,7 +159,9 @@ const ProjectFundingTable = ({ projectId = null }) => {
             ),
           },
         }}
-        icons={{ Delete: DeleteOutlineIcon }}
+        icons={{
+          Delete: DeleteOutlineIcon,
+        }}
         // editable={}
       />
     </ApolloErrorHandler>
