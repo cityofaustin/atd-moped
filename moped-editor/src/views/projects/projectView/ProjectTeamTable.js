@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@apollo/client";
 // Material
 import {
   Button,
-  Chip,
   CircularProgress,
   TextField,
   Typography,
@@ -152,6 +151,16 @@ const ProjectTeamTable = ({
   };
 
   /**
+   * Get string of role names from roleIDs
+   * @param {Array} rolesArray - Array of roleIDs
+   * @return {string} roles separated by comma and space
+   */
+  const getPersonnelRoles = rolesArray => {
+    const roleNames = rolesArray.map(roleId => roles[roleId])
+    return roleNames.join(', ')
+  }
+
+  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
@@ -182,15 +191,9 @@ const ProjectTeamTable = ({
     {
       title: "Role",
       field: "role_id",
-      render: personnel => {
-        return personnel.role_id.map(chipRoleId => (
-          <Chip
-            className={classes.roleChip}
-            variant="outlined"
-            label={roles[chipRoleId]}
-          />
-        ));
-      },
+      render: personnel => (
+        <Typography>{getPersonnelRoles(personnel.role_id)}</Typography>
+      ),
       validate: rowData =>
         Array.isArray(rowData.role_id) && rowData.role_id.length > 0,
       editComponent: props => (

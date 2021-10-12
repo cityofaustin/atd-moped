@@ -85,7 +85,7 @@ const ProjectTeamRoleMultiselect = ({
       >
         {Object.keys(roles).map(roleId => (
           <MenuItem key={roleId} value={Number.parseInt(roleId)}>
-            <Checkbox checked={userRoles.includes(Number.parseInt(roleId))} />
+            <Checkbox checked={userRoles.includes(Number.parseInt(roleId))} color={'primary'}/>
             <ListItemText primary={roles[roleId]} />
           </MenuItem>
         ))}
