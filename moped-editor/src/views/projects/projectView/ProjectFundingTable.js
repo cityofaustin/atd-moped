@@ -28,6 +28,8 @@ import { FUNDING_QUERY } from "../../../queries/funding";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
+import { handleKeyEvent } from "../../../utils/materialTableHelpers";
+
 const useStyles = makeStyles(() => ({
   roleChip: {
     margin: ".25rem",
