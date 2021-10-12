@@ -6,6 +6,8 @@ import {
   Button,
   Chip,
   CircularProgress,
+  MenuItem,
+  Select,
   TextField,
   Typography,
 } from "@material-ui/core";
@@ -39,6 +41,8 @@ const useStyles = makeStyles(() => ({
 const ProjectFundingTable = ({ projectId = null }) => {
   const isNewProject = projectId === null;
   const classes = useStyles();
+
+  const addActionRef = React.useRef();
 
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
@@ -75,6 +79,36 @@ const ProjectFundingTable = ({ projectId = null }) => {
   };
 
   /**
+   * lookup object formatted into the shape that <MaterialTable>
+   *
+   *
+   */
+  const fundingSourceLookup = data.moped_fund_sources.reduce((obj, item) => {
+    return Object.assign(obj, {
+      [item.funding_source_name.toLowerCase()]:
+        item.funding_source_name.charAt(0).toUpperCase() +
+        item.funding_source_name.slice(1),
+    });
+  });
+
+  const LookupSelectComponent = props => (
+    <Select id={props.name} value={props.value}>
+      {props.data.map(item => {
+        return (
+          <MenuItem
+            onChange={() => props.onChange(item[`${props.name}_id`])}
+            onClick={() => props.onChange(item[`${props.name}_id`])}
+            onKeyDown={e => handleKeyEvent(e)}
+            value={item[`${props.name}_id`]}
+          >
+            {item[`${props.name}_name`]}
+          </MenuItem>
+        );
+      })}
+    </Select>
+  );
+
+  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
@@ -87,6 +121,14 @@ const ProjectFundingTable = ({ projectId = null }) => {
           "funding_source",
           row.funding_source_id
         ),
+      lookup: fundingSourceLookup,
+      editComponent: props => (
+        <LookupSelectComponent
+          {...props}
+          name={"funding_source"}
+          data={data.moped_fund_sources}
+        />
+      ),
     },
     {
       title: "Program",
@@ -97,10 +139,26 @@ const ProjectFundingTable = ({ projectId = null }) => {
           "funding_program",
           row.funding_source_id
         ),
+      editComponent: props => (
+        <LookupSelectComponent
+          {...props}
+          name={"funding_program"}
+          data={data.moped_fund_programs}
+        />
+      ),
     },
     {
       title: "Description",
       field: "funding_description",
+      editComponent: props => (
+        <TextField
+          id="funding_description"
+          name="funding_description"
+          multiline
+          value={props.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
     },
     {
       title: "Status",
@@ -111,6 +169,13 @@ const ProjectFundingTable = ({ projectId = null }) => {
           "funding_status",
           row.funding_source_id
         ),
+      editComponent: props => (
+        <LookupSelectComponent
+          {...props}
+          name={"funding_status"}
+          data={data.moped_fund_status}
+        />
+      ),
     },
     {
       title: "FDU",
@@ -132,7 +197,42 @@ const ProjectFundingTable = ({ projectId = null }) => {
     <ApolloErrorHandler errors={error}>
       <MaterialTable
         columns={columns}
-        // components={}
+        components={{
+          EditRow: props => (
+            <MTableEditRow
+              {...props}
+              onKeyDown={e => {
+                if (e.keyCode === 13) {
+                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                }
+              }}
+            />
+          ),
+          Action: props => {
+            // Add action icons when for NOT "add"
+            if (
+              typeof props.action === typeof Function ||
+              props.action.tooltip !== "Add"
+            ) {
+              return <MTableAction {...props} />;
+            } else {
+              // else add "Add ..." button
+              return (
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<AddCircleIcon />}
+                  ref={addActionRef}
+                  onClick={props.action.onClick}
+                >
+                  Add Funding Source
+                </Button>
+              );
+            }
+          },
+        }}
         data={data.moped_proj_funding}
         title={
           <Typography variant="h2" color="primary">
@@ -164,7 +264,37 @@ const ProjectFundingTable = ({ projectId = null }) => {
         icons={{
           Delete: DeleteOutlineIcon,
         }}
-        // editable={}
+        editable={{
+          onRowAdd: newData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                // isNewProjectActions[isNewProject].add(newData);
+                console.log("onRowDelete", newData);
+
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                // isNewProjectActions[isNewProject].update(newData, oldData);
+                console.log("onRowUpdate", newData, oldData);
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+          onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                console.log("onRowDelete", oldData);
+                // isNewProjectActions[isNewProject].delete(oldData);
+
+                setTimeout(() => refetch(), 501);
+                resolve();
+              }, 500);
+            }),
+        }}
       />
     </ApolloErrorHandler>
   );
