@@ -44,7 +44,7 @@ const useStyles = makeStyles(theme => ({
     margin: ".5rem",
   },
   searchBarContainer: {
-    padding: "24px",
+    padding: "2px",
     [theme.breakpoints.down("xs")]: {
       paddingBottom: "12px",
     },
