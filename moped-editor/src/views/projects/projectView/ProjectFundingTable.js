@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@apollo/client";
 // Material
 import {
   Button,
-  Chip,
   CircularProgress,
   MenuItem,
   Select,
@@ -16,7 +15,6 @@ import {
   DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
-import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
@@ -24,24 +22,14 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
-import { FUNDING_QUERY } from "../../../queries/funding";
-
-import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import {
+  FUNDING_QUERY,
+  UPDATE_PROJECT_FUNDING,
+} from "../../../queries/funding";
 
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
-const useStyles = makeStyles(() => ({
-  roleChip: {
-    margin: ".25rem",
-  },
-}));
-
 const ProjectFundingTable = ({ projectId = null }) => {
-  const isNewProject = projectId === null;
-  const classes = useStyles();
-
   const addActionRef = React.useRef();
 
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
@@ -53,17 +41,11 @@ const ProjectFundingTable = ({ projectId = null }) => {
     fetchPolicy: "no-cache",
   });
 
+  const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
+
   if (loading || !data) return <CircularProgress />;
 
   console.log(data);
-
-  // Get data from the FUNDING_QUERY payload
-  let fundingSources = {};
-
-  // For each funding entry...
-  data.moped_proj_funding.map(item => {
-    console.log(item);
-  });
 
   /**
    * Get lookup value for a given table using a row ID and returning a name
@@ -79,17 +61,19 @@ const ProjectFundingTable = ({ projectId = null }) => {
   };
 
   /**
-   * lookup object formatted into the shape that <MaterialTable>
-   *
-   *
+   * Lookup object formatted from GraphQL query data response into the
+   * shape that <MaterialTable> expects
+   * @param {array} arr - array of items from data object {ex: data.moped_fund_sources}
+   * @param {key} string - item attribute to return as key ex: "funding_source_id"
+   * @param {value} string - item attribute to return as value ex: "funding_source_name"
+   * @return {object} - object of key/pair values with lookup item id and name
    */
-  const fundingSourceLookup = data.moped_fund_sources.reduce((obj, item) => {
-    return Object.assign(obj, {
-      [item.funding_source_name.toLowerCase()]:
-        item.funding_source_name.charAt(0).toUpperCase() +
-        item.funding_source_name.slice(1),
-    });
-  });
+  const queryArrayToLookupObject = (arr, key, value) => {
+    return arr.reduce((obj, item) => {
+      obj[item[key]] = item[value];
+      return obj;
+    }, {});
+  };
 
   const LookupSelectComponent = props => (
     <Select id={props.name} value={props.value}>
@@ -100,6 +84,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
             onClick={() => props.onChange(item[`${props.name}_id`])}
             onKeyDown={e => handleKeyEvent(e)}
             value={item[`${props.name}_id`]}
+            key={item[`${props.name}_name`]}
           >
             {item[`${props.name}_name`]}
           </MenuItem>
@@ -121,7 +106,11 @@ const ProjectFundingTable = ({ projectId = null }) => {
           "funding_source",
           row.funding_source_id
         ),
-      lookup: fundingSourceLookup,
+      lookup: queryArrayToLookupObject(
+        data.moped_fund_sources,
+        "funding_source_id",
+        "funding_source_name"
+      ),
       editComponent: props => (
         <LookupSelectComponent
           {...props}
@@ -137,7 +126,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
         getLookupValueByID(
           "moped_fund_programs",
           "funding_program",
-          row.funding_source_id
+          row.funding_program_id
         ),
       editComponent: props => (
         <LookupSelectComponent
@@ -167,7 +156,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
         getLookupValueByID(
           "moped_fund_status",
           "funding_status",
-          row.funding_source_id
+          row.funding_status_id
         ),
       editComponent: props => (
         <LookupSelectComponent
@@ -278,8 +267,19 @@ const ProjectFundingTable = ({ projectId = null }) => {
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
-                // isNewProjectActions[isNewProject].update(newData, oldData);
-                console.log("onRowUpdate", newData, oldData);
+                let updateProjectFundingData = newData;
+
+                // Remove unexpected variables
+                delete updateProjectFundingData.__typename;
+                delete updateProjectFundingData.added_by;
+                delete updateProjectFundingData.date_added;
+
+                console.log(
+                  `Updating Project Funding Data #${updateProjectFundingData.proj_funding_id}:`,
+                  updateProjectFundingData
+                );
+
+                updateProjectFunding({ variables: updateProjectFundingData });
                 setTimeout(() => refetch(), 501);
                 resolve();
               }, 500);
@@ -288,6 +288,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
             new Promise((resolve, reject) => {
               setTimeout(() => {
                 console.log("onRowDelete", oldData);
+
                 // isNewProjectActions[isNewProject].delete(oldData);
 
                 setTimeout(() => refetch(), 501);
