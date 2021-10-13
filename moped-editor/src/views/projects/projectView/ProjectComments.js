@@ -17,8 +17,8 @@ import {
   Button,
   FormControlLabel,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+import EditIcon from "@material-ui/icons/EditOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData, getHighestRole, useUser } from "src/auth/user";
