@@ -33,6 +33,9 @@ const useStyles = makeStyles(theme => ({
     fontSize: "1.25rem",
     verticalAlign: "sub",
     color: theme.palette.text.primary,
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   },
 }));
 
