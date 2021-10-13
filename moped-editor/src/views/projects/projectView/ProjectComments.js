@@ -54,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
+  editDeleteButtons: {
+    color: "#000000",
+  }
 }));
 
 const ProjectComments = () => {
@@ -300,7 +303,9 @@ const ProjectComments = () => {
                                     editComment(i, item.project_note_id)
                                   }
                                 >
-                                  <EditIcon />
+                                  <EditIcon 
+                                    className={classes.editDeleteButtons}
+                                  />
                                 </IconButton>
                               )}
                               {!editingComment && (
@@ -311,7 +316,9 @@ const ProjectComments = () => {
                                     submitDeleteComment(item.project_note_id)
                                   }
                                 >
-                                  <DeleteIcon />
+                                  <DeleteIcon
+                                    className={classes.editDeleteButtons}
+                                  />
                                 </IconButton>
                               )}
                             </ListItemSecondaryAction>
