@@ -267,6 +267,11 @@ const ProjectComments = () => {
                                     year: "numeric",
                                     month: "long",
                                     day: "numeric",
+                                  })} ${new Date(
+                                    item.date_created
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "numeric",
+                                    minute: "numeric",
                                   })}`}
                                 </Typography>
                               </>
