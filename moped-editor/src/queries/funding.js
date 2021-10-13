@@ -56,3 +56,14 @@ export const UPDATE_PROJECT_FUNDING = gql`
     }
   }
 `;
+
+export const DELETE_PROJECT_FUNDING = gql`
+  mutation DeleteProjectFunding($proj_funding_id: Int!) {
+    update_moped_proj_funding(
+      _set: { funding_status_id: 0 }
+      where: { proj_funding_id: { _eq: $proj_funding_id } }
+    ) {
+      affected_rows
+    }
+  }
+`;

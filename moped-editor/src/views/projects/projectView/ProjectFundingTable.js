@@ -25,6 +25,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import {
   FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
+  DELETE_PROJECT_FUNDING,
 } from "../../../queries/funding";
 
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
@@ -42,6 +43,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
   });
 
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
+  const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -288,8 +290,9 @@ const ProjectFundingTable = ({ projectId = null }) => {
             new Promise((resolve, reject) => {
               setTimeout(() => {
                 console.log("onRowDelete", oldData);
-
-                // isNewProjectActions[isNewProject].delete(oldData);
+                deleteProjectFunding({
+                  variables: { proj_funding_id: oldData.proj_funding_id },
+                });
 
                 setTimeout(() => refetch(), 501);
                 resolve();
