@@ -2,7 +2,9 @@ import { gql } from "@apollo/client";
 
 export const FUNDING_QUERY = gql`
   query ProjectFunding($projectId: Int) {
-    moped_proj_funding(where: { project_id: { _eq: $projectId } }) {
+    moped_proj_funding(
+      where: { project_id: { _eq: $projectId }, funding_status_id: { _gt: 0 } }
+    ) {
       proj_funding_id
       added_by
       date_added
@@ -22,7 +24,7 @@ export const FUNDING_QUERY = gql`
       funding_program_id
       funding_program_name
     }
-    moped_fund_status {
+    moped_fund_status(where: { funding_status_id: { _gt: 0 } }) {
       funding_status_id
       funding_status_name
     }

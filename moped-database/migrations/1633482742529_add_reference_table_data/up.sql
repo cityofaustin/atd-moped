@@ -50,6 +50,7 @@ INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_progr
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (23, 'Urban Trails'); 
 
 -- Add Fund Status seed data
+INSERT INTO "public"."moped_fund_status" ("funding_status_id", "funding_status_name") VALUES (0, 'Archived');
 INSERT INTO "public"."moped_fund_status" ("funding_status_id", "funding_status_name") VALUES (1, 'Tentative');
 INSERT INTO "public"."moped_fund_status" ("funding_status_id", "funding_status_name") VALUES (2, 'Confirmed');
 INSERT INTO "public"."moped_fund_status" ("funding_status_id", "funding_status_name") VALUES (3, 'Available');
