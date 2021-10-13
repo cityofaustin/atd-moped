@@ -10,17 +10,15 @@ import {
   FormControl,
   MenuItem,
   Grid,
+  Hidden,
   Icon,
+  IconButton,
   Grow,
   makeStyles,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
 } from "@material-ui/core";
 
 import { Alert } from "@material-ui/lab";
+import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
 
 /**
  * The styling for the filter components
@@ -31,7 +29,6 @@ const useStyles = makeStyles(theme => ({
   root: {},
   filterAlert: {
     margin: theme.spacing(1),
-    marginRight: theme.spacing(0),
   },
   formControl: {
     margin: theme.spacing(1),
@@ -40,27 +37,57 @@ const useStyles = makeStyles(theme => ({
   selectEmpty: {
     marginTop: theme.spacing(2),
   },
-  filterButton: {
+  deleteButton: {
     marginTop: theme.spacing(1),
-    height: "3.4rem",
+  },
+  deleteIcon: {
+    fontSize: "2rem",
+  },
+  gridItemPadding: {
+    paddingTop: "2px",
+    paddingBottom: "2px",
+    paddingRight: "16px",
+    paddingLeft: "16px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    },
   },
   bottomButton: {
     margin: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      margin: 0,
+    },
   },
   applyButton: {
     marginTop: theme.spacing(1),
     marginBottom: theme.spacing(1),
   },
+  closeButton: {
+    padding: "9px",
+  },
+  filtersContainer: {
+    paddingLeft: "8px",
+    marginBottom: "8px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+    },
+  },
 }));
 
 /**
- * Filter Search Component
+ * Filter Search Component aka Advanced Search
  * @param {Object} query - The main query object
  * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
+const GridTableFilters = ({
+  query,
+  filterState,
+  filterQuery,
+  history,
+  handleAdvancedSearchClose,
+}) => {
   /**
    * The styling of the search bar
    * @constant
@@ -78,26 +105,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   const [filterParameters, setFilterParameters] = useState(
     filterState.filterParameters
   );
-
-  /**
-   * Confirm dialog state.
-   * @type {boolean} confirmDialogOpen - True to show, False to hide
-   * @function setConfirmDialogOpen - Update the state of confirmDialogOpen
-   * @default false
-   */
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-
-  /**
-   * The current local filter parameters
-   * @type {Object} dialogSettings - Contains the dialog's title, message(s) and actions.
-   * @function setDialogSettings - Updates the state of confirmDialogOpen
-   * @default false
-   */
-  const [dialogSettings, setDialogSettings] = useState({
-    title: null,
-    message: null,
-    actions: null,
-  });
 
   /**
    * The default structure of an empty field
@@ -146,20 +153,6 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
       dt = Math.floor(dt / 16);
       return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
     });
-  };
-
-  /**
-   * Updates the dialog settings
-   * @param {string} title - The title for the dialog
-   * @param {string|string[]} message - The message within the dialog
-   * @param {JSX.Element} actions - Any buttons you would like to add
-   */
-  const updateDialog = (title = null, message = null, actions = null) => {
-    let newDialogState = { ...dialogSettings };
-    newDialogState.title = title;
-    newDialogState.message = message;
-    newDialogState.actions = actions;
-    setDialogSettings(newDialogState);
   };
 
   /**
@@ -330,18 +323,9 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   };
 
   /**
-   * Closes the dialog
-   */
-  const handleDialogClose = () => {
-    updateDialog();
-    setConfirmDialogOpen(false);
-  };
-
-  /**
-   * Clears the filters, closes the dialog
+   * Clears the filters
    */
   const handleClearFilters = () => {
-    handleDialogClose();
     setFilterParameters({});
     filterState.setFilterParameters({});
   };
@@ -379,12 +363,13 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
   };
 
   /**
-   * Applies the current local state and updates the parent's
+   * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     filterState.setFilterParameters(filterParameters);
+    handleAdvancedSearchClose();
   };
 
   /**
@@ -408,6 +393,14 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
 
   return (
     <Grid>
+      <Grid container justify={"flex-end"}>
+        <IconButton
+          onClick={handleAdvancedSearchClose}
+          className={classes.closeButton}
+        >
+          <Icon fontSize={"small"}>close</Icon>
+        </IconButton>
+      </Grid>
       {Object.keys(filterParameters).length === 0 && (
         <Alert className={classes.filterAlert} severity="info">
           You don't have any search filters, add one below.
@@ -418,17 +411,13 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
               container
-              spacing={3}
               id={`filter-${filterId}`}
               key={`filter-${filterId}`}
+              className={classes.filtersContainer}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} lg={4}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
+              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
+                <FormControl fullWidth className={classes.formControl}>
                   <InputLabel
                     id={`filter-field-select-${filterId}-label`}
                     key={`filter-field-select-${filterId}-label`}
@@ -468,12 +457,8 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
               </Grid>
 
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} lg={3}>
-                <FormControl
-                  fullWidth
-                  variant="outlined"
-                  className={classes.formControl}
-                >
+              <Grid item xs={12} lg={3} className={classes.gridItemPadding}>
+                <FormControl fullWidth className={classes.formControl}>
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
                   </InputLabel>
@@ -510,7 +495,7 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={4}>
+              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -534,23 +519,34 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
                   )}
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={1}>
-                <Button
-                  fullWidth
-                  className={classes.filterButton}
-                  variant="contained"
-                  color="secondary"
-                  onClick={() => handleDeleteFilterButtonClick(filterId)}
-                >
-                  <Icon>delete_outline</Icon>
-                </Button>
-              </Grid>
+              <Hidden mdDown>
+                <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
+                  <IconButton
+                    className={classes.deleteButton}
+                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                  >
+                    <Icon className={classes.deleteIcon}>delete_outline</Icon>
+                  </IconButton>
+                </Grid>
+              </Hidden>
+              <Hidden lgUp>
+                <Grid item xs={12}>
+                  <Button
+                    fullWidth
+                    className={classes.filterButton}
+                    variant="outlined"
+                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                  >
+                    <Icon>delete_outline</Icon>
+                  </Button>
+                </Grid>
+              </Hidden>
             </Grid>
           </Grow>
         );
       })}
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={2}>
           <Button
             className={classes.bottomButton}
             fullWidth
@@ -562,24 +558,25 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
             Add Filter
           </Button>
         </Grid>
-        <Grid item xs={12} lg={3}>
+        <Grid item xs={12} lg={1}>
           {Object.keys(filterParameters).length > 0 && (
             <Button
               className={classes.bottomButton}
               fullWidth
               variant="outlined"
-              color="secondary"
-              startIcon={<Icon>backspace</Icon>}
+              startIcon={<BackspaceOutlinedIcon />}
               onClick={handleClearFilters}
             >
               Reset
             </Button>
           )}
         </Grid>
-        <Grid item xs={12} lg={3}>
-          {""}
-        </Grid>
-        <Grid item xs={12} lg={3}>
+        <Hidden mdDown>
+          <Grid item xs={12} lg={7}>
+            {""}
+          </Grid>
+        </Hidden>
+        <Grid item xs={12} lg={2}>
           {Object.keys(filterParameters).length > 0 && (
             <Grow in={handleApplyValidation() === null}>
               <Button
@@ -587,42 +584,15 @@ const GridTableFilters = ({ query, filterState, filterQuery, history }) => {
                 className={classes.applyButton}
                 variant="contained"
                 color="primary"
-                startIcon={<Icon>check</Icon>}
+                startIcon={<Icon>search</Icon>}
                 onClick={handleApplyButtonClick}
               >
-                Apply
+                Search
               </Button>
             </Grow>
           )}
         </Grid>
       </Grid>
-      <Dialog
-        open={confirmDialogOpen}
-        onClose={handleDialogClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {dialogSettings.title}
-        </DialogTitle>
-        <DialogContent>
-          {typeof dialogSettings.message === "string" ? (
-            <DialogContentText id="alert-dialog-description">
-              {dialogSettings.message}
-            </DialogContentText>
-          ) : (
-            dialogSettings.message &&
-            dialogSettings.message.map((message, messageIndex) => {
-              return (
-                <DialogContentText key={messageIndex}>
-                  {message}
-                </DialogContentText>
-              );
-            })
-          )}
-        </DialogContent>
-        <DialogActions>{dialogSettings.actions}</DialogActions>
-      </Dialog>
     </Grid>
   );
 };
