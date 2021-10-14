@@ -15,6 +15,9 @@ export const FUNDING_QUERY = gql`
       funding_source_id
       funding_status_id
     }
+    moped_project(where: { project_id: { _eq: $projectId } }) {
+      ecapris_subproject_id
+    }
     moped_fund_sources {
       funding_source_id
       funding_source_name

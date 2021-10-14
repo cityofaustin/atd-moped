@@ -22,6 +22,7 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ExternalLink from "../../../components/ExternalLink";
 
 import {
   FUNDING_QUERY,
@@ -106,6 +107,8 @@ const ProjectFundingTable = () => {
       })}
     </Select>
   );
+
+  const eCaprisId = data.moped_project[0].ecapris_subproject_id;
 
   /**
    * Column configuration for <MaterialTable>
@@ -241,9 +244,21 @@ const ProjectFundingTable = () => {
         }}
         data={data.moped_proj_funding}
         title={
-          <Typography variant="h2" color="primary">
-            Funding sources
-          </Typography>
+          <div>
+            <Typography variant="h2" color="primary">
+              Funding sources
+            </Typography>
+
+            {eCaprisId && (
+              <Typography variant="h5" color="text">
+                eCAPRIS subproject ID:{" "}
+                <ExternalLink
+                  text={eCaprisId}
+                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisId}`}
+                />
+              </Typography>
+            )}
+          </div>
         }
         options={{
           ...(data.moped_proj_funding.length < PAGING_DEFAULT_COUNT + 1 && {
