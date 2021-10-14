@@ -24,7 +24,7 @@ export const FUNDING_QUERY = gql`
       funding_program_id
       funding_program_name
     }
-    moped_fund_status(where: { funding_status_id: { _gt: 0 } }) {
+    moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
       funding_status_id
       funding_status_name
     }
@@ -64,6 +64,16 @@ export const DELETE_PROJECT_FUNDING = gql`
       where: { proj_funding_id: { _eq: $proj_funding_id } }
     ) {
       affected_rows
+    }
+  }
+`;
+
+export const ADD_PROJECT_FUNDING = gql`
+  mutation AddProjectFunding($objects: [moped_proj_funding_insert_input!]!) {
+    insert_moped_proj_funding(objects: $objects) {
+      returning {
+        proj_funding_id
+      }
     }
   }
 `;

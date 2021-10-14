@@ -1,4 +1,5 @@
 import React from "react";
+import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
@@ -25,13 +26,23 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import {
   FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
+  ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
 } from "../../../queries/funding";
 
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
-const ProjectFundingTable = ({ projectId = null }) => {
+const ProjectFundingTable = () => {
+  /** addAction Ref - mutable ref object used to access add action button
+   * imperatively.
+   * @type {object} addActionRef
+   * */
   const addActionRef = React.useRef();
+
+  /** Params Hook
+   * @type {integer} projectId
+   * */
+  const { projectId } = useParams();
 
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
@@ -42,12 +53,11 @@ const ProjectFundingTable = ({ projectId = null }) => {
     fetchPolicy: "no-cache",
   });
 
+  const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
   if (loading || !data) return <CircularProgress />;
-
-  console.log(data);
 
   /**
    * Get lookup value for a given table using a row ID and returning a name
@@ -57,6 +67,8 @@ const ProjectFundingTable = ({ projectId = null }) => {
    * @return {string} - Name of attribute in the given row.
    */
   const getLookupValueByID = (lookupTable, attribute, id) => {
+    if (!id) return null;
+
     return data[lookupTable].find(item => item[`${attribute}_id`] === id)[
       `${attribute}_name`
     ];
@@ -120,6 +132,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
           data={data.moped_fund_sources}
         />
       ),
+      validate: rowData => (rowData.funding_source_id > 0 ? "" : "Required"),
     },
     {
       title: "Program",
@@ -137,6 +150,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
           data={data.moped_fund_programs}
         />
       ),
+      validate: rowData => (rowData.funding_program_id > 0 ? "" : "Required"),
     },
     {
       title: "Description",
@@ -167,6 +181,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
           data={data.moped_fund_status}
         />
       ),
+      validate: rowData => (rowData.funding_status_id > 0 ? "" : "Required"),
     },
     {
       title: "FDU",
@@ -176,7 +191,7 @@ const ProjectFundingTable = ({ projectId = null }) => {
       title: "Amount",
       field: "funding_amount",
       render: row => {
-        return row.funding_amount.toLocaleString("en-US", {
+        return row.funding_amount?.toLocaleString("en-US", {
           style: "currency",
           currency: "USD",
         });
@@ -259,8 +274,14 @@ const ProjectFundingTable = ({ projectId = null }) => {
           onRowAdd: newData =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
-                // isNewProjectActions[isNewProject].add(newData);
-                console.log("onRowDelete", newData);
+                let newFundingItem = newData;
+                newFundingItem.project_id = projectId;
+
+                addProjectFunding({
+                  variables: {
+                    objects: newData,
+                  },
+                });
 
                 setTimeout(() => refetch(), 501);
                 resolve();
@@ -276,12 +297,9 @@ const ProjectFundingTable = ({ projectId = null }) => {
                 delete updateProjectFundingData.added_by;
                 delete updateProjectFundingData.date_added;
 
-                console.log(
-                  `Updating Project Funding Data #${updateProjectFundingData.proj_funding_id}:`,
-                  updateProjectFundingData
-                );
-
-                updateProjectFunding({ variables: updateProjectFundingData });
+                updateProjectFunding({
+                  variables: updateProjectFundingData,
+                });
                 setTimeout(() => refetch(), 501);
                 resolve();
               }, 500);
@@ -289,9 +307,10 @@ const ProjectFundingTable = ({ projectId = null }) => {
           onRowDelete: oldData =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
-                console.log("onRowDelete", oldData);
                 deleteProjectFunding({
-                  variables: { proj_funding_id: oldData.proj_funding_id },
+                  variables: {
+                    proj_funding_id: oldData.proj_funding_id,
+                  },
                 });
 
                 setTimeout(() => refetch(), 501);
