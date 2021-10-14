@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 
 import {
   Checkbox,
-  Chip,
   FormControl,
   Input,
   ListItemText,
@@ -16,13 +15,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     minWidth: 120,
     maxWidth: 300,
-  },
-  chips: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
-  chip: {
-    margin: 2,
   },
   noLabel: {
     marginTop: theme.spacing(3),
@@ -68,24 +60,21 @@ const ProjectTeamRoleMultiselect = ({
   return (
     <FormControl className={classes.formControl}>
       <Select
-        labelId="demo-mutiple-chip-label"
-        id="demo-mutiple-chip"
+        labelId="team-role-multiselect-label"
+        id="team-role-multiselect"
         multiple
         value={userRoles}
         onChange={handleChange}
-        input={<Input id="select-multiple-chip" />}
-        renderValue={selected => (
-          <div className={classes.chips}>
-            {selected.map(value => (
-              <Chip key={value} label={roles[value]} className={classes.chip} />
-            ))}
-          </div>
-        )}
+        input={<Input id="select-multiple" />}
+        renderValue={selected => selected.map(value => roles[value]).join(", ")}
         MenuProps={MenuProps}
       >
         {Object.keys(roles).map(roleId => (
           <MenuItem key={roleId} value={Number.parseInt(roleId)}>
-            <Checkbox checked={userRoles.includes(Number.parseInt(roleId))} color={'primary'}/>
+            <Checkbox
+              checked={userRoles.includes(Number.parseInt(roleId))}
+              color={"primary"}
+            />
             <ListItemText primary={roles[roleId]} />
           </MenuItem>
         ))}
