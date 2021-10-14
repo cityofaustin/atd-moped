@@ -231,7 +231,7 @@ const ProjectTeamTable = ({
           name="notes"
           multiline
           inputProps={{ maxLength: 125 }}
-          value={props.value}
+          value={props.value ?? ""}
           onChange={e => props.onChange(e.target.value)}
         />
       ),
