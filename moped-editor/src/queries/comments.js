@@ -12,6 +12,7 @@ export const COMMENTS_QUERY = gql`
       project_id
       date_created
       project_note_id
+      project_note_type
     }
   }
 `;

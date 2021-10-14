@@ -45,6 +45,12 @@ const useStyles = makeStyles(theme => ({
     display: "inline",
     fontWeight: "bold",
   },
+  noteType: {
+    display: "inline",
+    marginLeft: "12px",
+    color: theme.palette.primary.main,
+    textTransform: "uppercase",
+  },
   noteText: {
     marginTop: theme.spacing(1),
   },
@@ -58,6 +64,10 @@ const useStyles = makeStyles(theme => ({
     color: "#000000",
   }
 }));
+
+ // Lookup array to convert project note types to a human readable interpretation 
+ // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
+const projectNoteTypes = ['', 'Internal Note', 'Status Update', 'Timeline Notes'];
 
 const ProjectComments = () => {
   const { projectId } = useParams();
@@ -273,6 +283,9 @@ const ProjectComments = () => {
                                     hour: "numeric",
                                     minute: "numeric",
                                   })}`}
+                                </Typography>
+                                <Typography className={classes.noteType}>
+                                  {` ${projectNoteTypes[item.project_note_type]}`}
                                 </Typography>
                               </>
                             }
