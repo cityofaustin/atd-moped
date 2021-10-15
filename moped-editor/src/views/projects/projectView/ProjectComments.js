@@ -48,6 +48,9 @@ const useStyles = makeStyles(theme => ({
   commentDate: {
     display: "inline",
   },
+  editableComment: {
+    marginRight: "30px",
+  },
   noteType: {
     display: "inline",
     marginLeft: "12px",
@@ -265,6 +268,8 @@ const ProjectComments = () => {
                             <Avatar />
                           </ListItemAvatar>
                           <ListItemText
+                            className={(userSessionData.user_id === item.added_by_user_id ||
+                              userHighestRole === "moped-admin") ? classes.editableComment : ""}
                             primary={
                               <>
                                 <Typography className={classes.commentorText}>
