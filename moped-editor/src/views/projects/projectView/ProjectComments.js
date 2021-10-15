@@ -28,6 +28,8 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
 
+import "./ProjectComments.css"
+
 // Query
 import {
   COMMENTS_QUERY,
@@ -312,7 +314,7 @@ const ProjectComments = () => {
                                   cancelCommentEdit={cancelCommentEdit}
                                 />
                               ) : (
-                                <Typography className={classes.newNoteText}>
+                                <Typography className={"noteBody"}>
                                   {parse(item.project_note)}
                                 </Typography>
                               )
