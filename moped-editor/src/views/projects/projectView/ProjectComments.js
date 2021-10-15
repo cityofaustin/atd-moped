@@ -261,6 +261,10 @@ const ProjectComments = () => {
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
                     let isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    //let editableComment = (userSessionData.user_id === item.added_by_user_id ||
+                                           //userHighestRole === "moped-admin");
+                    let editableComment = (Math.random() > .5) ? true : false;
+
                     return (
                       <>
                         <ListItem alignItems="flex-start">
@@ -268,8 +272,7 @@ const ProjectComments = () => {
                             <Avatar />
                           </ListItemAvatar>
                           <ListItemText
-                            className={(userSessionData.user_id === item.added_by_user_id ||
-                              userHighestRole === "moped-admin") ? classes.editableComment : ""}
+                            className={editableComment ? classes.editableComment : ""}
                             primary={
                               <>
                                 <Typography className={classes.commentorText}>
@@ -315,8 +318,7 @@ const ProjectComments = () => {
                           />
                           {// show edit/delete icons if comment authored by logged in user
                           // or user is admin
-                          (userSessionData.user_id === item.added_by_user_id ||
-                            userHighestRole === "moped-admin") && (
+                          editableComment && (
                             <ListItemSecondaryAction>
                               {commentId !== item.project_note_id && (
                                 <IconButton
