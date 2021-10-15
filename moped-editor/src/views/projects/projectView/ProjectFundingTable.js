@@ -365,6 +365,17 @@ const ProjectFundingTable = () => {
                   variables: {
                     proj_funding_id: oldData.proj_funding_id,
                   },
+                }).catch(error => {
+                  setSnackbarState({
+                    open: true,
+                    message: (
+                      <span>
+                        There was a problem deleting funding. Error message:{" "}
+                        {error.message}
+                      </span>
+                    ),
+                    severity: "error",
+                  });
                 });
 
                 setTimeout(() => refetch(), 501);
