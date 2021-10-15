@@ -182,7 +182,6 @@ const ProjectFundingTable = () => {
           data={data.moped_fund_programs}
         />
       ),
-      validate: rowData => (rowData.funding_program_id > 0 ? "" : "Required"),
     },
     {
       title: "Description",
