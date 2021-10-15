@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -8,9 +8,11 @@ import {
   CircularProgress,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
   Typography,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
@@ -57,6 +59,17 @@ const ProjectFundingTable = () => {
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+
+  const DEFAULT_SNACKBAR_STATE = {
+    open: false,
+    message: null,
+    severity: "success",
+  };
+  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+
+  const handleSnackbarClose = () => {
+    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  };
 
   if (loading || !data) return <CircularProgress />;
 
@@ -296,6 +309,17 @@ const ProjectFundingTable = () => {
                   variables: {
                     objects: newData,
                   },
+                }).catch(error => {
+                  setSnackbarState({
+                    open: true,
+                    message: (
+                      <span>
+                        There was a problem adding funding. Error message:{" "}
+                        {error.message}
+                      </span>
+                    ),
+                    severity: "error",
+                  });
                 });
 
                 setTimeout(() => refetch(), 501);
@@ -314,6 +338,17 @@ const ProjectFundingTable = () => {
 
                 updateProjectFunding({
                   variables: updateProjectFundingData,
+                }).catch(error => {
+                  setSnackbarState({
+                    open: true,
+                    message: (
+                      <span>
+                        There was a problem updating funding. Error message:{" "}
+                        {error.message}
+                      </span>
+                    ),
+                    severity: "error",
+                  });
                 });
                 setTimeout(() => refetch(), 501);
                 resolve();
@@ -334,6 +369,16 @@ const ProjectFundingTable = () => {
             }),
         }}
       />
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarState.open}
+        onClose={handleSnackbarClose}
+        key={"datatable-snackbar"}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </ApolloErrorHandler>
   );
 };
