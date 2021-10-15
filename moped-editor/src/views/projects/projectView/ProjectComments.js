@@ -66,7 +66,8 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
   },
   editControls: {
-    top: "20%",
+    top: "0%",
+    marginTop: "25px",
   },
   editDeleteButtons: {
     color: "#000000",
