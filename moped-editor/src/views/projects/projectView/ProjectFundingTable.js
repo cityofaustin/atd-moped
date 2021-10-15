@@ -115,20 +115,18 @@ const ProjectFundingTable = () => {
    * @returns {React component}
    */
   const LookupSelectComponent = props => (
-    <Select id={props.name} value={props.value} defaultValue="">
-      {props.data.map(item => {
-        return (
-          <MenuItem
-            onChange={() => props.onChange(item[`${props.name}_id`])}
-            onClick={() => props.onChange(item[`${props.name}_id`])}
-            onKeyDown={e => handleKeyEvent(e)}
-            value={item[`${props.name}_id`]}
-            key={item[`${props.name}_name`]}
-          >
-            {item[`${props.name}_name`]}
-          </MenuItem>
-        );
-      })}
+    <Select id={props.name} value={props.value || ""}>
+      {props.data.map(item => (
+        <MenuItem
+          onChange={() => props.onChange(item[`${props.name}_id`])}
+          onClick={() => props.onChange(item[`${props.name}_id`])}
+          onKeyDown={e => handleKeyEvent(e)}
+          value={item[`${props.name}_id`]}
+          key={item[`${props.name}_name`]}
+        >
+          {item[`${props.name}_name`]}
+        </MenuItem>
+      ))}
     </Select>
   );
 
