@@ -18,10 +18,11 @@ import {
   DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
-
 import typography from "../../../theme/typography";
+
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { currencyFormatter } from "../../../utils/numberFormatter";
+import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -34,7 +35,6 @@ import {
   DELETE_PROJECT_FUNDING,
 } from "../../../queries/funding";
 
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import { getDatabaseId, useUser } from "../../../auth/user";
 
 const ProjectFundingTable = () => {
@@ -75,11 +75,9 @@ const ProjectFundingTable = () => {
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
-  };
-
   if (loading || !data) return <CircularProgress />;
+
+  const eCaprisId = data.moped_project[0].ecapris_subproject_id;
 
   /**
    * Get lookup value for a given table using a row ID and returning a name
@@ -111,6 +109,11 @@ const ProjectFundingTable = () => {
     }, {});
   };
 
+  /**
+   * Component for dropdown select using a lookup table as options
+   * @param {*} props
+   * @returns {React component}
+   */
   const LookupSelectComponent = props => (
     <Select id={props.name} value={props.value}>
       {props.data.map(item => {
@@ -129,7 +132,12 @@ const ProjectFundingTable = () => {
     </Select>
   );
 
-  const eCaprisId = data.moped_project[0].ecapris_subproject_id;
+  /**
+   * Return Snackbar state to default, closed state
+   */
+  const handleSnackbarClose = () => {
+    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  };
 
   /**
    * Column configuration for <MaterialTable>
