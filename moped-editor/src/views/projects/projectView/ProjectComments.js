@@ -51,9 +51,6 @@ const useStyles = makeStyles(theme => ({
     color: theme.palette.primary.main,
     textTransform: "uppercase",
   },
-  noteText: {
-    marginTop: theme.spacing(1),
-  },
   emptyState: {
     margin: theme.spacing(3),
   },
