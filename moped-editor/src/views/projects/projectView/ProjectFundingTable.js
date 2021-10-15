@@ -21,6 +21,7 @@ import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 
 import typography from "../../../theme/typography";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import { currencyFormatter } from "../../../utils/numberFormatter";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -206,12 +207,7 @@ const ProjectFundingTable = () => {
     {
       title: "Amount",
       field: "funding_amount",
-      render: row => {
-        return row.funding_amount?.toLocaleString("en-US", {
-          style: "currency",
-          currency: "USD",
-        });
-      },
+      render: row => currencyFormatter.format(row.funding_amount),
     },
   ];
 
