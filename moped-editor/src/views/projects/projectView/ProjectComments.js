@@ -45,6 +45,9 @@ const useStyles = makeStyles(theme => ({
     display: "inline",
     fontWeight: "bold",
   },
+  commentDate: {
+    display: "inline",
+  },
   noteType: {
     display: "inline",
     marginLeft: "12px",
@@ -267,7 +270,7 @@ const ProjectComments = () => {
                                 <Typography className={classes.commentorText}>
                                   {item.added_by}
                                 </Typography>
-                                <Typography variant="button">
+                                <Typography className={classes.commentDate}>
                                   {` - ${new Date(
                                     item.date_created
                                   ).toLocaleDateString("en-US", {
