@@ -115,7 +115,7 @@ const ProjectFundingTable = () => {
    * @returns {React component}
    */
   const LookupSelectComponent = props => (
-    <Select id={props.name} value={props.value}>
+    <Select id={props.name} value={props.value} defaultValue="">
       {props.data.map(item => {
         return (
           <MenuItem
@@ -274,7 +274,7 @@ const ProjectFundingTable = () => {
             </Typography>
 
             {eCaprisId && (
-              <Typography variant="h5" color="text">
+              <Typography variant="h5" color="textPrimary">
                 eCAPRIS subproject ID:{" "}
                 <ExternalLink
                   text={eCaprisId}
