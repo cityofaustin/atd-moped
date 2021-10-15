@@ -35,6 +35,7 @@ import {
 } from "../../../queries/funding";
 
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
+import { getDatabaseId, useUser } from "../../../auth/user";
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -42,6 +43,12 @@ const ProjectFundingTable = () => {
    * @type {object} addActionRef
    * */
   const addActionRef = React.useRef();
+
+  /**
+   * User Hook
+   * @type {object} CognitoUserSession
+   */
+  const { user } = useUser();
 
   /** Params Hook
    * @type {integer} projectId
@@ -300,6 +307,7 @@ const ProjectFundingTable = () => {
               setTimeout(() => {
                 let newFundingItem = newData;
                 newFundingItem.project_id = projectId;
+                newFundingItem.added_by = getDatabaseId(user);
 
                 addProjectFunding({
                   variables: {
