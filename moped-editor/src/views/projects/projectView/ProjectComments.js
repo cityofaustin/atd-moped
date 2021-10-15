@@ -261,9 +261,8 @@ const ProjectComments = () => {
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
                     let isNotLastItem = i < data.moped_proj_notes.length - 1;
-                    //let editableComment = (userSessionData.user_id === item.added_by_user_id ||
-                                           //userHighestRole === "moped-admin");
-                    let editableComment = (Math.random() > .5) ? true : false;
+                    let editableComment = (userSessionData.user_id === item.added_by_user_id ||
+                                           userHighestRole === "moped-admin");
 
                     return (
                       <>
