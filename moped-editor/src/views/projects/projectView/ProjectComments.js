@@ -63,6 +63,9 @@ const useStyles = makeStyles(theme => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
+  editControls: {
+    top: "20%",
+  },
   editDeleteButtons: {
     color: "#000000",
   }
@@ -318,7 +321,7 @@ const ProjectComments = () => {
                           {// show edit/delete icons if comment authored by logged in user
                           // or user is admin
                           editableComment && (
-                            <ListItemSecondaryAction>
+                            <ListItemSecondaryAction className={classes.editControls}>
                               {commentId !== item.project_note_id && (
                                 <IconButton
                                   edge="end"
