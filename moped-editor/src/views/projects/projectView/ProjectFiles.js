@@ -307,6 +307,7 @@ const ProjectFiles = props => {
               updateProjectFileAttachment({
                 variables: {
                   fileId: newData.project_file_id,
+                  fileType: newData.file_type,
                   fileName: newData.file_name,
                   fileDescription: newData.file_description,
                 },
