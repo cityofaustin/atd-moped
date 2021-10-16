@@ -110,6 +110,7 @@ const FileUploadDialogSingle = props => {
    */
   const clearState = () => {
     setFileName(null);
+    setFileType(null);
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
@@ -130,6 +131,7 @@ const FileUploadDialogSingle = props => {
   const handleSaveFile = () => {
     const fileBundle = {
       name: fileName,
+      name: fileType,
       description: fileDescription,
       key: fileKey,
       file: fileObject,
@@ -165,7 +167,7 @@ const FileUploadDialogSingle = props => {
     // Determine if the file is ready to be saved to DB
     const saveDisabled =
       fieldLength(fileName) === 0 ||
-      fieldLength(fileDescription) === 0 ||
+      fieldLength(fileType) === 0 ||
       fieldLength(fileKey) === 0 ||
       fileObject === null;
 
@@ -178,7 +180,7 @@ const FileUploadDialogSingle = props => {
     if(saveDisabled && fileReady) {
       setFileReady(false);
     }
-  }, [fileName, fileDescription, fileKey, fileObject, fileReady]);
+  }, [fileName, fileType, fileDescription, fileKey, fileObject, fileReady]);
 
 
   return (
