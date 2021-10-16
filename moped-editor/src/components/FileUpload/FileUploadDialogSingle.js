@@ -56,7 +56,7 @@ const FileUploadDialogSingle = props => {
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
    */
   const [fileName, setFileName] = useState(null);
-  const [fileType, setFileType] = useState(1);
+  const [fileType, setFileType] = useState(null);
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
