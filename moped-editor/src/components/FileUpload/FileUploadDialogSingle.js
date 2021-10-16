@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
     position: "relative",
     top: "-1.6rem",
   },
-  textFieldAdornmentColor: {
+  inputFieldAdornmentColor: {
     color: "grey",
   },
 }));
@@ -206,7 +206,7 @@ const FileUploadDialogSingle = props => {
                 startAdornment: (
                   <InputAdornment
                     position="start"
-                    className={classes.textFieldAdornmentColor}
+                    className={classes.inputFieldAdornmentColor}
                   >
                     <Icon>info</Icon>
                   </InputAdornment>
@@ -217,16 +217,23 @@ const FileUploadDialogSingle = props => {
 
             <FormControl >
               <InputLabel>Type</InputLabel>
-              <Select sx={{ width: "200px"}}
+              <Select  
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
                 onChange={handleFileTypeChange}
+                startAdornment={
+                  <InputAdornment
+                    className={classes.inputFieldAdornmentColor}
+                    position="start">
+                    <Icon>info</Icon>
+                  </InputAdornment>
+                }
               >
-                <MenuItem value={1}>Funding</MenuItem>
-                <MenuItem value={2}>Plans</MenuItem>
-                <MenuItem value={3}>Estimates</MenuItem>
-                <MenuItem value={4}>Other</MenuItem>
+                <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
+                <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
+                <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
+                <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
               </Select>
             </FormControl>
 
@@ -242,7 +249,7 @@ const FileUploadDialogSingle = props => {
                 startAdornment: (
                   <InputAdornment
                     position="start"
-                    className={`${classes.textFieldAdornment} ${classes.textFieldAdornmentColor}`}
+                    className={`${classes.textFieldAdornment} ${classes.inputFieldAdornmentColor}`}
                   >
                     <Icon>textsms</Icon>
                   </InputAdornment>
