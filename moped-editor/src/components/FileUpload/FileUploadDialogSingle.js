@@ -9,6 +9,10 @@ import {
   Icon,
   InputAdornment,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import FileUpload from "./FileUpload";
 
@@ -27,6 +31,10 @@ const useStyles = makeStyles(theme => ({
   },
   textField: {
     marginTop: "1rem",
+  },
+  selectField: {
+    marginTop: "1rem",
+    width: "200px",
   },
   textFieldAdornment: {
     position: "relative",
@@ -48,6 +56,7 @@ const FileUploadDialogSingle = props => {
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
    */
   const [fileName, setFileName] = useState(null);
+  const [fileType, setFileType] = useState(1);
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
@@ -86,6 +95,14 @@ const FileUploadDialogSingle = props => {
    */
   const handleFileDescriptionChange = e => {
     setFileDescription(e.target.value);
+  };
+
+  /**
+   * Handles the file ltype changes
+   * @param {Object} e - The event object
+   */
+  const handleFileTypeChange = e => {
+    setFileType(e.target.value);
   };
 
   /**
@@ -197,6 +214,22 @@ const FileUploadDialogSingle = props => {
               }}
               fullWidth
             />
+
+            <FormControl >
+              <InputLabel>Type</InputLabel>
+              <Select sx={{ width: "200px"}}
+                className={classes.selectField}
+                value={fileType}
+                label="Type"
+                onChange={handleFileTypeChange}
+              >
+                <MenuItem value={1}>Funding</MenuItem>
+                <MenuItem value={2}>Plans</MenuItem>
+                <MenuItem value={3}>Estimates</MenuItem>
+                <MenuItem value={4}>Other</MenuItem>
+              </Select>
+            </FormControl>
+
             <TextField
               className={classes.textField}
               id="standard-multiline-static"
