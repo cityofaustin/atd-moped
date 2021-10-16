@@ -49,6 +49,7 @@ const useStyles = makeStyles(theme => ({
   },
   commentDate: {
     display: "inline",
+    fontSize: ".875rem",
   },
   editableComment: {
     marginRight: "30px",
