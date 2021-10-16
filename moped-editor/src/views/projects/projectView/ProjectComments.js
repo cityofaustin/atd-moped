@@ -59,6 +59,8 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "12px",
     color: theme.palette.primary.main,
     textTransform: "uppercase",
+    fontSize: ".875rem",
+    fontWeight: 500,
   },
   emptyState: {
     margin: theme.spacing(3),
