@@ -8,6 +8,10 @@ import {
   Link,
   TextField,
   Typography,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -165,12 +169,19 @@ const ProjectFiles = props => {
       field: "file_type",
       render: record => <span>{fileTypes[record?.file_type]}</span>,
       editComponent: props => (
-        <TextField
+        <FormControl >
+          <Select  
           id="file_description"
           name="file_description"
           value={props?.value}
           onChange={e => props.onChange(e.target.value)}
-        />
+          >
+            <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
+            <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
+            <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
+            <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
+          </Select>
+        </FormControl>
       ),
     },
     {
