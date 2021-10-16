@@ -418,6 +418,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       project_id
       file_key
       file_name
+      file_type
       file_description
       file_size
       file_metadata
