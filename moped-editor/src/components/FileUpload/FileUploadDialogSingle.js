@@ -36,10 +36,6 @@ const useStyles = makeStyles(theme => ({
     marginTop: "1rem",
     width: "200px",
   },
-  textFieldAdornment: {
-    position: "relative",
-    top: "-1.6rem",
-  },
   inputFieldAdornmentColor: {
     color: "grey",
   },
@@ -205,16 +201,6 @@ const FileUploadDialogSingle = props => {
               rowsMax={1}
               value={null}
               onChange={handleFileNameChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    className={classes.inputFieldAdornmentColor}
-                  >
-                    <Icon>info</Icon>
-                  </InputAdornment>
-                ),
-              }}
               fullWidth
             />
 
@@ -225,13 +211,6 @@ const FileUploadDialogSingle = props => {
                 value={fileType}
                 label="Type"
                 onChange={handleFileTypeChange}
-                startAdornment={
-                  <InputAdornment
-                    className={classes.inputFieldAdornmentColor}
-                    position="start">
-                    <Icon>info</Icon>
-                  </InputAdornment>
-                }
               >
                 <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
                 <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
@@ -248,16 +227,6 @@ const FileUploadDialogSingle = props => {
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    className={`${classes.textFieldAdornment} ${classes.inputFieldAdornmentColor}`}
-                  >
-                    <Icon>textsms</Icon>
-                  </InputAdornment>
-                ),
-              }}
               fullWidth
             />
           </Grid>
