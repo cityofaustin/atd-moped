@@ -11,6 +11,7 @@ import {
   FormControl,
   Select,
   MenuItem,
+  FormHelperText,
 } from "@material-ui/core";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -160,6 +161,7 @@ const ProjectFiles = props => {
           name="file_name"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
+          helperText="Required"
         />
       ),
     },
@@ -180,6 +182,7 @@ const ProjectFiles = props => {
             <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
             <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
           </Select>
+          <FormHelperText>Required</FormHelperText>
         </FormControl>
       ),
     },
