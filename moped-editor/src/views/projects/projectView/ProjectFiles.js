@@ -134,6 +134,8 @@ const ProjectFiles = props => {
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
 
+  const fileTypes = ['', 'Funding', 'Plans', 'Estimates', 'Other'];
+
   /**
    * Column configuration for <MaterialTable>
    */
@@ -161,7 +163,7 @@ const ProjectFiles = props => {
     {
       title: "Type",
       field: "file_type",
-      render: record => <span>{record?.file_type}</span>,
+      render: record => <span>{fileTypes[record?.file_type]}</span>,
       editComponent: props => (
         <TextField
           id="file_description"
