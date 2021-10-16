@@ -7,7 +7,6 @@ import {
   DialogTitle,
   Grid,
   Icon,
-  InputAdornment,
   TextField,
   FormControl,
   InputLabel,
