@@ -86,6 +86,7 @@ const ProjectFiles = props => {
         object: {
           project_id: projectId,
           file_name: fileDataBundle?.name,
+          file_type: fileDataBundle?.type,
           file_description: fileDataBundle.description,
           file_key: fileDataBundle.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,

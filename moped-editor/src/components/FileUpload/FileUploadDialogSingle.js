@@ -50,6 +50,7 @@ const FileUploadDialogSingle = props => {
 
   /**
    * @constant {string} fileName - Contains a human-readable file name
+   * @constant {string} fileType- Contains an integer representing file type
    * @constant {string} fileDescription - Contains a human-readable file description
    * @constant {string} fileKey - The location of the file in S3
    * @constant {Object} fileObject - Contains the file object, including metadata.
@@ -98,7 +99,7 @@ const FileUploadDialogSingle = props => {
   };
 
   /**
-   * Handles the file ltype changes
+   * Handles the file type changes
    * @param {Object} e - The event object
    */
   const handleFileTypeChange = e => {
@@ -131,7 +132,7 @@ const FileUploadDialogSingle = props => {
   const handleSaveFile = () => {
     const fileBundle = {
       name: fileName,
-      name: fileType,
+      type: fileType,
       description: fileDescription,
       key: fileKey,
       file: fileObject,
