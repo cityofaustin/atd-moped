@@ -147,6 +147,9 @@ const ProjectFiles = props => {
     {
       title: "Name",
       field: "file_name",
+      validate: (rowData) => {
+        return rowData.file_name.length > 0 ? true : false;
+        },
       render: record => (
         <Link
           className={classes.downloadLink}
