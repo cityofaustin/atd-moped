@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
   },
   commentorText: {
     display: "inline",
-    fontWeight: "bold",
+    fontWeight: 500,
   },
   commentDate: {
     display: "inline",
