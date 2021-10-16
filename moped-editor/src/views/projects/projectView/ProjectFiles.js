@@ -159,6 +159,19 @@ const ProjectFiles = props => {
       ),
     },
     {
+      title: "Type",
+      field: "file_type",
+      render: record => <span>{record?.file_type}</span>,
+      editComponent: props => (
+        <TextField
+          id="file_description"
+          name="file_description"
+          value={props?.value}
+          onChange={e => props.onChange(e.target.value)}
+        />
+      ),
+    },
+    {
       title: "Description",
       field: "file_description",
       render: record => <span>{record?.file_description}</span>,
