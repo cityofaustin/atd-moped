@@ -299,7 +299,7 @@ const ProjectFiles = props => {
         />
       </ApolloErrorHandler>
       <FileUploadDialogSingle
-        title={"Upload Media"}
+        title={"Add file"}
         dialogOpen={dialogOpen}
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}
