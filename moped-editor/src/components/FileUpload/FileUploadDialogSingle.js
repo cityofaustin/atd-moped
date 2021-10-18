@@ -163,11 +163,10 @@ const FileUploadDialogSingle = props => {
     // Determine if the file is ready to be saved to DB
     const saveDisabled =
       fieldLength(fileName) === 0 ||
-      fieldLength(fileType) === 0 ||
+      !Number.isInteger(fileType) || 
       fieldLength(fileKey) === 0 ||
       fileObject === null;
 
-    debugger;
     // If no longer disabled, but marked as not ready
     if (saveDisabled === false && fileReady === false) {
       // Mark it as ready
