@@ -156,7 +156,7 @@ const FileUploadDialogSingle = props => {
   /**
    * This side effect checks if the save button should be disabled.
    * This is done by checking the state every time there is a
-   * change in the field name, description, file object, and
+   * change in the field name, file type, description, file object, and
    * file key state.
    */
   useEffect(() => {
