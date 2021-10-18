@@ -167,6 +167,7 @@ const FileUploadDialogSingle = props => {
       fieldLength(fileKey) === 0 ||
       fileObject === null;
 
+    debugger;
     // If no longer disabled, but marked as not ready
     if (saveDisabled === false && fileReady === false) {
       // Mark it as ready
