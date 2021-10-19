@@ -15,6 +15,7 @@ import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectView from "src/views/projects/projectView/ProjectView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 import DeviasStyleView from "./views/dev/DeviasStyleView/DeviasStyleView";
+import SignalProjectTable from "src/views/projects/signalProjectTable/SignalProjectTable";
 
 export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
@@ -74,6 +75,11 @@ export const routes = [
         path: "dev/styles",
         action: "style:visit",
         element: <DeviasStyleView />,
+      },
+      {
+        path: "projects/signals", // this is a temporary path
+        action: "projects:visit", // I am assuming if you can see projects you can see this
+        element: <SignalProjectTable />
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
