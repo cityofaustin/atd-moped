@@ -17,8 +17,8 @@ import {
   Button,
   FormControlLabel,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+import EditIcon from "@material-ui/icons/EditOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData, getHighestRole, useUser } from "src/auth/user";
@@ -27,6 +27,8 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
+
+import "./ProjectComments.css"
 
 // Query
 import {
@@ -43,10 +45,22 @@ const useStyles = makeStyles(theme => ({
   },
   commentorText: {
     display: "inline",
-    fontWeight: "bold",
+    fontWeight: 500,
   },
-  noteText: {
-    marginTop: theme.spacing(1),
+  commentDate: {
+    display: "inline",
+    fontSize: ".875rem",
+  },
+  editableComment: {
+    marginRight: "30px",
+  },
+  noteType: {
+    display: "inline",
+    marginLeft: "12px",
+    color: theme.palette.primary.main,
+    textTransform: "uppercase",
+    fontSize: ".875rem",
+    fontWeight: 500,
   },
   emptyState: {
     margin: theme.spacing(3),
@@ -54,7 +68,18 @@ const useStyles = makeStyles(theme => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
+  editControls: {
+    top: "0%",
+    marginTop: "25px",
+  },
+  editDeleteButtons: {
+    color: "#000000",
+  }
 }));
+
+ // Lookup array to convert project note types to a human readable interpretation 
+ // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
+const projectNoteTypes = ['', 'Internal Note', 'Status Update', 'Timeline Notes'];
 
 const ProjectComments = () => {
   const { projectId } = useParams();
@@ -245,6 +270,9 @@ const ProjectComments = () => {
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
                     let isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    let editableComment = (userSessionData.user_id === item.added_by_user_id ||
+                                           userHighestRole === "moped-admin");
+
                     return (
                       <>
                         <ListItem alignItems="flex-start">
@@ -252,19 +280,28 @@ const ProjectComments = () => {
                             <Avatar />
                           </ListItemAvatar>
                           <ListItemText
+                            className={editableComment ? classes.editableComment : ""}
                             primary={
                               <>
                                 <Typography className={classes.commentorText}>
                                   {item.added_by}
                                 </Typography>
-                                <Typography variant="button">
+                                <Typography className={classes.commentDate}>
                                   {` - ${new Date(
                                     item.date_created
                                   ).toLocaleDateString("en-US", {
                                     year: "numeric",
                                     month: "long",
                                     day: "numeric",
+                                  })} ${new Date(
+                                    item.date_created
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "numeric",
+                                    minute: "numeric",
                                   })}`}
+                                </Typography>
+                                <Typography className={classes.noteType}>
+                                  {` ${projectNoteTypes[item.project_note_type]}`}
                                 </Typography>
                               </>
                             }
@@ -281,7 +318,7 @@ const ProjectComments = () => {
                                   cancelCommentEdit={cancelCommentEdit}
                                 />
                               ) : (
-                                <Typography className={classes.newNoteText}>
+                                <Typography className={"noteBody"}>
                                   {parse(item.project_note)}
                                 </Typography>
                               )
@@ -289,9 +326,8 @@ const ProjectComments = () => {
                           />
                           {// show edit/delete icons if comment authored by logged in user
                           // or user is admin
-                          (userSessionData.user_id === item.added_by_user_id ||
-                            userHighestRole === "moped-admin") && (
-                            <ListItemSecondaryAction>
+                          editableComment && (
+                            <ListItemSecondaryAction className={classes.editControls}>
                               {commentId !== item.project_note_id && (
                                 <IconButton
                                   edge="end"
@@ -300,7 +336,9 @@ const ProjectComments = () => {
                                     editComment(i, item.project_note_id)
                                   }
                                 >
-                                  <EditIcon />
+                                  <EditIcon 
+                                    className={classes.editDeleteButtons}
+                                  />
                                 </IconButton>
                               )}
                               {!editingComment && (
@@ -311,7 +349,9 @@ const ProjectComments = () => {
                                     submitDeleteComment(item.project_note_id)
                                   }
                                 >
-                                  <DeleteIcon />
+                                  <DeleteIcon
+                                    className={classes.editDeleteButtons}
+                                  />
                                 </IconButton>
                               )}
                             </ListItemSecondaryAction>

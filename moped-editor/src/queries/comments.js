@@ -4,7 +4,7 @@ export const COMMENTS_QUERY = gql`
   query GetProjectComments($projectNoteConditions: moped_proj_notes_bool_exp!) {
     moped_proj_notes(
       where: $projectNoteConditions
-      order_by: { date_created: asc }
+      order_by: { date_created: desc }
     ) {
       added_by
       added_by_user_id
@@ -12,6 +12,7 @@ export const COMMENTS_QUERY = gql`
       project_id
       date_created
       project_note_id
+      project_note_type
     }
   }
 `;
