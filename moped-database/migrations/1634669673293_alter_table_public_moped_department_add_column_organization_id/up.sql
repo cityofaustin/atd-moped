@@ -1,6 +1,6 @@
 ALTER TABLE "public"."moped_department" ADD COLUMN "organization_id" integer NULL;
 
-INSERT INTO moped_department (department_id, department_name, organization_id, department_abbreviation)
+INSERT INTO public.moped_department (department_id, department_name, organization_id, department_abbreviation)
   VALUES 
   (5, 'Housing & Planning', 1, NULL), 
   (6, 'Aviation', 1, NULL),
