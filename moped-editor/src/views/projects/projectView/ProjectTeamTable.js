@@ -199,7 +199,11 @@ const ProjectTeamTable = ({
       title: (
         <span>
           Role{" "}
-          <Link href="https://atd-dts.gitbook.io/moped/user-guides/project-team">
+          <Link
+            href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Icon className={classes.infoIcon}>info_outline</Icon>
           </Link>
         </span>
