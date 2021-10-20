@@ -220,6 +220,12 @@ const ProjectFundingTable = () => {
       title: "Amount",
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
+      type: "currency",
+      validate: row => {
+        // test string input is a normal integer.
+        // https://stackoverflow.com/questions/10834796/validate-that-a-string-is-a-positive-integer
+        return /^\+?(0|[1-9]\d*)$/.test(row.funding_amount);
+      },
     },
   ];
 
@@ -344,6 +350,17 @@ const ProjectFundingTable = () => {
                 delete updateProjectFundingData.__typename;
                 delete updateProjectFundingData.added_by;
                 delete updateProjectFundingData.date_added;
+                // Format edited funding values to number value
+                updateProjectFundingData.funding_amount = Number(
+                  newData.funding_amount
+                );
+                // add fallback of empty strings instead of null value
+                updateProjectFundingData.fund_dept_unit =
+                  newData.fund_dept_unit || "";
+                updateProjectFundingData.funding_description =
+                  newData.funding_description || "";
+                updateProjectFundingData.funding_program_id =
+                  newData.funding_program_id || 0;
 
                 updateProjectFunding({
                   variables: updateProjectFundingData,

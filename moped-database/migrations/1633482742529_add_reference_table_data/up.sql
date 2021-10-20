@@ -25,6 +25,7 @@ INSERT INTO "public"."moped_fund_sources" ("funding_source_id", "funding_source_
 INSERT INTO "public"."moped_fund_sources" ("funding_source_id", "funding_source_name", "funding_source_category") VALUES (24, 'Williamson County', '0');
 
 -- Add Funding Programs seed data
+INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (0, ' ');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (1, '2018 Interlocal Agreement');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (2, 'Bikeways');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (3, 'Capital Renewal');
@@ -35,7 +36,7 @@ INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_progr
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (8, 'Mitigation Fees');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (9, 'Neighborhood Partnering');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (10, 'Operating Fund');
-INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (11, 'Pedestrian Crossing					');
+INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (11, 'Pedestrian Crossing');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (12, 'Project Development');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (13, 'Regional');
 INSERT INTO "public"."moped_fund_programs" ("funding_program_id", "funding_program_name") VALUES (14, 'Safe Routes to Schools');
