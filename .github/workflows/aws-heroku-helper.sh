@@ -35,8 +35,7 @@ function build_editor() {
 #
 
 function clone_hasura_repo() {
-  git clone https://github.com/hasura/graphql-engine-heroku;
-  git checkout "1.3.3";
+  git clone --single-branch --branch "1.3.3" https://github.com/hasura/graphql-engine-heroku;
 }
 
 function heroku_commit_and_push() {
