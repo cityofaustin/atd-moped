@@ -694,6 +694,9 @@
       check: {}
 - table:
     schema: public
+    name: moped_organization
+- table:
+    schema: public
     name: moped_phases
   insert_permissions:
   - role: moped-admin
