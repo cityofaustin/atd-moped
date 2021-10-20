@@ -15,6 +15,7 @@ const useStyles = makeStyles(theme => ({
   wrapper: {
     margin: theme.spacing(1),
     position: "relative",
+    marginRight: 0,
   },
   buttonSuccess: {
     backgroundColor: green[500],

@@ -353,8 +353,18 @@ export const getClickEditableLayerNames = () =>
  * Edit map needs all layers to be interactive to let users select features
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getEditMapInteractiveIds = () =>
-  Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
+export const getEditMapInteractiveIds = drawLines => {
+  const interactiveIds = Object.values(mapConfig.layerConfigs).map(
+    config => config.layerIdName
+  );
+  if (drawLines === true) {
+    return interactiveIds.filter(layer => layer !== "project-component-points");
+  }
+  if (drawLines === false) {
+    return interactiveIds.filter(layer => layer !== "ctn-lines");
+  }
+  return interactiveIds;
+};
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the summary map

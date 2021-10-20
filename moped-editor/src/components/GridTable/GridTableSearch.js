@@ -13,16 +13,13 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
-  Icon,
   Paper,
-  Tab,
-  Tabs,
-  useTheme,
+  Popper,
 } from "@material-ui/core";
+import SaveAltIcon from "@material-ui/icons/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
-import GridTableExport from "./GridTableExport";
-import TabPanel from "../../views/projects/projectView/TabPanel";
+import GridTableNewItem from "./GridTableNewItem";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
@@ -35,13 +32,47 @@ const useStyles = makeStyles(theme => ({
     },
   },
   downloadButtonGrid: {
-    padding: "1rem 1rem 0 1rem",
+    padding: "12px",
+    [theme.breakpoints.only("sm")]: {
+      padding: 0,
+    },
   },
   downloadCsvButton: {
     height: "2.5rem",
   },
   tabStyle: {
     margin: ".5rem",
+  },
+  searchBarContainer: {
+    padding: "2px",
+    [theme.breakpoints.down("xs")]: {
+      paddingBottom: "12px",
+    },
+  },
+  advancedSearchRoot: {
+    width: "calc(100% - 32px)",
+    zIndex: "3",
+    paddingLeft: "16px",
+    paddingRight: "16px",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: "23px",
+      paddingRight: "14px",
+    },
+  },
+  advancedSearchPaper: {
+    paddingTop: "0px",
+    paddingRight: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+    paddingLeft: theme.spacing(2),
+    boxShadow:
+      "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
+  },
+  gridSearchPadding: {
+    padding: "12px",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: "0px",
+      paddingTop: "0px",
+    },
   },
 }));
 
@@ -66,21 +97,14 @@ const GridTableSearch = ({
   parentData = null,
 }) => {
   const classes = useStyles();
-  const theme = useTheme();
   const queryPath = useLocation().pathname;
+  const divRef = React.useRef();
+
+  // anchor element for advanced search popper to "attach" to
+  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   /**
-   * Controls what tab is being displayed
-   * @type {boolean} tabValue
-   * @function setTabValue - Sets the state of tabValue
-   * @default if filter exists in url, 1. Otherwise 0.
-   */
-  const [tabValue, setTabValue] = React.useState(
-    Array.from(filterQuery).length
-  );
-
-  /**
-   * When True, the dialog is open.
+   * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
    * @function setDialogOpen - Sets the state of dialogOpen
    * @default false
@@ -208,7 +232,7 @@ const GridTableSearch = ({
   };
 
   /**
-   * Handles export button (to open the dialog)
+   * Handles export button (to open the csv download dialog)
    */
   const handleExportButtonClick = () => {
     setDialogOpen(true);
@@ -241,13 +265,18 @@ const GridTableSearch = ({
     });
   };
 
-  /**
-   * Handles the click on a tab to switch between tabs
-   * @param {Object} event - The tab being clicked event
-   * @param {number} newTabValue - The clicked tab value
-   */
-  const handleTabChange = (event, newTabValue) => {
-    setTabValue(newTabValue);
+  const toggleAdvancedSearch = () => {
+    if (advancedSearchAnchor) {
+      setAdvancedSearchAnchor(null);
+      handleSwitchToSearch();
+    } else {
+      setAdvancedSearchAnchor(divRef.current);
+      handleSwitchToAdvancedSearch();
+    }
+  };
+
+  const handleAdvancedSearchClose = () => {
+    setAdvancedSearchAnchor(null);
   };
 
   /**
@@ -278,49 +307,32 @@ const GridTableSearch = ({
 
   return (
     <div>
-      <GridTableExport query={query} />
+      <GridTableNewItem query={query} />
       {children}
 
       <Box mt={3}>
-        <Paper>
-          <Grid container>
-            <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
-              <Tabs
-                value={tabValue}
-                onChange={handleTabChange}
-                indicatorColor="primary"
-                textColor="primary"
-                aria-label="Search Data Table"
-              >
-                <Tab
-                  className={classes.tabStyle}
-                  onClick={handleSwitchToSearch}
-                  label={
-                    <div>
-                      <Icon style={{ verticalAlign: "middle" }}>search</Icon>{" "}
-                      Search{" "}
-                    </div>
-                  }
-                />
-                <Tab
-                  className={classes.tabStyle}
-                  onClick={handleSwitchToAdvancedSearch}
-                  label={
-                    <div>
-                      <Icon style={{ verticalAlign: "middle" }}>rule</Icon>{" "}
-                      Advanced Search{" "}
-                    </div>
-                  }
-                />
-              </Tabs>
+        <Paper ref={divRef}>
+          <Grid container className={classes.searchBarContainer}>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              lg={10}
+              className={classes.gridSearchPadding}
+            >
+              <GridTableSearchBar
+                query={query}
+                searchState={searchState}
+                toggleAdvancedSearch={toggleAdvancedSearch}
+                advancedSearchAnchor={advancedSearchAnchor}
+              />
             </Grid>
             <Grid
               item
               xs={12}
-              sm={6}
+              sm={4}
               md={4}
               lg={2}
-              xl={2}
               className={classes.downloadButtonGrid}
             >
               {query.config.showExport && (
@@ -330,7 +342,7 @@ const GridTableSearch = ({
                   }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
-                  startIcon={<Icon>save</Icon>}
+                  startIcon={<SaveAltIcon />}
                   variant="outlined"
                   color="primary"
                   fullWidth
@@ -340,20 +352,26 @@ const GridTableSearch = ({
               )}
             </Grid>
           </Grid>
-
-          <TabPanel value={tabValue} index={0} dir={theme.direction}>
-            <GridTableSearchBar query={query} searchState={searchState} />
-          </TabPanel>
-          <TabPanel value={tabValue} index={1} dir={theme.direction}>
-            <GridTableFilters
-              query={query}
-              filterState={filterState}
-              filterQuery={filterQuery}
-              history={history}
-            />
-          </TabPanel>
         </Paper>
       </Box>
+      <Popper
+        id="advancedSearch"
+        open={Boolean(advancedSearchAnchor)}
+        anchorEl={advancedSearchAnchor}
+        onClose={handleAdvancedSearchClose}
+        placement={"bottom"}
+        className={classes.advancedSearchRoot}
+      >
+        <Paper className={classes.advancedSearchPaper}>
+          <GridTableFilters
+            query={query}
+            filterState={filterState}
+            filterQuery={filterQuery}
+            history={history}
+            handleAdvancedSearchClose={handleAdvancedSearchClose}
+          />
+        </Paper>
+      </Popper>
       <Dialog
         open={dialogOpen}
         onClose={handleDialogClose}

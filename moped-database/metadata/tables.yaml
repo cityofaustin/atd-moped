@@ -2628,66 +2628,71 @@
     permission:
       check: {}
       columns:
-      - project_note_id
-      - project_note
       - added_by
-      - date_created
-      - comm_id
-      - project_id
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - project_note_id
-      - project_note
       - added_by
-      - date_created
-      - status_id
-      - comm_id
-      - project_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - project_note_id
-      - project_note
       - added_by
-      - date_created
-      - comm_id
-      - project_id
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -2695,26 +2700,28 @@
     permission:
       columns:
       - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
       - added_by
-      - comm_id
-      - project_id
-      - project_note_id
-      - project_note
-      - date_created
-      - status_id
       - added_by_user_id
+      - comm_id
+      - date_created
+      - project_id
+      - project_note
+      - project_note_id
+      - project_note_type
+      - status_id
       filter: {}
       check: null
   event_triggers:
@@ -3833,6 +3840,13 @@
         table:
           schema: public
           name: moped_proj_features
+  - name: moped_proj_notes
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_notes
   - name: moped_proj_personnel
     using:
       foreign_key_constraint_on:

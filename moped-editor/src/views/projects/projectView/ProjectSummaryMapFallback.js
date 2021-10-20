@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Button, Card, Icon, makeStyles } from "@material-ui/core";
+import { Box, Button, Card, makeStyles } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
   card: {
     minHeight: "12rem",
     textAlign: "center",
-    padding: "1rem",
+    padding: "2rem",
   },
   mapIcon: {
     maxWidth: "9rem",
@@ -20,6 +20,16 @@ const useStyles = makeStyles(theme => ({
   },
   paragraphGroup: {
     margin: "1rem 0",
+  },
+  mapPlaceholder: {
+    color: theme.palette.text.secondary,
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: "18px",
+  },
+  mapPlaceholderImg: {
+    width: "40%",
+    marginBottom: "2%",
   },
   button: {
     margin: "1rem",
@@ -32,7 +42,6 @@ const useStyles = makeStyles(theme => ({
 /**
  * Renders a fallback component that shows the user whenever there is a map error.
  * @param {object} error - provided by ErrorBoundary component, contains error details.
- * @param {function} resetErrorBoundary - A function that forces ErrorBoundary to re-render it's children components
  * @param {object} mapData - The map data with errors to show in the console for debugging
  * @return {JSX.Element}
  * @constructor
@@ -49,34 +58,21 @@ const ProjectSummaryMapFallback = ({ error, mapData }) => {
   return (
     <Box>
       <Card className={classes.card} color="secondary">
-        <img
-          className={classes.mapIcon}
-          alt="Logo"
-          src={`${process.env.PUBLIC_URL}/static/map-error.svg`}
+        <img 
+          className={classes.mapPlaceholderImg}
+          alt="Map Unavailable"
+          src={`${process.env.PUBLIC_URL}/static/images/map_unavailable.png`}
         />
-        <h3 className={classes.mapErrorTitle}>No map available</h3>
-        <div className={classes.paragraphGroup}>
-          <p>
-            This project does not have components or is outdated. Create new
-            components or{" "}
-            <a
-              href={
-                "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
-              }
-            >
-              submit a support request
-            </a>{" "}
-            for more options.
-          </p>
+        <div className={classes.mapPlaceholder}>
+          Define and map the assets and features included in this project.
         </div>
         <Link to="?tab=map">
           <Button
             className={classes.button}
             variant="contained"
             color="primary"
-            startIcon={<Icon>edit</Icon>}
           >
-            MAP PROJECT
+            Add Components
           </Button>
         </Link>
       </Card>

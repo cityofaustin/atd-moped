@@ -4,14 +4,15 @@ import { useQuery, useMutation } from "@apollo/client";
 // Material
 import {
   Button,
-  Chip,
   CircularProgress,
+  Icon,
+  Link,
   TextField,
   Typography,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon
+  DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -27,9 +28,14 @@ import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const useStyles = makeStyles(() => ({
-  roleChip: {
-    margin: ".25rem",
+const useStyles = makeStyles(theme => ({
+  infoIcon: {
+    fontSize: "1.25rem",
+    verticalAlign: "sub",
+    color: theme.palette.text.primary,
+    "&:hover": {
+      color: theme.palette.primary.main,
+    },
   },
 }));
 
@@ -152,6 +158,16 @@ const ProjectTeamTable = ({
   };
 
   /**
+   * Get string of role names from roleIDs
+   * @param {Array} rolesArray - Array of roleIDs
+   * @return {string} roles separated by comma and space
+   */
+  const getPersonnelRoles = rolesArray => {
+    const roleNames = rolesArray.map(roleId => roles[roleId]);
+    return roleNames.join(", ");
+  };
+
+  /**
    * Column configuration for <MaterialTable>
    */
   const columns = [
@@ -180,17 +196,22 @@ const ProjectTeamTable = ({
       ),
     },
     {
-      title: "Role",
+      title: (
+        <span>
+          Role{" "}
+          <Link
+            href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Icon className={classes.infoIcon}>info_outline</Icon>
+          </Link>
+        </span>
+      ),
       field: "role_id",
-      render: personnel => {
-        return personnel.role_id.map(chipRoleId => (
-          <Chip
-            className={classes.roleChip}
-            variant="outlined"
-            label={roles[chipRoleId]}
-          />
-        ));
-      },
+      render: personnel => (
+        <Typography>{getPersonnelRoles(personnel.role_id)}</Typography>
+      ),
       validate: rowData =>
         Array.isArray(rowData.role_id) && rowData.role_id.length > 0,
       editComponent: props => (
@@ -214,7 +235,7 @@ const ProjectTeamTable = ({
           name="notes"
           multiline
           inputProps={{ maxLength: 125 }}
-          value={props.value}
+          value={props.value ?? ""}
           onChange={e => props.onChange(e.target.value)}
         />
       ),
