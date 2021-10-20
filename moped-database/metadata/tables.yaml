@@ -297,31 +297,34 @@
       check: {}
       columns:
       - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - entity_name
       - entity_id
-      - affiliated_workgroup
+      - workgroup_id
       - date_added
+      - organization_id
+      - department_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - department_id
       - entity_id
-      - affiliated_workgroup
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
+      - entity_uuid
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -329,10 +332,11 @@
   - role: moped-editor
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -340,22 +344,24 @@
   - role: moped-viewer
     permission:
       columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - department_id
       - entity_id
-      - affiliated_workgroup
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
+      - entity_uuid
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -363,10 +369,11 @@
   - role: moped-editor
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
