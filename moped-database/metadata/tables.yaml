@@ -291,6 +291,31 @@
 - table:
     schema: public
     name: moped_entity
+  array_relationships:
+  - name: entity_department
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_department
+        column_mapping:
+          department_id: department_id
+  - name: entity_organization
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_organization
+        column_mapping:
+          organization_id: organization_id
+  - name: entity_workgroup
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_workgroup
+        column_mapping:
+          workgroup_id: workgroup_id
   insert_permissions:
   - role: moped-admin
     permission:
