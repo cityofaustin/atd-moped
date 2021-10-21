@@ -225,7 +225,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   </Box>
                 )}
                 {/*Edit Button*/}
-                {!statusUpdateEditable && (
+                {!statusUpdateEditable && statusUpdate && (
                   <Icon
                     className={classes.editIcon}
                     onClick={handleStatusUpdateEdit}
