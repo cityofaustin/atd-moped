@@ -107,14 +107,14 @@ const ProjectTeamTable = ({
   const workgroups = data.moped_workgroup.reduce(
     (acc, workgroup) => ({
       ...acc,
-      [workgroup.workgroup_id]: workgroup.workgroup_name,
+      [workgroup?.workgroup_id ?? 0]: workgroup?.workgroup_name ?? "N/A",
     }),
     {}
   );
   const roles = data.moped_project_roles.reduce(
     (acc, role) => ({
       ...acc,
-      [role.project_role_id]: role.project_role_name,
+      [role?.project_role_id ?? 0]: role?.project_role_name ?? "N/A",
     }),
     {}
   );
@@ -122,7 +122,7 @@ const ProjectTeamTable = ({
   const roleDescriptions = data.moped_project_roles.reduce(
     (acc, role) => ({
       ...acc,
-      [role.project_role_id]: role.project_role_description,
+      [role?.project_role_id ?? 0]: role?.project_role_description ?? "N/A",
     }),
     {}
   );
