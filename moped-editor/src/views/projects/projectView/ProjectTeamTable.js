@@ -144,7 +144,7 @@ const ProjectTeamTable = ({
    */
   const getPersonnelName = id => {
     const user = getUserById(id);
-    return `${user.first_name} ${user.last_name}`;
+    return `${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`;
   };
 
   /**
