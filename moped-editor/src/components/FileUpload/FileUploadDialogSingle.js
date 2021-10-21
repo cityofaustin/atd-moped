@@ -106,7 +106,7 @@ const FileUploadDialogSingle = props => {
    */
   const clearState = () => {
     setFileName(null);
-    setFileType(null);
+    setFileType('');
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
