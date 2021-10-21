@@ -36,7 +36,9 @@ function build_editor() {
 
 function clone_hasura_repo() {
   git clone https://github.com/hasura/graphql-engine-heroku;
-  sed -ri "s/(2\...?\...?)/1.3.3/g" "graphql-engine-heroku/Dockerfile";
+  echo graphql-engine-heroku/Dockerfile;
+  head -1 graphql-engine-heroku/Dockerfile;
+  sed -ri "s/(2\...?\...?)/1.3.3/g" graphql-engine-heroku/Dockerfile;
 }
 
 function heroku_commit_and_push() {
