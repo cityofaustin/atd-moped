@@ -154,7 +154,7 @@ const ProjectTeamTable = ({
    */
   const getPersonnelWorkgroup = id => {
     const user = getUserById(id);
-    return workgroups[user.workgroup_id];
+    return workgroups[user?.workgroup_id ?? 0];
   };
 
   /**
