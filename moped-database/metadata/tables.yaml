@@ -3852,6 +3852,7 @@
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3879,6 +3880,7 @@
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3906,6 +3908,7 @@
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       allow_aggregations: true
   update_permissions:

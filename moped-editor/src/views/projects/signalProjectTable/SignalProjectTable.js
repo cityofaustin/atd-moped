@@ -1,20 +1,27 @@
 import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
-// Material
-import { CardContent, Grid, Typography } from "@material-ui/core";
+import {
+  CardContent,
+  CircularProgress,
+  Grid,
+  Typography,
+} from "@material-ui/core";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
-import Page from "src/components/Page";
+import { NavLink as RouterLink } from "react-router-dom";
 
+import Page from "src/components/Page";
 import typography from "../../../theme/typography";
+import { SIGNAL_PROJECTS_QUERY } from "../../../queries/signals";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 const SignalProjectTable = () => {
-  // todo: signal projects query
-  // const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
-  //   // sending a null projectId will cause a graphql error
-  //   // id 0 used when creating a new project, no project personnel will be returned
-  //   variables: { projectId: projectId ?? 0 },
-  //   fetchPolicy: "no-cache",
-  // });
+  const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
+    fetchPolicy: "no-cache",
+  });
+
+  console.log(data, loading, error);
+
+  if (loading || !data) return <CircularProgress />;
 
   /**
    * Column configuration for <MaterialTable>
@@ -23,7 +30,15 @@ const SignalProjectTable = () => {
     {
       title: "Project name",
       field: "project_name", // clicking on this should be a link to the project
-      // render: entry => <Typography>{entry.project_name}</Typography>,
+      render: entry => (
+        <RouterLink
+          to={`/projects/${entry.project_id}/`}
+          // state={jsonValues.state}
+          className={"MuiTypography-colorPrimary"}
+        >
+          {entry.project_name}
+        </RouterLink>
+      ),
     },
     {
       title: "Signal IDs",
@@ -69,6 +84,11 @@ const SignalProjectTable = () => {
     {
       title: "Last modified",
       field: "last_modified",
+      editable: "never",
+      render: entry =>
+        new Date(entry.updated_at).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
     },
   ];
 
@@ -76,25 +96,10 @@ const SignalProjectTable = () => {
    * Data handlers for editable actions based on isNewProject boolean <MaterialTable>
    */
   const projectActions = {
-    add: newData => {
-      console.log(newData);
-      // const personnelData = newData.role_id.map((roleId, index) => {
-      //   return {
-      //     project_id: Number.parseInt(projectId),
-      //     user_id: newData.user_id,
-      //     role_id: roleId,
-      //     status_id: 1,
-      //     notes: index === 0 ? newData.notes : "",
-      //   };
-      // });
+    // add: newData => {
+    //   console.log(newData);
 
-      // // Upsert as usual
-      // upsertProjectPersonnel({
-      //   variables: {
-      //     objects: personnelData,
-      //   },
-      // });
-    },
+    // },
     update: (newData, oldData) => {
       console.log(newData, oldData);
       // // Creates a set of tuples that contain the user id and the role comprised by the new state
@@ -148,60 +153,27 @@ const SignalProjectTable = () => {
       //   },
       // });
     },
-    delete: oldData => {
-      console.log("deleting ", oldData);
-      // // We will soft delete by marking as "status_id"
-      // const updatedPersonnelData = oldData.role_id.map((roleId, index) => {
-      //   return {
-      //     project_id: Number.parseInt(projectId),
-      //     user_id: oldData.user_id,
-      //     role_id: roleId,
-      //     status_id: 0,
-      //     notes: index === 0 ? oldData.notes : "",
-      //   };
-      // });
-
-      // // Upsert as usual
-      // upsertProjectPersonnel({
-      //   variables: {
-      //     objects: updatedPersonnelData,
-      //   },
-      // });
-    },
   };
 
-  const data = [
-    {
-      project_name: "My project",
-      signal_ids: 44, // is this a string or number
-      project_type: "Signal - Mod",
-      current_phase: "",
-      task_order: "34FTJSDL:",
-      contractor: "Name",
-      status_update: "this is a status update",
-      funding_source: "2016 Bond - Safety",
-      project_do: "190911 13453",
-      project_sponsor: "Private Development",
-      moped_phase: "10/12/2021",
-      last_modified: "10/18/2021",
-    },
-    {
-      project_name: "Your project",
-      signal_ids: 66, // is this a string or number
-      project_type: "Signal - Mod",
-      current_phase: "",
-      task_order: "34FTJSDL:",
-      contractor: "Name",
-      status_update: "this is a status update",
-      funding_source: "2016 Bond - Safety",
-      project_do: "190911 13453",
-      project_sponsor: "Private Development",
-      moped_phase: "10/12/2021",
-      last_modified: "10/18/2021",
-    },
-  ];
+  // const data = [
+  //   {
+  //     project_name: "My project",
+  //     project_id: 123,
+  //     signal_ids: 44, // is this a string or number
+  //     project_type: "Signal - Mod",
+  //     current_phase: "",
+  //     task_order: "34FTJSDL:",
+  //     contractor: "Name",
+  //     status_update: "this is a status update",
+  //     funding_source: "2016 Bond - Safety",
+  //     project_do: "190911 13453",
+  //     project_sponsor: "Private Development",
+  //     moped_phase: "10/12/2021",
+  //     last_modified: "10/18/2021",
+  //   }
+  // ];
 
-  console.log(data);
+  console.log("data ", data);
 
   return (
     <CardContent>
@@ -223,7 +195,6 @@ const SignalProjectTable = () => {
                   />
                 ),
                 Action: props => {
-                  console.log("ACTION ", props);
                   // If isn't the add action
                   if (
                     typeof props.action === typeof Function ||
@@ -247,17 +218,16 @@ const SignalProjectTable = () => {
                   }
                 },
               }}
-              data={data}
+              data={data.moped_project}
               title={
                 <Typography variant="h2" color="primary">
                   Signals Table
                 </Typography>
               }
               options={{
-                paging: false,
-                /*...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && {
+                ...(data.moped_project.length < PAGING_DEFAULT_COUNT + 1 && {
                   paging: false,
-                }), */
+                }),
                 search: false, // assuming this is false to match other material tables
                 rowStyle: { fontFamily: typography.fontFamily },
                 actionsColumnIndex: -1,
