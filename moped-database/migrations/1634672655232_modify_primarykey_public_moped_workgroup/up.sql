@@ -31,5 +31,6 @@ INSERT INTO "public"."moped_workgroup" (workgroup_id, workgroup_name, workgroup_
   (18, 'Other', NULL, NULL),
   (24, 'Neighborhood Partnering', NULL, 3),
   (25, 'Project Delivery', NULL, 1),
-  (26, 'Shared Mobility', NULL, 1);
+  (26, 'Shared Mobility', NULL, 1)
+ON CONFLICT DO NOTHING;
 
