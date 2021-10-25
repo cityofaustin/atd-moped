@@ -291,37 +291,65 @@
 - table:
     schema: public
     name: moped_entity
+  array_relationships:
+  - name: entity_department
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_department
+        column_mapping:
+          department_id: department_id
+  - name: entity_organization
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_organization
+        column_mapping:
+          organization_id: organization_id
+  - name: entity_workgroup
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_workgroup
+        column_mapping:
+          workgroup_id: workgroup_id
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
       - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - entity_name
       - entity_id
-      - affiliated_workgroup
+      - workgroup_id
       - date_added
+      - organization_id
+      - department_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - department_id
       - entity_id
-      - affiliated_workgroup
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
+      - entity_uuid
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -329,10 +357,11 @@
   - role: moped-editor
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -340,22 +369,24 @@
   - role: moped-viewer
     permission:
       columns:
-      - entity_uuid
-      - workgroup_name
-      - abbreviated_name
+      - department_id
       - entity_id
-      - affiliated_workgroup
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
+      - entity_uuid
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -363,10 +394,11 @@
   - role: moped-editor
     permission:
       columns:
-      - affiliated_workgroup
+      - department_id
       - entity_id
-      - abbreviated_name
-      - workgroup_name
+      - organization_id
+      - workgroup_id
+      - entity_name
       - date_added
       - entity_uuid
       filter: {}
@@ -692,6 +724,9 @@
       - milestone_name
       filter: {}
       check: {}
+- table:
+    schema: public
+    name: moped_organization
 - table:
     schema: public
     name: moped_phases
@@ -3109,163 +3144,6 @@
         - phase_name
         - phase_status
         - date_added
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - value: activity_log
-      name: MOPED_API_EVENT_NAME
-- table:
-    schema: public
-    name: moped_proj_sponsors
-  insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-editor
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      allow_aggregations: true
-  - role: moped-viewer
-    permission:
-      columns:
-      - sponsor_name
-      - sponsor_context
-      - sponsor_context_file
-      - date_added
-      - project_sponsor_id
-      - sponsor_description
-      - sponsor_website
-      - is_external_sponsor
-      - sponsor_allocation
-      - entity_id
-      - project_id
-      - added_by
-      filter: {}
-      allow_aggregations: true
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      check: null
-  - role: moped-editor
-    permission:
-      columns:
-      - is_external_sponsor
-      - sponsor_allocation
-      - added_by
-      - entity_id
-      - project_id
-      - sponsor_context
-      - sponsor_context_file
-      - sponsor_description
-      - sponsor_name
-      - sponsor_website
-      - date_added
-      - project_sponsor_id
-      filter: {}
-      check: null
-  event_triggers:
-  - name: activity_log_moped_proj_sponsors
-    definition:
-      enable_manual: false
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - is_external_sponsor
-        - sponsor_allocation
-        - added_by
-        - entity_id
-        - project_id
-        - sponsor_context
-        - sponsor_context_file
-        - sponsor_description
-        - sponsor_name
-        - sponsor_website
-        - date_added
-        - project_sponsor_id
     retry_conf:
       num_retries: 0
       interval_sec: 10
