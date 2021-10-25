@@ -103,6 +103,7 @@ const ProjectComments = () => {
         ...noteTypeConditions,
       },
     },
+    fetchPolicy: "no-cache",
   });
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {

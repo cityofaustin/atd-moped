@@ -62,7 +62,7 @@ jobs:
       - name: "Install CLI Requirements: Heroku, Hasura"
         run: |
           curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | VERSION=v1.3.3 bash
       # Run the shell commands using the AWS environment variables
       - name: "Moped Database: Re-deploy"
         env:
