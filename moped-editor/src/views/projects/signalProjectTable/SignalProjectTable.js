@@ -11,7 +11,10 @@ import { NavLink as RouterLink } from "react-router-dom";
 
 import Page from "src/components/Page";
 import typography from "../../../theme/typography";
-import { SIGNAL_PROJECTS_QUERY } from "../../../queries/signals";
+import {
+  SIGNAL_PROJECTS_QUERY,
+  UPDATE_SIGNAL_PROJECT,
+} from "../../../queries/signals";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 const SignalProjectTable = () => {
@@ -19,7 +22,7 @@ const SignalProjectTable = () => {
     fetchPolicy: "no-cache",
   });
 
-  console.log(data, loading, error);
+  const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -92,65 +95,34 @@ const SignalProjectTable = () => {
     },
   ];
 
-  /**
-   * Data handlers for editable actions based on isNewProject boolean <MaterialTable>
-   */
   const projectActions = {
-    // add: newData => {
-    //   console.log(newData);
-
-    // },
     update: (newData, oldData) => {
-      console.log(newData, oldData);
-      // // Creates a set of tuples that contain the user id and the role comprised by the new state
-      // const newStateTuples = newData.role_id.map(role_id => [
-      //   newData.user_id,
-      //   role_id,
-      // ]);
+      console.log("newData ", newData);
+      console.log("oldData ", oldData);
+      // initialize update object with old data
+      const updatedProjectObject = {
+        ...oldData,
+      };
+      // Array of differences between new and old data
+      let differences = Object.keys(oldData).filter(
+        key => oldData[key] !== newData[key]
+      );
 
-      // // Creates a set of tuples that contain the user id and role comprised by the old state
-      // const oldStateTuples = oldData.role_id.map(role_id => [
-      //   oldData.user_id,
-      //   role_id,
-      // ]);
+      // Loop through the differences and assign newData values.
+      differences.forEach(diff => {
+        updatedProjectObject[diff] = newData[diff];
+      });
 
-      // /**
-      //  * From the old state, we need to remove the tuples that are not present
-      //  * in the new state, these tuples are 'orphans' and need to be archived.
-      //  */
-      // const orphanData = oldStateTuples.filter(
-      //   oldTuple => !tuplesContain(newStateTuples, oldTuple)
-      // );
+      // Remove extraneous fields given by MaterialTable that
+      // Hasura doesn't need
+      delete updatedProjectObject.tableData;
+      delete updatedProjectObject.project_id;
+      delete updatedProjectObject.__typename;
 
-      // *
-      //  * We must build a unique set of tuples so that there are no repeated
-      //  * operations run against the database
+      console.log(updatedProjectObject)
 
-      // const uniqueSetOfTuples = [...newStateTuples, ...oldStateTuples].reduce(
-      //   (accumulator, item) => {
-      //     if (!tuplesContain(accumulator, item)) accumulator.push(item);
-      //     return accumulator;
-      //   },
-      //   []
-      // );
-
-      // // Removed ids means they are not present in new data,
-      // const updatedPersonnelData = uniqueSetOfTuples.map(
-      //   (currentTuple, index) => {
-      //     return {
-      //       project_id: Number.parseInt(projectId),
-      //       user_id: currentTuple[0],
-      //       role_id: currentTuple[1],
-      //       status_id: tuplesContain(orphanData, currentTuple) ? 0 : 1,
-      //       notes: index === 0 ? newData.notes : "",
-      //     };
-      //   }
-      // );
-
-      // upsertProjectPersonnel({
-      //   variables: {
-      //     objects: updatedPersonnelData,
-      //   },
+      // updateSignalProject({
+      //   variables: updatedProjectObject,
       // });
     },
   };
@@ -238,30 +210,12 @@ const SignalProjectTable = () => {
                 },
               }}
               editable={{
-                onRowAdd: newData =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      projectActions.add(newData);
-
-                      //setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
                 onRowUpdate: (newData, oldData) =>
                   new Promise((resolve, reject) => {
                     setTimeout(() => {
                       projectActions.update(newData, oldData);
 
-                      //setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
-                onRowDelete: oldData =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      projectActions.delete(oldData);
-
-                      //setTimeout(() => refetch(), 501);
+                      setTimeout(() => refetch(), 501);
                       resolve();
                     }, 500);
                   }),
@@ -274,13 +228,17 @@ const SignalProjectTable = () => {
                   columnDef
                 ) => {
                   return new Promise((resolve, reject) => {
-                    console.log(
-                      "newValue: " + newValue,
-                      oldValue,
-                      rowData,
-                      columnDef
-                    );
-                    setTimeout(resolve, 1000);
+                    setTimeout(() => {
+                      // projectActions.update(newValue, oldValue);
+                      console.log(
+                        "newValue: " + newValue,
+                        oldValue,
+                        rowData,
+                        columnDef
+                      );
+                      setTimeout(() => refetch(), 501);
+                      resolve();
+                    }, 500);
                   });
                 },
               }}
