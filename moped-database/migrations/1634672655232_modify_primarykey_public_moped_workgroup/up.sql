@@ -35,7 +35,7 @@ INSERT INTO "public"."moped_workgroup" (
     (18, 'Other', NULL, NULL),
     (24, 'Neighborhood Partnering', NULL, 3),
     (25, 'Project Delivery', NULL, 1),
-    (26, 'Shared Mobility', NULL, 1),
+    (26, 'Shared Mobility', NULL, 1)
   ON CONFLICT ON CONSTRAINT moped_workgroup_workgroup_id_key
     DO 
       UPDATE SET workgroup_abbreviation = EXCLUDED.workgroup_abbreviation;
