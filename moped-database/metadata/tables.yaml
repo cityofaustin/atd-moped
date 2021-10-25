@@ -3656,6 +3656,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3683,6 +3684,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3710,6 +3712,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3738,6 +3741,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3766,6 +3770,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3795,6 +3800,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
@@ -3822,6 +3828,7 @@
       columns:
       - added_by
       - capitally_funded
+      - contractor
       - current_phase
       - current_status
       - date_added
