@@ -7,8 +7,11 @@ import {
   DialogTitle,
   Grid,
   Icon,
-  InputAdornment,
   TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import FileUpload from "./FileUpload";
 
@@ -28,11 +31,11 @@ const useStyles = makeStyles(theme => ({
   textField: {
     marginTop: "1rem",
   },
-  textFieldAdornment: {
-    position: "relative",
-    top: "-1.6rem",
+  selectField: {
+    marginTop: "1rem",
+    width: "200px",
   },
-  textFieldAdornmentColor: {
+  inputFieldAdornmentColor: {
     color: "grey",
   },
 }));
@@ -42,12 +45,14 @@ const FileUploadDialogSingle = props => {
 
   /**
    * @constant {string} fileName - Contains a human-readable file name
+   * @constant {string} fileType- Contains an integer representing file type
    * @constant {string} fileDescription - Contains a human-readable file description
    * @constant {string} fileKey - The location of the file in S3
    * @constant {Object} fileObject - Contains the file object, including metadata.
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
    */
   const [fileName, setFileName] = useState(null);
+  const [fileType, setFileType] = useState('');
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
@@ -89,10 +94,19 @@ const FileUploadDialogSingle = props => {
   };
 
   /**
+   * Handles the file type changes
+   * @param {Object} e - The event object
+   */
+  const handleFileTypeChange = e => {
+    setFileType(e.target.value);
+  };
+
+  /**
    * Resets all the values in the file upload component
    */
   const clearState = () => {
     setFileName(null);
+    setFileType('');
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
@@ -113,6 +127,7 @@ const FileUploadDialogSingle = props => {
   const handleSaveFile = () => {
     const fileBundle = {
       name: fileName,
+      type: fileType,
       description: fileDescription,
       key: fileKey,
       file: fileObject,
@@ -141,14 +156,14 @@ const FileUploadDialogSingle = props => {
   /**
    * This side effect checks if the save button should be disabled.
    * This is done by checking the state every time there is a
-   * change in the field name, description, file object, and
+   * change in the field name, file type, description, file object, and
    * file key state.
    */
   useEffect(() => {
     // Determine if the file is ready to be saved to DB
     const saveDisabled =
       fieldLength(fileName) === 0 ||
-      fieldLength(fileDescription) === 0 ||
+      !Number.isInteger(fileType) || 
       fieldLength(fileKey) === 0 ||
       fileObject === null;
 
@@ -161,7 +176,7 @@ const FileUploadDialogSingle = props => {
     if(saveDisabled && fileReady) {
       setFileReady(false);
     }
-  }, [fileName, fileDescription, fileKey, fileObject, fileReady]);
+  }, [fileName, fileType, fileDescription, fileKey, fileObject, fileReady]);
 
 
   return (
@@ -185,18 +200,24 @@ const FileUploadDialogSingle = props => {
               rowsMax={1}
               value={null}
               onChange={handleFileNameChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    className={classes.textFieldAdornmentColor}
-                  >
-                    <Icon>info</Icon>
-                  </InputAdornment>
-                ),
-              }}
               fullWidth
             />
+
+            <FormControl >
+              <InputLabel>Type</InputLabel>
+              <Select  
+                className={classes.selectField}
+                value={fileType}
+                label="Type"
+                onChange={handleFileTypeChange}
+              >
+                <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
+                <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
+                <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
+                <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
+              </Select>
+            </FormControl>
+
             <TextField
               className={classes.textField}
               id="standard-multiline-static"
@@ -205,16 +226,6 @@ const FileUploadDialogSingle = props => {
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment
-                    position="start"
-                    className={`${classes.textFieldAdornment} ${classes.textFieldAdornmentColor}`}
-                  >
-                    <Icon>textsms</Icon>
-                  </InputAdornment>
-                ),
-              }}
               fullWidth
             />
           </Grid>
