@@ -38,19 +38,5 @@ INSERT INTO "public"."moped_workgroup" (
     (26, 'Shared Mobility', NULL, 1),
   ON CONFLICT ON CONSTRAINT moped_workgroup_workgroup_id_key
     DO 
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'ATSD' where workgroup_id = 1;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'AMD' where workgroup_id = 2;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'DTS' where workgroup_id = 3;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'HR' where workgroup_id = 5;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'OSE' where workgroup_id = 6;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'OOD' where workgroup_id = 7;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'PE' where workgroup_id = 8;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'PIO' where workgroup_id = 10;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'ROW' where workgroup_id = 11;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SAM' where workgroup_id = 12;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SM' where workgroup_id = 13;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SD' where workgroup_id = 14;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'TE' where workgroup_id = 15;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'TDS' where workgroup_id = 16;
-      UPDATE public.moped_workgroup SET workgroup_abbreviation = 'VZ' where workgroup_id = 17;
+      UPDATE SET workgroup_abbreviation = EXCLUDED.workgroup_abbreviation;
 
