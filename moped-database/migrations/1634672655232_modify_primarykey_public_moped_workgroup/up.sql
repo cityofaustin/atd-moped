@@ -4,28 +4,32 @@ alter table "public"."moped_workgroup"
 
 -- Add workgroup abbreviations
 
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'ATSD' where workgroup_id = 1;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'AMD' where workgroup_id = 2;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'DTS' where workgroup_id = 3;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'HR' where workgroup_id = 5;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'OSE' where workgroup_id = 6;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'OOD' where workgroup_id = 7;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'PE' where workgroup_id = 8;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'PIO' where workgroup_id = 10;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'ROW' where workgroup_id = 11;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SAM' where workgroup_id = 12;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SM' where workgroup_id = 13;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SD' where workgroup_id = 14;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'TE' where workgroup_id = 15;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'TDS' where workgroup_id = 16;
-UPDATE public.moped_workgroup SET workgroup_abbreviation = 'VZ' where workgroup_id = 17;
 UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SRTS' where workgroup_id = 20;
 UPDATE public.moped_workgroup SET workgroup_abbreviation = 'CPO' where workgroup_id = 21;
 UPDATE public.moped_workgroup SET workgroup_abbreviation = 'SSP' where workgroup_id = 22;
 
+
 INSERT INTO "public"."moped_workgroup" (workgroup_id, workgroup_name, workgroup_abbreviation, department_id)
-  VALUES 
-  (24, 'Neighborhood Planning', NULL, 3), 
+  VALUES
+  (1, 'Active Transportation & Street Design', 'ATSD', 1),
+  (2, 'Arterial Management', 'AMD', 1),
+  (3, 'Data & Technology Services', 'DTS', 1),
+  (4, 'Finance', NULL, 1),
+  (5, 'Human Resources', 'HR', 1),
+  (6, 'Office of Special Events', 'OSE', 1),
+  (7, 'Office of the Director', 'OOD', 1),
+  (8, 'Parking Enterprise', 'PE', 1),
+  (9, 'Parking Meters', NULL, 1),
+  (10, 'Public Information Office', 'PIO', 1),
+  (11, 'Right-of-Way', 'ROW', 1),
+  (12, 'Signs & Markings', 'SAM', 1),
+  (13, 'Smart Mobility', 'SM', 1),
+  (14, 'Systems Development', 'SD', 1),
+  (15, 'Transportation Engineering', 'TE', 1),
+  (16, 'Transportation Development Services', 'TDS', 1),
+  (17, 'Vision Zero', 'VZ', 1),
+  (18, 'Other', NULL, NULL),
+  (24, 'Neighborhood Partnering', NULL, 3),
   (25, 'Project Delivery', NULL, 1),
-  (26, 'Shared Mobility', NULL, 1)
+  (26, 'Shared Mobility', NULL, 1);
 
