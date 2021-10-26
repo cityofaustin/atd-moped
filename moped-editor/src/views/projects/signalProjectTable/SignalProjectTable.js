@@ -28,7 +28,7 @@ const SignalProjectTable = () => {
   if (loading || !data) return <CircularProgress />;
 
   // For each signal entry -- is this woefully inefficient?
-  data.moped_project.map(project => {
+  data.moped_project.forEach(project => {
     project["status_update"] = "yo"
     if (project?.moped_proj_notes?.length) {
       const note = project.moped_proj_notes[0]["project_note"]
