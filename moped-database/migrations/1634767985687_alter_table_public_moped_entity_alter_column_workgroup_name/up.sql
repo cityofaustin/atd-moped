@@ -2,7 +2,7 @@ alter table "public"."moped_entity" rename column "workgroup_name" to "entity_na
 
 
 INSERT INTO "public"."moped_entity"(entity_id, entity_name, organization_id, department_id, workgroup_id)
-VALUES (1, 'COA ATD', 1, 1, NULL),
+VALUES 
        (2, 'COA ATD Active Transportation & Street Design', 1, 1, 1),
        (3, 'COA ATD Arterial Management', 1, 1, 2),
        (4, 'COA ATD Development Review', 1, 1, 16),
