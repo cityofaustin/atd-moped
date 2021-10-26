@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow } from "material-table";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import Page from "src/components/Page";
@@ -23,7 +23,6 @@ const SignalProjectTable = () => {
   });
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
-  console.log(loading, data)
 
   if (loading || !data) return <CircularProgress />;
   if (error) console.log(error);
@@ -50,7 +49,7 @@ const SignalProjectTable = () => {
       title: "Signal IDs",
       field: "signal_ids",
       type: "numeric",
-      // would these link to the knack page for the signal? 
+      // would these link to the knack page for the signal?
       // https://atd.knack.com/amd#projects/signal-details/5817c079e052e0422be6c40a/
     },
     {
@@ -60,6 +59,7 @@ const SignalProjectTable = () => {
     {
       title: "Current phase",
       field: "current_phase", // updating current phase happens now in the timeline, we actually pull the wrong one
+      editable: "never",
     },
     {
       title: "Task order",
@@ -88,6 +88,7 @@ const SignalProjectTable = () => {
     {
       title: "Targeted construction start",
       field: "moped_phase", // moped_proj_phases where phase = Construction, display the phase start date, otherwise leave blank
+      editable: "never",
     },
     {
       title: "Last modified",
@@ -102,8 +103,6 @@ const SignalProjectTable = () => {
 
   const projectActions = {
     update: (newData, oldData) => {
-      console.log("newData ", newData);
-      console.log("oldData ", oldData);
       // initialize update object with old data
       const updatedProjectObject = {
         ...oldData,
@@ -121,34 +120,28 @@ const SignalProjectTable = () => {
       // Remove extraneous fields given by MaterialTable that
       // Hasura doesn't need
       delete updatedProjectObject.tableData;
-      delete updatedProjectObject.project_id;
       delete updatedProjectObject.__typename;
 
-      console.log('upo: ', updatedProjectObject)
+      updateSignalProject({
+        variables: updatedProjectObject,
+      });
+    },
+    cellUpdate: (newData, oldData, rowData, columnDef) => {
+      const updatedProjectObject = {
+        ...rowData,
+      };
+      updatedProjectObject[columnDef.field] = newData;
 
-      // updateSignalProject({
-      //   variables: updatedProjectObject,
-      // });
+      // Remove extraneous fields given by MaterialTable that
+      // Hasura doesn't need
+      delete updatedProjectObject.tableData;
+      delete updatedProjectObject.__typename;
+
+      updateSignalProject({
+        variables: updatedProjectObject,
+      });
     },
   };
-
-  // const data = [
-  //   {
-  //     project_name: "My project",
-  //     project_id: 123,
-  //     signal_ids: 44, // is this a string or number
-  //     project_type: "Signal - Mod",
-  //     current_phase: "",
-  //     task_order: "34FTJSDL:",
-  //     contractor: "Name",
-  //     status_update: "this is a status update",
-  //     funding_source: "2016 Bond - Safety",
-  //     project_do: "190911 13453",
-  //     project_sponsor: "Private Development",
-  //     moped_phase: "10/12/2021",
-  //     last_modified: "10/18/2021",
-  //   }
-  // ];
 
   console.log("data ", data);
 
@@ -171,29 +164,29 @@ const SignalProjectTable = () => {
                     }}
                   />
                 ),
-                Action: props => {
-                  // If isn't the add action
-                  if (
-                    typeof props.action === typeof Function ||
-                    props.action.tooltip !== "Add"
-                  ) {
-                    return <MTableAction {...props} />;
-                  } else {
-                    return (
-                      <div>+</div>
-                      // <Button
-                      //   variant="contained"
-                      //   color="primary"
-                      //   size="large"
-                      //   startIcon={<AddCircleIcon />}
-                      //   ref={addActionRef}
-                      //   onClick={props.action.onClick}
-                      // >
-                      //   Add team member
-                      // </Button>
-                    );
-                  }
-                },
+                // Action: props => {
+                //   // If isn't the add action
+                //   if (
+                //     typeof props.action === typeof Function ||
+                //     props.action.tooltip !== "Add"
+                //   ) {
+                //     return <MTableAction {...props} />;
+                //   } else {
+                //     return (
+                //       <div>+</div>
+                //       // <Button
+                //       //   variant="contained"
+                //       //   color="primary"
+                //       //   size="large"
+                //       //   startIcon={<AddCircleIcon />}
+                //       //   ref={addActionRef}
+                //       //   onClick={props.action.onClick}
+                //       // >
+                //       //   Add team member
+                //       // </Button>
+                //     );
+                //   }
+                // },
               }}
               data={data.moped_project}
               title={
@@ -234,13 +227,7 @@ const SignalProjectTable = () => {
                 ) => {
                   return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      // projectActions.update(newValue, oldValue);
-                      console.log(
-                        "newValue: " + newValue,
-                        oldValue,
-                        rowData,
-                        columnDef
-                      );
+                      projectActions.cellUpdate(newValue, oldValue, rowData, columnDef);
                       setTimeout(() => refetch(), 501);
                       resolve();
                     }, 500);

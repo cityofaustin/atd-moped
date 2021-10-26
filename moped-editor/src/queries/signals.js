@@ -15,10 +15,12 @@ export const SIGNAL_PROJECTS_QUERY = gql`
 export const UPDATE_SIGNAL_PROJECT = gql`
   mutation SignalProjectMutation(
     $project_id: Int!
+    $contractor: String
   ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $project_id }
       _set: {
+        contractor: $contractor
       }
     ) {
       project_id
