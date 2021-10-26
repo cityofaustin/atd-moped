@@ -8,6 +8,13 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_name
       updated_at
       contractor
+      moped_proj_notes(
+        where: { project_note_type: { _eq: 2 } }
+        order_by: { date_created: desc }
+      ) {
+        project_note_id
+        project_note
+      }
     }
   }
 `;

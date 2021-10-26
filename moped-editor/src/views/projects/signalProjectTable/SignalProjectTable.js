@@ -24,8 +24,18 @@ const SignalProjectTable = () => {
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
 
-  if (loading || !data) return <CircularProgress />;
   if (error) console.log(error);
+  if (loading || !data) return <CircularProgress />;
+
+  // For each signal entry -- is this woefully inefficient?
+  data.moped_project.map(project => {
+    project["status_update"] = "yo"
+    if (project?.moped_proj_notes?.length) {
+      const note = project.moped_proj_notes[0]["project_note"]
+      // Remove any HTML tags
+      project["status_update"] = note ? String(note).replace(/(<([^>]+)>)/gi, "") : "";
+    }
+  });
 
   /**
    * Column configuration for <MaterialTable>
@@ -72,6 +82,7 @@ const SignalProjectTable = () => {
     {
       title: "Internal status note",
       field: "status_update", // Status update (from Project details page)
+      editable: "never",
     },
     {
       title: "Funding source",
@@ -154,7 +165,7 @@ const SignalProjectTable = () => {
               columns={columns}
               components={{
                 EditRow: props => (
-                  <MTableEditRow
+                  <MTableEditRow // if its not editable, its coming out with wrong typography
                     {...props}
                     onKeyDown={e => {
                       if (e.keyCode === 13) {
