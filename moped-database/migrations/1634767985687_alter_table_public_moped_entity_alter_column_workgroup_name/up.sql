@@ -1,8 +1,8 @@
 alter table "public"."moped_entity" rename column "workgroup_name" to "entity_name";
 
-
+-- Handle updating existing row in production and inserting row in local database instances
 INSERT INTO "public"."moped_entity"(entity_id, entity_name, organization_id, department_id, workgroup_id)
-VALUES (1, 'COA ATD', 1, 1, NULL),
+VALUES (1, 'COA ATD', 1, 1, null),
        (2, 'COA ATD Active Transportation & Street Design', 1, 1, 1),
        (3, 'COA ATD Arterial Management', 1, 1, 2),
        (4, 'COA ATD Development Review', 1, 1, 16),
@@ -37,4 +37,10 @@ VALUES (1, 'COA ATD', 1, 1, NULL),
        (33, 'Private Developer', 9, NULL, NULL),
        (34, 'Private Partner', 10, NULL, NULL),
        (35, 'Private Partner - Hill Country Conservancy', 11, NULL, NULL),
-       (36, 'Private Partner - Mueller Foundation', 12, NULL, NULL);
+       (36, 'Private Partner - Mueller Foundation', 12, NULL, NULL)
+  ON CONFLICT ON CONSTRAINT moped_entities_entity_id_key
+    DO UPDATE SET
+        entity_name =  EXCLUDED.entity_name,
+        organization_id =  EXCLUDED.organization_id,
+        department_id =  EXCLUDED.department_id,
+        workgroup_id =  EXCLUDED.workgroup_id;
