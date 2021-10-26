@@ -15,6 +15,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         project_note_id
         project_note
       }
+      moped_proj_phases {
+        phase_name
+        phase_start
+      }
     }
   }
 `;

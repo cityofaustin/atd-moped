@@ -29,11 +29,27 @@ const SignalProjectTable = () => {
 
   // For each signal entry -- is this woefully inefficient?
   data.moped_project.forEach(project => {
-    project["status_update"] = "yo"
+    // project status update equivalent to most recent project note
+    project["status_update"] = "";
     if (project?.moped_proj_notes?.length) {
-      const note = project.moped_proj_notes[0]["project_note"]
+      const note = project.moped_proj_notes[0]["project_note"];
       // Remove any HTML tags
-      project["status_update"] = note ? String(note).replace(/(<([^>]+)>)/gi, "") : "";
+      project["status_update"] = note
+        ? String(note).replace(/(<([^>]+)>)/gi, "")
+        : "";
+    }
+
+    // Targeted Construction Start > moped_proj_phases where phase = Construction,
+    //display the phase start date, otherwise leave blank
+    project["construction_start"] = "";
+    if (project?.moped_proj_phases?.length) {
+      project["construction_start"] = "3/3/33";
+      const phase = project.moped_proj_phases.find(
+        p => p.phase_name === "construction"
+      );
+      if (phase) {
+        project["construction_start"] = phase.phase_start;
+      }
     }
   });
 
@@ -98,8 +114,12 @@ const SignalProjectTable = () => {
     },
     {
       title: "Targeted construction start",
-      field: "moped_phase", // moped_proj_phases where phase = Construction, display the phase start date, otherwise leave blank
+      field: "construction_start", // moped_proj_phases where phase = Construction, display the phase start date, otherwise leave blank
       editable: "never",
+      render: entry =>
+        new Date(entry.construction_start).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
     },
     {
       title: "Last modified",
@@ -238,7 +258,12 @@ const SignalProjectTable = () => {
                 ) => {
                   return new Promise((resolve, reject) => {
                     setTimeout(() => {
-                      projectActions.cellUpdate(newValue, oldValue, rowData, columnDef);
+                      projectActions.cellUpdate(
+                        newValue,
+                        oldValue,
+                        rowData,
+                        columnDef
+                      );
                       setTimeout(() => refetch(), 501);
                       resolve();
                     }, 500);
