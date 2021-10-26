@@ -38,3 +38,5 @@ VALUES
        (34, 'Private Partner', 10, NULL, NULL),
        (35, 'Private Partner - Hill Country Conservancy', 11, NULL, NULL),
        (36, 'Private Partner - Mueller Foundation', 12, NULL, NULL);
+
+UPDATE "public"."moped_entity" SET entity_name = 'COA ATD', organization_id = 1, department_id = 1 where entity_id = 1;
