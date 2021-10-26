@@ -23,8 +23,10 @@ const SignalProjectTable = () => {
   });
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
+  console.log(loading, data)
 
   if (loading || !data) return <CircularProgress />;
+  if (error) console.log(error);
 
   /**
    * Column configuration for <MaterialTable>
@@ -32,7 +34,8 @@ const SignalProjectTable = () => {
   const columns = [
     {
       title: "Project name",
-      field: "project_name", // clicking on this should be a link to the project
+      field: "project_name",
+      editable: "never",
       render: entry => (
         <RouterLink
           to={`/projects/${entry.project_id}/`}
@@ -47,6 +50,8 @@ const SignalProjectTable = () => {
       title: "Signal IDs",
       field: "signal_ids",
       type: "numeric",
+      // would these link to the knack page for the signal? 
+      // https://atd.knack.com/amd#projects/signal-details/5817c079e052e0422be6c40a/
     },
     {
       title: "Project type",
@@ -54,15 +59,15 @@ const SignalProjectTable = () => {
     },
     {
       title: "Current phase",
-      field: "current_phase",
+      field: "current_phase", // updating current phase happens now in the timeline, we actually pull the wrong one
     },
     {
       title: "Task order",
       field: "task_order",
     },
     {
-      title: "Contractor",
-      field: "contractor", // new column in moped_proj
+      title: "Contractor/Contract",
+      field: "contractor",
     },
     {
       title: "Internal status note",
@@ -119,7 +124,7 @@ const SignalProjectTable = () => {
       delete updatedProjectObject.project_id;
       delete updatedProjectObject.__typename;
 
-      console.log(updatedProjectObject)
+      console.log('upo: ', updatedProjectObject)
 
       // updateSignalProject({
       //   variables: updatedProjectObject,
