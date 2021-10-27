@@ -19,6 +19,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_name
         phase_start
       }
+      moped_proj_features {
+        feature_id
+        location
+      }
     }
   }
 `;

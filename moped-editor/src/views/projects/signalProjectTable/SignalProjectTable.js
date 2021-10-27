@@ -24,10 +24,14 @@ const SignalProjectTable = () => {
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
 
-  if (error) console.log(error);
-  if (loading || !data) return <CircularProgress />;
+  if (error) {
+    console.log(error);
+  }
+  if (loading || !data) {
+    return <CircularProgress />;
+  }
 
-  // For each signal entry -- is this woefully inefficient?
+  // Assemble the data for each signal entry?
   data.moped_project.forEach(project => {
     // project status update equivalent to most recent project note
     project["status_update"] = "";
@@ -38,6 +42,16 @@ const SignalProjectTable = () => {
         ? String(note).replace(/(<([^>]+)>)/gi, "")
         : "";
     }
+
+    // Signal IDs
+    const signal_ids = [];
+    if (project?.moped_proj_features) {
+      console.log(project.moped_proj_features)
+      project.moped_proj_features.forEach(feature => {
+        signal_ids.push(feature?.location?.properties.signal_id)
+      })
+    }
+    project["signal_ids"] = signal_ids
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     //display the phase start date, otherwise leave blank
@@ -74,7 +88,7 @@ const SignalProjectTable = () => {
     {
       title: "Signal IDs",
       field: "signal_ids",
-      type: "numeric",
+      editable: "never"
       // would these link to the knack page for the signal?
       // https://atd.knack.com/amd#projects/signal-details/5817c079e052e0422be6c40a/
     },
