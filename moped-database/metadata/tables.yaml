@@ -3681,173 +3681,187 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       filter: {}
       check: {}
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
-      - project_uuid
-      - start_date
+      - project_sponsor
       - status_id
       - timeline_id
+      - ecapris_subproject_id
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - date_added
+      - updated_at
+      - project_uuid
       filter: {}
       check: {}
   event_triggers:
