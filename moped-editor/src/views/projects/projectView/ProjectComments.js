@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Page from "src/components/Page";
 import {
   Avatar,
@@ -14,9 +14,11 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
+  Button,
+  FormControlLabel,
 } from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+import EditIcon from "@material-ui/icons/EditOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
 import { getSessionDatabaseData, getHighestRole, useUser } from "src/auth/user";
@@ -25,6 +27,8 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
+
+import "./ProjectComments.css"
 
 // Query
 import {
@@ -41,15 +45,41 @@ const useStyles = makeStyles(theme => ({
   },
   commentorText: {
     display: "inline",
-    fontWeight: "bold",
+    fontWeight: 500,
   },
-  noteText: {
-    marginTop: theme.spacing(1),
+  commentDate: {
+    display: "inline",
+    fontSize: ".875rem",
+  },
+  editableComment: {
+    marginRight: "30px",
+  },
+  noteType: {
+    display: "inline",
+    marginLeft: "12px",
+    color: theme.palette.primary.main,
+    textTransform: "uppercase",
+    fontSize: ".875rem",
+    fontWeight: 500,
   },
   emptyState: {
     margin: theme.spacing(3),
   },
+  showButtonItem: {
+    margin: theme.spacing(2),
+  },
+  editControls: {
+    top: "0%",
+    marginTop: "25px",
+  },
+  editDeleteButtons: {
+    color: "#000000",
+  }
 }));
+
+ // Lookup array to convert project note types to a human readable interpretation 
+ // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
+const projectNoteTypes = ['', 'Internal Note', 'Status Update', 'Timeline Notes'];
 
 const ProjectComments = () => {
   const { projectId } = useParams();
@@ -62,9 +92,17 @@ const ProjectComments = () => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [noteType, setNoteType] = useState(0);
+  const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
-    variables: { projectId },
+    variables: {
+      projectNoteConditions: {
+        project_id: { _eq: Number(projectId) },
+        status_id: { _eq: Number(1) },
+        ...noteTypeConditions,
+      },
+    },
   });
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
@@ -98,12 +136,6 @@ const ProjectComments = () => {
     },
   });
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
-
-  if (error) return console.log(error);
-
   const submitNewComment = () => {
     setCommentAddLoading(true);
     addNewComment({
@@ -115,6 +147,7 @@ const ProjectComments = () => {
             project_id: projectId,
             status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
+            project_note_type: 1,
           },
         ],
       },
@@ -154,98 +187,54 @@ const ProjectComments = () => {
     });
   };
 
+  /**
+   * Updates the type based on conditions
+   * @param {Number} typeId
+   */
+  const filterNoteType = typeId => setNoteType(Number(typeId));
+
+  /**
+   * Whenever noteType changes, we change the query conditions
+   */
+  useEffect(() => {
+    if (noteType === 0) {
+      setNoteTypeConditions({});
+    } else {
+      setNoteTypeConditions({
+        project_note_type: { _eq: noteType },
+      });
+    }
+    refetch();
+  }, [noteType, setNoteTypeConditions, refetch]);
+
+  // If the query is loading or data object is undefined,
+  // stop here and just render the spinner.
+  if (loading || !data) return <CircularProgress />;
+  if (error) return console.log(error);
+
+  /**
+   * Defines the CommentButton with a toggle style-change behavior.
+   * @param {Object} props
+   * @return {JSX.Element}
+   * @constructor
+   */
+  const CommentButton = props => (
+    <Button
+      {...props}
+      color="primary"
+      className={classes.showButtonItem}
+      variant={noteType === props.noteTypeId ? "contained" : "outlined"}
+      onClick={() => filterNoteType(props.noteTypeId)}
+    >
+      {props.children}
+    </Button>
+  );
+
   return (
     <Page title="Project Notes">
       <Container>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Card>
-              {data.moped_proj_notes.length > 0 ? (
-                <List className={classes.root}>
-                  {data.moped_proj_notes.map((item, i) => {
-                    let isNotLastItem = i < data.moped_proj_notes.length - 1;
-                    return (
-                      <>
-                        <ListItem alignItems="flex-start">
-                          <ListItemAvatar>
-                            <Avatar />
-                          </ListItemAvatar>
-                          <ListItemText
-                            primary={
-                              <>
-                                <Typography className={classes.commentorText}>
-                                  {item.added_by}
-                                </Typography>
-                                <Typography variant="button">
-                                  {` - ${new Date(
-                                    item.date_created
-                                  ).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })}`}
-                                </Typography>
-                              </>
-                            }
-                            secondary={
-                              commentId === item.project_note_id ? (
-                                <CommentInputQuill
-                                  noteText={noteText}
-                                  setNoteText={setNoteText}
-                                  editingComment={editingComment}
-                                  commentAddLoading={commentAddLoading}
-                                  commentAddSuccess={commentAddSuccess}
-                                  submitNewComment={submitNewComment}
-                                  submitEditComment={submitEditComment}
-                                  cancelCommentEdit={cancelCommentEdit}
-                                />
-                              ) : (
-                                <Typography className={classes.newNoteText}>
-                                  {parse(item.project_note)}
-                                </Typography>
-                              )
-                            }
-                          />
-                          {// show edit/delete icons if comment authored by logged in user
-                          // or user is admin
-                          (userSessionData.user_id === item.added_by_user_id ||
-                            userHighestRole === "moped-admin") && (
-                            <ListItemSecondaryAction>
-                              {commentId !== item.project_note_id && (
-                                <IconButton
-                                  edge="end"
-                                  aria-label="edit"
-                                  onClick={() =>
-                                    editComment(i, item.project_note_id)
-                                  }
-                                >
-                                  <EditIcon />
-                                </IconButton>
-                              )}
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() =>
-                                  submitDeleteComment(item.project_note_id)
-                                }
-                              >
-                                <DeleteIcon />
-                              </IconButton>
-                            </ListItemSecondaryAction>
-                          )}
-                        </ListItem>
-                        {isNotLastItem && <Divider component="li" />}
-                      </>
-                    );
-                  })}
-                </List>
-              ) : (
-                <Typography className={classes.emptyState}>
-                  No comments to display
-                </Typography>
-              )}
-            </Card>
-          </Grid>
+          {/*New Note Form*/}
           {!editingComment && (
             <Grid item xs={12}>
               <Card>
@@ -262,6 +251,124 @@ const ProjectComments = () => {
               </Card>
             </Grid>
           )}
+          {/*First the Filter Buttons*/}
+          <Grid item xs={12}>
+            <FormControlLabel
+              className={classes.showButtonItem}
+              label="Show"
+              control={<span />}
+            />
+            <CommentButton noteTypeId={0}>All</CommentButton>
+            <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
+            <CommentButton noteTypeId={2}>Status Updates</CommentButton>
+            <CommentButton noteTypeId={3}>Timeline Notes</CommentButton>
+          </Grid>
+          {/*Now the notes*/}
+          <Grid item xs={12}>
+            <Card>
+              {data.moped_proj_notes.length > 0 ? (
+                <List className={classes.root}>
+                  {data.moped_proj_notes.map((item, i) => {
+                    let isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    let editableComment = (userSessionData.user_id === item.added_by_user_id ||
+                                           userHighestRole === "moped-admin");
+
+                    return (
+                      <>
+                        <ListItem alignItems="flex-start">
+                          <ListItemAvatar>
+                            <Avatar />
+                          </ListItemAvatar>
+                          <ListItemText
+                            className={editableComment ? classes.editableComment : ""}
+                            primary={
+                              <>
+                                <Typography className={classes.commentorText}>
+                                  {item.added_by}
+                                </Typography>
+                                <Typography className={classes.commentDate}>
+                                  {` - ${new Date(
+                                    item.date_created
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })} ${new Date(
+                                    item.date_created
+                                  ).toLocaleTimeString("en-US", {
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                  })}`}
+                                </Typography>
+                                <Typography className={classes.noteType}>
+                                  {` ${projectNoteTypes[item.project_note_type]}`}
+                                </Typography>
+                              </>
+                            }
+                            secondary={
+                              commentId === item.project_note_id ? (
+                                <CommentInputQuill
+                                  noteText={noteText}
+                                  setNoteText={setNoteText}
+                                  editingComment={editingComment}
+                                  commentAddLoading={commentAddLoading}
+                                  commentAddSuccess={commentAddSuccess}
+                                  submitNewComment={submitNewComment}
+                                  submitEditComment={submitEditComment}
+                                  cancelCommentEdit={cancelCommentEdit}
+                                />
+                              ) : (
+                                <Typography className={"noteBody"}>
+                                  {parse(item.project_note)}
+                                </Typography>
+                              )
+                            }
+                          />
+                          {// show edit/delete icons if comment authored by logged in user
+                          // or user is admin
+                          editableComment && (
+                            <ListItemSecondaryAction className={classes.editControls}>
+                              {commentId !== item.project_note_id && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="edit"
+                                  onClick={() =>
+                                    editComment(i, item.project_note_id)
+                                  }
+                                >
+                                  <EditIcon 
+                                    className={classes.editDeleteButtons}
+                                  />
+                                </IconButton>
+                              )}
+                              {!editingComment && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="delete"
+                                  onClick={() =>
+                                    submitDeleteComment(item.project_note_id)
+                                  }
+                                >
+                                  <DeleteIcon
+                                    className={classes.editDeleteButtons}
+                                  />
+                                </IconButton>
+                              )}
+                            </ListItemSecondaryAction>
+                          )}
+                        </ListItem>
+                        {isNotLastItem && <Divider component="li" />}
+                      </>
+                    );
+                  })}
+                </List>
+              ) : (
+                <Typography className={classes.emptyState}>
+                  No comments to display
+                </Typography>
+              )}
+            </Card>
+          </Grid>
         </Grid>
       </Container>
     </Page>

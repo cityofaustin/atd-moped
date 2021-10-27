@@ -95,7 +95,7 @@ const useStyles = makeStyles(theme => ({
 
 /**
  * The project component editor
- * @param {Number} componentId - The moped_proj_component id being edited
+ * @param {Number} componentId - The moped_proj_component id being edited. If adding new component, componentId is 0
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
@@ -117,6 +117,7 @@ const ProjectComponentEdit = ({
 
   /**
    * The State
+   * @type {Number} selectedComponentId - id of component chosen in dropdown
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
    * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
@@ -126,6 +127,8 @@ const ProjectComponentEdit = ({
    * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
    * @type {String} componentDescription - The description of this component
    * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
+   * @type {boolean} editPanelCollapsed - If true, component picking panel is collapsed
+   * @type {boolean} editPanelCollapsedShow - If true, component picking panel is showing
    * @constant
    */
   const [selectedComponentId, setSelectedComponentId] = useState(null);
@@ -139,6 +142,7 @@ const ProjectComponentEdit = ({
   const [editFeatureCollection, setEditFeatureCollection] = useState(
     emptyFeatureCollection
   );
+  const [drawLines, setDrawLines] = useState(null);
 
   const [componentDescription, setComponentDescription] = useState(null);
 
@@ -168,7 +172,7 @@ const ProjectComponentEdit = ({
   const { saveActionState, saveActionDispatch } = useSaveActionReducer();
 
   /**
-   * Generates an initial list of component types, subtypes and counts
+   * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
    */
   const initialTypeCounts = data // Do we have data?
     ? // Yes, let's get the counts by using reduce
@@ -273,8 +277,21 @@ const ProjectComponentEdit = ({
       ].sort()
     : [];
 
+  // list of components that are represented by lines ** note: highway can be either
+  const lineRepresentable = data
+    ? [
+        ...new Set(
+          data.moped_components.map(moped_component =>
+            moped_component?.line_representation
+              ? moped_component.component_name.toLowerCase()
+              : null
+          )
+        ),
+      ].filter(item => item)
+    : [];
+
   /**
-   * Generates a list of available subtypes for a fiven type name
+   * Generates a list of available subtypes for a given type name
    * @param {String} type - The type name
    * @return {String[]} - A string array with the available subtypes
    */
@@ -328,6 +345,10 @@ const ProjectComponentEdit = ({
     setSelectedComponentType(selectedType);
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
+    // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
+    !!selectedType
+      ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
+      : setDrawLines(null);
   };
 
   /**
@@ -575,7 +596,7 @@ const ProjectComponentEdit = ({
   };
 
   /**
-   * Handles the deletion of the component
+   * Handles the deletion of the component from database
    */
   const handleComponentDelete = () => {
     deleteProjectComponent({
@@ -699,6 +720,10 @@ const ProjectComponentEdit = ({
           .toLowerCase();
         setSelectedComponentSubtype(subtypeDB);
       }
+      // check if selected component is represented by lines or points
+      setDrawLines(
+        data.moped_proj_components[0].moped_components.line_representation
+      );
     }
   }
 
@@ -771,6 +796,7 @@ const ProjectComponentEdit = ({
         saveActionState={saveActionState}
         saveActionDispatch={saveActionDispatch}
         isSignalComponent={isSignalComponent}
+        drawLines={drawLines}
         componentEditorPanel={
           <>
             <Collapse
@@ -867,7 +893,7 @@ const ProjectComponentEdit = ({
                         rows={4}
                         defaultValue=""
                         variant="filled"
-                        value={componentDescription}
+                        value={componentDescription ?? ""}
                         onChange={e => handleDescriptionKeyDown(e)}
                         fullWidth
                       />

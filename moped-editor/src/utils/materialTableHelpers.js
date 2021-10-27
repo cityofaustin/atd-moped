@@ -14,3 +14,13 @@ export const filterObjectByKeys = (obj, keys) =>
       }),
       {}
     );
+
+/**
+ * Prevents the line from being saved on enter key
+ * @param {object} e - Event Object
+ */
+export const handleKeyEvent = e => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.stopPropagation();
+  }
+};

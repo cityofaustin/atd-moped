@@ -1,10 +1,10 @@
 import { gql } from "@apollo/client";
 
 export const COMMENTS_QUERY = gql`
-  query GetProjectComments($projectId: Int!) {
+  query GetProjectComments($projectNoteConditions: moped_proj_notes_bool_exp!) {
     moped_proj_notes(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
-      order_by: { date_created: asc }
+      where: $projectNoteConditions
+      order_by: { date_created: desc }
     ) {
       added_by
       added_by_user_id
@@ -12,6 +12,7 @@ export const COMMENTS_QUERY = gql`
       project_id
       date_created
       project_note_id
+      project_note_type
     }
   }
 `;
@@ -28,7 +29,11 @@ export const ADD_PROJECT_COMMENT = gql`
 `;
 
 export const UPDATE_PROJECT_COMMENT = gql`
-  mutation UpdateProjectComment($projectId: Int!, $projectNoteId: Int!, $projectNote: String!) {
+  mutation UpdateProjectComment(
+    $projectId: Int!
+    $projectNoteId: Int!
+    $projectNote: String!
+  ) {
     update_moped_proj_notes(
       _set: { project_note: $projectNote }
       where: {
@@ -44,7 +49,7 @@ export const UPDATE_PROJECT_COMMENT = gql`
 export const DELETE_PROJECT_COMMENT = gql`
   mutation DeleteProjectComent($projectId: Int!, $projectNoteId: Int!) {
     update_moped_proj_notes(
-      _set: {status_id: 0},
+      _set: { status_id: 0 }
       where: {
         project_id: { _eq: $projectId }
         project_note_id: { _eq: $projectNoteId }
