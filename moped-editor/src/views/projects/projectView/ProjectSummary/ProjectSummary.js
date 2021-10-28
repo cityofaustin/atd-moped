@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
-import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
+import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
 
 import {
   Grid,
@@ -14,14 +14,14 @@ import {
   Box,
   Typography,
 } from "@material-ui/core";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
   PROJECT_SUMMARY_STATUS_UPDATE_INSERT,
   PROJECT_SUMMARY_STATUS_UPDATE_UPDATE,
-} from "../../../queries/project";
+} from "../../../../queries/project";
 
 /*
   Error Handler and Fallback Component
@@ -30,7 +30,7 @@ import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { useMutation } from "@apollo/client";
-import { getSessionDatabaseData } from "../../../auth/user";
+import { getSessionDatabaseData } from "../../../../auth/user";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
