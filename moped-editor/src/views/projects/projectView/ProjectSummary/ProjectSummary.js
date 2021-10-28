@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
   editIcon: {
     cursor: "pointer",
-    margin: "28px 0 0 8px",
+    margin: "1.2rem 0 0 8px",
     fontSize: "20px",
   },
   editIconConfirm: {
@@ -31,11 +31,22 @@ const useStyles = makeStyles(theme => ({
     margin: "28px 0 0 8px",
     fontSize: "24px",
   },
+  fieldLabel: {
+    width: "100%",
+    color: theme.palette.grey["600"],
+    fontSize: ".8rem",
+  },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+  },
   fieldBox: {
     width: "100%",
   },
   fieldBoxTypography: {
     width: "100%",
+  },
+  fieldSelectItem: {
+    width: "calc(100% - 3rem)",
   },
 }));
 
@@ -88,13 +99,15 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid container spacing={2} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
-                    projectId={projectId}
-                    data={data}
-                    refetch={refetch}
-                    classes={classes}
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
                 />
               </Grid>
-              <Grid item xs={6}>Project Partners</Grid>
+              <Grid item xs={6}>
+                Project Partners
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
