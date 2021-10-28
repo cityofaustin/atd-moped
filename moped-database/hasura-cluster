@@ -109,7 +109,7 @@ function run_migration() {
     }
   } || {
     echo "--------------------------------------------------------------------";
-    echo -e " 🛑️ Stopping hasura cluster. Error in stage: \e[31m ${CURRENT_STAGE_NAME}️ \e[0m";
+    printf " 🛑️ Stopping hasura cluster. Error in stage: \e[31m ${CURRENT_STAGE_NAME}️ \e[0m\n";
     echo "--------------------------------------------------------------------";
     stop;
     echo "--------------------------------------------------------------------";
@@ -247,7 +247,7 @@ HASURA_EOM
 
 function show_banner() {
   show_hasura_kit_banner;
-  echo -e " Hasura Cluster: \e[32m $1 \e[0m";
+  printf " Hasura Cluster: \e[32m $1 \e[0m\n";
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 
