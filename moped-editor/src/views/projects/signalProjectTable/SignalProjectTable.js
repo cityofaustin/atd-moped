@@ -77,7 +77,7 @@ const SignalProjectTable = () => {
       editable: "never",
       render: entry => (
         <RouterLink
-          to={`/projects/${entry.project_id}/`}
+          to={`projects/${entry.project_id}/`}
           // state={jsonValues.state}
           className={"MuiTypography-colorPrimary"}
         >
