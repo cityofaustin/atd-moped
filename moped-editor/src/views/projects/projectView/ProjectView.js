@@ -31,7 +31,7 @@ import {
 } from "@material-ui/core";
 
 import Page from "src/components/Page";
-import ProjectSummary from "./ProjectSummary";
+import ProjectSummary from "./ProjectSummary/ProjectSummary";
 import ProjectComponents from "./ProjectComponents";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
