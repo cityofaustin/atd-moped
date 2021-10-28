@@ -14,6 +14,30 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 */
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
+import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles(theme => ({
+  fieldGridItem: {
+    margin: theme.spacing(2),
+  },
+  editIcon: {
+    cursor: "pointer",
+    margin: "28px 0 0 8px",
+    fontSize: "20px",
+  },
+  editIconConfirm: {
+    cursor: "pointer",
+    margin: "28px 0 0 8px",
+    fontSize: "24px",
+  },
+  fieldBox: {
+    width: "100%",
+  },
+  fieldBoxTypography: {
+    width: "100%",
+  },
+}));
 
 /**
  * Project Summary Component
@@ -26,6 +50,7 @@ import { ErrorBoundary } from "react-error-boundary";
  */
 const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
+  const classes = useStyles();
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
@@ -51,6 +76,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               projectId={projectId}
               data={data}
               refetch={refetch}
+              classes={classes}
             />
             {/*Data Table Component*/}
             <ProjectSummaryTable
@@ -59,6 +85,17 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               error={error}
               refetch={refetch}
             />
+            <Grid container spacing={2} xs={12}>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectSponsor
+                    projectId={projectId}
+                    data={data}
+                    refetch={refetch}
+                    classes={classes}
+                />
+              </Grid>
+              <Grid item xs={6}>Project Partners</Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
             {projectFeatureCollection && (
