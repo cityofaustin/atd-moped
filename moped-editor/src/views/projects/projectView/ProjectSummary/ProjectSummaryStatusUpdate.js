@@ -9,41 +9,19 @@ import {
   PROJECT_SUMMARY_STATUS_UPDATE_UPDATE,
 } from "../../../../queries/project";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
 import { getSessionDatabaseData } from "../../../../auth/user";
-
-const useStyles = makeStyles(theme => ({
-  fieldGridItem: {
-    margin: theme.spacing(2),
-  },
-  editIcon: {
-    cursor: "pointer",
-    margin: "28px 0 0 8px",
-    fontSize: "20px",
-  },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: "28px 0 0 8px",
-    fontSize: "24px",
-  },
-  fieldBox: {
-    width: "100%",
-  },
-  fieldBoxTypography: {
-    width: "100%",
-  },
-}));
 
 /**
  * ProjectSummaryStatusUpdate Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
+ * @param {Object} classes - The shared style settings
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryStatusUpdate = ({ projectId, data, refetch }) => {
-  const classes = useStyles();
+const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes}) => {
+
   const userSessionData = getSessionDatabaseData();
 
   const [updateProjectStatusUpdateInsert] = useMutation(
@@ -61,12 +39,12 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch }) => {
    */
   const getStatusUpdate = (fieldName = "project_note") => {
     const lastItem =
-        (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
+      (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
       // Get the data from the note
       const note = data
-          ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
-          : null;
+        ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
+        : null;
       // Remove any HTML tags
       return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
     }
