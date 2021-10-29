@@ -8,17 +8,48 @@
 #
 set -o errexit
 
-HIDE_HASURA_KIT_BANNER="FALSE"
+HIDE_HASURA_KIT_BANNER="FALSE";
+HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
+HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
+
+#
+# Get timestamp
+#
+function __get_timestamp() {
+  TIMESTAMP=$(date "+%Y_%m_%d--%H_%M_%S");
+  echo "${TIMESTAMP}";
+}
+
+#
+# Checks if the config file exists
+#
+function __config_exists() {
+  [[ -f $HASURA_CLUSTER_CONFIG ]] && echo "TRUE" || echo "FALSE";
+}
+
+#
+# Opens a file with default system console editor, or uses vim
+#
+function __open_edit_with_default_editor() {
+  "${EDITOR:-vi}" $1;
+}
 
 #
 # Check if docker is running
 #
 function __get_docker_running() {
-  {
-    docker ps -q &> /dev/null && echo "TRUE";
-  } || {
-    echo "FALSE";
-  }
+  docker ps -q &> /dev/null && echo "TRUE" || echo "FALSE";
+}
+
+#
+# Returns TRUE if port $1 is open for listening
+#
+function __is_local_port_open() {
+  PORT_IN_QUESTION=$1;
+  netstat -ant -p tcp | \
+    grep LISTEN | \
+    grep -q -e "${PORT_IN_QUESTION}" && \
+    echo "TRUE" || echo "FALSE";
 }
 
 #
@@ -39,11 +70,113 @@ function __get_version() {
 # Prints TRUE if the current configuration is local
 #
 function __is_local() {
-  if grep -q "endpoint: http://localhost:8080" config.yaml; then
-    echo "TRUE";
-  else
-    echo "FALSE";
+  grep -q "endpoint: http://localhost:8080" config.yaml && echo "TRUE" || echo "FALSE";
+}
+
+#
+# Returns TRUE if AWS is installed
+#
+function __is_aws_cli_installed() {
+  aws --help 2&>1 /dev/null && echo "TRUE" || echo "FALSE";
+}
+
+
+#
+# Retrieves a value from the configuration key in jq pattern
+#
+function __config_get_key() {
+  HASURA_CLUSTER_CONFIG_JSON_PATH=$1;
+{
+  python3 <<EOF_PYTHON_JSON_PATH
+import json
+with open("${HASURA_CLUSTER_CONFIG}") as fp:
+    data = json.load(fp)
+def get_val(json_path, data):
+    if(len(json_path) == 0):
+        exit(1)
+    tokens = json_path.split(".")
+    first = tokens[0]
+    if(len(tokens) == 1):
+        return data[first]
+    else:
+        return get_val(".".join(tokens[1:]), data[first])
+print(get_val("${HASURA_CLUSTER_CONFIG_JSON_PATH}", data))
+exit(0)
+EOF_PYTHON_JSON_PATH
+} || {
+    exit 1;
+  }
+}
+
+#
+# Checks if there is a link, or exits
+#
+function __check_link_or_exit() {
+  LOCAL_PORT=$(__config_get_key "bastion.local_port");
+  if [[ $(__is_local_port_open $LOCAL_PORT) = "FALSE" ]]; then
+    echo "No link to bastion established, please run './hasura-cluster link'";
+    exit 1;
   fi;
+}
+
+#
+# Restores a snapshot into local
+#
+function __restore_snapshot() {
+  docker run -it --rm -v "$(pwd)"/snapshots:/snapshots \
+     --env PGHOST="localhost" \
+     --env PGPORT="5432" \
+     --env PGUSER="moped" \
+     --env PGPASSWORD="moped" \
+     --env PGDATABASE="moped" \
+      $HASURA_CLUSTER_POSTGRES_IMAGE pg_dump --no-owner > "/downloads/${DB_PROFILE}_clone.sql";
+}
+
+#
+# Clones from remote
+#
+function __create_snapshot() {
+  DB_PROFILE=$1;
+  TIMESTAMP=$(__get_timestamp);
+
+  echo "Creating snapshot from postgres, profile: ${DB_PROFILE}"
+
+  # Exit if there is no link!
+  __check_link_or_exit;
+
+  # 1. Read the profile in hasura_cluster.json
+  # 2. Populate Variables in function
+  # 3. Run pg_dump to create database
+  echo "Please seat back and relax, this is going to take a while...";
+  sleep 3;
+
+  docker run -it --rm --network host --name moped_download_db_snapshot \
+    -v "$(pwd)"/snapshots:/snapshots \
+    --env PGHOST=$(__config_get_key "bastion.container_parent") \
+    --env PGPORT=$(__config_get_key "bastion.local_port") \
+    --env PGUSER=$(__config_get_key "postgres.${DB_PROFILE}.db_user") \
+    --env PGPASSWORD=$(__config_get_key "postgres.${DB_PROFILE}.db_pass") \
+    --env PGDATABASE=$(__config_get_key "postgres.${DB_PROFILE}.db_name") \
+    $HASURA_CLUSTER_POSTGRES_IMAGE pg_dump --verbose --no-owner \
+    --file="/snapshots/${DB_PROFILE}/postgres_${DB_PROFILE}_${TIMESTAMP}.psql";
+}
+
+#
+# Download a snapshot from bucket
+#
+function __create_snapshot_from_bucket() {
+  LOCAL_ENV=$1;
+  S3_FILE_NAME=$2;
+
+  # 1. Make sure the S3_FILE_NAME is valid S3 bucket filename name s3://bucket_name/file_name.sql
+  # 2. Make sure the user has AWS CLI installed
+  BUCKET_NAME=$(__config_get_key "backups.${LOCAL_ENV}.bucket");
+  BUCKET_PREFIX=$(__config_get_key "backups.${LOCAL_ENV}.prefix");
+  LOCAL_FILE_PATH="./snapshots/${LOCAL_ENV}/atd_moped_staging-full.sql.gz";
+  LOCAL_FILE_PATH_UNZIPPED="./snapshots/${LOCAL_ENV}/atd_moped_staging-full.sql";
+  aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}/${S3_FILE_NAME}/atd_moped_staging-full.sql.gz" "${LOCAL_FILE_PATH}";
+  zcat "${LOCAL_FILE_PATH}" > "${LOCAL_FILE_PATH_UNZIPPED}";
+#  rm "${LOCAL_FILE_PATH}";
 }
 
 #
@@ -51,11 +184,7 @@ function __is_local() {
 #
 function hasura_server_ready() {
   HASURA_SERVER_STATUS=$(curl --silent http://localhost:8080/v1/version)
-  if [[ "${HASURA_SERVER_STATUS}" =~ "version" ]]; then
-    echo "TRUE"
-  else
-    echo "FALSE"
-  fi
+  [[ "${HASURA_SERVER_STATUS}" =~ "version" ]] && echo "TRUE" || echo "FALSE";
 }
 
 #
@@ -75,6 +204,27 @@ function wait_server_ready() {
     INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
   done
   echo "[λ] Hasura server ready!                    ✅";
+}
+
+#
+# Wait until link is established
+#
+function wait_link_bastion() {
+  SCAN_TIMEOUT=$(__config_get_key "bastion.scan_timeout");
+  INITIALIZATION_TIMEOUT_LIMIT="${SCAN_TIMEOUT:-10}";
+  INITIALIZATION_COUNT=1;
+  LOCAL_PORT=$(__config_get_key "bastion.local_port");
+
+  while [ "$(__is_local_port_open $LOCAL_PORT)" = "FALSE" ]; do
+    echo -ne "Link to bastion server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔\r";
+    if [ $INITIALIZATION_COUNT -gt $INITIALIZATION_TIMEOUT_LIMIT ]; then
+      echo "Hasura server unavailable"
+      exit 1
+    fi
+    sleep 1
+    INITIALIZATION_COUNT=$(($INITIALIZATION_COUNT + 1))
+  done
+  echo "[λ] Link to bastion ready!                    ✅";
 }
 
 #
@@ -130,7 +280,112 @@ function start_only() {
   else
     docker-compose -f "${START_MODE}" up -d;
   fi;
+}
 
+#
+# Creates an SSH Link
+#
+function link() {
+  LOCAL_PORT=$(__config_get_key "bastion.local_port");
+  echo "Creating port-forwarding link on bastion @ ${LOCAL_PORT}...";
+  if [[ $(__is_local_port_open "${LOCAL_PORT}") = "TRUE" ]]; then
+    echo "Link to bastion already established, listening on tcp://localhost:${LOCAL_PORT}";
+    exit 1;
+  fi;
+
+  {
+    SSH_BASTION=$(__config_get_key "bastion.ssh_bastion");
+    SSH_CERTIFICATE=$(__config_get_key "bastion.ssh_certificate");
+    SSH_USER=$(__config_get_key "bastion.ssh_user");
+    LOCAL_HOST=$(__config_get_key "bastion.local_host");
+    LOCAL_PORT=$(__config_get_key "bastion.local_port");
+    REMOTE_HOST=$(__config_get_key "bastion.remote_host");
+    REMOTE_PORT=$(__config_get_key "bastion.remote_port");
+
+    ssh -f -o ConnectTimeout=5 \
+      -o ExitOnForwardFailure=yes \
+      -i $SSH_CERTIFICATE -N -L \
+      $LOCAL_HOST:$LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT \
+      $SSH_USER@$SSH_BASTION;
+
+    wait_link_bastion;
+    echo "Link to bastion established, listening on tcp://localhost:9999";
+  } || {
+    echo "Failed creating link on bastion, check your settings.";
+  }
+}
+
+#
+# Destroys an existing link
+#
+function unlink() {
+  LOCAL_PORT=$(__config_get_key "bastion.local_port");
+  if [[ $(__is_local_port_open "${LOCAL_PORT}") = "TRUE" ]]; then
+    # Find the pid
+    SSH_PID=$(ps -eo pid,command | grep ssh | grep bastion | cut -d" " -f1);
+    if [[ "${SSH_PID}" -ne "" ]]; then
+      echo "Stopping bastion link @ PID: ${SSH_PID}";
+      kill -2 $SSH_PID; # Stop it gracefully via SIGINT
+      [[ "$?" = "0" ]] && echo "Stopped successfully" || echo "Could not terminate process";
+    else
+      echo "Cannot find bastion link.";
+    fi;
+  else
+    echo "Link to bastion not open, ignoring this command.";
+  fi;
+}
+
+#
+# Lists available files in S3, limit of 10 or more if established as second parameter
+#
+function list() {
+  LIST_MODE=$1; # local or remote
+  LIST_ENV=$2; # production or staging
+
+  case "${LIST_MODE}" in
+    "local")
+        ls -lha "snapshots/${LIST_ENV}";
+    ;;
+    "remote")
+        BUCKET_NAME=$(__config_get_key "backups.${LIST_ENV}.bucket");
+        BUCKET_PREFIX=$(__config_get_key "backups.${LIST_ENV}.prefix");
+        aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}" --human-readable;
+        # 1. Check if the user has AWS CLI installed
+        # 2. Check there is a backup stage with the name provided or display an error and exit
+        # 3. Populate variables and
+        # 4. Compile AWS CLI command
+        # 5. Run AWS CLI for list
+    ;;
+    *)
+      echo "try local: ./hasura-cluster list local staging\ntry remote: ./hasura-cluster list remote staging";
+    ;;
+  esac;
+
+
+}
+
+#
+# Downloads a snapshot from production, staging or from a bucket
+#
+function download_postgres() {
+  DB_PROFILE=$1;
+
+  if [[ "${DB_PROFILE}" = "" ]]; then
+    echo -e "You must also provide an environment: production, staging\nor enter an S3 file: s3://bucket/file.psql";
+    exit 1;
+  fi;
+
+  echo "Downloading: ${DB_PROFILE}";
+  _create_snapshot $DB_PROFILE;
+}
+
+#
+# Download from S3
+#
+function download_s3() {
+  LOCAL_ENV=$1;
+  S3_FILE_NAME=$2;
+  __create_snapshot_from_bucket "${LOCAL_ENV}" "${S3_FILE_NAME}";
 }
 
 #
@@ -138,17 +393,30 @@ function start_only() {
 #
 function start() {
   START_MODE=$1;
+  CLONE_FROM_PROFILE=$2;
   if [[ $(__get_status) == "OK" ]]; then
     status;
     echo "The Hasura Cluster is already running...";
     echo " - To stop, try: './hasura-cluster stop'";
-    echo -e " - To open the hasura console, try: './hasura-cluster console' \n";
+    echo -e "- Or try './hasura-cluster console' to open the console.\n";
     exit 0;
-  else
-    start_only $START_MODE;
-    run_migration;
-    status;
   fi;
+
+  # Start Hasura
+  start_only $START_MODE;
+
+  # We must clone from a profile
+  if [[ $CLONE_FROM_PROFILE != "" ]]; then
+    # 1. Check the profile exists, or display error and exit
+    # 2. Download the dump (from db or s3)
+    __clone_remote_postgres $CLONE_FROM_PROFILE;
+    echo "Not implemented";
+  fi;
+
+
+  run_migration;
+  status;
+
 }
 
 #
@@ -165,6 +433,32 @@ function setenv() {
   cat "./config/hasura.${ENVIRONMENT}.yaml" > ./config.yaml;
   echo "current_environment: ${ENVIRONMENT}" >./hasura.current_environment.yaml;
   cat ./hasura.current_environment.yaml
+}
+
+#
+# Deletes the existing configuration
+#
+function delete_config() {
+  if [[ $(__config_exists) == "TRUE" ]]; then
+    echo "Deleting ${HASURA_CLUSTER_CONFIG}";
+    rm $HASURA_CLUSTER_CONFIG;
+  else
+    echo "No configuration found: nothing to delete.";
+  fi;
+}
+
+#
+# Creates a new configuration file
+#
+function configure() {
+  if [[ $(__config_exists) == "FALSE" ]]; then
+    TEMPLATE_PATH="$(pwd)/config/hasura_cluster_template.json";
+    echo "Creating new configuration file...";
+    echo "Copying ${TEMPLATE_PATH} into ${HASURA_CLUSTER_CONFIG}";
+    cp "${TEMPLATE_PATH}" "${HASURA_CLUSTER_CONFIG}";
+    chmod 600 "${HASURA_CLUSTER_CONFIG}";
+  fi;
+  __open_edit_with_default_editor $HASURA_CLUSTER_CONFIG;
 }
 
 #
@@ -263,8 +557,8 @@ fi;
 # Start the hasura cluster...
 #
 if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
-   show_banner "$1" && $1 $2 $3;
+   show_banner "$1" && $@;
 else
-  echo "Hasura Cluster: $1" && $1 $2 $3;
+  echo "Hasura Cluster: $1" && $@;
 fi;
 
