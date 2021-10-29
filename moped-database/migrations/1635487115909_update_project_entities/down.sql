@@ -1,0 +1,1 @@
+DELETE FROM public.moped_entity WHERE entity_id = 0;
