@@ -69,6 +69,10 @@ export const SUMMARY_QUERY = gql`
       phase_start
       phase_end
     }
+    moped_entity {
+      entity_id
+      entity_name
+    }
   }
 `;
 
