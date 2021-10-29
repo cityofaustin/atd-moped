@@ -4138,6 +4138,79 @@
       check: {}
 - table:
     schema: public
+    name: moped_project_types
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      filter: {}
+      check: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - project_id
+      - type_name
+      - project_type_id
+      - date_added
+      - added_by
+      filter: {}
+      check: {}
+- table:
+    schema: public
     name: moped_status
   insert_permissions:
   - role: moped-admin
