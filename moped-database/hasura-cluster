@@ -80,6 +80,13 @@ function __is_aws_cli_installed() {
   aws --help 2&>1 /dev/null && echo "TRUE" || echo "FALSE";
 }
 
+#
+# Check snapshots folder
+#
+function __check_snapshots_folder() {
+  mkdir -p "./snapshots/production" || echo "";
+  mkdir -p "./snapshots/staging" || echo "";
+}
 
 #
 # Retrieves a value from the configuration key in jq pattern
@@ -375,8 +382,9 @@ function download_postgres() {
     exit 1;
   fi;
 
+  __check_snapshots_folder;
   echo "Downloading: ${DB_PROFILE}";
-  _create_snapshot $DB_PROFILE;
+  __create_snapshot $DB_PROFILE;
 }
 
 #
@@ -385,6 +393,8 @@ function download_postgres() {
 function download_s3() {
   LOCAL_ENV=$1;
   S3_FILE_NAME=$2;
+
+  __check_snapshots_folder;
   __create_snapshot_from_bucket "${LOCAL_ENV}" "${S3_FILE_NAME}";
 }
 
