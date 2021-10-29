@@ -17,9 +17,92 @@ const ProjectSummaryProjectSponsor = ({
   refetch,
   classes,
 }) => {
+  const entityList = data?.moped_entity ?? [];
+  const noneSponsor = entityList.find(e => e.entity_id === 0);
+  const originalSponsor = entityList.find(
+    e => e.entity_id === data?.moped_project?.[0]?.project_sponsor
+  );
+  const [editMode, setEditMode] = useState(false);
+
+  const [sponsor, setSponsor] = useState(originalSponsor ?? noneSponsor);
+
+  // The mutation and mutation function
+  const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+
+  /**
+   * Resets the sponsor back to its original state, closes edit mode
+   */
+  const handleProjectSponsorClose = () => {
+    setSponsor(originalSponsor);
+    setEditMode(false);
+  };
+
+  /**
+   * Saves the new project sponsor
+   */
+  const handleProjectSponsorSave = () => {
+    updateProjectSponsor({
+      variables: {
+        projectId: projectId,
+        entityId: sponsor.entity_id,
+      },
+    })
+      .then(() => {
+        setEditMode(false);
+        refetch();
+      })
+      .catch(err => {
+        alert("Unable to make the change: " + String(err));
+        handleProjectSponsorClose();
+      });
+  };
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <ProjectSummaryLabel label={"Project Sponsor"} />
+      <Typography className={classes.fieldLabel}>Project Sponsor</Typography>
+      <Box
+        display="flex"
+        justifyContent="flex-start"
+        className={classes.fieldBox}
+      >
+        {editMode && (
+          <>
+            <Autocomplete
+              value={sponsor}
+              defaultValue={"None"}
+              className={classes.fieldSelectItem}
+              id={`moped-project-summary-autocomplete-${projectId}`}
+              options={entityList}
+              getOptionLabel={e => e.entity_name}
+              onChange={(event, newValue) => {
+                setSponsor(newValue);
+              }}
+              renderInput={params => (
+                <TextField {...params} variant="standard" label={null} />
+              )}
+            />
+            <Icon
+              className={classes.editIconConfirm}
+              onClick={handleProjectSponsorSave}
+            >
+              check
+            </Icon>
+            <Icon
+              className={classes.editIconConfirm}
+              onClick={handleProjectSponsorClose}
+            >
+              close
+            </Icon>
+          </>
+        )}
+        {!editMode && (
+          <ProjectSummaryLabel
+            text={sponsor?.entity_name || "n/a"}
+            classes={classes}
+            onClickEdit={() => setEditMode(true)}
+          />
+        )}
+      </Box>
     </Grid>
   );
 };
