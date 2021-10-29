@@ -711,7 +711,22 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
   ) {
     update_moped_proj_notes(
       where: { project_note_id: $project_note_id }
-      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
+      _set: {
+        project_note: $project_note
+        added_by: $added_by
+        project_note_type: 2
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_SPONSOR = gql`
+  mutation ProjectUpdateSponsor($projectId: Int!, $entityId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_sponsor: $entityId }
     ) {
       affected_rows
     }
