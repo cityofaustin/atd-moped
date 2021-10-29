@@ -23,12 +23,12 @@ const useStyles = makeStyles(theme => ({
   },
   editIcon: {
     cursor: "pointer",
-    margin: "1.2rem 0 0 8px",
+    margin: ".25rem",
     fontSize: "20px",
   },
   editIconConfirm: {
     cursor: "pointer",
-    margin: "28px 0 0 8px",
+    margin: ".25rem 0",
     fontSize: "24px",
   },
   fieldLabel: {
