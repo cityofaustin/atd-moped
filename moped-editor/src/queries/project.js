@@ -448,7 +448,11 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
   ) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
-      _set: { file_name: $fileName, file_type: $fileType, file_description: $fileDescription }
+      _set: {
+        file_name: $fileName
+        file_type: $fileType
+        file_description: $fileDescription
+      }
     ) {
       affected_rows
     }
