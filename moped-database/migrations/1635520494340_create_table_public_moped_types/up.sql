@@ -1,0 +1,1 @@
+CREATE TABLE "public"."moped_types"("type_name" text NOT NULL, "type_id" serial NOT NULL, "active_type" boolean NOT NULL DEFAULT True, "on_street" boolean, "sensitivity" boolean, "type_order" integer NOT NULL, "date_added" timestamptz DEFAULT clock_timestamp(), PRIMARY KEY ("type_id") , UNIQUE ("type_id"), UNIQUE ("type_name"));
