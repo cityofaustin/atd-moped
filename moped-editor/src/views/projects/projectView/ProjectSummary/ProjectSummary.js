@@ -106,7 +106,12 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                Project Partners
+                <ProjectSummaryProjectPartners
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                />
               </Grid>
             </Grid>
           </Grid>
