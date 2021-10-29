@@ -15,6 +15,8 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
+import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
+
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles(theme => ({
