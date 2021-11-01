@@ -11,6 +11,10 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import { useMutation } from "@apollo/client";
+import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
+
 /**
  * ProjectSummaryProjectPartners Component
  * @param {Number} projectId - The id of the current project being viewed
