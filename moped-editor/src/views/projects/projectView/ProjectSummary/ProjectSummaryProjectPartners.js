@@ -40,7 +40,11 @@ const ProjectSummaryProjectPartners = ({
 
   const [partner, setPartner] = useState(originalPartner ?? nonePartner);
 
-  
+  // The mutation and mutation function
+  const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+
+  const [personName, setPersonName] = React.useState([]);
+
 
   return (
       <Grid item xs={12} className={classes.fieldGridItem}>
