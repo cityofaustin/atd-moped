@@ -46,6 +46,38 @@ const ProjectSummaryProjectPartners = ({
   const [personName, setPersonName] = React.useState([]);
 
 
+  const handleChange = event => {
+    setPersonName(event.target.value);
+  };
+
+  /**
+   * Resets the sponsor back to its original state, closes edit mode
+   */
+  const handleProjectSponsorClose = () => {
+    setPartner(originalPartner);
+    setEditMode(false);
+  };
+
+  /**
+   * Saves the new project sponsor
+   */
+  const handleProjectSponsorSave = () => {
+    updateProjectSponsor({
+      variables: {
+        projectId: projectId,
+        entityId: partner.entity_id,
+      },
+    })
+        .then(() => {
+          setEditMode(false);
+          refetch();
+        })
+        .catch(err => {
+          alert("Unable to make the change: " + String(err));
+          handleProjectSponsorClose();
+        });
+  };
+
   return (
       <Grid item xs={12} className={classes.fieldGridItem}>
         <Typography className={classes.fieldLabel}>Project Partners</Typography>
