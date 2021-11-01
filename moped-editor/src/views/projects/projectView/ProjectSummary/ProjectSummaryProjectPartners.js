@@ -1,4 +1,15 @@
 import React, { useState } from "react";
+import {
+  Box,
+  Checkbox,
+  Grid,
+  Icon,
+  Input,
+  ListItemText,
+  MenuItem,
+  Select,
+  Typography,
+} from "@material-ui/core";
 
 /**
  * ProjectSummaryProjectPartners Component
