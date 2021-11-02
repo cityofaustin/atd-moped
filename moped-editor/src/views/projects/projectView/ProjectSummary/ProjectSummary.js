@@ -96,6 +96,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   return (
     <ApolloErrorHandler errors={error}>
+      <ProjectSummarySnackbar
+        snackbarState={snackbarState}
+        snackbarHandle={snackbarHandle}
+      />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
