@@ -1685,6 +1685,7 @@
       - financials_id
       - project_id
       - last_updated
+      - purchase_order_number
       backend_only: false
   - role: moped-editor
     permission:
@@ -1703,6 +1704,7 @@
       - financials_id
       - project_id
       - last_updated
+      - purchase_order_number
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -1718,6 +1720,7 @@
       - project_id
       - ecapris_subproject_id
       - primary_funding_source
+      - purchase_order_number
       - subproject_name
       - subproject_status
       - last_updated
@@ -1736,6 +1739,7 @@
       - project_id
       - ecapris_subproject_id
       - primary_funding_source
+      - purchase_order_number
       - subproject_name
       - subproject_status
       - last_updated
@@ -1757,6 +1761,7 @@
       - financials_id
       - project_id
       - last_updated
+      - purchase_order_number
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -1773,6 +1778,7 @@
       - project_id
       - ecapris_subproject_id
       - primary_funding_source
+      - purchase_order_number
       - subproject_name
       - subproject_status
       - last_updated
@@ -1791,6 +1797,7 @@
       - project_id
       - ecapris_subproject_id
       - primary_funding_source
+      - purchase_order_number
       - subproject_name
       - subproject_status
       - last_updated

@@ -78,7 +78,6 @@ const SignalProjectTable = () => {
       render: entry => (
         <RouterLink
           to={`projects/${entry.project_id}/`}
-          // state={jsonValues.state}
           className={"MuiTypography-colorPrimary"}
         >
           {entry.project_name}
@@ -98,7 +97,7 @@ const SignalProjectTable = () => {
     },
     {
       title: "Current phase",
-      field: "current_phase", // updating current phase happens now in the timeline, we actually pull the wrong one
+      field: "current_phase",
       editable: "never",
     },
     {
@@ -209,29 +208,6 @@ const SignalProjectTable = () => {
                     }}
                   />
                 ),
-                // Action: props => {
-                //   // If isn't the add action
-                //   if (
-                //     typeof props.action === typeof Function ||
-                //     props.action.tooltip !== "Add"
-                //   ) {
-                //     return <MTableAction {...props} />;
-                //   } else {
-                //     return (
-                //       <div>+</div>
-                //       // <Button
-                //       //   variant="contained"
-                //       //   color="primary"
-                //       //   size="large"
-                //       //   startIcon={<AddCircleIcon />}
-                //       //   ref={addActionRef}
-                //       //   onClick={props.action.onClick}
-                //       // >
-                //       //   Add team member
-                //       // </Button>
-                //     );
-                //   }
-                // },
               }}
               data={data.moped_project}
               title={
@@ -243,7 +219,7 @@ const SignalProjectTable = () => {
                 ...(data.moped_project.length < PAGING_DEFAULT_COUNT + 1 && {
                   paging: false,
                 }),
-                search: false, // assuming this is false to match other material tables
+                search: false,
                 rowStyle: { fontFamily: typography.fontFamily },
                 actionsColumnIndex: -1,
               }}
