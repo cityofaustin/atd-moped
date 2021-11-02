@@ -755,7 +755,7 @@ export const PROJECT_UPDATE_PARTNERS = gql`
       affected_rows
     }
     update_moped_proj_partners(
-      where: { project_id: { _in: $deleteList } }
+      where: { proj_partner_id: { _in: $deleteList } }
       _set: { status_id: 0 }
     ) {
       affected_rows
