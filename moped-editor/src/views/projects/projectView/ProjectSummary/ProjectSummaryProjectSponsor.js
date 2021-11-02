@@ -23,6 +23,7 @@ const ProjectSummaryProjectSponsor = ({
   data,
   refetch,
   classes,
+  snackbarHandle,
 }) => {
   const entityList = data?.moped_entity ?? [];
   const noneSponsor = entityList.find(e => e.entity_id === 0);
