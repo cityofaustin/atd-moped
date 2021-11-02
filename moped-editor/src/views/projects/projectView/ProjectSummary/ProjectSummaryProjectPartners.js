@@ -62,7 +62,7 @@ const ProjectSummaryProjectPartners = ({
    * Saves the new project sponsor
    */
   const handleProjectSponsorSave = () => {
-    updateProjectSponsor({
+    updateProjectPartners({
       variables: {
         projectId: projectId,
         entityId: partner.entity_id,
