@@ -1672,39 +1672,39 @@
     permission:
       check: {}
       columns:
-      - subproject_name
-      - ecapris_subproject_id
-      - subproject_status
+      - budget_available
+      - budget_previous
       - budget_total
+      - ecapris_subproject_id
+      - expenses_previous
       - expenses_total
       - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
       - financials_id
-      - project_id
       - last_updated
+      - primary_funding_source
+      - project_id
       - purchase_order_number
+      - subproject_name
+      - subproject_status
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - subproject_name
-      - ecapris_subproject_id
-      - subproject_status
+      - budget_available
+      - budget_previous
       - budget_total
+      - ecapris_subproject_id
+      - expenses_previous
       - expenses_total
       - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
       - financials_id
-      - project_id
       - last_updated
+      - primary_funding_source
+      - project_id
       - purchase_order_number
+      - subproject_name
+      - subproject_status
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -1713,17 +1713,17 @@
       - budget_available
       - budget_previous
       - budget_total
+      - ecapris_subproject_id
       - expenses_previous
       - expenses_total
       - expenses_ytd
       - financials_id
-      - project_id
-      - ecapris_subproject_id
+      - last_updated
       - primary_funding_source
+      - project_id
       - purchase_order_number
       - subproject_name
       - subproject_status
-      - last_updated
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -1732,36 +1732,36 @@
       - budget_available
       - budget_previous
       - budget_total
+      - ecapris_subproject_id
       - expenses_previous
       - expenses_total
       - expenses_ytd
       - financials_id
-      - project_id
-      - ecapris_subproject_id
+      - last_updated
       - primary_funding_source
+      - project_id
       - purchase_order_number
       - subproject_name
       - subproject_status
-      - last_updated
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - subproject_name
-      - ecapris_subproject_id
-      - subproject_status
+      - budget_available
+      - budget_previous
       - budget_total
+      - ecapris_subproject_id
+      - expenses_previous
       - expenses_total
       - expenses_ytd
-      - expenses_previous
-      - budget_previous
-      - budget_available
-      - primary_funding_source
       - financials_id
-      - project_id
       - last_updated
+      - primary_funding_source
+      - project_id
       - purchase_order_number
+      - subproject_name
+      - subproject_status
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -1771,17 +1771,17 @@
       - budget_available
       - budget_previous
       - budget_total
+      - ecapris_subproject_id
       - expenses_previous
       - expenses_total
       - expenses_ytd
       - financials_id
-      - project_id
-      - ecapris_subproject_id
+      - last_updated
       - primary_funding_source
+      - project_id
       - purchase_order_number
       - subproject_name
       - subproject_status
-      - last_updated
       filter: {}
       check: null
   - role: moped-editor
@@ -1790,17 +1790,17 @@
       - budget_available
       - budget_previous
       - budget_total
+      - ecapris_subproject_id
       - expenses_previous
       - expenses_total
       - expenses_ytd
       - financials_id
-      - project_id
-      - ecapris_subproject_id
+      - last_updated
       - primary_funding_source
+      - project_id
       - purchase_order_number
       - subproject_name
       - subproject_status
-      - last_updated
       filter: {}
       check: null
   event_triggers:
@@ -3651,6 +3651,13 @@
         table:
           schema: public
           name: moped_proj_features
+  - name: moped_proj_fund_sources
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_proj_fund_source
   - name: moped_proj_notes
     using:
       foreign_key_constraint_on:

@@ -3,7 +3,6 @@ import { gql } from "@apollo/client";
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(where: {moped_proj_components: {moped_components: {component_name: {_ilike: "signal"}}}}) {
-      current_phase
       project_id
       project_name
       updated_at
@@ -17,6 +16,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       }
       moped_proj_phases {
         phase_name
+        is_current_phase
         phase_start
       }
       moped_proj_features {
@@ -25,6 +25,9 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       }
       moped_proj_financial {
         purchase_order_number
+      }
+      moped_proj_fund_sources {
+        funding_source_name
       }
     }
   }

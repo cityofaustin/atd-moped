@@ -54,17 +54,23 @@ const SignalProjectTable = () => {
     project["signal_ids"] = signal_ids
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
-    //display the phase start date, otherwise leave blank
+    // display the phase start date, otherwise leave blank
     project["construction_start"] = "";
+    project["current_phase"] = "";
     if (project?.moped_proj_phases?.length) {
-      project["construction_start"] = "3/3/33";
-      const phase = project.moped_proj_phases.find(
+      const constructionPhase = project.moped_proj_phases.find(
         p => p.phase_name === "construction"
       );
-      if (phase) {
-        project["construction_start"] = phase.phase_start;
+      if (constructionPhase) {
+        project["construction_start"] = constructionPhase.phase_start;
+      }
+      const currentPhase = project.moped_proj_phases.find(p => p.is_current_phase);
+      if (currentPhase) {
+        project["current_phase"] = currentPhase.phase_name
       }
     }
+
+
   });
 
   /**
@@ -77,7 +83,7 @@ const SignalProjectTable = () => {
       editable: "never",
       render: entry => (
         <RouterLink
-          to={`projects/${entry.project_id}/`}
+          to={`/moped/projects/${entry.project_id}/`}
           className={"MuiTypography-colorPrimary"}
         >
           {entry.project_name}
@@ -88,8 +94,6 @@ const SignalProjectTable = () => {
       title: "Signal IDs",
       field: "signal_ids",
       editable: "never"
-      // would these link to the knack page for the signal?
-      // https://atd.knack.com/amd#projects/signal-details/5817c079e052e0422be6c40a/
     },
     {
       title: "Project type",
