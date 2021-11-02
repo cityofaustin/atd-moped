@@ -46,7 +46,6 @@ const SignalProjectTable = () => {
     // Signal IDs
     const signal_ids = [];
     if (project?.moped_proj_features) {
-      console.log(project.moped_proj_features)
       project.moped_proj_features.forEach(feature => {
         signal_ids.push(feature?.location?.properties.signal_id)
       })
@@ -93,20 +92,25 @@ const SignalProjectTable = () => {
     {
       title: "Signal IDs",
       field: "signal_ids",
-      editable: "never"
+      editable: "never",
+      // cell style font needs to be set if editable is never
+      cellStyle: { fontFamily: typography.fontFamily },
     },
     {
       title: "Project type",
       field: "project_type",
+      // update after other issue is merged
     },
     {
       title: "Current phase",
       field: "current_phase",
       editable: "never",
+      cellStyle: { fontFamily: typography.fontFamily },
     },
     {
       title: "Task order",
       field: "task_order",
+      // placeholder for task order issue
     },
     {
       title: "Contractor/Contract",
@@ -116,6 +120,7 @@ const SignalProjectTable = () => {
       title: "Internal status note",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
+      cellStyle: { fontFamily: typography.fontFamily },
     },
     {
       title: "Funding source",
@@ -131,8 +136,9 @@ const SignalProjectTable = () => {
     },
     {
       title: "Targeted construction start",
-      field: "construction_start", // moped_proj_phases where phase = Construction, display the phase start date, otherwise leave blank
+      field: "construction_start",
       editable: "never",
+      cellStyle: { fontFamily: typography.fontFamily },
       render: entry =>
         new Date(entry.construction_start).toLocaleDateString("en-US", {
           timeZone: "UTC",
@@ -142,6 +148,7 @@ const SignalProjectTable = () => {
       title: "Last modified",
       field: "last_modified",
       editable: "never",
+      cellStyle: { fontFamily: typography.fontFamily },
       render: entry =>
         new Date(entry.updated_at).toLocaleDateString("en-US", {
           timeZone: "UTC",
