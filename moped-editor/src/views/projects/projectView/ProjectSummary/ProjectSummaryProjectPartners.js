@@ -82,10 +82,10 @@ const ProjectSummaryProjectPartners = ({
             <Select
               id={`moped-project-summary-partner-select-${projectId}`}
               multiple
-              value={personName}
+              value={selectedEntities}
               onChange={handleChange}
               input={<Input />}
-              renderValue={selected => selected.join(", ")}
+              renderValue={entity => entity.map(e => e?.entity_name).join(", ")}
               /*
                 There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
                 this is fixed by overriding the function "getContentAnchorEl".
