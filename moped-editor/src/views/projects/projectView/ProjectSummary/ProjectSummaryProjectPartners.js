@@ -13,7 +13,7 @@ import {
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { useMutation } from "@apollo/client";
-import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
+import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
 
 /**
  * ProjectSummaryProjectPartners Component
