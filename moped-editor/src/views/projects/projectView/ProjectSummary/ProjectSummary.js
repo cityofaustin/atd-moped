@@ -124,6 +124,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   data={data}
                   refetch={refetch}
                   classes={classes}
+                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
               <Grid item xs={6}>
@@ -132,6 +133,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   data={data}
                   refetch={refetch}
                   classes={classes}
+                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
             </Grid>
