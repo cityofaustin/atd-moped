@@ -18,6 +18,7 @@ import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
