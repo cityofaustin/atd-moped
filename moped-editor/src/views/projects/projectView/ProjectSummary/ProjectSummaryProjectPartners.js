@@ -77,8 +77,49 @@ const ProjectSummaryProjectPartners = ({
    * Saves the new project partner
    */
   const handleProjectPartnersSave = () => {
-    console.log("Nothing!");
-    if (false) updateProjectPartners();
+    // Retrieve partners list (original list)
+    const oldPartnersList = originalEntities;
+    // The new partners list is just the selected entities ids
+    const newPartnersList = selectedEntities;
+    // Retrieves the ids of oldPartnersList that are not present in newPartnersList
+    const partnerIdsToDelete = oldPartnersList.filter(
+      p => !newPartnersList.includes(p)
+    );
+    // Retrieves the ids of newPartnersList that are not present in oldPartnersList
+    const partnerIdsToInsert = newPartnersList.filter(
+      p => !oldPartnersList.includes(p)
+    );
+    // We need a final list of objects to insert
+    const partnerObjectsToInsert = partnerIdsToInsert.map(id => ({
+      project_id: projectId,
+      partner_name: entityDict[id],
+      entity_id: id,
+      status_id: 1,
+    }));
+    // We need a final list of primary keys to delete
+    const partnerPksToDelete = originalPartners
+      .filter(p => partnerIdsToDelete.includes(p.entity_id))
+      .map(p => p.proj_partner_id);
+
+    updateProjectPartners({
+      variables: {
+        partners: partnerObjectsToInsert,
+        deleteList: partnerPksToDelete,
+      },
+    })
+      .then(() => {
+        refetch();
+        setEditMode(false);
+        snackbarHandle(true, "Update successful", "success");
+      })
+      .catch(err => {
+        snackbarHandle(
+          true,
+          "Failed to update partners: " + String(err),
+          "error"
+        );
+        handleProjectPartnersClose();
+      });
     setEditMode(false);
   };
 
