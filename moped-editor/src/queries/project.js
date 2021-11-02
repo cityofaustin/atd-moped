@@ -57,6 +57,7 @@ export const SUMMARY_QUERY = gql`
             status_id: { _eq: 1 }
         }
     ) {
+      proj_partner_id
       project_id
       entity_id
       moped_entity {
