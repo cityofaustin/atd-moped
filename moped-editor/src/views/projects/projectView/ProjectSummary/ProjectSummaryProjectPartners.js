@@ -31,17 +31,18 @@ const ProjectSummaryProjectPartners = ({
   classes,
 }) => {
   const entityList = data?.moped_entity ?? [];
-
-  const nonePartner = entityList.find(e => e.entity_id === 0);
-  const originalPartner = entityList.find(
-    e => e.entity_id === data?.moped_project?.[0]?.project_sponsor
+  const originalPartners = data?.moped_proj_partners ?? [];
+  const originalSelected = (data?.moped_proj_partners ?? []).map(
+    p => p.entity_id
   );
+  const nonePartner = [];
+
   const [editMode, setEditMode] = useState(false);
 
-  const [partner, setPartner] = useState(originalPartner ?? nonePartner);
+  const [partner, setPartner] = useState(originalPartners ?? nonePartner);
 
   // The mutation and mutation function
-  const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+  const [updateProjectPartners] = useMutation(PROJECT_UPDATE_PARTNERS);
 
   const [personName, setPersonName] = React.useState([]);
 
