@@ -64,20 +64,9 @@ const ProjectSummaryProjectPartners = ({
    * Saves the new project sponsor
    */
   const handleProjectSponsorSave = () => {
-    updateProjectPartners({
-      variables: {
-        projectId: projectId,
-        entityId: partner.entity_id,
-      },
-    })
-      .then(() => {
-        setEditMode(false);
-        refetch();
-      })
-      .catch(err => {
-        alert("Unable to make the change: " + String(err));
-        handleProjectSponsorClose();
-      });
+    console.log("Nothing!");
+    if (false) updateProjectPartners();
+    setEditMode(false);
   };
 
   return (
