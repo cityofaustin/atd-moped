@@ -125,7 +125,7 @@ const ProjectSummaryProjectPartners = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={partner?.entity_name || "n/a"}
+            text={selectedEntities.map(e => e?.entity_name).join(", ")}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
