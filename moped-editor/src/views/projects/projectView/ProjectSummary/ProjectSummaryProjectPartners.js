@@ -101,9 +101,9 @@ const ProjectSummaryProjectPartners = ({
               className={classes.fieldSelectItem}
             >
               {entityList.map(entity => (
-                <MenuItem key={entity.entity_name} value={entity.entity_name}>
+                <MenuItem key={entity.entity_id} value={entity}>
                   <Checkbox
-                    checked={personName.indexOf(entity.entity_name) > -1}
+                    checked={selectedEntitiesIds.indexOf(entity.entity_id) > -1}
                   />
                   <ListItemText primary={entity.entity_name} />
                 </MenuItem>
