@@ -31,30 +31,32 @@ const ProjectSummaryProjectPartners = ({
   classes,
 }) => {
   const entityList = data?.moped_entity ?? [];
+
   const originalPartners = data?.moped_proj_partners ?? [];
-  const originalSelected = (data?.moped_proj_partners ?? []).map(
-    p => p.entity_id
-  );
-  const nonePartner = [];
+
+  const originalEntities = originalPartners.map(e => ({
+    entity_id: e.entity_id,
+    entity_name: e.moped_entity.entity_name,
+  }));
 
   const [editMode, setEditMode] = useState(false);
 
-  const [partner, setPartner] = useState(originalPartners ?? nonePartner);
+  const [selectedEntities, setSelectedEntities] = useState(originalEntities);
+
+  const selectedEntitiesIds = selectedEntities.map(e => e?.entity_id);
 
   // The mutation and mutation function
   const [updateProjectPartners] = useMutation(PROJECT_UPDATE_PARTNERS);
 
-  const [personName, setPersonName] = React.useState([]);
-
   const handleChange = event => {
-    setPersonName(event.target.value);
+    setSelectedEntities(event.target.value);
   };
 
   /**
    * Resets the sponsor back to its original state, closes edit mode
    */
   const handleProjectSponsorClose = () => {
-    setPartner(originalPartners);
+    setSelectedEntities(originalEntities);
     setEditMode(false);
   };
 
