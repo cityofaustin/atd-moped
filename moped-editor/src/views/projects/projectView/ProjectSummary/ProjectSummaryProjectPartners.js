@@ -53,17 +53,17 @@ const ProjectSummaryProjectPartners = ({
   };
 
   /**
-   * Resets the sponsor back to its original state, closes edit mode
+   * Resets the partners list back to the original state, closes edit mode
    */
-  const handleProjectSponsorClose = () => {
+  const handleProjectPartnersClose = () => {
     setSelectedEntities(originalEntities);
     setEditMode(false);
   };
 
   /**
-   * Saves the new project sponsor
+   * Saves the new project partner
    */
-  const handleProjectSponsorSave = () => {
+  const handleProjectPartnersSave = () => {
     console.log("Nothing!");
     if (false) updateProjectPartners();
     setEditMode(false);
@@ -111,13 +111,13 @@ const ProjectSummaryProjectPartners = ({
             </Select>
             <Icon
               className={classes.editIconConfirm}
-              onClick={handleProjectSponsorSave}
+              onClick={handleProjectPartnersSave}
             >
               check
             </Icon>
             <Icon
               className={classes.editIconConfirm}
-              onClick={handleProjectSponsorClose}
+              onClick={handleProjectPartnersClose}
             >
               close
             </Icon>
