@@ -3620,6 +3620,15 @@
 - table:
     schema: public
     name: moped_project
+  object_relationships:
+  - name: moped_proj_financial
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: moped_proj_financials
+        column_mapping:
+          project_id: project_id
   array_relationships:
   - name: moped_proj_components
     using:
