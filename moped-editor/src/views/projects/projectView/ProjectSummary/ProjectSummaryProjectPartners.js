@@ -139,7 +139,9 @@ const ProjectSummaryProjectPartners = ({
               value={selectedEntities}
               onChange={handleChange}
               input={<Input />}
-              renderValue={entity => entity.map(e => e?.entity_name).join(", ")}
+              renderValue={entity_ids =>
+                entity_ids.map(e => entityDict[e]).join(", ")
+              }
               /*
                 There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
                 this is fixed by overriding the function "getContentAnchorEl".
