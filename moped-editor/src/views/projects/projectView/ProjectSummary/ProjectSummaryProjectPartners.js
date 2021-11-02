@@ -54,7 +54,7 @@ const ProjectSummaryProjectPartners = ({
    * Resets the sponsor back to its original state, closes edit mode
    */
   const handleProjectSponsorClose = () => {
-    setPartner(originalPartner);
+    setPartner(originalPartners);
     setEditMode(false);
   };
 
