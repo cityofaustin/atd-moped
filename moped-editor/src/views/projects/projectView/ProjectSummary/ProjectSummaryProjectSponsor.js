@@ -58,9 +58,10 @@ const ProjectSummaryProjectSponsor = ({
       .then(() => {
         setEditMode(false);
         refetch();
+        snackbarHandle(true, "Sponsor updated!", "success");
       })
       .catch(err => {
-        alert("Unable to make the change: " + String(err));
+        snackbarHandle(true, "Failed to update: " + String(err), "success");
         handleProjectSponsorClose();
       });
   };
