@@ -51,6 +51,18 @@ export const SUMMARY_QUERY = gql`
         project_note
       }
     }
+    moped_proj_partners(
+        where: {
+            project_id: { _eq: $projectId }
+            status_id: { _eq: 1 }
+        }
+    ) {
+      project_id
+      entity_id
+      moped_entity {
+        entity_name
+      }
+    }
     moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
