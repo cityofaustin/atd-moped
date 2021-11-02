@@ -68,6 +68,20 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
+  const [snackbarState, setSnackbarState] = useState(false);
+
+  /**
+   * Updates the state of snackbar state
+   * @param {String|JSX.Element} message - The message to be displayed
+   * @param {String} severity - Usually "success" or "error"
+   */
+  const snackbarHandle = (open = true, message, severity = "success") => {
+    setSnackbarState({
+      open: open,
+      message: message,
+      severity: severity,
+    });
+  };
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
