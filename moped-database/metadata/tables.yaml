@@ -2705,86 +2705,94 @@
 - table:
     schema: public
     name: moped_proj_partners
+  object_relationships:
+  - name: moped_entity
+    using:
+      foreign_key_constraint_on: entity_id
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      check: null
+      check: {}
   event_triggers:
   - name: activity_log_moped_proj_partners
     definition:
