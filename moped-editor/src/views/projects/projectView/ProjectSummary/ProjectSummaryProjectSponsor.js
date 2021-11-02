@@ -14,6 +14,7 @@ import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
+ * @param {function} snackbarHandle - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
