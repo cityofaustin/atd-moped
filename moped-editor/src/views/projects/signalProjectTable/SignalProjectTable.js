@@ -51,6 +51,7 @@ const SignalProjectTable = () => {
       })
     }
     project["signal_ids"] = signal_ids
+    console.log(project["signal_ids"])
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
@@ -95,6 +96,7 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: { fontFamily: typography.fontFamily },
+      render: entry => entry.signal_ids.join(", ")
     },
     {
       title: "Project type",
