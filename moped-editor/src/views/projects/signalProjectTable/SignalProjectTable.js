@@ -74,6 +74,15 @@ const SignalProjectTable = () => {
         project["current_phase"] = currentPhase.phase_name;
       }
     }
+
+    // funding source
+    const funding_sources = [];
+    if (project?.moped_proj_funding?.length) {
+      project.moped_proj_funding.forEach(source => {
+        funding_sources.push(source?.moped_fund_source?.funding_source_name);
+      });
+    }
+    project["funding_sources"] = funding_sources;
   });
 
   /**
@@ -125,11 +134,14 @@ const SignalProjectTable = () => {
       title: "Internal status note",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
-      cellStyle: { fontFamily: typography.fontFamily, minWidth: "300px" },
+      cellStyle: { ...typographyStyle, minWidth: "300px" },
     },
     {
       title: "Funding source",
-      field: "funding_source",
+      field: "funding_sources",
+      editable: "never",
+      cellStyle: typographyStyle,
+      render: entry => entry.funding_sources.join(", "),
     },
     {
       title: "Project DO#",
