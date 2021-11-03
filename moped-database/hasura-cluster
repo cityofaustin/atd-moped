@@ -381,53 +381,82 @@ function list() {
   LIST_MODE=$1; # local or remote
   LIST_ENV=$2; # production or staging
 
+  echo -e "\n--------------------------------------------------------------------";
+  echo " 🐘  List of available postgres snapshots";
+  echo "--------------------------------------------------------------------";
+
   case "${LIST_MODE}" in
     "local")
-        ls -lha "snapshots/${LIST_ENV}";
+        find "snapshots/${LIST_ENV}" -type f -name "*.psql" | nl;
     ;;
-    "remote")
+    "bucket")
         BUCKET_NAME=$(__config_get_key "backups.${LIST_ENV}.bucket");
         BUCKET_PREFIX=$(__config_get_key "backups.${LIST_ENV}.prefix");
         aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}" --human-readable;
-        # 1. Check if the user has AWS CLI installed
-        # 2. Check there is a backup stage with the name provided or display an error and exit
-        # 3. Populate variables and
-        # 4. Compile AWS CLI command
-        # 5. Run AWS CLI for list
     ;;
     *)
-      echo "try local: ./hasura-cluster list local staging\ntry remote: ./hasura-cluster list remote staging";
+      printf "try local: ./hasura-cluster list local staging\ntry bucket: ./hasura-cluster list bucket staging";
     ;;
   esac;
-
-
 }
 
 #
 # Downloads a snapshot from production, staging or from a bucket
 #
-function download_postgres() {
+function clone() {
   DB_PROFILE=$1;
+  DB_BUCKET_STAGE=$2;
+  DB_BUCKET_DATE=$3;
 
   if [[ "${DB_PROFILE}" = "" ]]; then
-    echo -e "You must also provide an environment: production, staging\nor enter an S3 file: s3://bucket/file.psql";
+    echo -e "You must also provide an environment: production, staging";
     exit 1;
   fi;
 
   __check_snapshots_folder;
-  echo "Downloading: ${DB_PROFILE}";
-  __create_snapshot $DB_PROFILE;
+
+  if [[ "${DB_PROFILE}" = "production" ]] || [[ "${DB_PROFILE}" = "staging" ]]; then
+    echo "Cloning (with pg_dump): ${DB_PROFILE}";
+    link;
+    __create_snapshot $DB_PROFILE;
+    unlink;
+  else
+    echo "Cloning from bucket: ${DB_BUCKET_DATE}"
+    __download_s3 "${DB_PROFILE}" "${DB_BUCKET_DATE}";
+  fi;
 }
 
 #
-# Download from S3
+# Restores a snapshot into the current running postgres database
 #
-function download_s3() {
-  LOCAL_ENV=$1;
-  S3_FILE_NAME=$2;
+function restore() {
+  DB_SNAPSHOT=$1;
 
-  __check_snapshots_folder;
-  __create_snapshot_from_bucket "${LOCAL_ENV}" "${S3_FILE_NAME}";
+  __exit_on_link;
+
+  if [[ $(__hasura_server_ready) = "FALSE" ]]; then
+    echo "Error: Hasura isn't running, be sure to try: './hasura-cluster start_only'";
+    exit 1;
+  fi;
+
+  echo -e "\n--------------------------------------------------------------------";
+  echo " 🐘  Restoring snapshot to local database";
+  echo "     [${DB_SNAPSHOT}]"
+  echo "--------------------------------------------------------------------";
+
+  __restore_snapshot $DB_SNAPSHOT;
+}
+
+#
+# Starts the cluster and does NOT run migrations...
+#
+function start_only() {
+  START_MODE=$1;
+  if [[ "${START_MODE}" = "" ]]; then
+    docker-compose -f docker-compose.yml up -d;
+  else
+    docker-compose -f "${START_MODE}" up -d;
+  fi;
 }
 
 #
