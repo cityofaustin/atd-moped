@@ -287,7 +287,7 @@ function run_migration() {
 
   echo "Checking the Hasura server is ready...";
   CURRENT_STAGE_NAME="";
-  wait_server_ready;
+  __wait_server_ready;
   echo "--------------------------------------------------------------------";
   echo " ♻️  MIGRATIONS STARTED";
   echo "--------------------------------------------------------------------";
