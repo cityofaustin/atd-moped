@@ -123,6 +123,10 @@ const ProjectSummaryProjectPartners = ({
     setEditMode(false);
   };
 
+  const selectedEntitiesJoint = selectedEntities
+    .map(e => entityDict[e])
+    .join(", ");
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Project Partners</Typography>
