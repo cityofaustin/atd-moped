@@ -549,6 +549,17 @@ function restart() {
 }
 
 #
+# Stops the database, and re-starts without migrations.
+#
+function reload() {
+  echo "--------------------------------------------------------------------";
+  echo " ♻️ Reloading the Hasura Cluster (without migrations)...️";
+  echo "--------------------------------------------------------------------";
+  stop;
+  start_only;
+}
+
+#
 # Removes any volumes whose names start with the string "moped"
 #
 function prune() {
