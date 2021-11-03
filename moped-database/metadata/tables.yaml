@@ -3734,13 +3734,6 @@
         table:
           schema: public
           name: moped_proj_features
-  - name: moped_proj_fund_sources
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: moped_proj_fund_source
   - name: moped_proj_notes
     using:
       foreign_key_constraint_on:

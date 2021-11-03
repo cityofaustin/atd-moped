@@ -21,6 +21,10 @@ const SignalProjectTable = () => {
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
     fetchPolicy: "no-cache",
   });
+  const typographyStyle = {
+    fontFamily: typography.fontFamily,
+    fontSize: "14px",
+  };
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
 
@@ -31,7 +35,7 @@ const SignalProjectTable = () => {
     return <CircularProgress />;
   }
 
-  // Assemble the data for each signal entry?
+  // Assemble the data for each signal entry
   data.moped_project.forEach(project => {
     // project status update equivalent to most recent project note
     project["status_update"] = "";
@@ -47,15 +51,14 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features) {
       project.moped_proj_features.forEach(feature => {
-        signal_ids.push(feature?.location?.properties.signal_id)
-      })
+        signal_ids.push(feature?.location?.properties.signal_id);
+      });
     }
-    project["signal_ids"] = signal_ids
-    console.log(project["signal_ids"])
+    project["signal_ids"] = signal_ids;
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
-    project["construction_start"] = "";
+    project["construction_start"] = null;
     project["current_phase"] = "";
     if (project?.moped_proj_phases?.length) {
       const constructionPhase = project.moped_proj_phases.find(
@@ -64,13 +67,13 @@ const SignalProjectTable = () => {
       if (constructionPhase) {
         project["construction_start"] = constructionPhase.phase_start;
       }
-      const currentPhase = project.moped_proj_phases.find(p => p.is_current_phase);
+      const currentPhase = project.moped_proj_phases.find(
+        p => p.is_current_phase
+      );
       if (currentPhase) {
-        project["current_phase"] = currentPhase.phase_name
+        project["current_phase"] = currentPhase.phase_name;
       }
     }
-
-
   });
 
   /**
@@ -95,8 +98,8 @@ const SignalProjectTable = () => {
       field: "signal_ids",
       editable: "never",
       // cell style font needs to be set if editable is never
-      cellStyle: { fontFamily: typography.fontFamily },
-      render: entry => entry.signal_ids.join(", ")
+      cellStyle: typographyStyle,
+      render: entry => entry.signal_ids.join(", "),
     },
     {
       title: "Project type",
@@ -107,7 +110,7 @@ const SignalProjectTable = () => {
       title: "Current phase",
       field: "current_phase",
       editable: "never",
-      cellStyle: { fontFamily: typography.fontFamily },
+      cellStyle: typographyStyle,
     },
     {
       title: "Task order",
@@ -122,7 +125,7 @@ const SignalProjectTable = () => {
       title: "Internal status note",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
-      cellStyle: { fontFamily: typography.fontFamily },
+      cellStyle: { fontFamily: typography.fontFamily, minWidth: "300px" },
     },
     {
       title: "Funding source",
@@ -140,17 +143,19 @@ const SignalProjectTable = () => {
       title: "Targeted construction start",
       field: "construction_start",
       editable: "never",
-      cellStyle: { fontFamily: typography.fontFamily },
+      cellStyle: typographyStyle,
       render: entry =>
-        new Date(entry.construction_start).toLocaleDateString("en-US", {
-          timeZone: "UTC",
-        }),
+        entry.construction_start
+          ? new Date(entry.construction_start).toLocaleDateString("en-US", {
+              timeZone: "UTC",
+            })
+          : "",
     },
     {
       title: "Last modified",
       field: "last_modified",
       editable: "never",
-      cellStyle: { fontFamily: typography.fontFamily },
+      cellStyle: typographyStyle,
       render: entry =>
         new Date(entry.updated_at).toLocaleDateString("en-US", {
           timeZone: "UTC",
@@ -233,8 +238,9 @@ const SignalProjectTable = () => {
                   paging: false,
                 }),
                 search: false,
-                rowStyle: { fontFamily: typography.fontFamily },
+                rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
+                // padding: "dense",
               }}
               localization={{
                 header: {

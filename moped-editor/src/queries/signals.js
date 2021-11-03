@@ -26,9 +26,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       moped_proj_financial {
         purchase_order_number
       }
-      moped_proj_fund_sources {
-        funding_source_name
-      }
     }
   }
 `;
