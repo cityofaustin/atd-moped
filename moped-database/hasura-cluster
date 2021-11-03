@@ -365,8 +365,7 @@ function unlink() {
     SSH_PID=$(ps -eo pid,command | grep ssh | grep bastion | cut -d" " -f1);
     if [[ "${SSH_PID}" -ne "" ]]; then
       echo "Stopping bastion link @ PID: ${SSH_PID}";
-      kill -2 $SSH_PID; # Stop it gracefully via SIGINT
-      [[ "$?" = "0" ]] && echo "Stopped successfully" || echo "Could not terminate process";
+      kill -2 $SSH_PID && echo "Stopped successfully" || echo "Could not terminate process";
     else
       echo "Cannot find bastion link.";
     fi;
