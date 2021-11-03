@@ -1,0 +1,1 @@
+TRUNCATE moped_fund_status, moped_fund_sources, moped_fund_programs;
