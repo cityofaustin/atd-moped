@@ -348,7 +348,7 @@ function link() {
       $LOCAL_HOST:$LOCAL_PORT:$REMOTE_HOST:$REMOTE_PORT \
       $SSH_USER@$SSH_BASTION;
 
-    wait_link_bastion;
+    __wait_link_bastion;
     echo "Link to bastion established, listening on tcp://localhost:9999";
   } || {
     echo "Failed creating link on bastion, check your settings.";
