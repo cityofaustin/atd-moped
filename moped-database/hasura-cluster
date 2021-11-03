@@ -211,13 +211,23 @@ function __create_snapshot_from_bucket() {
   LOCAL_FILE_PATH_UNZIPPED="./snapshots/${LOCAL_ENV}/atd_moped_staging-full.sql";
   aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}/${S3_FILE_NAME}/atd_moped_staging-full.sql.gz" "${LOCAL_FILE_PATH}";
   zcat "${LOCAL_FILE_PATH}" > "${LOCAL_FILE_PATH_UNZIPPED}";
-#  rm "${LOCAL_FILE_PATH}";
+}
+
+#
+# Download from S3
+#
+function __download_s3() {
+  LOCAL_ENV=$1;
+  S3_FILE_NAME=$2;
+
+  __check_snapshots_folder;
+  __create_snapshot_from_bucket "${LOCAL_ENV}" "${S3_FILE_NAME}";
 }
 
 #
 # Pings the Hasura server, returns True if it is ready to accept connections.
 #
-function hasura_server_ready() {
+function __hasura_server_ready() {
   HASURA_SERVER_STATUS=$(curl --silent http://localhost:8080/v1/version)
   [[ "${HASURA_SERVER_STATUS}" =~ "version" ]] && echo "TRUE" || echo "FALSE";
 }
