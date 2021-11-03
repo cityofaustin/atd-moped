@@ -178,11 +178,12 @@ function __create_snapshot() {
   # Exit if there is no link!
   __check_link_or_exit;
 
-  # 1. Read the profile in hasura_cluster.json
-  # 2. Populate Variables in function
-  # 3. Run pg_dump to create database
-  echo "Please seat back and relax, this is going to take a while...";
-  sleep 3;
+  # Delegate
+  echo "--------------------------------------------------------------------";
+  echo " ⏳ Please seat back and relax, this is going to take a while...";
+  echo "    ** It takes time for pg_dump to download the search_path. **";
+  echo "--------------------------------------------------------------------";
+  sleep 5;
 
   docker run -it --rm --network host --name moped_download_db_snapshot \
     -v "$(pwd)"/snapshots:/snapshots \
