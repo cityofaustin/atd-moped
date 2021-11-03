@@ -192,7 +192,7 @@ function __create_snapshot() {
     --env PGUSER=$(__config_get_key "postgres.${DB_PROFILE}.db_user") \
     --env PGPASSWORD=$(__config_get_key "postgres.${DB_PROFILE}.db_pass") \
     --env PGDATABASE=$(__config_get_key "postgres.${DB_PROFILE}.db_name") \
-    $HASURA_CLUSTER_POSTGRES_IMAGE pg_dump --verbose --no-owner \
+    $HASURA_CLUSTER_POSTGRES_IMAGE pg_dump --verbose --no-owner --no-privileges --clean \
     --file="/snapshots/${DB_PROFILE}/postgres_${DB_PROFILE}_${TIMESTAMP}.psql";
 }
 
