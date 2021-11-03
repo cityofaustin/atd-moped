@@ -129,6 +129,7 @@ const SignalProjectTable = () => {
     {
       title: "Contractor/Contract",
       field: "contractor",
+      render: entry => entry.contractor === "" ? "blank" : entry.contractor
     },
     {
       title: "Internal status note",
