@@ -467,57 +467,57 @@
       check: null
 - table:
     schema: public
-    name: moped_fund_source_cat
+    name: moped_fund_programs
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
-      - funding_source_category_id
-      - funding_source_category_name
+      - funding_program_id
+      - funding_program_name
       filter: {}
       check: null
 - table:
@@ -582,6 +582,65 @@
       - funding_source_name
       filter: {}
       check: null
+- table:
+    schema: public
+    name: moped_fund_status
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - funding_status_id
+      - funding_status_name
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - funding_status_id
+      - funding_status_name
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+      - funding_status_id
+      - funding_status_name
+      filter: {}
+      check: {}
+  delete_permissions:
+  - role: moped-admin
+    permission:
+      filter: {}
+  - role: moped-editor
+    permission:
+      filter: {}
 - table:
     schema: public
     name: moped_group
@@ -2072,92 +2131,113 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
-    name: moped_proj_fund_source
+    name: moped_proj_funding
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
       - added_by
+      - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
       - added_by
+      - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_other
       - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
       - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
-      - funding_source_other
       - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
       - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - proj_fund_source_id
-      - funding_source_name
-      - funding_source_category
-      - project_id
-      - funding_source_other
-      - date_added
       - added_by
+      - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       filter: {}
       allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - funding_source_other
       - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
       - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
-      - funding_source_other
       - added_by
-      - proj_fund_source_id
-      - project_id
-      - funding_source_category
-      - funding_source_name
       - date_added
+      - fund_dept_unit
+      - funding_amount
+      - funding_description
+      - funding_program_id
+      - funding_source_id
+      - funding_status_id
+      - proj_funding_id
+      - project_id
       filter: {}
       check: null
   event_triggers:
@@ -2170,12 +2250,15 @@
         columns: '*'
       update:
         columns:
-        - funding_source_other
         - added_by
+        - funding_amount
+        - funding_program_id
+        - funding_source_id
+        - funding_status_id
         - project_id
-        - proj_fund_source_id
-        - funding_source_category
-        - funding_source_name
+        - proj_funding_id
+        - fund_dept_unit
+        - funding_description
         - date_added
     retry_conf:
       num_retries: 0
