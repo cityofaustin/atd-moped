@@ -599,13 +599,6 @@ function status() {
 }
 
 #
-# Lists migrations by number
-#
-function list_migrations() {
-  ls "./migrations/" | nl;
-}
-
-#
 # Run the Hasura Console
 #
 function console() {
