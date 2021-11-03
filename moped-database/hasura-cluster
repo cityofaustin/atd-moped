@@ -254,7 +254,7 @@ function __wait_server_ready() {
 #
 # Wait until link is established
 #
-function wait_link_bastion() {
+function __wait_link_bastion() {
   SCAN_TIMEOUT=$(__config_get_key "bastion.scan_timeout");
   INITIALIZATION_TIMEOUT_LIMIT="${SCAN_TIMEOUT:-10}";
   INITIALIZATION_COUNT=1;
