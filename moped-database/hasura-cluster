@@ -127,16 +127,43 @@ function __check_link_or_exit() {
 }
 
 #
+# Checks if there is a link, it so it exits
+#
+function __exit_on_link() {
+  LOCAL_PORT=$(__config_get_key "bastion.local_port");
+  if [[ $(__is_local_port_open $LOCAL_PORT) = "TRUE" ]]; then
+    echo "A link cannot be present for this operation, please run './hasura-cluster unlink'";
+    exit 1;
+  fi;
+}
+
+#
+# Checks if there is VPN access
+#
+function __check_vpn_access() {
+  curl -skIL --max-time 3 "https://$(__config_get_key "bastion.ssh_bastion")" && echo "TRUE" || echo "FALSE";
+}
+
+#
 # Restores a snapshot into local
 #
 function __restore_snapshot() {
-  docker run -it --rm -v "$(pwd)"/snapshots:/snapshots \
-     --env PGHOST="localhost" \
+
+  # Be sure there is no link
+  __exit_on_link;
+
+  DB_SNAPSHOT=$1;
+  DB_SS_BASENAME="${DB_SNAPSHOT:10:512}";
+  echo "Basename: ${DB_SS_BASENAME}";
+
+  docker run -it --rm --network host -v "$(pwd)"/snapshots:/snapshots \
+     --workdir="/snapshots" \
+     --env PGHOST="docker.for.mac.host.internal" \
      --env PGPORT="5432" \
      --env PGUSER="moped" \
      --env PGPASSWORD="moped" \
      --env PGDATABASE="moped" \
-      $HASURA_CLUSTER_POSTGRES_IMAGE pg_dump --no-owner > "/downloads/${DB_PROFILE}_clone.sql";
+      $HASURA_CLUSTER_POSTGRES_IMAGE psql -f $DB_SS_BASENAME;
 }
 
 #
