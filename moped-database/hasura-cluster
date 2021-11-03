@@ -637,8 +637,7 @@ fi;
 # Start the hasura cluster...
 #
 if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
-   show_banner "$1" && $@;
+   show_banner "$@" && $@;
 else
-  echo "Hasura Cluster: $1" && $@;
+  echo "Hasura Cluster: $@" && $@;
 fi;
-
