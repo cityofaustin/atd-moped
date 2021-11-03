@@ -316,21 +316,16 @@ function run_migration() {
 }
 
 #
-# Starts the cluster and does NOT run migrations...
-#
-function start_only() {
-  START_MODE=$1;
-  if [[ "${START_MODE}" = "" ]]; then
-    docker-compose -f docker-compose.yml up -d;
-  else
-    docker-compose -f "${START_MODE}" up -d;
-  fi;
-}
-
-#
 # Creates an SSH Link
 #
 function link() {
+  # Check if on VPN, if not then exit
+  if [[ $(__check_vpn_access) = "FALSE" ]]; then
+    echo "Cannot establish link, you don't seem to be on VPN?";
+    exit 1;
+  fi;
+
+  # Get local bastion local_port
   LOCAL_PORT=$(__config_get_key "bastion.local_port");
   echo "Creating port-forwarding link on bastion @ ${LOCAL_PORT}...";
   if [[ $(__is_local_port_open "${LOCAL_PORT}") = "TRUE" ]]; then
