@@ -116,7 +116,7 @@ EOF_PYTHON_JSON_PATH
 }
 
 #
-# Checks if there is a link, or exits
+# Checks if there is no link, or exits
 #
 function __check_link_or_exit() {
   LOCAL_PORT=$(__config_get_key "bastion.local_port");
