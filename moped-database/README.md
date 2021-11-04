@@ -95,7 +95,7 @@ Example:
 3. Edit the file with nano or vim, and fill-in the blanks:
 
    `nano ~/.ssh/hasura_cluster.json`
-   
+
    -or-
 
    `vim ~/.ssh/hasura_cluster.json`
@@ -116,18 +116,37 @@ $./hasura-cluster clone [environment]
 
 Example:
 
+- Cloning staging or production:
+
 ```bash
 ./hasura-cluster clone staging
+./hasura-cluster clone production
 ```
+
+
+- Cloning a staging or production backup from S3:
+
+```bash
+/hasura-cluster clone bucket staging "2021-11-03"
+/hasura-cluster clone bucket production "2021-11-03"
+```
+
+
 
 #### III. Restore
 
 This operation loads a snapshot into your local database instance. It does not create a snapshot.
 
-- Listing snapshot files:
+- Listing snapshot files downloaded:
 
 ```bash
-./hasura-cluster list
+./hasura-cluster list local [staging|production]
+```
+
+- Listing files in an s3 bucket:
+
+```bash
+./hasura-cluster list bucket [staging|production]
 ```
 
 - Restoring a specific file:
@@ -143,7 +162,6 @@ NOTE: If hasura isn't running, restore is going to exit with an error.
 ```bash
 ./hasura-cluster reload
 ```
-
 ### Hasura-Cluster Reference
 
 - `run_migration`: Runs all 3 hasura migrations: database, metadata, seed data. 
