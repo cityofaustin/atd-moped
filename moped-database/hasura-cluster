@@ -452,8 +452,8 @@ function clone() {
     __create_snapshot $DB_PROFILE;
     unlink;
   else
-    echo "Cloning from bucket: ${DB_BUCKET_DATE}"
-    __download_s3 "${DB_PROFILE}" "${DB_BUCKET_DATE}";
+    echo "Cloning from bucket: ${DB_BUCKET_DATE}";
+    __download_s3 "${DB_BUCKET_STAGE}" "${DB_BUCKET_DATE}";
   fi;
 }
 
