@@ -324,6 +324,25 @@ function run_migration() {
   echo -e " Migrations Finished! \n";
 }
 
+# Alias for run_migration
+function apply() {
+  APPLY_MODE=$1;
+  case "${APPLY_MODE}" in
+    "metadata")
+      hasura metadata apply;
+    ;;
+    "migrations")
+      hasura migrate apply;
+    ;;
+    "seeds")
+      hasura seeds apply;
+    ;;
+    *)
+      echo "Invalid option ${APPLY_MODE}";
+    ;;
+  esac;
+}
+
 #
 # Creates an SSH Link
 #
