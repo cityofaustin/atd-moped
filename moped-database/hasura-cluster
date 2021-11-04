@@ -527,10 +527,8 @@ function start() {
     echo "Not implemented";
   fi;
 
-
   run_migration;
   status;
-
 }
 
 #
