@@ -365,7 +365,11 @@ function link() {
   LOCAL_PORT=$(__config_get_key "bastion.local_port");
   echo "Creating port-forwarding link on bastion @ ${LOCAL_PORT}...";
   if [[ $(__is_local_port_open "${LOCAL_PORT}") = "TRUE" ]]; then
-    echo "Link to bastion already established, listening on tcp://localhost:${LOCAL_PORT}";
+    echo "Error: Link to bastion already established (listening on tcp://localhost:${LOCAL_PORT})";
+    echo "  - Make sure you don't have other cloning process running.";
+    echo "  - Make sure you don't have other tunnels established running other processes.";
+    echo "";
+    echo " You may unlink by running ./hasura-cluster unlink";
     exit 1;
   fi;
 
