@@ -409,18 +409,21 @@ function list() {
   LIST_MODE=$1; # local or remote
   LIST_ENV=$2; # production or staging
 
-  echo -e "\n--------------------------------------------------------------------";
-  echo " 🐘  List of available postgres snapshots";
-  echo "--------------------------------------------------------------------";
-
   case "${LIST_MODE}" in
     "local")
-        find "snapshots/${LIST_ENV}" -type f -name "*.psql" | nl;
+        echo -e "\n--------------------------------------------------------------------";
+        echo " 🐘  List of available postgres snapshots";
+        echo "--------------------------------------------------------------------";
+        find "snapshots/${LIST_ENV}" -type f -name "*.psql" | sed -r "s/\/\//\//g" | nl;
     ;;
     "bucket")
+        echo -e "\n--------------------------------------------------------------------";
+        echo " ⛅️  List of available backups in AWS";
+        echo "--------------------------------------------------------------------";
+        __aws_installed_or_exit;
         BUCKET_NAME=$(__config_get_key "backups.${LIST_ENV}.bucket");
         BUCKET_PREFIX=$(__config_get_key "backups.${LIST_ENV}.prefix");
-        aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}" --human-readable;
+        aws s3 ls "s3://${BUCKET_NAME}/${BUCKET_PREFIX}" --human-readable | sed -r "s/PRE//g" | sed -r "s/\///g" | sed -e "s/^[[:space:]]*//" | nl;
     ;;
     *)
       printf "try local: ./hasura-cluster list local staging\ntry bucket: ./hasura-cluster list bucket staging";
