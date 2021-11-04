@@ -5,7 +5,7 @@
     "ssh_bastion": "bastion_host_domain",
     "local_host": "localhost",
     "local_port": 9999,
-    "remote_host": "remote_host_domain",
+    "remote_host": "rds_host_domain",
     "remote_port": 5432,
     "scan_timeout": 10,
     "ssh_timeout": 5,
