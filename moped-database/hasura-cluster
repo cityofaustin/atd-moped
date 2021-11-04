@@ -77,9 +77,12 @@ function __is_local() {
 # Returns TRUE if AWS is installed
 #
 function __is_aws_cli_installed() {
-  aws --help 2&>1 /dev/null && echo "TRUE" || echo "FALSE";
+  aws --help > /dev/null && echo "TRUE" || echo "FALSE";
 }
 
+#
+# Exits if there is no aws cli
+#
 function __aws_installed_or_exit() {
   if [[ $(__is_aws_cli_installed) == "FALSE" ]]; then
     echo "AWS CLI is not installed, aborting.";
