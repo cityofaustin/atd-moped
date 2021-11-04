@@ -488,6 +488,9 @@ function start_only() {
   else
     docker-compose -f "${START_MODE}" up -d;
   fi;
+
+  echo "Checking the Hasura server is ready...";
+  __wait_server_ready;
 }
 
 #
