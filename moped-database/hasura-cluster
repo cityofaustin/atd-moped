@@ -401,8 +401,7 @@ function link() {
 function unlink() {
   LOCAL_PORT=$(__config_get_key "bastion.local_port");
   if [[ $(__is_local_port_open "${LOCAL_PORT}") = "TRUE" ]]; then
-    # Find the pid
-    SSH_PID=$(ps -eo pid,command | grep ssh | grep bastion | cut -d" " -f1);
+    SSH_PID=$(ps -eo pid,command | grep ssh | grep bastion | awk '{ sub(/^[ \t]+/, ""); print }' | cut -d" " -f1);
     if [[ "${SSH_PID}" -ne "" ]]; then
       echo "Stopping bastion link @ PID: ${SSH_PID}";
       kill -2 $SSH_PID && echo "Stopped successfully" || echo "Could not terminate process";
