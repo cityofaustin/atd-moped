@@ -212,15 +212,20 @@ function __create_snapshot() {
 function __create_snapshot_from_bucket() {
   LOCAL_ENV=$1;
   S3_BACKUP_DATE=$2;
+  KEY_NAME="atd_moped";
 
   # Check we have AWS
   __aws_installed_or_exit;
 
+  if [[ "${LOCAL_ENV}" = "staging" ]]; then
+    KEY_NAME="atd_moped_staging";
+  fi;
+
   BUCKET_NAME=$(__config_get_key "backups.${LOCAL_ENV}.bucket");
   BUCKET_PREFIX=$(__config_get_key "backups.${LOCAL_ENV}.prefix" | sed -r "s/_staging\//_staging/g"| sed -r "s/_production\//_production/g");
-  LOCAL_FILE_PATH="./snapshots/${LOCAL_ENV}/atd_moped_${LOCAL_ENV}-full.sql.gz";
+  LOCAL_FILE_PATH="./snapshots/${LOCAL_ENV}/${KEY_NAME}-full.sql.gz";
   LOCAL_FILE_PATH_UNZIPPED="./snapshots/${LOCAL_ENV}/bucket_${LOCAL_ENV}-${S3_BACKUP_DATE}.psql";
-  aws s3 cp "s3://${BUCKET_NAME}/${BUCKET_PREFIX}/${S3_BACKUP_DATE}/atd_moped_${LOCAL_ENV}-full.sql.gz" "${LOCAL_FILE_PATH}";
+  aws s3 cp "s3://${BUCKET_NAME}/${BUCKET_PREFIX}/${S3_BACKUP_DATE}/${KEY_NAME}-full.sql.gz" "${LOCAL_FILE_PATH}";
   cat "${LOCAL_FILE_PATH}" | zcat > "${LOCAL_FILE_PATH_UNZIPPED}";
   gsed -i'' "s/REVOKE ALL ON SCHEMA public FROM rdsadmin;//" "${LOCAL_FILE_PATH_UNZIPPED}";
   gsed -i'' "s/GRANT ALL ON SCHEMA public TO atd_moped;//" "${LOCAL_FILE_PATH_UNZIPPED}";
