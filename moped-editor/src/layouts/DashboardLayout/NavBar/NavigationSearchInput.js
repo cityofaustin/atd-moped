@@ -26,6 +26,19 @@ const useStyles = makeStyles(theme => ({
     // but instead appears to come in from edge of div
     overflow: "hidden",
   },
+  root404: {
+    borderRadius: "4px",
+    backgroundColor: theme.palette.background.paper,
+    [theme.breakpoints.up("sm")]: {
+      width: "600px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "400px",
+    },
+    // overflow hidden makes it so the popper does not slide in from edge of screen
+    // but instead appears to come in from edge of div
+    overflow: "hidden",
+  },
   inputRoot: {
     borderWidth: "1px",
     borderRadius: "4px",
@@ -40,6 +53,23 @@ const useStyles = makeStyles(theme => ({
     },
     [theme.breakpoints.down("sm")]: {
       maxWidth: "200px",
+    },
+    height: "36px",
+  },
+  input404: {
+    borderWidth: "1px",
+    borderRadius: "4px",
+    borderColor: "rgba(0,0,0, .23)",
+    "&:hover": {
+      borderColor: theme.palette.text.secondary,
+    },
+    borderStyle: "solid",
+    padding: "2px",
+    [theme.breakpoints.up("sm")]: {
+      width: "600px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      maxWidth: "400px",
     },
     height: "36px",
   },
@@ -76,6 +106,16 @@ const useStyles = makeStyles(theme => ({
     overflow: "hidden",
     borderRadius: "4px",
   },
+  searchPopper404: {
+    [theme.breakpoints.up("sm")]: {
+      width: "600px",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "400px",
+    },
+    overflow: "hidden",
+    borderRadius: "4px",
+  },
   // separate style so it can be applied after animation completes
   searchPopperShadow: {
     boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 3px 3px -3px rgb(0 0 0 / 25%)",
@@ -97,7 +137,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const NavigationSearchInput = () => {
+const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
   let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
@@ -221,9 +261,12 @@ const NavigationSearchInput = () => {
   }, [searchTerm]);
 
   return (
-    <div>
+    <Box display="flex" justifyContent="center">
       <ClickAwayListener onClickAway={startSlideAway}>
-        <div className={classes.root} ref={divRef}>
+        <div
+          className={input404Class ? classes.root404 : classes.root}
+          ref={divRef}
+        >
           {!searchInput ? (
             <IconButton onClick={handleMagClick}>
               <SearchIcon />
@@ -238,7 +281,7 @@ const NavigationSearchInput = () => {
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
-                  root: classes.inputRoot,
+                  root: input404Class ? classes.input404 : classes.inputRoot,
                   input: classes.inputInput,
                   adornedStart: classes.adornedStart,
                   focused: classes.inputFocused,
@@ -267,10 +310,13 @@ const NavigationSearchInput = () => {
             }}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
-            className={clsx(classes.searchPopper, {
-              // only apply dropshadow after component has fully slid into position
-              [classes.searchPopperShadow]: popperEnterComplete,
-            })}
+            className={clsx(
+              input404Class ? classes.searchPopper404 : classes.searchPopper,
+              {
+                // only apply dropshadow after component has fully slid into position
+                [classes.searchPopperShadow]: popperEnterComplete,
+              }
+            )}
             // need transition prop since child components include Slide
             transition
           >
@@ -293,7 +339,7 @@ const NavigationSearchInput = () => {
           </Popper>
         </div>
       </ClickAwayListener>
-    </div>
+    </Box>
   );
 };
 

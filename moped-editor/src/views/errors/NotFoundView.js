@@ -15,6 +15,10 @@ const useStyles = makeStyles(theme => ({
     maxWidth: "100%",
     width: 300,
   },
+  subheading: {
+    marginTop: 50,
+    marginBottom: 50,
+  }
 }));
 
 const NotFoundView = () => {
@@ -39,10 +43,10 @@ const NotFoundView = () => {
               src={`${process.env.PUBLIC_URL}/static/images/moped-flat.svg`}
             />
           </Box>
-          <Typography align="center" color="textPrimary" variant="h1">
+          <Typography align="center" color="textPrimary" variant="h1" className={classes.subheading}>
             Let's get you back on the road. What are you looking for?
           </Typography>
-          <NavigationSearchInput />
+          <NavigationSearchInput input404Class={true}/>
         </Container>
       </Box>
     </Page>
