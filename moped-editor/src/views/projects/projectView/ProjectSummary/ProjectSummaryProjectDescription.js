@@ -11,7 +11,6 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import { PROJECT_UPDATE_DESCRIPTION } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@material-ui/icons";
 
 /**
  * ProjectSummaryProjectDescription Component
