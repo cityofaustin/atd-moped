@@ -283,7 +283,7 @@ const GridTableSearch = ({
 
       <Box mt={3}>
         <Paper>
-          <Grid container lg={12}>
+          <Grid container>
             <Grid item xs={12} sm={6} md={8} lg={10} xl={10}>
               <Tabs
                 value={tabValue}

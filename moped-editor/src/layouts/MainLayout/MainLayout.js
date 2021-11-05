@@ -33,8 +33,6 @@ const MainLayout = () => {
 
   const { user } = useUser();
 
-  console.log("user", user);
-
   return user ? (
     <Navigate to="/moped" />
   ) : (

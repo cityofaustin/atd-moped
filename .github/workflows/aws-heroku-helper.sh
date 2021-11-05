@@ -19,6 +19,8 @@ function build_editor() {
   cd "./moped-editor";
   print_header "Building the editor";
   npm install && npm run build:development;
+  print_header "Clearing Bucket";
+  aws s3 rm s3://atd-moped-editor-development --recursive;
   print_header "Deploying to AWS S3";
   aws s3 cp ./build/ s3://atd-moped-editor-development --recursive;
   print_header "Clearing the CF Cache";

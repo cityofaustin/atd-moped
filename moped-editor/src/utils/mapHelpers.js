@@ -14,7 +14,6 @@ import {
   withStyles,
 } from "@material-ui/core";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
-
 import {
   mapSaveActionReducer,
   mapSaveActionInitialState,
@@ -354,8 +353,18 @@ export const getClickEditableLayerNames = () =>
  * Edit map needs all layers to be interactive to let users select features
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getEditMapInteractiveIds = () =>
-  Object.values(mapConfig.layerConfigs).map(config => config.layerIdName);
+export const getEditMapInteractiveIds = drawLines => {
+  const interactiveIds = Object.values(mapConfig.layerConfigs).map(
+    config => config.layerIdName
+  );
+  if (drawLines === true) {
+    return interactiveIds.filter(layer => layer !== "project-component-points");
+  }
+  if (drawLines === false) {
+    return interactiveIds.filter(layer => layer !== "ctn-lines");
+  }
+  return interactiveIds;
+};
 
 /**
  * Get the IDs from the layerConfigs object to set as interactive in the summary map
@@ -384,7 +393,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>
-  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]
+  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty];
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -1018,7 +1027,7 @@ export const useSaveActionReducer = () => {
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
  * @return {Object} The combined GeoJSON geometry object
  */
- export const combineLineGeometries = (features) => {
+export const combineLineGeometries = features => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1028,7 +1037,6 @@ export const useSaveActionReducer = () => {
   const combinedFeaturesCollection = combine(dummyFeatureCollection);
   return combinedFeaturesCollection.features[0].geometry;
 };
-
 
 /**
  * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id

@@ -43,8 +43,9 @@ function initialize_virtualenv() {
 # First, we need to create the python package by installing requirements
 #
 function install_requirements() {
-  echo "Installing requirements..."
-  pip install -r "./requirements/${WORKING_STAGE}.txt"
+  echo "Installing requirements...";
+  pip install --upgrade setuptools==57.5.0;
+  pip install -r "./requirements/${WORKING_STAGE}.txt";
 }
 
 

@@ -42,10 +42,18 @@ export const SUMMARY_QUERY = gql`
         project_id
         location
       }
+      moped_proj_notes(
+        where: { project_note_type: { _eq: 2 } }
+        order_by: { date_created: asc }
+      ) {
+        project_note_id
+        project_note
+      }
     }
-    moped_phases {
+    moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
+      phase_order
     }
     moped_proj_phases(
       where: {
@@ -156,9 +164,13 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases(where: { phase_id: { _gt: 0 } }) {
+    moped_phases(
+      where: { phase_id: { _gt: 0 } }
+      order_by: { phase_order: asc }
+    ) {
       phase_id
       phase_name
+      phase_order
       subphases
     }
     moped_subphases(
@@ -512,6 +524,7 @@ export const COMPONENTS_QUERY = gql`
       moped_components {
         component_type: component_name
         component_subtype
+        line_representation
       }
       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
         status_id
@@ -549,6 +562,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_name
         component_id
         component_subtype
+        line_representation
       }
       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
         project_features_components_id
@@ -578,6 +592,17 @@ export const COMPONENT_DETAILS_QUERY = gql`
       component_id
     }
     moped_components {
+      component_name
+      component_subtype
+      component_id
+      line_representation
+    }
+  }
+`;
+
+export const SIGNAL_COMPONENTS_QUERY = gql`
+  query GetSignalComponents {
+    moped_components(where: { component_name: { _ilike: "signal" } }) {
       component_name
       component_subtype
       component_id
@@ -644,6 +669,38 @@ export const UPDATE_NEW_PROJ_FEATURES = gql`
     update_moped_proj_features(
       where: { feature_id: { _in: $featureList } }
       _set: { project_id: $projectId }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+/**
+ * Inserts a project summary status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
+  mutation ProjectStatusUpdateInsert(
+    $statusUpdate: [moped_proj_notes_insert_input!]!
+  ) {
+    insert_moped_proj_notes(objects: $statusUpdate) {
+      affected_rows
+      __typename
+    }
+  }
+`;
+
+/**
+ * Updates the status update
+ */
+export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
+  mutation ProjectStatusUpdateUpdate(
+    $project_note_id: Int_comparison_exp = {}
+    $project_note: String = ""
+    $added_by: bpchar = ""
+  ) {
+    update_moped_proj_notes(
+      where: { project_note_id: $project_note_id }
+      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
     ) {
       affected_rows
     }
