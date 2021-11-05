@@ -168,7 +168,7 @@ function __restore_snapshot() {
 
   docker run -it --rm --network host -v "$(pwd)"/snapshots:/snapshots \
      --workdir="/snapshots" \
-     --env PGHOST="docker.for.mac.host.internal" \
+     --env PGHOST=$(__config_get_key "bastion.container_parent") \
      --env PGPORT="5432" \
      --env PGUSER="moped" \
      --env PGPASSWORD="moped" \
