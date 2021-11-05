@@ -45,17 +45,6 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         },
         style: classes.fieldSelectCapitalize,
       },
-      project_description: {
-        label: "Description",
-        type: "string",
-        placeholder: "Enter description",
-        editable: true,
-        multiline: true,
-        multilineRows: 4,
-        widthSmallAndLarger: 12,
-        nullable: false,
-        errorMessage: "Field cannot be blank",
-      },
       start_date: {
         label: "Start date",
         type: "date",
