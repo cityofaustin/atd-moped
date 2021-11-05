@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
+import MaterialTable, { MTableEditRow } from "material-table";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import Page from "src/components/Page";
@@ -17,13 +17,19 @@ import {
 } from "../../../queries/signals";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
-const CellEditComponent = (props) => {
-  console.log(props)
-  return (<RouterLink
-          to={`/moped/projects/122/`}
-        >
-          {props.value}
-        </RouterLink>) }
+const RenderFieldLink = ({ projectId, value, tab }) => {
+  const route = tab
+    ? `/moped/projects/${projectId}?tab=${tab}`
+    : `/moped/projects/${projectId}/`;
+  return (
+    <RouterLink
+      to={route}
+      className={tab ? "MuiPaper-root" : "MuiTypography-colorPrimary"}
+    >
+      {value}
+    </RouterLink>
+  );
+};
 
 const SignalProjectTable = () => {
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
@@ -102,12 +108,10 @@ const SignalProjectTable = () => {
       field: "project_name",
       editable: "never",
       render: entry => (
-        <RouterLink
-          to={`/moped/projects/${entry.project_id}/`}
-          className={"MuiTypography-colorPrimary"}
-        >
-          {entry.project_name}
-        </RouterLink>
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_name}
+        />
       ),
     },
     {
@@ -139,7 +143,6 @@ const SignalProjectTable = () => {
       field: "contractor",
       emptyValue: "blank",
       render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
-      customEdit: false
     },
     {
       title: "Internal status note",
@@ -151,9 +154,14 @@ const SignalProjectTable = () => {
       title: "Funding source",
       field: "funding_sources",
       cellStyle: typographyStyle,
-      render: entry => entry.funding_sources.join(", "),
-      // editComponent: should also be our custom edit component
-      customEdit: true,
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.funding_sources.join(", ")}
+          tab="funding"
+        />
+      ),
     },
     {
       title: "Project DO#",
@@ -239,24 +247,17 @@ const SignalProjectTable = () => {
             <MaterialTable
               columns={columns}
               components={{
-                EditRow: props => { console.log("edit row ", props, props.rowData) 
-                  return (
-                  <MTableEditRow // if its not editable, its coming out with wrong typography
-                    {...props}
-                    onKeyDown={e => {
-                      if (e.keyCode === 13) {
-                        // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                        // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                      }
-                    }}
-                  />
-                )},
-                EditField: props => {console.log("edit field ", props, props.rowData) 
-                return (
-                  props.columnDef.customEdit ?
-                  <CellEditComponent {...props} /> :
-                  <MTableEditField {...props} />
-                )}
+                EditRow: props => (
+                    <MTableEditRow // if its not editable, its coming out with wrong typography
+                      {...props}
+                      onKeyDown={e => {
+                        if (e.keyCode === 13) {
+                          // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                          // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                        }
+                      }}
+                    />
+                  )
               }}
               data={data.moped_project}
               title={
