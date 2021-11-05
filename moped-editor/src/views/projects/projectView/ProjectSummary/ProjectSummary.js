@@ -141,6 +141,15 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
+            <Grid container spacing={2} xs={12}>
+              <ProjectSummaryProjectWebsite
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                classes={classes}
+                snackbarHandle={snackbarHandle}
+              />
+            </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
             {projectFeatureCollection && (
