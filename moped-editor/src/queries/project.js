@@ -38,6 +38,7 @@ export const SUMMARY_QUERY = gql`
       fiscal_year
       project_priority
       project_sponsor
+      project_website
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
