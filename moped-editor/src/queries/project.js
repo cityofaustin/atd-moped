@@ -53,10 +53,7 @@ export const SUMMARY_QUERY = gql`
       }
     }
     moped_proj_partners(
-        where: {
-            project_id: { _eq: $projectId }
-            status_id: { _eq: 1 }
-        }
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
     ) {
       proj_partner_id
       project_id
