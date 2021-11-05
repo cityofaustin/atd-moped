@@ -19,10 +19,14 @@ import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
+import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
     margin: theme.spacing(2),
+  },
+  linkIcon: {
+    fontSize: "1rem",
   },
   editIcon: {
     cursor: "pointer",
