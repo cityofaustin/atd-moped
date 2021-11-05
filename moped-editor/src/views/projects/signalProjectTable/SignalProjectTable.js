@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import MaterialTable, { MTableEditRow } from "material-table";
+import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import Page from "src/components/Page";
@@ -16,6 +16,14 @@ import {
   UPDATE_SIGNAL_PROJECT,
 } from "../../../queries/signals";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+
+const CellEditComponent = (props) => {
+  console.log(props)
+  return (<RouterLink
+          to={`/moped/projects/122/`}
+        >
+          {props.value}
+        </RouterLink>) }
 
 const SignalProjectTable = () => {
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
@@ -129,7 +137,9 @@ const SignalProjectTable = () => {
     {
       title: "Contractor/Contract",
       field: "contractor",
-      render: entry => entry.contractor === "" ? "blank" : entry.contractor
+      emptyValue: "blank",
+      render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
+      customEdit: false
     },
     {
       title: "Internal status note",
@@ -140,9 +150,10 @@ const SignalProjectTable = () => {
     {
       title: "Funding source",
       field: "funding_sources",
-      editable: "never",
       cellStyle: typographyStyle,
       render: entry => entry.funding_sources.join(", "),
+      // editComponent: should also be our custom edit component
+      customEdit: true,
     },
     {
       title: "Project DO#",
@@ -228,7 +239,8 @@ const SignalProjectTable = () => {
             <MaterialTable
               columns={columns}
               components={{
-                EditRow: props => (
+                EditRow: props => { console.log("edit row ", props, props.rowData) 
+                  return (
                   <MTableEditRow // if its not editable, its coming out with wrong typography
                     {...props}
                     onKeyDown={e => {
@@ -238,7 +250,13 @@ const SignalProjectTable = () => {
                       }
                     }}
                   />
-                ),
+                )},
+                EditField: props => {console.log("edit field ", props, props.rowData) 
+                return (
+                  props.columnDef.customEdit ?
+                  <CellEditComponent {...props} /> :
+                  <MTableEditField {...props} />
+                )}
               }}
               data={data.moped_project}
               title={
