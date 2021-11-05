@@ -59,7 +59,18 @@ const ProjectTeamRoleMultiselect = ({
         onChange={handleChange}
         input={<Input id="select-multiple" />}
         renderValue={selected => selected.map(value => roles[value]).join(", ")}
-        MenuProps={MenuProps}
+        /*
+            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
+            this is fixed by overriding the function "getContentAnchorEl".
+                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
+        */
+        MenuProps={{
+          getContentAnchorEl: () => null,
+          style: {
+            maxHeight: 400,
+            width: 450,
+          },
+        }}
       >
         {Object.keys(roles).map(roleId => (
           <MenuItem key={roleId} value={Number.parseInt(roleId)}>
