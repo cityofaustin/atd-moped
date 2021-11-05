@@ -551,22 +551,6 @@ INSERT INTO public.moped_activity_log (activity_id, record_id, record_type, reco
 
 
 --
--- TOC entry 6033 (class 0 OID 21373)
--- Dependencies: 254
--- Data for Name: moped_categories; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('CIP', 1, true, NULL, NULL, 1, '2020-10-09 13:37:32.779628+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Lane Conversion', 2, true, NULL, NULL, 2, '2020-10-09 13:37:50.460015+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Parking Mod', 3, true, NULL, NULL, 3, '2020-10-09 13:38:56.504668+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Private Development', 4, true, NULL, NULL, 10, '2020-10-09 13:39:09.593212+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('New Road', 5, true, NULL, NULL, 6, '2020-10-09 13:39:23.93937+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Plan', 6, true, NULL, NULL, 8, '2020-10-09 13:39:31.616226+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Operations', 7, true, NULL, NULL, 9, '2020-10-09 13:39:41.544508+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Lane Width', 8, true, NULL, NULL, 12, '2020-10-09 13:39:51.594248+00');
-
-
---
 -- TOC entry 6035 (class 0 OID 21383)
 -- Dependencies: 256
 -- Data for Name: moped_city_fiscal_years; Type: TABLE DATA; Schema: public; Owner: atd_moped
@@ -1090,15 +1074,6 @@ INSERT INTO public.moped_project_files (project_file_id, project_id, file_key, f
 
 
 --
--- TOC entry 6111 (class 0 OID 0)
--- Dependencies: 255
--- Name: moped_categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_categories_category_id_seq', 8, true);
-
-
---
 -- TOC entry 6112 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: moped_components_component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
@@ -1186,16 +1161,6 @@ SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 
 --
 
 SELECT pg_catalog.setval('public.moped_phases_phase_id_seq', 1, false);
-
-
---
--- TOC entry 6122 (class 0 OID 0)
--- Dependencies: 277
--- Name: moped_proj_categories_proj_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_categories_proj_category_id_seq', 1, false);
-
 
 --
 -- TOC entry 6123 (class 0 OID 0)
