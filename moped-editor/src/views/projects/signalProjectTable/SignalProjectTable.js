@@ -166,6 +166,14 @@ const SignalProjectTable = () => {
     {
       title: "Project DO#",
       field: "project_do",
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_do ?? "PO# "}
+          tab="funding"
+        />
+      )
     },
     {
       title: "Project sponsor",
@@ -248,16 +256,16 @@ const SignalProjectTable = () => {
               columns={columns}
               components={{
                 EditRow: props => (
-                    <MTableEditRow // if its not editable, its coming out with wrong typography
-                      {...props}
-                      onKeyDown={e => {
-                        if (e.keyCode === 13) {
-                          // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                          // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                        }
-                      }}
-                    />
-                  )
+                  <MTableEditRow // if its not editable, its coming out with wrong typography
+                    {...props}
+                    onKeyDown={e => {
+                      if (e.keyCode === 13) {
+                        // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                        // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                      }
+                    }}
+                  />
+                ),
               }}
               data={data.moped_project}
               title={
