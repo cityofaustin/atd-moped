@@ -61,7 +61,7 @@ const ProjectSummaryProjectSponsor = ({
         snackbarHandle(true, "Sponsor updated!", "success");
       })
       .catch(err => {
-        snackbarHandle(true, "Failed to update: " + String(err), "success");
+        snackbarHandle(true, "Failed to update: " + String(err), "error");
         handleProjectSponsorClose();
       });
   };
