@@ -63,12 +63,21 @@ const SignalProjectTable = () => {
 
     // Signal IDs
     const signal_ids = [];
-    if (project?.moped_proj_features) {
+    if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
         signal_ids.push(feature?.location?.properties.signal_id);
       });
     }
     project["signal_ids"] = signal_ids;
+
+    // moped project types
+    const project_types = [];
+    if (project?.moped_project_types?.length) {
+      project.moped_project_types.forEach(projType => {
+        project_types.push(projType?.moped_type?.type_name);
+      });
+    }
+    project["project_types"] = project_types
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
@@ -123,9 +132,10 @@ const SignalProjectTable = () => {
       render: entry => entry.signal_ids.join(", "),
     },
     {
-      title: "Project type",
-      field: "project_type",
-      // update after other issue is merged
+      title: "Project types",
+      field: "project_types",
+      editable: "never",
+      render: entry => entry.project_types.join(", "),
     },
     {
       title: "Current phase",

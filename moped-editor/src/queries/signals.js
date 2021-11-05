@@ -31,6 +31,11 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           funding_source_name
         }
       }
+      moped_project_types {
+        moped_type {
+          type_name
+        }
+      }
     }
   }
 `;
