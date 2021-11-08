@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
   fieldLabel: {
     width: "100%",
-    color: theme.palette.grey["600"],
+    color: theme.palette.text.secondary,
     fontSize: ".8rem",
   },
   fieldLabelText: {
