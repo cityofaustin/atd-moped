@@ -38,6 +38,7 @@ export const SUMMARY_QUERY = gql`
       fiscal_year
       project_priority
       project_sponsor
+      project_website
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
@@ -52,10 +53,7 @@ export const SUMMARY_QUERY = gql`
       }
     }
     moped_proj_partners(
-        where: {
-            project_id: { _eq: $projectId }
-            status_id: { _eq: 1 }
-        }
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
     ) {
       proj_partner_id
       project_id
@@ -757,6 +755,17 @@ export const PROJECT_UPDATE_PARTNERS = gql`
     update_moped_proj_partners(
       where: { proj_partner_id: { _in: $deleteList } }
       _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_WEBSITE = gql`
+  mutation UpdateProjectWebsite($projectId: Int!, $website: String!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_website: $website }
     ) {
       affected_rows
     }

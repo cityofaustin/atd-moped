@@ -19,10 +19,14 @@ import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
+import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
     margin: theme.spacing(2),
+  },
+  linkIcon: {
+    fontSize: "1rem",
   },
   editIcon: {
     cursor: "pointer",
@@ -136,6 +140,15 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
+            </Grid>
+            <Grid container spacing={2} xs={12}>
+              <ProjectSummaryProjectWebsite
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                classes={classes}
+                snackbarHandle={snackbarHandle}
+              />
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
