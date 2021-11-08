@@ -84,6 +84,12 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_name
+    }
   }
 `;
 
