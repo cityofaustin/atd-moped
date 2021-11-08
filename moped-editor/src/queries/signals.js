@@ -8,6 +8,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       updated_at
       contractor
       purchase_order_number
+      project_sponsor
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 } }
         order_by: { date_created: desc }
@@ -34,6 +35,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           type_name
         }
       }
+    }
+    moped_entity {
+      entity_id
+      entity_name
     }
   }
 `;

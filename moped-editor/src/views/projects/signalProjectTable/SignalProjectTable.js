@@ -46,6 +46,8 @@ const SignalProjectTable = () => {
     return <CircularProgress />;
   }
 
+  const entityList = data?.moped_entity ?? [];
+
   // Assemble the data for each signal entry
   data.moped_project.forEach(project => {
     // project status update equivalent to most recent project note
@@ -75,6 +77,11 @@ const SignalProjectTable = () => {
       });
     }
     project["project_types"] = project_types;
+
+    // project sponsor
+    project["project_sponsor"] = entityList.find(
+      e => e.entity_id === project?.project_sponsor
+    ).entity_name;
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
