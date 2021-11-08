@@ -3512,6 +3512,10 @@
 - table:
     schema: public
     name: moped_project
+  object_relationships:
+  - name: moped_entity
+    using:
+      foreign_key_constraint_on: project_sponsor
   array_relationships:
   - name: moped_proj_components
     using:
@@ -3564,10 +3568,12 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   - role: moped-editor
     permission:
@@ -3591,10 +3597,12 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -3618,12 +3626,13 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3645,12 +3654,13 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3672,12 +3682,13 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3700,10 +3711,12 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   - role: moped-editor
@@ -3727,10 +3740,12 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   event_triggers:

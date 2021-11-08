@@ -1,10 +1,10 @@
 import React from "react";
 
-import DataTable from "../../../components/DataTable/DataTable";
+import DataTable from "../../../../components/DataTable/DataTable";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Box, Grid } from "@material-ui/core";
 
-import ExternalLink from "../../../components/ExternalLink";
+import ExternalLink from "../../../../components/ExternalLink";
 
 const useStyles = makeStyles(theme => ({
   fieldSelectCapitalize: {

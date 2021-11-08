@@ -1,0 +1,2 @@
+INSERT INTO public.moped_entity (entity_uuid, entity_name, entity_id, workgroup_id, date_added, organization_id, department_id)
+    VALUES ('84aee0df-abf6-4665-9501-25422737237c', 'None', 0, null, '2021-10-29 05:56:59.682780 +00:00', null, null);

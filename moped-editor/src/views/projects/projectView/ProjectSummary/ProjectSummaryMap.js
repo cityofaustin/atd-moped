@@ -15,7 +15,7 @@ import {
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
-} from "../../../utils/mapHelpers";
+} from "../../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
   locationCountText: {
