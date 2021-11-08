@@ -123,6 +123,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               refetch={refetch}
               classes={classes}
             />
+            <ProjectSummaryCurrentPhase
+              projectId={projectId}
+              data={data}
+              classes={classes}
+            />
             {/*Data Table Component*/}
             <ProjectSummaryTable
               loading={loading}
