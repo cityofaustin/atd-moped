@@ -129,13 +129,20 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               data={data}
               classes={classes}
             />
-            {/*Data Table Component*/}
-            <ProjectSummaryTable
-              loading={loading}
-              data={data}
-              error={error}
-              refetch={refetch}
-            />
+            <Grid container spacing={2} xs={12}>
+              <Grid item xs={6}>
+                <ProjectSummaryCurrentStatus
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                {null}
+              </Grid>
+            </Grid>
             <Grid container spacing={2} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
