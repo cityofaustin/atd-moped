@@ -76,43 +76,8 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
     },
   };
 
-  const fieldConfigurationPhases = {
-    table: {
-      name: "moped_proj_phases",
-    },
-    fields: {
-      phase_name: {
-        label: "Current phase",
-        labelStyle: classes.fieldSelectCapitalize,
-        type: "string",
-        emptyValue: "None",
-        editable: false,
-        lookup: {
-          table: "moped_phases",
-          fieldLabel: "phase_name",
-          fieldValue: "phase_name",
-          relationship:
-            "where: {phase_id: {_gt: 0}}, order_by: {phase_order: asc}",
-          style: classes.fieldSelectCapitalize,
-          format: value => String(value).toLowerCase(),
-        },
-        style: classes.fieldSelectCapitalize,
-      },
-    },
-  };
-
   return (
     <Grid>
-      <Box mb={2}>
-        <DataTable
-          fieldConfiguration={fieldConfigurationPhases}
-          tableName={"moped_proj_phases"}
-          loading={loading}
-          error={error}
-          data={data}
-          refetch={refetch}
-        />
-      </Box>
       <Box>
         <DataTable
           fieldConfiguration={fieldConfiguration}

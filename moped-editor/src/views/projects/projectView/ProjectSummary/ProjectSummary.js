@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
+import ProjectSummaryCurrentPhase from "./ProjectSummaryCurrentPhase";
 import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
@@ -120,6 +121,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               projectId={projectId}
               data={data}
               refetch={refetch}
+              classes={classes}
+            />
+            <ProjectSummaryCurrentPhase
+              projectId={projectId}
+              data={data}
               classes={classes}
             />
             {/*Data Table Component*/}

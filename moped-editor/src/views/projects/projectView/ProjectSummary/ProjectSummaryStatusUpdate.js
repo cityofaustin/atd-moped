@@ -20,8 +20,7 @@ import { getSessionDatabaseData } from "../../../../auth/user";
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes}) => {
-
+const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
 
   const [updateProjectStatusUpdateInsert] = useMutation(
@@ -155,9 +154,11 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes}) => {
         )}
         {!statusUpdateEditable && (
           <Box className={classes.fieldBox}>
-            <Typography variant="h4">Status update</Typography>
+            <Typography className={classes.fieldLabel}>
+              Status Update
+            </Typography>
             <Typography className={classes.fieldBoxTypography}>
-              {statusUpdate}
+              {statusUpdate || "None"}
             </Typography>
           </Box>
         )}
