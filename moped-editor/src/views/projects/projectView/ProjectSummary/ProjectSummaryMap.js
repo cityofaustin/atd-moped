@@ -23,7 +23,7 @@ const useStyles = makeStyles({
   },
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
-    bottom: "1rem",
+    bottom: "1.5rem",
     right: 0,
     padding: "10px",
     position: "absolute",
