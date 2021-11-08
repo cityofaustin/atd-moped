@@ -14,9 +14,7 @@ const ProjectSummaryLabel = ({ text, classes, onClickEdit }) => {
   return (
     <>
       <Typography className={classes.fieldLabelText}>{text}</Typography>
-      <Icon className={classes.editIcon} onClick={onClickEdit}>
-        edit
-      </Icon>
+      <CreateOutlinedIcon className={classes.editIcon} onClick={onClickEdit} />
     </>
   );
 };
