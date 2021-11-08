@@ -778,7 +778,6 @@ export const PROJECT_UPDATE_WEBSITE = gql`
   }
 `;
 
-
 export const PROJECT_UPDATE_DESCRIPTION = gql`
   mutation UpdateProjectDescription($projectId: Int!, $description: String!) {
     update_moped_project(
