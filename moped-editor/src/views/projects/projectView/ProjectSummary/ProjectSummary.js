@@ -49,6 +49,11 @@ const useStyles = makeStyles(theme => ({
   fieldLabelText: {
     width: "calc(100% - 2rem)",
   },
+  fieldLabelLink: {
+    width: "calc(100% - 2rem)",
+    overflow: "hidden",
+    "white-space": "nowrap",
+  },
   fieldBox: {
     width: "100%",
   },
