@@ -11,7 +11,6 @@ import {
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
-  renderFeatureCount,
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
@@ -31,9 +30,7 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({
-  projectExtentGeoJSON,
-}) => {
+const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = countFeatures(projectExtentGeoJSON);
