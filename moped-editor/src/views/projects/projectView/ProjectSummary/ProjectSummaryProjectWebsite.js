@@ -114,11 +114,12 @@ const ProjectSummaryProjectWebsite = ({
         {!editMode && (
           <ProjectSummaryLabel
             text={
-              (
+              (website && website.length > 0 && (
                 <Link href={website} target={"_blank"}>
                   {website} <OpenInNew className={classes.linkIcon} />
                 </Link>
-              ) || "None"
+              )) ||
+              "None"
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}
