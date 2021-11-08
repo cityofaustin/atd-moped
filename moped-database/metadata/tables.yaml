@@ -2601,86 +2601,94 @@
 - table:
     schema: public
     name: moped_proj_partners
+  object_relationships:
+  - name: moped_entity
+    using:
+      foreign_key_constraint_on: entity_id
   insert_permissions:
   - role: moped-admin
     permission:
       check: {}
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
-      - partner_name
+      - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - date_added
-      - added_by
+      - status_id
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
       - added_by
+      - date_added
       - entity_id
+      - partner_name
       - proj_partner_id
       - project_id
-      - partner_name
-      - date_added
+      - status_id
       filter: {}
-      check: null
+      check: {}
   event_triggers:
   - name: activity_log_moped_proj_partners
     definition:
@@ -3517,14 +3525,9 @@
     schema: public
     name: moped_project
   object_relationships:
-  - name: moped_proj_financial
+  - name: moped_entity
     using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: moped_proj_financials
-        column_mapping:
-          project_id: project_id
+      foreign_key_constraint_on: project_sponsor
   array_relationships:
   - name: moped_proj_components
     using:
@@ -3599,11 +3602,14 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   - role: moped-editor
     permission:
@@ -3628,11 +3634,14 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -3657,14 +3666,15 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
       - updated_at
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3687,14 +3697,15 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
       - updated_at
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3717,14 +3728,15 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
       - updated_at
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -3748,11 +3760,14 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   - role: moped-editor
@@ -3777,11 +3792,14 @@
       - project_name
       - project_order
       - project_priority
+      - project_sponsor
       - project_uuid
       - purchase_order_number
+      - project_website
       - start_date
       - status_id
       - timeline_id
+      - updated_at
       filter: {}
       check: {}
   event_triggers:
