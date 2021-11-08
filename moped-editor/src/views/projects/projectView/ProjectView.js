@@ -239,6 +239,15 @@ const ProjectView = () => {
     setAnchorElement(null);
   };
 
+/**
+ * Handles a Knack sync request
+ */
+
+const handleKnackSync = () => {
+  
+};
+
+
   /**
    * Handles the rename menu option click
    */
@@ -375,6 +384,14 @@ const ProjectView = () => {
                           </ListItemIcon>
                           <ListItemText primary="Add to favorites" />
                         </MenuItem>
+
+                        <MenuItem onClick={handleKnackSync} selected={false}>
+                          <ListItemIcon>
+                            <Icon fontSize="small">sync</Icon>
+                          </ListItemIcon>
+                          <ListItemText primary="Knack Sync" />
+                        </MenuItem>
+
                         <MenuItem onClick={handleRenameClick} selected={false}>
                           <ListItemIcon>
                             <Icon fontSize="small">create</Icon>
