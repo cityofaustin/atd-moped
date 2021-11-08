@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
+import ProjectSummaryCurrentPhase from "./ProjectSummaryCurrentPhase";
 import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
