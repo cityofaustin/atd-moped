@@ -20,8 +20,7 @@ import { getSessionDatabaseData } from "../../../../auth/user";
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes}) => {
-
+const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
 
   const [updateProjectStatusUpdateInsert] = useMutation(
