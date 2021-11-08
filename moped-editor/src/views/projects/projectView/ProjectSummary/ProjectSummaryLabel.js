@@ -1,5 +1,6 @@
 import React from "react";
-import { Icon, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 
 /**
  *
