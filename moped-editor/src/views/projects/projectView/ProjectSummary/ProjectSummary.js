@@ -15,8 +15,10 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
 import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
+import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -66,6 +68,20 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
+  const [snackbarState, setSnackbarState] = useState(false);
+
+  /**
+   * Updates the state of snackbar state
+   * @param {String|JSX.Element} message - The message to be displayed
+   * @param {String} severity - Usually "success" or "error"
+   */
+  const snackbarHandle = (open = true, message, severity = "success") => {
+    setSnackbarState({
+      open: open,
+      message: message,
+      severity: severity,
+    });
+  };
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
@@ -80,6 +96,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   return (
     <ApolloErrorHandler errors={error}>
+      <ProjectSummarySnackbar
+        snackbarState={snackbarState}
+        snackbarHandle={snackbarHandle}
+      />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -104,9 +124,18 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   data={data}
                   refetch={refetch}
                   classes={classes}
+                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
-              <Grid item xs={6}></Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectPartners
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>

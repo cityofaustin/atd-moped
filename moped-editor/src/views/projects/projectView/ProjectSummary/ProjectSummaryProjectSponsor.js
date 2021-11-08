@@ -14,6 +14,7 @@ import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
+ * @param {function} snackbarHandle - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -22,6 +23,7 @@ const ProjectSummaryProjectSponsor = ({
   data,
   refetch,
   classes,
+  snackbarHandle,
 }) => {
   const entityList = data?.moped_entity ?? [];
   const noneSponsor = entityList.find(e => e.entity_id === 0);
@@ -56,9 +58,10 @@ const ProjectSummaryProjectSponsor = ({
       .then(() => {
         setEditMode(false);
         refetch();
+        snackbarHandle(true, "Sponsor updated!", "success");
       })
       .catch(err => {
-        alert("Unable to make the change: " + String(err));
+        snackbarHandle(true, "Failed to update: " + String(err), "error");
         handleProjectSponsorClose();
       });
   };
