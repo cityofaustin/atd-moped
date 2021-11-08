@@ -103,7 +103,6 @@ const ProjectSummaryMap = ({
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
-      {renderFeatureCount(featureCount)}
     </Box>
   );
 };
