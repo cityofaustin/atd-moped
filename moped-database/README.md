@@ -127,8 +127,8 @@ Example:
 - Cloning a staging or production backup from S3:
 
 ```bash
-/hasura-cluster clone bucket staging "2021-11-03"
-/hasura-cluster clone bucket production "2021-11-03"
+./hasura-cluster clone bucket staging "2021-11-03"
+./hasura-cluster clone bucket production "2021-11-03"
 ```
 
 
