@@ -115,10 +115,12 @@ const ProjectSummaryProjectWebsite = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
+            className={classes.fieldLabelLink} // Override
             text={
               (website && website.length > 0 && (
                 <Link href={website} target={"_blank"}>
-                  {website} <OpenInNew className={classes.linkIcon} />
+                  {website}
+                  <OpenInNew className={classes.linkIcon} />
                 </Link>
               )) ||
               "None"
