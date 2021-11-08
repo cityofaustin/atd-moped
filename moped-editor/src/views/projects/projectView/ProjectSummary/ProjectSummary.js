@@ -22,6 +22,7 @@ import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
+import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -139,7 +140,13 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                {null}
+                <ProjectSummaryProjectECapris
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
               </Grid>
             </Grid>
             <Grid container spacing={2} xs={12}>
