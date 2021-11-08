@@ -788,3 +788,17 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
     }
   }
 `;
+
+export const PROJECT_UPDATE_CURRENT_STATUS = gql`
+  mutation UpdateProjectCurrentStatus(
+    $projectId: Int!
+    $currentStatus: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { current_status: $currentStatus }
+    ) {
+      affected_rows
+    }
+  }
+`;
