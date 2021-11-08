@@ -84,6 +84,12 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_name
+    }
   }
 `;
 
@@ -772,12 +778,25 @@ export const PROJECT_UPDATE_WEBSITE = gql`
   }
 `;
 
-
 export const PROJECT_UPDATE_DESCRIPTION = gql`
   mutation UpdateProjectDescription($projectId: Int!, $description: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { project_description: $description }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_CURRENT_STATUS = gql`
+  mutation UpdateProjectCurrentStatus(
+    $projectId: Int!
+    $currentStatus: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { current_status: $currentStatus }
     ) {
       affected_rows
     }

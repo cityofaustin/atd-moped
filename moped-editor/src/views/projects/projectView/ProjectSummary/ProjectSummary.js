@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import ProjectSummaryTable from "./ProjectSummaryTable";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 import ProjectSummaryCurrentPhase from "./ProjectSummaryCurrentPhase";
@@ -22,6 +21,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
+import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -128,13 +128,20 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               data={data}
               classes={classes}
             />
-            {/*Data Table Component*/}
-            <ProjectSummaryTable
-              loading={loading}
-              data={data}
-              error={error}
-              refetch={refetch}
-            />
+            <Grid container spacing={2} xs={12}>
+              <Grid item xs={6}>
+                <ProjectSummaryCurrentStatus
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                {null}
+              </Grid>
+            </Grid>
             <Grid container spacing={2} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
