@@ -41,7 +41,7 @@ const ProjectSummaryCurrentStatus = ({
    * Resets the sponsor back to its original state, closes edit mode
    */
   const handleCurrentStatusClose = () => {
-    setCurrentStatus(origin);
+    setCurrentStatus(originalStatus);
     setEditMode(false);
   };
 
