@@ -802,3 +802,32 @@ export const PROJECT_UPDATE_CURRENT_STATUS = gql`
     }
   }
 `;
+
+export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
+  mutation UpdateProjectECapris(
+    $projectId: Int!
+    $eCapris: numeric!
+    $capitallyFunded: Boolean!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: {
+        ecapris_subproject_id: $eCapris
+        capitally_funded: $capitallyFunded
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
+  mutation UpdateProjectECaprisClear($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { ecapris_subproject_id: null, capitally_funded: false }
+    ) {
+      affected_rows
+    }
+  }
+`;
