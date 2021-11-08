@@ -1551,7 +1551,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       backend_only: false
@@ -1570,7 +1569,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       backend_only: false
@@ -1589,7 +1587,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       filter: {}
@@ -1608,7 +1605,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       filter: {}
@@ -1627,7 +1623,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       filter: {}
@@ -1647,7 +1642,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       filter: {}
@@ -1666,7 +1660,6 @@
       - last_updated
       - primary_funding_source
       - project_id
-      - purchase_order_number
       - subproject_name
       - subproject_status
       filter: {}
@@ -3607,6 +3600,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3635,6 +3629,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3663,6 +3658,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3692,6 +3688,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3721,6 +3718,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3751,6 +3749,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id
@@ -3779,6 +3778,7 @@
       - project_order
       - project_priority
       - project_uuid
+      - purchase_order_number
       - start_date
       - status_id
       - timeline_id

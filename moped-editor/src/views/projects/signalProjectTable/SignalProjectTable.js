@@ -5,9 +5,9 @@ import {
   CircularProgress,
   Grid,
   Typography,
+  makeStyles,
 } from "@material-ui/core";
 import MaterialTable, { MTableEditRow } from "material-table";
-import { NavLink as RouterLink } from "react-router-dom";
 
 import Page from "src/components/Page";
 import typography from "../../../theme/typography";
@@ -16,22 +16,19 @@ import {
   UPDATE_SIGNAL_PROJECT,
 } from "../../../queries/signals";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import RenderFieldLink from "./RenderFieldLink";
 
-const RenderFieldLink = ({ projectId, value, tab }) => {
-  const route = tab
-    ? `/moped/projects/${projectId}?tab=${tab}`
-    : `/moped/projects/${projectId}/`;
-  return (
-    <RouterLink
-      to={route}
-      className={tab ? "MuiPaper-root" : "MuiTypography-colorPrimary"}
-    >
-      {value}
-    </RouterLink>
-  );
-};
+const useStyles = makeStyles({
+  signalsTable: {
+    "& .MuiTableCell-root": {
+      // override the default padding of 16px
+      padding: "14px",
+    },
+  },
+});
 
 const SignalProjectTable = () => {
+  const classes = useStyles();
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -175,7 +172,8 @@ const SignalProjectTable = () => {
     },
     {
       title: "Project DO#",
-      field: "project_order_number",
+      field: "purchase_order_number",
+      emptyValue: "blank",
     },
     {
       title: "Project sponsor",
@@ -253,7 +251,7 @@ const SignalProjectTable = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Page title={"signal view"}>
+          <Page title={"signal view"} className={classes.signalsTable}>
             <MaterialTable
               columns={columns}
               components={{
@@ -282,7 +280,6 @@ const SignalProjectTable = () => {
                 search: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
-                // padding: "dense",
               }}
               localization={{
                 header: {
