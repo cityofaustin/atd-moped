@@ -38,8 +38,6 @@ const ProjectSummaryProjectWebsite = ({
 
   const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
 
-  const maxLength = 32;
-
   /**
    * Resets the project website to original value
    */
