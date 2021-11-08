@@ -771,3 +771,15 @@ export const PROJECT_UPDATE_WEBSITE = gql`
     }
   }
 `;
+
+
+export const PROJECT_UPDATE_DESCRIPTION = gql`
+  mutation UpdateProjectDescription($projectId: Int!, $description: String!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_description: $description }
+    ) {
+      affected_rows
+    }
+  }
+`;

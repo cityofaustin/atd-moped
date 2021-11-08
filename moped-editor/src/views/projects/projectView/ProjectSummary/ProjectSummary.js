@@ -20,6 +20,7 @@ import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
+import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -107,6 +108,13 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
+            <ProjectSummaryProjectDescription
+              projectId={projectId}
+              data={data}
+              refetch={refetch}
+              classes={classes}
+              snackbarHandle={snackbarHandle}
+            />
             {/*Status Update Component*/}
             <ProjectSummaryStatusUpdate
               projectId={projectId}
