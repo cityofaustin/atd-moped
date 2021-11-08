@@ -7,6 +7,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_name
       updated_at
       contractor
+      purchase_order_number
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 } }
         order_by: { date_created: desc }
@@ -22,9 +23,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       moped_proj_features {
         feature_id
         location
-      }
-      moped_proj_financial {
-        purchase_order_number
       }
       moped_proj_funding {
         moped_fund_source {

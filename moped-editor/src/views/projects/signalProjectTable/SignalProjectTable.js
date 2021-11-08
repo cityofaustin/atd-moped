@@ -77,7 +77,7 @@ const SignalProjectTable = () => {
         project_types.push(projType?.moped_type?.type_name);
       });
     }
-    project["project_types"] = project_types
+    project["project_types"] = project_types;
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
@@ -175,15 +175,7 @@ const SignalProjectTable = () => {
     },
     {
       title: "Project DO#",
-      field: "project_do",
-      editable: "never",
-      render: entry => (
-        <RenderFieldLink
-          projectId={entry.project_id}
-          value={entry.project_do ?? "PO# "}
-          tab="funding"
-        />
-      )
+      field: "project_order_number",
     },
     {
       title: "Project sponsor",
