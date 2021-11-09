@@ -4,10 +4,12 @@ import {
   CardContent,
   CircularProgress,
   Grid,
+  TextField,
   Typography,
   makeStyles,
 } from "@material-ui/core";
-import MaterialTable, { MTableEditRow } from "material-table";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
 
 import Page from "src/components/Page";
 import typography from "../../../theme/typography";
@@ -15,6 +17,7 @@ import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,
 } from "../../../queries/signals";
+import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 
@@ -38,6 +41,7 @@ const SignalProjectTable = () => {
   };
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
+  const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
 
   if (error) {
     console.log(error);
@@ -81,7 +85,7 @@ const SignalProjectTable = () => {
     // project sponsor
     project["project_sponsor"] = entityList.find(
       e => e.entity_id === project?.project_sponsor
-    ).entity_name;
+    );
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
@@ -185,6 +189,10 @@ const SignalProjectTable = () => {
     {
       title: "Project sponsor",
       field: "project_sponsor",
+      render: entry => (
+        <Typography>{entry?.project_sponsor?.entity_name}</Typography>
+      ),
+      customEdit: "projectSponsor",
     },
     {
       title: "Targeted construction start",
@@ -236,20 +244,45 @@ const SignalProjectTable = () => {
       });
     },
     cellUpdate: (newData, oldData, rowData, columnDef) => {
-      const updatedProjectObject = {
-        ...rowData,
-      };
-      updatedProjectObject[columnDef.field] = newData;
+      console.log(columnDef);
+      if (columnDef.customEdit === "projectSponsor") {
+        updateProjectSponsor({
+          variables: {
+            projectId: rowData.project_id,
+            entityId: newData.entity_id,
+          },
+        });
+      } else {
+        const updatedProjectObject = {
+          ...rowData,
+        };
+        updatedProjectObject[columnDef.field] = newData;
 
-      // Remove extraneous fields given by MaterialTable that
-      // Hasura doesn't need
-      delete updatedProjectObject.tableData;
-      delete updatedProjectObject.__typename;
+        // Remove extraneous fields given by MaterialTable that
+        // Hasura doesn't need
+        delete updatedProjectObject.tableData;
+        delete updatedProjectObject.__typename;
 
-      updateSignalProject({
-        variables: updatedProjectObject,
-      });
+        updateSignalProject({
+          variables: updatedProjectObject,
+        });
+      }
     },
+  };
+
+  const cellEditComponents = {
+    projectSponsor: props => (
+      <Autocomplete
+        value={props.value}
+        defaultValue={"None"}
+        options={entityList}
+        getOptionLabel={e => e.entity_name}
+        onChange={(event, value) => props.onChange(value)}
+        renderInput={params => (
+          <TextField {...params} variant="standard" label={null} />
+        )}
+      />
+    ),
   };
 
   console.log("data ", data);
@@ -263,7 +296,7 @@ const SignalProjectTable = () => {
               columns={columns}
               components={{
                 EditRow: props => (
-                  <MTableEditRow // if its not editable, its coming out with wrong typography
+                  <MTableEditRow
                     {...props}
                     onKeyDown={e => {
                       if (e.keyCode === 13) {
@@ -273,6 +306,12 @@ const SignalProjectTable = () => {
                     }}
                   />
                 ),
+                EditField: props =>
+                  props.columnDef.customEdit ? (
+                    cellEditComponents[props.columnDef.customEdit](props)
+                  ) : (
+                    <MTableEditField {...props} />
+                  ),
               }}
               data={data.moped_project}
               title={
@@ -305,6 +344,7 @@ const SignalProjectTable = () => {
                   }),
               }}
               cellEditable={{
+                cellStyle: { minWidth: "300px" },
                 onCellEditApproved: (
                   newValue,
                   oldValue,
