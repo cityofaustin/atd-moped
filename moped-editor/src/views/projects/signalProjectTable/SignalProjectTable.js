@@ -150,6 +150,13 @@ const SignalProjectTable = () => {
       field: "current_phase",
       editable: "never",
       cellStyle: typographyStyle,
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.current_phase}
+          tab="timeline"
+        />
+      ),
     },
     {
       title: "Task order",
