@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
   editIcon: {
     cursor: "pointer",
-    margin: ".25rem",
+    margin: "0 .5rem",
     fontSize: "20px",
   },
   editIconConfirm: {
@@ -134,7 +134,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               data={data}
               classes={classes}
             />
-            <Grid container spacing={2} xs={12}>
+            <Grid container spacing={0} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryCurrentStatus
                   projectId={projectId}
@@ -154,7 +154,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={2} xs={12}>
+            <Grid container spacing={0} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
                   projectId={projectId}
@@ -174,14 +174,19 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={2} xs={6}>
-              <ProjectSummaryProjectWebsite
-                projectId={projectId}
-                data={data}
-                refetch={refetch}
-                classes={classes}
-                snackbarHandle={snackbarHandle}
-              />
+            <Grid container spacing={0} xs={12}>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectWebsite
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                {null}
+              </Grid>
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
