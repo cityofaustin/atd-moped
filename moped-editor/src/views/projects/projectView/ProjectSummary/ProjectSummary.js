@@ -43,11 +43,16 @@ const useStyles = makeStyles(theme => ({
   },
   fieldLabel: {
     width: "100%",
-    color: theme.palette.grey["600"],
+    color: theme.palette.text.secondary,
     fontSize: ".8rem",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
+  },
+  fieldLabelLink: {
+    width: "calc(100% - 2rem)",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
   },
   fieldBox: {
     width: "100%",
@@ -169,7 +174,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={2} xs={12}>
+            <Grid container spacing={2} xs={6}>
               <ProjectSummaryProjectWebsite
                 projectId={projectId}
                 data={data}
