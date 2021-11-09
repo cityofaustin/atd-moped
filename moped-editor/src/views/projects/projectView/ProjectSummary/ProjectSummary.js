@@ -134,7 +134,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               data={data}
               classes={classes}
             />
-            <Grid container spacing={2} xs={12}>
+            <Grid container spacing={0} xs={12}>
               <Grid item xs={6}>
                 <ProjectSummaryCurrentStatus
                   projectId={projectId}
