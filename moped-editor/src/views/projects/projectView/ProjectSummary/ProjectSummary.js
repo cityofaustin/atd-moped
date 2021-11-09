@@ -33,7 +33,7 @@ const useStyles = makeStyles(theme => ({
   },
   editIcon: {
     cursor: "pointer",
-    margin: ".25rem",
+    margin: "0 .5rem",
     fontSize: "20px",
   },
   editIconConfirm: {
