@@ -10,6 +10,7 @@ import {
 } from "../../../../queries/project";
 
 import { getSessionDatabaseData } from "../../../../auth/user";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -164,9 +165,10 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         )}
         {/*Edit Button*/}
         {!statusUpdateEditable && statusUpdate && (
-          <Icon className={classes.editIcon} onClick={handleStatusUpdateEdit}>
-            edit
-          </Icon>
+          <CreateOutlinedIcon
+            className={classes.editIcon}
+            onClick={handleStatusUpdateEdit}
+          />
         )}
         {/*Add New Button*/}
         {!statusUpdateEditable && (

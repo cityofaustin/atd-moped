@@ -11,7 +11,6 @@ import {
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
-  renderFeatureCount,
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
@@ -24,16 +23,14 @@ const useStyles = makeStyles({
   },
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
-    position: "absolute",
-    top: 0,
-    left: 0,
+    bottom: "1.5rem",
+    right: 0,
     padding: "10px",
+    position: "absolute",
   },
 });
 
-const ProjectSummaryMap = ({
-  projectExtentGeoJSON,
-}) => {
+const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
   const classes = useStyles();
   const mapRef = useRef();
   const featureCount = countFeatures(projectExtentGeoJSON);
@@ -103,7 +100,6 @@ const ProjectSummaryMap = ({
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
-      {renderFeatureCount(featureCount)}
     </Box>
   );
 };
