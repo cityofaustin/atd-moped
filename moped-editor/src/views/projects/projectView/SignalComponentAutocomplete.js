@@ -12,7 +12,7 @@ import {
   renderSignalInput,
 } from "src/utils/signalComponentHelpers";
 const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type&$order=signal_id asc&$limit=9999";
+  "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
 
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
