@@ -68,7 +68,7 @@ const ProjectSummaryCurrentStatus = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Current Status</Typography>
+      <Typography className={classes.fieldLabel}>Current status</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
