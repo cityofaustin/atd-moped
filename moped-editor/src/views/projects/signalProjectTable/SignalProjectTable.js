@@ -248,6 +248,17 @@ const SignalProjectTable = () => {
       delete updatedProjectObject.tableData;
       delete updatedProjectObject.__typename;
 
+      if (
+        newData.project_sponsor.entity_id !== oldData.project_sponsor.entity_id
+      ) {
+        updateProjectSponsor({
+          variables: {
+            projectId: updatedProjectObject.project_id,
+            entityId: newData.project_sponsor.entity_id,
+          },
+        });
+      }
+
       updateSignalProject({
         variables: updatedProjectObject,
       });
@@ -282,11 +293,14 @@ const SignalProjectTable = () => {
   const cellEditComponents = {
     projectSponsor: props => (
       <Autocomplete
-        value={props.value}
+        value={props.value ?? "None"}
         defaultValue={"None"}
         options={entityList}
         getOptionLabel={e => e.entity_name}
         onChange={(event, value) => props.onChange(value)}
+        getOptionSelected={(option, value) =>
+          option.entity_id === value.entity_id
+        }
         renderInput={params => (
           <TextField {...params} variant="standard" label={null} />
         )}
