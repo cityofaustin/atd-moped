@@ -294,6 +294,8 @@ const SignalProjectTable = () => {
     ),
   };
 
+  console.log(data)
+
   return (
     <CardContent>
       <Grid container spacing={2}>
