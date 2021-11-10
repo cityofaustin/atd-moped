@@ -25,7 +25,7 @@ const ProjectSummaryCurrentPhase = ({ projectId, data, classes }) => {
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Box className={classes.fieldBox}>
-        <Typography className={classes.fieldLabel}>Current Phase</Typography>
+        <Typography className={classes.fieldLabel}>Current phase</Typography>
         <Typography className={classes.fieldBoxTypography}>
           {currentPhase}
         </Typography>

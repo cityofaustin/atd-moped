@@ -156,7 +156,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         {!statusUpdateEditable && (
           <Box className={classes.fieldBox}>
             <Typography className={classes.fieldLabel}>
-              Status Update
+              Status update
             </Typography>
             <Typography className={classes.fieldBoxTypography}>
               {statusUpdate || "None"}
