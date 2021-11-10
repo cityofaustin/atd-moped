@@ -52,7 +52,9 @@ const SignalProjectTable = () => {
 
   const entityList = data?.moped_entity ?? [];
 
-  // Assemble the data for each signal entry
+  /**
+   * Build data needed in Signals Material Table
+   */
   data.moped_project.forEach(project => {
     // project status update equivalent to most recent project note
     project["status_update"] = "";
@@ -68,7 +70,7 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
-        signal_ids.push(feature?.location?.properties.signal_id);
+        signal_ids.push(feature?.location?.properties?.signal_id);
       });
     }
     project["signal_ids"] = signal_ids;
@@ -251,7 +253,7 @@ const SignalProjectTable = () => {
       });
     },
     cellUpdate: (newData, oldData, rowData, columnDef) => {
-      console.log(columnDef);
+      // if column definition has a custom edit component, use that mutation to update
       if (columnDef.customEdit === "projectSponsor") {
         updateProjectSponsor({
           variables: {
@@ -291,8 +293,6 @@ const SignalProjectTable = () => {
       />
     ),
   };
-
-  console.log("data ", data);
 
   return (
     <CardContent>
