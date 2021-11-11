@@ -38,6 +38,8 @@ const useStyles = makeStyles(theme => ({
     // overflow hidden makes it so the popper does not slide in from edge of screen
     // but instead appears to come in from edge of div
     overflow: "hidden",
+    height: "44px",
+    cursor: "pointer",
   },
   inputRoot: {
     borderWidth: "1px",
@@ -54,9 +56,9 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       maxWidth: "200px",
     },
-    height: "36px",
+    height: "44px",
   },
-  input404: {
+  inputRoot404: {
     borderWidth: "1px",
     borderRadius: "4px",
     borderColor: "rgba(0,0,0, .23)",
@@ -71,7 +73,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       maxWidth: "400px",
     },
-    height: "36px",
+    height: "44px",
   },
   inputInput: {
     [theme.breakpoints.up("sm")]: {
@@ -261,14 +263,14 @@ const NavigationSearchInput = ({ input404Class }) => {
   }, [searchTerm]);
 
   return (
-    <Box display="flex" justifyContent="center">
+    <Box display="flex" justifyContent="center" onClick={handleMagClick}>
       <ClickAwayListener onClickAway={startSlideAway}>
         <div
           className={input404Class ? classes.root404 : classes.root}
           ref={divRef}
         >
           {!searchInput ? (
-            <IconButton onClick={handleMagClick}>
+            <IconButton>
               <SearchIcon />
             </IconButton>
           ) : (
@@ -281,7 +283,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
-                  root: input404Class ? classes.input404 : classes.inputRoot,
+                  root: input404Class ? classes.inputRoot404 : classes.inputRoot,
                   input: classes.inputInput,
                   adornedStart: classes.adornedStart,
                   focused: classes.inputFocused,
@@ -302,7 +304,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             anchorEl={searchResultsAnchor}
             onClose={handleDropdownClose}
             placement={"bottom-start"}
-            modifiers={{
+            modifiers={!input404Class && {
               offset: {
                 enabled: true,
                 offset: "0, 15",
