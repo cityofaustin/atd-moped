@@ -25,10 +25,7 @@ import {
   useLayerSelect,
   getLayerNames,
 } from "../../../utils/mapHelpers";
-import {
-  KeyboardArrowDown,
-  KeyboardArrowUp,
-} from "@material-ui/icons";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import Geocoder from "react-map-gl-geocoder";
 import NewProjectMapBaseMap from "../newProjectView/NewProjectMapBaseMap";
 
@@ -40,6 +37,12 @@ const useStyles = makeStyles(theme => ({
   layerSelectBox: {
     maxHeight: "35vh",
     overflow: "scroll",
+    // Chrome
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+    "-ms-overflow-style": "none" /* IE and Edge */,
+    "scrollbar-width": "none" /* Firefox */,
   },
   layerSelectButton: {
     position: "absolute",
@@ -236,7 +239,12 @@ const ProjectComponentsMapView = ({
         onExited={() => setEditPanelCollapsedShow(true)}
       >
         <Grid>
-          <Grid className={classes.layerSelectBox}>{children}</Grid>
+          <Grid
+            id={"moped-component-editor-container"}
+            className={classes.layerSelectBox}
+          >
+            {children}
+          </Grid>
           <Grid item xs={12}>
             <Divider className={classes.mapToolsDivider} />
             <Button
