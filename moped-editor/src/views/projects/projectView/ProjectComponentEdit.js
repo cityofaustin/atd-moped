@@ -90,6 +90,12 @@ const useStyles = makeStyles(theme => ({
   layerSelectBox: {
     maxHeight: "35vh",
     overflow: "scroll",
+    // Chrome
+    "&::-webkit-scrollbar": {
+      display: "none",
+    },
+    "-ms-overflow-style": "none" /* IE and Edge */,
+    "scrollbar-width": "none" /* Firefox */,
   },
 }));
 
