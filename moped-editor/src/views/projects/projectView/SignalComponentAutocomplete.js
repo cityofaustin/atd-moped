@@ -48,6 +48,8 @@ const SignalComponentAutocomplete = ({
     );
   }
 
+  console.log(features)
+
   return (
     <Autocomplete
       className={classes}

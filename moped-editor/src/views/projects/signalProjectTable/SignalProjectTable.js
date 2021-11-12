@@ -70,7 +70,11 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
-        signal_ids.push(feature?.location?.properties?.signal_id);
+        let signal = feature?.location?.properties?.signal_id;
+        console.log(feature?.location?.properties)
+        if (signal) {
+          signal_ids.push({signal_id: signal});
+        }
       });
     }
     project["signal_ids"] = signal_ids;
