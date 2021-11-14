@@ -42,12 +42,31 @@ export default function KnackSync ({
   };
 
   const buildBody = () => {
+
+    // FIXME the project.moped_project[0] doesn't get updated if the user uses the UI to 
+    // change data, in the eyes of this component. 
+    // 
+    // is that because it doesn't get updated in the parent components, or does this hold a 
+    // copy that isn't a reference to the parent's data
     console.log('buildBody current state: ', project.moped_project[0].currentKnackState)
-    let body = {
-      field_3998: project.moped_project[0].project_id,
-      field_3999: project.moped_project[0].project_name,
-      field_4000: project.moped_project[0].current_status,
+    console.log('buildBody project state', project.moped_project[0])
+
+    let body = { };
+
+    let field_map = {
+      field_3998: 'project_id',
+      field_3999: 'project_name',
+      field_4000: 'current_status',
     };
+
+    Object.keys(field_map).forEach(element => {
+      if (project.moped_project[0].currentKnackState[element] != project.moped_project[0][field_map[element]]) {
+        body[element] = project.moped_project[0][field_map[element]];
+      }
+
+    });
+
+    console.log('body built', body);
     return(JSON.stringify(body));
   };
 
