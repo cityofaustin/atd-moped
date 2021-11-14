@@ -104,7 +104,9 @@ const SignalProjectTable = () => {
         p => p.is_current_phase
       );
       if (currentPhase) {
-        project["current_phase"] = currentPhase.phase_name;
+        project["current_phase"] =
+          currentPhase.phase_name.charAt(0).toUpperCase() +
+          currentPhase.phase_name.slice(1);
       }
     }
 
@@ -248,7 +250,8 @@ const SignalProjectTable = () => {
       delete updatedProjectObject.tableData;
       delete updatedProjectObject.__typename;
 
-      updatedProjectObject["entity_id"] = updatedProjectObject.project_sponsor.entity_id
+      updatedProjectObject["entity_id"] =
+        updatedProjectObject.project_sponsor.entity_id;
 
       return updateSignalProject({
         variables: updatedProjectObject,
@@ -269,7 +272,8 @@ const SignalProjectTable = () => {
         };
         updatedProjectObject[columnDef.field] = newData;
 
-        updatedProjectObject["entity_id"] = updatedProjectObject.project_sponsor.entity_id
+        updatedProjectObject["entity_id"] =
+          updatedProjectObject.project_sponsor.entity_id;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
