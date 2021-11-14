@@ -15,10 +15,11 @@ export default function KnackSync ({
     }) {
 
   const buildUrl = () => {
+    let url = 'https://api.knack.com/v1/pages/scene_' + scene_number + '/views/view_' + view_number + '/records';
     if (project.moped_project[0].knack_project_id) { // existing record
-    } else { // create new record
+      url = url + '/' + project.moped_project[0].knack_project_id;
     }
-    console.log(view_number);
+    return url;
   }
 
   const handleSync = () => {
