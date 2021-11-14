@@ -34,28 +34,40 @@ export default function KnackSync ({
 
   const buildHeaders = () => {
     let headers = {
-      'Content-Type': 'application/json/',
+      'Content-Type': 'application/json',
       'X-Knack-Application-Id': knackApplicationId,
       'X-Knack-REST-API-Key': 'knack',
     };
     return headers;
   }
 
+  const buildBody = () => {
+    let body = {
+      field_3998: project.moped_project[0].project_id,
+      field_3999: project.moped_project[0].project_name,
+      field_4000: project.moped_project[0].current_status
+    };
+    return(JSON.stringify(body));
+  }
+
   const handleSync = () => {
     console.log(project.moped_project[0]);
-    //const method = getHttpMethod();
     fetch(buildUrl(), {
       method: getHttpMethod(),
       headers: buildHeaders(),
+      body: buildBody(),
       })
       .then(response => response.json())
       .then( 
         result => {
+          if (result.errors) { // knack error
+          console.log('knack error:', result);
+          } else {
           console.log('success:', result);
-          
+          }
         },
         error => {
-          console.log('error:', error);
+          console.log('fetch error:', error);
         }
       );
     closeHandler();
