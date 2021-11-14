@@ -10,12 +10,14 @@ import {
 export default function KnackSync ({
     project, 
     closeHandler, 
-    scene_number = 514, 
-    view_number = 3047 
+    sceneNumber = 514, 
+    viewNumber = 3047,
+    knackApplicationId = '6167314778435d001ea3e7cb',
+
     }) {
 
   const buildUrl = () => {
-    let url = 'https://api.knack.com/v1/pages/scene_' + scene_number + '/views/view_' + view_number + '/records';
+    let url = 'https://api.knack.com/v1/pages/scene_' + sceneNumber + '/views/view_' + viewNumber + '/records';
     if (project.moped_project[0].knack_project_id) { // existing record
       url = url + '/' + project.moped_project[0].knack_project_id;
     }
@@ -32,9 +34,19 @@ export default function KnackSync ({
 
   const handleSync = () => {
     console.log(project.moped_project[0]);
-    const url = buildUrl();
-    const method = getHttpMethod();
-
+    //const method = getHttpMethod();
+    fetch(buildUrl(), {
+      method: getHttpMethod(),
+      })
+      .then(response => response)
+      .then( 
+        result => {
+          console.log(result);
+        },
+        error => {
+          console.log(error);
+        }
+      );
     closeHandler();
   };
 
