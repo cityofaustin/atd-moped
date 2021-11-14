@@ -48,8 +48,8 @@ export default function KnackSync ({
     // 
     // is that because it doesn't get updated in the parent components, or does this hold a 
     // copy that isn't a reference to the parent's data
-    console.log('buildBody current state: ', project.moped_project[0].currentKnackState)
-    console.log('buildBody project state', project.moped_project[0])
+    //console.log('buildBody current state: ', project.moped_project[0].currentKnackState)
+    //console.log('buildBody project state', project.moped_project[0])
 
     let body = { };
 
@@ -63,42 +63,58 @@ export default function KnackSync ({
       if (project.moped_project[0].currentKnackState[element] != project.moped_project[0][field_map[element]]) {
         body[element] = project.moped_project[0][field_map[element]];
       }
-
     });
 
-    console.log('body built', body);
     return(JSON.stringify(body));
   };
 
 
   const handleSync = () => {
-    project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
+    //project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
 
-    //console.log(project.moped_project[0]);
-
-    fetch(buildUrl(), {
-      method: 'GET',
-      headers: buildHeaders(),
-      })
-      .then(response => response.json())
-      .then( 
-        result => {
-          if (result.errors) { // knack error
-            console.log('get-state knack error:', result);
-            return Promise.reject(result);
-          } else {
-            console.log('get-state success:', result);
-            project.moped_project[0].currentKnackState = result;
-            return fetch(buildUrl(), {
-              method: getHttpMethod(),
-              headers: buildHeaders(),
-              body: buildBody(),
-              });
+    if (project.moped_project[0].knack_project_id) { // updating knack record
+      fetch(buildUrl(), {
+        method: 'GET',
+        headers: buildHeaders(),
+        })
+        .then(response => response.json())
+        .then( 
+          result => {
+            if (result.errors) { // knack error
+              console.log('get-state knack error:', result);
+              return Promise.reject(result);
+            } else {
+              console.log('get-state success:', result);
+              project.moped_project[0].currentKnackState = result;
+              return fetch(buildUrl(), {
+                method: getHttpMethod(),
+                headers: buildHeaders(),
+                body: buildBody(),
+                });
+            }
+          },
+          error => {
+            console.log('get-state fetch error:', error);
+            return Promise.reject(error);
+          })
+        .then(response => response.json())
+        .then( 
+          result => {
+            if (result.errors) { // knack error
+              console.log('knack error:', result);
+            } else {
+              console.log('success:', result);
+            }
+          },
+          error => {
+            console.log('fetch error:', error);
           }
-        },
-        error => {
-          console.log('get-state fetch error:', error);
-          return Promise.reject(error);
+        );
+    } else { // creating new knack record
+      fetch(buildUrl(), {
+        method: getHttpMethod(),
+        headers: buildHeaders(),
+        body: buildBody(),
         })
       .then(response => response.json())
       .then( 
@@ -113,8 +129,8 @@ export default function KnackSync ({
           console.log('fetch error:', error);
         }
       );
-
-
+    }
+    
     closeHandler();
   };
 
