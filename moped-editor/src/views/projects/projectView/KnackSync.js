@@ -32,19 +32,30 @@ export default function KnackSync ({
     return method;
   }
 
+  const buildHeaders = () => {
+    let headers = {
+      'Content-Type': 'application/json/',
+      'X-Knack-Application-Id': knackApplicationId,
+      'X-Knack-REST-API-Key': 'knack',
+    };
+    return headers;
+  }
+
   const handleSync = () => {
     console.log(project.moped_project[0]);
     //const method = getHttpMethod();
     fetch(buildUrl(), {
       method: getHttpMethod(),
+      headers: buildHeaders(),
       })
-      .then(response => response)
+      .then(response => response.json())
       .then( 
         result => {
-          console.log(result);
+          console.log('success:', result);
+          
         },
         error => {
-          console.log(error);
+          console.log('error:', error);
         }
       );
     closeHandler();
