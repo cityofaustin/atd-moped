@@ -22,7 +22,7 @@ export default function KnackSync ({
       url = url + '/' + project.moped_project[0].knack_project_id;
     }
     return url;
-  }
+  };
 
   const getHttpMethod = () => {
     let method = 'POST';
@@ -30,7 +30,7 @@ export default function KnackSync ({
       method = 'PUT';
     }
     return method;
-  }
+  };
 
   const buildHeaders = () => {
     let headers = {
@@ -39,37 +39,63 @@ export default function KnackSync ({
       'X-Knack-REST-API-Key': 'knack',
     };
     return headers;
-  }
+  };
 
   const buildBody = () => {
+    console.log('buildBody current state: ', project.moped_project[0].currentKnackState)
     let body = {
       field_3998: project.moped_project[0].project_id,
       field_3999: project.moped_project[0].project_name,
-      field_4000: project.moped_project[0].current_status
+      field_4000: project.moped_project[0].current_status,
     };
     return(JSON.stringify(body));
-  }
+  };
+
 
   const handleSync = () => {
-    console.log(project.moped_project[0]);
+    project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
+
+    //console.log(project.moped_project[0]);
+
     fetch(buildUrl(), {
-      method: getHttpMethod(),
+      method: 'GET',
       headers: buildHeaders(),
-      body: buildBody(),
       })
       .then(response => response.json())
       .then( 
         result => {
           if (result.errors) { // knack error
-          console.log('knack error:', result);
+            console.log('get-state knack error:', result);
+            return Promise.reject(result);
           } else {
-          console.log('success:', result);
+            console.log('get-state success:', result);
+            project.moped_project[0].currentKnackState = result;
+            return fetch(buildUrl(), {
+              method: getHttpMethod(),
+              headers: buildHeaders(),
+              body: buildBody(),
+              });
+          }
+        },
+        error => {
+          console.log('get-state fetch error:', error);
+          return Promise.reject(error);
+        })
+      .then(response => response.json())
+      .then( 
+        result => {
+          if (result.errors) { // knack error
+            console.log('knack error:', result);
+          } else {
+            console.log('success:', result);
           }
         },
         error => {
           console.log('fetch error:', error);
         }
       );
+
+
     closeHandler();
   };
 
