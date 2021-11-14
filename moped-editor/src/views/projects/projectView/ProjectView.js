@@ -4,6 +4,9 @@ import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
+//import { useKnackProjectWriter} from "src/utils/knackHelpers";
+import KnackSync from "./KnackSync.js";
+
 import {
   Breadcrumbs,
   Link,
@@ -239,14 +242,6 @@ const ProjectView = () => {
     setAnchorElement(null);
   };
 
-/**
- * Handles a Knack sync request
- */
-
-const handleKnackSync = () => {
-  
-};
-
 
   /**
    * Handles the rename menu option click
@@ -385,12 +380,7 @@ const handleKnackSync = () => {
                           <ListItemText primary="Add to favorites" />
                         </MenuItem>
 
-                        <MenuItem onClick={handleKnackSync} selected={false}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">sync</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Knack Sync" />
-                        </MenuItem>
+                        <KnackSync project={data} closeHandler={handleMenuClose} />
 
                         <MenuItem onClick={handleRenameClick} selected={false}>
                           <ListItemIcon>
