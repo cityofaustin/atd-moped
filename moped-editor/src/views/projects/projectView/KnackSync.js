@@ -60,7 +60,7 @@ export default function KnackSync ({
     };
 
     Object.keys(field_map).forEach(element => {
-      if (project.moped_project[0].currentKnackState[element] != project.moped_project[0][field_map[element]]) {
+      if (project.moped_project[0].currentKnackState[element] !== project.moped_project[0][field_map[element]]) {
         body[element] = project.moped_project[0][field_map[element]];
       }
     });
@@ -71,8 +71,8 @@ export default function KnackSync ({
 
   const handleSync = () => {
     //project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
-
     if (project.moped_project[0].knack_project_id) { // updating knack record
+      console.log('updating record');
       fetch(buildUrl(), {
         method: 'GET',
         headers: buildHeaders(),
@@ -111,6 +111,8 @@ export default function KnackSync ({
           }
         );
     } else { // creating new knack record
+      console.log('creating record');
+      project.moped_project[0].currentKnackState = {};
       fetch(buildUrl(), {
         method: getHttpMethod(),
         headers: buildHeaders(),
@@ -121,14 +123,19 @@ export default function KnackSync ({
         result => {
           if (result.errors) { // knack error
             console.log('knack error:', result);
+            return Promise.reject(result);
           } else {
             console.log('success:', result);
+            return Promise.resolve(result);
           }
         },
         error => {
           console.log('fetch error:', error);
-        }
-      );
+          return Promise.reject(error);
+        })
+      .then(knack_record => {
+        console.log('knack record: ', knack_record);
+      });
     }
     
     closeHandler();
