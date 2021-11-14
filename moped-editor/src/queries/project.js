@@ -709,3 +709,14 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
     }
   }
 `;
+
+export const UPDATE_PROJECT_KNACK_ID = gql`
+mutation updateKnackId ($project_id: Int, $knack_id: String) {
+  update_moped_project(where: {project_id: {_eq: $project_id}},
+    _set: {knack_project_id: $knack_id}) {
+    returning {
+      knack_project_id
+      project_id
+    }
+  }
+}`;

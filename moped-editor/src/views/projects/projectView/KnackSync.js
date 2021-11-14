@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
-//import { Button } from "@material-ui/core"
+import React from "react";
 import {
     MenuItem,
     Icon,
     ListItemIcon,
     ListItemText,
   } from "@material-ui/core";
+
+import { useMutation } from "@apollo/client";
+
+import { UPDATE_PROJECT_KNACK_ID } from "../../../queries/project";
 
 export default function KnackSync ({
     project, 
@@ -68,6 +71,7 @@ export default function KnackSync ({
     return(JSON.stringify(body));
   };
 
+  const [mutateProjectKnackId, { data, loading, error }] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   const handleSync = () => {
     //project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
@@ -135,6 +139,11 @@ export default function KnackSync ({
         })
       .then(knack_record => {
         console.log('knack record: ', knack_record);
+        mutateProjectKnackId({ variables: {
+          project_id: project.moped_project[0].project_id,
+          knack_id: knack_record.record.id,
+          }
+        });
       });
     }
     
