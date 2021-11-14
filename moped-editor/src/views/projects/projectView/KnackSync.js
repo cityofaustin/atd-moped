@@ -22,9 +22,19 @@ export default function KnackSync ({
     return url;
   }
 
+  const getHttpMethod = () => {
+    let method = 'POST';
+    if (project.moped_project[0].knack_project_id) {
+      method = 'PUT';
+    }
+    return method;
+  }
+
   const handleSync = () => {
     console.log(project.moped_project[0]);
-    buildUrl();
+    const url = buildUrl();
+    const method = getHttpMethod();
+
     closeHandler();
   };
 
