@@ -31,7 +31,9 @@ import {
   Icon,
   ListItemIcon,
   ListItemText,
+  Snackbar,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary";
@@ -165,6 +167,23 @@ const ProjectView = () => {
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
   const menuOpen = anchorElement ?? false;
+
+  const DEFAULT_SNACKBAR_STATE = {
+    open: false,
+    message: "Default State",
+    severity: "warning",
+  };
+
+  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+
+  const handleSnackbarClose = () => {
+    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  };
+
+  const handleSnackbarOpen = (snackbarState) => {
+    snackbarState.open = true;
+    setSnackbarState(snackbarState);
+  };
 
   /**
    * Handles the click on a tab, which should trigger a change.
@@ -380,7 +399,7 @@ const ProjectView = () => {
                           <ListItemText primary="Add to favorites" />
                         </MenuItem>
 
-                        <KnackSync project={data} closeHandler={handleMenuClose} />
+                        <KnackSync project={data} closeHandler={handleMenuClose} snackbarHandler={handleSnackbarOpen}/>
 
                         <MenuItem onClick={handleRenameClick} selected={false}>
                           <ListItemIcon>
@@ -468,6 +487,16 @@ const ProjectView = () => {
           </Dialog>
         )}
       </Page>
+      <Snackbar
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      open={snackbarState.open}
+      onClose={handleSnackbarClose}
+      key={"datatable-snackbar"}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </ApolloErrorHandler>
   );
 };

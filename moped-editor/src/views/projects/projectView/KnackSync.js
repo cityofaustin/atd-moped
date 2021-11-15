@@ -4,9 +4,7 @@ import {
     Icon,
     ListItemIcon,
     ListItemText,
-    Snackbar,
   } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
 
 import { useMutation } from "@apollo/client";
 
@@ -16,22 +14,11 @@ import { UPDATE_PROJECT_KNACK_ID } from "../../../queries/project";
 const KnackSync = React.forwardRef(({
     project, 
     closeHandler, 
+    snackbarHandler,
     sceneNumber = 514, 
     viewNumber = 3047,
     knackApplicationId = '6167314778435d001ea3e7cb',
     }, ref) => {
-
-  const DEFAULT_SNACKBAR_STATE = {
-    open: true,
-    message: "This is the default snackbar state.",
-    severity: "warning",
-  };
-
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
-  };
 
   const buildUrl = () => {
     let url = 'https://api.knack.com/v1/pages/scene_' + sceneNumber + '/views/view_' + viewNumber + '/records';
@@ -122,10 +109,9 @@ const KnackSync = React.forwardRef(({
               console.log('knack error:', result);
             } else {
               console.log('update success:', result);
-              setSnackbarState({
-                open: true,
-                message: <span>Success! The project has been pushed to Data Tracker.</span>,
-                severity: "success",
+              snackbarHandler({
+                seveirty: 'successs',
+                message: 'Success: Project data pushed to Data Tracker'
               });
             }
           },
@@ -163,36 +149,19 @@ const KnackSync = React.forwardRef(({
           knack_id: knack_record.record.id,
           }
         });
-        setSnackbarState({
-          open: true,
-          message: <span>Success! The project has been pushed to Data Tracker.</span>,
-          severity: "success",
-        });
       });
     }
     
-    //closeHandler();
+    closeHandler();
   };
 
   return (
-    <>
-      <MenuItem onClick={handleSync} selected={false}>
-        <ListItemIcon>
-          <Icon fontSize="small">cached</Icon>
-        </ListItemIcon>
-        <ListItemText primary="Sync to Knack" />
-      </MenuItem>
-      <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      open={snackbarState.open}
-      onClose={handleSnackbarClose}
-      key={"datatable-snackbar"}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
-    </>
+    <MenuItem onClick={handleSync} selected={false}>
+      <ListItemIcon>
+        <Icon fontSize="small">cached</Icon>
+      </ListItemIcon>
+      <ListItemText primary="Sync to Knack" />
+    </MenuItem>
   );
 
 });
