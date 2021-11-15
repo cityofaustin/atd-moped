@@ -46,15 +46,6 @@ const KnackSync = React.forwardRef(({
   };
 
   const buildBody = () => {
-
-    // FIXME the project.moped_project[0] doesn't get updated if the user uses the UI to 
-    // change data, in the eyes of this component. 
-    // 
-    // is that because it doesn't get updated in the parent components, or does this hold a 
-    // copy that isn't a reference to the parent's data
-    //console.log('buildBody current state: ', project.moped_project[0].currentKnackState)
-    //console.log('buildBody project state', project.moped_project[0])
-
     let body = { };
 
     let field_map = {
