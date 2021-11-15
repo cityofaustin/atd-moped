@@ -171,7 +171,7 @@ const KnackSync = React.forwardRef(({
       <ListItemIcon>
         <Icon fontSize="small">cached</Icon>
       </ListItemIcon>
-      <ListItemText primary="Sync to Knack" />
+      <ListItemText primary="Sync to Data Tracker" />
     </MenuItem>
   );
 
