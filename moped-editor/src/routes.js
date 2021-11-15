@@ -7,7 +7,6 @@ import AccountView from "src/views/account/AccountView/AccountView";
 import StaffListView from "src/views/staff/StaffListView";
 import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
-// import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
@@ -40,7 +39,6 @@ export const routes = [
       {
         path: "dashboard",
         action: "dashboard:visit",
-        // element: <DashboardView />,
         element: <SignalProjectTable />,
       },
       { path: "account", action: "account:visit", element: <AccountView /> },
