@@ -114,6 +114,7 @@ const ProjectNameEditable = props => {
         if (props?.setIsEditing) props.setIsEditing(false);
         setIsEditing(false);
         setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+        props.updatedCallback();
       });
     } else {
       setTitleError(true);

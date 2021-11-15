@@ -326,6 +326,15 @@ const ProjectView = () => {
       });
   };
 
+  /**
+   * Routine to pass down to ProjectNameEditable so it can indicate when a name
+   * update has been issued allowing this component to refetch() and populate
+   * data.
+   */
+  const handleNameUpdate = () => {
+    refetch();
+  }
+
   return (
     <ApolloErrorHandler error={error}>
       <Page
@@ -357,6 +366,7 @@ const ProjectView = () => {
                         editable={true}
                         isEditing={isEditing}
                         setIsEditing={setIsEditing}
+                        updatedCallback={handleNameUpdate}
                       />
                     </Grid>
                     <Grid item xs={1} md={1}>
