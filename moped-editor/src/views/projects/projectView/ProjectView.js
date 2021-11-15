@@ -153,12 +153,19 @@ const ProjectView = () => {
     ? TABS.findIndex(tab => tab.param === query.get("tab"))
     : 0;
 
+  const DEFAULT_SNACKBAR_STATE = {
+    open: false,
+    message: "Default State",
+    severity: "warning",
+  };
+
   /**
    * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
    * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
    * @constant {JSX} anchorElement - The element our 'MoreHorizontal' menu anchors to.
+   * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
   const [activeTab, setActiveTab] = useState(activeTabIndex);
@@ -166,20 +173,17 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
-  const menuOpen = anchorElement ?? false;
-
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: "Default State",
-    severity: "warning",
-  };
-
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const menuOpen = anchorElement ?? false;
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
+  /**
+   * Fuction which can be passed to child component to allow it to invoke a snackbar which
+   * will persist even after that child component has been deconstructed or otherwise hidden.
+   */
   const handleSnackbarOpen = (snackbarState) => {
     snackbarState.open = true;
     setSnackbarState(snackbarState);
