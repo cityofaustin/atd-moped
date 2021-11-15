@@ -10,7 +10,11 @@ import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../queries/project";
 
-//export default function KnackSync ({
+/**
+ * Entry in project menu drop down to trigger sync to Data Tracker
+ * @return {JSX.Element}
+ * @constructor
+ */
 const KnackSync = React.forwardRef(({
     project, 
     closeHandler, 
@@ -20,6 +24,11 @@ const KnackSync = React.forwardRef(({
     knackApplicationId = '6167314778435d001ea3e7cb',
     }, ref) => {
 
+/**
+ * Function to build the correct Knack URL to interact with based on properties and if there will be an 
+ * update or an initial sync.
+ * @returns string
+ */
   const buildUrl = () => {
     let url = 'https://api.knack.com/v1/pages/scene_' + sceneNumber + '/views/view_' + viewNumber + '/records';
     if (project.moped_project[0].knack_project_id) { // existing record
@@ -28,6 +37,10 @@ const KnackSync = React.forwardRef(({
     return url;
   };
 
+/**
+ * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack 
+ * @returns string
+ */
   const getHttpMethod = () => {
     let method = 'POST';
     if (project.moped_project[0].knack_project_id) {
@@ -36,6 +49,10 @@ const KnackSync = React.forwardRef(({
     return method;
   };
 
+/**
+ * Function to build up the headers which need to be sent as part of the a Knack API call
+ * @returns object
+ */
   const buildHeaders = () => {
     let headers = {
       'Content-Type': 'application/json',
@@ -45,6 +62,11 @@ const KnackSync = React.forwardRef(({
     return headers;
   };
 
+/**
+ * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
+ * because if you update the project number field, even with the same, extant number, Knack returns an error.
+ * @returns string
+ */
   const buildBody = () => {
     let body = { };
 
@@ -65,6 +87,9 @@ const KnackSync = React.forwardRef(({
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
+/**
+ * Function to hanlde the actual mechanics of syncronizing the data on hand to the Knack API endpoint.
+ */
   const handleSync = () => {
     if (project.moped_project[0].knack_project_id) { // updating knack record
       fetch(buildUrl(), {
