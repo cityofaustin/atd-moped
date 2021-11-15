@@ -87,6 +87,10 @@ const KnackSync = React.forwardRef(({
           result => {
             if (result.errors) { // knack error
               console.log('get-state knack error:', result);
+              snackbarHandler({
+                severity: 'warning',
+                message: 'Success: Data Tracker sync failed.',
+              });
               return Promise.reject(result);
             } else {
               console.log('get-state success:', result);
@@ -107,6 +111,10 @@ const KnackSync = React.forwardRef(({
           result => {
             if (result.errors) { // knack error
               console.log('knack error:', result);
+              snackbarHandler({
+                severity: 'warning',
+                message: 'Success: Data Tracker sync failed.',
+              });
             } else {
               console.log('update success:', result);
               snackbarHandler({
@@ -117,6 +125,10 @@ const KnackSync = React.forwardRef(({
           },
           error => {
             console.log('fetch error:', error);
+            snackbarHandler({
+              severity: 'warning',
+              message: 'Success: Data Tracker sync failed.',
+            });
           }
         );
     } else { // creating new knack record
@@ -132,6 +144,10 @@ const KnackSync = React.forwardRef(({
         result => {
           if (result.errors) { // knack error
             console.log('knack error:', result);
+            snackbarHandler({
+              severity: 'warning',
+              message: 'Success: Data Tracker sync failed.',
+            });
             return Promise.reject(result);
           } else {
             console.log('success:', result);
@@ -140,6 +156,10 @@ const KnackSync = React.forwardRef(({
         },
         error => {
           console.log('fetch error:', error);
+          snackbarHandler({
+            severity: 'warning',
+            message: 'Success: Data Tracker sync failed.',
+          });
           return Promise.reject(error);
         })
       .then(knack_record => {
