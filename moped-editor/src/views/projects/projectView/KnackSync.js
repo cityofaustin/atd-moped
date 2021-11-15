@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     MenuItem,
     Icon,
@@ -63,7 +63,7 @@ const KnackSync = React.forwardRef(({
     return(JSON.stringify(body));
   };
 
-  const [mutateProjectKnackId, { data, loading, error }] = useMutation(UPDATE_PROJECT_KNACK_ID);
+  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   const handleSync = () => {
     if (project.moped_project[0].knack_project_id) { // updating knack record
