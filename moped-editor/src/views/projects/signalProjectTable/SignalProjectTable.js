@@ -313,7 +313,7 @@ const SignalProjectTable = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <Page title={"signal view"} className={classes.signalsTable}>
+          <Page title={"Signal projects"} className={classes.signalsTable}>
             <MaterialTable
               columns={columns}
               components={{
@@ -338,7 +338,7 @@ const SignalProjectTable = () => {
               data={data.moped_project}
               title={
                 <Typography variant="h2" color="primary">
-                  Signals Table
+                  Signal projects
                 </Typography>
               }
               options={{
