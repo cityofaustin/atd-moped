@@ -75,7 +75,6 @@ const KnackSync = React.forwardRef(({
   const [mutateProjectKnackId, { data, loading, error }] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   const handleSync = () => {
-    //project.moped_project[0].knack_project_id = '61914151b08f28001e8b87d8';
     if (project.moped_project[0].knack_project_id) { // updating knack record
       console.log('updating record');
       fetch(buildUrl(), {
