@@ -20,6 +20,7 @@ import {
 import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
+import RenderSignalLink from "./RenderSignalLink";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -73,7 +74,7 @@ const SignalProjectTable = () => {
         let signal = feature?.location?.properties?.signal_id;
         console.log(feature?.location?.properties)
         if (signal) {
-          signal_ids.push({signal_id: signal});
+          signal_ids.push({signal_id: signal, knack_id: feature.location.properties.id});
         }
       });
     }
@@ -145,7 +146,7 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
-      render: entry => entry.signal_ids.join(", "),
+      render: entry => <RenderSignalLink signals={entry.signal_ids} />
     },
     {
       title: "Project types",
