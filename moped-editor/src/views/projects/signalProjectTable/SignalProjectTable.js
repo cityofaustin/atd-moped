@@ -72,7 +72,6 @@ const SignalProjectTable = () => {
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
         let signal = feature?.location?.properties?.signal_id;
-        console.log(feature?.location?.properties)
         if (signal) {
           signal_ids.push({signal_id: signal, knack_id: feature.location.properties.id});
         }
@@ -309,8 +308,6 @@ const SignalProjectTable = () => {
       />
     ),
   };
-
-  console.log(data)
 
   return (
     <CardContent>
