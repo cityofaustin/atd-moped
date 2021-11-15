@@ -183,6 +183,7 @@ const ProjectView = () => {
   const handleSnackbarOpen = (snackbarState) => {
     snackbarState.open = true;
     setSnackbarState(snackbarState);
+    setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
   };
 
   /**
