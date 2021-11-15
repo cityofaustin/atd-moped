@@ -110,7 +110,7 @@ const KnackSync = React.forwardRef(({
             } else {
               console.log('update success:', result);
               snackbarHandler({
-                seveirty: 'successs',
+                severity: 'success',
                 message: 'Success: Project data pushed to Data Tracker'
               });
             }
@@ -148,6 +148,10 @@ const KnackSync = React.forwardRef(({
           project_id: project.moped_project[0].project_id,
           knack_id: knack_record.record.id,
           }
+        });
+        snackbarHandler({
+          severity: 'success',
+          message: 'Success: Project data pushed to Data Tracker'
         });
       });
     }
