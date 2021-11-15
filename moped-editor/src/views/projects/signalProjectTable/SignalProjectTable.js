@@ -108,7 +108,9 @@ const SignalProjectTable = () => {
         p => p.is_current_phase
       );
       if (currentPhase) {
-        project["current_phase"] = currentPhase.phase_name;
+        project["current_phase"] =
+          currentPhase.phase_name.charAt(0).toUpperCase() +
+          currentPhase.phase_name.slice(1);
       }
     }
 
@@ -252,25 +254,17 @@ const SignalProjectTable = () => {
       delete updatedProjectObject.tableData;
       delete updatedProjectObject.__typename;
 
-      if (
-        newData.project_sponsor.entity_id !== oldData.project_sponsor.entity_id
-      ) {
-        updateProjectSponsor({
-          variables: {
-            projectId: updatedProjectObject.project_id,
-            entityId: newData.project_sponsor.entity_id,
-          },
-        });
-      }
+      updatedProjectObject["entity_id"] =
+        updatedProjectObject.project_sponsor.entity_id;
 
-      updateSignalProject({
+      return updateSignalProject({
         variables: updatedProjectObject,
       });
     },
     cellUpdate: (newData, oldData, rowData, columnDef) => {
       // if column definition has a custom edit component, use that mutation to update
       if (columnDef.customEdit === "projectSponsor") {
-        updateProjectSponsor({
+        return updateProjectSponsor({
           variables: {
             projectId: rowData.project_id,
             entityId: newData.entity_id,
@@ -282,12 +276,15 @@ const SignalProjectTable = () => {
         };
         updatedProjectObject[columnDef.field] = newData;
 
+        updatedProjectObject["entity_id"] =
+          updatedProjectObject.project_sponsor.entity_id;
+
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
         delete updatedProjectObject.tableData;
         delete updatedProjectObject.__typename;
 
-        updateSignalProject({
+        return updateSignalProject({
           variables: updatedProjectObject,
         });
       }
@@ -360,15 +357,11 @@ const SignalProjectTable = () => {
                 },
               }}
               editable={{
-                onRowUpdate: (newData, oldData) =>
-                  new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      projectActions.update(newData, oldData);
-
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  }),
+                onRowUpdate: (newData, oldData) => {
+                  return projectActions
+                    .update(newData, oldData)
+                    .then(() => refetch());
+                },
               }}
               cellEditable={{
                 cellStyle: { minWidth: "300px" },
@@ -378,18 +371,9 @@ const SignalProjectTable = () => {
                   rowData,
                   columnDef
                 ) => {
-                  return new Promise((resolve, reject) => {
-                    setTimeout(() => {
-                      projectActions.cellUpdate(
-                        newValue,
-                        oldValue,
-                        rowData,
-                        columnDef
-                      );
-                      setTimeout(() => refetch(), 501);
-                      resolve();
-                    }, 500);
-                  });
+                  return projectActions
+                    .cellUpdate(newValue, oldValue, rowData, columnDef)
+                    .then(() => refetch());
                 },
               }}
             />
