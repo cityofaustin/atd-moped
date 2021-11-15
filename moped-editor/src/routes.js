@@ -7,7 +7,6 @@ import AccountView from "src/views/account/AccountView/AccountView";
 import StaffListView from "src/views/staff/StaffListView";
 import NewStaffView from "src/views/staff/NewStaffView";
 import EditStaffView from "src/views/staff/EditStaffView";
-import DashboardView from "src/views/reports/DashboardView/DashboardView";
 import LoginView from "src/views/auth/LoginView";
 import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
@@ -15,6 +14,7 @@ import NewProjectView from "src/views/projects/newProjectView/NewProjectView";
 import ProjectView from "src/views/projects/projectView/ProjectView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 import DeviasStyleView from "./views/dev/DeviasStyleView/DeviasStyleView";
+import SignalProjectTable from "src/views/projects/signalProjectTable/SignalProjectTable";
 
 export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
@@ -39,7 +39,7 @@ export const routes = [
       {
         path: "dashboard",
         action: "dashboard:visit",
-        element: <DashboardView />,
+        element: <SignalProjectTable />,
       },
       { path: "account", action: "account:visit", element: <AccountView /> },
       { path: "staff", action: "staff:visit", element: <StaffListView /> },
@@ -74,6 +74,11 @@ export const routes = [
         path: "dev/styles",
         action: "style:visit",
         element: <DeviasStyleView />,
+      },
+      {
+        path: "projects/signals",
+        action: "projects:visit",
+        element: <SignalProjectTable />
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
