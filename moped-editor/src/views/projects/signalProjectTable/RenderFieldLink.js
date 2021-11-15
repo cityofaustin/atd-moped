@@ -8,7 +8,7 @@ const RenderFieldLink = ({ projectId, value, tab }) => {
   return (
     <RouterLink
       to={route}
-      className={tab ? "MuiPaper-root" : "MuiTypography-colorPrimary"}
+      className={"MuiTypography-colorPrimary"}
     >
       {value}
     </RouterLink>
