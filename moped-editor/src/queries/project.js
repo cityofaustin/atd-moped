@@ -710,6 +710,9 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
   }
 `;
 
+/**
+ * Record the ID which Knack assigned a project when pushed to Data Tracker
+ */
 export const UPDATE_PROJECT_KNACK_ID = gql`
 mutation updateKnackId ($project_id: Int, $knack_id: String) {
   update_moped_project(where: {project_id: {_eq: $project_id}},
