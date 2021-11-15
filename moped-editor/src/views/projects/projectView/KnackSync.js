@@ -76,7 +76,6 @@ const KnackSync = React.forwardRef(({
 
   const handleSync = () => {
     if (project.moped_project[0].knack_project_id) { // updating knack record
-      console.log('updating record');
       fetch(buildUrl(), {
         method: 'GET',
         headers: buildHeaders(),
@@ -85,14 +84,12 @@ const KnackSync = React.forwardRef(({
         .then( 
           result => {
             if (result.errors) { // knack error
-              console.log('get-state knack error:', result);
               snackbarHandler({
                 severity: 'warning',
                 message: 'Success: Data Tracker sync failed.',
               });
               return Promise.reject(result);
-            } else {
-              console.log('get-state success:', result);
+            } else { // get-state success
               project.moped_project[0].currentKnackState = result;
               return fetch(buildUrl(), {
                 method: getHttpMethod(),
@@ -101,29 +98,25 @@ const KnackSync = React.forwardRef(({
                 });
             }
           },
-          error => {
-            console.log('get-state fetch error:', error);
+          error => { // get-state fetch error
             return Promise.reject(error);
           })
         .then(response => response.json())
         .then( 
           result => {
             if (result.errors) { // knack error
-              console.log('knack error:', result);
               snackbarHandler({
                 severity: 'warning',
                 message: 'Success: Data Tracker sync failed.',
               });
-            } else {
-              console.log('update success:', result);
+            } else { // successful update
               snackbarHandler({
                 severity: 'success',
                 message: 'Success: Project data pushed to Data Tracker'
               });
             }
-          },
-          error => {
-            console.log('fetch error:', error);
+          }, 
+          error => { // fetch error
             snackbarHandler({
               severity: 'warning',
               message: 'Success: Data Tracker sync failed.',
@@ -131,7 +124,6 @@ const KnackSync = React.forwardRef(({
           }
         );
     } else { // creating new knack record
-      console.log('creating record');
       project.moped_project[0].currentKnackState = {};
       fetch(buildUrl(), {
         method: getHttpMethod(),
@@ -142,27 +134,23 @@ const KnackSync = React.forwardRef(({
       .then( 
         result => {
           if (result.errors) { // knack error
-            console.log('knack error:', result);
             snackbarHandler({
               severity: 'warning',
               message: 'Success: Data Tracker sync failed.',
             });
             return Promise.reject(result);
-          } else {
-            console.log('success:', result);
+          } else { // knack fetch success
             return Promise.resolve(result);
           }
         },
-        error => {
-          console.log('fetch error:', error);
+        error => { // fetch error
           snackbarHandler({
             severity: 'warning',
             message: 'Success: Data Tracker sync failed.',
           });
           return Promise.reject(error);
         })
-      .then(knack_record => {
-        console.log('knack record: ', knack_record);
+      .then(knack_record => { 
         mutateProjectKnackId({ variables: {
           project_id: project.moped_project[0].project_id,
           knack_id: knack_record.record.id,
