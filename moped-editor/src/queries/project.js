@@ -444,7 +444,11 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
   ) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
-      _set: { file_name: $fileName, file_type: $fileType, file_description: $fileDescription }
+      _set: {
+        file_name: $fileName
+        file_type: $fileType
+        file_description: $fileDescription
+      }
     ) {
       affected_rows
     }
@@ -703,7 +707,11 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
   ) {
     update_moped_proj_notes(
       where: { project_note_id: $project_note_id }
-      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
+      _set: {
+        project_note: $project_note
+        added_by: $added_by
+        project_note_type: 2
+      }
     ) {
       affected_rows
     }
@@ -714,12 +722,15 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
  * Record the ID which Knack assigned a project when pushed to Data Tracker
  */
 export const UPDATE_PROJECT_KNACK_ID = gql`
-mutation updateKnackId ($project_id: Int, $knack_id: String) {
-  update_moped_project(where: {project_id: {_eq: $project_id}},
-    _set: {knack_project_id: $knack_id}) {
-    returning {
-      knack_project_id
-      project_id
+  mutation updateKnackId($project_id: Int, $knack_id: String) {
+    update_moped_project(
+      where: { project_id: { _eq: $project_id } }
+      _set: { knack_project_id: $knack_id }
+    ) {
+      returning {
+        knack_project_id
+        project_id
+      }
     }
   }
-}`;
+`;

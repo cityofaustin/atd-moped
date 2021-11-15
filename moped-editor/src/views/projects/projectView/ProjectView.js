@@ -183,7 +183,7 @@ const ProjectView = () => {
    * Fuction which can be passed to child component to allow it to invoke a snackbar which
    * will persist even after that child component has been deconstructed or otherwise hidden.
    */
-  const handleSnackbarOpen = (snackbarState) => {
+  const handleSnackbarOpen = snackbarState => {
     snackbarState.open = true;
     setSnackbarState(snackbarState);
     setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
@@ -265,7 +265,6 @@ const ProjectView = () => {
     setAnchorElement(null);
   };
 
-
   /**
    * Handles the rename menu option click
    */
@@ -332,7 +331,7 @@ const ProjectView = () => {
    */
   const handleNameUpdate = () => {
     refetch();
-  }
+  };
 
   return (
     <ApolloErrorHandler error={error}>
@@ -413,7 +412,11 @@ const ProjectView = () => {
                           <ListItemText primary="Add to favorites" />
                         </MenuItem>
 
-                        <KnackSync project={data} closeHandler={handleMenuClose} snackbarHandler={handleSnackbarOpen}/>
+                        <KnackSync
+                          project={data}
+                          closeHandler={handleMenuClose}
+                          snackbarHandler={handleSnackbarOpen}
+                        />
 
                         <MenuItem onClick={handleRenameClick} selected={false}>
                           <ListItemIcon>
@@ -502,10 +505,10 @@ const ProjectView = () => {
         )}
       </Page>
       <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      open={snackbarState.open}
-      onClose={handleSnackbarClose}
-      key={"datatable-snackbar"}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarState.open}
+        onClose={handleSnackbarClose}
+        key={"datatable-snackbar"}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
           {snackbarState.message}
