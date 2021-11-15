@@ -97,7 +97,7 @@ const ProjectNameEditable = props => {
         setProjectNameBeforeEdit(projectName);
         setSnackbarState({
           open: true,
-          message: <span>Success! the project name has been updated!</span>,
+          message: <span>Success! The project name has been updated!</span>,
           severity: "success",
         });
       })
