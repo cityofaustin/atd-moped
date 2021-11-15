@@ -10,14 +10,14 @@ import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../queries/project";
 
-export default function KnackSync ({
+//export default function KnackSync ({
+const KnackSync = React.forwardRef(({
     project, 
     closeHandler, 
     sceneNumber = 514, 
     viewNumber = 3047,
     knackApplicationId = '6167314778435d001ea3e7cb',
-
-    }) {
+    }, ref) => {
 
   const buildUrl = () => {
     let url = 'https://api.knack.com/v1/pages/scene_' + sceneNumber + '/views/view_' + viewNumber + '/records';
@@ -159,4 +159,6 @@ export default function KnackSync ({
     </MenuItem>
   );
 
-};
+});
+
+export default KnackSync;
