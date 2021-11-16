@@ -210,12 +210,19 @@ const SignalProjectTable = () => {
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry =>
-        entry.construction_start
-          ? new Date(entry.construction_start).toLocaleDateString("en-US", {
-              timeZone: "UTC",
-            })
-          : "",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={
+            entry.construction_start
+              ? new Date(entry.construction_start).toLocaleDateString("en-US", {
+                  timeZone: "UTC",
+                })
+              : ""
+          }
+          tab="timeline"
+        />
+      ),
     },
     {
       title: "Last modified",
