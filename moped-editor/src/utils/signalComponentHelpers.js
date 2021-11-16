@@ -2,6 +2,13 @@ import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { TextField } from "@material-ui/core";
 
+
+/*
+ * Socrata Endpoint
+ */
+export const SOCRATA_ENDPOINT =
+  "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
+
 /*
 / MUI autocomplete filter function which limits number of options rendered in select menu
 */
