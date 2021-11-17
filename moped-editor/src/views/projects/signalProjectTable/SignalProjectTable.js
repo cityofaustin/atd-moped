@@ -71,7 +71,7 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
-        let signal = feature?.location?.properties?.signal_id;
+        const signal = feature?.location?.properties?.signal_id;
         if (signal) {
           signal_ids.push({signal_id: signal, knack_id: feature.location.properties.id});
         }

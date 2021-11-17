@@ -6,7 +6,7 @@ const RenderSignalLink = ({ signals }) => {
     <span>
       {signals.map((signal, index) => (
         <>
-          {signal.knack_id ? (
+          {signal?.knack_id ? (
             <Link
               href={`https://atd.knack.com/amd#projects/signal-details/${signal.knack_id}`}
               target="_blank"
