@@ -16,9 +16,6 @@ const KnackSync = React.forwardRef(
       project,
       closeHandler,
       snackbarHandler,
-      sceneNumber = 514,
-      viewNumber = 3047,
-      knackApplicationId = "6167314778435d001ea3e7cb",
     },
     ref
   ) => {
@@ -30,9 +27,9 @@ const KnackSync = React.forwardRef(
     const buildUrl = () => {
       let url =
         "https://api.knack.com/v1/pages/scene_" +
-        sceneNumber +
+        process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE +
         "/views/view_" +
-        viewNumber +
+        process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW +
         "/records";
       if (project.moped_project[0].knack_project_id) {
         // existing record
@@ -60,7 +57,7 @@ const KnackSync = React.forwardRef(
     const buildHeaders = () => {
       let headers = {
         "Content-Type": "application/json",
-        "X-Knack-Application-Id": knackApplicationId,
+        "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
         "X-Knack-REST-API-Key": "knack",
       };
       return headers;
