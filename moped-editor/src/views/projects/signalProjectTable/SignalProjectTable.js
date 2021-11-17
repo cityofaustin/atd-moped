@@ -20,6 +20,7 @@ import {
 import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
+import RenderSignalLink from "./RenderSignalLink";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -73,7 +74,10 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
-        signal_ids.push(feature?.location?.properties?.signal_id);
+        const signal = feature?.location?.properties?.signal_id;
+        if (signal) {
+          signal_ids.push({signal_id: signal, knack_id: feature.location.properties.id});
+        }
       });
     }
     project["signal_ids"] = signal_ids;
@@ -174,7 +178,7 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
-      render: entry => entry.signal_ids.join(", "),
+      render: entry => <RenderSignalLink signals={entry.signal_ids} />
     },
     {
       title: "Project types",

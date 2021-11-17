@@ -22,7 +22,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_features {
+      moped_proj_features(where: {status_id: {_eq: 1}}) {
         feature_id
         location
       }
