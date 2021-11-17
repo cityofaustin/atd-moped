@@ -28,6 +28,9 @@ const useStyles = makeStyles({
       padding: "14px",
     },
   },
+  tableTypography: {
+    fontSize: "14px",
+  },
 });
 
 const SignalProjectTable = () => {
@@ -92,14 +95,24 @@ const SignalProjectTable = () => {
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
     project["construction_start"] = null;
+    project["completion_date"] = null;
     project["current_phase"] = "";
     if (project?.moped_proj_phases?.length) {
+      // check for construction phase
       const constructionPhase = project.moped_proj_phases.find(
         p => p.phase_name === "construction"
       );
       if (constructionPhase) {
         project["construction_start"] = constructionPhase.phase_start;
       }
+      // check for completion phase
+      const completionPhase = project.moped_proj_phases.find(
+        p => p.phase_name === "complete"
+      );
+      if (completionPhase) {
+        project["completion_date"] = completionPhase.phase_end;
+      }
+      // get current phase
       const currentPhase = project.moped_proj_phases.find(
         p => p.is_current_phase
       );
@@ -118,6 +131,26 @@ const SignalProjectTable = () => {
       });
     }
     project["funding_sources"] = funding_sources;
+
+    // project personnel
+    const designers = [];
+    const inspectors = [];
+    if (project?.moped_proj_personnel?.length) {
+      project.moped_proj_personnel.forEach(personnel => {
+        if (personnel?.role_id === 8) {
+          designers.push(
+            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+          );
+        }
+        if (personnel?.role_id === 12) {
+          inspectors.push(
+            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+          );
+        }
+      });
+    }
+    project["project_designer"] = designers.join(", ");
+    project["project_inspector"] = inspectors.join(", ");
   });
 
   /**
@@ -201,9 +234,37 @@ const SignalProjectTable = () => {
       title: "Project sponsor",
       field: "project_sponsor",
       render: entry => (
-        <Typography>{entry?.project_sponsor?.entity_name}</Typography>
+        <Typography className={classes.tableTypography}>
+          {entry?.project_sponsor?.entity_name}
+        </Typography>
       ),
       customEdit: "projectSponsor",
+    },
+    {
+      title: "Designer",
+      field: "project_designer",
+      cellStyle: typographyStyle,
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_designer}
+          tab="team"
+        />
+      ),
+    },
+    {
+      title: "Inspector",
+      field: "project_inspector",
+      cellStyle: typographyStyle,
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_inspector}
+          tab="team"
+        />
+      ),
     },
     {
       title: "Targeted construction start",
@@ -216,6 +277,25 @@ const SignalProjectTable = () => {
           value={
             entry.construction_start
               ? new Date(entry.construction_start).toLocaleDateString("en-US", {
+                  timeZone: "UTC",
+                })
+              : ""
+          }
+          tab="timeline"
+        />
+      ),
+    },
+    {
+      title: "Project completion date",
+      field: "completion_date",
+      editable: "never",
+      cellStyle: typographyStyle,
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={
+            entry.completion_date
+              ? new Date(entry.completion_date).toLocaleDateString("en-US", {
                   timeZone: "UTC",
                 })
               : ""
