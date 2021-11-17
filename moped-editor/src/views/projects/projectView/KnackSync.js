@@ -43,25 +43,17 @@ const KnackSync = React.forwardRef(
      * @returns string
      */
     const getHttpMethod = () => {
-      const method = "POST";
-      if (project.knack_project_id) {
-        method = "PUT";
-      }
-      return method;
+      return (project?.knack_project_id ?? false) ? "PUT" : "POST";
     };
 
     /**
-     * Function to build up the headers which need to be sent as part of the a Knack API call
-     * @returns object
+     * Object to hold headers which need to be sent as part of the a Knack API call
      */
-    const buildHeaders = () => {
-      const headers = {
+    const buildHeaders = {
         "Content-Type": "application/json",
         "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
         "X-Knack-REST-API-Key": "knack",
       };
-      return headers;
-    };
 
     /**
      * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
@@ -99,7 +91,7 @@ const KnackSync = React.forwardRef(
         // updating knack record
         fetch(buildUrl(), {
           method: "GET",
-          headers: buildHeaders(),
+          headers: buildHeaders,
         })
           .then(response => response.json())
           .then(
@@ -116,7 +108,7 @@ const KnackSync = React.forwardRef(
                 project.currentKnackState = result;
                 return fetch(buildUrl(), {
                   method: getHttpMethod(),
-                  headers: buildHeaders(),
+                  headers: buildHeaders,
                   body: buildBody(),
                 });
               }
@@ -160,7 +152,7 @@ const KnackSync = React.forwardRef(
         project.currentKnackState = {};
         fetch(buildUrl(), {
           method: getHttpMethod(),
-          headers: buildHeaders(),
+          headers: buildHeaders,
           body: buildBody(),
         })
           .then(response => response.json())
