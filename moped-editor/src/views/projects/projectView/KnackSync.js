@@ -43,7 +43,7 @@ const KnackSync = React.forwardRef(
      * @returns string
      */
     const getHttpMethod = () => {
-      let method = "POST";
+      const method = "POST";
       if (project.knack_project_id) {
         method = "PUT";
       }
@@ -55,7 +55,7 @@ const KnackSync = React.forwardRef(
      * @returns object
      */
     const buildHeaders = () => {
-      let headers = {
+      const headers = {
         "Content-Type": "application/json",
         "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
         "X-Knack-REST-API-Key": "knack",
@@ -71,7 +71,7 @@ const KnackSync = React.forwardRef(
     const buildBody = () => {
       let body = {};
 
-      let field_map = {
+      const field_map = {
         field_3998: "project_id",
         field_3999: "project_name",
         field_4000: "current_status",
