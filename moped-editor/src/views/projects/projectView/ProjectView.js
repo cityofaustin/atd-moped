@@ -405,7 +405,7 @@ const ProjectView = () => {
                         </MenuItem>
 
                         <KnackSync
-                          project={data}
+                          project={data.moped_project[0]}
                           closeHandler={handleMenuClose}
                           snackbarHandler={handleSnackbarOpen}
                         />

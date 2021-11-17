@@ -31,9 +31,9 @@ const KnackSync = React.forwardRef(
         "/views/view_" +
         process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW +
         "/records";
-      if (project.moped_project[0].knack_project_id) {
+      if (project.knack_project_id) {
         // existing record
-        url = url + "/" + project.moped_project[0].knack_project_id;
+        url = url + "/" + project.knack_project_id;
       }
       return url;
     };
@@ -44,7 +44,7 @@ const KnackSync = React.forwardRef(
      */
     const getHttpMethod = () => {
       let method = "POST";
-      if (project.moped_project[0].knack_project_id) {
+      if (project.knack_project_id) {
         method = "PUT";
       }
       return method;
@@ -79,10 +79,10 @@ const KnackSync = React.forwardRef(
 
       Object.keys(field_map).forEach(element => {
         if (
-          project.moped_project[0].currentKnackState[element] !==
-          project.moped_project[0][field_map[element]]
+          project.currentKnackState[element] !==
+          project[field_map[element]]
         ) {
-          body[element] = project.moped_project[0][field_map[element]];
+          body[element] = project[field_map[element]];
         }
       });
 
@@ -95,7 +95,7 @@ const KnackSync = React.forwardRef(
      * Function to hanlde the actual mechanics of syncronizing the data on hand to the Knack API endpoint.
      */
     const handleSync = () => {
-      if (project.moped_project[0].knack_project_id) {
+      if (project.knack_project_id) {
         // updating knack record
         fetch(buildUrl(), {
           method: "GET",
@@ -113,7 +113,7 @@ const KnackSync = React.forwardRef(
                 return Promise.reject(result);
               } else {
                 // get-state success
-                project.moped_project[0].currentKnackState = result;
+                project.currentKnackState = result;
                 return fetch(buildUrl(), {
                   method: getHttpMethod(),
                   headers: buildHeaders(),
@@ -157,7 +157,7 @@ const KnackSync = React.forwardRef(
           );
       } else {
         // creating new knack record
-        project.moped_project[0].currentKnackState = {};
+        project.currentKnackState = {};
         fetch(buildUrl(), {
           method: getHttpMethod(),
           headers: buildHeaders(),
@@ -190,7 +190,7 @@ const KnackSync = React.forwardRef(
           .then(knack_record => {
             mutateProjectKnackId({
               variables: {
-                project_id: project.moped_project[0].project_id,
+                project_id: project.project_id,
                 knack_id: knack_record.record.id,
               },
             });
