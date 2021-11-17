@@ -114,11 +114,11 @@ function useQueryParams() {
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Map", Component: ProjectComponents, param: "map" },
-  { label: "Funding", Component: ProjectFunding, param: "funding" },
-  { label: "Files", Component: ProjectFiles, param: "files" },
-  { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
+  { label: "Team", Component: ProjectTeam, param: "team" },
+  { label: "Funding", Component: ProjectFunding, param: "funding" },
   { label: "Comments", Component: ProjectComments, param: "comments" },
+  { label: "Files", Component: ProjectFiles, param: "files" },
   {
     label: "Activity Log",
     Component: ProjectActivityLog,
