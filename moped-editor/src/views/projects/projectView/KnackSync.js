@@ -111,7 +111,7 @@ const KnackSync = React.forwardRef(
                 // knack error
                 snackbarHandler({
                   severity: "warning",
-                  message: "Success: Data Tracker sync failed.",
+                  message: "Error: Data Tracker sync failed.",
                 });
                 return Promise.reject(result);
               } else {
@@ -126,6 +126,10 @@ const KnackSync = React.forwardRef(
             },
             error => {
               // get-state fetch error
+              snackbarHandler({
+                severity: "warning",
+                message: "Error: Data Tracker sync failed.",
+              });
               return Promise.reject(error);
             }
           )
@@ -136,13 +140,13 @@ const KnackSync = React.forwardRef(
                 // knack error
                 snackbarHandler({
                   severity: "warning",
-                  message: "Success: Data Tracker sync failed.",
+                  message: "Error: Data Tracker sync failed.",
                 });
               } else {
                 // successful update
                 snackbarHandler({
                   severity: "success",
-                  message: "Success: Project data pushed to Data Tracker",
+                  message: "Success: Project data pushed to Data Tracker.",
                 });
               }
             },
@@ -150,7 +154,7 @@ const KnackSync = React.forwardRef(
               // fetch error
               snackbarHandler({
                 severity: "warning",
-                message: "Success: Data Tracker sync failed.",
+                message: "Error: Data Tracker sync failed.",
               });
             }
           );
@@ -169,7 +173,7 @@ const KnackSync = React.forwardRef(
                 // knack error
                 snackbarHandler({
                   severity: "warning",
-                  message: "Success: Data Tracker sync failed.",
+                  message: "Error: Data Tracker sync failed.",
                 });
                 return Promise.reject(result);
               } else {
@@ -181,7 +185,7 @@ const KnackSync = React.forwardRef(
               // fetch error
               snackbarHandler({
                 severity: "warning",
-                message: "Success: Data Tracker sync failed.",
+                message: "Error: Data Tracker sync failed.",
               });
               return Promise.reject(error);
             }
@@ -195,7 +199,7 @@ const KnackSync = React.forwardRef(
             });
             snackbarHandler({
               severity: "success",
-              message: "Success: Project data pushed to Data Tracker",
+              message: "Success: Project data pushed to Data Tracker.",
             });
           });
       }
