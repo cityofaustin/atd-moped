@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Container, Typography, makeStyles } from "@material-ui/core";
 import Page from "src/components/Page";
+import NavigationSearchInput from "../../layouts/DashboardLayout/NavBar/NavigationSearchInput";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -12,8 +13,12 @@ const useStyles = makeStyles(theme => ({
     marginTop: 50,
     display: "inline-block",
     maxWidth: "100%",
-    width: 560,
+    width: 300,
   },
+  subheading: {
+    marginTop: 50,
+    marginBottom: 50,
+  }
 }));
 
 const NotFoundView = () => {
@@ -28,20 +33,20 @@ const NotFoundView = () => {
         justifyContent="center"
       >
         <Container maxWidth="md">
-          <Typography align="center" color="textPrimary" variant="h1">
-            404: The page you are looking for isn’t here
-          </Typography>
-          <Typography align="center" color="textPrimary" variant="subtitle2">
-            You either tried some shady route or you came here by mistake.
-            Whichever it is, try using the navigation
+          <Typography align="center" color="textPrimary" variant="h2">
+            404: The page you are looking for doesn't exist.
           </Typography>
           <Box textAlign="center">
             <img
               alt="Under development"
               className={classes.image}
-              src={`${process.env.PUBLIC_URL}/static/images/undraw_page_not_found_su7k.svg`}
+              src={`${process.env.PUBLIC_URL}/static/images/moped-flat.svg`}
             />
           </Box>
+          <Typography align="center" color="textPrimary" variant="h1" className={classes.subheading}>
+            Let's get you back on the road. What are you looking for?
+          </Typography>
+          <NavigationSearchInput input404Class={true}/>
         </Container>
       </Box>
     </Page>

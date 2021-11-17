@@ -35,7 +35,7 @@ import {
 import { Alert } from "@material-ui/lab";
 
 import Page from "src/components/Page";
-import ProjectSummary from "./ProjectSummary";
+import ProjectSummary from "./ProjectSummary/ProjectSummary";
 import ProjectComponents from "./ProjectComponents";
 import ProjectFunding from "./ProjectFunding";
 import ProjectTeam from "./ProjectTeam";
@@ -280,9 +280,9 @@ const ProjectView = () => {
     setDialogContent(
       "Are you sure?",
       <span>
-        Deleting this project will make it inaccessible to Moped users and only
-        available to administrators. Users may request a deleted project be
-        restored by{" "}
+        Cancelling this project will make it inaccessible to Moped users and
+        only available to administrators. Users may request a cancelled project
+        be restored by{" "}
         <Link
           href={"https://atd.knack.com/dts#new-service-request/"}
           target="new"
@@ -292,8 +292,8 @@ const ProjectView = () => {
         .
       </span>,
       <>
-        <Button onClick={handleDelete}>Delete</Button>
-        <Button onClick={handleDialogClose}>Cancel</Button>
+        <Button onClick={handleDelete}>Cancel</Button>
+        <Button onClick={handleDialogClose}>Do not cancel</Button>
       </>
     );
     handleDialogOpen();
@@ -391,21 +391,13 @@ const ProjectView = () => {
                           horizontal: "center",
                         }}
                       >
-                        <MenuItem
-                          onClick={handleMenuClose}
-                          selected={false}
-                          disabled={true}
-                        >
+                        <MenuItem onClick={handleMenuClose} disabled={true}>
                           <ListItemIcon>
                             <Icon fontSize="small">share</Icon>
                           </ListItemIcon>
                           <ListItemText primary="Share" />
                         </MenuItem>
-                        <MenuItem
-                          onClick={handleMenuClose}
-                          selected={false}
-                          disabled={true}
-                        >
+                        <MenuItem onClick={handleMenuClose} disabled={true}>
                           <ListItemIcon>
                             <Icon fontSize="small">favorite</Icon>
                           </ListItemIcon>
@@ -418,13 +410,22 @@ const ProjectView = () => {
                           snackbarHandler={handleSnackbarOpen}
                         />
 
-                        <MenuItem onClick={handleRenameClick} selected={false}>
+                        <MenuItem onClick={handleRenameClick}>
                           <ListItemIcon>
                             <Icon fontSize="small">create</Icon>
                           </ListItemIcon>
                           <ListItemText primary="Rename" />
                         </MenuItem>
-
+                        <MenuItem
+                          onClick={handleMenuClose}
+                          selected={false}
+                          disabled={true}
+                        >
+                          <ListItemIcon>
+                            <Icon fontSize="small">block</Icon>
+                          </ListItemIcon>
+                          <ListItemText primary="Place on hold" />
+                        </MenuItem>
                         <MenuItem
                           onClick={handleDeleteClick}
                           className={classes.menuDangerItem}
@@ -434,7 +435,7 @@ const ProjectView = () => {
                             <Icon fontSize="small">delete</Icon>
                           </ListItemIcon>
                           <ListItemText
-                            primary="Delete"
+                            primary="Cancel"
                             className={classes.menuDangerText}
                           />
                         </MenuItem>

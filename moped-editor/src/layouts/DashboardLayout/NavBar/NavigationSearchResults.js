@@ -49,7 +49,7 @@ const NavigationSearchResults = ({
     <List className={classes.padding}>
       {firstResults.map(result => (
         <ListItemLink
-          to={`projects/${result.project_id}`}
+          to={`/moped/projects/${result.project_id}`}
           onClick={handleDropdownClose}
         >
           <ListItemText primary={result.project_name} />
@@ -59,7 +59,7 @@ const NavigationSearchResults = ({
         <>
           <Divider />
           <ListItemLink
-            to={`projects/`}
+            to={`/moped/projects/`}
             // send searchTerm in location state
             state={{ searchTerm: searchTerm }}
             onClick={handleDropdownClose}
