@@ -134,7 +134,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               data={data}
               classes={classes}
             />
-            <Grid container spacing={0} xs={12}>
+            <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryCurrentStatus
                   projectId={projectId}
@@ -154,7 +154,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={0} xs={12}>
+            <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
                   projectId={projectId}
@@ -174,7 +174,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-            <Grid container spacing={0} xs={12}>
+            <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectWebsite
                   projectId={projectId}
