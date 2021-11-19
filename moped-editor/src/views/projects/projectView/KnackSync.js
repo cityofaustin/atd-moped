@@ -27,6 +27,12 @@ const buildUrl = (scene, view, knackProjectId) => {
  */
 const KnackSync = React.forwardRef(
   ({ project, closeHandler, snackbarHandler }, ref) => {
+    let knackEndpointUrl = buildUrl(
+      process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
+      process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
+      project.knack_project_id
+    );
+
     /**
      * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
      * @returns string
@@ -77,17 +83,10 @@ const KnackSync = React.forwardRef(
     const handleSync = () => {
       if (project.knack_project_id) {
         // updating knack record
-        fetch(
-          buildUrl(
-            process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
-            process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-            project.knack_project_id
-          ),
-          {
-            method: "GET",
-            headers: buildHeaders,
-          }
-        )
+        fetch(knackEndpointUrl, {
+          method: "GET",
+          headers: buildHeaders,
+        })
           .then(response => response.json())
           .then(
             result => {
@@ -101,18 +100,11 @@ const KnackSync = React.forwardRef(
               } else {
                 // get-state success
                 project.currentKnackState = result;
-                return fetch(
-                  buildUrl(
-                    process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
-                    process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-                    project.knack_project_id
-                  ),
-                  {
-                    method: getHttpMethod(),
-                    headers: buildHeaders,
-                    body: buildBody(),
-                  }
-                );
+                return fetch(knackEndpointUrl, {
+                  method: getHttpMethod(),
+                  headers: buildHeaders,
+                  body: buildBody(),
+                });
               }
             },
             error => {
@@ -152,18 +144,11 @@ const KnackSync = React.forwardRef(
       } else {
         // creating new knack record
         project.currentKnackState = {};
-        fetch(
-          buildUrl(
-            process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
-            process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-            project.knack_project_id
-          ),
-          {
-            method: getHttpMethod(),
-            headers: buildHeaders,
-            body: buildBody(),
-          }
-        )
+        fetch(knackEndpointUrl, {
+          method: getHttpMethod(),
+          headers: buildHeaders,
+          body: buildBody(),
+        })
           .then(response => response.json())
           .then(
             result => {
