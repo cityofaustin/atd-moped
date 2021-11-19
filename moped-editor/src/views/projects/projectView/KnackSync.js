@@ -37,12 +37,14 @@ const getHttpMethod = knackProjectId => {
  * @constructor
  */
 const KnackSync = React.forwardRef(
-  ({ project, closeHandler, snackbarHandler }, ref) => {
+  ({ project, closeHandler, snackbarHandler, refetch }, ref) => {
     let knackEndpointUrl = buildUrl(
       process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
       process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
       project.knack_project_id
     );
+
+    console.log("Project: ", project);
 
     let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
@@ -145,7 +147,8 @@ const KnackSync = React.forwardRef(
                 message: "Error: Data Tracker sync failed.",
               });
             }
-          );
+          )
+          .then(refetch);
       } else {
         // creating new knack record
         project.currentKnackState = {};
@@ -189,7 +192,8 @@ const KnackSync = React.forwardRef(
               severity: "success",
               message: "Success: Project data pushed to Data Tracker.",
             });
-          });
+          })
+          .then(refetch);
       }
 
       closeHandler();

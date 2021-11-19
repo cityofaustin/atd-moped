@@ -408,6 +408,7 @@ const ProjectView = () => {
                           project={data.moped_project[0]}
                           closeHandler={handleMenuClose}
                           snackbarHandler={handleSnackbarOpen}
+                          refetch={refetch}
                         />
 
                         <MenuItem onClick={handleRenameClick}>
