@@ -23,6 +23,7 @@ import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
+import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -185,7 +186,13 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                {null}
+               <ProjectSummaryProjectTypes
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
               </Grid>
             </Grid>
           </Grid>
