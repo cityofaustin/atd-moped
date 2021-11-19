@@ -20,6 +20,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_name
         is_current_phase
         phase_start
+        phase_end
       }
       moped_proj_features(where: {status_id: {_eq: 1}}) {
         feature_id
@@ -33,6 +34,13 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       moped_project_types {
         moped_type {
           type_name
+        }
+      }
+      moped_proj_personnel(where: {status_id: {_eq: 1}}) {
+        role_id
+        moped_user {
+          first_name
+          last_name
         }
       }
     }
