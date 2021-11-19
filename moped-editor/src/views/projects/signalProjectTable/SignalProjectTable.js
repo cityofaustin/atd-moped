@@ -76,7 +76,10 @@ const SignalProjectTable = () => {
       project.moped_proj_features.forEach(feature => {
         const signal = feature?.location?.properties?.signal_id;
         if (signal) {
-          signal_ids.push({signal_id: signal, knack_id: feature.location.properties.id});
+          signal_ids.push({
+            signal_id: signal,
+            knack_id: feature.location.properties.id,
+          });
         }
       });
     }
@@ -139,14 +142,17 @@ const SignalProjectTable = () => {
     // project personnel
     const designers = [];
     const inspectors = [];
+    // role_ids come from moped_project_roles. 8 is Designer and 12 is Inspector
+    const isDesigner = personnel => personnel?.role_id === 8;
+    const isInspector = personnel => personnel?.role_id === 12;
     if (project?.moped_proj_personnel?.length) {
       project.moped_proj_personnel.forEach(personnel => {
-        if (personnel?.role_id === 8) {
+        if (isDesigner(personnel)) {
           designers.push(
             `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
           );
         }
-        if (personnel?.role_id === 12) {
+        if (isInspector(personnel)) {
           inspectors.push(
             `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
           );
@@ -178,7 +184,7 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
-      render: entry => <RenderSignalLink signals={entry.signal_ids} />
+      render: entry => <RenderSignalLink signals={entry.signal_ids} />,
     },
     {
       title: "Project types",
