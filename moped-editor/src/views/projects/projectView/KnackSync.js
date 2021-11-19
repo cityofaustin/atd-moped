@@ -16,7 +16,7 @@ const buildUrl = (scene, view, knackProjectId) => {
     // existing record
     url = url + "/" + knackProjectId;
   }
-  console.log('Knack URL: ', url);
+  console.log("Knack URL: ", url);
   return url;
 };
 
@@ -26,31 +26,23 @@ const buildUrl = (scene, view, knackProjectId) => {
  * @constructor
  */
 const KnackSync = React.forwardRef(
-  (
-    {
-      project,
-      closeHandler,
-      snackbarHandler,
-    },
-    ref
-  ) => {
-
+  ({ project, closeHandler, snackbarHandler }, ref) => {
     /**
      * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
      * @returns string
      */
     const getHttpMethod = () => {
-      return (project?.knack_project_id ?? false) ? "PUT" : "POST";
+      return project?.knack_project_id ?? false ? "PUT" : "POST";
     };
 
     /**
      * Object to hold headers which need to be sent as part of the a Knack API call
      */
     const buildHeaders = {
-        "Content-Type": "application/json",
-        "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
-        "X-Knack-REST-API-Key": "knack",
-      };
+      "Content-Type": "application/json",
+      "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
+      "X-Knack-REST-API-Key": "knack",
+    };
 
     /**
      * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
@@ -68,8 +60,7 @@ const KnackSync = React.forwardRef(
 
       Object.keys(field_map).forEach(element => {
         if (
-          project.currentKnackState[element] !==
-          project[field_map[element]]
+          project.currentKnackState[element] !== project[field_map[element]]
         ) {
           body[element] = project[field_map[element]];
         }
@@ -86,14 +77,17 @@ const KnackSync = React.forwardRef(
     const handleSync = () => {
       if (project.knack_project_id) {
         // updating knack record
-        fetch(buildUrl(
-          process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE, 
-          process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-          project.knack_project_id,
-          ), {
-          method: "GET",
-          headers: buildHeaders,
-        })
+        fetch(
+          buildUrl(
+            process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
+            process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
+            project.knack_project_id
+          ),
+          {
+            method: "GET",
+            headers: buildHeaders,
+          }
+        )
           .then(response => response.json())
           .then(
             result => {
@@ -107,15 +101,18 @@ const KnackSync = React.forwardRef(
               } else {
                 // get-state success
                 project.currentKnackState = result;
-                return fetch(buildUrl(
-                  process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE, 
-                  process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-                  project.knack_project_id,
-                ), {
-                  method: getHttpMethod(),
-                  headers: buildHeaders,
-                  body: buildBody(),
-                });
+                return fetch(
+                  buildUrl(
+                    process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
+                    process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
+                    project.knack_project_id
+                  ),
+                  {
+                    method: getHttpMethod(),
+                    headers: buildHeaders,
+                    body: buildBody(),
+                  }
+                );
               }
             },
             error => {
@@ -155,15 +152,18 @@ const KnackSync = React.forwardRef(
       } else {
         // creating new knack record
         project.currentKnackState = {};
-        fetch(buildUrl(
-            process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE, 
+        fetch(
+          buildUrl(
+            process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
             process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-            project.knack_project_id,
-          ) , {
-          method: getHttpMethod(),
-          headers: buildHeaders,
-          body: buildBody(),
-        })
+            project.knack_project_id
+          ),
+          {
+            method: getHttpMethod(),
+            headers: buildHeaders,
+            body: buildBody(),
+          }
+        )
           .then(response => response.json())
           .then(
             result => {
