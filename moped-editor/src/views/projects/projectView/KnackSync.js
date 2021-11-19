@@ -25,12 +25,7 @@ const KnackSync = React.forwardRef(
      * @returns string
      */
     const buildUrl = () => {
-      let url =
-        "https://api.knack.com/v1/pages/scene_" +
-        process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE +
-        "/views/view_" +
-        process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW +
-        "/records";
+      let url = `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW}/records`;
       if (project.knack_project_id) {
         // existing record
         url = url + "/" + project.knack_project_id;
