@@ -16,8 +16,19 @@ const buildUrl = (scene, view, knackProjectId) => {
     // existing record
     url = url + "/" + knackProjectId;
   }
-  console.log("Knack URL: ", url);
   return url;
+};
+
+/**
+ * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
+ * @returns string
+ */
+const getHttpMethod = knackProjectId => {
+  //return project?.knack_project_id ?? false ? "PUT" : "POST";
+  let method = knackProjectId ?? false ? "PUT" : "POST";
+  console.log("knackProjectId: ", knackProjectId);
+  console.log("HTTP Method: ", method);
+  return knackProjectId ?? false ? "PUT" : "POST";
 };
 
 /**
@@ -33,13 +44,7 @@ const KnackSync = React.forwardRef(
       project.knack_project_id
     );
 
-    /**
-     * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
-     * @returns string
-     */
-    const getHttpMethod = () => {
-      return project?.knack_project_id ?? false ? "PUT" : "POST";
-    };
+    let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
     /**
      * Object to hold headers which need to be sent as part of the a Knack API call
@@ -101,7 +106,7 @@ const KnackSync = React.forwardRef(
                 // get-state success
                 project.currentKnackState = result;
                 return fetch(knackEndpointUrl, {
-                  method: getHttpMethod(),
+                  method: knackHttpMethod,
                   headers: buildHeaders,
                   body: buildBody(),
                 });
@@ -145,7 +150,7 @@ const KnackSync = React.forwardRef(
         // creating new knack record
         project.currentKnackState = {};
         fetch(knackEndpointUrl, {
-          method: getHttpMethod(),
+          method: knackHttpMethod,
           headers: buildHeaders,
           body: buildBody(),
         })
