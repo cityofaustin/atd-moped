@@ -187,7 +187,6 @@ const ProjectView = () => {
     let snackbarStateCopy = {...snackbarState};
     snackbarStateCopy.open = true;
     setSnackbarState(snackbarStateCopy);
-    setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
   };
 
   /**
@@ -512,6 +511,7 @@ const ProjectView = () => {
         open={snackbarState.open}
         onClose={handleSnackbarClose}
         key={"datatable-snackbar"}
+        autoHideDuration={5000}
       >
         <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
           {snackbarState.message}
