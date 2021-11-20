@@ -258,7 +258,6 @@ function __download_s3() {
 #
 function __hasura_server_ready() {
   HASURA_SERVER_STATUS=$(curl --silent http://localhost:8080/v1/version)
-  #echo ${HASURA_SERVER_STATUS}
   [[ "${HASURA_SERVER_STATUS}" =~ "version" ]] && echo "TRUE" || echo "FALSE";
 }
 
