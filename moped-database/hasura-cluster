@@ -266,8 +266,6 @@ function __hasura_server_ready() {
 # if not, it waits 1 second and tries again (up to 120 seconds)
 #
 function __wait_server_ready() {
-  # increased up from 60; due to the qemu emulation layer, the start-up
-  # time is increased on arm64, but once running, performance is nominal.
   INITIALIZATION_TIMEOUT_LIMIT=120
   INITIALIZATION_COUNT=1
   while [ "$(__hasura_server_ready)" = "FALSE" ]; do
