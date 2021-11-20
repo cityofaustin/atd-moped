@@ -24,7 +24,7 @@ services:
             - POSTGRES_DB=moped
 
     hasura:
-        image: hasura/graphql-engine:v1.3.2
+        image: fedormelexin/graphql-engine-arm64:v1.3.3.cli-migrations-v3
         restart: always
         depends_on:
             - moped-pgsql
