@@ -12,6 +12,16 @@ HIDE_HASURA_KIT_BANNER="FALSE";
 HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
 HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 
+
+#
+# Detect platform
+#
+
+function __get_platform() {
+  PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
+  echo "Detected platform: ${PLATFORM}";
+}
+
 #
 # Get timestamp
 #
@@ -257,6 +267,8 @@ function __hasura_server_ready() {
 # if not, it waits 1 second and tries again (up to 120 seconds)
 #
 function __wait_server_ready() {
+  # increased up from 60; due to the qemu emulation layer, the start-up
+  # time is increased on arm64, but once running, performance is nominal.
   INITIALIZATION_TIMEOUT_LIMIT=120
   INITIALIZATION_COUNT=1
   while [ "$(__hasura_server_ready)" = "FALSE" ]; do
@@ -494,9 +506,10 @@ function restore() {
 # Starts the cluster and does NOT run migrations...
 #
 function start_only() {
+  __get_platform;
   START_MODE=$1;
   if [[ "${START_MODE}" = "" ]]; then
-    docker-compose -f docker-compose.yml up -d;
+    docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml up -d;
   else
     docker-compose -f "${START_MODE}" up -d;
   fi;
@@ -578,7 +591,8 @@ function configure() {
 # Stops the cluster and removes any created volumes
 #
 function stop() {
-  docker-compose -f docker-compose.yml down --volumes --remove-orphans;
+  __get_platform;
+  docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml down --volumes --remove-orphans;
 }
 
 #
