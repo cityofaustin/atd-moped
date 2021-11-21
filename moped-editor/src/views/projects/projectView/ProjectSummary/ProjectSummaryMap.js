@@ -3,7 +3,7 @@ import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import { stopReportingRuntimeErrors } from "react-error-overlay";
+//import { stopReportingRuntimeErrors } from "react-error-overlay";
 
 import {
   createSummaryMapLayers,
@@ -60,7 +60,15 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
    * Let's throw an error intentionally if there are no features for a project.
    */
   if (featureCount < 1) {
-    stopReportingRuntimeErrors();
+    // Does this have implications for the rest of the app, or is this directive contained
+    // in this branch of the component hierarchy?
+    // stopReportingRuntimeErrors();
+
+    // Invoking this component without any features to render should produce an error.
+    // However, we should not rely on the Error handling to do the test to see if we 
+    // want to render the map, which should be handled up a level in the component tree.
+    // This is for when we render this component in error, not in the normal course
+    // of the application.
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 
