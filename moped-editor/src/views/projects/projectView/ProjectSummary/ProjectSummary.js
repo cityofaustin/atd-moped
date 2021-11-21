@@ -69,7 +69,7 @@ const useStyles = makeStyles(theme => ({
  * Project Summary Component
  * @param {boolean} loading - True if it is loading
  * @param {Object} error - Error content if provided
- * @param {Object} data - THe query data
+ * @param {Object} data - The query data
  * @param {function} refetch - A function to reload the data
  * @return {JSX.Element}
  * @constructor
