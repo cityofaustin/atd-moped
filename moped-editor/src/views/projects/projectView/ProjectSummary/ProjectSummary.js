@@ -24,7 +24,7 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 
-import { countFeatures } from "../../../../utils/mapHelpers"
+import { countFeatures } from "../../../../utils/mapHelpers";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -105,20 +105,24 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     projectFeatureRecords
   );
 
-  if (projectFeatureRecords.length === 0 && !makeSureRefresh) 
+  if (projectFeatureRecords.length === 0 && !makeSureRefresh)
     setMakeSureRefresh(true);
 
   const renderMap = () => {
     if (countFeatures(projectFeatureCollection) < 1) {
-    return <ProjectSummaryMapFallback
-        projectId={projectId}
-        refetchProjectDetails={refetch}
-        mapData={projectFeatureCollection}
-      /> 
+      return (
+        <ProjectSummaryMapFallback
+          projectId={projectId}
+          refetchProjectDetails={refetch}
+          mapData={projectFeatureCollection}
+        />
+      );
     } else {
-      return <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+      return (
+        <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+      );
     }
-  }
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
