@@ -36,7 +36,7 @@ const DashboardLayout = () => {
   const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
 
-  console.log("user", user);
+  console.debug("user", user);
 
   return user ? (
     <div className={classes.root}>
