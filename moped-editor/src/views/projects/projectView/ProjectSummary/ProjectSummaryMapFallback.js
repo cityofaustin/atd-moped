@@ -52,8 +52,8 @@ const ProjectSummaryMapFallback = ({ error, mapData }) => {
   /**
    * Log whatever error there may be
    */
-  console.error("MapDataError: ", error);
-  console.error("MapData: ", mapData);
+  console.debug("MapDataError: ", error);
+  console.debug("MapData: ", mapData);
 
   return (
     <Box>
