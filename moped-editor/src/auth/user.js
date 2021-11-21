@@ -149,7 +149,9 @@ export const UserProvider = ({ children }) => {
      * @see https://github.com/aws-amplify/amplify-js
      */
 
-    Amplify.Logger.LOG_LEVEL = "DEBUG";
+    // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
+    // so we would need to turn this back to DEBUG if we're actively debugging authentication.
+    Amplify.Logger.LOG_LEVEL = "INFO";
 
     Auth.currentSession()
       .then(user => {
