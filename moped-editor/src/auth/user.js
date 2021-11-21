@@ -235,7 +235,7 @@ export const getRandomColor = () => {
 };
 
 // We also create a simple custom hook to read these values from. We want our React components
-// to know as little as possible on how everything is handled, so we are not only abtracting them from
+// to know as little as possible on how everything is handled, so we are not only abstracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = useContext(UserContext);
