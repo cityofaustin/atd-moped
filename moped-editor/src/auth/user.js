@@ -15,7 +15,7 @@ import config from "../config";
 import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
 
 // Create a context that will hold the values that we are going to expose to our components.
-// Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
+// Don't worry about the `null` value. It's gonna be *instantly* overridden by the component below
 export const UserContext = createContext(null);
 
 /**
