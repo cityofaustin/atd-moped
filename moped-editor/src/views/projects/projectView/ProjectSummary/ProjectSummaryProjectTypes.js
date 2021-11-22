@@ -47,13 +47,13 @@ const ProjectSummaryProjectTypes = ({
   // Original Types: array of moped_type objects
   const originalTypes = data?.moped_project[0]?.moped_project_types ?? [];
   // Original Types Ids: array of ids (ints)
-  const originalTypesIds = originalTypesA.map(t => t?.moped_type?.type_id);
-  console.log(originalTypesA, originalTypesIds)
+  const originalTypesIds = originalTypes.map(t => t?.moped_type?.type_id);
+  console.log(originalTypes, originalTypesIds)
   /**
    * Edit Mode and selected Types states
    */
   const [editMode, setEditMode] = useState(false);
-  const [selectedTypes, setSelectedTypes] = useState(originalTypes);
+  const [selectedTypes, setSelectedTypes] = useState(originalTypesIds);
 
   // The mutation and mutation function
   const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
@@ -67,28 +67,28 @@ const ProjectSummaryProjectTypes = ({
   };
 
   /**
-   * Resets the partners list back to the original state, closes edit mode
+   * Resets the types list back to the original state, closes edit mode
    */
   const handleProjectTypesClose = () => {
-    setSelectedTypes(originalTypes);
+    setSelectedTypes(originalTypesIds);
     setEditMode(false);
   };
 
   /**
-   * Saves the new project partner
+   * Saves the new project types
    */
   const handleProjectTypesSave = () => {
     // Retrieve types list (original list)
-    const oldTypesList = originalTypes;
-    // The new types list is just the selected entities ids
+    const oldTypesList = originalTypesIds
+    // Get selected types ids
     const newTypesList = selectedTypes;
     // Retrieves the ids of oldTypesList that are not present in newTypesList
     const typeIdsToDelete = oldTypesList.filter(
-      p => !newTypesList.includes(p)
+      t => !newTypesList.includes(t)
     );
     // Retrieves the ids of newTypesList that are not present in oldTypesList
     const typeIdsToInsert = newTypesList.filter(
-      p => !oldTypesList.includes(p)
+      t => !oldTypesList.includes(t)
     );
     // We need a final list of objects to insert
     const typeObjectsToInsert = typeIdsToInsert.map(id => ({
@@ -99,7 +99,8 @@ const ProjectSummaryProjectTypes = ({
     // We need a final list of primary keys to delete
     const typePksToDelete = originalTypes
       .filter(t => typeIdsToDelete.includes(t.type_id))
-      .map(t => t.proj_partner_id);
+
+    console.log(typePksToDelete);
 
     updateProjectTypes({
       variables: {
@@ -160,14 +161,16 @@ const ProjectSummaryProjectTypes = ({
               }}
               className={classes.fieldSelectItem}
             >
-              {typeList.map(type => (
+              {typeList.map(type => {
+                console.log("TYPE ", type)
+                return (
                 <MenuItem key={type.type_id} value={type.type_id}>
                   <Checkbox
                     checked={selectedTypes.includes(type.type_id)}
                   />
                   <ListItemText primary={type.type_name} />
                 </MenuItem>
-              ))}
+              )})}
             </Select>
             <Icon
               className={classes.editIconConfirm}
