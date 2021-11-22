@@ -60,15 +60,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
    * Let's throw an error intentionally if there are no features for a project.
    */
   if (featureCount < 1) {
-    // Does this have implications for the rest of the app, or is this directive contained
-    // in this branch of the component hierarchy?
-    // stopReportingRuntimeErrors();
-
-    // Invoking this component without any features to render should produce an error.
-    // However, we should not rely on the Error handling to do the test to see if we 
-    // want to render the map, which should be handled up a level in the component tree.
-    // This is for when we render this component in error, not in the normal course
-    // of the application.
+    // Throw an error if this component was called without features to render.
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 
