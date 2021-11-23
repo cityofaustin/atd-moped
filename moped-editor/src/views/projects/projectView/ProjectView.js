@@ -44,6 +44,7 @@ import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import ProjectStatusBadge from "./ProjectStatusBadge";
 
 const useStyles = makeStyles(theme => ({
   root: {
