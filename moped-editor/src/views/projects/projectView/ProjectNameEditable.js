@@ -222,7 +222,7 @@ const ProjectNameEditable = props => {
           {snackbarState.message}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 };
 
