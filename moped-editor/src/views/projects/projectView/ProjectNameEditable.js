@@ -176,7 +176,7 @@ const ProjectNameEditable = props => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3} className={classes.fieldGridItemButtons}>
+            <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
               <Icon
                 className={classes.editIconConfirm}
                 onClick={handleAcceptClick}
