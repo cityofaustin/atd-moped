@@ -35,6 +35,9 @@ const useStyles = makeStyles(theme => ({
     "font-size": "1.5rem",
     "font-weight": "bold",
   },
+  boxField: {
+    width: "100%",
+  },
 }));
 
 const ProjectNameEditable = props => {
