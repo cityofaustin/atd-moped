@@ -58,16 +58,13 @@ const useChipStyles = makeStyles(theme => ({
         potential: theme.palette.warning.light,
       };
 
-      // If the project is active
-      if (status === 1) {
-        return Object.keys(phaseValue).includes(phase)
+      return status === 1
+        ? Object.keys(phaseValue).includes(phase)
           ? phaseValue[phase]
-          : theme.palette.primary.main;
-      } else {
-        return status === 4
-          ? theme.palette.grey[400] // on hold
-          : theme.palette.error.main; // cancelled
-      }
+          : theme.palette.primary.main
+        : status === 4
+        ? theme.palette.grey[400] // on hold
+        : theme.palette.error.main; // cancelled
     },
   },
 }));
