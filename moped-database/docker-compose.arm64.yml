@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
     hasura:
-        image: fedormelexin/graphql-engine-arm64:v1.3.3.cli-migrations-v3
+        image: frankinaustin/graphql-engine-arm64:v1.3.3
         restart: always
         depends_on:
             - moped-pgsql
