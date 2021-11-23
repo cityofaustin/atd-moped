@@ -324,13 +324,22 @@ const ProjectView = () => {
                       </Box>
                     </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
-                      <ProjectNameEditable
-                        projectName={data.moped_project[0].project_name}
-                        projectId={projectId}
-                        editable={true}
-                        isEditing={isEditing}
-                        setIsEditing={setIsEditing}
-                      />
+                      <Box
+                        alignItems="center"
+                        display="flex"
+                        flexDirection="row"
+                      >
+                        <ProjectNameEditable
+                          projectName={data.moped_project[0].project_name}
+                          projectId={projectId}
+                          editable={true}
+                          isEditing={isEditing}
+                          setIsEditing={setIsEditing}
+                        />
+                        <Box>
+                          <ProjectStatusBadge status={4} phase={"on hold"} />
+                        </Box>
+                      </Box>
                     </Grid>
                     <Grid item xs={1} md={1}>
                       <MoreHorizIcon
