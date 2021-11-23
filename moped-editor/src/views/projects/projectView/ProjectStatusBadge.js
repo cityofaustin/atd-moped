@@ -23,10 +23,10 @@ const useFontColorStyles = makeStyles(theme => ({
       const white = theme.palette.common.white;
 
       return status === 1
-        ? ["potential"].includes(phase)
+        ? ["potential"].includes(phase) // this list may grow
           ? black
           : white
-        : ["on hold"].includes(phase)
+        : ["on hold"].includes(phase) // same here
         ? black
         : white;
     },
