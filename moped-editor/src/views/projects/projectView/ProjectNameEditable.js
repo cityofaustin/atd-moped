@@ -193,8 +193,8 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      { // if not Editing Project Name, show edit icon on mouse over of title
-        !isEditing && (
+      {// if not Editing Project Name, show edit icon on mouse over of title
+      !isEditing && (
         <Typography
           color="textPrimary"
           variant="h1"
