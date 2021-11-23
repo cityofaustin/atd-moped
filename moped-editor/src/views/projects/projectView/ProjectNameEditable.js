@@ -96,35 +96,37 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (!(projectName.trim()==="")) {
-    updateProjectName({
-      variables: {
-        projectId: props?.projectId,
-        projectName: projectName,
-      },
-    })
-      .then(res => {
-        setProjectNameBeforeEdit(projectName);
-        setSnackbarState({
-          open: true,
-          message: <span>Success! the project name has been updated!</span>,
-          severity: "success",
-        });
+    if (!(projectName.trim() === "")) {
+      updateProjectName({
+        variables: {
+          projectId: props?.projectId,
+          projectName: projectName,
+        },
       })
-      .catch(err => {
-        setProjectName(projectNameBeforeEdit);
-        setSnackbarState({
-          open: true,
-          message: <span>There was a problem updating the project name.</span>,
-          severity: "error",
+        .then(res => {
+          setProjectNameBeforeEdit(projectName);
+          setSnackbarState({
+            open: true,
+            message: <span>Success! the project name has been updated!</span>,
+            severity: "success",
+          });
+        })
+        .catch(err => {
+          setProjectName(projectNameBeforeEdit);
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>There was a problem updating the project name.</span>
+            ),
+            severity: "error",
+          });
+          setProjectName(initialProjectName);
+        })
+        .finally(() => {
+          if (props?.setIsEditing) props.setIsEditing(false);
+          setIsEditing(false);
+          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         });
-        setProjectName(initialProjectName);
-      })
-      .finally(() => {
-        if (props?.setIsEditing) props.setIsEditing(false);
-        setIsEditing(false);
-        setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-      });
     } else {
       setTitleError(true);
     }
