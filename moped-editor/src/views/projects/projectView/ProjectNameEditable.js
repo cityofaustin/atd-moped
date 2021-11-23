@@ -86,7 +86,7 @@ const ProjectNameEditable = props => {
 
   const handleProjectNameChange = e => {
     if (titleError) {
-      setTitleError(false)
+      setTitleError(false);
     }
     setProjectName(e.target.value);
   };
