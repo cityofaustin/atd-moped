@@ -160,7 +160,9 @@ const ProjectNameEditable = props => {
                 type="text"
                 defaultValue={projectName ?? props?.projectName}
                 error={titleError}
-                placeholder={titleError ? "Title cannot be blank" : "Enter project name"}
+                placeholder={
+                  titleError ? "Title cannot be blank" : "Enter project name"
+                }
                 multiline={false}
                 rows={1}
                 onChange={e => handleProjectNameChange(e)}
