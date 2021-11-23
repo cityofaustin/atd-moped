@@ -148,11 +148,11 @@ const ProjectNameEditable = props => {
   };
 
   return (
-    <>
+    <Box className={isEditing ? classes.boxField : null}>
       {isEditing && (
         <form onSubmit={e => handleAcceptClick(e)}>
           <Grid container fullWidth>
-            <Grid item xs={12} sm={9}>
+            <Grid item xs={12} sm={11}>
               <TextField
                 fullWidth
                 id="project name"
