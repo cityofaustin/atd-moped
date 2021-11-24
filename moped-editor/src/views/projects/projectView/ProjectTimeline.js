@@ -536,15 +536,35 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
-                    }).then(() => {
-                      // Refetch data
-                      refetch();
-                      refetchSummary();
-                    });
+                    })
+                      .then(
+                        () =>
+                          // If there was a change, update the project
+                          currentPhaseChanged
+                            ? updateProjectStatus({
+                                variables: {
+                                  projectId: projectId,
+                                  projectUpdateInput: {
+                                    status_id: 1,
+                                    // If this is the new current current phase, adopt it, otherwise clear it
+                                    current_phase: isNewCurrentPhase
+                                      ? updatedPhaseObject?.phase_name
+                                      : null,
+                                  },
+                                },
+                              })
+                            : true // No change in project, safely ignore
+                      )
+                      .then(() => {
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
                   },
                   onRowDelete: oldData => {
                     // Execute mutation to set current phase of phase to be deleted to false
                     // to ensure summary table stays up to date
+                    const was_current_phase = !!oldData?.is_current_phase;
                     oldData.is_current_phase = false;
                     return updateProjectPhase({
                       variables: oldData,
