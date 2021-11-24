@@ -10,6 +10,110 @@ import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlin
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 
+const defaultIcon = PlayCircleOutlineOutlinedIcon;
+
+const getStyle = (theme, phase) => {
+  if (theme === null) return null;
+
+  const primary = theme.palette.text.primary;
+  const white = theme.palette.common.white;
+
+  const backgroundColors = {
+    default: theme.palette.grey[300],
+    warning: theme.palette.warning.light,
+    success: theme.palette.success.main,
+    info: theme.palette.info.dark,
+    error: theme.palette.error.main,
+  };
+
+  const defaultBackgroundColor = backgroundColors.default;
+
+  const styleMapping = {
+    planned: {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "preliminary engineering": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    scoping: {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "preliminary design": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    design: {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "pre-construction": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "bid/award/execution": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "construction-ready": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    construction: {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    "post-construction": {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
+    potential: {
+      color: primary,
+      background: backgroundColors.warning,
+      icon: RemoveCircleOutlineOutlinedIcon,
+    },
+    canceled: {
+      color: white,
+      background: backgroundColors.error,
+      icon: CancelOutlinedIcon,
+    },
+    "on hold": {
+      color: primary,
+      background: backgroundColors.default,
+      icon: PauseCircleOutlineOutlinedIcon,
+    },
+    "on-hold": {
+      color: primary,
+      background: backgroundColors.default,
+      icon: PauseCircleOutlineOutlinedIcon,
+    },
+    complete: {
+      color: white,
+      background: backgroundColors.info,
+      icon: CheckCircleOutlineOutlinedIcon,
+    },
+    default: {
+      color: primary,
+      background: defaultBackgroundColor,
+      icon: defaultIcon,
+    },
+  };
+
+  return styleMapping?.[phase] ?? styleMapping.default;
+};
+
 /**
  * Picks the right color based on the status-phase combination
  */
@@ -17,18 +121,8 @@ const useFontColorStyles = makeStyles(theme => ({
   root: {
     // Find text color
     color: props => {
-      const status = props?.status ?? 0;
       const phase = (props?.phase ?? "").toLowerCase();
-      const primary = theme.palette.text.primary;
-      const white = theme.palette.common.white;
-
-      return status === 1
-        ? ["potential"].includes(phase) // this list may grow
-          ? primary
-          : white
-        : ["on hold", "on-hold"].includes(phase) // same here
-        ? primary
-        : white;
+      return getStyle(theme, phase).color;
     },
   },
 }));
