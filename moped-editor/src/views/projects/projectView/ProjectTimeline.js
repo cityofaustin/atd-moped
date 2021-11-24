@@ -574,11 +574,25 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         variables: {
                           project_phase_id: oldData.project_phase_id,
                         },
-                      }).then(() => {
-                        // Refetch data
-                        refetch();
-                        refetchSummary();
-                      });
+                      })
+                        .then(() =>
+                          was_current_phase
+                            ? updateProjectStatus({
+                                variables: {
+                                  projectId: projectId,
+                                  projectUpdateInput: {
+                                    status_id: 1,
+                                    current_phase: null,
+                                  },
+                                },
+                              })
+                            : true
+                        )
+                        .then(() => {
+                          // Refetch data
+                          refetch();
+                          refetchSummary();
+                        });
                     });
                   },
                 }}
