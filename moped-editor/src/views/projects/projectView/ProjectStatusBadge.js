@@ -190,7 +190,7 @@ const ProjectStatusBadge = ({ status, phase }) => {
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = getStyle(null, phase)?.icon ?? defaultIcon;
+  const ChipIcon = getStyle(null, phase)?.icon ?? null;
 
   // ?.[getComponentMapName(status, phase)] ?? null;
 
