@@ -46,6 +46,7 @@ export const SUMMARY_QUERY = gql`
       project_priority
       project_sponsor
       project_website
+      status_id
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
@@ -95,6 +96,7 @@ export const SUMMARY_QUERY = gql`
       where: { status_id: { _gt: 0 } }
       order_by: { status_order: asc }
     ) {
+      status_id
       status_name
     }
   }
