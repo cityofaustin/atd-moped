@@ -41,8 +41,6 @@ const useChipStyles = makeStyles(theme => ({
     marginLeft: "1rem",
     fontWeight: "500",
     fontSize: "16px",
-    fontFamily: "Roboto",
-    textTransform: "capitalize",
     borderRadius: "2rem",
     height: "2.5rem",
     padding: ".5rem",
