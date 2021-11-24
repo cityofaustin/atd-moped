@@ -54,7 +54,7 @@ const useChipStyles = makeStyles(theme => ({
 
       // Phase Value
       const phaseValue = {
-        planned: theme.palette.success.main,
+        planned: theme.palette.info.dark,
         potential: theme.palette.warning.light,
       };
 
