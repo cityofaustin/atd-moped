@@ -12,6 +12,12 @@ import clsx from "clsx";
 
 const defaultIcon = PlayCircleOutlineOutlinedIcon;
 
+/**
+ * Retrieves the style configuration for an individual phase
+ * @param {Object} theme - The theme object, if null the function returns null
+ * @param {string} phase - The phase name
+ * @returns {Object|null}
+ */
 const getStyle = (theme, phase) => {
   if (theme === null) return null;
 
