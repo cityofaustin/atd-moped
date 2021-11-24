@@ -840,3 +840,17 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
     }
   }
 `;
+
+export const PROJECT_UPDATE_STATUS = gql`
+  mutation UpdateProjectPhase(
+    $projectId: Int!
+    $projectUpdateInput: moped_project_set_input!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: $projectUpdateInput
+    ) {
+      affected_rows
+    }
+  }
+`;
