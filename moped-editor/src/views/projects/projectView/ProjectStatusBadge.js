@@ -26,7 +26,7 @@ const useFontColorStyles = makeStyles(theme => ({
         ? ["potential"].includes(phase) // this list may grow
           ? primary
           : white
-        : ["on hold"].includes(phase) // same here
+        : ["on hold", "on-hold"].includes(phase) // same here
         ? primary
         : white;
     },
