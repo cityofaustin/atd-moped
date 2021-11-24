@@ -115,6 +115,19 @@ const ProjectStatusBadge = ({ status, phase }) => {
   const ChipIcon = phaseIcons?.[getComponentMapName(status, phase)] ?? null;
 
   /**
+   * Make sure the text in the chip is capital-case
+   * @param {string} text - The contents of the chip text
+   * @returns {string}
+   */
+  const capitalCase = text =>
+    String(text)
+      .charAt(0)
+      .toUpperCase() +
+    String(text)
+      .toLowerCase()
+      .substring(1);
+
+  /**
    * Return the object
    */
   return (
