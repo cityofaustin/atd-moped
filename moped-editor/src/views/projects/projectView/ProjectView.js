@@ -350,7 +350,10 @@ const ProjectView = () => {
                           setIsEditing={setIsEditing}
                         />
                         <Box>
-                          <ProjectStatusBadge status={4} phase={"on hold"} />
+                          <ProjectStatusBadge
+                            status={projectStatus.status}
+                            phase={projectStatus.phase}
+                          />
                         </Box>
                       </Box>
                     </Grid>
