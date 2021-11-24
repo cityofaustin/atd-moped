@@ -31,7 +31,8 @@ const getStyle = (theme, phase) => {
   };
 
   const defaultBackgroundColor = backgroundColors.default;
-
+  const defaultIcon = PlayCircleOutlineOutlinedIcon;
+  
   const styleMapping = {
     planned: {
       color: white,
