@@ -114,20 +114,22 @@ const ProjectStatusBadge = ({ status, phase }) => {
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = phaseIcons[getComponentMapName(status, phase)];
+  const ChipIcon = phaseIcons?.[getComponentMapName(status, phase)] ?? null;
 
   /**
    * Return the object
    */
   return (
-    <Chip
-      className={clsx(iconClasses.root, chipClasses.root)}
-      icon={<ChipIcon className={iconClasses.root} />}
-      label={getComponentMapName(status, phase)}
-      color={"default"}
-      onDelete={null}
-      deleteIcon={null}
-    />
+    ChipIcon && (
+      <Chip
+        className={clsx(iconClasses.root, chipClasses.root)}
+        icon={<ChipIcon className={iconClasses.root} />}
+        label={getComponentMapName(status, phase)}
+        color={"default"}
+        onDelete={null}
+        deleteIcon={null}
+      />
+    )
   );
 };
 
