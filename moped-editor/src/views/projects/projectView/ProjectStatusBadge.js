@@ -135,7 +135,7 @@ const ProjectStatusBadge = ({ status, phase }) => {
       <Chip
         className={clsx(iconClasses.root, chipClasses.root)}
         icon={<ChipIcon className={iconClasses.root} />}
-        label={getComponentMapName(status, phase)}
+        label={capitalCase(getComponentMapName(status, phase))}
         color={"default"}
         onDelete={null}
         deleteIcon={null}
