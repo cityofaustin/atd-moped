@@ -162,20 +162,6 @@ const useChipStyles = makeStyles(theme => ({
  */
 const ProjectStatusBadge = ({ status, phase }) => {
   /**
-   * Bundle style properties object
-   */
-  const styleProps = {
-    status: status,
-    phase: phase,
-  };
-
-  /**
-   * Generate font, chip and icon classes
-   */
-  const chipClasses = useChipStyles(styleProps);
-  const iconClasses = useFontColorStyles(styleProps);
-
-  /**
    * Returns the label given a status-phase combination
    * @param status
    * @param phase
@@ -191,6 +177,23 @@ const ProjectStatusBadge = ({ status, phase }) => {
         return String(phase).toLowerCase();
     }
   };
+
+  /**
+   * Bundle style properties object
+   */
+  const styleProps = {
+    status: status,
+    phase: getComponentMapName(status, phase), // It's here so it can be corrected by status id
+  };
+
+  /**
+   * Generate font, chip and icon classes
+   */
+  const chipClasses = useChipStyles(styleProps);
+  const iconClasses = useFontColorStyles(styleProps);
+
+  // If we don't have a status, then do not render.
+  if (!!!status) return null;
 
   /**
    * Create an abstract component pointer
