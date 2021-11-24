@@ -10,6 +10,8 @@ import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlin
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 
+const defaultIcon = PlayCircleOutlineOutlinedIcon;
+
 /**
  * Retrieves the style configuration for an individual phase
  * @param {Object} theme - The theme object, if null the function returns null
@@ -31,8 +33,7 @@ const getStyle = (theme, phase) => {
   };
 
   const defaultBackgroundColor = backgroundColors.default;
-  const defaultIcon = PlayCircleOutlineOutlinedIcon;
-  
+
   const styleMapping = {
     planned: {
       color: white,
@@ -180,17 +181,21 @@ const ProjectStatusBadge = ({ status, phase }) => {
    * @param phase
    * @returns {string}
    */
-  const getComponentMapName = (status, phase) =>
-    status === 1 // Is status active?
-      ? String(phase).toLowerCase() // Then pass the name of the pase
-      : status === 4 // If status is on hold (4), else must be canceled
-      ? "on hold"
-      : "canceled";
+  const getComponentMapName = (status, phase) => {
+    switch (status) {
+      case 3:
+        return "on hold";
+      case 4:
+        return "canceled";
+      default:
+        return String(phase).toLowerCase();
+    }
+  };
 
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = getStyle(null, phase)?.icon ?? null;
+  const ChipIcon = getStyle(null, phase)?.icon ?? defaultIcon;
 
   // ?.[getComponentMapName(status, phase)] ?? null;
 
@@ -211,6 +216,7 @@ const ProjectStatusBadge = ({ status, phase }) => {
    * Return the object
    */
   return (
+    phase &&
     ChipIcon && (
       <Chip
         className={clsx(iconClasses.root, chipClasses.root)}
