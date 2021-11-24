@@ -19,15 +19,15 @@ const useFontColorStyles = makeStyles(theme => ({
     color: props => {
       const status = props?.status ?? 0;
       const phase = (props?.phase ?? "").toLowerCase();
-      const black = theme.palette.text.primary;
+      const primary = theme.palette.text.primary;
       const white = theme.palette.common.white;
 
       return status === 1
         ? ["potential"].includes(phase) // this list may grow
-          ? black
+          ? primary
           : white
         : ["on hold"].includes(phase) // same here
-        ? black
+        ? primary
         : white;
     },
   },
