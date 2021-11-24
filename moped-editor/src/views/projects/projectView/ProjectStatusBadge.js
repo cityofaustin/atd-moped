@@ -141,22 +141,8 @@ const useChipStyles = makeStyles(theme => ({
 
     // Find background color
     backgroundColor: props => {
-      const status = props?.status ?? 0;
       const phase = props?.phase ?? "";
-
-      // Phase Value
-      const phaseValue = {
-        planned: theme.palette.info.dark,
-        potential: theme.palette.warning.light,
-      };
-
-      return status === 1
-        ? Object.keys(phaseValue).includes(phase)
-          ? phaseValue[phase]
-          : theme.palette.primary.main
-        : status === 4
-        ? theme.palette.grey[300] // on hold
-        : theme.palette.error.main; // cancelled
+      return getStyle(theme, phase).background;
     },
   },
 }));
