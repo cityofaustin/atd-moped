@@ -474,11 +474,25 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       variables: {
                         objects: [newPhaseObject],
                       },
-                    }).then(() => {
-                      // Refetch data
-                      refetch();
-                      refetchSummary();
-                    });
+                    })
+                      .then(() =>
+                        !!newPhaseObject?.is_current_phase
+                          ? updateProjectStatus({
+                              variables: {
+                                projectId: projectId,
+                                projectUpdateInput: {
+                                  status_id: 1,
+                                  current_phase: newPhaseObject?.phase_name,
+                                },
+                              },
+                            })
+                          : true
+                      )
+                      .then(() => {
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
                   },
                   onRowUpdate: (newData, oldData) => {
                     const updatedPhaseObject = {
