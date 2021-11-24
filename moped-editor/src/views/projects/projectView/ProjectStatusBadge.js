@@ -170,17 +170,6 @@ const ProjectStatusBadge = ({ status, phase }) => {
   const iconClasses = useFontColorStyles(styleProps);
 
   /**
-   * Phase icon mapping to component objects
-   */
-  const phaseIcons = {
-    canceled: CancelOutlinedIcon,
-    "on hold": PauseCircleOutlineOutlinedIcon,
-    potential: RemoveCircleOutlineOutlinedIcon,
-    planned: PlayCircleOutlineOutlinedIcon,
-    complete: CheckCircleOutlineOutlinedIcon,
-  };
-
-  /**
    * Returns the label given a status-phase combination
    * @param status
    * @param phase
