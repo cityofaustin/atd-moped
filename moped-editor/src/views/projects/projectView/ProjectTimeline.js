@@ -30,6 +30,7 @@ import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
   ADD_PROJECT_MILESTONE,
+  PROJECT_UPDATE_STATUS,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useQuery, useMutation } from "@apollo/client";
