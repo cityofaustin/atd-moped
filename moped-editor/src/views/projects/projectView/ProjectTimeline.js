@@ -518,6 +518,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }
                     });
 
+                    // If there the phase name or is_current_phase changed, then true.
+                    const currentPhaseChanged =
+                      differences.filter(value =>
+                        ["phase_name", "is_current_phase"].includes(value)
+                      ).length > 0;
+
+                    const isNewCurrentPhase = newData.is_current_phase;
+
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
                     delete updatedPhaseObject.tableData;
