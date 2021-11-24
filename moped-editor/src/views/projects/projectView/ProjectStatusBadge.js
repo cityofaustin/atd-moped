@@ -63,7 +63,7 @@ const useChipStyles = makeStyles(theme => ({
           ? phaseValue[phase]
           : theme.palette.primary.main
         : status === 4
-        ? theme.palette.grey[400] // on hold
+        ? theme.palette.grey[300] // on hold
         : theme.palette.error.main; // cancelled
     },
   },
