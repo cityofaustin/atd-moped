@@ -176,12 +176,18 @@ const ProjectStatusBadge = ({ status, phase }) => {
    * @returns {string}
    */
   const getComponentMapName = (status, phase) =>
-    status !== 1 ? (status === 4 ? "on hold" : "canceled") : phase;
+    status === 1 // Is status active?
+      ? String(phase).toLowerCase() // Then pass the name of the pase
+      : status === 4 // If status is on hold (4), else must be canceled
+      ? "on hold"
+      : "canceled";
 
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon = phaseIcons?.[getComponentMapName(status, phase)] ?? null;
+  const ChipIcon = getStyle(null, phase)?.icon ?? defaultIcon;
+
+  // ?.[getComponentMapName(status, phase)] ?? null;
 
   /**
    * Make sure the text in the chip is capital-case
