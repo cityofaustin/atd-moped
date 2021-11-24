@@ -10,8 +10,6 @@ import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlin
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 
-const defaultIcon = PlayCircleOutlineOutlinedIcon;
-
 /**
  * Retrieves the style configuration for an individual phase
  * @param {Object} theme - The theme object, if null the function returns null
