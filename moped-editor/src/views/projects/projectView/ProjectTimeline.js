@@ -75,6 +75,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
+  const [updateProjectStatus] = useMutation(PROJECT_UPDATE_STATUS);
+
   const [updateProjectMilestone] = useMutation(
     UPDATE_PROJECT_MILESTONES_MUTATION
   );
