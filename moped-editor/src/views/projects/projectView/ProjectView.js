@@ -25,7 +25,6 @@ import {
   Menu,
   MenuItem,
   Fade,
-  Icon,
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
