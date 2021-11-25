@@ -524,7 +524,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         ["phase_name", "is_current_phase"].includes(value)
                       ).length > 0;
 
-                    const isNewCurrentPhase = newData.is_current_phase;
+                    // If the new data doesn't contain is_current_phase assume false
+                    const isNewCurrentPhase = !!newData?.is_current_phase;
 
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
