@@ -165,6 +165,7 @@ export const ProjectsListViewQueryConf = {
   order_by: { updated_at: "desc" },
   where: {
     is_retired: "_eq: false",
+    status_id: "_neq: 4",
   },
   or: null,
   and: null,
