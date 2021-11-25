@@ -406,46 +406,53 @@ const ProjectView = () => {
                           horizontal: "center",
                         }}
                       >
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">share</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Share" />
-                        </MenuItem>
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">favorite</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Add to favorites" />
-                        </MenuItem>
-                        <MenuItem onClick={handleRenameClick}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">create</Icon>
+                        <MenuItem
+                          onClick={handleRenameClick}
+                          className={classes.projectOptionsMenuItem}
+                          selected={false}
+                        >
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <CreateOutlinedIcon />
                           </ListItemIcon>
                           <ListItemText primary="Rename" />
                         </MenuItem>
                         <MenuItem
-                          onClick={handleMenuClose}
+                          onClick={() => handleUpdateStatus(3, "on hold")}
+                          className={classes.projectOptionsMenuItem}
                           selected={false}
-                          disabled={true}
                         >
-                          <ListItemIcon>
-                            <Icon fontSize="small">block</Icon>
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <PauseCircleOutlineOutlinedIcon />
                           </ListItemIcon>
                           <ListItemText primary="Place on hold" />
                         </MenuItem>
                         <MenuItem
-                          onClick={handleDeleteClick}
-                          className={classes.menuDangerItem}
+                          onClick={() => handleUpdateStatus(4, "canceled")}
+                          className={classes.projectOptionsMenuItem}
                           selected={false}
                         >
-                          <ListItemIcon className={classes.menuDangerText}>
-                            <Icon fontSize="small">delete</Icon>
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <CancelOutlinedIcon />
                           </ListItemIcon>
-                          <ListItemText
-                            primary="Cancel"
-                            className={classes.menuDangerText}
-                          />
+                          <ListItemText primary="Cancel" />
+                        </MenuItem>
+                        <MenuItem
+                          onClick={handleDeleteClick}
+                          className={classes.projectOptionsMenuItem}
+                          selected={false}
+                        >
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <DeleteOutlinedIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Delete" />
                         </MenuItem>
                       </Menu>
                     </Grid>
