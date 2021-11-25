@@ -218,10 +218,17 @@ const ProjectStatusBadge = ({ status, phase }) => {
       .substring(1);
 
   /**
+   * Show chip is true if we have a phase or a valid status id
+   * @type {boolean}
+   */
+  const showChip =
+    (!!phase && String(phase).trim().length > 0) || [3, 4].includes(status);
+
+  /**
    * Return the object
    */
   return (
-    phase &&
+    showChip &&
     ChipIcon && (
       <Chip
         className={clsx(iconClasses.root, chipClasses.root)}
