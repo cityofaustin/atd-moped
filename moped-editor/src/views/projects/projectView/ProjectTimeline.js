@@ -589,14 +589,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                             ? updateProjectStatus({
                                 variables: {
                                   projectId: projectId,
-                                  projectUpdateInput: {
-                                    status_id: isCurrentPhase ? 1 : 4,
-                                    current_status: isCurrentPhase ? "active" : "on hold",
-                                    // If this is the new current current phase, adopt it, otherwise clear it
-                                    current_phase: isCurrentPhase
-                                      ? updatedPhaseObject?.phase_name
-                                      : null,
-                                  },
+                                  projectUpdateInput: isCurrentPhase
+                                    ? mappedProjectUpdateInput
+                                    : {
+                                        status_id: 4,
+                                        current_status: "on hold",
+                                        current_phase: null,
+                                      },
                                 },
                               })
                             : true // No change in project, safely ignore
