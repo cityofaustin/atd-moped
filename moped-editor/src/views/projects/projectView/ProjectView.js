@@ -315,6 +315,13 @@ const ProjectView = () => {
         statusId: status_id,
       },
     })
+      .then(() =>
+        clearCurrentNoPhase({
+          variables: {
+            projectId: projectId,
+          },
+        })
+      )
       .then(() => {
         window.location = "/moped/projects";
       })
