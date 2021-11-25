@@ -565,6 +565,23 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.__typename;
                     updateExistingPhases(updatedPhaseObject);
 
+                    const newPhase = updatedPhaseObject?.phase_name.toLowerCase();
+                    const statusMapped = getStatusByName(newPhase);
+
+                    const mappedProjectUpdateInput = !!statusMapped
+                      ? {
+                          // It is
+                          status_id: statusMapped.status_id,
+                          current_status: statusMapped.status_name.toLowerCase(),
+                          current_phase: newPhase,
+                        }
+                      : {
+                          // It isn't
+                          status_id: 1,
+                          current_status: "active",
+                          current_phase: newPhase,
+                        };
+
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
