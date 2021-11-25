@@ -174,9 +174,9 @@ const ProjectStatusBadge = ({ status, phase }) => {
   const getComponentMapName = (status, phase) => {
     switch (status) {
       case 3:
-        return "on hold";
-      case 4:
         return "canceled";
+      case 4:
+        return "on hold";
       default:
         return String(phase).toLowerCase();
     }
