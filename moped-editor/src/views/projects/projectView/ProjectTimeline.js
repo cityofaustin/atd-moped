@@ -510,11 +510,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           ? updateProjectStatus({
                               variables: {
                                 projectId: projectId,
-                                projectUpdateInput: {
-                                  status_id: 1,
-                                  current_status: "active",
-                                  current_phase: newPhaseObject?.phase_name,
-                                },
+                                projectUpdateInput: projectUpdateInput,
                               },
                             })
                           : true
