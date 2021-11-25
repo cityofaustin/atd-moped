@@ -394,6 +394,7 @@ const ProjectView = () => {
                         keepMounted
                         open={menuOpen}
                         onClose={handleMenuClose}
+                        autoFocus={false}
                         TransitionComponent={Fade}
                         getContentAnchorEl={null}
                         anchorOrigin={{
