@@ -39,12 +39,22 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "../../../queries/project";
+import {
+  PROJECT_ARCHIVE,
+  PROJECT_CANCEL,
+  PROJECT_UPDATE_CURRENT_STATUS,
+  SUMMARY_QUERY,
+} from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import ProjectStatusBadge from "./ProjectStatusBadge";
+
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
+import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
+import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 
 const useStyles = makeStyles(theme => ({
   root: {
