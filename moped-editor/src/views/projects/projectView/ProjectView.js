@@ -190,6 +190,7 @@ const ProjectView = () => {
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
   const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
+  const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
 
   /**
    * Clears the dialog contents
