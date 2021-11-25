@@ -88,6 +88,19 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   if (loading || !data) return <CircularProgress />;
 
   /**
+   * Direct access to the moped_status array
+   */
+  const statusMap = data?.moped_status ?? [];
+
+  /**
+   * Retrieves the moped_status values from the statusMap array
+   * @param {string} status - The name of the status
+   * @returns {Object}
+   */
+  const getStatusByName = status =>
+    statusMap.find(s => s.status_name.toLowerCase() === status);
+
+  /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
    * expects.
    * Ex: { construction: "Construction", hold: "Hold", ...}
