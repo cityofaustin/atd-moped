@@ -83,19 +83,11 @@ const useStyles = makeStyles(theme => ({
     float: "right",
     cursor: "pointer",
   },
-  menuDangerItem: {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.common.white,
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItem: {
+    minWidth: "14rem",
   },
-  menuDangerText: {
-    color: theme.palette.common.white,
-    "&:hover": {
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItemIcon: {
+    minWidth: "2rem",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
