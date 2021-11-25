@@ -284,7 +284,9 @@ const ProjectView = () => {
     setDialogContent("Please wait", <CircularProgress />, null);
 
     // run the mutation
-    archiveProject()
+    archiveProject({
+      variables: { projectId },
+    })
       .then(() => {
         // Do not close the dialog, redirect will take care
         window.location = "/moped/projects";
