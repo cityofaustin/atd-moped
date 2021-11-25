@@ -21,9 +21,15 @@ const defaultIcon = PlayCircleOutlineOutlinedIcon;
 const getStyle = (theme, phase) => {
   if (theme === null) return null;
 
+  /**
+   * Font colors
+   */
   const primary = theme.palette.text.primary;
   const white = theme.palette.common.white;
 
+  /**
+   * Background color mapping
+   */
   const backgroundColors = {
     default: theme.palette.grey[300],
     warning: theme.palette.warning.light,
@@ -32,8 +38,12 @@ const getStyle = (theme, phase) => {
     error: theme.palette.error.main,
   };
 
+  // Default background color
   const defaultBackgroundColor = backgroundColors.default;
 
+  /**
+   * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
+   */
   const styleMapping = {
     planned: {
       color: white,
