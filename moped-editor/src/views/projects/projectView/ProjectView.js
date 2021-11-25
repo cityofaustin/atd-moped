@@ -187,9 +187,8 @@ const ProjectView = () => {
   /**
    * The mutation to soft-delete the project
    */
-  const [archiveProject] = useMutation(PROJECT_ARCHIVE, {
-    variables: { projectId },
-  });
+  const [archiveProject] = useMutation(PROJECT_ARCHIVE);
+  const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
 
   /**
    * Clears the dialog contents
