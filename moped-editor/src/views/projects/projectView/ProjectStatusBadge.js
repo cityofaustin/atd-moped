@@ -136,10 +136,7 @@ const getStyle = (theme, phase) => {
 const useFontColorStyles = makeStyles(theme => ({
   root: {
     // Find text color
-    color: props => {
-      const phase = (props?.phase ?? "").toLowerCase();
-      return getStyle(theme, phase).color;
-    },
+    color: props => getStyle(theme, (props?.phase ?? "").toLowerCase()).color,
   },
 }));
 
