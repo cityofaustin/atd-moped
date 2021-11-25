@@ -189,9 +189,9 @@ const ProjectStatusBadge = ({ status, phase }) => {
   };
 
   /**
-   * Bundle style properties object
+   * Bundle status properties object
    */
-  const styleProps = {
+  const statusProperties = {
     status: status,
     phase: getComponentMapName(status, phase), // It's here so it can be corrected by status id
   };
@@ -199,8 +199,8 @@ const ProjectStatusBadge = ({ status, phase }) => {
   /**
    * Generate font, chip and icon classes
    */
-  const chipClasses = useChipStyles(styleProps);
-  const iconClasses = useFontColorStyles(styleProps);
+  const chipClasses = useChipStyles(statusProperties);
+  const iconClasses = useFontColorStyles(statusProperties);
 
   // If we don't have a status, then do not render.
   if (!!!status) return null;
@@ -209,8 +209,6 @@ const ProjectStatusBadge = ({ status, phase }) => {
    * Create an abstract component pointer
    */
   const ChipIcon = getStyle(null, phase)?.icon ?? defaultIcon;
-
-  // ?.[getComponentMapName(status, phase)] ?? null;
 
   /**
    * Make sure the text in the chip is capital-case
@@ -234,7 +232,7 @@ const ProjectStatusBadge = ({ status, phase }) => {
       <Chip
         className={clsx(iconClasses.root, chipClasses.root)}
         icon={<ChipIcon className={iconClasses.root} />}
-        label={capitalCase(getComponentMapName(status, phase))}
+        label={capitalCase(statusProperties?.phase)}
         color={"default"}
       />
     )
