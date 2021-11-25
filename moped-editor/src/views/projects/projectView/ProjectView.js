@@ -426,7 +426,7 @@ const ProjectView = () => {
                           <ListItemText primary="Rename" />
                         </MenuItem>
                         <MenuItem
-                          onClick={() => handleUpdateStatus(3, "on hold")}
+                          onClick={() => handleUpdateStatus(4, "on hold")}
                           className={classes.projectOptionsMenuItem}
                           selected={false}
                         >
