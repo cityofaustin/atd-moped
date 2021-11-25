@@ -256,9 +256,9 @@ const ProjectView = () => {
     setDialogContent(
       "Are you sure?",
       <span>
-        Cancelling this project will make it inaccessible to Moped users and
-        only available to administrators. Users may request a cancelled project
-        be restored by{" "}
+        Deleting this project will make it inaccessible to Moped users and only
+        available to administrators. Users may request a delete project be
+        restored by{" "}
         <Link
           href={"https://atd.knack.com/dts#new-service-request/"}
           target="new"
