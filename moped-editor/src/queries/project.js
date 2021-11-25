@@ -864,5 +864,11 @@ export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
     ) {
       affected_rows
     }
+    update_moped_project(
+      _set: { current_phase: null }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
+    }
   }
 `;
