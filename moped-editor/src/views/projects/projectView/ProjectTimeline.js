@@ -482,6 +482,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                 projectId: projectId,
                                 projectUpdateInput: {
                                   status_id: 1,
+                                  current_status: "active",
                                   current_phase: newPhaseObject?.phase_name,
                                 },
                               },
