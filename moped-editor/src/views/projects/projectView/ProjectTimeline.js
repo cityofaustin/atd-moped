@@ -547,9 +547,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                 variables: {
                                   projectId: projectId,
                                   projectUpdateInput: {
-                                    status_id: 1,
+                                    status_id: isCurrentPhase ? 1 : 4,
+                                    current_status: isCurrentPhase ? "active" : "on hold",
                                     // If this is the new current current phase, adopt it, otherwise clear it
-                                    current_phase: !!newData?.is_current_phase
+                                    current_phase: isCurrentPhase
                                       ? updatedPhaseObject?.phase_name
                                       : null,
                                   },
