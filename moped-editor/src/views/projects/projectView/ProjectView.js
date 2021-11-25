@@ -302,15 +302,10 @@ const ProjectView = () => {
   /**
    * Establishes the project status for our badge
    */
-  const projectStatus = data
-    ? {
-        status: data?.moped_project?.[0]?.status_id ?? 0,
-        phase: data?.moped_project?.[0]?.current_phase ?? null,
-      }
-    : {
-        status: 0,
-        phase: null,
-      };
+  const projectStatus = {
+    status: data?.moped_project?.[0]?.status_id ?? 0,
+    phase: data?.moped_project?.[0]?.current_phase ?? null,
+  };
 
   return (
     <ApolloErrorHandler error={error}>
