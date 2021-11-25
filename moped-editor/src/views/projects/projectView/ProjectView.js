@@ -303,6 +303,32 @@ const ProjectView = () => {
   };
 
   /**
+   * Cancels the current project
+   */
+  const handleUpdateStatus = (status_id, current_phase) => {
+    updateStatus({
+      variables: {
+        projectId: projectId,
+        currentStatus: current_phase,
+        statusId: status_id,
+      },
+    })
+      .then(() => {
+        window.location = "/moped/projects";
+      })
+      .catch(err => {
+        // If there is an error, show it in the dialog
+        setDialogContent(
+          "Error",
+          `It appears there was an error while changing status to '${current_phase}', please contact the Data & Technology Services department. Reference: ${String(
+            err
+          )}`,
+          <Button onClick={handleDialogClose}>Close</Button>
+        );
+      });
+  };
+
+  /**
    * Establishes the project status for our badge
    */
   const projectStatus = {
