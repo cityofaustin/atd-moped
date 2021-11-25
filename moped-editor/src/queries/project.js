@@ -855,3 +855,14 @@ export const PROJECT_UPDATE_STATUS = gql`
     }
   }
 `;
+
+export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
+  mutation ClearProjectPhases($projectId: Int!) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
+    }
+  }
+`;
