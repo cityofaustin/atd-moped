@@ -240,6 +240,10 @@ export const TIMELINE_QUERY = gql`
       project_milestone_id
       project_id
     }
+    moped_status {
+      status_id
+      status_name
+    }
   }
 `;
 
