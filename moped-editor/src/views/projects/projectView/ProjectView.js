@@ -268,8 +268,8 @@ const ProjectView = () => {
         .
       </span>,
       <>
-        <Button onClick={handleDelete}>Cancel</Button>
-        <Button onClick={handleDialogClose}>Do not cancel</Button>
+        <Button onClick={handleDelete}>Delete</Button>
+        <Button onClick={handleDialogClose}>Do not delete</Button>
       </>
     );
     handleDialogOpen();
