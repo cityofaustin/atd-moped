@@ -39,7 +39,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_features(where: {status_id: {_eq: 1}}) {
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         location
       }
@@ -53,7 +53,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           type_name
         }
       }
-      moped_proj_personnel(where: {status_id: {_eq: 1}}) {
+      moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
         role_id
         moped_user {
           first_name
