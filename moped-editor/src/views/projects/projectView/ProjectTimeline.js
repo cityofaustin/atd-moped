@@ -524,9 +524,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         ["phase_name", "is_current_phase"].includes(value)
                       ).length > 0;
 
-                    // If the new data doesn't contain is_current_phase assume false
-                    const isNewCurrentPhase = !!newData?.is_current_phase;
-
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
                     delete updatedPhaseObject.tableData;
@@ -548,7 +545,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                   projectUpdateInput: {
                                     status_id: 1,
                                     // If this is the new current current phase, adopt it, otherwise clear it
-                                    current_phase: isNewCurrentPhase
+                                    current_phase: !!newData?.is_current_phase
                                       ? updatedPhaseObject?.phase_name
                                       : null,
                                   },
