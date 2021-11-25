@@ -148,7 +148,7 @@ const useFontColorStyles = makeStyles(theme => ({
  */
 const useChipStyles = makeStyles(theme => ({
   root: {
-    marginLeft: "1rem",
+    marginLeft: "1.5rem",
     fontWeight: "500",
     fontSize: "16px",
     borderRadius: "2rem",
