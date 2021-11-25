@@ -802,10 +802,11 @@ export const PROJECT_UPDATE_CURRENT_STATUS = gql`
   mutation UpdateProjectCurrentStatus(
     $projectId: Int!
     $currentStatus: String!
+    $statusId: Int = 1
   ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { current_status: $currentStatus }
+      _set: { current_status: $currentStatus, status_id: $statusId }
     ) {
       affected_rows
     }
