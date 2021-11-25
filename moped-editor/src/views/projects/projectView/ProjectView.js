@@ -42,6 +42,7 @@ import TabPanel from "./TabPanel";
 import {
   PROJECT_ARCHIVE,
   PROJECT_CANCEL,
+  PROJECT_CLEAR_NO_CURRENT_PHASE,
   PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
 } from "../../../queries/project";
