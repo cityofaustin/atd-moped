@@ -482,6 +482,23 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
+                    const newPhase = newPhaseObject?.phase_name;
+                    const statusMapped = getStatusByName(newPhase);
+
+                    const projectUpdateInput = !!statusMapped
+                      ? {
+                          // It is
+                          status_id: statusMapped.status_id,
+                          current_status: statusMapped.status_name,
+                          current_phase: newPhase,
+                        }
+                      : {
+                          // It isn't
+                          status_id: 1,
+                          current_status: "active",
+                          current_phase: newPhase,
+                        };
+
                     // Execute insert mutation, returns promise
                     return addProjectPhase({
                       variables: {
