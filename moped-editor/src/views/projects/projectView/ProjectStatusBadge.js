@@ -153,10 +153,7 @@ const useChipStyles = makeStyles(theme => ({
     padding: ".5rem",
 
     // Find background color
-    backgroundColor: props => {
-      const phase = props?.phase ?? "";
-      return getStyle(theme, phase).background;
-    },
+    backgroundColor: props => getStyle(theme, props?.phase ?? "").background,
   },
 }));
 
