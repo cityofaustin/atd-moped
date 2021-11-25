@@ -584,18 +584,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                 variables: {
                                   projectId: projectId,
                                   projectUpdateInput: {
-                                    status_id: 1,
+                                    status_id: 4,
+                                    current_status: "on hold",
                                     current_phase: null,
                                   },
                                 },
                               })
                             : true
                         )
-                        .then(() => {
-                          // Refetch data
-                          refetch();
-                          refetchSummary();
-                        });
+                        .then(() => refetch())
+                        .then(() => refetchSummary());
                     });
                   },
                 }}
