@@ -42,6 +42,8 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
+          echo "Node Version: $(node --version)"
+          echo " NPM Version: $(npm --version)"
 
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           echo "Commented out editor build"
