@@ -489,14 +489,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       ? {
                           // It is
                           status_id: statusMapped.status_id,
-                          current_status: statusMapped.status_name,
-                          current_phase: newPhase,
+                          current_status: statusMapped.status_name.toLowerCase(),
+                          current_phase: newPhase.toLowerCase(),
                         }
                       : {
                           // It isn't
                           status_id: 1,
                           current_status: "active",
-                          current_phase: newPhase,
+                          current_phase: newPhase.toLowerCase(),
                         };
 
                     // Execute insert mutation, returns promise
