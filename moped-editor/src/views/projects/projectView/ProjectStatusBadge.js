@@ -161,26 +161,27 @@ const useChipStyles = makeStyles(theme => ({
  * Renders a chip
  * @param {number} status - The status id of the current project
  * @param {string} phase - The current phase name of the project
+ * @param {Object} projectStatuses - A dictionary of all available project statuses
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectStatusBadge = ({ status, phase }) => {
+const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
   /**
    * Returns the label given a status-phase combination
-   * @param status
-   * @param phase
+   * @param {number} status - The status id number
+   * @param {string} phase - The name of the phase
    * @returns {string}
    */
-  const getComponentMapName = (status, phase) => {
-    switch (status) {
-      case 3:
-        return "canceled";
-      case 4:
-        return "on hold";
-      default:
-        return String(phase).toLowerCase();
-    }
-  };
+  const getComponentMapName = (status, phase) =>
+    status > 1 // is active?
+      ? // Then it can be found as a status
+        (
+          projectStatuses.find(s => s.status_id === status)?.status_name ??
+          String(phase)
+        ) // if not, default to phase
+          .toLowerCase()
+      : // it's a phase for sure
+        String(phase).toLowerCase();
 
   /**
    * Bundle status properties object

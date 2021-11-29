@@ -394,6 +394,7 @@ const ProjectView = () => {
                           <ProjectStatusBadge
                             status={projectStatus.status}
                             phase={projectStatus.phase}
+                            projectStatuses={data?.moped_status ?? []}
                           />
                         </Box>
                       </Box>
