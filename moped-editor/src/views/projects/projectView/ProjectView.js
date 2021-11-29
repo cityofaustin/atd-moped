@@ -341,6 +341,7 @@ const ProjectView = () => {
   const projectStatus = {
     status: data?.moped_project?.[0]?.status_id ?? 0,
     phase: data?.moped_project?.[0]?.current_phase ?? null,
+    current_status: data?.moped_project?.[0]?.current_status ?? null,
   };
 
   return (
