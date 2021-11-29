@@ -25,7 +25,6 @@ import {
   Menu,
   MenuItem,
   Fade,
-  Icon,
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
@@ -39,12 +38,22 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "../../../queries/project";
+import {
+  PROJECT_ARCHIVE,
+  PROJECT_CLEAR_NO_CURRENT_PHASE,
+  PROJECT_UPDATE_CURRENT_STATUS,
+  SUMMARY_QUERY,
+} from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import ProjectStatusBadge from "./ProjectStatusBadge";
+
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
+import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
+import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -73,19 +82,11 @@ const useStyles = makeStyles(theme => ({
     float: "right",
     cursor: "pointer",
   },
-  menuDangerItem: {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.common.white,
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItem: {
+    minWidth: "14rem",
   },
-  menuDangerText: {
-    color: theme.palette.common.white,
-    "&:hover": {
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItemIcon: {
+    minWidth: "2rem",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
@@ -185,9 +186,9 @@ const ProjectView = () => {
   /**
    * The mutation to soft-delete the project
    */
-  const [archiveProject] = useMutation(PROJECT_ARCHIVE, {
-    variables: { projectId },
-  });
+  const [archiveProject] = useMutation(PROJECT_ARCHIVE);
+  const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
+  const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
 
   /**
    * Clears the dialog contents
@@ -255,9 +256,9 @@ const ProjectView = () => {
     setDialogContent(
       "Are you sure?",
       <span>
-        Cancelling this project will make it inaccessible to Moped users and
-        only available to administrators. Users may request a cancelled project
-        be restored by{" "}
+        Deleting this project will make it inaccessible to Moped users and only
+        available to administrators. Users may request a delete project be
+        restored by{" "}
         <Link
           href={"https://atd.knack.com/dts#new-service-request/"}
           target="new"
@@ -267,8 +268,8 @@ const ProjectView = () => {
         .
       </span>,
       <>
-        <Button onClick={handleDelete}>Cancel</Button>
-        <Button onClick={handleDialogClose}>Do not cancel</Button>
+        <Button onClick={handleDelete}>Delete</Button>
+        <Button onClick={handleDialogClose}>Do not delete</Button>
       </>
     );
     handleDialogOpen();
@@ -283,7 +284,9 @@ const ProjectView = () => {
     setDialogContent("Please wait", <CircularProgress />, null);
 
     // run the mutation
-    archiveProject()
+    archiveProject({
+      variables: { projectId },
+    })
       .then(() => {
         // Do not close the dialog, redirect will take care
         window.location = "/moped/projects";
@@ -294,6 +297,39 @@ const ProjectView = () => {
           "Error",
           "It appears there was an error while deleting, please contact the Data & Technology Services department. Reference: " +
             String(err),
+          <Button onClick={handleDialogClose}>Close</Button>
+        );
+      });
+  };
+
+  /**
+   * Cancels the current project
+   */
+  const handleUpdateStatus = (status_id, current_phase) => {
+    updateStatus({
+      variables: {
+        projectId: projectId,
+        currentStatus: current_phase,
+        statusId: status_id,
+      },
+    })
+      .then(() =>
+        clearCurrentNoPhase({
+          variables: {
+            projectId: projectId,
+          },
+        })
+      )
+      .then(() => {
+        window.location = "/moped/projects";
+      })
+      .catch(err => {
+        // If there is an error, show it in the dialog
+        setDialogContent(
+          "Error",
+          `It appears there was an error while changing status to '${current_phase}', please contact the Data & Technology Services department. Reference: ${String(
+            err
+          )}`,
           <Button onClick={handleDialogClose}>Close</Button>
         );
       });
@@ -365,6 +401,7 @@ const ProjectView = () => {
                         keepMounted
                         open={menuOpen}
                         onClose={handleMenuClose}
+                        autoFocus={false}
                         TransitionComponent={Fade}
                         getContentAnchorEl={null}
                         anchorOrigin={{
@@ -376,46 +413,53 @@ const ProjectView = () => {
                           horizontal: "center",
                         }}
                       >
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">share</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Share" />
-                        </MenuItem>
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">favorite</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Add to favorites" />
-                        </MenuItem>
-                        <MenuItem onClick={handleRenameClick}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">create</Icon>
+                        <MenuItem
+                          onClick={handleRenameClick}
+                          className={classes.projectOptionsMenuItem}
+                          selected={false}
+                        >
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <CreateOutlinedIcon />
                           </ListItemIcon>
                           <ListItemText primary="Rename" />
                         </MenuItem>
                         <MenuItem
-                          onClick={handleMenuClose}
+                          onClick={() => handleUpdateStatus(4, "on hold")}
+                          className={classes.projectOptionsMenuItem}
                           selected={false}
-                          disabled={true}
                         >
-                          <ListItemIcon>
-                            <Icon fontSize="small">block</Icon>
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <PauseCircleOutlineOutlinedIcon />
                           </ListItemIcon>
                           <ListItemText primary="Place on hold" />
                         </MenuItem>
                         <MenuItem
-                          onClick={handleDeleteClick}
-                          className={classes.menuDangerItem}
+                          onClick={() => handleUpdateStatus(3, "canceled")}
+                          className={classes.projectOptionsMenuItem}
                           selected={false}
                         >
-                          <ListItemIcon className={classes.menuDangerText}>
-                            <Icon fontSize="small">delete</Icon>
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <CancelOutlinedIcon />
                           </ListItemIcon>
-                          <ListItemText
-                            primary="Cancel"
-                            className={classes.menuDangerText}
-                          />
+                          <ListItemText primary="Cancel" />
+                        </MenuItem>
+                        <MenuItem
+                          onClick={handleDeleteClick}
+                          className={classes.projectOptionsMenuItem}
+                          selected={false}
+                        >
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <DeleteOutlinedIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Delete" />
                         </MenuItem>
                       </Menu>
                     </Grid>

@@ -240,6 +240,10 @@ export const TIMELINE_QUERY = gql`
       project_milestone_id
       project_id
     }
+    moped_status {
+      status_id
+      status_name
+    }
   }
 `;
 
@@ -802,10 +806,11 @@ export const PROJECT_UPDATE_CURRENT_STATUS = gql`
   mutation UpdateProjectCurrentStatus(
     $projectId: Int!
     $currentStatus: String!
+    $statusId: Int = 1
   ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { current_status: $currentStatus }
+      _set: { current_status: $currentStatus, status_id: $statusId }
     ) {
       affected_rows
     }
@@ -849,6 +854,23 @@ export const PROJECT_UPDATE_STATUS = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: $projectUpdateInput
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
+  mutation ClearProjectPhases($projectId: Int!) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
+    }
+    update_moped_project(
+      _set: { current_phase: null }
+      where: { project_id: { _eq: $projectId } }
     ) {
       affected_rows
     }
