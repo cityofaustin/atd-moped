@@ -166,14 +166,14 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
    * @returns {string}
    */
   const getComponentMapName = (status, phase) =>
-    status > 1 // is active?
+    status > 1 // is not active?
       ? // Then it can be found as a status
         (
           projectStatuses.find(s => s.status_id === status)?.status_name ??
           String(phase)
         ) // if not, default to phase
           .toLowerCase()
-      : // it's a phase for sure
+      : // if it's active then it's a phase for sure
         String(phase).toLowerCase();
 
   /**
