@@ -51,7 +51,9 @@ export const SUMMARY_QUERY = gql`
         project_note_id
         project_note
       }
-      moped_project_types {
+      moped_project_types(where: { status_id: { _eq: 1 } }) {
+        id
+        status_id
         moped_type {
           type_name
           type_id
@@ -815,14 +817,14 @@ export const PROJECT_UPDATE_CURRENT_STATUS = gql`
 
 export const PROJECT_UPDATE_TYPES = gql`
   mutation UpdateMopedProjectTypes(
-    $types: [moped_proj_partners_insert_input!]!
+    $types: [moped_project_types_insert_input!]!
     $deleteList: [Int!]!
   ) {
     insert_moped_project_types(objects: $types) {
       affected_rows
     }
     update_moped_project_types(
-      where: { project_type_id: { _in: $deleteList } }
+      where: { id: { _in: $deleteList } }
       _set: { status_id: 0 }
     ) {
       affected_rows

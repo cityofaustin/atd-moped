@@ -48,7 +48,7 @@ const ProjectSummaryProjectTypes = ({
   const originalTypes = data?.moped_project[0]?.moped_project_types ?? [];
   // Original Types Ids: array of ids (ints)
   const originalTypesIds = originalTypes.map(t => t?.moped_type?.type_id);
-  console.log(originalTypes, originalTypesIds)
+
   /**
    * Edit Mode and selected Types states
    */
@@ -78,29 +78,25 @@ const ProjectSummaryProjectTypes = ({
    * Saves the new project types
    */
   const handleProjectTypesSave = () => {
-    // Retrieve types list (original list)
-    const oldTypesList = originalTypesIds
+    // Original type Ids
+    const oldTypesList = originalTypesIds;
     // Get selected types ids
     const newTypesList = selectedTypes;
     // Retrieves the ids of oldTypesList that are not present in newTypesList
-    const typeIdsToDelete = oldTypesList.filter(
-      t => !newTypesList.includes(t)
-    );
+    const typeIdsToDelete = oldTypesList.filter(t => !newTypesList.includes(t));
     // Retrieves the ids of newTypesList that are not present in oldTypesList
-    const typeIdsToInsert = newTypesList.filter(
-      t => !oldTypesList.includes(t)
-    );
-    // We need a final list of objects to insert
-    const typeObjectsToInsert = typeIdsToInsert.map(id => ({
+    const typeIdsToInsert = newTypesList.filter(t => !oldTypesList.includes(t));
+    // List of objects to insert
+    const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
       project_id: projectId,
-      type_id: id,
+      project_type_id: type_id,
       status_id: 1,
     }));
-    // We need a final list of primary keys to delete
-    const typePksToDelete = originalTypes
-      .filter(t => typeIdsToDelete.includes(t.type_id))
 
-    console.log(typePksToDelete);
+    // List of primary keys to delete
+    const typePksToDelete = originalTypes
+      .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
+      .map(t => t.id);
 
     updateProjectTypes({
       variables: {
@@ -114,19 +110,15 @@ const ProjectSummaryProjectTypes = ({
         snackbarHandle(true, "Update successful", "success");
       })
       .catch(err => {
-        snackbarHandle(
-          true,
-          "Failed to update types: " + String(err),
-          "error"
-        );
+        snackbarHandle(true, "Failed to update types: " + String(err), "error");
         handleProjectTypesClose();
       });
     setEditMode(false);
   };
 
-  const selectedTypesJoint = selectedTypes
-    .map(t => typeDict[t])
-    .join(", ");
+  // join selected type names in a comma separated string
+  // used to display when not editing
+  const selectedTypesJoint = selectedTypes.map(t => typeDict[t]).join(", ");
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -136,7 +128,7 @@ const ProjectSummaryProjectTypes = ({
         justifyContent="flex-start"
         className={classes.fieldBox}
       >
-        {editMode && (
+        {editMode ? (
           <>
             <Select
               id={`moped-project-summary-type-select-${projectId}`}
@@ -161,16 +153,12 @@ const ProjectSummaryProjectTypes = ({
               }}
               className={classes.fieldSelectItem}
             >
-              {typeList.map(type => {
-                console.log("TYPE ", type)
-                return (
+              {typeList.map(type => (
                 <MenuItem key={type.type_id} value={type.type_id}>
-                  <Checkbox
-                    checked={selectedTypes.includes(type.type_id)}
-                  />
+                  <Checkbox checked={selectedTypes.includes(type.type_id)} />
                   <ListItemText primary={type.type_name} />
                 </MenuItem>
-              )})}
+              ))}
             </Select>
             <Icon
               className={classes.editIconConfirm}
@@ -185,13 +173,10 @@ const ProjectSummaryProjectTypes = ({
               close
             </Icon>
           </>
-        )}
-        {!editMode && (
+        ) : (
           <ProjectSummaryLabel
             text={
-              selectedTypesJoint.trim() === ""
-                ? "None"
-                : selectedTypesJoint
+              selectedTypesJoint.trim() === "" ? "None" : selectedTypesJoint
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}
