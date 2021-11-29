@@ -426,18 +426,21 @@ const ProjectView = () => {
                           </ListItemIcon>
                           <ListItemText primary="Rename" />
                         </MenuItem>
-                        <MenuItem
-                          onClick={() => handleUpdateStatus(4, "on hold")}
-                          className={classes.projectOptionsMenuItem}
-                          selected={false}
-                        >
-                          <ListItemIcon
-                            className={classes.projectOptionsMenuItemIcon}
+                        {projectStatus?.current_status !== "on hold" && (
+                          <MenuItem
+                            onClick={() => handleUpdateStatus(4, "on hold")}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
                           >
-                            <PauseCircleOutlineOutlinedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="Place on hold" />
-                        </MenuItem>
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              <PauseCircleOutlineOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Place on hold" />
+                          </MenuItem>
+                        )}
+
                         <MenuItem
                           onClick={() => handleUpdateStatus(3, "canceled")}
                           className={classes.projectOptionsMenuItem}
