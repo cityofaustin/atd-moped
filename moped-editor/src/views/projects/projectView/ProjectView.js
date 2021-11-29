@@ -329,9 +329,7 @@ const ProjectView = () => {
           },
         })
       )
-      .then(() => {
-        window.location = "/moped/projects";
-      })
+      .then(() => refetch())
       .catch(err => {
         // If there is an error, show it in the dialog
         setDialogContent(
