@@ -451,7 +451,7 @@ const ProjectView = () => {
                         )}
 
                         <MenuItem
-                          onClick={() => handleUpdateStatus(3, "canceled")}
+                          onClick={() => handleUpdateStatus("canceled")}
                           className={classes.projectOptionsMenuItem}
                           selected={false}
                         >
