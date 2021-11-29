@@ -20,6 +20,7 @@ import {
 import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
+import RenderSignalLink from "./RenderSignalLink";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -27,6 +28,9 @@ const useStyles = makeStyles({
       // override the default padding of 16px
       padding: "14px",
     },
+  },
+  tableTypography: {
+    fontSize: "14px",
   },
 });
 
@@ -70,7 +74,13 @@ const SignalProjectTable = () => {
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
       project.moped_proj_features.forEach(feature => {
-        signal_ids.push(feature?.location?.properties?.signal_id);
+        const signal = feature?.location?.properties?.signal_id;
+        if (signal) {
+          signal_ids.push({
+            signal_id: signal,
+            knack_id: feature.location.properties.id,
+          });
+        }
       });
     }
     project["signal_ids"] = signal_ids;
@@ -92,14 +102,24 @@ const SignalProjectTable = () => {
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
     // display the phase start date, otherwise leave blank
     project["construction_start"] = null;
+    project["completion_date"] = null;
     project["current_phase"] = "";
     if (project?.moped_proj_phases?.length) {
+      // check for construction phase
       const constructionPhase = project.moped_proj_phases.find(
         p => p.phase_name === "construction"
       );
       if (constructionPhase) {
         project["construction_start"] = constructionPhase.phase_start;
       }
+      // check for completion phase
+      const completionPhase = project.moped_proj_phases.find(
+        p => p.phase_name === "complete"
+      );
+      if (completionPhase) {
+        project["completion_date"] = completionPhase.phase_end;
+      }
+      // get current phase
       const currentPhase = project.moped_proj_phases.find(
         p => p.is_current_phase
       );
@@ -118,6 +138,29 @@ const SignalProjectTable = () => {
       });
     }
     project["funding_sources"] = funding_sources;
+
+    // project personnel
+    const designers = [];
+    const inspectors = [];
+    // role_ids come from moped_project_roles. 8 is Designer and 12 is Inspector
+    const isDesigner = personnel => personnel?.role_id === 8;
+    const isInspector = personnel => personnel?.role_id === 12;
+    if (project?.moped_proj_personnel?.length) {
+      project.moped_proj_personnel.forEach(personnel => {
+        if (isDesigner(personnel)) {
+          designers.push(
+            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+          );
+        }
+        if (isInspector(personnel)) {
+          inspectors.push(
+            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+          );
+        }
+      });
+    }
+    project["project_designer"] = designers.join(", ");
+    project["project_inspector"] = inspectors.join(", ");
   });
 
   /**
@@ -141,7 +184,7 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
-      render: entry => entry.signal_ids.join(", "),
+      render: entry => <RenderSignalLink signals={entry.signal_ids} />,
     },
     {
       title: "Project types",
@@ -201,21 +244,75 @@ const SignalProjectTable = () => {
       title: "Project sponsor",
       field: "project_sponsor",
       render: entry => (
-        <Typography>{entry?.project_sponsor?.entity_name}</Typography>
+        <Typography className={classes.tableTypography}>
+          {entry?.project_sponsor?.entity_name}
+        </Typography>
       ),
       customEdit: "projectSponsor",
+    },
+    {
+      title: "Designer",
+      field: "project_designer",
+      cellStyle: typographyStyle,
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_designer}
+          tab="team"
+        />
+      ),
+    },
+    {
+      title: "Inspector",
+      field: "project_inspector",
+      cellStyle: typographyStyle,
+      editable: "never",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_inspector}
+          tab="team"
+        />
+      ),
     },
     {
       title: "Targeted construction start",
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry =>
-        entry.construction_start
-          ? new Date(entry.construction_start).toLocaleDateString("en-US", {
-              timeZone: "UTC",
-            })
-          : "",
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={
+            entry.construction_start
+              ? new Date(entry.construction_start).toLocaleDateString("en-US", {
+                  timeZone: "UTC",
+                })
+              : ""
+          }
+          tab="timeline"
+        />
+      ),
+    },
+    {
+      title: "Project completion date",
+      field: "completion_date",
+      editable: "never",
+      cellStyle: typographyStyle,
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={
+            entry.completion_date
+              ? new Date(entry.completion_date).toLocaleDateString("en-US", {
+                  timeZone: "UTC",
+                })
+              : ""
+          }
+          tab="timeline"
+        />
+      ),
     },
     {
       title: "Last modified",
