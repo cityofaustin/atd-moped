@@ -108,11 +108,6 @@ const getStyle = (theme, phase) => {
       background: backgroundColors.default,
       icon: PauseCircleOutlineOutlinedIcon,
     },
-    "on-hold": {
-      color: primary,
-      background: backgroundColors.default,
-      icon: PauseCircleOutlineOutlinedIcon,
-    },
     complete: {
       color: white,
       background: backgroundColors.info,
