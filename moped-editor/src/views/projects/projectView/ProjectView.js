@@ -303,14 +303,23 @@ const ProjectView = () => {
   };
 
   /**
+   * Finds the status_id for a phase name
+   * @param {string} phase - The name of the phase
+   * @returns {number}
+   */
+  const resolveStatusIdForPhase = phase =>
+    data?.moped_status.find(s => s.status_name.toLowerCase() === phase)
+      .status_id ?? 1;
+
+  /**
    * Cancels the current project
    */
-  const handleUpdateStatus = (status_id, current_phase) => {
+  const handleUpdateStatus = current_phase => {
     updateStatus({
       variables: {
         projectId: projectId,
         currentStatus: current_phase,
-        statusId: status_id,
+        statusId: resolveStatusIdForPhase(current_phase),
       },
     })
       .then(() =>
