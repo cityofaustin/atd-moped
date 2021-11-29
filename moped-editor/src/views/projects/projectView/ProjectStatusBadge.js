@@ -19,23 +19,21 @@ const defaultIcon = PlayCircleOutlineOutlinedIcon;
  * @returns {Object|null}
  */
 const getStyle = (theme, phase) => {
-  if (theme === null) return null;
-
   /**
    * Font colors
    */
-  const primary = theme.palette.text.primary;
-  const white = theme.palette.common.white;
+  const primary = theme?.palette?.text?.primary;
+  const white = theme?.palette?.common?.white;
 
   /**
    * Background color mapping
    */
   const backgroundColors = {
-    default: theme.palette.grey[300],
-    warning: theme.palette.warning.light,
-    success: theme.palette.success.main,
-    info: theme.palette.info.dark,
-    error: theme.palette.error.main,
+    default: theme?.palette?.grey?.[300],
+    warning: theme?.palette?.warning?.light,
+    success: theme?.palette?.success?.main,
+    info: theme?.palette?.info?.dark,
+    error: theme?.palette?.error?.main,
   };
 
   // Default background color
