@@ -32,6 +32,9 @@ const useStyles = makeStyles({
   tableTypography: {
     fontSize: "14px",
   },
+  projectNameStyle: {
+    minWidth: "150px",
+  },
 });
 
 const SignalProjectTable = () => {
@@ -171,7 +174,7 @@ const SignalProjectTable = () => {
       title: "Project name",
       field: "project_name",
       editable: "never",
-      cellStyle: { minWidth: "150px" },
+      cellStyle: projectNameStyle,
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
