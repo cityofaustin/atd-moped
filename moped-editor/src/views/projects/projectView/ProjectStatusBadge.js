@@ -222,7 +222,7 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
    * @type {boolean}
    */
   const showChip =
-    (!!phase && String(phase).trim().length > 0) || [3, 4].includes(status);
+    (!!phase && String(phase).trim().length > 0) || status > 1;
 
   /**
    * Return the object
