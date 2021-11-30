@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   CardContent,
@@ -22,7 +22,10 @@ import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,
 } from "../../../queries/signals";
-import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
+import {
+  PROJECT_UPDATE_SPONSOR,
+  PROJECT_UPDATE_TYPES,
+} from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
@@ -49,11 +52,9 @@ const SignalProjectTable = () => {
     fontSize: "14px",
   };
 
-  const [selectedTypes, setSelectedTypes] = useState([]);
-
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
-  
+  const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
 
   if (error) {
     console.log(error);
@@ -106,7 +107,7 @@ const SignalProjectTable = () => {
     const project_types = [];
     if (project?.moped_project_types?.length) {
       project.moped_project_types.forEach(projType => {
-        project_types.push(projType?.moped_type?.type_name);
+        project_types.push(projType?.moped_type?.type_id);
       });
     }
     project["project_types"] = project_types;
@@ -180,7 +181,7 @@ const SignalProjectTable = () => {
     project["project_inspector"] = inspectors.join(", ");
   });
 
-  console.log(data.moped_project)
+  console.log(data.moped_project);
 
   /**
    * Column configuration for <MaterialTable>
@@ -207,20 +208,20 @@ const SignalProjectTable = () => {
     },
     {
       title: "Project types",
-      field: "moped_project_types",
+      field: "project_types",
       customEdit: "projectTypes",
       render: entry => {
-        const project_types = [];
-        if (entry?.moped_project_types?.length) {
-          entry.moped_project_types.forEach(projType => {
-            project_types.push(projType?.moped_type?.type_name);
-          })
-          return <Typography className={classes.tableTypography}>{project_types.join(", ")}</Typography>
-        };
-        return <Typography className={classes.tableTypography}>None</Typography>
-    }
-        
-
+        if (entry?.project_types?.length) {
+          return (
+            <Typography className={classes.tableTypography}>
+              {entry.project_types.map(t => typeDict[t]).join(", ")}
+            </Typography>
+          );
+        }
+        return (
+          <Typography className={classes.tableTypography}>None</Typography>
+        );
+      },
     },
     {
       title: "Current phase",
@@ -356,7 +357,6 @@ const SignalProjectTable = () => {
     },
   ];
 
-
   /**
    * projectActions functions object
    */
@@ -395,6 +395,24 @@ const SignalProjectTable = () => {
           variables: {
             projectId: rowData.project_id,
             entityId: newData.entity_id,
+          },
+        });
+      } else if (columnDef.customEdit === "projectTypes") {
+        const typeIdsToDelete = oldData.filter(t => !newData.includes(t));
+        const typeIdsToInsert = newData.filter(t => !oldData.includes(t));
+        const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
+          project_id: rowData.project_id,
+          project_type_id: type_id,
+          status_id: 1,
+        }));
+        // List of primary keys to delete
+        const typePksToDelete = rowData.moped_project_types
+          .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
+          .map(t => t.id);
+        return updateProjectTypes({
+          variables: {
+            types: typeObjectsToInsert,
+            deleteList: typePksToDelete,
           },
         });
       } else {
@@ -438,18 +456,13 @@ const SignalProjectTable = () => {
       />
     ),
     projectTypes: props => {
-      const originalTypesIds = props.value.map(t => t?.moped_type?.type_id);
-      console.log(props, props.value, selectedTypes)
       return (
         <Select
-          id={`moped-project-summary-type-select-${"ee"}`}
           multiple
-          value={originalTypesIds}
-          onChange={(event, value) => setSelectedTypes(event.target.value)}//handleChange}
+          value={props.value}
+          onChange={(event, value) => props.onChange(event.target.value)} //handleChange}
           input={<Input />}
-          renderValue={type_ids =>
-            type_ids.map(t => typeDict[t]).join(", ")
-          }
+          renderValue={type_ids => type_ids.map(t => typeDict[t]).join(", ")}
           /*
             There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
             this is fixed by overriding the function "getContentAnchorEl".
@@ -465,12 +478,13 @@ const SignalProjectTable = () => {
         >
           {typeList.map(type => (
             <MenuItem key={type.type_id} value={type.type_id}>
-              <Checkbox checked={originalTypesIds.includes(type.type_id)} />
+              <Checkbox checked={props.value.includes(type.type_id)} />
               <ListItemText primary={type.type_name} />
             </MenuItem>
           ))}
         </Select>
-      )}
+      );
+    },
   };
 
   return (
