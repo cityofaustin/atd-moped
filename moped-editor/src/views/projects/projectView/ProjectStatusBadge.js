@@ -43,6 +43,11 @@ const getStyle = (theme, phase) => {
    * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
    */
   const styleMapping = {
+    active: {
+      color: white,
+      background: backgroundColors.success,
+      icon: PlayCircleOutlineOutlinedIcon,
+    },
     planned: {
       color: white,
       background: backgroundColors.success,
