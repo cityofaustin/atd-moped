@@ -221,8 +221,7 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
    * Show chip is true if we have a phase or a valid status id
    * @type {boolean}
    */
-  const showChip =
-    (!!phase && String(phase).trim().length > 0) || status > 1;
+  const showChip = (!!phase && String(phase).trim().length > 0) || status > 1;
 
   /**
    * Return the object
