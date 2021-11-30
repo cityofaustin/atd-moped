@@ -1,9 +1,14 @@
-import React from "react";
+import React, {useState} from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   CardContent,
+  Checkbox,
   CircularProgress,
   Grid,
+  Input,
+  ListItemText,
+  MenuItem,
+  Select,
   TextField,
   Typography,
   makeStyles,
@@ -44,8 +49,11 @@ const SignalProjectTable = () => {
     fontSize: "14px",
   };
 
+  const [selectedTypes, setSelectedTypes] = useState([]);
+
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+  
 
   if (error) {
     console.log(error);
@@ -54,7 +62,16 @@ const SignalProjectTable = () => {
     return <CircularProgress />;
   }
 
+  // lists needed for dropdown options
   const entityList = data?.moped_entity ?? [];
+  const typeList = data?.moped_types ?? [];
+  const typeDict = typeList.reduce(
+    (prev, curr) => ({
+      ...prev,
+      ...{ [curr.type_id]: curr.type_name },
+    }),
+    {}
+  );
 
   /**
    * Build data needed in Signals Material Table
@@ -163,6 +180,8 @@ const SignalProjectTable = () => {
     project["project_inspector"] = inspectors.join(", ");
   });
 
+  console.log(data.moped_project)
+
   /**
    * Column configuration for <MaterialTable>
    */
@@ -188,9 +207,20 @@ const SignalProjectTable = () => {
     },
     {
       title: "Project types",
-      field: "project_types",
-      editable: "never",
-      render: entry => entry.project_types.join(", "),
+      field: "moped_project_types",
+      customEdit: "projectTypes",
+      render: entry => {
+        const project_types = [];
+        if (entry?.moped_project_types?.length) {
+          entry.moped_project_types.forEach(projType => {
+            project_types.push(projType?.moped_type?.type_name);
+          })
+          return <Typography className={classes.tableTypography}>{project_types.join(", ")}</Typography>
+        };
+        return <Typography className={classes.tableTypography}>None</Typography>
+    }
+        
+
     },
     {
       title: "Current phase",
@@ -326,6 +356,10 @@ const SignalProjectTable = () => {
     },
   ];
 
+
+  /**
+   * projectActions functions object
+   */
   const projectActions = {
     update: (newData, oldData) => {
       // initialize update object with old data
@@ -384,6 +418,9 @@ const SignalProjectTable = () => {
     },
   };
 
+  /**
+   * Custom edit components
+   */
   const cellEditComponents = {
     projectSponsor: props => (
       <Autocomplete
@@ -400,6 +437,40 @@ const SignalProjectTable = () => {
         )}
       />
     ),
+    projectTypes: props => {
+      const originalTypesIds = props.value.map(t => t?.moped_type?.type_id);
+      console.log(props, props.value, selectedTypes)
+      return (
+        <Select
+          id={`moped-project-summary-type-select-${"ee"}`}
+          multiple
+          value={originalTypesIds}
+          onChange={(event, value) => setSelectedTypes(event.target.value)}//handleChange}
+          input={<Input />}
+          renderValue={type_ids =>
+            type_ids.map(t => typeDict[t]).join(", ")
+          }
+          /*
+            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
+            this is fixed by overriding the function "getContentAnchorEl".
+                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
+          */
+          MenuProps={{
+            getContentAnchorEl: () => null,
+            style: {
+              maxHeight: 500,
+              width: 450,
+            },
+          }}
+        >
+          {typeList.map(type => (
+            <MenuItem key={type.type_id} value={type.type_id}>
+              <Checkbox checked={originalTypesIds.includes(type.type_id)} />
+              <ListItemText primary={type.type_name} />
+            </MenuItem>
+          ))}
+        </Select>
+      )}
   };
 
   return (

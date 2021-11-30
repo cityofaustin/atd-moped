@@ -31,9 +31,12 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           funding_source_name
         }
       }
-      moped_project_types {
+      moped_project_types(where: { status_id: { _eq: 1 } }) {
+        id
+        status_id
         moped_type {
           type_name
+          type_id
         }
       }
       moped_proj_personnel(where: {status_id: {_eq: 1}}) {
@@ -47,6 +50,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
     moped_entity {
       entity_id
       entity_name
+    }
+    moped_types {
+      type_id
+      type_name
     }
   }
 `;
