@@ -330,7 +330,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                     inputRef={ref}
                     value={value}
                   >
-                    {console.log(workgroups.moped_workgroup)}
                     {workgroups.moped_workgroup.map(workgroup => (
                       <MenuItem
                         key={workgroup.workgroup_id}
