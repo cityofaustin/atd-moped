@@ -181,8 +181,6 @@ const SignalProjectTable = () => {
     project["project_inspector"] = inspectors.join(", ");
   });
 
-  console.log(data.moped_project);
-
   /**
    * Column configuration for <MaterialTable>
    */
@@ -383,6 +381,32 @@ const SignalProjectTable = () => {
 
       updatedProjectObject["entity_id"] =
         updatedProjectObject.project_sponsor.entity_id;
+
+      // compare moped project types
+      const oldTypesList = oldData.project_types;
+      const newTypesList = newData.project_types;
+      // Retrieves the ids of oldTypesList that are not present in newTypesList
+      const typeIdsToDelete = oldTypesList.filter(
+        t => !newTypesList.includes(t)
+      );
+      // Retrieves the ids of newTypesList that are not present in oldTypesList
+      const typeIdsToInsert = newTypesList.filter(
+        t => !oldTypesList.includes(t)
+      );
+      // List of objects to insert
+      const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
+        project_id: oldData.project_id,
+        project_type_id: type_id,
+        status_id: 1,
+      }));
+
+      // List of primary keys to delete
+      const typePksToDelete = oldData.moped_project_types
+        .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
+        .map(t => t.id);
+
+      updatedProjectObject["projectTypes"] = typeObjectsToInsert;
+      updatedProjectObject["typesDeleteList"] = typePksToDelete;
 
       return updateSignalProject({
         variables: updatedProjectObject,

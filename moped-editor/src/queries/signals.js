@@ -64,7 +64,7 @@ export const UPDATE_SIGNAL_PROJECT = gql`
     $contractor: String
     $purchase_order_number: String
     $entity_id: Int
-    $projectTypes: [moped_project_types_insert_input!]
+    $projectTypes: [moped_project_types_insert_input!]!
     $typesDeleteList: [Int!]
   ) {
     update_moped_project_by_pk(
