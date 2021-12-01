@@ -129,7 +129,7 @@ const ProjectSummaryProjectPartners = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Project partners</Typography>
+      <Typography className={classes.fieldLabel}>Partners</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
