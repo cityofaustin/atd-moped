@@ -46,6 +46,7 @@ export const SUMMARY_QUERY = gql`
       project_priority
       project_sponsor
       project_website
+      status_id
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
@@ -95,6 +96,7 @@ export const SUMMARY_QUERY = gql`
       where: { status_id: { _gt: 0 } }
       order_by: { status_order: asc }
     ) {
+      status_id
       status_name
     }
   }
@@ -237,6 +239,10 @@ export const TIMELINE_QUERY = gql`
       completed
       project_milestone_id
       project_id
+    }
+    moped_status {
+      status_id
+      status_name
     }
   }
 `;
@@ -800,10 +806,11 @@ export const PROJECT_UPDATE_CURRENT_STATUS = gql`
   mutation UpdateProjectCurrentStatus(
     $projectId: Int!
     $currentStatus: String!
+    $statusId: Int = 1
   ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { current_status: $currentStatus }
+      _set: { current_status: $currentStatus, status_id: $statusId }
     ) {
       affected_rows
     }
@@ -833,6 +840,37 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { ecapris_subproject_id: null, capitally_funded: false }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_STATUS = gql`
+  mutation UpdateProjectPhase(
+    $projectId: Int!
+    $projectUpdateInput: moped_project_set_input!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: $projectUpdateInput
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
+  mutation ClearProjectPhases($projectId: Int!) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
+    }
+    update_moped_project(
+      _set: { current_phase: null }
+      where: { project_id: { _eq: $projectId } }
     ) {
       affected_rows
     }
