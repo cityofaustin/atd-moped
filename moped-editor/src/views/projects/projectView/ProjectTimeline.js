@@ -305,6 +305,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
             </MenuItem>
           );
         })}
+        <MenuItem
+          onChange={() => props.onChange("")}
+          onClick={() => props.onChange("")}
+          onKeyDown={e => handleKeyEvent(e)}
+          value=""
+        >
+          -
+        </MenuItem>
       </Select>
     );
   };
