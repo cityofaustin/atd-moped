@@ -67,11 +67,12 @@ const NewProjectView = () => {
    *    the project name and featureCollection will be set from the `signal` value.
    */
   const [projectDetails, setProjectDetails] = useState({
-    current_phase: "",
+    current_phase: "potential",
     project_description: "",
     project_name: "",
     start_date: format(Date.now(), "yyyy-MM-dd"),
-    current_status: "",
+    current_status: "active",
+    status_id: 1,
   });
 
   const {
@@ -111,8 +112,8 @@ const NewProjectView = () => {
    * Persists a new project into the database
    */
   const handleSubmit = () => {
-    let signalError = fromSignalAsset && !Boolean(signal);
-    setSignalError(signalError);
+    const newSignalError = fromSignalAsset && !Boolean(signal);
+    setSignalError(newSignalError);
 
     if (projectDetails.project_name.trim().length === 0) {
       setNameError(true);
@@ -132,28 +133,41 @@ const NewProjectView = () => {
        * If it is a signal asset, include moped_proj_components, otherwise only the project details
        * @type {Object}
        */
-      const variablePayload = fromSignalAsset
-        ? {
-            object: {
-              // First we need to copy the project details
-              ...projectDetails,
-              // Next we generate the project extent component
-              moped_proj_components: {
-                data: [
-                  generateProjectComponent(
-                    featureCollection,
-                    fromSignalAsset,
-                    componentData["moped_components"]
-                  ),
-                ],
+      const variablePayload = {
+        object: {
+          // First we need to copy the project details
+          ...projectDetails,
+
+          // We need to add the potential phase as a default
+          moped_proj_phases: {
+            data: [
+              {
+                phase_name: "potential",
+                is_current_phase: true,
+                status_id: 1,
+                completion_percentage: 0,
+                completed: false,
+                phase_start: format(Date.now(), "yyyy-MM-dd"),
               },
-            },
-          }
-        : {
-            object: {
-              ...projectDetails,
-            },
-          };
+            ],
+          },
+          // Append moped_proj_components object if fromSignalAsset is true
+          ...(fromSignalAsset
+            ? {
+                moped_proj_components: {
+                  data: [
+                    generateProjectComponent(
+                      featureCollection,
+                      fromSignalAsset,
+                      componentData["moped_components"]
+                    ),
+                  ],
+                },
+              }
+            : {}),
+        },
+      };
+
       /**
        * Persist the new project to database
        */
