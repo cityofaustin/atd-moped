@@ -150,7 +150,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
-               <ProjectSummaryProjectTypes
+                <ProjectSummaryProjectTypes
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
@@ -168,7 +168,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-              <Grid container spacing={0}>
+            <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectECapris
                   projectId={projectId}
