@@ -42,7 +42,7 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
-          npm install npm@latest && echo "Updated npm to version: $(npm --version)"
+          npm install -g npm@latest && echo "Updated npm to version: $(npm --version)"
           echo "Node Version: $(node --version)"
           echo " NPM Version: $(npm --version)"
 
