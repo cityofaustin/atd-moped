@@ -111,14 +111,14 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
       },
     })
       .then(() => {
-        console.log((commentId ? "Updated" : "Created") + " project note");
+        console.info((commentId ? "Updated" : "Created") + " project note");
         refetch().then(() => {
           setStatusUpdateEditable(false);
           setStatusUpdateAddNew(false);
         });
       })
       .catch(err => {
-        console.log("Error: " + err);
+        console.warn("Error: " + err);
       });
   };
 
