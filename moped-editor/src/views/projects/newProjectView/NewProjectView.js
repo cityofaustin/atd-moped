@@ -71,8 +71,8 @@ const NewProjectView = () => {
     project_description: "",
     project_name: "",
     start_date: format(Date.now(), "yyyy-MM-dd"),
-    current_status: "active",
-    status_id: 1,
+    current_status: "potential",
+    status_id: 2,
   });
 
   const {
