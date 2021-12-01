@@ -13,6 +13,13 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       start_date
+      moped_proj_phases {
+        phase_name
+        is_current_phase
+        status_id
+        completion_percentage
+        completed
+      }
       moped_proj_components {
         moped_proj_features_components {
           moped_proj_feature {
