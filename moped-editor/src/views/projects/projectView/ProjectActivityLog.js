@@ -36,6 +36,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
+import typography from "src/theme/typography";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -53,6 +54,9 @@ const useStyles = makeStyles(theme => ({
   },
   avatarName: {
     margin: "0.3rem 0 0 .5rem",
+  },
+  projectPageHeader: {
+    fontFamily: typography.fontFamily,
   },
 }));
 
@@ -187,7 +191,7 @@ const ProjectActivityLog = () => {
   return (
     <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
-        <h2 style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
+        <h2 className={classes.projectPageHeader} style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
         {getTotalItems() === 0 ? (
           <Alert severity="info">
             There aren't any items for this project.
