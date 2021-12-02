@@ -484,6 +484,7 @@ const ProjectView = () => {
                     classes={{ indicator: classes.indicatorColor }}
                     value={activeTab}
                     onChange={handleChange}
+                    variant="scrollable"
                     aria-label="Project Details Tabs"
                   >
                     {TABS.map((tab, i) => {
