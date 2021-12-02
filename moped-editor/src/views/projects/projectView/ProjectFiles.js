@@ -8,6 +8,10 @@ import {
   Link,
   TextField,
   Typography,
+  FormControl,
+  Select,
+  MenuItem,
+  FormHelperText,
 } from "@material-ui/core";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -86,6 +90,7 @@ const ProjectFiles = props => {
         object: {
           project_id: projectId,
           file_name: fileDataBundle?.name,
+          file_type: fileDataBundle?.type,
           file_description: fileDataBundle.description,
           file_key: fileDataBundle.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
@@ -133,6 +138,8 @@ const ProjectFiles = props => {
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
 
+  const fileTypes = ['', 'Funding', 'Plans', 'Estimates', 'Other'];
+
   /**
    * Column configuration for <MaterialTable>
    */
@@ -140,6 +147,9 @@ const ProjectFiles = props => {
     {
       title: "Name",
       field: "file_name",
+      validate: (rowData) => {
+        return rowData.file_name.length > 0 ? true : false;
+        },
       render: record => (
         <Link
           className={classes.downloadLink}
@@ -154,7 +164,29 @@ const ProjectFiles = props => {
           name="file_name"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
+          helperText="Required"
         />
+      ),
+    },
+    {
+      title: "Type",
+      field: "file_type",
+      render: record => <span>{fileTypes[record?.file_type]}</span>,
+      editComponent: props => (
+        <FormControl >
+          <Select  
+          id="file_description"
+          name="file_description"
+          value={props?.value}
+          onChange={e => props.onChange(e.target.value)}
+          >
+            <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
+            <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
+            <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
+            <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
+          </Select>
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
     },
     {
@@ -281,6 +313,7 @@ const ProjectFiles = props => {
               updateProjectFileAttachment({
                 variables: {
                   fileId: newData.project_file_id,
+                  fileType: newData.file_type,
                   fileName: newData.file_name,
                   fileDescription: newData.file_description,
                 },
@@ -299,7 +332,7 @@ const ProjectFiles = props => {
         />
       </ApolloErrorHandler>
       <FileUploadDialogSingle
-        title={"Upload Media"}
+        title={"Add file"}
         dialogOpen={dialogOpen}
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}

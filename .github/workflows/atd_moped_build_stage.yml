@@ -42,6 +42,8 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           echo "PWD: $(pwd)"
+          echo "Node Version: $(node --version)"
+          echo " NPM Version: $(npm --version)"
 
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
           echo "Commented out editor build"
@@ -62,7 +64,7 @@ jobs:
       - name: "Install CLI Requirements: Heroku, Hasura"
         run: |
           curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
-          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+          curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | VERSION=v1.3.3 bash
       # Run the shell commands using the AWS environment variables
       - name: "Moped Database: Re-deploy"
         env:

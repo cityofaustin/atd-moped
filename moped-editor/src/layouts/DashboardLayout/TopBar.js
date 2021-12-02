@@ -133,7 +133,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
           <Button className={classes.avatarButton} onClick={handleAvatarClick}>
             <CDNAvatar
               className={classes.avatar}
-              src={userDbData.picture}
+              src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
             />

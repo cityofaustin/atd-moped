@@ -15,10 +15,10 @@ import {
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon
+  DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
-
+import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
 // Query
@@ -170,16 +170,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           });
         }
       });
-    }
-  };
-
-  /**
-   * Prevents the line from being saved on enter key
-   * @param {object} e - Event Object
-   */
-  const handleKeyEvent = e => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.stopPropagation();
     }
   };
 

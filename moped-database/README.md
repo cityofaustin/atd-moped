@@ -72,6 +72,96 @@ $ hasura console
 $ ./hasura-cluster stop
 ```
 
+### Hasura-Cluster Cloning & Restoring
+
+There may be occasions where you need to copy the data in staging or production to run it locally. Clone and restore allow for these operations to happen easily.
+
+#### I. Configure
+
+You will first need to configure your environment:
+
+Example:
+
+1. Copy the hasura_cluster template file into your ssh directory with this specific name:
+
+   `$ cp config/hasura_cluster_template.json ~/.ssh/hasura_cluster.json`;
+
+   Note: This script expects to find it with this name `~/.ssh/hasura_cluster.json`
+
+2. Change permissions so only you can read/write to it:
+
+   `chmod 600 ~/.ssh/hasura_cluster.json`
+
+3. Edit the file with nano or vim, and fill-in the blanks:
+
+   `nano ~/.ssh/hasura_cluster.json`
+
+   -or-
+
+   `vim ~/.ssh/hasura_cluster.json`
+
+4. Save and exit
+
+#### II. Clone
+
+Cloning basically runs pg_dump for you and saves the file into the snapshots directory. To do this, you run:
+
+This operation does not insert into your local database.
+
+Syntax:
+
+```bash
+$./hasura-cluster clone [environment]
+```
+
+Example:
+
+- Cloning staging or production:
+
+```bash
+./hasura-cluster clone staging
+./hasura-cluster clone production
+```
+
+
+- Cloning a staging or production backup from S3:
+
+```bash
+./hasura-cluster clone bucket staging "2021-11-03"
+./hasura-cluster clone bucket production "2021-11-03"
+```
+
+
+
+#### III. Restore
+
+This operation loads a snapshot into your local database instance. It does not create a snapshot.
+
+- Listing snapshot files downloaded:
+
+```bash
+./hasura-cluster list local [staging|production]
+```
+
+- Listing files in an s3 bucket:
+
+```bash
+./hasura-cluster list bucket [staging|production]
+```
+
+- Restoring a specific file:
+
+```bash
+./hasura-cluster restore [filename]
+```
+
+NOTE: If hasura isn't running, restore is going to exit with an error.
+
+- Restarting the hasura cluster without migrations:
+
+```bash
+./hasura-cluster reload
+```
 ### Hasura-Cluster Reference
 
 - `run_migration`: Runs all 3 hasura migrations: database, metadata, seed data. 

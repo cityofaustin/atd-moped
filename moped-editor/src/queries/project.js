@@ -13,6 +13,13 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       start_date
+      moped_proj_phases {
+        phase_name
+        is_current_phase
+        status_id
+        completion_percentage
+        completed
+      }
       moped_proj_components {
         moped_proj_features_components {
           moped_proj_feature {
@@ -37,6 +44,8 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
+      project_sponsor
+      project_website
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
@@ -48,6 +57,16 @@ export const SUMMARY_QUERY = gql`
       ) {
         project_note_id
         project_note
+      }
+    }
+    moped_proj_partners(
+      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+    ) {
+      proj_partner_id
+      project_id
+      entity_id
+      moped_entity {
+        entity_name
       }
     }
     moped_phases(order_by: { phase_order: asc }) {
@@ -67,6 +86,16 @@ export const SUMMARY_QUERY = gql`
       project_id
       phase_start
       phase_end
+    }
+    moped_entity {
+      entity_id
+      entity_name
+    }
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_name
     }
   }
 `;
@@ -418,6 +447,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       project_id
       file_key
       file_name
+      file_type
       file_description
       file_size
       file_metadata
@@ -437,11 +467,16 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
   mutation UpdateProjectFileAttachment(
     $fileId: Int!
     $fileName: String!
+    $fileType: Int!
     $fileDescription: String!
   ) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
-      _set: { file_name: $fileName, file_description: $fileDescription }
+      _set: {
+        file_name: $fileName
+        file_type: $fileType
+        file_description: $fileDescription
+      }
     ) {
       affected_rows
     }
@@ -700,7 +735,104 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
   ) {
     update_moped_proj_notes(
       where: { project_note_id: $project_note_id }
-      _set: { project_note: $project_note, added_by: $added_by, project_note_type: 2 }
+      _set: {
+        project_note: $project_note
+        added_by: $added_by
+        project_note_type: 2
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_SPONSOR = gql`
+  mutation ProjectUpdateSponsor($projectId: Int!, $entityId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_sponsor: $entityId }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_PARTNERS = gql`
+  mutation UpdateMopedProjectPartners(
+    $partners: [moped_proj_partners_insert_input!]!
+    $deleteList: [Int!]!
+  ) {
+    insert_moped_proj_partners(objects: $partners) {
+      affected_rows
+    }
+    update_moped_proj_partners(
+      where: { proj_partner_id: { _in: $deleteList } }
+      _set: { status_id: 0 }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_WEBSITE = gql`
+  mutation UpdateProjectWebsite($projectId: Int!, $website: String!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_website: $website }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_DESCRIPTION = gql`
+  mutation UpdateProjectDescription($projectId: Int!, $description: String!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_description: $description }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_CURRENT_STATUS = gql`
+  mutation UpdateProjectCurrentStatus(
+    $projectId: Int!
+    $currentStatus: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { current_status: $currentStatus }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
+  mutation UpdateProjectECapris(
+    $projectId: Int!
+    $eCapris: numeric!
+    $capitallyFunded: Boolean!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: {
+        ecapris_subproject_id: $eCapris
+        capitally_funded: $capitallyFunded
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
+  mutation UpdateProjectECaprisClear($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { ecapris_subproject_id: null, capitally_funded: false }
     ) {
       affected_rows
     }

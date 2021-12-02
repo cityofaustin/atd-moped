@@ -21,7 +21,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMapView from "./ProjectComponentsMapView";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
-import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
+import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
 import Alert from "@material-ui/lab/Alert";
 import { ArrowForwardIos } from "@material-ui/icons";

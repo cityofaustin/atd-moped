@@ -551,22 +551,6 @@ INSERT INTO public.moped_activity_log (activity_id, record_id, record_type, reco
 
 
 --
--- TOC entry 6033 (class 0 OID 21373)
--- Dependencies: 254
--- Data for Name: moped_categories; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('CIP', 1, true, NULL, NULL, 1, '2020-10-09 13:37:32.779628+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Lane Conversion', 2, true, NULL, NULL, 2, '2020-10-09 13:37:50.460015+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Parking Mod', 3, true, NULL, NULL, 3, '2020-10-09 13:38:56.504668+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Private Development', 4, true, NULL, NULL, 10, '2020-10-09 13:39:09.593212+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('New Road', 5, true, NULL, NULL, 6, '2020-10-09 13:39:23.93937+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Plan', 6, true, NULL, NULL, 8, '2020-10-09 13:39:31.616226+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Operations', 7, true, NULL, NULL, 9, '2020-10-09 13:39:41.544508+00');
-INSERT INTO public.moped_categories (category_name, category_id, active_category, on_street, sensitivity, category_order, date_added) VALUES ('Lane Width', 8, true, NULL, NULL, 12, '2020-10-09 13:39:51.594248+00');
-
-
---
 -- TOC entry 6035 (class 0 OID 21383)
 -- Dependencies: 256
 -- Data for Name: moped_city_fiscal_years; Type: TABLE DATA; Schema: public; Owner: atd_moped
@@ -594,7 +578,7 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 -- Data for Name: moped_entity; Type: TABLE DATA; Schema: public; Owner: atd_moped
 --
 
-INSERT INTO public.moped_entity (entity_uuid, workgroup_name, abbreviated_name, entity_id, affiliated_workgroup, date_added) VALUES ('f30415c5-0b5d-4d92-bb04-7c4f0ea13288', 'Capital Metro', 'CapMetro', 1, NULL, '2020-10-09 13:44:36.783377+00');
+-- INSERT INTO public.moped_entity (entity_uuid, workgroup_name, abbreviated_name, entity_id, affiliated_workgroup, date_added) VALUES ('f30415c5-0b5d-4d92-bb04-7c4f0ea13288', 'Capital Metro', 'CapMetro', 1, NULL, '2020-10-09 13:44:36.783377+00');
 
 
 --
@@ -823,31 +807,6 @@ INSERT INTO public.moped_project (project_uuid, project_name, project_descriptio
 --
 
 
---
--- TOC entry 6093 (class 0 OID 21657)
--- Dependencies: 314
--- Data for Name: moped_workgroup; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Active Transportation & Street Design', 1, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Arterial Management', 2, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Data & Technology Services', 3, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Finance', 4, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Human Resources', 5, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Office of Special Events', 6, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Office of the Director', 7, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Parking Enterprise', 8, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Parking Meters', 9, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Public Information Office', 10, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Right-of-Way', 11, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Signs & Markings', 12, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Smart Mobility', 13, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Systems Development', 14, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Transportation Engineering', 15, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Transportation Development Services', 16, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Vision Zero', 17, '2020-12-04 16:53:02.752811+00', 1);
-INSERT INTO public.moped_workgroup (workgroup_name, workgroup_id, date_added, department_id) VALUES ('Other', 18, '2020-12-04 16:53:02.752811+00', 4);
-
 
 --
 -- TOC entry 6031 (class 0 OID 21353)
@@ -880,6 +839,7 @@ INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgr
 INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, status_id, email, roles, picture) VALUES ('ef33a1ea-f352-4425-9ea7-85253a674f7c', 'Sergio', 'Garcia', 'Software Developer', 'Data & Technology Services', 7, 3, '20c20b28-3b20-4e9e-a0bc-e1ef4e512f2c', '2021-03-09 17:07:29+00', true, 1, 'sergio.garcia@austintexas.gov', '["moped-admin"]', 'private/user/7/03232021012023_2d3cdd69a5f77fb9_sergio_avatar.jpeg');
 INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, status_id, email, roles, picture) VALUES ('e5db3749-16f8-4ac2-85eb-f9e01a81a812', 'Andrew', 'Shensky', 'Senior Geospatial Analyst', 'Data & Technology Services', 45, 3, 'd1360260-6a50-4b30-b544-28ccea429485', '2021-04-14 17:12:05.928079+00', true, 1, 'andrew.shensky@austintexas.gov', '["moped-editor"]', NULL);
 INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, status_id, email, roles, picture) VALUES ('e82793d7-aed2-427b-a5ad-bac36c7fdffc', 'Janet', 'Chu', 'Design Researcher', 'Data & Technology Services', 56, 3, '965834c2-8142-453d-89ac-5268d478e04a', '2021-06-25 15:17:11.953756', true, 1, 'janet.chu@austintexas.gov', '["moped-editor"]', null);
+INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgroup, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, status_id, email, roles, picture) VALUES ('59ebf0a1-2a08-497b-ba8c-43b647c3e4ea', 'Frank', 'Hereford', 'Software Developer', 'Data & Technology Services', 46, 3, 'aeaeb96f-6f69-4b95-a272-956445189c54', '2021-11-08 09:45:00.000000', true, 1, 'frank.hereford@austintexas.gov', '["moped-admin"]', null);
 
 
 --
@@ -1115,15 +1075,6 @@ INSERT INTO public.moped_project_files (project_file_id, project_id, file_key, f
 
 
 --
--- TOC entry 6111 (class 0 OID 0)
--- Dependencies: 255
--- Name: moped_categories_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_categories_category_id_seq', 8, true);
-
-
---
 -- TOC entry 6112 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: moped_components_component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
@@ -1211,16 +1162,6 @@ SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 
 --
 
 SELECT pg_catalog.setval('public.moped_phases_phase_id_seq', 1, false);
-
-
---
--- TOC entry 6122 (class 0 OID 0)
--- Dependencies: 277
--- Name: moped_proj_categories_proj_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_categories_proj_category_id_seq', 1, false);
-
 
 --
 -- TOC entry 6123 (class 0 OID 0)

@@ -1,0 +1,44 @@
+{
+  "bastion": {
+    "ssh_certificate": "~/.ssh/your_bastion_private_key",
+    "ssh_user": "your_username",
+    "ssh_bastion": "bastion_host_domain",
+    "local_host": "localhost",
+    "local_port": 9999,
+    "remote_host": "rds_host_domain",
+    "remote_port": 5432,
+    "scan_timeout": 10,
+    "ssh_timeout": 5,
+    "container_parent": "docker.for.mac.host.internal"
+  },
+  "postgres": {
+    "production": {
+      "description": "Moped Production",
+      "db_name": "",
+      "db_user": "",
+      "db_pass": ""
+    },
+    "staging": {
+      "description": "Moped Staging",
+      "db_name": "",
+      "db_user": "",
+      "db_pass": ""
+    },
+    "other": {
+      "description": "Any other bastion database",
+      "db_name": "",
+      "db_user": "",
+      "db_pass": ""
+    }
+  },
+  "backups": {
+    "production": {
+      "bucket": "",
+      "prefix": ""
+    },
+    "staging": {
+      "bucket": "",
+      "prefix": ""
+    }
+  }
+}
