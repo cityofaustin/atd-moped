@@ -171,6 +171,7 @@ const SignalProjectTable = () => {
       title: "Project name",
       field: "project_name",
       editable: "never",
+      cellStyle: { minWidth: "200px" },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
@@ -217,7 +218,7 @@ const SignalProjectTable = () => {
       render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
     },
     {
-      title: "Internal status note",
+      title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       cellStyle: { ...typographyStyle, minWidth: "300px" },
