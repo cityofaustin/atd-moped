@@ -164,6 +164,7 @@ const ProjectSummaryProjectPartners = ({
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
                   <Checkbox
                     checked={selectedEntities.includes(entity.entity_id)}
+                    color={"primary"}
                   />
                   <ListItemText primary={entity.entity_name} />
                 </MenuItem>

@@ -503,7 +503,10 @@ const SignalProjectTable = () => {
         >
           {typeList.map(type => (
             <MenuItem key={type.type_id} value={type.type_id}>
-              <Checkbox checked={props.value.includes(type.type_id)} />
+              <Checkbox
+                checked={props.value.includes(type.type_id)}
+                color={"primary"}
+              />
               <ListItemText primary={type.type_name} />
             </MenuItem>
           ))}
