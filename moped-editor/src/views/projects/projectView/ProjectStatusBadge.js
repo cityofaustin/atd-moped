@@ -148,9 +148,17 @@ const useChipStyles = makeStyles(theme => ({
     borderRadius: "2rem",
     height: "2.5rem",
     padding: ".5rem",
-
     // Find background color
-    backgroundColor: props => getStyle(theme, props?.phase ?? "").background,
+    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
+  },
+  condensed: {
+    fontWeight: "500",
+    fontSize: "14px",
+    borderRadius: "1.5rem",
+    height: "2rem",
+    padding: ".25rem",
+    // Find background color
+    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
   },
 }));
 
@@ -162,7 +170,12 @@ const useChipStyles = makeStyles(theme => ({
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
+const ProjectStatusBadge = ({
+  status,
+  phase,
+  projectStatuses,
+  condensed = false,
+}) => {
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number
@@ -228,7 +241,10 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
   return (
     showChip && (
       <Chip
-        className={clsx(iconClasses.root, chipClasses.root)}
+        className={clsx(
+          iconClasses.root,
+          condensed ? chipClasses.condensed : chipClasses.root
+        )}
         icon={<ChipIcon className={iconClasses.root} />}
         label={capitalCase(statusProperties.phase)}
         color={"default"}

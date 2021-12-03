@@ -275,15 +275,6 @@ const GridTable = ({ title, query, searchTerm }) => {
   };
 
   /**
-   * Removes any non-alphanumeric characters from a string
-   * @param {str} input - The text to be cleaned
-   * @returns {str}
-   */
-  // const cleanUpText = input => {
-  //   return String(input).replace(/[^0-9a-z]/gi, "");
-  // };
-
-  /**
    * Returns true if the input string is a valid alphanumeric object key
    * @param {string} input - The string to be tested
    * @returns {boolean}
@@ -364,11 +355,12 @@ const GridTable = ({ title, query, searchTerm }) => {
   const buildChip = (label, statusId, defaultLabel = "No Status") => {
     console.log(label)
     return String(label) !== "" ? (
-                          <ProjectStatusBadge
-                            status={statusId}
-                            phase={label}
-                            projectStatuses={data?.moped_status ?? []}
-                          />
+      <ProjectStatusBadge
+        status={statusId}
+        phase={label}
+        projectStatuses={data?.moped_status ?? []}
+        condensed
+      />
     ) : (
       <span>{defaultLabel}</span>
     );
