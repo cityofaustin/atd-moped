@@ -14,9 +14,9 @@ const defaultIcon = PlayCircleOutlineOutlinedIcon;
 
 /**
  * Retrieves the style configuration for an individual phase
- * @param {Object} theme - The theme object, if null the function returns null
+ * @param {Object} theme - The theme object
  * @param {string} phase - The phase name
- * @returns {Object|null}
+ * @returns {Object}
  */
 const getStyle = (theme, phase) => {
   /**
@@ -124,7 +124,6 @@ const getStyle = (theme, phase) => {
       icon: defaultIcon,
     },
   };
-
   return styleMapping?.[phase] ?? styleMapping.default;
 };
 
@@ -190,7 +189,7 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
   };
 
   /**
-   * Generate font, chip and icon classes
+   * Generate chip and icon classes
    */
   const chipClasses = useChipStyles(statusProperties);
   const iconClasses = useFontColorStyles(statusProperties);
@@ -227,12 +226,11 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
    * Return the object
    */
   return (
-    showChip &&
-    ChipIcon && (
+    showChip && (
       <Chip
         className={clsx(iconClasses.root, chipClasses.root)}
         icon={<ChipIcon className={iconClasses.root} />}
-        label={capitalCase(statusProperties?.phase)}
+        label={capitalCase(statusProperties.phase)}
         color={"default"}
       />
     )

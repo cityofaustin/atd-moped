@@ -7,7 +7,6 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import {
   Box,
   Card,
-  Chip,
   CircularProgress,
   Container,
   Icon,
@@ -30,6 +29,7 @@ import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
 import ApolloErrorHandler from "../ApolloErrorHandler";
+import ProjectStatusBadge from "../../views/projects/projectView/ProjectStatusBadge"
 
 /**
  * GridTable Style
@@ -279,9 +279,9 @@ const GridTable = ({ title, query, searchTerm }) => {
    * @param {str} input - The text to be cleaned
    * @returns {str}
    */
-  const cleanUpText = input => {
-    return String(input).replace(/[^0-9a-z]/gi, "");
-  };
+  // const cleanUpText = input => {
+  //   return String(input).replace(/[^0-9a-z]/gi, "");
+  // };
 
   /**
    * Returns true if the input string is a valid alphanumeric object key
@@ -361,19 +361,20 @@ const GridTable = ({ title, query, searchTerm }) => {
    * @param {string} defaultLabel - The the text that goes inside the Chip component
    * @return {JSX.Element}
    */
-  const buildChip = (label, labelColorMap, defaultLabel = "No Status") => {
-    const cleanLabel = cleanUpText(label);
+  const buildChip = (label, statusId, defaultLabel = "No Status") => {
+    console.log(label)
     return String(label) !== "" ? (
-      <Chip
-        className={classes.tableChip}
-        color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
-        size={"small"}
-        label={cleanLabel}
-      />
+                          <ProjectStatusBadge
+                            status={statusId}
+                            phase={label}
+                            projectStatuses={data?.moped_status ?? []}
+                          />
     ) : (
       <span>{defaultLabel}</span>
     );
   };
+
+  // status badge will go here
 
   /**
    * Returns a stringified object with information to format link.
@@ -400,6 +401,8 @@ const GridTable = ({ title, query, searchTerm }) => {
     query.gql,
     query.config.options.useQuery
   );
+
+  console.log(data)
 
   return (
     <ApolloErrorHandler error={error}>
@@ -446,6 +449,7 @@ const GridTable = ({ title, query, searchTerm }) => {
                     />
                     <TableBody>
                       {data[query.table].map((row, rowIndex) => {
+                        console.log(row["status_id"])
                         return (
                           <TableRow hover key={rowIndex}>
                             {query.columns.map(
@@ -510,7 +514,7 @@ const GridTable = ({ title, query, searchTerm }) => {
                                         ].hasOwnProperty("chip")
                                           ? buildChip(
                                               row[column],
-                                              query.config.columns[column].chip
+                                              row[query.config.columns[column].chip]
                                             )
                                           : query.getFormattedValue(
                                               column,

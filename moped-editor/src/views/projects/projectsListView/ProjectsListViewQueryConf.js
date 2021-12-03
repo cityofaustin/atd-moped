@@ -98,11 +98,11 @@ export const ProjectsListViewQueryConf = {
       label: "Status",
       type: "String",
       width: "5%",
-      chip: {
-        active: "primary",
-        hold: "secondary",
-        canceled: "default",
-      },
+      chip: "status_id",
+    },
+    status_id: {
+      hidden: true,
+      searchable: false,
     },
     current_phase: {
       searchable: true,
