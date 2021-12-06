@@ -153,10 +153,10 @@ const useChipStyles = makeStyles(theme => ({
   },
   condensed: {
     fontWeight: "500",
-    fontSize: "14px",
-    borderRadius: "1.5rem",
-    height: "2rem",
-    padding: ".25rem",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
+    padding: ".1rem",
     // Find background color
     backgroundColor: props => getStyle(theme, props.phase ?? "").background,
   },
@@ -176,8 +176,6 @@ const ProjectStatusBadge = ({
   projectStatuses,
   condensed = false,
 }) => {
-
-  console.log("STATUS: ", status, "PHASE: ", phase, "statuses" , projectStatuses)
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number

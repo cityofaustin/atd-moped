@@ -99,7 +99,6 @@ export const ProjectsListViewQueryConf = {
       label: "Status",
       type: "String",
       width: "5%",
-      chip: "status_id",
     },
     status_id: {
       hidden: true,
@@ -110,7 +109,7 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Status",
       width: "15%",
-      chip: "status_id",
+      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",

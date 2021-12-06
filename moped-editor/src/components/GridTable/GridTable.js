@@ -55,9 +55,6 @@ const useStyles = makeStyles(theme => ({
     "text-transform": "capitalize",
     "white-space": "pre-wrap",
   },
-  tableChip: {
-    "text-transform": "capitalize",
-  },
 }));
 
 /**
@@ -98,8 +95,6 @@ export const getSearchValue = (query, column, value) => {
  */
 const GridTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
-
-  console.log(referenceData)
 
   /**
    * State Management for pagination
@@ -349,27 +344,21 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
   };
 
   /**
-   * Returns a Chip object containing the status of the project.
-   * @param {string} label - The the text that goes inside the Chip component
-   * @param {Object} labelColorMap - The mapping of label to Material color name
-   * @param {string} defaultLabel - The the text that goes inside the Chip component
+   * Returns a ProjectStatusBadge component based on the status and phase of project
+   * @param {string} phase - A project's current phase
+   * @param {number} statusId - Project's status id
+   * @param {array of objects} projectStatuses - status id to status name mapping
+   * @param {boolean} condensed - use condensed styles
    * @return {JSX.Element}
    */
-  const buildChip = (label, statusId, defaultLabel = "No Status") => {
-    console.log(label)
-    return String(label) !== "" ? (
+  const buildStatusBadge = (phase, statusId, defaultLabel = "No Status") => (
       <ProjectStatusBadge
         status={statusId}
-        phase={label}
+        phase={phase}
         projectStatuses={referenceData?.moped_status ?? []}
         condensed
       />
-    ) : (
-      <span>{defaultLabel}</span>
-    );
-  };
-
-  // status badge will go here
+    )
 
   /**
    * Returns a stringified object with information to format link.
@@ -506,10 +495,10 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
                                       <>
                                         {query.config.columns[
                                           column
-                                        ].hasOwnProperty("chip")
-                                          ? buildChip(
+                                        ].hasOwnProperty("badge")
+                                          ? buildStatusBadge(
                                               row[column],
-                                              row[query.config.columns[column].chip]
+                                              row[query.config.columns[column].badge]
                                             )
                                           : query.getFormattedValue(
                                               column,

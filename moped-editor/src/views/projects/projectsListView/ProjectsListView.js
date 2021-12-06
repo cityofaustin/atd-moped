@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@apollo/client";
 
 // Material
 import { makeStyles } from "@material-ui/core";
@@ -9,6 +10,10 @@ import Page from "src/components/Page";
 import { GQLAbstract } from "atd-kickstand";
 import GridTable from "../../../components/GridTable/GridTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
+
+import {
+ STATUS_QUERY,
+} from "../../../queries/project";
 
 // Styles
 const useStyles = makeStyles(theme => ({
@@ -34,9 +39,16 @@ const ProjectsListView = () => {
   const classes = useStyles();
   const navSearchTerm = useLocation()?.state?.searchTerm;
 
+  const { data } = useQuery(STATUS_QUERY);
+
   return (
     <Page className={classes.root} title="Projects">
-      <GridTable title={"Projects"} query={projectsQuery} searchTerm={navSearchTerm}/>
+      <GridTable
+        title={"Projects"}
+        query={projectsQuery}
+        searchTerm={navSearchTerm}
+        referenceData={data}
+      />
     </Page>
   );
 };
