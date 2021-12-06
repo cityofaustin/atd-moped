@@ -386,8 +386,6 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
     query.config.options.useQuery
   );
 
-  console.log(data)
-
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -433,7 +431,6 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
                     />
                     <TableBody>
                       {data[query.table].map((row, rowIndex) => {
-                        console.log(row["status_id"])
                         return (
                           <TableRow hover key={rowIndex}>
                             {query.columns.map(
