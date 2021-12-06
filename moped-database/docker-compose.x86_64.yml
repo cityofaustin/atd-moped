@@ -17,7 +17,3 @@ services:
             - MOPED_API_ACTIONS_URL=http://localhost:5000/actions
             - MOPED_API_EVENTS_URL=http://localhost:5000/events
             - MOPED_API_APIKEY=DuMmyApiKeyHFVOVto19otC1wX6sP2N0VSKrCD70L10B7Sm525ZR6L672i2F79M9!
-
-volumes:
-    moped-db-vol:
-        driver: local

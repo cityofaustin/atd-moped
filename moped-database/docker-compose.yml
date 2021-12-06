@@ -22,3 +22,7 @@ services:
             - POSTGRES_USER=moped
             - POSTGRES_PASSWORD=moped
             - POSTGRES_DB=moped
+
+volumes:
+    moped-db-vol:
+        driver: local
