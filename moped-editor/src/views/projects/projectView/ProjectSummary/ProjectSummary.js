@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import ProjectSummaryCurrentPhase from "./ProjectSummaryCurrentPhase";
 import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
@@ -21,8 +20,8 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
-import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
+import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 
@@ -147,31 +146,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               refetch={refetch}
               classes={classes}
             />
-            <ProjectSummaryCurrentPhase
-              projectId={projectId}
-              data={data}
-              classes={classes}
-            />
-            <Grid container spacing={0}>
-              <Grid item xs={6}>
-                <ProjectSummaryCurrentStatus
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ProjectSummaryProjectECapris
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-            </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
@@ -194,7 +168,27 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
+                <ProjectSummaryProjectTypes
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
                 <ProjectSummaryProjectWebsite
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectECapris
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
