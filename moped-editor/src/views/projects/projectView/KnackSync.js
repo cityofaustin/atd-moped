@@ -94,7 +94,7 @@ const KnackSync = React.forwardRef(
     const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
     /**
-     * Function to hanlde the actual mechanics of syncronizing the data on hand to the Knack API endpoint.
+     * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
      */
     const handleSync = () => {
       if (project.knack_project_id) {
