@@ -1,9 +1,16 @@
 import React from "react";
 import { MenuItem, Icon, ListItemIcon, ListItemText } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../queries/project";
+
+const useStyles = makeStyles(theme => ({
+  projectOptionsMenuItemIcon: {
+    minWidth: "2rem",
+  },
+}));
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
@@ -38,6 +45,8 @@ const getHttpMethod = knackProjectId => {
  */
 const KnackSync = React.forwardRef(
   ({ project, closeHandler, snackbarHandler, refetch }, ref) => {
+    const classes = useStyles();
+
     let knackEndpointUrl = buildUrl(
       process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
       process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
@@ -201,7 +210,7 @@ const KnackSync = React.forwardRef(
 
     return (
       <MenuItem onClick={handleSync} selected={false}>
-        <ListItemIcon>
+        <ListItemIcon className={classes.projectOptionsMenuItemIcon}>
           <Icon fontSize="small">cached</Icon>
         </ListItemIcon>
         <ListItemText primary="Sync to Data Tracker" />
