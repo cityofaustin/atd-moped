@@ -176,6 +176,8 @@ const ProjectStatusBadge = ({
   projectStatuses,
   condensed = false,
 }) => {
+
+  console.log("STATUS: ", status, "PHASE: ", phase, "statuses" , projectStatuses)
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number

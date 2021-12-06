@@ -95,6 +95,7 @@ export const ProjectsListViewQueryConf = {
     current_status: {
       searchable: false,
       sortable: false,
+      hidden: true,
       label: "Status",
       type: "String",
       width: "5%",
@@ -107,8 +108,9 @@ export const ProjectsListViewQueryConf = {
     current_phase: {
       searchable: true,
       sortable: false,
-      label: "Current phase",
+      label: "Status",
       width: "15%",
+      chip: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",

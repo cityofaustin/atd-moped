@@ -92,11 +92,14 @@ export const getSearchValue = (query, column, value) => {
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
+ * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query, searchTerm }) => {
+const GridTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
+
+  console.log(referenceData)
 
   /**
    * State Management for pagination
@@ -358,7 +361,7 @@ const GridTable = ({ title, query, searchTerm }) => {
       <ProjectStatusBadge
         status={statusId}
         phase={label}
-        projectStatuses={data?.moped_status ?? []}
+        projectStatuses={referenceData?.moped_status ?? []}
         condensed
       />
     ) : (
