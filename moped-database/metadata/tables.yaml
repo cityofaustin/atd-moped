@@ -3528,6 +3528,9 @@
   - name: moped_entity
     using:
       foreign_key_constraint_on: project_sponsor
+  - name: moped_status
+    using:
+      foreign_key_constraint_on: status_id
   array_relationships:
   - name: moped_proj_components
     using:

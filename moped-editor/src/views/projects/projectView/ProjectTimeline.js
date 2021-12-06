@@ -30,6 +30,7 @@ import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
   ADD_PROJECT_MILESTONE,
+  PROJECT_UPDATE_STATUS,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useQuery, useMutation } from "@apollo/client";
@@ -74,6 +75,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
+  const [updateProjectStatus] = useMutation(PROJECT_UPDATE_STATUS);
+
   const [updateProjectMilestone] = useMutation(
     UPDATE_PROJECT_MILESTONES_MUTATION
   );
@@ -83,6 +86,19 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
+
+  /**
+   * Direct access to the moped_status array
+   */
+  const statusMap = data?.moped_status ?? [];
+
+  /**
+   * Retrieves the moped_status values from the statusMap array
+   * @param {string} status - The name of the status
+   * @returns {Object}
+   */
+  const getStatusByName = status =>
+    statusMap.find(s => s.status_name.toLowerCase() === status);
 
   /**
    * Phase table lookup object formatted into the shape that <MaterialTable>
@@ -289,6 +305,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
             </MenuItem>
           );
         })}
+        <MenuItem
+          onChange={() => props.onChange("")}
+          onClick={() => props.onChange("")}
+          onKeyDown={e => handleKeyEvent(e)}
+          value=""
+        >
+          -
+        </MenuItem>
       </Select>
     );
   };
@@ -466,16 +490,44 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
+                    const newPhase = newPhaseObject?.phase_name;
+                    const statusMapped = getStatusByName(newPhase);
+
+                    const projectUpdateInput = !!statusMapped
+                      ? {
+                          // It is
+                          status_id: statusMapped.status_id,
+                          current_status: statusMapped.status_name.toLowerCase(),
+                          current_phase: newPhase.toLowerCase(),
+                        }
+                      : {
+                          // It isn't
+                          status_id: 1,
+                          current_status: "active",
+                          current_phase: newPhase.toLowerCase(),
+                        };
+
                     // Execute insert mutation, returns promise
                     return addProjectPhase({
                       variables: {
                         objects: [newPhaseObject],
                       },
-                    }).then(() => {
-                      // Refetch data
-                      refetch();
-                      refetchSummary();
-                    });
+                    })
+                      .then(() =>
+                        !!newPhaseObject?.is_current_phase
+                          ? updateProjectStatus({
+                              variables: {
+                                projectId: projectId,
+                                projectUpdateInput: projectUpdateInput,
+                              },
+                            })
+                          : true
+                      )
+                      .then(() => {
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
                   },
                   onRowUpdate: (newData, oldData) => {
                     const updatedPhaseObject = {
@@ -501,6 +553,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }
                     });
 
+                    // If there the phase name or is_current_phase changed, then true.
+                    const currentPhaseChanged =
+                      differences.filter(value =>
+                        ["phase_name", "is_current_phase"].includes(value)
+                      ).length > 0;
+
+                    // We need to know if the current phase is active
+                    const isCurrentPhase = !!newData?.is_current_phase;
+
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
                     delete updatedPhaseObject.tableData;
@@ -508,18 +569,55 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.__typename;
                     updateExistingPhases(updatedPhaseObject);
 
+                    const newPhase = updatedPhaseObject?.phase_name.toLowerCase();
+                    const statusMapped = getStatusByName(newPhase);
+
+                    const mappedProjectUpdateInput = !!statusMapped
+                      ? {
+                          // It is
+                          status_id: statusMapped.status_id,
+                          current_status: statusMapped.status_name.toLowerCase(),
+                          current_phase: newPhase,
+                        }
+                      : {
+                          // It isn't
+                          status_id: 1,
+                          current_status: "active",
+                          current_phase: newPhase,
+                        };
+
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
-                    }).then(() => {
-                      // Refetch data
-                      refetch();
-                      refetchSummary();
-                    });
+                    })
+                      .then(
+                        () =>
+                          // If there was a change, update the project
+                          currentPhaseChanged
+                            ? updateProjectStatus({
+                                variables: {
+                                  projectId: projectId,
+                                  projectUpdateInput: isCurrentPhase
+                                    ? mappedProjectUpdateInput
+                                    : {
+                                        status_id: 1,
+                                        current_status: "active",
+                                        current_phase: "active",
+                                      },
+                                },
+                              })
+                            : true // No change in project, safely ignore
+                      )
+                      .then(() => {
+                        // Refetch data
+                        refetch();
+                        refetchSummary();
+                      });
                   },
                   onRowDelete: oldData => {
                     // Execute mutation to set current phase of phase to be deleted to false
                     // to ensure summary table stays up to date
+                    const was_current_phase = !!oldData?.is_current_phase;
                     oldData.is_current_phase = false;
                     return updateProjectPhase({
                       variables: oldData,
@@ -529,11 +627,23 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         variables: {
                           project_phase_id: oldData.project_phase_id,
                         },
-                      }).then(() => {
-                        // Refetch data
-                        refetch();
-                        refetchSummary();
-                      });
+                      })
+                        .then(() =>
+                          was_current_phase
+                            ? updateProjectStatus({
+                                variables: {
+                                  projectId: projectId,
+                                  projectUpdateInput: {
+                                    status_id: 1,
+                                    current_status: "active",
+                                    current_phase: "active",
+                                  },
+                                },
+                              })
+                            : true
+                        )
+                        .then(() => refetch())
+                        .then(() => refetchSummary());
                     });
                   },
                 }}

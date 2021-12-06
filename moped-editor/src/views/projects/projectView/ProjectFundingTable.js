@@ -127,6 +127,16 @@ const ProjectFundingTable = () => {
           {item[`${props.name}_name`]}
         </MenuItem>
       ))}
+      {props.columnDef.title === "Program" && (
+        <MenuItem
+          onChange={() => props.onChange("")}
+          onClick={() => props.onChange("")}
+          onKeyDown={e => handleKeyEvent(e)}
+          value=""
+        >
+          -
+        </MenuItem>
+      )}
     </Select>
   );
 

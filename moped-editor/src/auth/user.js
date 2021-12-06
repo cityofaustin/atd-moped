@@ -15,7 +15,7 @@ import config from "../config";
 import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
 
 // Create a context that will hold the values that we are going to expose to our components.
-// Don't worry about the `null` value. It's gonna be *instantly* overriden by the component below
+// Don't worry about the `null` value. It's gonna be *instantly* overridden by the component below
 export const UserContext = createContext(null);
 
 /**
@@ -149,7 +149,9 @@ export const UserProvider = ({ children }) => {
      * @see https://github.com/aws-amplify/amplify-js
      */
 
-    Amplify.Logger.LOG_LEVEL = "DEBUG";
+    // Amplify's Logger() class doesn't provide a mechanism to use console.[info|debug|warn, etc.],
+    // so we would need to turn this back to DEBUG if we're actively debugging authentication.
+    Amplify.Logger.LOG_LEVEL = "INFO";
 
     Auth.currentSession()
       .then(user => {
@@ -202,7 +204,7 @@ export const UserProvider = ({ children }) => {
   };
 
   // Make sure to not force a re-render on the components that are reading these values,
-  // unless the `user` value has changed. This is an optimisation that is mostly needed in cases
+  // unless the `user` value has changed. This is an optimization that is mostly needed in cases
   // where the parent of the current component re-renders and thus the current component is forced
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
@@ -235,7 +237,7 @@ export const getRandomColor = () => {
 };
 
 // We also create a simple custom hook to read these values from. We want our React components
-// to know as little as possible on how everything is handled, so we are not only abtracting them from
+// to know as little as possible on how everything is handled, so we are not only abstracting them from
 // the fact that we are using React's context, but we also skip some imports.
 export const useUser = () => {
   const context = useContext(UserContext);

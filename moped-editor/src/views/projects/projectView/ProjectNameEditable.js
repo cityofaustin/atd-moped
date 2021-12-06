@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Grid, Icon, Snackbar, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Grid,
+  Icon,
+  Snackbar,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import { gql, useMutation } from "@apollo/client";
 import { Alert } from "@material-ui/lab";
 
@@ -27,6 +34,9 @@ const useStyles = makeStyles(theme => ({
   titleEditField: {
     "font-size": "1.5rem",
     "font-weight": "bold",
+  },
+  boxField: {
+    width: "100%",
   },
 }));
 
@@ -76,7 +86,7 @@ const ProjectNameEditable = props => {
 
   const handleProjectNameChange = e => {
     if (titleError) {
-      setTitleError(false)
+      setTitleError(false);
     }
     setProjectName(e.target.value);
   };
@@ -86,36 +96,38 @@ const ProjectNameEditable = props => {
    */
   const handleAcceptClick = e => {
     e.preventDefault();
-    if (!(projectName.trim()==="")) {
-    updateProjectName({
-      variables: {
-        projectId: props?.projectId,
-        projectName: projectName,
-      },
-    })
-      .then(res => {
-        setProjectNameBeforeEdit(projectName);
-        setSnackbarState({
-          open: true,
-          message: <span>Success! The project name has been updated!</span>,
-          severity: "success",
-        });
+    if (!(projectName.trim() === "")) {
+      updateProjectName({
+        variables: {
+          projectId: props?.projectId,
+          projectName: projectName,
+        },
       })
-      .catch(err => {
-        setProjectName(projectNameBeforeEdit);
-        setSnackbarState({
-          open: true,
-          message: <span>There was a problem updating the project name.</span>,
-          severity: "error",
-        });
-        setProjectName(initialProjectName);
-      })
-      .finally(() => {
-        if (props?.setIsEditing) props.setIsEditing(false);
-        setIsEditing(false);
-        setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+        .then(res => {
+          setProjectNameBeforeEdit(projectName);
+          setSnackbarState({
+            open: true,
+            message: <span>Success! the project name has been updated!</span>,
+            severity: "success",
+          });
+        })
+        .catch(err => {
+          setProjectName(projectNameBeforeEdit);
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>There was a problem updating the project name.</span>
+            ),
+            severity: "error",
+          });
+          setProjectName(initialProjectName);
+        })
+        .finally(() => {
+          if (props?.setIsEditing) props.setIsEditing(false);
+          setIsEditing(false);
+          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
         props.updatedCallback();
-      });
+        });
     } else {
       setTitleError(true);
     }
@@ -137,11 +149,11 @@ const ProjectNameEditable = props => {
   };
 
   return (
-    <>
+    <Box className={isEditing ? classes.boxField : null}>
       {isEditing && (
         <form onSubmit={e => handleAcceptClick(e)}>
           <Grid container fullWidth>
-            <Grid item xs={12} sm={9}>
+            <Grid item xs={12} sm={11}>
               <TextField
                 fullWidth
                 id="project name"
@@ -149,7 +161,9 @@ const ProjectNameEditable = props => {
                 type="text"
                 defaultValue={projectName ?? props?.projectName}
                 error={titleError}
-                placeholder={titleError ? "Title cannot be blank" : "Enter project name"}
+                placeholder={
+                  titleError ? "Title cannot be blank" : "Enter project name"
+                }
                 multiline={false}
                 rows={1}
                 onChange={e => handleProjectNameChange(e)}
@@ -163,7 +177,7 @@ const ProjectNameEditable = props => {
                 }}
               />
             </Grid>
-            <Grid item xs={12} sm={3} className={classes.fieldGridItemButtons}>
+            <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
               <Icon
                 className={classes.editIconConfirm}
                 onClick={handleAcceptClick}
@@ -180,8 +194,8 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      { // if not Editing Project Name, show edit icon on mouse over of title
-        !isEditing && (
+      {// if not Editing Project Name, show edit icon on mouse over of title
+      !isEditing && (
         <Typography
           color="textPrimary"
           variant="h1"
@@ -209,7 +223,7 @@ const ProjectNameEditable = props => {
           {snackbarState.message}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 };
 
