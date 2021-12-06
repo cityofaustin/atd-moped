@@ -48,9 +48,12 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           funding_source_name
         }
       }
-      moped_project_types {
+      moped_project_types(where: { status_id: { _eq: 1 } }) {
+        id
+        status_id
         moped_type {
           type_name
+          type_id
         }
       }
       moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
@@ -65,6 +68,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_types {
+      type_id
+      type_name
+    }
   }
 `;
 
@@ -74,6 +81,8 @@ export const UPDATE_SIGNAL_PROJECT = gql`
     $contractor: String
     $purchase_order_number: String
     $entity_id: Int
+    $projectTypes: [moped_project_types_insert_input!]!
+    $typesDeleteList: [Int!]
   ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $project_id }
@@ -84,6 +93,15 @@ export const UPDATE_SIGNAL_PROJECT = gql`
       }
     ) {
       project_id
+    }
+    insert_moped_project_types(objects: $projectTypes) {
+      affected_rows
+    }
+    update_moped_project_types(
+      where: { id: { _in: $typesDeleteList } }
+      _set: { status_id: 0 }
+    ) {
+      affected_rows
     }
   }
 `;
