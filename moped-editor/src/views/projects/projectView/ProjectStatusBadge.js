@@ -156,7 +156,6 @@ const useChipStyles = makeStyles(theme => ({
     fontSize: "12px",
     borderRadius: "2rem",
     height: "1.75rem",
-    padding: ".1rem",
     // Find background color
     backgroundColor: props => getStyle(theme, props.phase ?? "").background,
   },
