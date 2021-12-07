@@ -141,14 +141,14 @@ const KnackSync = React.forwardRef(
             }
           )
           .then(refetch) // ask the application to update its status from our graphql endpoint
-          .then(() => {
+          .then(() => { // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
               message: "Success: Project data pushed to Data Tracker.",
             });
             return Promise.resolve();
           })
-          .catch((error) => {
+          .catch((error) => { // Failure, alert the user that we've encountered an error
             console.error(error);
             snackbarHandler({
               severity: "warning",
@@ -158,7 +158,7 @@ const KnackSync = React.forwardRef(
       } else {
         // creating new knack record execution branch
         project.currentKnackState = {};
-        fetch(knackEndpointUrl, {
+        fetch(knackEndpointUrl, { // start the process with a fetch, which is a Promise
           method: knackHttpMethod,
           headers: buildHeaders,
           body: buildBody(),
@@ -167,35 +167,35 @@ const KnackSync = React.forwardRef(
           .then(
             result => {
               if (result.errors) {
-                // knack error
+                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
                 return Promise.reject(result);
               } else {
-                // knack fetch success
+                // Successful HTTP request with meaningful results from Knack
                 return Promise.resolve(result);
               }
             },
             error => {
-              // fetch error
+              // Failed HTTP request, such as if the knack endpoint is down
               return Promise.reject(error);
             }
           )
           .then(knack_record => {
-            mutateProjectKnackId({
+            mutateProjectKnackId({ // Apollo will return a promise as well
               variables: {
                 project_id: project.project_id,
                 knack_id: knack_record.record.id,
               },
             });
           })
-          .then(refetch)
-          .then(() => {
+          .then(refetch) // ask the application to update its status from our graphql endpoint
+          .then(() => { // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
               message: "Success: Project data pushed to Data Tracker.",
             });
             return Promise.resolve();
           })
-          .catch((error) => {
+          .catch((error) => { // Failure, alert the user that we've encountered an error
             console.error(error);
             snackbarHandler({
               severity: "warning",
