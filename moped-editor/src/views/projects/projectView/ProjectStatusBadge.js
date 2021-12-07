@@ -164,6 +164,8 @@ const useChipStyles = makeStyles(theme => ({
  * @constructor
  */
 const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
+  console.log(status);
+  console.log(phase);
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number

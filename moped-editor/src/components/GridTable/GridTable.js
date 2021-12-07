@@ -401,6 +401,8 @@ const GridTable = ({ title, query, searchTerm }) => {
     query.config.options.useQuery
   );
 
+  console.log(data);
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
