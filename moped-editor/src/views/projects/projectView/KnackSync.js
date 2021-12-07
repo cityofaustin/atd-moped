@@ -125,8 +125,7 @@ const KnackSync = React.forwardRef(
             }
           )
           .then(response => response.json())
-          .then(
-            result => {
+          .then(result => {
               if (result.errors) {
                 // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
                 return Promise.reject(result);
@@ -134,10 +133,6 @@ const KnackSync = React.forwardRef(
                 // Successful HTTP Update request with meaningful results from Knack
                 return Promise.resolve();
               }
-            },
-            error => {
-              // Failed HTTP request, such as if the knack endpoint is down
-              return Promise.reject(error);
             }
           )
           .then(() => refetch()) // ask the application to update its status from our graphql endpoint
@@ -164,8 +159,7 @@ const KnackSync = React.forwardRef(
           body: buildBody(),
         })
           .then(response => response.json())
-          .then(
-            result => {
+          .then(result => {
               if (result.errors) {
                 // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
                 return Promise.reject(result);
@@ -173,10 +167,6 @@ const KnackSync = React.forwardRef(
                 // Successful HTTP request with meaningful results from Knack
                 return Promise.resolve(result);
               }
-            },
-            error => {
-              // Failed HTTP request, such as if the knack endpoint is down
-              return Promise.reject(error);
             }
           )
           .then(knack_record => {
