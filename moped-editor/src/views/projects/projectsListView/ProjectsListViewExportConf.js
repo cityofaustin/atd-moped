@@ -29,6 +29,9 @@ export const ProjectsListViewExportConf = {
   ecapris_subproject_id: {
     label: "ecapris_id"
   },
+  entity_name: {
+    label: "project_sponsor",
+  },
   start_date: {
     label: "start_date",
     filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),

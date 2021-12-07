@@ -4714,6 +4714,7 @@
       - date_added
       - ecapris_subproject_id
       - end_date
+      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
@@ -4743,6 +4744,7 @@
       - date_added
       - ecapris_subproject_id
       - end_date
+      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
@@ -4772,6 +4774,7 @@
       - date_added
       - ecapris_subproject_id
       - end_date
+      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
