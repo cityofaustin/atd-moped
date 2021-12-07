@@ -144,7 +144,7 @@ const KnackSync = React.forwardRef(
           .then(() => { // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
-              message: "Success: Project data pushed to Data Tracker.",
+              message: "Success: Project data updated in Data Tracker.",
             });
             return Promise.resolve();
           })
