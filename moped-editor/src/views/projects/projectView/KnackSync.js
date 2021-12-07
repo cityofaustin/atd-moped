@@ -99,20 +99,23 @@ const KnackSync = React.forwardRef(
     const handleSync = () => {
       if (project.knack_project_id) {
         // updating knack record
-        fetch(knackEndpointUrl, { // start the process with a fetch, which is a Promise
+        fetch(knackEndpointUrl, {
+          // start the process with a fetch, which is a Promise
           method: "GET",
           headers: buildHeaders,
         })
           .then(response => response.json()) // get the json payload, and the .json() method returns a Promise
-          .then( 
-            result => { // We'll see the following pattern again in the code
+          .then(
+            result => {
+              // We'll see the following pattern again in the code
               if (result.errors) {
                 // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
                 return Promise.reject(result);
               } else {
                 // Successful HTTP request with meaningful results from Knack
                 project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
-                return fetch(knackEndpointUrl, { // fetch returns a Promise
+                return fetch(knackEndpointUrl, {
+                  // fetch returns a Promise
                   method: knackHttpMethod,
                   headers: buildHeaders,
                   body: buildBody(),
@@ -126,24 +129,25 @@ const KnackSync = React.forwardRef(
           )
           .then(response => response.json())
           .then(result => {
-              if (result.errors) {
-                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
-                return Promise.reject(result);
-              } else {
-                // Successful HTTP Update request with meaningful results from Knack
-                return Promise.resolve();
-              }
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+              return Promise.reject(result);
+            } else {
+              // Successful HTTP Update request with meaningful results from Knack
+              return Promise.resolve();
             }
-          )
+          })
           .then(() => refetch()) // ask the application to update its status from our graphql endpoint
-          .then(() => { // End of the chain; advise the user of success
+          .then(() => {
+            // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
               message: "Success: Project data updated in Data Tracker.",
             });
             return Promise.resolve();
           })
-          .catch((error) => { // Failure, alert the user that we've encountered an error
+          .catch(error => {
+            // Failure, alert the user that we've encountered an error
             console.error(error);
             snackbarHandler({
               severity: "warning",
@@ -153,24 +157,25 @@ const KnackSync = React.forwardRef(
       } else {
         // creating new knack record execution branch
         project.currentKnackState = {};
-        fetch(knackEndpointUrl, { // start the process with a fetch, which is a Promise
+        fetch(knackEndpointUrl, {
+          // start the process with a fetch, which is a Promise
           method: knackHttpMethod,
           headers: buildHeaders,
           body: buildBody(),
         })
           .then(response => response.json())
           .then(result => {
-              if (result.errors) {
-                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
-                return Promise.reject(result);
-              } else {
-                // Successful HTTP request with meaningful results from Knack
-                return Promise.resolve(result);
-              }
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+              return Promise.reject(result);
+            } else {
+              // Successful HTTP request with meaningful results from Knack
+              return Promise.resolve(result);
             }
-          )
+          })
           .then(knack_record => {
-            mutateProjectKnackId({ // Apollo will return a promise as well
+            mutateProjectKnackId({
+              // Apollo will return a promise as well
               variables: {
                 project_id: project.project_id,
                 knack_id: knack_record.record.id,
@@ -178,14 +183,16 @@ const KnackSync = React.forwardRef(
             });
           })
           .then(() => refetch()) // ask the application to update its status from our graphql endpoint
-          .then(() => { // End of the chain; advise the user of success
+          .then(() => {
+            // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
               message: "Success: Project data pushed to Data Tracker.",
             });
             return Promise.resolve();
           })
-          .catch((error) => { // Failure, alert the user that we've encountered an error
+          .catch(error => {
+            // Failure, alert the user that we've encountered an error
             console.error(error);
             snackbarHandler({
               severity: "warning",
