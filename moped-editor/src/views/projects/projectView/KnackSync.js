@@ -152,7 +152,7 @@ const KnackSync = React.forwardRef(
             console.error(error);
             snackbarHandler({
               severity: "warning",
-              message: "Error: Data Tracker sync failed.",
+              message: "Error: Data Tracker update failed.",
             });
           });
       } else {
@@ -199,7 +199,7 @@ const KnackSync = React.forwardRef(
             console.error(error);
             snackbarHandler({
               severity: "warning",
-              message: "Error: Data Tracker sync failed.",
+              message: "Error: Data Tracker initial sync failed.",
             });
           });
       } // end of the creating new knack record branch
