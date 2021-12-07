@@ -104,7 +104,7 @@ const KnackSync = React.forwardRef(
           headers: buildHeaders,
         })
           .then(response => response.json()) // get the json payload, and the .json() method returns a Promise
-          .then(
+          .then( 
             result => { // We'll see the following pattern again in the code
               if (result.errors) {
                 // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
@@ -142,18 +142,18 @@ const KnackSync = React.forwardRef(
           )
           .then(refetch) // ask the application to update its status from our graphql endpoint
           .then(() => {
-                snackbarHandler({
-                  severity: "success",
-                  message: "Success: Project data pushed to Data Tracker.",
-                });
+            snackbarHandler({
+              severity: "success",
+              message: "Success: Project data pushed to Data Tracker.",
+            });
             return Promise.resolve();
           })
           .catch((error) => {
             console.error(error);
-              snackbarHandler({
-                severity: "warning",
-                message: "Error: Data Tracker sync failed.",
-              });
+            snackbarHandler({
+              severity: "warning",
+              message: "Error: Data Tracker sync failed.",
+            });
           });
       } else {
         // creating new knack record execution branch
@@ -168,10 +168,6 @@ const KnackSync = React.forwardRef(
             result => {
               if (result.errors) {
                 // knack error
-                snackbarHandler({
-                  severity: "warning",
-                  message: "Error: Data Tracker sync failed.",
-                });
                 return Promise.reject(result);
               } else {
                 // knack fetch success
@@ -180,10 +176,6 @@ const KnackSync = React.forwardRef(
             },
             error => {
               // fetch error
-              snackbarHandler({
-                severity: "warning",
-                message: "Error: Data Tracker sync failed.",
-              });
               return Promise.reject(error);
             }
           )
@@ -194,15 +186,25 @@ const KnackSync = React.forwardRef(
                 knack_id: knack_record.record.id,
               },
             });
+          })
+          .then(refetch)
+          .then(() => {
             snackbarHandler({
               severity: "success",
               message: "Success: Project data pushed to Data Tracker.",
             });
+            return Promise.resolve();
           })
-          .then(refetch);
-      }
+          .catch((error) => {
+            console.error(error);
+            snackbarHandler({
+              severity: "warning",
+              message: "Error: Data Tracker sync failed.",
+            });
+          });
+      } // end of the creating new knack record branch
 
-      closeHandler();
+      closeHandler(); // this is used to close the Menulist
     };
 
     return (
