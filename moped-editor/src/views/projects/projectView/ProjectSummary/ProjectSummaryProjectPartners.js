@@ -44,7 +44,7 @@ const ProjectSummaryProjectPartners = ({
     {}
   );
 
-  // Estrablish original partners
+  // Establish original partners
   const originalPartners = data?.moped_proj_partners ?? [];
   // Establish original entities
   const originalEntities = originalPartners.map(e => e.entity_id);
