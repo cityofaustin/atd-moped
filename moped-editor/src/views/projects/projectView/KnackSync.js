@@ -140,7 +140,7 @@ const KnackSync = React.forwardRef(
               return Promise.reject(error);
             }
           )
-          .then(refetch) // ask the application to update its status from our graphql endpoint
+          .then(() => refetch()) // ask the application to update its status from our graphql endpoint
           .then(() => { // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
@@ -187,7 +187,7 @@ const KnackSync = React.forwardRef(
               },
             });
           })
-          .then(refetch) // ask the application to update its status from our graphql endpoint
+          .then(() => refetch()) // ask the application to update its status from our graphql endpoint
           .then(() => { // End of the chain; advise the user of success
             snackbarHandler({
               severity: "success",
