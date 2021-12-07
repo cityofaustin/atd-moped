@@ -99,24 +99,20 @@ const KnackSync = React.forwardRef(
     const handleSync = () => {
       if (project.knack_project_id) {
         // updating knack record
-        fetch(knackEndpointUrl, {
+        fetch(knackEndpointUrl, { // start the process with a fetch, which is a Promise
           method: "GET",
           headers: buildHeaders,
         })
-          .then(response => response.json())
+          .then(response => response.json()) // get the json payload, and the .json() method returns a Promise
           .then(
-            result => {
+            result => { // We'll see the following pattern again in the code
               if (result.errors) {
-                // knack error
-                snackbarHandler({
-                  severity: "warning",
-                  message: "Error: Data Tracker sync failed.",
-                });
+                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
                 return Promise.reject(result);
               } else {
-                // get-state success
-                project.currentKnackState = result;
-                return fetch(knackEndpointUrl, {
+                // Successful HTTP request with meaningful results from Knack
+                project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
+                return fetch(knackEndpointUrl, { // fetch returns a Promise
                   method: knackHttpMethod,
                   headers: buildHeaders,
                   body: buildBody(),
@@ -124,11 +120,7 @@ const KnackSync = React.forwardRef(
               }
             },
             error => {
-              // get-state fetch error
-              snackbarHandler({
-                severity: "warning",
-                message: "Error: Data Tracker sync failed.",
-              });
+              // Failed HTTP request, such as if the knack endpoint is down
               return Promise.reject(error);
             }
           )
@@ -136,30 +128,35 @@ const KnackSync = React.forwardRef(
           .then(
             result => {
               if (result.errors) {
-                // knack error
-                snackbarHandler({
-                  severity: "warning",
-                  message: "Error: Data Tracker sync failed.",
-                });
+                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+                return Promise.reject(result);
               } else {
-                // successful update
+                // Successful HTTP Update request with meaningful results from Knack
+                return Promise.resolve();
+              }
+            },
+            error => {
+              // Failed HTTP request, such as if the knack endpoint is down
+              return Promise.reject(error);
+            }
+          )
+          .then(refetch) // ask the application to update its status from our graphql endpoint
+          .then(() => {
                 snackbarHandler({
                   severity: "success",
                   message: "Success: Project data pushed to Data Tracker.",
                 });
-              }
-            },
-            error => {
-              // fetch error
+            return Promise.resolve();
+          })
+          .catch((error) => {
+            console.error(error);
               snackbarHandler({
                 severity: "warning",
                 message: "Error: Data Tracker sync failed.",
               });
-            }
-          )
-          .then(refetch);
+          });
       } else {
-        // creating new knack record
+        // creating new knack record execution branch
         project.currentKnackState = {};
         fetch(knackEndpointUrl, {
           method: knackHttpMethod,
