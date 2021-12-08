@@ -168,20 +168,18 @@ const KnackSync = React.forwardRef(
             if (result.errors) {
               // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
               return Promise.reject(result);
-            } else {
-              // Successful HTTP request with meaningful results from Knack
-              return Promise.resolve(result);
-            }
+            } 
+            return Promise.resolve(result); // pass result object onto next .then()
           })
-          .then(knack_record => {
+          .then((knack_record) => 
             mutateProjectKnackId({
               // Apollo will return a promise as well
               variables: {
                 project_id: project.project_id,
                 knack_id: knack_record.record.id,
               },
-            });
-          })
+            })
+          )
           .then(() => refetch()) // ask the application to update its status from our graphql endpoint
           .then(() => {
             // End of the chain; advise the user of success
