@@ -121,10 +121,6 @@ const KnackSync = React.forwardRef(
                   body: buildBody(),
                 });
               }
-            },
-            error => {
-              // Failed HTTP request, such as if the knack endpoint is down
-              return Promise.reject(error);
             }
           )
           .then(response => response.json())
