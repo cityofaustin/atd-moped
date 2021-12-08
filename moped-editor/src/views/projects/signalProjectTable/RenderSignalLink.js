@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "@material-ui/core/Link";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 
 const RenderSignalLink = ({ signals }) => {
   return (
@@ -13,6 +14,7 @@ const RenderSignalLink = ({ signals }) => {
               rel="noopener noreferrer"
             >
               {signal.signal_id}
+              <OpenInNewIcon style={{ fontSize: 14 }} />
             </Link>
           ) : (
             signal.signal_id
