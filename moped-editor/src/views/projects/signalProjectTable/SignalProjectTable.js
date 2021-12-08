@@ -29,6 +29,7 @@ import {
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
+import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -238,7 +239,8 @@ const SignalProjectTable = () => {
     {
       title: "Task order",
       field: "task_order",
-      // placeholder for task order issue
+      customEdit: "taskOrders",
+      emptyValue: "blank",
     },
     {
       title: "Contractor/Contract",
@@ -513,6 +515,7 @@ const SignalProjectTable = () => {
         </Select>
       );
     },
+    taskOrders: props => <TaskOrderAutocomplete data={props} />,
   };
 
   return (
