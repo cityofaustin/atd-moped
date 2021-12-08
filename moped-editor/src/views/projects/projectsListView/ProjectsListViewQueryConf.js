@@ -3,7 +3,7 @@ import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
-import { filterProjectTeamMembers } from "./helpers.js"
+import { filterProjectTeamMembers } from "./helpers.js";
 
 /**
  * The Query configuration (now also including filters)
@@ -135,12 +135,13 @@ export const ProjectsListViewQueryConf = {
         envelope: "%{VALUE}%",
       },
       type: "string",
+      filter: value => (value === "None" ? "-" : value),
     },
     project_partner: {
       label: "Project partner",
       searchable: true,
       search: {
-        label: "Search by project sponsor",
+        label: "Search by project partner",
         operator: "_ilike",
         quoted: true,
         envelope: "%{VALUE}%",
