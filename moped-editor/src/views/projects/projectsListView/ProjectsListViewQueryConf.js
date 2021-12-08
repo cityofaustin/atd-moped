@@ -125,8 +125,19 @@ export const ProjectsListViewQueryConf = {
       width: "20%",
       filter: filterProjectTeamMembers,
     },
-    entity_name: {
+    project_sponsor: {
       label: "Project sponsor",
+      searchable: true,
+      search: {
+        label: "Search by project sponsor",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+    },
+    project_partner: {
+      label: "Project partner",
       searchable: true,
       search: {
         label: "Search by project sponsor",

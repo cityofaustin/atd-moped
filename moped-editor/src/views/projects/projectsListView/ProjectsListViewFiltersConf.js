@@ -91,7 +91,7 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "entity_name",
+      name: "project_sponsor",
       label: "Project sponsor",
       placeholder: "Project sponsor",
       type: "string",

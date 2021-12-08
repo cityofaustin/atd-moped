@@ -4714,7 +4714,6 @@
       - date_added
       - ecapris_subproject_id
       - end_date
-      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
@@ -4725,7 +4724,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4744,7 +4745,6 @@
       - date_added
       - ecapris_subproject_id
       - end_date
-      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
@@ -4755,7 +4755,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4774,7 +4776,6 @@
       - date_added
       - ecapris_subproject_id
       - end_date
-      - entity_name
       - fiscal_year
       - is_retired
       - milestone_id
@@ -4785,7 +4786,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date

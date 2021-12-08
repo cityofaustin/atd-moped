@@ -29,7 +29,7 @@ export const ProjectsListViewExportConf = {
   ecapris_subproject_id: {
     label: "ecapris_id"
   },
-  entity_name: {
+  project_sponsor: {
     label: "project_sponsor",
   },
   start_date: {
