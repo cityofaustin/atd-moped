@@ -105,24 +105,22 @@ const KnackSync = React.forwardRef(
           headers: buildHeaders,
         })
           .then(response => response.json()) // get the json payload, passing it the next step
-          .then(
-            result => {
-              if (result.errors) {
-                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-                // Reject the promise to fall through to the .catch() method
-                return Promise.reject(result);
-              } else {
-                // Successful HTTP request with meaningful results from Knack
-                project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
-                return fetch(knackEndpointUrl, {
-                  // fetch returns a Promise for the next step
-                  method: knackHttpMethod,
-                  headers: buildHeaders,
-                  body: buildBody(),
-                });
-              }
+          .then(result => {
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
+              // Reject the promise to fall through to the .catch() method
+              return Promise.reject(result);
+            } else {
+              // Successful HTTP request with meaningful results from Knack
+              project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
+              return fetch(knackEndpointUrl, {
+                // fetch returns a Promise for the next step
+                method: knackHttpMethod,
+                headers: buildHeaders,
+                body: buildBody(),
+              });
             }
-          )
+          })
           .then(response => response.json())
           .then(result => {
             if (result.errors) {
@@ -165,10 +163,10 @@ const KnackSync = React.forwardRef(
               // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
               // Reject this promise so we fall through to the .catch() method
               return Promise.reject(result);
-            } 
+            }
             return Promise.resolve(result); // pass result object onto next .then()
           })
-          .then((knack_record) => 
+          .then(knack_record =>
             // We've got an ID from the Knack endpoint for this project, so record it in our database
             mutateProjectKnackId({
               variables: {
