@@ -100,22 +100,22 @@ const KnackSync = React.forwardRef(
       if (project.knack_project_id) {
         // updating knack record
         fetch(knackEndpointUrl, {
-          // start the process with a fetch, which is a Promise
+          // Fetch will return a promise, allowing us to start a chain of .then() calls
           method: "GET",
           headers: buildHeaders,
         })
-          .then(response => response.json()) // get the json payload, and the .json() method returns a Promise
+          .then(response => response.json()) // get the json payload, passing it the next step
           .then(
             result => {
-              // We'll see the following pattern again in the code
               if (result.errors) {
-                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+                // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
+                // Reject the promise to fall through to the .catch() method
                 return Promise.reject(result);
               } else {
                 // Successful HTTP request with meaningful results from Knack
                 project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
                 return fetch(knackEndpointUrl, {
-                  // fetch returns a Promise
+                  // fetch returns a Promise for the next step
                   method: knackHttpMethod,
                   headers: buildHeaders,
                   body: buildBody(),
@@ -154,22 +154,23 @@ const KnackSync = React.forwardRef(
         // creating new knack record execution branch
         project.currentKnackState = {};
         fetch(knackEndpointUrl, {
-          // start the process with a fetch, which is a Promise
+          // Fetch will return a promise, which we'll use to start a chain of .then() steps
           method: knackHttpMethod,
           headers: buildHeaders,
           body: buildBody(),
         })
-          .then(response => response.json())
+          .then(response => response.json()) // get the json payload and pass it along
           .then(result => {
             if (result.errors) {
-              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
+              // Reject this promise so we fall through to the .catch() method
               return Promise.reject(result);
             } 
             return Promise.resolve(result); // pass result object onto next .then()
           })
           .then((knack_record) => 
+            // We've got an ID from the Knack endpoint for this project, so record it in our database
             mutateProjectKnackId({
-              // Apollo will return a promise as well
               variables: {
                 project_id: project.project_id,
                 knack_id: knack_record.record.id,
