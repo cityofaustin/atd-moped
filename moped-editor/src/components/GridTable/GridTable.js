@@ -29,7 +29,7 @@ import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
 import ApolloErrorHandler from "../ApolloErrorHandler";
-import ProjectStatusBadge from "../../views/projects/projectView/ProjectStatusBadge"
+import ProjectStatusBadge from "../../views/projects/projectView/ProjectStatusBadge";
 
 /**
  * GridTable Style
@@ -347,18 +347,16 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
    * Returns a ProjectStatusBadge component based on the status and phase of project
    * @param {string} phase - A project's current phase
    * @param {number} statusId - Project's status id
-   * @param {array of objects} projectStatuses - status id to status name mapping
-   * @param {boolean} condensed - use condensed styles
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId, defaultLabel = "No Status") => (
-      <ProjectStatusBadge
-        status={statusId}
-        phase={phase}
-        projectStatuses={referenceData?.moped_status ?? []}
-        condensed
-      />
-    )
+  const buildStatusBadge = (phase, statusId) => (
+    <ProjectStatusBadge
+      status={statusId}
+      phase={phase}
+      projectStatuses={referenceData?.moped_status ?? []}
+      condensed
+    />
+  );
 
   /**
    * Returns a stringified object with information to format link.
@@ -495,7 +493,10 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
                                         ].hasOwnProperty("badge")
                                           ? buildStatusBadge(
                                               row[column],
-                                              row[query.config.columns[column].badge]
+                                              row[
+                                                query.config.columns[column]
+                                                  .badge
+                                              ]
                                             )
                                           : query.getFormattedValue(
                                               column,
