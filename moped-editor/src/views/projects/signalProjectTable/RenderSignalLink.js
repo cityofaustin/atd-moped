@@ -1,8 +1,18 @@
 import React from "react";
 import Link from "@material-ui/core/Link";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles(theme => ({
+  openInNewIcon: {
+    fontSize: "16px",
+    verticalAlign: "middle",
+    paddingBottom: "1px",
+  },
+}));
 
 const RenderSignalLink = ({ signals }) => {
+  const classes = useStyles();
   return (
     <span>
       {signals.map((signal, index) => (
@@ -14,7 +24,7 @@ const RenderSignalLink = ({ signals }) => {
               rel="noopener noreferrer"
             >
               {signal.signal_id}
-              <OpenInNewIcon style={{ fontSize: 14 }} />
+              <OpenInNewIcon className={classes.openInNewIcon} />
             </Link>
           ) : (
             signal.signal_id
