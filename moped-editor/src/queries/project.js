@@ -114,6 +114,19 @@ export const SUMMARY_QUERY = gql`
   }
 `;
 
+export const STATUS_QUERY = gql `
+  query StatusQuery {
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_id
+      status_name
+    }
+  }
+`;
+
+
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(

@@ -95,20 +95,21 @@ export const ProjectsListViewQueryConf = {
     current_status: {
       searchable: false,
       sortable: false,
+      hidden: true,
       label: "Status",
       type: "String",
       width: "5%",
-      chip: {
-        active: "primary",
-        hold: "secondary",
-        canceled: "default",
-      },
+    },
+    status_id: {
+      hidden: true,
+      searchable: false,
     },
     current_phase: {
       searchable: true,
       sortable: false,
-      label: "Current phase",
+      label: "Status",
       width: "15%",
+      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
