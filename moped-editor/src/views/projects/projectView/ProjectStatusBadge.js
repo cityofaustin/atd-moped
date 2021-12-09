@@ -14,9 +14,9 @@ const defaultIcon = PlayCircleOutlineOutlinedIcon;
 
 /**
  * Retrieves the style configuration for an individual phase
- * @param {Object} theme - The theme object, if null the function returns null
+ * @param {Object} theme - The theme object
  * @param {string} phase - The phase name
- * @returns {Object|null}
+ * @returns {Object}
  */
 const getStyle = (theme, phase) => {
   /**
@@ -124,7 +124,6 @@ const getStyle = (theme, phase) => {
       icon: defaultIcon,
     },
   };
-
   return styleMapping?.[phase] ?? styleMapping.default;
 };
 
@@ -149,9 +148,16 @@ const useChipStyles = makeStyles(theme => ({
     borderRadius: "2rem",
     height: "2.5rem",
     padding: ".5rem",
-
     // Find background color
-    backgroundColor: props => getStyle(theme, props?.phase ?? "").background,
+    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
+  },
+  condensed: {
+    fontWeight: "500",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
+    // Find background color
+    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
   },
 }));
 
@@ -163,7 +169,12 @@ const useChipStyles = makeStyles(theme => ({
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
+const ProjectStatusBadge = ({
+  status,
+  phase,
+  projectStatuses,
+  condensed = false,
+}) => {
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number
@@ -190,7 +201,7 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
   };
 
   /**
-   * Generate font, chip and icon classes
+   * Generate chip and icon classes
    */
   const chipClasses = useChipStyles(statusProperties);
   const iconClasses = useFontColorStyles(statusProperties);
@@ -227,12 +238,14 @@ const ProjectStatusBadge = ({ status, phase, projectStatuses }) => {
    * Return the object
    */
   return (
-    showChip &&
-    ChipIcon && (
+    showChip && (
       <Chip
-        className={clsx(iconClasses.root, chipClasses.root)}
+        className={clsx(
+          iconClasses.root,
+          condensed ? chipClasses.condensed : chipClasses.root
+        )}
         icon={<ChipIcon className={iconClasses.root} />}
-        label={capitalCase(statusProperties?.phase)}
+        label={capitalCase(statusProperties.phase)}
         color={"default"}
       />
     )
