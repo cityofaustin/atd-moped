@@ -217,9 +217,7 @@ const SignalProjectTable = () => {
             </Typography>
           );
         }
-        return (
-          <Typography className={classes.tableTypography}>None</Typography>
-        );
+        return <Typography className={classes.tableTypography}>-</Typography>;
       },
     },
     {
@@ -243,8 +241,8 @@ const SignalProjectTable = () => {
     {
       title: "Contractor/Contract",
       field: "contractor",
-      emptyValue: "blank",
-      render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Status update",
@@ -268,14 +266,16 @@ const SignalProjectTable = () => {
     {
       title: "Project DO#",
       field: "purchase_order_number",
-      emptyValue: "blank",
+      emptyValue: "-",
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
       render: entry => (
         <Typography className={classes.tableTypography}>
-          {entry?.project_sponsor?.entity_name}
+          {entry?.project_sponsor?.entity_name === "None"
+            ? "-"
+            : entry?.project_sponsor?.entity_name}
         </Typography>
       ),
       customEdit: "projectSponsor",
