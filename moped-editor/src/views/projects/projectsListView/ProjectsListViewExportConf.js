@@ -1,4 +1,4 @@
-import { filterProjectTeamMembers } from "./helpers.js"
+import { filterProjectTeamMembers } from "./helpers.js";
 
 /**
  * The ProjectsListView export settings
@@ -27,10 +27,17 @@ export const ProjectsListViewExportConf = {
     filter: filterProjectTeamMembers,
   },
   ecapris_subproject_id: {
-    label: "ecapris_id"
+    label: "ecapris_id",
+  },
+  project_sponsor: {
+    label: "project_sponsor",
+  },
+  project_partner: {
+    label: "project_partner",
   },
   start_date: {
     label: "start_date",
-    filter: value => new Date(value).toLocaleDateString('en-US', {timeZone: 'UTC'}),
+    filter: value =>
+      new Date(value).toLocaleDateString("en-US", { timeZone: "UTC" }),
   },
 };
