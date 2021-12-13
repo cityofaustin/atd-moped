@@ -138,10 +138,10 @@ export const ProjectsListViewQueryConf = {
       filter: value => (value === "None" ? "-" : value),
     },
     project_partner: {
-      label: "Project partner",
+      label: "Project partners",
       searchable: true,
       search: {
-        label: "Search by project partner",
+        label: "Search by project partners",
         operator: "_ilike",
         quoted: true,
         envelope: "%{VALUE}%",

@@ -105,8 +105,8 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_partner",
-      label: "Project partner",
-      placeholder: "Project partner",
+      label: "Project partners",
+      placeholder: "Project partners",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
