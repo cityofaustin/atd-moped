@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
-import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 
 /**
  *
@@ -19,10 +18,12 @@ const ProjectSummaryLabel = ({
 }) => {
   return (
     <>
-      <Typography className={className ?? classes.fieldLabelText}>
-        {text}
+      <Typography
+        className={className ?? classes.fieldLabelText}
+        onClick={onClickEdit}
+      >
+        <span className={classes.fieldLabelTextSpan}>{text}</span>
       </Typography>
-      <CreateOutlinedIcon className={classes.editIcon} onClick={onClickEdit} />
     </>
   );
 };

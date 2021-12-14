@@ -50,6 +50,10 @@ const useStyles = makeStyles(theme => ({
   fieldLabelText: {
     width: "calc(100% - 2rem)",
   },
+  fieldLabelTextSpan: {
+    borderBottom: "1px dashed",
+    borderBottomColor: theme.palette.text.secondary,
+  },
   fieldLabelLink: {
     width: "calc(100% - 2rem)",
     overflow: "hidden",
