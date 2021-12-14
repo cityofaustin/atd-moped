@@ -20,6 +20,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         ],
         status_id: {_eq: 1}
       }
+      order_by: {updated_at: desc_nulls_last}
     ) {
       project_id
       project_name

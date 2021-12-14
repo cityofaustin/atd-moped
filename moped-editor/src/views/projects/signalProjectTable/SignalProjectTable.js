@@ -310,8 +310,6 @@ const SignalProjectTable = () => {
       title: "Construction start",
       field: "construction_start",
       editable: "never",
-      // sort table by construction start
-      defaultSort: "desc",
       cellStyle: typographyStyle,
       render: entry => (
         <RenderFieldLink
