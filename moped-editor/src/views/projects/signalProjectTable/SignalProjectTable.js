@@ -504,6 +504,9 @@ const SignalProjectTable = () => {
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
+                headerStyle: {
+                  whiteSpace: "nowrap",
+                },
               }}
               localization={{
                 header: {
