@@ -394,7 +394,7 @@ const SignalProjectTable = () => {
         updatedProjectObject[columnDef.field] = newData;
 
         updatedProjectObject["entity_id"] =
-          updatedProjectObject.project_sponsor.entity_id;
+          updatedProjectObject?.project_sponsor?.entity_id;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
@@ -508,7 +508,7 @@ const SignalProjectTable = () => {
                 },
               }}
               editable={{
-                isEditable: false,
+                isEditable: () => false,
               }}
               cellEditable={{
                 cellStyle: { minWidth: "300px" },
