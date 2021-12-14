@@ -17,7 +17,8 @@ export const SIGNAL_PROJECTS_QUERY = gql`
             }
             status_id: { _neq: 4 }
           }
-        ]
+        ],
+        status_id: {_eq: 1}
       }
     ) {
       project_id
