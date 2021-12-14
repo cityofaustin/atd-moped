@@ -40,10 +40,6 @@ const useStyles = makeStyles({
   tableTypography: {
     fontSize: "14px",
   },
-  editStyle: {
-    opacity: ".6",
-    fontSize: "14px",
-  },
 });
 
 const SignalProjectTable = () => {
@@ -221,7 +217,7 @@ const SignalProjectTable = () => {
             </Typography>
           );
         }
-        return <Typography className={classes.editStyle}>edit</Typography>;
+        return <Typography className={classes.tableTypography}>-</Typography>;
       },
     },
     {
@@ -245,8 +241,8 @@ const SignalProjectTable = () => {
     {
       title: "Contractor/Contract",
       field: "contractor",
-      emptyValue: "edit",
-      render: entry => (entry.contractor === "" ? "edit" : entry.contractor),
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Status update",
@@ -270,21 +266,18 @@ const SignalProjectTable = () => {
     {
       title: "Project DO#",
       field: "purchase_order_number",
-      emptyValue: "edit",
+      emptyValue: "-",
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
-      render: entry => {
-        const noEntity = entry?.project_sponsor?.entity_name === "None";
-        return (
-          <Typography
-            className={noEntity ? classes.editStyle : classes.tableTypography}
-          >
-            {noEntity ? "edit" : entry?.project_sponsor?.entity_name}
-          </Typography>
-        );
-      },
+      render: entry => (
+        <Typography className={classes.tableTypography}>
+          {entry?.project_sponsor?.entity_name === "None"
+            ? "-"
+            : entry?.project_sponsor?.entity_name}
+        </Typography>
+      ),
       customEdit: "projectSponsor",
     },
     {
