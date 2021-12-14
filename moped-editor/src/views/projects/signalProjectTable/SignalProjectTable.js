@@ -34,7 +34,7 @@ const useStyles = makeStyles({
   signalsTable: {
     "& .MuiTableCell-root": {
       // override the default padding of 16px
-      padding: "14px",
+      padding: "10px",
     },
   },
   tableTypography: {
@@ -310,6 +310,8 @@ const SignalProjectTable = () => {
       title: "Construction start",
       field: "construction_start",
       editable: "never",
+      // sort table by construction start
+      defaultSort: "desc",
       cellStyle: typographyStyle,
       render: entry => (
         <RenderFieldLink
