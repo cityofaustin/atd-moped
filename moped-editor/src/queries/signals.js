@@ -17,8 +17,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
             }
             status_id: { _neq: 4 }
           }
-        ]
+        ],
+        status_id: {_neq: 6}
       }
+      order_by: {updated_at: desc_nulls_last}
     ) {
       project_id
       project_name

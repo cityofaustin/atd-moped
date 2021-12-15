@@ -34,7 +34,7 @@ const useStyles = makeStyles({
   signalsTable: {
     "& .MuiTableCell-root": {
       // override the default padding of 16px
-      padding: "14px",
+      padding: "10px",
     },
   },
   tableTypography: {
@@ -307,7 +307,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Targeted construction start",
+      title: "Construction start",
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
@@ -326,7 +326,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Project completion date",
+      title: "Project completion",
       field: "completion_date",
       editable: "never",
       cellStyle: typographyStyle,
@@ -345,7 +345,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
@@ -501,6 +501,10 @@ const SignalProjectTable = () => {
                 search: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
+                pageSize: 30,
+                headerStyle: {
+                  whiteSpace: "nowrap",
+                },
               }}
               localization={{
                 header: {
