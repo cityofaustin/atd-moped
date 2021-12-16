@@ -4730,6 +4730,7 @@
       - fiscal_year
       - is_retired
       - milestone_id
+      - phase_name
       - project_description
       - project_description_public
       - project_id
@@ -4761,6 +4762,7 @@
       - fiscal_year
       - is_retired
       - milestone_id
+      - phase_name
       - project_description
       - project_description_public
       - project_id
@@ -4792,6 +4794,7 @@
       - fiscal_year
       - is_retired
       - milestone_id
+      - phase_name
       - project_description
       - project_description_public
       - project_id
