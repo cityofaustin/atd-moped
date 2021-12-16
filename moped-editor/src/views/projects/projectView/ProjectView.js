@@ -313,7 +313,7 @@ const ProjectView = () => {
       .status_id ?? 1;
 
   /**
-   * Cancels the current project
+   * Updates status of the current project
    */
   const handleUpdateStatus = current_phase => {
     updateStatus({

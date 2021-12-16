@@ -34,7 +34,7 @@ const useStyles = makeStyles({
   signalsTable: {
     "& .MuiTableCell-root": {
       // override the default padding of 16px
-      padding: "14px",
+      padding: "10px",
     },
   },
   tableTypography: {
@@ -217,9 +217,7 @@ const SignalProjectTable = () => {
             </Typography>
           );
         }
-        return (
-          <Typography className={classes.tableTypography}>None</Typography>
-        );
+        return <Typography className={classes.tableTypography}>-</Typography>;
       },
     },
     {
@@ -243,8 +241,8 @@ const SignalProjectTable = () => {
     {
       title: "Contractor/Contract",
       field: "contractor",
-      emptyValue: "blank",
-      render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Status update",
@@ -268,14 +266,16 @@ const SignalProjectTable = () => {
     {
       title: "Project DO#",
       field: "purchase_order_number",
-      emptyValue: "blank",
+      emptyValue: "-",
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
       render: entry => (
         <Typography className={classes.tableTypography}>
-          {entry?.project_sponsor?.entity_name}
+          {entry?.project_sponsor?.entity_name === "None"
+            ? "-"
+            : entry?.project_sponsor?.entity_name}
         </Typography>
       ),
       customEdit: "projectSponsor",
@@ -307,7 +307,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Targeted construction start",
+      title: "Construction start",
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
@@ -326,7 +326,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Project completion date",
+      title: "Project completion",
       field: "completion_date",
       editable: "never",
       cellStyle: typographyStyle,
@@ -345,7 +345,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
@@ -360,59 +360,6 @@ const SignalProjectTable = () => {
    * projectActions functions object
    */
   const projectActions = {
-    update: (newData, oldData) => {
-      // initialize update object with old data
-      const updatedProjectObject = {
-        ...oldData,
-      };
-      // Array of differences between new and old data
-      let differences = Object.keys(oldData).filter(
-        key => oldData[key] !== newData[key]
-      );
-
-      // Loop through the differences and assign newData values.
-      differences.forEach(diff => {
-        updatedProjectObject[diff] = newData[diff];
-      });
-
-      // Remove extraneous fields given by MaterialTable that
-      // Hasura doesn't need
-      delete updatedProjectObject.tableData;
-      delete updatedProjectObject.__typename;
-
-      updatedProjectObject["entity_id"] =
-        updatedProjectObject.project_sponsor.entity_id;
-
-      // compare moped project types
-      const oldTypesList = oldData.project_types;
-      const newTypesList = newData.project_types;
-      // Retrieves the ids of oldTypesList that are not present in newTypesList
-      const typeIdsToDelete = oldTypesList.filter(
-        t => !newTypesList.includes(t)
-      );
-      // Retrieves the ids of newTypesList that are not present in oldTypesList
-      const typeIdsToInsert = newTypesList.filter(
-        t => !oldTypesList.includes(t)
-      );
-      // List of objects to insert
-      const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
-        project_id: oldData.project_id,
-        project_type_id: type_id,
-        status_id: 1,
-      }));
-
-      // List of primary keys to delete
-      const typePksToDelete = oldData.moped_project_types
-        .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
-        .map(t => t.id);
-
-      updatedProjectObject["projectTypes"] = typeObjectsToInsert;
-      updatedProjectObject["typesDeleteList"] = typePksToDelete;
-
-      return updateSignalProject({
-        variables: updatedProjectObject,
-      });
-    },
     cellUpdate: (newData, oldData, rowData, columnDef) => {
       // if column definition has a custom edit component, use that mutation to update
       if (columnDef.customEdit === "projectSponsor") {
@@ -447,7 +394,7 @@ const SignalProjectTable = () => {
         updatedProjectObject[columnDef.field] = newData;
 
         updatedProjectObject["entity_id"] =
-          updatedProjectObject.project_sponsor.entity_id;
+          updatedProjectObject?.project_sponsor?.entity_id;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
@@ -554,6 +501,10 @@ const SignalProjectTable = () => {
                 search: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
+                pageSize: 30,
+                headerStyle: {
+                  whiteSpace: "nowrap",
+                },
               }}
               localization={{
                 header: {
@@ -561,11 +512,7 @@ const SignalProjectTable = () => {
                 },
               }}
               editable={{
-                onRowUpdate: (newData, oldData) => {
-                  return projectActions
-                    .update(newData, oldData)
-                    .then(() => refetch());
-                },
+                isEditable: () => false,
               }}
               cellEditable={{
                 cellStyle: { minWidth: "300px" },
