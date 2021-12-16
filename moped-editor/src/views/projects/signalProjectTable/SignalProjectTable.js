@@ -498,7 +498,7 @@ const SignalProjectTable = () => {
                 ...(data.moped_project.length < PAGING_DEFAULT_COUNT + 1 && {
                   paging: false,
                 }),
-                search: false,
+                search: true,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
