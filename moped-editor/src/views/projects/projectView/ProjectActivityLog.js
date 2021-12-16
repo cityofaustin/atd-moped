@@ -276,7 +276,7 @@ const ProjectActivityLog = () => {
                             </Icon>
                           </Box>
                           <Box p={0} flexGrow={1}>
-                            <Grid continer>
+                            <Grid container>
                               {Array.isArray(change.description) &&
                                 change.description.length === 0 && (
                                   <Grid

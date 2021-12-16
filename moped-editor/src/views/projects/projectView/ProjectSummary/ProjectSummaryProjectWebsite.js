@@ -82,7 +82,7 @@ const ProjectSummaryProjectWebsite = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Project website</Typography>
+      <Typography className={classes.fieldLabel}>Website</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"

@@ -2,7 +2,26 @@ import { gql } from "@apollo/client";
 
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
-    moped_project(where: {moped_proj_components: {moped_components: {component_name: {_ilike: "signal"}}}}) {
+    moped_project(
+      where: {
+        _or: [
+          {
+            moped_proj_components: {
+              moped_components: { component_name: { _ilike: "signal" } }
+            }
+            status_id: { _is_null: true }
+          }
+          {
+            moped_proj_components: {
+              moped_components: { component_name: { _ilike: "signal" } }
+            }
+            status_id: { _neq: 4 }
+          }
+        ],
+        status_id: {_neq: 6}
+      }
+      order_by: {updated_at: desc_nulls_last}
+    ) {
       project_id
       project_name
       updated_at
@@ -22,7 +41,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_features(where: {status_id: {_eq: 1}}) {
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         location
       }
@@ -31,12 +50,15 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           funding_source_name
         }
       }
-      moped_project_types {
+      moped_project_types(where: { status_id: { _eq: 1 } }) {
+        id
+        status_id
         moped_type {
           type_name
+          type_id
         }
       }
-      moped_proj_personnel(where: {status_id: {_eq: 1}}) {
+      moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
         role_id
         moped_user {
           first_name
@@ -47,6 +69,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
     moped_entity {
       entity_id
       entity_name
+    }
+    moped_types {
+      type_id
+      type_name
     }
   }
 `;

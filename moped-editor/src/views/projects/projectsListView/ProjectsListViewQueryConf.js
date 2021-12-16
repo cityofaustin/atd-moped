@@ -3,7 +3,7 @@ import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
-import { filterProjectTeamMembers } from "./helpers.js"
+import { filterProjectTeamMembers } from "./helpers.js";
 
 /**
  * The Query configuration (now also including filters)
@@ -95,20 +95,21 @@ export const ProjectsListViewQueryConf = {
     current_status: {
       searchable: false,
       sortable: false,
+      hidden: true,
       label: "Status",
       type: "String",
       width: "5%",
-      chip: {
-        active: "primary",
-        hold: "secondary",
-        canceled: "default",
-      },
     },
-    phase_name: {
+    status_id: {
+      hidden: true,
+      searchable: false,
+    },
+    current_phase: {
       searchable: true,
       sortable: false,
-      label: "Current phase",
+      label: "Status",
       width: "15%",
+      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
@@ -123,6 +124,29 @@ export const ProjectsListViewQueryConf = {
       label: "Team members",
       width: "20%",
       filter: filterProjectTeamMembers,
+    },
+    project_sponsor: {
+      label: "Project sponsor",
+      searchable: true,
+      search: {
+        label: "Search by project sponsor",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+      filter: value => (value === "None" ? "-" : value),
+    },
+    project_partner: {
+      label: "Project partners",
+      searchable: true,
+      search: {
+        label: "Search by project partners",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
     },
     start_date: {
       searchable: false,
@@ -165,6 +189,7 @@ export const ProjectsListViewQueryConf = {
   order_by: { updated_at: "desc" },
   where: {
     is_retired: "_eq: false",
+    status_id: "_neq: 3",
   },
   or: null,
   and: null,

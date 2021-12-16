@@ -7,7 +7,6 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import {
   Box,
   Card,
-  Chip,
   CircularProgress,
   Container,
   Icon,
@@ -30,6 +29,7 @@ import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
 import ApolloErrorHandler from "../ApolloErrorHandler";
+import ProjectStatusBadge from "../../views/projects/projectView/ProjectStatusBadge";
 
 /**
  * GridTable Style
@@ -54,9 +54,6 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     "text-transform": "capitalize",
     "white-space": "pre-wrap",
-  },
-  tableChip: {
-    "text-transform": "capitalize",
   },
 }));
 
@@ -92,10 +89,11 @@ export const getSearchValue = (query, column, value) => {
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
+ * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query, searchTerm }) => {
+const GridTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
 
   /**
@@ -275,15 +273,6 @@ const GridTable = ({ title, query, searchTerm }) => {
   };
 
   /**
-   * Removes any non-alphanumeric characters from a string
-   * @param {str} input - The text to be cleaned
-   * @returns {str}
-   */
-  const cleanUpText = input => {
-    return String(input).replace(/[^0-9a-z]/gi, "");
-  };
-
-  /**
    * Returns true if the input string is a valid alphanumeric object key
    * @param {string} input - The string to be tested
    * @returns {boolean}
@@ -355,25 +344,19 @@ const GridTable = ({ title, query, searchTerm }) => {
   };
 
   /**
-   * Returns a Chip object containing the status of the project.
-   * @param {string} label - The the text that goes inside the Chip component
-   * @param {Object} labelColorMap - The mapping of label to Material color name
-   * @param {string} defaultLabel - The the text that goes inside the Chip component
+   * Returns a ProjectStatusBadge component based on the status and phase of project
+   * @param {string} phase - A project's current phase
+   * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildChip = (label, labelColorMap, defaultLabel = "No Status") => {
-    const cleanLabel = cleanUpText(label);
-    return String(label) !== "" ? (
-      <Chip
-        className={classes.tableChip}
-        color={labelColorMap[cleanLabel.toLowerCase()] || "default"}
-        size={"small"}
-        label={cleanLabel}
-      />
-    ) : (
-      <span>{defaultLabel}</span>
-    );
-  };
+  const buildStatusBadge = (phase, statusId) => (
+    <ProjectStatusBadge
+      status={statusId}
+      phase={phase}
+      projectStatuses={referenceData?.moped_status ?? []}
+      condensed
+    />
+  );
 
   /**
    * Returns a stringified object with information to format link.
@@ -507,10 +490,13 @@ const GridTable = ({ title, query, searchTerm }) => {
                                       <>
                                         {query.config.columns[
                                           column
-                                        ].hasOwnProperty("chip")
-                                          ? buildChip(
+                                        ].hasOwnProperty("badge")
+                                          ? buildStatusBadge(
                                               row[column],
-                                              query.config.columns[column].chip
+                                              row[
+                                                query.config.columns[column]
+                                                  .badge
+                                              ]
                                             )
                                           : query.getFormattedValue(
                                               column,

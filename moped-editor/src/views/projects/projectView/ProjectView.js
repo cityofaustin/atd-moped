@@ -25,7 +25,6 @@ import {
   Menu,
   MenuItem,
   Fade,
-  Icon,
   ListItemIcon,
   ListItemText,
 } from "@material-ui/core";
@@ -39,11 +38,22 @@ import ProjectTimeline from "./ProjectTimeline";
 import ProjectComments from "./ProjectComments";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
-import { PROJECT_ARCHIVE, SUMMARY_QUERY } from "../../../queries/project";
+import {
+  PROJECT_ARCHIVE,
+  PROJECT_CLEAR_NO_CURRENT_PHASE,
+  PROJECT_UPDATE_CURRENT_STATUS,
+  SUMMARY_QUERY,
+} from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
+import ProjectStatusBadge from "./ProjectStatusBadge";
+
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
+import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
+import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -72,19 +82,11 @@ const useStyles = makeStyles(theme => ({
     float: "right",
     cursor: "pointer",
   },
-  menuDangerItem: {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.common.white,
-    "&:hover": {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItem: {
+    minWidth: "14rem",
   },
-  menuDangerText: {
-    color: theme.palette.common.white,
-    "&:hover": {
-      color: theme.palette.common.white,
-    },
+  projectOptionsMenuItemIcon: {
+    minWidth: "2rem",
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
@@ -184,9 +186,9 @@ const ProjectView = () => {
   /**
    * The mutation to soft-delete the project
    */
-  const [archiveProject] = useMutation(PROJECT_ARCHIVE, {
-    variables: { projectId },
-  });
+  const [archiveProject] = useMutation(PROJECT_ARCHIVE);
+  const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
+  const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
 
   /**
    * Clears the dialog contents
@@ -254,20 +256,21 @@ const ProjectView = () => {
     setDialogContent(
       "Are you sure?",
       <span>
-        Cancelling this project will make it inaccessible to Moped users and
-        only available to administrators. Users may request a cancelled project
-        be restored by{" "}
+        If you delete this project, it will no longer be visible in Moped or accessible in applications that use Moped data.
+        <br /><br />
+        If you need to restore a deleted project, please
+        {" "}
         <Link
-          href={"https://atd.knack.com/dts#new-service-request/"}
+          href={"https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"}
           target="new"
         >
-          opening a support ticket
+          submit a Data &amp; Technology Services support request
         </Link>
         .
       </span>,
       <>
-        <Button onClick={handleDelete}>Cancel</Button>
-        <Button onClick={handleDialogClose}>Do not cancel</Button>
+        <Button onClick={handleDialogClose}>Cancel</Button>
+        <Button onClick={handleDelete}>Delete project</Button>
       </>
     );
     handleDialogOpen();
@@ -282,7 +285,9 @@ const ProjectView = () => {
     setDialogContent("Please wait", <CircularProgress />, null);
 
     // run the mutation
-    archiveProject()
+    archiveProject({
+      variables: { projectId },
+    })
       .then(() => {
         // Do not close the dialog, redirect will take care
         window.location = "/moped/projects";
@@ -296,6 +301,55 @@ const ProjectView = () => {
           <Button onClick={handleDialogClose}>Close</Button>
         );
       });
+  };
+
+  /**
+   * Finds the status_id for a phase name
+   * @param {string} phase - The name of the phase
+   * @returns {number}
+   */
+  const resolveStatusIdForPhase = phase =>
+    data?.moped_status.find(s => s.status_name.toLowerCase() === phase)
+      .status_id ?? 1;
+
+  /**
+   * Updates status of the current project
+   */
+  const handleUpdateStatus = current_phase => {
+    updateStatus({
+      variables: {
+        projectId: projectId,
+        currentStatus: current_phase,
+        statusId: resolveStatusIdForPhase(current_phase),
+      },
+    })
+      .then(() =>
+        clearCurrentNoPhase({
+          variables: {
+            projectId: projectId,
+          },
+        })
+      )
+      .then(() => refetch())
+      .catch(err => {
+        // If there is an error, show it in the dialog
+        setDialogContent(
+          "Error",
+          `It appears there was an error while changing status to '${current_phase}', please contact the Data & Technology Services department. Reference: ${String(
+            err
+          )}`,
+          <Button onClick={handleDialogClose}>Close</Button>
+        );
+      });
+  };
+
+  /**
+   * Establishes the project status for our badge
+   */
+  const projectStatus = {
+    status: data?.moped_project?.[0]?.status_id ?? 0,
+    phase: data?.moped_project?.[0]?.current_phase ?? null,
+    current_status: data?.moped_project?.[0]?.current_status ?? null,
   };
 
   return (
@@ -323,13 +377,26 @@ const ProjectView = () => {
                       </Box>
                     </Grid>
                     <Grid item xs={11} md={11} className={classes.title}>
-                      <ProjectNameEditable
-                        projectName={data.moped_project[0].project_name}
-                        projectId={projectId}
-                        editable={true}
-                        isEditing={isEditing}
-                        setIsEditing={setIsEditing}
-                      />
+                      <Box
+                        alignItems="center"
+                        display="flex"
+                        flexDirection="row"
+                      >
+                        <ProjectNameEditable
+                          projectName={data.moped_project[0].project_name}
+                          projectId={projectId}
+                          editable={true}
+                          isEditing={isEditing}
+                          setIsEditing={setIsEditing}
+                        />
+                        <Box>
+                          <ProjectStatusBadge
+                            status={projectStatus.status}
+                            phase={projectStatus.phase}
+                            projectStatuses={data?.moped_status ?? []}
+                          />
+                        </Box>
+                      </Box>
                     </Grid>
                     <Grid item xs={1} md={1}>
                       <MoreHorizIcon
@@ -344,6 +411,7 @@ const ProjectView = () => {
                         keepMounted
                         open={menuOpen}
                         onClose={handleMenuClose}
+                        autoFocus={false}
                         TransitionComponent={Fade}
                         getContentAnchorEl={null}
                         anchorOrigin={{
@@ -355,46 +423,57 @@ const ProjectView = () => {
                           horizontal: "center",
                         }}
                       >
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">share</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Share" />
-                        </MenuItem>
-                        <MenuItem onClick={handleMenuClose} disabled={true}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">favorite</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Add to favorites" />
-                        </MenuItem>
-                        <MenuItem onClick={handleRenameClick}>
-                          <ListItemIcon>
-                            <Icon fontSize="small">create</Icon>
+                        <MenuItem
+                          onClick={handleRenameClick}
+                          className={classes.projectOptionsMenuItem}
+                          selected={false}
+                        >
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <CreateOutlinedIcon />
                           </ListItemIcon>
                           <ListItemText primary="Rename" />
                         </MenuItem>
-                        <MenuItem
-                          onClick={handleMenuClose}
-                          selected={false}
-                          disabled={true}
-                        >
-                          <ListItemIcon>
-                            <Icon fontSize="small">block</Icon>
-                          </ListItemIcon>
-                          <ListItemText primary="Place on hold" />
-                        </MenuItem>
+                        {projectStatus?.current_status !== "on hold" && (
+                          <MenuItem
+                            onClick={() => handleUpdateStatus("on hold")}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
+                          >
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              <PauseCircleOutlineOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Place on hold" />
+                          </MenuItem>
+                        )}
+                        {projectStatus?.current_status !== "canceled" && (
+                          <MenuItem
+                            onClick={() => handleUpdateStatus("canceled")}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
+                          >
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              <CancelOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cancel" />
+                          </MenuItem>
+                        )}
                         <MenuItem
                           onClick={handleDeleteClick}
-                          className={classes.menuDangerItem}
+                          className={classes.projectOptionsMenuItem}
                           selected={false}
                         >
-                          <ListItemIcon className={classes.menuDangerText}>
-                            <Icon fontSize="small">delete</Icon>
+                          <ListItemIcon
+                            className={classes.projectOptionsMenuItemIcon}
+                          >
+                            <DeleteOutlinedIcon />
                           </ListItemIcon>
-                          <ListItemText
-                            primary="Cancel"
-                            className={classes.menuDangerText}
-                          />
+                          <ListItemText primary="Delete" />
                         </MenuItem>
                       </Menu>
                     </Grid>
@@ -406,6 +485,7 @@ const ProjectView = () => {
                     classes={{ indicator: classes.indicatorColor }}
                     value={activeTab}
                     onChange={handleChange}
+                    variant="scrollable"
                     aria-label="Project Details Tabs"
                   >
                     {TABS.map((tab, i) => {

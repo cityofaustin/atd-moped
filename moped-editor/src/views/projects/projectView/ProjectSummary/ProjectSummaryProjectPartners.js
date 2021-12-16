@@ -44,7 +44,7 @@ const ProjectSummaryProjectPartners = ({
     {}
   );
 
-  // Estrablish original partners
+  // Establish original partners
   const originalPartners = data?.moped_proj_partners ?? [];
   // Establish original entities
   const originalEntities = originalPartners.map(e => e.entity_id);
@@ -129,7 +129,7 @@ const ProjectSummaryProjectPartners = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Project partners</Typography>
+      <Typography className={classes.fieldLabel}>Partners</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -164,6 +164,7 @@ const ProjectSummaryProjectPartners = ({
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
                   <Checkbox
                     checked={selectedEntities.includes(entity.entity_id)}
+                    color={"primary"}
                   />
                   <ListItemText primary={entity.entity_name} />
                 </MenuItem>
