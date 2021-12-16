@@ -4737,9 +4737,7 @@
       - project_length
       - project_name
       - project_order
-      - project_partner
       - project_priority
-      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4768,9 +4766,7 @@
       - project_length
       - project_name
       - project_order
-      - project_partner
       - project_priority
-      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4799,9 +4795,7 @@
       - project_length
       - project_name
       - project_order
-      - project_partner
       - project_priority
-      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
