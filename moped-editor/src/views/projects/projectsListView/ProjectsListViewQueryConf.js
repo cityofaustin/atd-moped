@@ -104,7 +104,7 @@ export const ProjectsListViewQueryConf = {
       hidden: true,
       searchable: false,
     },
-    phase_name: {
+    current_phase: {
       searchable: true,
       sortable: false,
       label: "Status",

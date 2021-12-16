@@ -1,3 +1,5 @@
+DROP VIEW "public"."project_list_view";
+
 CREATE OR REPLACE VIEW "public"."project_list_view" AS 
  SELECT mp.project_uuid,
     mp.project_id,
