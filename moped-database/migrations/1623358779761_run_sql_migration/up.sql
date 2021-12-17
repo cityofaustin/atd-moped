@@ -30,4 +30,3 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
      LEFT JOIN moped_project_roles mpr ON ((mpp.role_id = mpr.project_role_id)))
      LEFT JOIN moped_proj_phases mpph ON ((mp.project_id = mpph.project_id)) AND mpph.is_current_phase = true)
   GROUP BY mp.project_uuid, mp.project_id, mp.project_name, mp.project_description, mp.project_description_public, mp.ecapris_subproject_id, mp.project_importance, mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.project_length, mp.start_date, mp.fiscal_year, mp.capitally_funded, mp.project_priority, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, mp.updated_at, mpph.phase_name;
-  
