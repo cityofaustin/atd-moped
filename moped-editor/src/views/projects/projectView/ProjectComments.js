@@ -81,7 +81,7 @@ const useStyles = makeStyles(theme => ({
  // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
 const projectNoteTypes = ['', 'Internal Note', 'Status Update', 'Timeline Notes'];
 
-const ProjectComments = () => {
+const ProjectComments = (props) => {
   const { projectId } = useParams();
   const { user } = useUser();
   const userHighestRole = getHighestRole(user);
@@ -122,6 +122,7 @@ const ProjectComments = () => {
     onCompleted() {
       setNoteText("");
       refetch();
+      props.refetch();
       setCommentAddSuccess(true);
       setEditingComment(false);
       setTimeout(() => {
@@ -134,6 +135,7 @@ const ProjectComments = () => {
   const [deleteExistingComment] = useMutation(DELETE_PROJECT_COMMENT, {
     onCompleted() {
       refetch();
+      props.refetch();
     },
   });
 
