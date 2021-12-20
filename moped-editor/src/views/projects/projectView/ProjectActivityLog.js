@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
   },
   projectPageHeader: {
     fontFamily: typography.fontFamily,
+    padding: "0rem 0 2rem 0",
   },
 }));
 
@@ -191,7 +192,7 @@ const ProjectActivityLog = () => {
   return (
     <ApolloErrorHandler error={error || lookupError}>
       <CardContent>
-        <h2 className={classes.projectPageHeader} style={{ padding: "0rem 0 2rem 0" }}>Activity feed</h2>
+        <h2 className={classes.projectPageHeader}>Activity feed</h2>
         {getTotalItems() === 0 ? (
           <Alert severity="info">
             There aren't any items for this project.
