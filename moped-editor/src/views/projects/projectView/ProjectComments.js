@@ -279,8 +279,8 @@ const ProjectComments = props => {
               {data.moped_proj_notes.length > 0 ? (
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
-                    let isNotLastItem = i < data.moped_proj_notes.length - 1;
-                    let editableComment =
+                    const isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    const editableComment =
                       userSessionData.user_id === item.added_by_user_id ||
                       userHighestRole === "moped-admin";
 
