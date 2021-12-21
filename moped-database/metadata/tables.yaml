@@ -3596,6 +3596,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3628,6 +3629,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3660,6 +3662,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3691,6 +3694,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3722,6 +3726,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3754,6 +3759,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3786,6 +3792,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
