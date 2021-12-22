@@ -240,7 +240,7 @@ const ProjectFiles = props => {
     },
     {
       title: "File size",
-      cellStyle: { fontFamily: typography.fontFamily },
+      // cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
       render: record => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
