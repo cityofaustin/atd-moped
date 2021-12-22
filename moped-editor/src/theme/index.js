@@ -3,13 +3,6 @@ import shadows from "./shadows";
 import typography from "./typography";
 
 const theme = createMuiTheme({
-  components: {
-    MuiTypography: {
-      defaultProps: {
-        fontFamily: "Roboto",
-      },
-    },
-  },
   palette: {
     background: {
       default: "#edeeed",
