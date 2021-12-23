@@ -27,10 +27,3 @@ function deploy() {
     --function-name "${FUNCTION_NAME}" \
     --zip-file fileb://$PWD/function.zip > /dev/null;
 }
-
-function build() {
-  echo "Building Node Module...";
-  docker run -it --rm --workdir="/app" \
-     --volume "$(pwd):/app" node:14-alpine \
-     sh -c "apk update && apk add zip && npm install && zip -r9 -r function.zip node_modules index.js package.json package-lock.json";
-}
