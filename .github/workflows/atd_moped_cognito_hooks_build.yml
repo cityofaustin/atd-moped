@@ -42,5 +42,5 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-cognito-helper.sh
+          source $(pwd)/.github/workflows/aws-moped-cognito-helper.sh
           deploy_cognito_functions
