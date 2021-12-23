@@ -41,11 +41,12 @@ fi;
 #
 function build() {
   echo "Building Node Module...";
-  cp "${WORKING_STAGE}.js" index.js;
+  # Copy working stage into index.js
+  cp "${CLOUDFRONT_COGNITO_EDGE_DIR}/${WORKING_STAGE}.js" "${CLOUDFRONT_COGNITO_EDGE_DIR}/index.js";
 
   # At the time of this writing, Lambda@Edge only supports node v14.x.x
   docker run -it --rm --workdir="/app" \
-     --volume "$(pwd):/app" node:14-alpine \
+     --volume "${CLOUDFRONT_COGNITO_EDGE_DIR}:/app" node:14-alpine \
      sh -c "apk update && apk add zip && npm install && zip -r9 -r function.zip node_modules index.js package.json package-lock.json";
 }
 
