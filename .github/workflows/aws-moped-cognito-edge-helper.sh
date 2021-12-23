@@ -25,15 +25,15 @@ fi;
 #
 # If IGNORE_BRANCH is set to TRUE, skip branch check...
 #
-if [[ "${IGNORE_BRANCH}" != "TRUE" ]]; then
+if [[ "${IGNORE_BRANCH}" == "TRUE" ]]; then
+  echo "Ignoring branch build, assuming ${WORKING_STAGE} environment";
+else
   if [[ "${WORKING_STAGE}" == "test" ]]; then
     echo "Builds are only supported for production or staging at this moment";
     exit 0;
   else
       echo "Preparing Build & Deployment for environment: ${WORKING_STAGE}";
   fi;
-else
-  echo "Ignoring branch build, assuming ${WORKING_STAGE} environment";
 fi;
 
 #
