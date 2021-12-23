@@ -34,5 +34,3 @@ function build() {
      --volume "$(pwd):/app" node:14-alpine \
      sh -c "apk update && apk add zip && npm install && zip -r9 -r function.zip node_modules index.js package.json package-lock.json";
 }
-
-
