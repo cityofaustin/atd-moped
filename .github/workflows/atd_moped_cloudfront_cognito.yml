@@ -1,5 +1,6 @@
 #
-# Builds SQS Triggers for the ATD-Events
+# Builds the Cognito-at-edge validator from:
+# https://github.com/awslabs/cognito-at-edge
 #
 name: "Build & Deploy CloudFront Cognito Auth"
 
