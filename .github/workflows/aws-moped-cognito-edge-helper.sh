@@ -58,5 +58,5 @@ function deploy() {
   echo "Deploying function: ${FUNCTION_NAME}";
   aws lambda update-function-code \
     --function-name "${FUNCTION_NAME}" \
-    --zip-file fileb://$PWD/function.zip > /dev/null;
+    --zip-file "fileb://${CLOUDFRONT_COGNITO_EDGE_DIR}/function.zip" > /dev/null;
 }
