@@ -17,7 +17,7 @@ esac;
 echo "Preparing Build & Deployment";
 if [[ "${WORKING_STAGE}" == "other" ]]; then
   echo "Builds are only supported for production or staging at this moment";
-  exit 1;
+  exit 0;
 fi;
 
 function deploy() {
