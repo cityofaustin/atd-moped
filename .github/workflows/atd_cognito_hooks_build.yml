@@ -10,11 +10,6 @@ on:
       - production
     paths:
       - "moped-auth/cognito-pre-token-hook/**"
-  pull_request:
-    paths:
-      - ".github/workflows/atd_cognito_hooks_build.yml"
-      - ".github/workflows/aws-cognito-helper.sh"
-      - "moped-auth/cognito-pre-token-hook/**"
 jobs:
   build:
     name: Build
