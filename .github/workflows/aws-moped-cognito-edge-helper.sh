@@ -14,6 +14,14 @@ case "${BRANCH_NAME}" in
   ;;
 esac;
 
+CLOUDFRONT_COGNITO_EDGE_DIR="$(pwd)/moped-auth/cloudfront-cognito-at-edge";
+
+# Check if our directory exists, if not then we can exit
+if [[ ! -d "${CLOUDFRONT_COGNITO_EDGE_DIR}" ]]; then
+  echo "Required build directory '${CLOUDFRONT_COGNITO_EDGE_DIR}' does not exist, aborting.";
+  exit 0;
+fi;
+
 #
 # If IGNORE_BRANCH is set to TRUE, skip branch check...
 #
