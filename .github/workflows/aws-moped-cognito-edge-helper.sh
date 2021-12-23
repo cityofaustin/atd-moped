@@ -1,3 +1,7 @@
+#!/usr/bin/env bash
+
+set -o errexit;
+
 case "${BRANCH_NAME}" in
   "production")
     export WORKING_STAGE="production";
