@@ -10,7 +10,7 @@ case "${BRANCH_NAME}" in
     export WORKING_STAGE="staging";
   ;;
   *)
-    export WORKING_STAGE="test";
+    export WORKING_STAGE="production";
   ;;
 esac;
 
