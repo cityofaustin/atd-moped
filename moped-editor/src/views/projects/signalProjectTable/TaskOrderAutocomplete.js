@@ -15,32 +15,15 @@ import {
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
- * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
- * Socrata dataset and setting it as a project component.
- * * @param {Object} setSelectedComponentSubtype - sets the selectedComponentSubtype from parent state
- * * @param {Object} setEditFeatureCollection - sets the editFeatureCollection from parent state
- * * @param {Boolean} editFeatureCollection - the geoJSON generated for all the the features in this component
+ * Material Autocomplete wrapper that enables selecting a task order record from a
+ * Socrata dataset and setting it.
  * * @param {Object} classes - MaterialUI style object
+ * * @param {Object} props - passes down props parent MUI Table
  *  @return {JSX.Element}
  */
-const TaskOrderAutocomplete = ({
-  classes,
-  // setSelectedComponentSubtype,
-  // setEditFeatureCollection,
-  // editFeatureCollection,
-}) => {
-  const [signal, setSignal] = useState(null);
+const TaskOrderAutocomplete = ({ classes, props, setTaskOrder }) => {
+  const taskOrder = null;
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
-
-  console.log(data);
-
-  // useInitialSignalComponentValue(editFeatureCollection, setSignal);
-
-  // useSignalChangeEffect(
-  //   signal,
-  //   setSelectedComponentSubtype,
-  //   setEditFeatureCollection
-  // );
 
   if (loading) {
     return <CircularProgress color="primary" size={20} />;
@@ -50,6 +33,7 @@ const TaskOrderAutocomplete = ({
     );
   }
 
+  console.log(data);
   return (
     <Autocomplete
       className={classes}
@@ -57,13 +41,15 @@ const TaskOrderAutocomplete = ({
       filterOptions={filterOptions}
       // getOptionSelected={getSignalOptionSelected}
       getOptionLabel={option => option.display_name}
-      onChange={(e, signal) => {
-        // setSignal(signal ? signal : null);
+      onChange={(e, value) => {
+        console.log("change will happen here");
+        console.log(e, value);
+        props.onChange(value);
       }}
       loading={loading}
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}
-      value={signal || null}
+      value={taskOrder || null}
     />
   );
 };

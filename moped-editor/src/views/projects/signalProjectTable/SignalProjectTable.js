@@ -26,6 +26,7 @@ import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_TYPES,
 } from "../../../queries/project";
+import { UPDATE_PROJECT_TASK_ORDER } from "../../../queries/taskOrder";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
@@ -56,6 +57,7 @@ const SignalProjectTable = () => {
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
   const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
+  const [updateProjectTaskOrder] = useMutation(UPDATE_PROJECT_TASK_ORDER);
 
   if (error) {
     console.log(error);
@@ -442,6 +444,14 @@ const SignalProjectTable = () => {
             deleteList: typePksToDelete,
           },
         });
+      } else if (columnDef.customEdit === "taskOrders") {
+        console.log(newData, oldData, rowData);
+        return updateProjectTaskOrder({
+          variables: {
+            projectId: rowData.project_id,
+            taskOrder: newData.task_order,
+          },
+        });
       } else {
         const updatedProjectObject = {
           ...rowData,
@@ -515,7 +525,12 @@ const SignalProjectTable = () => {
         </Select>
       );
     },
-    taskOrders: props => <TaskOrderAutocomplete data={props} />,
+    taskOrders: props => (
+      <TaskOrderAutocomplete
+        props={props}
+        setTaskOrder={updateProjectTaskOrder}
+      />
+    ),
   };
 
   return (
