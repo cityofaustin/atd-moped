@@ -11,9 +11,6 @@ RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
 
-print(MAX_ATTEMPTS)
-
-
 def run_query(query):
     """
     Runs a GraphQL query against Hasura via an HTTP POST request.
