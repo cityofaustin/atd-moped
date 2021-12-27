@@ -36,6 +36,7 @@ const TaskOrderAutocomplete = ({ classes, props, setTaskOrder }) => {
   console.log(data);
   return (
     <Autocomplete
+      multiple
       className={classes}
       id="signal-id"
       filterOptions={filterOptions}
@@ -49,7 +50,7 @@ const TaskOrderAutocomplete = ({ classes, props, setTaskOrder }) => {
       loading={loading}
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}
-      value={taskOrder || null}
+      defaultValue={[]}
     />
   );
 };
