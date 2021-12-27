@@ -2,12 +2,10 @@
 
 import json
 import requests
-from string import Template
+from process.request import run_query
 
 
-
-# Query to gather a subset of list of specific Locations
-get_all_projects = Template("""
+get_all_projects = """
 query get_all_projects {
   moped_project {
     project_id
@@ -16,4 +14,8 @@ query get_all_projects {
     knack_project_id
   }
 }
-""")
+"""
+
+result = run_query(get_all_projects)
+
+print(result)
