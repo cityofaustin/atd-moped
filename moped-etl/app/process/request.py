@@ -11,8 +11,7 @@ MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
 RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
-KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
-KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
+
 
 def run_query(query):
     """
@@ -49,21 +48,3 @@ def run_query(query):
                 print("Attempt (%s out of %s)" % (current_attempt+1, MAX_ATTEMPTS))
                 print("Trying again in %s seconds..." % RETRY_WAIT_TIME)
                 time.sleep(RETRY_WAIT_TIME)
-
-
-def run_knack_project_query(knack_object_keys):
-    """
-    Utilize knackpy to pull data and build object from Knack for projects.
-    :param knack_object_keys: dictionary - Knack object keys 
-    :return: dict - Dictionary of projects in Knack containing Moped IDs
-    """
-
-    app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID)
-    records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
-    knack_records = {}
-    for record in records:
-        if (record[knack_object_keys['project_id']] == None):
-            continue
-        #print(record[knack_object_keys['PROJECT_ID']]) # accessing a particular field value defined by env variables
-        knack_records[record[knack_object_keys['project_id']]] = record
-    return(knack_records)
