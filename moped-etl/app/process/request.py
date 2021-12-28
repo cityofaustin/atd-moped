@@ -61,7 +61,7 @@ def run_knack_project_query():
     """
 
     knack_object_keys = {}
-    object_regex = re.compile('^KNACK_DATA_(?P<object_key>\S+)')
+    object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
     for variable in list(os.environ):
         match = object_regex.search(variable)
         if match:
