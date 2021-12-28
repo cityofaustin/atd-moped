@@ -1,14 +1,8 @@
 import React from "react";
-import { useState } from "react";
 import { CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import {
-  // useSignalChangeEffect,
-  // getSignalOptionLabel,
-  // getSignalOptionSelected,
-  // useInitialSignalComponentValue,
-  // renderSignalInput,
   TaskOrderInput,
   SOCRATA_ENDPOINT,
 } from "src/utils/taskOrderComponentHelpers";
@@ -33,20 +27,14 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
     );
   }
 
-  console.log(data);
   return (
     <Autocomplete
       multiple
       className={classes}
       id="signal-id"
       filterOptions={filterOptions}
-      // getOptionSelected={getSignalOptionSelected}
       getOptionLabel={option => option.display_name}
-      onChange={(e, value) => {
-        console.log("change will happen here");
-        console.log(e, value);
-        props.onChange(value);
-      }}
+      onChange={(e, value) => props.onChange(value)}
       loading={loading}
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}

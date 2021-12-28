@@ -1,5 +1,3 @@
-import React, { useEffect } from "react";
-
 /*
 / MUI autocomplete filter function which limits number of options rendered in select menu
 */

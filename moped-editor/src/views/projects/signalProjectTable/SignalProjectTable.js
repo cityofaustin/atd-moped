@@ -458,7 +458,6 @@ const SignalProjectTable = () => {
           },
         });
       } else if (columnDef.customEdit === "taskOrders") {
-        console.log(newData, oldData, rowData);
         return updateProjectTaskOrder({
           variables: {
             taskOrder: newData,
