@@ -62,10 +62,15 @@ function build_lambda_function() {
 #
 # Updates lambda@edge function
 #
-function deploy() {
+function deploy_lambda_function() {
   FUNCTION_NAME="atd-moped-cloudfront-auth-${WORKING_STAGE}";
   echo "Deploying function: ${FUNCTION_NAME}";
-  aws lambda update-function-code \
-    --function-name "${FUNCTION_NAME}" \
-    --zip-file "fileb://${CLOUDFRONT_COGNITO_EDGE_DIR}/function.zip" > /dev/null;
+  if [[ $(__aws_lambda_function_exists $FUNCTION_NAME) == "TRUE" ]]; then
+    echo "Lambda function already exists, performing update.";
+    aws lambda update-function-code \
+      --function-name "${FUNCTION_NAME}" \
+      --zip-file "fileb://${CLOUDFRONT_COGNITO_EDGE_DIR}/function.zip" > /dev/null;
+  else
+    echo "Lambda function doesn't exist, be sure to create a function first.";
+  fi;
 }
