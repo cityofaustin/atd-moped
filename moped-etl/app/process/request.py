@@ -1,5 +1,5 @@
 #
-# Request Helper - Makes post requests to a Hasura/GraphQL endpoint.
+# Request Helper - Makes requests to a Hasura/GraphQL or Knack endpoint
 #
 
 import os
@@ -55,9 +55,8 @@ def run_query(query):
 
 def run_knack_project_query():
     """
-    Runs a GraphQL query against Hasura via an HTTP POST request.
-    :param query: string - The GraphQL query to execute (query, mutation, etc.)
-    :return: object - A Json dictionary directly from Hasura
+    Utilize knackpy to pull data and build object from Knack for projects.
+    :return: dict - Dictionary of projects in Knack containing Moped IDs
     """
 
     knack_object_keys = {}
