@@ -6,7 +6,7 @@
 # will inherit these settings.
 #   From: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
 #   Also: https://docs.netlify.com/configure-builds/environment-variables/
-[context.deploy-preview]
+[context.branch-deploy]
     command = "npm run build:netlifypr"
-    [context.deploy-preview.environment]
+    [context.branch-deploy.environment]
       ATD_MOPED_BUILD_CONTEXT = "Netlify PR"
