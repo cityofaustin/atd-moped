@@ -49,8 +49,8 @@ Cognito into Hasura using another trigger hook.
 
 ### Development
 
-Currently we do not support branches or PRs for cognito triggers, there
-are github actions set up that listen for any changes to PRODUCTION and MAIN,
+Currently, we do not support branches or PRs for cognito triggers, there
+are GitHub actions set up that listen for any changes to PRODUCTION and MAIN,
 if the current branch is neither, then the changes will not be deployed.
 
 The MAIN branch serves as the staging environment, if you want to experiment
@@ -68,7 +68,7 @@ for help if you do not understand how it works.
 We use lambda@edge to protect content. Lambda-at-edge
 functions are basically leaner lambda functions with
 stricter and size restrictions, but they are far more
-scalable and they run in CloudFront's CDN. Also, they
+scalable, and they run in CloudFront's CDN. Also, they
 allow you to integrate and extend request events using
 javascript or python, etc.
 
