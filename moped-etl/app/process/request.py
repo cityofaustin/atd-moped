@@ -58,7 +58,6 @@ def run_knack_project_query(knack_object_keys):
     :return: dict - Dictionary of projects in Knack containing Moped IDs
     """
 
-
     app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID)
     records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
     knack_records = {}
