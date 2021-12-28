@@ -5,6 +5,8 @@
 import os
 import re
 import time
+import json
+import knackpy
 import requests
 
 MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
@@ -71,4 +73,3 @@ def run_knack_project_query():
             key = match.group('object_key')
             knack_object_keys[key] = os.getenv(variable)
 
-    print(knack_object_keys)

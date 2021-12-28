@@ -8,7 +8,7 @@ RUN mkdir /app && mkdir /app/tmp && mkdir /data
 
 RUN apk add bash build-base python3-dev 
 
-RUN pip install requests awscli web-pdb sodapy boto3 
+RUN pip install requests awscli web-pdb sodapy boto3 knackpy
 
 WORKDIR /app
 
