@@ -905,3 +905,18 @@ export const PROJECT_CLEAR_NO_CURRENT_PHASE = gql`
     }
   }
 `;
+
+export const UPDATE_PROJECT_TASK_ORDER = gql`
+  mutation TaskOrderMutation($projectId: Int!, $taskOrder: jsonb) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { task_order: $taskOrder }
+    ) {
+      affected_rows
+      returning {
+        task_order
+        project_id
+      }
+    }
+  }
+`;

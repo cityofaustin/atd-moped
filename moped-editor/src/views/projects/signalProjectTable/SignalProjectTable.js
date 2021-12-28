@@ -25,8 +25,8 @@ import {
 import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_TYPES,
+  UPDATE_PROJECT_TASK_ORDER,
 } from "../../../queries/project";
-import { UPDATE_PROJECT_TASK_ORDER } from "../../../queries/taskOrder";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
@@ -243,6 +243,13 @@ const SignalProjectTable = () => {
       field: "task_order",
       customEdit: "taskOrders",
       emptyValue: "blank",
+      render: entry => {
+        const taskOrders = entry.task_order.map(taskOrder => {
+          return taskOrder.display_name;
+        });
+
+        return <span>{taskOrders.join(", ")}</span>;
+      },
     },
     {
       title: "Contractor/Contract",
@@ -448,8 +455,8 @@ const SignalProjectTable = () => {
         console.log(newData, oldData, rowData);
         return updateProjectTaskOrder({
           variables: {
+            taskOrder: newData,
             projectId: rowData.project_id,
-            taskOrder: newData.task_order,
           },
         });
       } else {
