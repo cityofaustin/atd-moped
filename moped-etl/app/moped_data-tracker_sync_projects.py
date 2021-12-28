@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import re
+import os
 import json
 import pprint
 from process.request import run_query, run_knack_project_query
@@ -16,6 +18,15 @@ query get_all_projects {
   }
 }
 """
+
+knack_object_keys = {}
+object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
+for variable in list(os.environ):
+    match = object_regex.search(variable)
+    if match:
+        key = match.group('object_key')
+        knack_object_keys[key] = os.getenv(variable)
+
 
 moped_data = run_query(get_all_projects)
 #pp.pprint(moped_data)

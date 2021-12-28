@@ -3,9 +3,7 @@
 #
 
 import os
-import re
 import time
-import json
 import knackpy
 import requests
 
@@ -53,19 +51,13 @@ def run_query(query):
                 time.sleep(RETRY_WAIT_TIME)
 
 
-def run_knack_project_query():
+def run_knack_project_query(knack_object_keys):
     """
     Utilize knackpy to pull data and build object from Knack for projects.
+    :param knack_object_keys: dictionary - Knack object keys 
     :return: dict - Dictionary of projects in Knack containing Moped IDs
     """
 
-    knack_object_keys = {}
-    object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
-    for variable in list(os.environ):
-        match = object_regex.search(variable)
-        if match:
-            key = match.group('object_key')
-            knack_object_keys[key] = os.getenv(variable)
 
     app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID)
     records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
