@@ -10,6 +10,7 @@ MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
 RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
+KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 
 def run_query(query):
     """
@@ -46,3 +47,18 @@ def run_query(query):
                 print("Attempt (%s out of %s)" % (current_attempt+1, MAX_ATTEMPTS))
                 print("Trying again in %s seconds..." % RETRY_WAIT_TIME)
                 time.sleep(RETRY_WAIT_TIME)
+
+
+def run_knack_project_query():
+    """
+    Runs a GraphQL query against Hasura via an HTTP POST request.
+    :param query: string - The GraphQL query to execute (query, mutation, etc.)
+    :return: object - A Json dictionary directly from Hasura
+    """
+    # Build Header with Admin Secret
+    headers = {
+        "Content-Type": "application/json",
+        "X-Knack-Application-Id": KNACK_DATA_TRACKER_APP_ID,
+        "X-Knack-REST-API-Key": "knack",
+    }
+
