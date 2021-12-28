@@ -63,11 +63,12 @@ def run_knack_project_query():
         "X-Knack-REST-API-Key": "knack",
     }
 
+    knack_object_keys = {}
     object_regex = re.compile('^KNACK_DATA_(?P<object_key>\S+)')
-
     for variable in list(os.environ):
         match = object_regex.search(variable)
         if match:
-            print(variable)
             key = match.group('object_key')
-            print(key, ":", os.getenv(variable))
+            knack_object_keys[key] = os.getenv(variable)
+
+    print(knack_object_keys)
