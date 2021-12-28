@@ -2,7 +2,6 @@
 
 import re
 import os
-import json
 import pprint
 from process.request import run_query, run_knack_project_query
 
