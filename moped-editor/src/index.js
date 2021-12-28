@@ -34,7 +34,7 @@ Amplify.configure({
       redirectSignOut: config.cognito.REDIRECT_SIGN_OUT,
       responseType: "code",
     },
-    ...(["production", "staging"].includes(config.env.APP_ENVIRONMENT)
+    ...(["production", "staging", "test"].includes(config.env.APP_ENVIRONMENT)
       ? {
           cookieStorage: {
             domain: config.env.APP_CLOUDFRONT,
