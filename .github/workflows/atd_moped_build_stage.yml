@@ -185,5 +185,5 @@ jobs:
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
           source $(pwd)/.github/workflows/aws-moped-cognito-edge-helper.sh
-          build
-          deploy
+          build_lambda_function
+          deploy_lambda_function
