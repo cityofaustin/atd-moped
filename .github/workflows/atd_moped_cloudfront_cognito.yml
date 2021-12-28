@@ -13,11 +13,6 @@ on:
       - "moped-auth/cloudfront-cognito-at-edge/**"
       - ".github/workflows/atd_moped_cloudfront_cognito.yml"
       - ".github/workflows/aws-moped-cognito-edge-helper.sh"
-  pull_request:
-    paths:
-      - "moped-auth/cloudfront-cognito-at-edge/**"
-      - ".github/workflows/atd_moped_cloudfront_cognito.yml"
-      - ".github/workflows/aws-moped-cognito-edge-helper.sh"
 jobs:
   build:
     name: Build
