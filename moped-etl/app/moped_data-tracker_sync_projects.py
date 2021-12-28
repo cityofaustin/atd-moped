@@ -8,7 +8,7 @@ pp = pprint.PrettyPrinter(width=120, indent=2)
 
 get_all_projects = """
 query get_all_projects {
-  moped_project {
+  moped_project(where: {knack_project_id: {_is_null: false}}) {
     project_id
     project_name
     current_status
