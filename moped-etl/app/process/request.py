@@ -59,12 +59,6 @@ def run_knack_project_query():
     :param query: string - The GraphQL query to execute (query, mutation, etc.)
     :return: object - A Json dictionary directly from Hasura
     """
-    # Build Header with Admin Secret
-    headers = {
-        "Content-Type": "application/json",
-        "X-Knack-Application-Id": KNACK_DATA_TRACKER_APP_ID,
-        "X-Knack-REST-API-Key": "knack",
-    }
 
     knack_object_keys = {}
     object_regex = re.compile('^KNACK_DATA_(?P<object_key>\S+)')
