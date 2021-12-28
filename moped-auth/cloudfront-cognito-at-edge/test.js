@@ -11,7 +11,7 @@ const authenticator = new Authenticator({
     userPoolId: "us-east-1_U2dzkxfTv", // user pool ID
     userPoolAppId: "3u9n9373e37v603tbp25gs5fdc", // user pool app client ID
     userPoolDomain: "atd-moped-staging.auth.us-east-1.amazoncognito.com", // user pool domain
-    logLevel: "debug", // show everything
+    // logLevel: "debug", // uncomment to show everything
 });
 
 exports.handler = async (request) => authenticator.handle(request);
