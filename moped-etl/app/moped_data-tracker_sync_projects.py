@@ -19,6 +19,6 @@ query get_all_projects {
 """
 
 moped_data = run_query(get_all_projects)
-pp.pprint(moped_data)
+#pp.pprint(moped_data)
 
 run_knack_project_query()
