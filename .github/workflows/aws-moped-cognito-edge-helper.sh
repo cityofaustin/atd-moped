@@ -36,10 +36,19 @@ else
   fi;
 fi;
 
+
+#
+# Checks if a function has been already created
+#
+function __aws_lambda_function_exists() {
+  aws lambda get-function --function-name $1 > /dev/null 2>&1;
+  [[ 0 -eq $? ]] && echo "TRUE" || echo "FALSE";
+}
+
 #
 # Builds the bundle into a zip file.
 #
-function build() {
+function build_lambda_function() {
   echo "Building Node Module...";
   # Copy working stage into index.js
   cp "${CLOUDFRONT_COGNITO_EDGE_DIR}/${WORKING_STAGE}.js" "${CLOUDFRONT_COGNITO_EDGE_DIR}/index.js";
