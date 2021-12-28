@@ -3596,6 +3596,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3629,6 +3630,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3662,6 +3664,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3689,6 +3692,7 @@
       - end_date
       - start_date
       - added_by
+      - knack_project_id
       - milestone_id
       - project_id
       - project_importance
@@ -3721,6 +3725,7 @@
       - end_date
       - start_date
       - added_by
+      - knack_project_id
       - milestone_id
       - project_id
       - project_importance
@@ -3759,6 +3764,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3787,6 +3793,7 @@
       - end_date
       - start_date
       - added_by
+      - knack_project_id
       - milestone_id
       - project_id
       - project_importance
@@ -4744,7 +4751,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4773,7 +4782,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
@@ -4802,7 +4813,9 @@
       - project_length
       - project_name
       - project_order
+      - project_partner
       - project_priority
+      - project_sponsor
       - project_team_members
       - project_uuid
       - start_date
