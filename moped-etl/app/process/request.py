@@ -63,8 +63,8 @@ def run_knack_project_query(knack_object_keys):
     records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
     knack_records = {}
     for record in records:
-        if (record[knack_object_keys['PROJECT_ID']] == None):
+        if (record[knack_object_keys['project_id']] == None):
             continue
         #print(record[knack_object_keys['PROJECT_ID']]) # accessing a particular field value defined by env variables
-        knack_records[record[knack_object_keys['PROJECT_ID']]] = record
+        knack_records[record[knack_object_keys['project_id']]] = record
     return(knack_records)

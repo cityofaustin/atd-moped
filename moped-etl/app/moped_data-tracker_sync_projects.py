@@ -24,7 +24,7 @@ for variable in list(os.environ):
     match = object_regex.search(variable)
     if match:
         key = match.group('object_key')
-        knack_object_keys[key] = os.getenv(variable)
+        knack_object_keys[key.lower()] = os.getenv(variable)
 
 
 moped_data = run_query(get_all_projects)
