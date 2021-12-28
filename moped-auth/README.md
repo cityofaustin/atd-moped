@@ -56,7 +56,30 @@ This is a living document, and it is being fleshed out as we work in this
 authentication mechanism. Feel free to reach out to any of the developers
 for help if you do not understand how it works.
 
+## Lambda@Edge
 
+We use lambda@edge to protect content. Lambda-at-edge
+functions are basically leaner lambda functions with
+stricter and size restrictions, but they are far more
+scalable and they run in CloudFront's CDN. Also, they
+allow you to integrate and extend request events using
+javascript or python, etc.
 
+This is simplified illustration of how we integrate
+Cognito to CloudFront using Lambda@edge:
 
+![](https://github.com/awslabs/cognito-at-edge/raw/main/doc/architecture.png)
 
+In short, the mission of the function in lambda
+at edge is to validate the JWT token contained in our
+Cognito session. This session exists either in
+the application local memory (default: local, PRs), or it exists in a
+Cookie (by configuration: test, staging, prod).
+
+Thankfully, there are now libraries recently published
+that simplify the validation of the token, it used to
+be that we had to write your own validator in
+javascript or python.
+
+The library we use is called cognito-at-edge, 
+published by awslabs. [It can be found here](https://github.com/awslabs/cognito-at-edge).
