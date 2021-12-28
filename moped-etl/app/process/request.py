@@ -2,9 +2,10 @@
 # Request Helper - Makes post requests to a Hasura/GraphQL endpoint.
 #
 
+import os
+import re
 import time
 import requests
-import os
 
 MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
 RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
@@ -62,3 +63,11 @@ def run_knack_project_query():
         "X-Knack-REST-API-Key": "knack",
     }
 
+    object_regex = re.compile('^KNACK_DATA_(?P<object_key>\S+)')
+
+    for variable in list(os.environ):
+        match = object_regex.search(variable)
+        if match:
+            print(variable)
+            key = match.group('object_key')
+            print(key, ":", os.getenv(variable))
