@@ -124,6 +124,21 @@ one for staging and another for production.
 Simply update the file, and there is a GitHub action
 whose purpose is to update the lambda function.
 
+### What about local and PRs?
+
+Local and PRs do not use cookies at this moment,
+they simply use an unprotected bucket directed
+to staging. Any files in staging are not considered
+to be protected.
+
+The way this is accomplished is by establishing
+two CloudFront distributions, both pointed to the
+same staging bucket. The staging distribution has
+the protection enabled (for testing purposes),
+while the other does not, and that is intentional
+as to provide local environment and PRs access to
+the files and images.
+
 ### Important Note
 
 After the successful deployment to lambda, be sure
