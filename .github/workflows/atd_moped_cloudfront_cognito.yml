@@ -50,5 +50,5 @@ jobs:
           echo "PWD: $(pwd)"
           echo "PR_NUMBER: ${PR_NUMBER}"
           source $(pwd)/.github/workflows/aws-moped-cognito-edge-helper.sh
-          build
-          deploy
+          build_lambda_function
+          deploy_lambda_function
