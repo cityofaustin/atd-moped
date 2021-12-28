@@ -8,6 +8,7 @@ from process.request import run_query
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
+KNACK_DATA_TRACKER_SCENE = os.getenv("KNACK_DATA_TRACKER_SCENE")
 
 pp = pprint.PrettyPrinter(width=120, indent=2)
 
@@ -44,16 +45,18 @@ for record in records:
 #print(knack_records)
 
 for moped_project in moped_data['data']['moped_project']:
-    #print(moped_project)
-    #print(knack_records[moped_project['project_id']].format())
-    #required_knack_updates = {}
     knack_data = dict(knack_records[moped_project['project_id']])
     for key in knack_object_keys:
-        print(key)
         if not moped_project[key] == knack_records[moped_project['project_id']][knack_object_keys[key]]:
-            print('mismatch!')
+            #print('mismatch, knack update required!')
             knack_data[knack_object_keys[key]] = moped_project[key]
-            #required_knack_updates[knack_object_keys[key]] = moped_project[key]
-        print()
-    #print(required_knack_updates)
 
+    print(knack_data)
+
+    #print(app.containers)
+
+    #app.record(method="update", data=knack_data)
+    #app.record(method="update", data=knack_data, scene='scene_514', view='view_3047')
+    #app.record(method="update", data=knack_data, obj='projects')
+    #app.record(method="update", data=knack_data, obj='view_3047')
+    app.record(method="update", data=knack_data, obj='object_201')
