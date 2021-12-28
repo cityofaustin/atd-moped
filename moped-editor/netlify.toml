@@ -1,12 +1,15 @@
 [build]
     ignore = "/bin/false"
 
-# Deploy Preview context:
-# All deploys generated from a pull/merge request
-# will inherit these settings.
+# Build Context Configuration:
 #   From: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
 #   Also: https://docs.netlify.com/configure-builds/environment-variables/
 [context.branch-deploy]
-    command = "npm run build:netlifypr"
+    command = "echo 'Build Context Mode: Branch-Deploy' && npm run build:netlifypr"
     [context.branch-deploy.environment]
-      ATD_MOPED_BUILD_CONTEXT = "Netlify PR"
+      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- branch-deploy"
+
+[context.deploy-preview]
+    command = "echo 'Build Context Mode: Deploy-Preview' && npm run build:netlifypr"
+    [context.deploy-preview.environment]
+      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- deploy-preview"
