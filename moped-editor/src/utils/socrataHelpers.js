@@ -36,7 +36,7 @@ export const useSocrataGeojson = url => {
  * @return {Object} data (json object), loading, and error states
  */
 export const useSocrataJson = url => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [error, setError] = useState(null);
   useEffect(() => {
     fetch(url)

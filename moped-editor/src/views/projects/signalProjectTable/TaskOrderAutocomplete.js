@@ -38,7 +38,7 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
       loading={loading}
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}
-      value={value}
+      value={value ?? []}
       getOptionSelected={(value, option) =>
         value.display_name === option.display_name
       }

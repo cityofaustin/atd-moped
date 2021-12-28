@@ -485,7 +485,7 @@ const SignalProjectTable = () => {
       );
     },
     taskOrders: props => (
-      <TaskOrderAutocomplete props={props} value={props.value || "None"} />
+      <TaskOrderAutocomplete props={props} value={props.value} />
     ),
   };
 
