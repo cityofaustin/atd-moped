@@ -19,10 +19,10 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * Socrata dataset and setting it.
  * * @param {Object} classes - MaterialUI style object
  * * @param {Object} props - passes down props parent MUI Table
+ * * @param {Array} value - passes an array of objects, each representing a task order
  *  @return {JSX.Element}
  */
-const TaskOrderAutocomplete = ({ classes, props, setTaskOrder }) => {
-  const taskOrder = null;
+const TaskOrderAutocomplete = ({ classes, props, value }) => {
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
 
   if (loading) {
@@ -50,7 +50,10 @@ const TaskOrderAutocomplete = ({ classes, props, setTaskOrder }) => {
       loading={loading}
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}
-      defaultValue={[]}
+      value={value}
+      getOptionSelected={(value, option) =>
+        value.display_name === option.display_name
+      }
     />
   );
 };

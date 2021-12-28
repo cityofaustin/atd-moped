@@ -244,11 +244,17 @@ const SignalProjectTable = () => {
       customEdit: "taskOrders",
       emptyValue: "blank",
       render: entry => {
-        const taskOrders = entry.task_order.map(taskOrder => {
-          return taskOrder.display_name;
-        });
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry.task_order.length < 1) {
+          return "blank";
+        }
 
-        return <span>{taskOrders.join(", ")}</span>;
+        // Render values as a comma seperated string
+        return entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
       },
     },
     {
@@ -533,10 +539,7 @@ const SignalProjectTable = () => {
       );
     },
     taskOrders: props => (
-      <TaskOrderAutocomplete
-        props={props}
-        setTaskOrder={updateProjectTaskOrder}
-      />
+      <TaskOrderAutocomplete props={props} value={props.value || "None"} />
     ),
   };
 
