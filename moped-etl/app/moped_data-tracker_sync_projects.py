@@ -46,11 +46,14 @@ for record in records:
 for moped_project in moped_data['data']['moped_project']:
     #print(moped_project)
     #print(knack_records[moped_project['project_id']].format())
-    required_knack_updates = {}
+    #required_knack_updates = {}
+    knack_data = dict(knack_records[moped_project['project_id']])
     for key in knack_object_keys:
         print(key)
         if not moped_project[key] == knack_records[moped_project['project_id']][knack_object_keys[key]]:
             print('mismatch!')
-            required_knack_updates[knack_object_keys[key]] = moped_project[key]
+            knack_data[knack_object_keys[key]] = moped_project[key]
+            #required_knack_updates[knack_object_keys[key]] = moped_project[key]
         print()
-    print(required_knack_updates)
+    #print(required_knack_updates)
+
