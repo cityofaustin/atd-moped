@@ -32,7 +32,6 @@ for variable in list(os.environ):
     if match:
         key = match.group('object_key')
         knack_object_keys[key.lower()] = os.getenv(variable)
-#print(knack_object_keys)
 
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
@@ -46,7 +45,7 @@ for record in records:
     if (record[knack_object_keys['project_id']] == None):
         continue
     knack_records[record[knack_object_keys['project_id']]] = record
-#print(knack_records)
+#pp.pprint(knack_records) # remove the generate argument from the .get() method above to see complete data
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data['data']['moped_project']:
@@ -57,5 +56,5 @@ for moped_project in moped_data['data']['moped_project']:
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
     if update_needed:
-        print ("Need to update knack for Moped project", moped_project['project_id'])
+        #print ("Need to update knack for Moped project", moped_project['project_id'])
         app.record(method="update", data=knack_data, obj='object_' + KNACK_DATA_TRACKER_PROJECT_OBJECT)
