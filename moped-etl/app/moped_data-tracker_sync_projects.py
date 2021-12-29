@@ -13,7 +13,7 @@ KNACK_DATA_TRACKER_PROJECT_OBJECT= os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT"
 
 pp = pprint.PrettyPrinter(width=120, indent=2)
 
-get_all_projects = """
+get_all_synchronized_projects = """
 query get_all_projects {
   moped_project(where: {knack_project_id: {_is_null: false}}) {
     project_id
@@ -33,7 +33,8 @@ for variable in list(os.environ):
         knack_object_keys[key.lower()] = os.getenv(variable)
 #print(knack_object_keys)
 
-moped_data = run_query(get_all_projects)
+# Get Moped's current state of synchronized projects
+moped_data = run_query(get_all_synchronized_projects)
 #pp.pprint(moped_data)
 
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID)
