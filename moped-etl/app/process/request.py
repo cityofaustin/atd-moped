@@ -1,5 +1,5 @@
 #
-# Request Helper - Makes requests to a Hasura/GraphQL or Knack endpoint
+# Request Helper - Makes requests to a Hasura/GraphQL endpoint
 #
 
 import os
@@ -10,7 +10,6 @@ MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
 RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
-
 
 def run_query(query):
     """
