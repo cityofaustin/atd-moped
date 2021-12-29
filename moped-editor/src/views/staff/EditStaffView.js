@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import { findHighestRole } from "../../auth/user";
+import NotFoundView from "../errors/NotFoundView";
 
 const useStyles = makeStyles(() => ({
   root: {},
