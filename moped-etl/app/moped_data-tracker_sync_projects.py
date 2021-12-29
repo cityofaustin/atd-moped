@@ -39,6 +39,7 @@ moped_data = run_query(get_all_synchronized_projects)
 #pp.pprint(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
+app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
 records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
 knack_records = {}
 for record in records:
@@ -64,6 +65,8 @@ for moped_project in moped_data['data']['moped_project']:
     print(knack_data)
 
         # the following works iff you have an API key defined in the app invocation
+        app.record(method="update", data=knack_data, obj='object_' + KNACK_DATA_TRACKER_PROJECT_OBJECT)
+
 
     #app.record(method="update", data=knack_data)
     #app.record(method="update", data=knack_data, scene='scene_514', view='view_3047')
