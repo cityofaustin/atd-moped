@@ -7,8 +7,9 @@ import knackpy
 from process.request import run_query
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
+KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
-KNACK_DATA_TRACKER_SCENE = os.getenv("KNACK_DATA_TRACKER_SCENE")
+KNACK_DATA_TRACKER_PROJECT_OBJECT= os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
 
 pp = pprint.PrettyPrinter(width=120, indent=2)
 
