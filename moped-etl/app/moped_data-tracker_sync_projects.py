@@ -24,6 +24,7 @@ query get_all_projects {
 }
 """
 
+# Extract mapping between field names and Knack's field codes from environment
 knack_object_keys = {}
 object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
 for variable in list(os.environ):
@@ -37,7 +38,7 @@ for variable in list(os.environ):
 moped_data = run_query(get_all_synchronized_projects)
 #pp.pprint(moped_data)
 
-app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID)
+# Use KnackPy to pull the current state of records in Data Tracker
 records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
 knack_records = {}
 for record in records:
@@ -46,6 +47,7 @@ for record in records:
     knack_records[record[knack_object_keys['project_id']]] = record
 #print(knack_records)
 
+# Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data['data']['moped_project']:
     knack_data = dict(knack_records[moped_project['project_id']])
     for key in knack_object_keys:
@@ -55,7 +57,7 @@ for moped_project in moped_data['data']['moped_project']:
 
     print(knack_data)
 
-    #print(app.containers)
+        # the following works iff you have an API key defined in the app invocation
 
     #app.record(method="update", data=knack_data)
     #app.record(method="update", data=knack_data, scene='scene_514', view='view_3047')
