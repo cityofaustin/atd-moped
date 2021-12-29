@@ -393,203 +393,209 @@ const ProjectView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page
-        title={
-          loading ? "Project Summary Page" : data.moped_project[0].project_name
-        }
-      >
-        <Container maxWidth="xl">
-          <Card className={classes.cardWrapper}>
-            {loading ? (
-              <CircularProgress />
-            ) : (
-              <div className={classes.root}>
-                <Box p={4} pb={2}>
-                  <Grid container>
-                    <Grid item xs={12}>
-                      <Box pb={1}>
-                        <Breadcrumbs aria-label="all-projects-breadcrumb">
-                          <Link component={RouterLink} to={allProjectsLink}>
-                            <strong>{"< ALL PROJECTS"}</strong>
-                          </Link>
-                        </Breadcrumbs>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={11} md={11} className={classes.title}>
-                      <Box
-                        alignItems="center"
-                        display="flex"
-                        flexDirection="row"
-                      >
-                        <ProjectNameEditable
-                          projectName={data.moped_project[0].project_name}
-                          projectId={projectId}
-                          editable={true}
-                          isEditing={isEditing}
-                          setIsEditing={setIsEditing}
-                          updatedCallback={handleNameUpdate} // FLH not sure if this is needed
-                        />
-                        <Box>
-                          <ProjectStatusBadge
-                            status={projectStatus.status}
-                            phase={projectStatus.phase}
-                            projectStatuses={data?.moped_status ?? []}
-                          />
+      {data && !data?.moped_project?.length && <NotFoundView />}
+      {data && !!data?.moped_project?.length && (
+        <Page
+          title={
+            loading
+              ? "Project Summary Page"
+              : data.moped_project[0].project_name
+          }
+        >
+          <Container maxWidth="xl">
+            <Card className={classes.cardWrapper}>
+              {loading ? (
+                <CircularProgress />
+              ) : (
+                <div className={classes.root}>
+                  <Box p={4} pb={2}>
+                    <Grid container>
+                      <Grid item xs={12}>
+                        <Box pb={1}>
+                          <Breadcrumbs aria-label="all-projects-breadcrumb">
+                            <Link component={RouterLink} to={allProjectsLink}>
+                              <strong>{"< ALL PROJECTS"}</strong>
+                            </Link>
+                          </Breadcrumbs>
                         </Box>
-                      </Box>
-                    </Grid>
-                    <Grid item xs={1} md={1}>
-                      <MoreHorizIcon
-                        aria-controls="fade-menu"
-                        aria-haspopup="true"
-                        className={classes.moreHorizontal}
-                        onClick={handleMenuOpen}
-                      />
-                      <Menu
-                        id="fade-menu"
-                        anchorEl={anchorElement}
-                        keepMounted
-                        open={menuOpen}
-                        onClose={handleMenuClose}
-                        autoFocus={false}
-                        TransitionComponent={Fade}
-                        getContentAnchorEl={null}
-                        anchorOrigin={{
-                          vertical: "bottom",
-                          horizontal: "center",
-                        }}
-                        transformOrigin={{
-                          vertical: "top",
-                          horizontal: "center",
-                        }}
-                      >
+                      </Grid>
+                      <Grid item xs={11} md={11} className={classes.title}>
+                        <Box
+                          alignItems="center"
+                          display="flex"
+                          flexDirection="row"
+                        >
+                          <ProjectNameEditable
+                            projectName={data.moped_project[0].project_name}
+                            projectId={projectId}
+                            editable={true}
+                            isEditing={isEditing}
+                            setIsEditing={setIsEditing}
+                            updatedCallback={handleNameUpdate} // FLH not sure if this is needed
+                          />
+                          <Box>
+                            <ProjectStatusBadge
+                              status={projectStatus.status}
+                              phase={projectStatus.phase}
+                              projectStatuses={data?.moped_status ?? []}
+                            />
+                          </Box>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={1} md={1}>
+                        <MoreHorizIcon
+                          aria-controls="fade-menu"
+                          aria-haspopup="true"
+                          className={classes.moreHorizontal}
+                          onClick={handleMenuOpen}
+                        />
+                        <Menu
+                          id="fade-menu"
+                          anchorEl={anchorElement}
+                          keepMounted
+                          open={menuOpen}
+                          onClose={handleMenuClose}
+                          autoFocus={false}
+                          TransitionComponent={Fade}
+                          getContentAnchorEl={null}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }}
+                        >
+                          <KnackSync
+                            project={data.moped_project[0]}
+                            closeHandler={handleMenuClose}
+                            snackbarHandler={handleSnackbarOpen}
+                            refetch={refetch}
+                          />
 
-                        <KnackSync
-                          project={data.moped_project[0]}
-                          closeHandler={handleMenuClose}
-                          snackbarHandler={handleSnackbarOpen}
+                          <MenuItem
+                            onClick={handleRenameClick}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
+                          >
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              <CreateOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Rename" />
+                          </MenuItem>
+                          {projectStatus?.current_status !== "on hold" && (
+                            <MenuItem
+                              onClick={() => handleUpdateStatus("on hold")}
+                              className={classes.projectOptionsMenuItem}
+                              selected={false}
+                            >
+                              <ListItemIcon
+                                className={classes.projectOptionsMenuItemIcon}
+                              >
+                                <PauseCircleOutlineOutlinedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="Place on hold" />
+                            </MenuItem>
+                          )}
+                          {projectStatus?.current_status !== "canceled" && (
+                            <MenuItem
+                              onClick={() => handleUpdateStatus("canceled")}
+                              className={classes.projectOptionsMenuItem}
+                              selected={false}
+                            >
+                              <ListItemIcon
+                                className={classes.projectOptionsMenuItemIcon}
+                              >
+                                <CancelOutlinedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="Cancel" />
+                            </MenuItem>
+                          )}
+                          <MenuItem
+                            onClick={handleDeleteClick}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
+                          >
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              <DeleteOutlinedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Delete" />
+                          </MenuItem>
+                        </Menu>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                  <Divider />
+                  <AppBar className={classes.appBar} position="static">
+                    <Tabs
+                      classes={{ indicator: classes.indicatorColor }}
+                      value={activeTab}
+                      onChange={handleChange}
+                      variant="scrollable"
+                      aria-label="Project Details Tabs"
+                    >
+                      {TABS.map((tab, i) => {
+                        return (
+                          <Tab
+                            className={classes.selectedTab}
+                            key={tab.label}
+                            label={tab.label}
+                            {...a11yProps(i)}
+                          />
+                        );
+                      })}
+                    </Tabs>
+                  </AppBar>
+                  {TABS.map((tab, i) => {
+                    const TabComponent = tab.Component;
+                    return (
+                      <TabPanel
+                        data-name={"moped-project-view-tabpanel"}
+                        key={tab.label}
+                        value={activeTab}
+                        index={i}
+                        className={
+                          tab.label === "Map" ? classes.noPadding : null
+                        }
+                      >
+                        <TabComponent
+                          loading={loading}
+                          data={data}
+                          error={error}
                           refetch={refetch}
                         />
-
-                        <MenuItem
-                          onClick={handleRenameClick}
-                          className={classes.projectOptionsMenuItem}
-                          selected={false}
-                        >
-                          <ListItemIcon
-                            className={classes.projectOptionsMenuItemIcon}
-                          >
-                            <CreateOutlinedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="Rename" />
-                        </MenuItem>
-                        {projectStatus?.current_status !== "on hold" && (
-                          <MenuItem
-                            onClick={() => handleUpdateStatus("on hold")}
-                            className={classes.projectOptionsMenuItem}
-                            selected={false}
-                          >
-                            <ListItemIcon
-                              className={classes.projectOptionsMenuItemIcon}
-                            >
-                              <PauseCircleOutlineOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Place on hold" />
-                          </MenuItem>
-                        )}
-                        {projectStatus?.current_status !== "canceled" && (
-                          <MenuItem
-                            onClick={() => handleUpdateStatus("canceled")}
-                            className={classes.projectOptionsMenuItem}
-                            selected={false}
-                          >
-                            <ListItemIcon
-                              className={classes.projectOptionsMenuItemIcon}
-                            >
-                              <CancelOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Cancel" />
-                          </MenuItem>
-                        )}
-                        <MenuItem
-                          onClick={handleDeleteClick}
-                          className={classes.projectOptionsMenuItem}
-                          selected={false}
-                        >
-                          <ListItemIcon
-                            className={classes.projectOptionsMenuItemIcon}
-                          >
-                            <DeleteOutlinedIcon />
-                          </ListItemIcon>
-                          <ListItemText primary="Delete" />
-                        </MenuItem>
-                      </Menu>
-                    </Grid>
-                  </Grid>
-                </Box>
-                <Divider />
-                <AppBar className={classes.appBar} position="static">
-                  <Tabs
-                    classes={{ indicator: classes.indicatorColor }}
-                    value={activeTab}
-                    onChange={handleChange}
-                    variant="scrollable"
-                    aria-label="Project Details Tabs"
-                  >
-                    {TABS.map((tab, i) => {
-                      return (
-                        <Tab
-                          className={classes.selectedTab}
-                          key={tab.label}
-                          label={tab.label}
-                          {...a11yProps(i)}
-                        />
-                      );
-                    })}
-                  </Tabs>
-                </AppBar>
-                {TABS.map((tab, i) => {
-                  const TabComponent = tab.Component;
-                  return (
-                    <TabPanel
-                      data-name={"moped-project-view-tabpanel"}
-                      key={tab.label}
-                      value={activeTab}
-                      index={i}
-                      className={tab.label === "Map" ? classes.noPadding : null}
-                    >
-                      <TabComponent
-                        loading={loading}
-                        data={data}
-                        error={error}
-                        refetch={refetch}
-                      />
-                    </TabPanel>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-        </Container>
-        {dialogOpen && dialogState && (
-          <Dialog
-            open={dialogOpen}
-            onClose={handleDialogClose}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              <h2>{dialogState?.title}</h2>
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {dialogState?.body}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>{dialogState?.actions}</DialogActions>
-          </Dialog>
-        )}
-      </Page>
+                      </TabPanel>
+                    );
+                  })}
+                </div>
+              )}
+            </Card>
+          </Container>
+          {dialogOpen && dialogState && (
+            <Dialog
+              open={dialogOpen}
+              onClose={handleDialogClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                <h2>{dialogState?.title}</h2>
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  {dialogState?.body}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>{dialogState?.actions}</DialogActions>
+            </Dialog>
+          )}
+        </Page>
+      )}
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}
