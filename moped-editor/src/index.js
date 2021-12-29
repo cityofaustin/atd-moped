@@ -37,7 +37,7 @@ Amplify.configure({
     ...(["production", "staging", "test"].includes(config.env.APP_ENVIRONMENT)
       ? {
           cookieStorage: {
-            expires: "",
+            expires: 30,
             domain: window.location.hostname,
             path: "/",
             secure: true,
