@@ -54,22 +54,8 @@ for moped_project in moped_data['data']['moped_project']:
     knack_data = dict(knack_records[moped_project['project_id']])
     for key in knack_object_keys:
         if not moped_project[key] == knack_records[moped_project['project_id']][knack_object_keys[key]]:
-            #print('mismatch, knack update required!')
-            knack_data[knack_object_keys[key]] = moped_project[key]
             update_needed = True
-
+            knack_data[knack_object_keys[key]] = moped_project[key]
     if update_needed:
-
         print ("Need to update knack for Moped project", moped_project['project_id'])
-
-    print(knack_data)
-
-        # the following works iff you have an API key defined in the app invocation
         app.record(method="update", data=knack_data, obj='object_' + KNACK_DATA_TRACKER_PROJECT_OBJECT)
-
-
-    #app.record(method="update", data=knack_data)
-    #app.record(method="update", data=knack_data, scene='scene_514', view='view_3047')
-    #app.record(method="update", data=knack_data, obj='projects')
-    #app.record(method="update", data=knack_data, obj='view_3047')
-    app.record(method="update", data=knack_data, obj='object_201')
