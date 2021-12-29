@@ -49,11 +49,17 @@ for record in records:
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data['data']['moped_project']:
+    update_needed = False
     knack_data = dict(knack_records[moped_project['project_id']])
     for key in knack_object_keys:
         if not moped_project[key] == knack_records[moped_project['project_id']][knack_object_keys[key]]:
             #print('mismatch, knack update required!')
             knack_data[knack_object_keys[key]] = moped_project[key]
+            update_needed = True
+
+    if update_needed:
+
+        print ("Need to update knack for Moped project", moped_project['project_id'])
 
     print(knack_data)
 
