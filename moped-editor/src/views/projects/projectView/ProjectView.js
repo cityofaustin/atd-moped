@@ -283,12 +283,15 @@ const ProjectView = () => {
     setDialogContent(
       "Are you sure?",
       <span>
-        If you delete this project, it will no longer be visible in Moped or accessible in applications that use Moped data.
-        <br /><br />
-        If you need to restore a deleted project, please
-        {" "}
+        If you delete this project, it will no longer be visible in Moped or
+        accessible in applications that use Moped data.
+        <br />
+        <br />
+        If you need to restore a deleted project, please{" "}
         <Link
-          href={"https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"}
+          href={
+            "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+          }
           target="new"
         >
           submit a Data &amp; Technology Services support request
