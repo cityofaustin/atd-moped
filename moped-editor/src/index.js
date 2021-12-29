@@ -9,9 +9,6 @@ import Amplify, { Hub } from "aws-amplify";
 
 import config from "./config";
 
-const APP_DOMAIN = config.env.APP_CLOUDFRONT.replace("https://", "");
-console.log("$ APP_DOMAIN: ", APP_DOMAIN);
-
 // https://aws-amplify.github.io/docs/js/hub
 Hub.listen(/.*/, ({ channel, payload }) =>
   console.debug(`[hub::${channel}::${payload.event}]`, payload)
