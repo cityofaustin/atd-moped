@@ -4,7 +4,6 @@
 
 import os
 import time
-import knackpy
 import requests
 
 MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
