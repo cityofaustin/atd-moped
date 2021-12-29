@@ -187,7 +187,7 @@ const ProjectView = () => {
    * will persist even after that child component has been deconstructed or otherwise hidden.
    */
   const handleSnackbarOpen = snackbarState => {
-    let snackbarStateCopy = {...snackbarState};
+    let snackbarStateCopy = { ...snackbarState };
     snackbarStateCopy.open = true;
     setSnackbarState(snackbarStateCopy);
   };
