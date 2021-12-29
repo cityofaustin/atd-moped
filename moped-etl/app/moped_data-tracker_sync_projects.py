@@ -2,7 +2,6 @@
 
 import re
 import os
-import pprint
 import knackpy
 from process.request import run_query
 
@@ -11,7 +10,15 @@ KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
 KNACK_DATA_TRACKER_PROJECT_OBJECT= os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
 
-pp = pprint.PrettyPrinter(width=120, indent=2)
+# Extract mapping between field names and Knack's field codes from environment
+knack_object_keys = {}
+object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
+for variable in list(os.environ):
+    match = object_regex.search(variable)
+    if match:
+        key = match.group('object_key')
+        knack_object_keys[key.lower()] = os.getenv(variable)
+
 
 get_all_synchronized_projects = """
 query get_all_projects {
@@ -24,18 +31,9 @@ query get_all_projects {
 }
 """
 
-# Extract mapping between field names and Knack's field codes from environment
-knack_object_keys = {}
-object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
-for variable in list(os.environ):
-    match = object_regex.search(variable)
-    if match:
-        key = match.group('object_key')
-        knack_object_keys[key.lower()] = os.getenv(variable)
-
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
-#pp.pprint(moped_data)
+#print(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
@@ -45,7 +43,7 @@ for record in records:
     if (record[knack_object_keys['project_id']] == None):
         continue
     knack_records[record[knack_object_keys['project_id']]] = record
-#pp.pprint(knack_records) # remove the generate argument from the .get() method above to see complete data
+#print(knack_records) # remove the generate argument from the .get() method above to see complete data
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data['data']['moped_project']:
