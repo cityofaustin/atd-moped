@@ -25,7 +25,6 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
-import { autoShowTooltip } from "aws-amplify";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
