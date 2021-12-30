@@ -37,6 +37,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
               )) || "Synchronize"
             }
             classes={classes}
+            spanClassName={''}
           />
         </Box>
       </Grid>
