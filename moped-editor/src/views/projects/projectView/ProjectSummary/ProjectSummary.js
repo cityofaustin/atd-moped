@@ -22,6 +22,7 @@ import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
+import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 
@@ -192,6 +193,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
+                <ProjectSummaryKnackDataTrackerSync
+                  classes={classes}
+                />
+              </Grid>
+              <Grid item xs={6}>
                 <ProjectSummaryProjectECapris
                   projectId={projectId}
                   data={data}
@@ -199,9 +205,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   classes={classes}
                   snackbarHandle={snackbarHandle}
                 />
-              </Grid>
-              <Grid item xs={6}>
-                {null}
               </Grid>
             </Grid>
           </Grid>
