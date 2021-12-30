@@ -10,6 +10,32 @@ import { OpenInNew, Autorenew } from "@material-ui/icons";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
+/**
+ * Function to build the correct Knack URL to interact with based on properties and if there will be an
+ * update or an initial sync.
+ * @returns string
+ */
+ const buildUrl = (scene, view, knackProjectId) => {
+  let url = `https://api.knack.com/v1/pages/scene_${scene}/views/view_${view}/records`;
+  if (knackProjectId) {
+    // existing record
+    url = url + "/" + knackProjectId;
+  }
+  return url;
+};
+
+/**
+ * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
+ * @returns string
+ */
+ const getHttpMethod = knackProjectId => {
+  //return project?.knack_project_id ?? false ? "PUT" : "POST";
+  let method = knackProjectId ?? false ? "PUT" : "POST";
+  console.log("knackProjectId: ", knackProjectId);
+  console.log("HTTP Method: ", method);
+  return knackProjectId ?? false ? "PUT" : "POST";
+};
+
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   knackProjectId = undefined
