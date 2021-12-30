@@ -23,7 +23,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
         <Box
           display="flex"
           justifyContent="flex-start"
-        c  lassName={classes.fieldBox}
         >
           <ProjectSummaryLabel
             text={
@@ -34,8 +33,11 @@ const ProjectSummaryKnackDataTrackerSync = ({
             >
               {'View it here'} <OpenInNew className={classes.linkIcon} />
             </Link>
-              )) || "Synchronize"
-            }
+              )) || (
+                <>
+                  {'Synchronize'} <Autorenew className={classes.linkIcon} />
+                </>
+              )}
             classes={classes}
             spanClassName={''}
           />
