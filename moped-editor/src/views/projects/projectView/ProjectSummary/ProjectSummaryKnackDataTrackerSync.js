@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   Grid,
@@ -36,7 +36,12 @@ const ProjectSummaryKnackDataTrackerSync = ({
                 </Link>
               )) || (
                 <>
-                  <Link className={classes.fieldLabelText}>
+                  <Link 
+                    className={classes.fieldLabelText}
+                    onClick={() => {
+                      console.log('clicked')
+                    }}
+                  >
                     {'Synchronize'}<Autorenew viewBox={"0 -4 22 26"} className={classes.syncLinkIcon} />
                   </Link>
                 </>
