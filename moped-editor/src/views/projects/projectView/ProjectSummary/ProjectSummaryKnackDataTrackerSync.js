@@ -41,6 +41,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
   project,
 }) => {
 
+  let knackEndpointUrl = buildUrl(
+    process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
+    process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
+    project?.knackProjectId,
+  );
+
+  let knackHttpMethod = getHttpMethod(project?.knack_project_id);
+
+
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
