@@ -38,7 +38,7 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
-  knackProjectId = undefined
+  project,
 }) => {
 
   return (
@@ -53,9 +53,9 @@ const ProjectSummaryKnackDataTrackerSync = ({
         >
           <ProjectSummaryLabel
             text={
-              (knackProjectId && (
+              (project.knack_project_id && (
                 <Link
-                  href={'https://atd.knack.com/amd#projects/project-details/' + knackProjectId}
+                  href={'https://atd.knack.com/amd#projects/project-details/' + project.knack_project_id}
                   target={"_blank"}
                 >
                   {'View in Data Tracker'} <OpenInNew className={classes.linkIcon} />

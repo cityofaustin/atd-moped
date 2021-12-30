@@ -199,7 +199,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
-                  knackProjectId={data?.moped_project?.[0]?.knack_project_id}
+                  project={data?.moped_project?.[0]}
                 />
               </Grid>
               <Grid item xs={6}>
