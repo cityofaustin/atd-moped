@@ -6,12 +6,13 @@ import {
   Typography,
 } from "@material-ui/core";
 
-import { OpenInNew } from "@material-ui/icons";
+import { OpenInNew, Autorenew } from "@material-ui/icons";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 const ProjectSummaryKnackDataTrackerSync = ({
-  classes
+  classes,
+  knackProjectId = undefined
 }) => {
 
   return (
@@ -26,16 +27,18 @@ const ProjectSummaryKnackDataTrackerSync = ({
         >
           <ProjectSummaryLabel
             text={
-              (true && (
-              <Link
-              href={''}
-              target={"_blank"}
-            >
-              {'View it here'} <OpenInNew className={classes.linkIcon} />
-            </Link>
+              (knackProjectId && (
+                <Link
+                  href={'https://atd.knack.com/amd#projects/project-details/' + knackProjectId}
+                  target={"_blank"}
+                >
+                  {'View in Data Tracker'} <OpenInNew className={classes.linkIcon} />
+                </Link>
               )) || (
                 <>
-                  {'Synchronize'} <Autorenew className={classes.linkIcon} />
+                  <Link className={classes.fieldLabelText}>
+                    {'Synchronize'}<Autorenew viewBox={"0 -4 22 26"} className={classes.syncLinkIcon} />
+                  </Link>
                 </>
               )}
             classes={classes}

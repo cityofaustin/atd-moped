@@ -25,6 +25,7 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
+import { autoShowTooltip } from "aws-amplify";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -32,6 +33,10 @@ const useStyles = makeStyles(theme => ({
   },
   linkIcon: {
     fontSize: "1rem",
+  },
+  syncLinkIcon: {
+    fontSize: "1.2rem",
+
   },
   editIcon: {
     cursor: "pointer",
@@ -195,6 +200,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
+                  knackProjectId={data?.moped_project?.[0]?.knack_project_id}
                 />
               </Grid>
               <Grid item xs={6}>
