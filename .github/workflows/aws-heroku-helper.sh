@@ -22,8 +22,8 @@ function build_editor() {
   print_header "Clearing Bucket -- Exclude test 'private' files";
   aws s3 rm s3://atd-moped-editor-development --recursive --exclude "private/*" --exclude "moped/private/*";
   print_header "Copying test 'private' files from staging into test";
-  aws s3 cp s3://atd-moped-editor-staging/private s3://atd-moped-editor-development/private --recursive;
-  aws s3 cp s3://atd-moped-editor-staging/moped/private s3://atd-moped-editor-development/moped/private --recursive;
+  aws s3 cp s3://atd-moped-editor-staging/private s3://atd-moped-editor-development/private --recursive --quiet;
+  aws s3 cp s3://atd-moped-editor-staging/moped/private s3://atd-moped-editor-development/moped/private --recursive --quiet;
   print_header "Deploying to AWS S3";
   aws s3 cp ./build/ s3://atd-moped-editor-development --recursive;
   print_header "Clearing the CF Cache";
