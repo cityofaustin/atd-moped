@@ -1,12 +1,9 @@
 import React from "react";
 import { Box, Grid, Link, Typography } from "@material-ui/core";
-
 import { OpenInNew, Autorenew } from "@material-ui/icons";
-
-import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
-
 import { useMutation } from "@apollo/client";
 
+import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 /**
@@ -28,10 +25,6 @@ const buildUrl = (scene, view, knackProjectId) => {
  * @returns string
  */
 const getHttpMethod = knackProjectId => {
-  //return project?.knack_project_id ?? false ? "PUT" : "POST";
-  //let method = knackProjectId ?? false ? "PUT" : "POST";
-  //console.log("knackProjectId: ", knackProjectId);
-  //console.log("HTTP Method: ", method);
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
