@@ -8,6 +8,10 @@ import {
 
 import { OpenInNew, Autorenew } from "@material-ui/icons";
 
+import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
+
+import { useMutation } from "@apollo/client";
+
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 /**
@@ -82,6 +86,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
       return JSON.stringify(body);
     };
+
+  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
+
+
 
   return (
     <>
