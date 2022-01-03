@@ -49,6 +49,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
+  /**
+   * Object to hold headers which need to be sent as part of the a Knack API call
+   */
+    const buildHeaders = {
+    "Content-Type": "application/json",
+    "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
+    "X-Knack-REST-API-Key": "knack",
+  };
+
+
 
   return (
     <>
