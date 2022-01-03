@@ -89,46 +89,148 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
+    /**
+     * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
+     */
+     const handleSync = () => {
+      if (project.knack_project_id) {
+        // updating knack record
+        fetch(knackEndpointUrl, {
+          // Fetch will return a promise, allowing us to start a chain of .then() calls
+          method: "GET",
+          headers: buildHeaders,
+        })
+          .then(response => response.json()) // get the json payload, passing it the next step
+          .then(result => {
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
+              // Reject the promise to fall through to the .catch() method
+              return Promise.reject(result);
+            } else {
+              // Successful HTTP request with meaningful results from Knack
+              project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
+              return fetch(knackEndpointUrl, {
+                // fetch returns a Promise for the next step
+                method: knackHttpMethod,
+                headers: buildHeaders,
+                body: buildBody(),
+              });
+            }
+          })
+          .then(response => response.json())
+          .then(result => {
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+              return Promise.reject(result);
+            } else {
+              // Successful HTTP Update request with meaningful results from Knack
+              return Promise.resolve();
+            }
+          })
+          //.then(() => refetch()) // ask the application to update its status from our graphql endpoint
+          .then(() => {
+            // End of the chain; advise the user of success
+            //snackbarHandler({
+              //severity: "success",
+              //message: "Success: Project data updated in Data Tracker.",
+            //});
+            return Promise.resolve();
+          })
+          .catch(error => {
+            // Failure, alert the user that we've encountered an error
+            console.error(error);
+            //snackbarHandler({
+              //severity: "warning",
+              //message: "Error: Data Tracker update failed.",
+            //});
+          });
+      } else {
+        // creating new knack record execution branch
+        project.currentKnackState = {};
+        fetch(knackEndpointUrl, {
+          // Fetch will return a promise, which we'll use to start a chain of .then() steps
+          method: knackHttpMethod,
+          headers: buildHeaders,
+          body: buildBody(),
+        })
+          .then(response => response.json()) // get the json payload and pass it along
+          .then(result => {
+            if (result.errors) {
+              // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
+              // Reject this promise so we fall through to the .catch() method
+              return Promise.reject(result);
+            }
+            return Promise.resolve(result); // pass result object onto next .then()
+          })
+          .then(knack_record =>
+            // We've got an ID from the Knack endpoint for this project, so record it in our database
+            mutateProjectKnackId({
+              variables: {
+                project_id: project.project_id,
+                knack_id: knack_record.record.id,
+              },
+            })
+          )
+          //.then(() => refetch()) // ask the application to update its status from our graphql endpoint
+          .then(() => {
+            // End of the chain; advise the user of success
+            //snackbarHandler({
+              //severity: "success",
+              //message: "Success: Project data pushed to Data Tracker.",
+            //});
+            return Promise.resolve();
+          })
+          .catch(error => {
+            // Failure, alert the user that we've encountered an error
+            console.error(error);
+            //snackbarHandler({
+              //severity: "warning",
+              //message: "Error: Data Tracker initial sync failed.",
+            //});
+          });
+      } // end of the creating new knack record branch
 
+      //closeHandler(); // this is used to close the Menulist
+  };
 
-  return (
-    <>
-      <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>
-          Data Tracker signal IDs
-        </Typography>
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-        >
-          <ProjectSummaryLabel
-            text={
-              (project.knack_project_id && (
-                <Link
-                  href={'https://atd.knack.com/amd#projects/project-details/' + project.knack_project_id}
-                  target={"_blank"}
+return (
+  <>
+    <Grid item xs={12} className={classes.fieldGridItem}>
+      <Typography className={classes.fieldLabel}>
+        Data Tracker signal IDs
+      </Typography>
+      <Box
+        display="flex"
+        justifyContent="flex-start"
+      >
+        <ProjectSummaryLabel
+          text={
+            (project.knack_project_id && (
+              <Link
+                href={'https://atd.knack.com/amd#projects/project-details/' + project.knack_project_id}
+                target={"_blank"}
+              >
+                {'View in Data Tracker'} <OpenInNew className={classes.linkIcon} />
+              </Link>
+            )) || (
+              <>
+                <Link 
+                  className={classes.fieldLabelText}
+                  onClick={() => {
+                    console.log('clicked')
+                  }}
                 >
-                  {'View in Data Tracker'} <OpenInNew className={classes.linkIcon} />
+                  {'Synchronize'}<Autorenew viewBox={"0 -4 22 26"} className={classes.syncLinkIcon} />
                 </Link>
-              )) || (
-                <>
-                  <Link 
-                    className={classes.fieldLabelText}
-                    onClick={() => {
-                      console.log('clicked')
-                    }}
-                  >
-                    {'Synchronize'}<Autorenew viewBox={"0 -4 22 26"} className={classes.syncLinkIcon} />
-                  </Link>
-                </>
-              )}
-            classes={classes}
-            spanClassName={''}
-          />
-        </Box>
-      </Grid>
-    </>
-  )
+              </>
+            )}
+          classes={classes}
+          spanClassName={''}
+        />
+      </Box>
+    </Grid>
+  </>
+)
 
 };
 
