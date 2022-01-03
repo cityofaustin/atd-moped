@@ -200,6 +200,8 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
                   project={data?.moped_project?.[0]}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
               <Grid item xs={6}>
