@@ -43,6 +43,8 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   project,
+  refetch,
+  snackbarHandle
 }) => {
 
   let knackEndpointUrl = buildUrl(
@@ -127,22 +129,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
               return Promise.resolve();
             }
           })
-          //.then(() => refetch()) // ask the application to update its status from our graphql endpoint
+          .then(() => refetch()) // ask the application to update its status from our graphql endpoint
           .then(() => {
             // End of the chain; advise the user of success
-            //snackbarHandler({
-              //severity: "success",
-              //message: "Success: Project data updated in Data Tracker.",
-            //});
+            snackbarHandle(true, "Success: Project updated in Data Tracker", "success")
             return Promise.resolve();
           })
           .catch(error => {
             // Failure, alert the user that we've encountered an error
             console.error(error);
-            //snackbarHandler({
-              //severity: "warning",
-              //message: "Error: Data Tracker update failed.",
-            //});
+            snackbarHandle(true, "Error: Data Tracker update failed.", "warning");
           });
       } else {
         // creating new knack record execution branch
@@ -171,22 +167,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
               },
             })
           )
-          //.then(() => refetch()) // ask the application to update its status from our graphql endpoint
+          .then(() => refetch()) // ask the application to update its status from our graphql endpoint
           .then(() => {
             // End of the chain; advise the user of success
-            //snackbarHandler({
-              //severity: "success",
-              //message: "Success: Project data pushed to Data Tracker.",
-            //});
+            snackbarHandle(true, "Success: Project data pushed to Data Tracker", "success")
             return Promise.resolve();
           })
           .catch(error => {
             // Failure, alert the user that we've encountered an error
             console.error(error);
-            //snackbarHandler({
-              //severity: "warning",
-              //message: "Error: Data Tracker initial sync failed.",
-            //});
+            snackbarHandle(true, "Error: Data Tracker initial sync failed.", "warning");
           });
       } // end of the creating new knack record branch
 
@@ -217,7 +207,7 @@ return (
                 <Link 
                   className={classes.fieldLabelText}
                   onClick={() => {
-                    console.log('clicked')
+                    handleSync();
                   }}
                 >
                   {'Synchronize'}<Autorenew viewBox={"0 -4 22 26"} className={classes.syncLinkIcon} />
