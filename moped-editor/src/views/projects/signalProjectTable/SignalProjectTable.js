@@ -499,7 +499,7 @@ const SignalProjectTable = () => {
                   paging: false,
                 }),
                 search: true,
-                filtering: true,
+                filtering: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
