@@ -58,7 +58,30 @@ const ProjectSummaryKnackDataTrackerSync = ({
     "X-Knack-REST-API-Key": "knack",
   };
 
+   /**
+     * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
+     * because if you update the project number field, even with the same, extant number, Knack returns an error.
+     * @returns string
+     */
+    const buildBody = () => {
+      let body = {};
 
+      const field_map = {
+        field_3998: "project_id",
+        field_3999: "project_name",
+        field_4000: "current_status",
+      };
+
+      Object.keys(field_map).forEach(element => {
+        if (
+          project.currentKnackState[element] !== project[field_map[element]]
+        ) {
+          body[element] = project[field_map[element]];
+        }
+      });
+
+      return JSON.stringify(body);
+    };
 
   return (
     <>
