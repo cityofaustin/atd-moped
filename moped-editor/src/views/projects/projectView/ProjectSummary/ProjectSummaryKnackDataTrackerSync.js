@@ -31,8 +31,8 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
  const getHttpMethod = knackProjectId => {
   //return project?.knack_project_id ?? false ? "PUT" : "POST";
   let method = knackProjectId ?? false ? "PUT" : "POST";
-  console.log("knackProjectId: ", knackProjectId);
-  console.log("HTTP Method: ", method);
+  //console.log("knackProjectId: ", knackProjectId);
+  //console.log("HTTP Method: ", method);
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
