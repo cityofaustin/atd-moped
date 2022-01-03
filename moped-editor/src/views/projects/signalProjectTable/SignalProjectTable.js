@@ -189,7 +189,7 @@ const SignalProjectTable = () => {
       title: "Project name",
       field: "project_name",
       editable: "never",
-      cellStyle: { minWidth: "200px" },
+      cellStyle: { ...typographyStyle, minWidth: "200px" },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
