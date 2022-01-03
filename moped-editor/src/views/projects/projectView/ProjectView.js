@@ -4,6 +4,8 @@ import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
+import KnackSync from "./KnackSync";
+
 import {
   Breadcrumbs,
   Link,
@@ -27,7 +29,9 @@ import {
   Fade,
   ListItemIcon,
   ListItemText,
+  Snackbar,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -150,12 +154,19 @@ const ProjectView = () => {
     ? TABS.findIndex(tab => tab.param === query.get("tab"))
     : 0;
 
+  const DEFAULT_SNACKBAR_STATE = {
+    open: false,
+    message: "Default State",
+    severity: "warning",
+  };
+
   /**
    * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
    * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
    * @constant {JSX} anchorElement - The element our 'MoreHorizontal' menu anchors to.
+   * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
   const [activeTab, setActiveTab] = useState(activeTabIndex);
@@ -163,7 +174,22 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
+  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
+
+  const handleSnackbarClose = () => {
+    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  };
+
+  /**
+   * Function which can be passed to child component to allow it to invoke a snackbar which
+   * will persist even after that child component has been deconstructed or otherwise hidden.
+   */
+  const handleSnackbarOpen = snackbarState => {
+    let snackbarStateCopy = {...snackbarState};
+    snackbarStateCopy.open = true;
+    setSnackbarState(snackbarStateCopy);
+  };
 
   /**
    * Handles the click on a tab, which should trigger a change.
@@ -304,6 +330,15 @@ const ProjectView = () => {
   };
 
   /**
+   * Routine to pass down to ProjectNameEditable so it can indicate when a name
+   * update has been issued allowing this component to refetch() and populate
+   * data.
+   */
+  const handleNameUpdate = () => {
+    refetch();
+  };
+
+  /**
    * Finds the status_id for a phase name
    * @param {string} phase - The name of the phase
    * @returns {number}
@@ -388,6 +423,7 @@ const ProjectView = () => {
                           editable={true}
                           isEditing={isEditing}
                           setIsEditing={setIsEditing}
+                          updatedCallback={handleNameUpdate} // FLH not sure if this is needed
                         />
                         <Box>
                           <ProjectStatusBadge
@@ -423,6 +459,14 @@ const ProjectView = () => {
                           horizontal: "center",
                         }}
                       >
+
+                        <KnackSync
+                          project={data.moped_project[0]}
+                          closeHandler={handleMenuClose}
+                          snackbarHandler={handleSnackbarOpen}
+                          refetch={refetch}
+                        />
+
                         <MenuItem
                           onClick={handleRenameClick}
                           className={classes.projectOptionsMenuItem}
@@ -542,6 +586,17 @@ const ProjectView = () => {
           </Dialog>
         )}
       </Page>
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={snackbarState.open}
+        onClose={handleSnackbarClose}
+        key={"datatable-snackbar"}
+        autoHideDuration={5000}
+      >
+        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+          {snackbarState.message}
+        </Alert>
+      </Snackbar>
     </ApolloErrorHandler>
   );
 };

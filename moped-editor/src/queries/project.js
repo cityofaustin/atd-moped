@@ -44,6 +44,7 @@ export const SUMMARY_QUERY = gql`
       ecapris_subproject_id
       fiscal_year
       project_priority
+      knack_project_id
       project_sponsor
       project_website
       status_id
@@ -53,7 +54,7 @@ export const SUMMARY_QUERY = gql`
         location
       }
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 } }
+        where: { project_note_type: { _eq: 2 }, status_id: {_eq: 1} }
         order_by: { date_created: asc }
       ) {
         project_note_id
@@ -884,6 +885,23 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
       _set: { ecapris_subproject_id: null, capitally_funded: false }
     ) {
       affected_rows
+    }
+  }
+`;
+
+/**
+ * Record the ID which Knack assigned a project when pushed to Data Tracker
+ */
+export const UPDATE_PROJECT_KNACK_ID = gql`
+  mutation updateKnackId($project_id: Int, $knack_id: String) {
+    update_moped_project(
+      where: { project_id: { _eq: $project_id } }
+      _set: { knack_project_id: $knack_id }
+    ) {
+      returning {
+        knack_project_id
+        project_id
+      }
     }
   }
 `;
