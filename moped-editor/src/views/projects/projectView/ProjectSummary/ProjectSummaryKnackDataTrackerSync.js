@@ -179,8 +179,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
             snackbarHandle(true, "Error: Data Tracker initial sync failed.", "warning");
           });
       } // end of the creating new knack record branch
-
-      //closeHandler(); // this is used to close the Menulist
   };
 
 return (
