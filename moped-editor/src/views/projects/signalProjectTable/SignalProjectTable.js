@@ -509,7 +509,7 @@ const SignalProjectTable = () => {
                   position: "sticky",
                   top: 0,
                 },
-                maxBodyHeight: `${height - 150}px`,
+                maxBodyHeight: `${height - 225}px`,
               }}
               localization={{
                 header: {
