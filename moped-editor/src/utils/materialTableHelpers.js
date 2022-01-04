@@ -1,3 +1,5 @@
+import { useState, useEffect } from "react";
+
 /**
  * Filter k/v pairs from an object by the key names passed in an array
  * @param {object} obj - The object with unwanted k/v pairs
@@ -23,4 +25,26 @@ export const handleKeyEvent = e => {
   if (e.key === "Enter" || e.key === " ") {
     e.stopPropagation();
   }
+};
+
+export const useWindowResize = () => {
+  const [width, setWidth] = useState(window.innerWidth);
+  const [height, setHeight] = useState(window.innerHeight);
+
+  const listener = () => {
+    setWidth(window.innerWidth);
+    setHeight(window.innerHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", listener);
+    return () => {
+      window.removeEventListener("resize", listener);
+    };
+  }, []);
+
+  return {
+    width,
+    height,
+  };
 };
