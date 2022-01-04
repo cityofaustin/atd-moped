@@ -10,11 +10,6 @@ on:
       - production
     paths:
       - "moped-auth/cognito-pre-token-hook/**"
-  pull_request:
-    paths:
-      - ".github/workflows/atd_cognito_hooks_build.yml"
-      - ".github/workflows/aws-cognito-helper.sh"
-      - "moped-auth/cognito-pre-token-hook/**"
 jobs:
   build:
     name: Build
@@ -47,5 +42,5 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "GR: ${GITHUB_REF}"
           echo "PWD: $(pwd)"
-          source $(pwd)/.github/workflows/aws-cognito-helper.sh
+          source $(pwd)/.github/workflows/aws-moped-cognito-helper.sh
           deploy_cognito_functions
