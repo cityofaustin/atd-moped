@@ -83,7 +83,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [snackbarState, setSnackbarState] = useState(false);
 
@@ -107,9 +106,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
   );
-
-  if (projectFeatureRecords.length === 0 && !makeSureRefresh)
-    setMakeSureRefresh(true);
 
   const renderMap = () => {
     if (countFeatures(projectFeatureCollection) < 1) {
