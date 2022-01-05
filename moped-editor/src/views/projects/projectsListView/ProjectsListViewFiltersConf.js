@@ -52,14 +52,16 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "current_status",
-      label: "Currrent status",
+      name: "status_name",
+      label: "Current status",
       placeholder: "Current status",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
