@@ -66,7 +66,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "current_phase",
-      label: "Currrent phase",
+      label: "Current phase",
       placeholder: "Current phase",
       type: "string",
       operators: [
