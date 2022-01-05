@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
@@ -98,11 +98,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       severity: severity,
     });
   };
-
-  /**
-   * Force a refetch when visiting summary tab.
-   */
-  useEffect(() => refetch(), [refetch]);
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
