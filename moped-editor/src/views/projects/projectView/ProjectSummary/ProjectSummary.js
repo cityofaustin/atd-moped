@@ -99,6 +99,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     });
   };
 
+  /**
+   * Force a refetch when visiting summary tab.
+   */
+  useEffect(() => refetch(), [refetch]);
+
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
