@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW "public"."project_list_view" AS 
+CREATE OR REPLACE VIEW "public"."project_list_view" AS
  SELECT mp.project_uuid,
     mp.project_id,
     mp.project_name,
@@ -24,7 +24,12 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
     string_agg(distinct concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members,
     mp.updated_at,
     me.entity_name AS project_sponsor,
-    string_agg(me2.entity_name, ', '::text) AS project_partner
+    string_agg(me2.entity_name, ', '::text) AS project_partner,
+    (CASE
+         WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL
+         WHEN mp.status_id = 1 THEN mp.current_phase
+         ELSE mp.current_status END
+    ) AS status_name
    FROM ((((((moped_project mp
      LEFT JOIN moped_proj_personnel mpp ON (((mp.project_id = mpp.project_id) AND (mpp.status_id = 1))))
      LEFT JOIN moped_users mu ON ((mpp.user_id = mu.user_id)))
