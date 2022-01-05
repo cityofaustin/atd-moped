@@ -24,7 +24,7 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
     string_agg(distinct concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members,
     mp.updated_at,
     me.entity_name AS project_sponsor,
-    string_agg(me2.entity_name, ', '::text) AS project_partner,
+    string_agg(distinct me2.entity_name, ', '::text) AS project_partner,
     (CASE
          WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL
          WHEN mp.status_id = 1 THEN mp.current_phase
