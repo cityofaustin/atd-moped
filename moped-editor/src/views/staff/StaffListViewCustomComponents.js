@@ -1,6 +1,6 @@
 import React from "react";
 import Can from "../../auth/Can";
-import EditIcon from "@material-ui/icons/Edit";
+import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import { Button, Icon } from "@material-ui/core";
 import { NavLink as RouterLink } from "react-router-dom";
 
