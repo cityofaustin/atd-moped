@@ -47,9 +47,32 @@ const StaffListView = () => {
   };
 
   return (
-    <Page className={classes.root} title="Staff">
-      <GridTable title={"Staff"} query={staffQuery} toolbar={null} />
-    </Page>
+      <Page className={classes.root} title="Staff">
+        <GridTable
+            title={"Staff"}
+            query={staffQuery}
+            toolbar={null}
+            customComponents={{
+              table: {
+                before: (
+                    <FormGroup className={classes.switch}>
+                      <FormControlLabel
+                          control={
+                            <Switch
+                                checked={showInactive}
+                                onChange={toggleShowInactive}
+                                color={"primary"}
+                            />
+                          }
+                          labelPlacement="start"
+                          label="Show Inactive Accounts"
+                      />
+                    </FormGroup>
+                ),
+              },
+            }}
+        />
+      </Page>
   );
 };
 
