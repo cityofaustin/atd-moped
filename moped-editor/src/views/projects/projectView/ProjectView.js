@@ -206,11 +206,10 @@ const ProjectView = () => {
    * @param {int} newTab - The number of the tab
    */
   const handleChange = (event, newTab) => {
-    if(newTab === 0) refetch();
+    if (newTab === 0) refetch();
     setActiveTab(newTab);
     history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
   };
-
 
   /**
    * The mutation to soft-delete the project
