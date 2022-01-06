@@ -25,12 +25,19 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-let staffQuery = new GQLAbstract(StaffListViewQueryConf);
-
 const StaffListView = () => {
   const classes = useStyles();
 
   const [showInactive, setShowInactive] = useState(false);
+
+  /**
+   * Override 'where' key based on state of 'showInactive'
+   * @type {GQLAbstract}
+   */
+  const staffQuery = new GQLAbstract({
+    ...StaffListViewQueryConf,
+    ...(showInactive ? { where: {} } : {}),
+  });
 
   return (
     <Page className={classes.root} title="Staff">
