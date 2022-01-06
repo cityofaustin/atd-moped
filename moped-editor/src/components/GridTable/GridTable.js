@@ -91,10 +91,17 @@ export const getSearchValue = (query, column, value) => {
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
  * @param {Object} referenceData - optional, static data used in presentation
+ * @param {Object} customComponents - An object containing custom components
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query, searchTerm, referenceData }) => {
+const GridTable = ({
+  title,
+  query,
+  searchTerm,
+  referenceData,
+  customComponents,
+}) => {
   const classes = useStyles();
 
   /**
