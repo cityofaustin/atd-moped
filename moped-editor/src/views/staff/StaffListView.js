@@ -30,6 +30,8 @@ let staffQuery = new GQLAbstract(StaffListViewQueryConf);
 const StaffListView = () => {
   const classes = useStyles();
 
+  const [showInactive, setShowInactive] = useState(false);
+
   return (
     <Page className={classes.root} title="Staff">
       <GridTable title={"Staff"} query={staffQuery} toolbar={null} />
