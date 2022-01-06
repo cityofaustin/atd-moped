@@ -509,6 +509,8 @@ const SignalProjectTable = () => {
                   position: "sticky",
                   top: 0,
                 },
+                // maxBodyHeight is used in conjunction with headerStyle position:"sticky"
+                // maxBodyHeight is window height minus size of navbar, footer, table title, and table padding
                 maxBodyHeight: `${height - 210}px`,
               }}
               localization={{

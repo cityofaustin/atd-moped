@@ -27,6 +27,10 @@ export const handleKeyEvent = e => {
   }
 };
 
+/**
+ * Hook to get current window size
+ * Listens for resize and returns { width, height }
+ */
 export const useWindowResize = () => {
   const [width, setWidth] = useState(window.innerWidth);
   const [height, setHeight] = useState(window.innerHeight);
