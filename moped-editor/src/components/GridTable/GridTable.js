@@ -89,6 +89,7 @@ export const getSearchValue = (query, column, value) => {
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
+ * @param {String} searchTerm - The initial term
  * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
