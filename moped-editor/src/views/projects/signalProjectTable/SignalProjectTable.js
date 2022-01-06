@@ -17,6 +17,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
 
 import Page from "src/components/Page";
+import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
 import {
   SIGNAL_PROJECTS_QUERY,
@@ -44,6 +45,7 @@ const useStyles = makeStyles({
 
 const SignalProjectTable = () => {
   const classes = useStyles();
+  const { height } = useWindowResize();
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -504,7 +506,12 @@ const SignalProjectTable = () => {
                 pageSize: 30,
                 headerStyle: {
                   whiteSpace: "nowrap",
+                  position: "sticky",
+                  top: 0,
                 },
+                // maxBodyHeight is used in conjunction with headerStyle position:"sticky"
+                // maxBodyHeight is window height minus size of navbar, footer, table title, and table padding
+                maxBodyHeight: `${height - 210}px`,
               }}
               localization={{
                 header: {
