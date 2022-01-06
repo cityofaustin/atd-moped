@@ -547,6 +547,7 @@ const GridTable = ({
             )}
           </Box>
         </Paper>
+        {customComponents?.table?.after}
       </Container>
     </ApolloErrorHandler>
   );
