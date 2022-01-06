@@ -385,15 +385,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Milestone",
       field: "milestone_name",
-      lookup: milestoneNameLookup,
-      render: milestone => milestone,
-      validate: rowData => !!rowData.milestone_name,
+      render: milestone => milestoneNameLookup[milestone.milestone_name],
+      validate: milestone => !!milestone.milestone_name,
       editComponent: props => (
         <Autocomplete
           id={"milestone_name"}
           name={"milestone_name"}
-          options={Object.keys(props.columnDef.lookup)}
-          getOptionLabel={option => props.columnDef.lookup[option]}
+          options={Object.keys(milestoneNameLookup)}
+          getOptionLabel={option => milestoneNameLookup[option]}
           getOptionSelected={(option, value) => option === value}
           value={props.value}
           onChange={(event, value) => props.onChange(value)}
