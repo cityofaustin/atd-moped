@@ -26,7 +26,7 @@ export const editItemButton = id => (
     perform="user:edit"
     yes={
       <RouterLink to={`/moped/staff/edit/${id}`}>
-        <EditIcon color="primary" />
+        <EditOutlinedIcon color="primary" />
       </RouterLink>
     }
   />
