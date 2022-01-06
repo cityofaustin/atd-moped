@@ -39,6 +39,13 @@ const StaffListView = () => {
     ...(showInactive ? { where: {} } : {}),
   });
 
+  /**
+   * Toggles list of inactive users
+   */
+  const toggleShowInactive = () => {
+    setShowInactive(!showInactive);
+  };
+
   return (
     <Page className={classes.root} title="Staff">
       <GridTable title={"Staff"} query={staffQuery} toolbar={null} />
