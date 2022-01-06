@@ -406,6 +406,7 @@ const GridTable = ({
         </Typography>
         {/*Toolbar Space*/}
         <GridTableToolbar>
+          {customComponents?.toolbar?.before}
           <GridTableSearch
             parentData={data}
             query={query}
