@@ -420,8 +420,10 @@ const GridTable = ({
             }}
             filterQuery={filterQuery}
           />
+          {customComponents?.toolbar?.after}
         </GridTableToolbar>
         {/*Main Table Body*/}
+        {customComponents?.table?.before}
         <Paper className={classes.paper}>
           <Box mt={3}>
             {loading ? (
