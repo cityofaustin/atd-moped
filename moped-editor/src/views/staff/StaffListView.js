@@ -18,6 +18,11 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
+  switch: {
+    marginTop: "1rem",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+  },
 }));
 
 let staffQuery = new GQLAbstract(StaffListViewQueryConf);
