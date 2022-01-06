@@ -13,18 +13,14 @@ If you are working in a shared environment, protect the file to being read-only 
 #### 2) Build the image
 Execute the following to build the ETL image: `docker build -t atd-moped-etl --no-cache .` 
 
-If you are developing the image itself, the `--no-cache` argument can be removed. It is useful when you may have old intermediate layers to your image, that may contain manifests of software available apk, dpkg, yum or other package management systems.
+If you are developing the image itself, the `--no-cache` argument can be removed. It is useful when you may have old intermediate layers to your image, that may contain manifests of software available apk, dpkg, yum or some other package management systems.
 
 #### 3) Development of ETL scripts
 You can start the container using the following command for local development.
 
-`docker run -it --rm -p 5555:5555 -v $(pwd)/app:/app -v $(pwd)/data:/data --env-file local_moped_dev_knack.env --env HASURA_ENDPOINT=http://$(./get_ip.sh):8080/v1/graphql atd-moped-etl bash`
+`docker run -it --rm -p 5555:5555 -v $(pwd)/app:/app -v $(pwd)/data:/data --env-file local_moped_dev_knack.env atd-moped-etl bash`
 
-There is an important difference between local development of Moped ETL scripts and how they will run in production. In production, the graphql-engine endpoint will be known and will have a fixed IP or hostname. It will be defined in the environment file along with all the other specifics about the deployment. 
-
-Local development has a complication however. It is likely that you will be self hosting the graphql-engine endpoint on your local machine. Outside of the container, you likely are referring to that endpoint using the `localhost` hostname. However, inside the container itself, `localhost` points to the local network interface of the container, which is separate and apart from the host's `localhost.` Because the container does not have knowledge of the network configuration of the host, the IP where the graphql-endpoint can be found must be explicitly supplied to the container, again through the use of environment variables. A bash script is provided, `get_ip.sh`, which will return the IP assigned to the active network interface or the interface currently holding the broadcast flag. To confirm that this is returning the IP you want to pass to the container as part of the graphql-engine endpoint, execute the script and substitute the IP into the URL seen in the above command. This URL should return a JSON object, likely with an error stating "resource does not exist." While it does indicate an error, that error pertains to the malformed query sent to the endpoint, and the fact that an error was returned at all indicates the graphql-engine endpoint is available on that network IP. 
-
-**Note**: The `get_ip.sh` script is written to support Apple's version of `ifconfig`, and it may need modification to work on other platforms.
+Please note, the graphql-engine console will indicate that the endpoint where you want to send your graphql queries is likely: `http://localhost:8080/v1/graphql`. The hostname "localhost," in this case, referrers to your computer, running the graphql-engine which is exposed on the port `8080`.  However, when you run the Moped ETL container, that container will have its own localhost, being the local address of the container, not the host machine. Because of this, the address used to access the graphql-engine endpoint, **from inside the ETL docker container**, needs to be configured in the environment variable file in a way similar to this entry: `HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql`. The hostname `host.docker.internal` is a special hostname provided by the docker engine's DNS subsystem that points to localhost of the host computer, not the ETL container, which allows you to connect to services local to your machine, but outside of the guest container.
 
 #### 4) Debugging
 The python environment should support Web-PDB based debugging, but this is untested. Please see the debugging section in this [README.md](https://github.com/cityofaustin/atd-vz-data/blob/master/atd-etl/README.md) file for more information. 
