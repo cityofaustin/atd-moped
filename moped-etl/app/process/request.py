@@ -10,7 +10,7 @@ from logging import getLogger
 logging = getLogger("request.py")
 
 MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
-RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
+RETRY_WAIT_TIME = int(os.getenv("HASURA_RETRY_WAIT_TIME"))
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
 
