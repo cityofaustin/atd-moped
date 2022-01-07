@@ -50,3 +50,4 @@ def run_query(query):
                 )
                 logging.info(f"Trying again in {RETRY_WAIT_TIME} seconds...")
                 time.sleep(RETRY_WAIT_TIME)
+    raise ValueError(response)
