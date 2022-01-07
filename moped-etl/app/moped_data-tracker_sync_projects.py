@@ -4,6 +4,11 @@ import re
 import os
 import knackpy
 from process.request import run_query
+from process.logging import getLogger
+
+logger = getLogger('logger');
+
+logger.debug('Syncing Moped Project Data to Data Tracker')
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
