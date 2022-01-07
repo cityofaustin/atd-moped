@@ -15,15 +15,16 @@ KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
 KNACK_DATA_TRACKER_PROJECT_OBJECT = os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
 
-# Extract mapping between field names and Knack's field codes from environment
-knack_object_keys = {}
-object_regex = re.compile("^KNACK_OBJECT_(?P<object_key>\S+)")
-for variable in list(os.environ):
-    match = object_regex.search(variable)
-    if match:
-        key = match.group("object_key")
-        knack_object_keys[key.lower()] = os.getenv(variable)
+KNACK_OBJECT_PROJECT_ID = os.getenv("KNACK_OBJECT_PROJECT_ID")
+KNACK_OBJECT_PROJECT_NAME = os.getenv("KNACK_OBJECT_PROJECT_NAME")
+KNACK_OBJECT_CURRENT_STATUS = os.getenv("KNACK_OBJECT_CURRENT_STATUS")
 
+# Define mapping between column names and knack column fields
+knack_object_keys = {
+  'project_id': KNACK_OBJECT_PROJECT_ID, 
+  'project_name': KNACK_OBJECT_PROJECT_NAME,
+  'current_status': KNACK_OBJECT_CURRENT_STATUS,
+}
 
 get_all_synchronized_projects = """
 query get_all_projects {
