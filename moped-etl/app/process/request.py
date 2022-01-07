@@ -32,10 +32,10 @@ def run_query(query):
                 HASURA_ENDPOINT, json={"query": query}, headers=headers
             ).json()
         except Exception as e:
-            logging.error("Exception, could not insert: " + str(e))
-            logging.error("Query: '%s'" % query)
+            logging.error(f"Exception, could not insert: {e}")
+            logging.error(f"Query: {query}")
             response = {
-                "errors": "Exception, could not insert: " + str(e),
+                "errors": f"Exception, could not insert: {e}",
                 "query": query,
             }
 
@@ -46,7 +46,7 @@ def run_query(query):
             # If less than 5, then wait 5 seconds and try again
             else:
                 logging.info(
-                    "Attempt (%s out of %s)" % (current_attempt + 1, MAX_ATTEMPTS)
+                    f"Attempt ({current_attempt + 1} out of {MAX_ATTEMPTS})"
                 )
-                logging.info("Trying again in %s seconds..." % RETRY_WAIT_TIME)
+                logging.info(f"Trying again in {RETRY_WAIT_TIME} seconds...")
                 time.sleep(RETRY_WAIT_TIME)
