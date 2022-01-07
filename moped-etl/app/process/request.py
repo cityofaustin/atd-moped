@@ -14,6 +14,7 @@ RETRY_WAIT_TIME = int(os.getenv("HASURA_RETRY_WAIT_TIME"))
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_KEY = os.getenv("HASURA_ADMIN_KEY")
 
+
 def run_query(query):
     """
     Runs a GraphQL query against Hasura via an HTTP POST request.
@@ -27,8 +28,7 @@ def run_query(query):
     for current_attempt in range(MAX_ATTEMPTS):
         # Try making the request via POST
         try:
-            res = requests.post(
-                HASURA_ENDPOINT, json={"query": query}, headers=headers)
+            res = requests.post(HASURA_ENDPOINT, json={"query": query}, headers=headers)
             res.raise_for_status()
             return res.json()
         except Exception as e:
@@ -45,9 +45,7 @@ def run_query(query):
 
             # If less than 5, then wait 5 seconds and try again
             else:
-                logging.info(
-                    f"Attempt ({current_attempt + 1} out of {MAX_ATTEMPTS})"
-                )
+                logging.info(f"Attempt ({current_attempt + 1} out of {MAX_ATTEMPTS})")
                 logging.info(f"Trying again in {RETRY_WAIT_TIME} seconds...")
                 time.sleep(RETRY_WAIT_TIME)
     raise ValueError(response)

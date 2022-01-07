@@ -21,9 +21,9 @@ KNACK_OBJECT_CURRENT_STATUS = os.getenv("KNACK_OBJECT_CURRENT_STATUS")
 
 # Define mapping between column names and knack column fields
 knack_object_keys = {
-  'project_id': KNACK_OBJECT_PROJECT_ID, 
-  'project_name': KNACK_OBJECT_PROJECT_NAME,
-  'current_status': KNACK_OBJECT_CURRENT_STATUS,
+    "project_id": KNACK_OBJECT_PROJECT_ID,
+    "project_name": KNACK_OBJECT_PROJECT_NAME,
+    "current_status": KNACK_OBJECT_CURRENT_STATUS,
 }
 
 get_all_synchronized_projects = """
@@ -51,7 +51,9 @@ knack_query_filter = {
     ],
 }
 
-records = app.get("view_" + KNACK_DATA_TRACKER_VIEW, filters=knack_query_filter, generate=1)
+records = app.get(
+    "view_" + KNACK_DATA_TRACKER_VIEW, filters=knack_query_filter, generate=1
+)
 knack_records = {}
 for record in records:
     if not record[KNACK_OBJECT_PROJECT_ID]:
