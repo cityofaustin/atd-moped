@@ -43,7 +43,15 @@ logger.debug(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
-records = app.get("view_" + KNACK_DATA_TRACKER_VIEW, generate=1)
+
+knack_query_filter = {
+    "match": "and",
+    "rules": [
+        {"field": KNACK_OBJECT_PROJECT_ID, "operator": "is not blank"},
+    ],
+}
+
+records = app.get("view_" + KNACK_DATA_TRACKER_VIEW, filters=knack_query_filter, generate=1)
 knack_records = {}
 for record in records:
     if not record[KNACK_OBJECT_PROJECT_ID]:
