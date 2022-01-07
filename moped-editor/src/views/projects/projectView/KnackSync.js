@@ -31,10 +31,6 @@ const buildUrl = (scene, view, knackProjectId) => {
  * @returns string
  */
 const getHttpMethod = knackProjectId => {
-  //return project?.knack_project_id ?? false ? "PUT" : "POST";
-  let method = knackProjectId ?? false ? "PUT" : "POST";
-  console.log("knackProjectId: ", knackProjectId);
-  console.log("HTTP Method: ", method);
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
@@ -52,8 +48,6 @@ const KnackSync = React.forwardRef(
       process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
       project.knack_project_id
     );
-
-    console.log("Project: ", project);
 
     let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
