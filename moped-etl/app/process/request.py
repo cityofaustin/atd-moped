@@ -5,6 +5,9 @@
 import os
 import time
 import requests
+from logging import getLogger
+
+logging = getLogger('request.py')
 
 MAX_ATTEMPTS = int(os.getenv("HASURA_MAX_ATTEMPTS"))
 RETRY_WAIT_TIME = os.getenv("HASURA_RETRY_WAIT_TIME")
@@ -30,8 +33,8 @@ def run_query(query):
                                  json={'query': query},
                                  headers=headers).json()
         except Exception as e:
-            print("Exception, could not insert: " + str(e))
-            print("Query: '%s'" % query)
+            logging.error("Exception, could not insert: " + str(e))
+            logging.error("Query: '%s'" % query)
             response = {
                 "errors": "Exception, could not insert: " + str(e),
                 "query": query
@@ -43,6 +46,6 @@ def run_query(query):
 
             # If less than 5, then wait 5 seconds and try again
             else:
-                print("Attempt (%s out of %s)" % (current_attempt+1, MAX_ATTEMPTS))
-                print("Trying again in %s seconds..." % RETRY_WAIT_TIME)
+                logging.info("Attempt (%s out of %s)" % (current_attempt+1, MAX_ATTEMPTS))
+                logging.info("Trying again in %s seconds..." % RETRY_WAIT_TIME)
                 time.sleep(RETRY_WAIT_TIME)
