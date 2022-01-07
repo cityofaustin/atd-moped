@@ -46,7 +46,7 @@ app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_A
 records = app.get("view_" + KNACK_DATA_TRACKER_VIEW, generate=1)
 knack_records = {}
 for record in records:
-    if record[KNACK_OBJECT_PROJECT_ID] == None:
+    if not record[KNACK_OBJECT_PROJECT_ID]:
         continue
     knack_records[record[KNACK_OBJECT_PROJECT_ID]] = record
 
