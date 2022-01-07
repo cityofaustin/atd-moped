@@ -10,7 +10,8 @@ RUN apk add bash build-base python3-dev vim
 
 RUN mkdir /requirements
 COPY requirements /requirements
-# Add a new <app_name>_requirements.txt in the requirements folder to have the libraries installed at image build time
+# Add a new <app_name>_requirements.txt in the requirements folder to have the app's 
+# libraries installed at image build time.
 RUN ls -1 /requirements/ | xargs -I {} pip install -r /requirements/{}
 
 WORKDIR /app
