@@ -15,6 +15,9 @@ Execute the following to build the ETL image: `docker build -t atd-moped-etl --n
 
 If you are developing the image itself, the `--no-cache` argument can be removed. It is useful when you may have old intermediate layers to your image, that may contain manifests of software available apk, dpkg, yum or some other package management systems.
 
+#### 2.1) Python Requirements
+A folder exists named `requirements` in the `moped-etl` directory. Any file placed in this folder will be interpreted as a requirements.txt file and run through `pip install -r [filename]` during the building of the Docker image. This is a replacement of the system where we were `pip install`ing libraries explicitly during the image build process. The intent is to provide a mechanism for a user to easily pull a single ETL app out of this docker context and have a requirements file that goes along with it should he or she wish to run the script in another, perhaps local, environment. 
+
 #### 3) Development of ETL scripts
 You can start the container using the following command for local development.
 
