@@ -27,9 +27,10 @@ def run_query(query):
     for current_attempt in range(MAX_ATTEMPTS):
         # Try making the request via POST
         try:
-            return requests.post(
-                HASURA_ENDPOINT, json={"query": query}, headers=headers
-            ).json()
+            res = requests.post(
+                HASURA_ENDPOINT, json={"query": query}, headers=headers)
+            res.raise_for_status()
+            return res.json()
         except Exception as e:
             logging.error(f"Exception, could not insert: {e}")
             logging.error(f"Query: {query}")
