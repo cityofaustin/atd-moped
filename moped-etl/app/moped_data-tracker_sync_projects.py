@@ -6,22 +6,22 @@ import knackpy
 from process.request import run_query
 from process.logging import getLogger
 
-logger = getLogger('moped-knack-sync');
+logger = getLogger("moped-knack-sync")
 
-logger.debug('Syncing Moped Project Data to Data Tracker')
+logger.debug("Syncing Moped Project Data to Data Tracker")
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
-KNACK_DATA_TRACKER_PROJECT_OBJECT= os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
+KNACK_DATA_TRACKER_PROJECT_OBJECT = os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
 
 # Extract mapping between field names and Knack's field codes from environment
 knack_object_keys = {}
-object_regex = re.compile('^KNACK_OBJECT_(?P<object_key>\S+)')
+object_regex = re.compile("^KNACK_OBJECT_(?P<object_key>\S+)")
 for variable in list(os.environ):
     match = object_regex.search(variable)
     if match:
-        key = match.group('object_key')
+        key = match.group("object_key")
         knack_object_keys[key.lower()] = os.getenv(variable)
 
 
@@ -42,21 +42,30 @@ logger.debug(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
-records = app.get('view_' + KNACK_DATA_TRACKER_VIEW, generate=1)
+records = app.get("view_" + KNACK_DATA_TRACKER_VIEW, generate=1)
 knack_records = {}
 for record in records:
-    if (record[knack_object_keys['project_id']] == None):
+    if record[knack_object_keys["project_id"]] == None:
         continue
-    knack_records[record[knack_object_keys['project_id']]] = record
+    knack_records[record[knack_object_keys["project_id"]]] = record
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
-for moped_project in moped_data['data']['moped_project']:
+for moped_project in moped_data["data"]["moped_project"]:
     update_needed = False
-    knack_data = dict(knack_records[moped_project['project_id']])
+    knack_data = dict(knack_records[moped_project["project_id"]])
     for key in knack_object_keys:
-        if not moped_project[key] == knack_records[moped_project['project_id']][knack_object_keys[key]]:
+        if (
+            not moped_project[key]
+            == knack_records[moped_project["project_id"]][knack_object_keys[key]]
+        ):
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
     if update_needed:
-        logger.debug("Need to update knack for Moped project", moped_project['project_id'])
-        app.record(method="update", data=knack_data, obj='object_' + KNACK_DATA_TRACKER_PROJECT_OBJECT)
+        logger.debug(
+            "Need to update knack for Moped project", moped_project["project_id"]
+        )
+        app.record(
+            method="update",
+            data=knack_data,
+            obj="object_" + KNACK_DATA_TRACKER_PROJECT_OBJECT,
+        )
