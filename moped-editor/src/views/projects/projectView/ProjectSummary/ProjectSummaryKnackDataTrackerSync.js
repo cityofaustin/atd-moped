@@ -65,9 +65,21 @@ const ProjectSummaryKnackDataTrackerSync = ({
       field_4000: "current_status",
     };
 
-    //console.log(project);
+    // signals: scene_514 view_1483
     const signalIds = project.moped_proj_features.map(feature => feature.location.properties.signal_id);
-    //console.log(signalIds);
+
+    let getSignalFilter = {
+      'match': 'or',
+      'rules': signalIds.map(signalId => {
+        return {
+          'field': 'field_199',
+          'operator': 'is',
+          'value': signalId,
+        }
+      }),
+    }
+    console.log(JSON.stringify(getSignalFilter));
+
 
     Object.keys(field_map).forEach(element => {
       if (project.currentKnackState[element] !== project[field_map[element]]) {
