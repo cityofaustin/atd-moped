@@ -11,7 +11,7 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
  * update or an initial sync.
  * @returns string
  */
-const buildUrl = (scene, view, knackProjectId) => {
+const buildProjectUrl = (scene, view, knackProjectId) => {
   let url = `https://api.knack.com/v1/pages/scene_${scene}/views/view_${view}/records`;
   if (knackProjectId) {
     // existing record
@@ -34,7 +34,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
   refetch,
   snackbarHandle,
 }) => {
-  let knackEndpointUrl = buildUrl(
+  let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
     process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
     project?.knackProjectId
@@ -90,7 +90,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           'value': signalId,
         }
       }),
-  };
+    };
     return JSON.stringify(getSignalFilter);
   }
 
@@ -102,7 +102,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
   const handleSync = () => {
     if (project.knack_project_id) {
       // updating knack record
-      fetch(knackEndpointUrl, {
+      fetch(knackProjectEndpointUrl, {
         // Fetch will return a promise, allowing us to start a chain of .then() calls
         method: "GET",
         headers: buildHeaders,
@@ -116,7 +116,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           } else {
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
-            return fetch(knackEndpointUrl, {
+            return fetch(knackProjectEndpointUrl, {
               // fetch returns a Promise for the next step
               method: knackHttpMethod,
               headers: buildHeaders,
@@ -152,7 +152,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
     } else {
       // creating new knack record execution branch
       project.currentKnackState = {};
-      fetch(knackEndpointUrl, {
+      fetch(knackProjectEndpointUrl, {
         // Fetch will return a promise, which we'll use to start a chain of .then() steps
         method: knackHttpMethod,
         headers: buildHeaders,
