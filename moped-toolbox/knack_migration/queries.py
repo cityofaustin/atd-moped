@@ -38,3 +38,12 @@ UPDATE_NEW_PROJ_FEATURES = """
     }
   }
 """
+
+GET_KNACK_PROJECTS = """
+  query GET_KNACK_PROJECTS {
+    moped_project(where: {knack_project_id: {_is_null: false}}) {
+      project_id
+      knack_project_id
+    }
+  }
+"""
