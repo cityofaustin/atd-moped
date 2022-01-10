@@ -43,7 +43,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
   let knackSignalEndpointUrl = 
     `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}` +
-    `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW}/records`;
+    `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_VIEW}/records`;
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
@@ -97,6 +97,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       }),
     };
     return JSON.stringify(getSignalFilter);
+    //return encodeURIComponent(JSON.stringify(getSignalFilter));
   }
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
@@ -157,12 +158,26 @@ const ProjectSummaryKnackDataTrackerSync = ({
     } else {
       // creating new knack record execution branch
       project.currentKnackState = {};
-      fetch(knackProjectEndpointUrl, {
+
+      let completeUrl = knackSignalEndpointUrl + '?filters=' + buildSignalIdFilters(project);
+      console.log(knackSignalEndpointUrl);
+      console.log(completeUrl);
+
+      fetch(knackSignalEndpointUrl + '?filters=' + buildSignalIdFilters(project), {
         // Fetch will return a promise, which we'll use to start a chain of .then() steps
-        method: knackHttpMethod,
+        method: 'GET',
         headers: buildHeaders,
-        body: buildBody(),
       })
+        .then(response => response.json()) // get the json payload and pass it along
+        .then(result => {
+          console.log(result);
+        })
+        .then(fetch(knackProjectEndpointUrl, {
+          // Fetch will return a promise, which we'll use to start a chain of .then() steps
+          method: knackHttpMethod,
+          headers: buildHeaders,
+          body: buildBody(),
+        }))
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
           if (result.errors) {
