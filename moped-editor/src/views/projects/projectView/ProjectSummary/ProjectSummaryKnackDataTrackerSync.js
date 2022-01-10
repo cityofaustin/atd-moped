@@ -34,11 +34,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
   refetch,
   snackbarHandle,
 }) => {
+
   let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
     process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW,
     project?.knackProjectId
   );
+
+  let knackSignalEndpointUrl = 
+    `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}` +
+    `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW}/records`;
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
