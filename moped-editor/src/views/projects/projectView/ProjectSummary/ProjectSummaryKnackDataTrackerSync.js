@@ -65,6 +65,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
       field_4000: "current_status",
     };
 
+    //console.log(project);
+    const signalIds = project.moped_proj_features.map(feature => feature.location.properties.signal_id);
+    //console.log(signalIds);
+
     Object.keys(field_map).forEach(element => {
       if (project.currentKnackState[element] !== project[field_map[element]]) {
         body[element] = project[field_map[element]];
