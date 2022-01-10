@@ -65,8 +65,21 @@ const ProjectSummaryKnackDataTrackerSync = ({
       field_4000: "current_status",
     };
 
+
+    Object.keys(field_map).forEach(element => {
+      if (project.currentKnackState[element] !== project[field_map[element]]) {
+        body[element] = project[field_map[element]];
+      }
+    });
+
+    return JSON.stringify(body);
+  };
+
+  const buildSignalIdFilters = (project) => {
     // signals: scene_514 view_1483
-    const signalIds = project.moped_proj_features.map(feature => feature.location.properties.signal_id);
+    const signalIds = project.moped_proj_features.map(
+      feature => feature.location.properties.signal_id
+    );
 
     let getSignalFilter = {
       'match': 'or',
@@ -77,18 +90,9 @@ const ProjectSummaryKnackDataTrackerSync = ({
           'value': signalId,
         }
       }),
-    }
-    console.log(JSON.stringify(getSignalFilter));
-
-
-    Object.keys(field_map).forEach(element => {
-      if (project.currentKnackState[element] !== project[field_map[element]]) {
-        body[element] = project[field_map[element]];
-      }
-    });
-
-    return JSON.stringify(body);
   };
+    return JSON.stringify(getSignalFilter);
+  }
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
