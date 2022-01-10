@@ -193,22 +193,23 @@ const ProjectView = () => {
   };
 
   /**
-   * Handles the click on a tab, which should trigger a change.
-   * @param {Object} event - The click event
-   * @param {int} newTab - The number of the tab
-   */
-  const handleChange = (event, newTab) => {
-    setActiveTab(newTab);
-    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
-  };
-
-  /**
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+
+  /**
+   * Handles the click on a tab, which should trigger a change.
+   * @param {Object} event - The click event
+   * @param {int} newTab - The number of the tab
+   */
+  const handleChange = (event, newTab) => {
+    if (newTab === 0) refetch();
+    setActiveTab(newTab);
+    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
+  };
 
   /**
    * The mutation to soft-delete the project
