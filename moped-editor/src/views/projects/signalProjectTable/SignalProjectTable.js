@@ -246,13 +246,14 @@ const SignalProjectTable = () => {
         if (entry.task_order.length < 1) {
           return "-";
         }
-
         // Render values as a comma seperated string
-        return entry.task_order
+        let content = entry.task_order
           .map(taskOrder => {
             return taskOrder.display_name;
           })
           .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
       },
     },
     {
