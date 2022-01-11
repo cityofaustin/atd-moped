@@ -26,10 +26,12 @@ import {
 import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_TYPES,
+  UPDATE_PROJECT_TASK_ORDER,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
+import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -57,6 +59,7 @@ const SignalProjectTable = () => {
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
   const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
+  const [updateProjectTaskOrder] = useMutation(UPDATE_PROJECT_TASK_ORDER);
 
   if (error) {
     console.log(error);
@@ -238,7 +241,22 @@ const SignalProjectTable = () => {
     {
       title: "Task order",
       field: "task_order",
-      // placeholder for task order issue
+      customEdit: "taskOrders",
+      emptyValue: "-",
+      render: entry => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        let content = entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+      },
     },
     {
       title: "Contractor/Contract",
@@ -389,6 +407,13 @@ const SignalProjectTable = () => {
             deleteList: typePksToDelete,
           },
         });
+      } else if (columnDef.customEdit === "taskOrders") {
+        return updateProjectTaskOrder({
+          variables: {
+            taskOrder: newData,
+            projectId: rowData.project_id,
+          },
+        });
       } else {
         const updatedProjectObject = {
           ...rowData,
@@ -462,6 +487,9 @@ const SignalProjectTable = () => {
         </Select>
       );
     },
+    taskOrders: props => (
+      <TaskOrderAutocomplete props={props} value={props.value} />
+    ),
   };
 
   return (

@@ -28,6 +28,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       contractor
       purchase_order_number
       project_sponsor
+      task_order
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 } }
         order_by: { date_created: desc }
