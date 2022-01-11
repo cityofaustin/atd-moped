@@ -240,11 +240,11 @@ const SignalProjectTable = () => {
       title: "Task order",
       field: "task_order",
       customEdit: "taskOrders",
-      emptyValue: "blank",
+      emptyValue: "-",
       render: entry => {
         // Empty value won't work in some cases where task_order is an empty array.
         if (entry.task_order.length < 1) {
-          return "blank";
+          return "-";
         }
 
         // Render values as a comma seperated string
