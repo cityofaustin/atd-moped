@@ -187,7 +187,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             )
               .then(response => response.json()) // get the json payload and pass it along
               .then(result => {
-                const signalIds = [];
+                let signalIds = [];
                 if (signalCount > 0) {
                   signalIds = result.records.map(record => record.id);
                 }
