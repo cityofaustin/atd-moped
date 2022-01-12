@@ -314,15 +314,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
             spanClassName={""}
           />
         </Box>
-        <Box>
-          <Button
-            onClick={() => {
-              handleSync();
-            }}
-          >
-            Resync
-          </Button>
-        </Box>
       </Grid>
     </>
   );
