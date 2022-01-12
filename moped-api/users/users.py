@@ -242,7 +242,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         # Check we received a database_id and workgroup_id from database
         database_id, workgroup_id = get_user_database_ids(response=db_response)
