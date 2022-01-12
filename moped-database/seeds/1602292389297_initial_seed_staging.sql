@@ -581,13 +581,6 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 -- INSERT INTO public.moped_entity (entity_uuid, workgroup_name, abbreviated_name, entity_id, affiliated_workgroup, date_added) VALUES ('f30415c5-0b5d-4d92-bb04-7c4f0ea13288', 'Capital Metro', 'CapMetro', 1, NULL, '2020-10-09 13:44:36.783377+00');
 
 
---
--- TOC entry 6043 (class 0 OID 21419)
--- Dependencies: 264
--- Data for Name: moped_fund_opp; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
 
 --
 -- TOC entry 6045 (class 0 OID 21427)
@@ -601,14 +594,6 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 -- TOC entry 6047 (class 0 OID 21435)
 -- Dependencies: 268
 -- Data for Name: moped_fund_sources; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
--- TOC entry 6049 (class 0 OID 21443)
--- Dependencies: 270
--- Data for Name: moped_group; Type: TABLE DATA; Schema: public; Owner: atd_moped
 --
 
 
@@ -705,25 +690,9 @@ INSERT INTO public.moped_project (project_uuid, project_name, project_descriptio
 
 
 --
--- TOC entry 6057 (class 0 OID 21494)
--- Dependencies: 278
--- Data for Name: moped_proj_communication; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
 -- TOC entry 6059 (class 0 OID 21502)
 -- Dependencies: 280
 -- Data for Name: moped_proj_components; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
--- TOC entry 6061 (class 0 OID 21511)
--- Dependencies: 282
--- Data for Name: moped_proj_dates; Type: TABLE DATA; Schema: public; Owner: atd_moped
 --
 
 
@@ -753,25 +722,9 @@ INSERT INTO public.moped_project (project_uuid, project_name, project_descriptio
 
 
 --
--- TOC entry 6066 (class 0 OID 21536)
--- Dependencies: 287
--- Data for Name: moped_proj_fund_opp; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
 -- TOC entry 6069 (class 0 OID 21547)
 -- Dependencies: 290
 -- Data for Name: moped_proj_fund_source; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
--- TOC entry 6071 (class 0 OID 21556)
--- Dependencies: 292
--- Data for Name: moped_proj_groups; Type: TABLE DATA; Schema: public; Owner: atd_moped
 --
 
 
@@ -991,35 +944,10 @@ INSERT INTO public.moped_proj_phases (phase_name, phase_description, phase_order
 
 
 
-
---
--- TOC entry 6081 (class 0 OID 21601)
--- Dependencies: 302
--- Data for Name: moped_proj_status_history; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
--- TOC entry 6082 (class 0 OID 21609)
--- Dependencies: 303
--- Data for Name: moped_proj_status_notes; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
 --
 -- TOC entry 6101 (class 0 OID 24648)
 -- Dependencies: 322
 -- Data for Name: moped_proj_subphases; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
--- TOC entry 6083 (class 0 OID 21616)
--- Dependencies: 304
--- Data for Name: moped_proj_timeline; Type: TABLE DATA; Schema: public; Owner: atd_moped
 --
 
 
@@ -1102,15 +1030,6 @@ SELECT pg_catalog.setval('public.moped_financials_financials_id_seq', 1, false);
 
 
 --
--- TOC entry 6115 (class 0 OID 0)
--- Dependencies: 265
--- Name: moped_fund_opp_funding_opportunity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_fund_opp_funding_opportunity_id_seq', 1, false);
-
-
---
 -- TOC entry 6116 (class 0 OID 0)
 -- Dependencies: 267
 -- Name: moped_fund_source_cat_funding_source_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
@@ -1127,14 +1046,6 @@ SELECT pg_catalog.setval('public.moped_fund_source_cat_funding_source_category_i
 
 SELECT pg_catalog.setval('public.moped_fund_sources_funding_source_id_seq', 1, false);
 
-
---
--- TOC entry 6118 (class 0 OID 0)
--- Dependencies: 271
--- Name: moped_groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_groups_group_id_seq', 1, false);
 
 
 --
@@ -1163,22 +1074,6 @@ SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 
 
 SELECT pg_catalog.setval('public.moped_phases_phase_id_seq', 1, false);
 
---
--- TOC entry 6123 (class 0 OID 0)
--- Dependencies: 279
--- Name: moped_proj_communication_comm_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_communication_comm_id_seq', 1, false);
-
-
---
--- TOC entry 6125 (class 0 OID 0)
--- Dependencies: 283
--- Name: moped_proj_dates_date_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_dates_date_id_seq', 1, false);
 
 
 --
@@ -1190,23 +1085,6 @@ SELECT pg_catalog.setval('public.moped_proj_dates_date_id_seq', 1, false);
 SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, false);
 
 
---
--- TOC entry 6127 (class 0 OID 0)
--- Dependencies: 288
--- Name: moped_proj_fund_opp_fund_opp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_fund_opp_fund_opp_id_seq', 1, false);
-
-
---
--- TOC entry 6128 (class 0 OID 0)
--- Dependencies: 289
--- Name: moped_proj_fund_opp_proj_fund_opp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_fund_opp_proj_fund_opp_id_seq', 1, false);
-
 
 --
 -- TOC entry 6129 (class 0 OID 0)
@@ -1215,15 +1093,6 @@ SELECT pg_catalog.setval('public.moped_proj_fund_opp_proj_fund_opp_id_seq', 1, f
 --
 
 SELECT pg_catalog.setval('public.moped_proj_fund_source_proj_fund_source_id_seq', 1, false);
-
-
---
--- TOC entry 6130 (class 0 OID 0)
--- Dependencies: 293
--- Name: moped_proj_groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_groups_group_id_seq', 1, false);
 
 
 --
@@ -1269,14 +1138,6 @@ SELECT pg_catalog.setval('public.moped_proj_partners_proj_partner_id_seq', 1, fa
 --
 
 SELECT pg_catalog.setval('public.moped_proj_personnel_project_personnel_id_seq', 212, true);
-
---
--- TOC entry 6137 (class 0 OID 0)
--- Dependencies: 305
--- Name: moped_proj_timeline_timeline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_timeline_timeline_id_seq', 2, true);
 
 
 --
