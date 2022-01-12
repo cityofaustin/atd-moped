@@ -107,7 +107,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
       }),
     };
     return JSON.stringify(getSignalFilter);
-    //return encodeURIComponent(JSON.stringify(getSignalFilter));
   };
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
