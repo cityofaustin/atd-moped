@@ -334,7 +334,7 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                 )
             except botocore.errorfactory.UserNotFoundException as e:
                 cognito_response_sso = {
-                            "success": "azure account email not found, skipping"
+                    "success": "azure account email not found, skipping"
                 }
                 pass
         else:
