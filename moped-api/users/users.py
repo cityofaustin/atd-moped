@@ -220,6 +220,14 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         password = request.json.get("password", None)
         reactivate_account = False
 
+        # Check if there is email provided
+        if email is None:
+            return jsonify({
+                "error": {
+                    "message": "No email provided"
+                }
+            }), 400
+
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
             ignore_fields=["password"]
