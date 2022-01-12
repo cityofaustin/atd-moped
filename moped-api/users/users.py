@@ -142,7 +142,7 @@ def user_create_user(claims: list) -> (Response, int):
             elif e.response["Error"]["Code"] == "InvalidPasswordException":
                 return jsonify(e.response), 400  # Bad request
             else:
-                return jsonify(e.response), 500  # Internal Server Error
+                return jsonify(e.response), 400  # Internal Server Error
 
         # Generate the user profile for the database
         user_profile = generate_user_profile(
