@@ -243,6 +243,15 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                 user_already_exists = True
             except ClientError as e:
                 user_already_exists = False
+        # If the user doesn't exist and is now active, create it...
+        if user_already_exists == False and status_id == 1:
+            # Check if the password needs to be provided
+            if password is None or password == "":
+                return jsonify({
+                    "error": {
+                        "message": "No password provided."
+                    }
+                }), 400
                 
         # Retrieve current profile (to fetch old email)
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
