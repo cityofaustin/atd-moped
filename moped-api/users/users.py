@@ -218,6 +218,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         status_id = request.json.get("status_id", 0)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
+        reactivate_account = False
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
