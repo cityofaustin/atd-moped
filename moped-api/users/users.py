@@ -236,6 +236,14 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
+        # The status is active, check if the user exists
+        if(status_id == 1):
+            try:
+                cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+                user_already_exists = True
+            except ClientError as e:
+                user_already_exists = False
+                
         # Retrieve current profile (to fetch old email)
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
         user_email_before_update = get_user_email_from_attr(user_attr=user_info)
