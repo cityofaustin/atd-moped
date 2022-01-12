@@ -254,7 +254,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         updated_attributes = generate_cognito_attributes(user_profile=json_data)
 
