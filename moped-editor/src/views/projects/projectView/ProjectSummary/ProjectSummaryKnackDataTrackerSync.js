@@ -32,12 +32,12 @@ const getHttpMethod = knackProjectId => {
  * Function to map the signal IDs from a project object into an array and return the array length.
  * @returns integer
  */
-const countSignalsInProject = (project) => {
+const countSignalsInProject = project => {
   const signalIds = project.moped_proj_features.map(
     feature => feature.location.properties.signal_id
   );
   return Promise.resolve(signalIds.length);
-}
+};
 
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
