@@ -316,7 +316,7 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
         user_email = get_user_email_from_attr(user_attr=user_info)
