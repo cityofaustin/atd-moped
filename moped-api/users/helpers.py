@@ -142,17 +142,24 @@ def db_create_user(user_profile: dict) -> dict:
     return response.json()
 
 
-def db_update_user(user_profile: dict) -> dict:
+def db_update_user(user_profile: dict, search_by_email: bool = False) -> dict:
     """
     Updates a user in the database via GraphQL
     :param dict user_profile: The user details
     :return dict: The response from the GraphQL server
     """
+
+    search_logic = {
+        "cognito_user_id": {
+            "_eq": user_profile["cognito_user_id"]
+        }
+    }
+
     response = run_query(
         query=GRAPHQL_UPDATE_USER,
         variables={
             "userBoolExp": {
-                "cognito_user_id": {"_eq": user_profile["cognito_user_id"]}
+                **search_logic
             },
             "user": user_profile,
         },
