@@ -1,4 +1,4 @@
-import boto3
+import boto3, botocore
 
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
