@@ -274,6 +274,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                )
                # Copy the username to the UUID variable
                user_cognito_uuid = cognito_username
+               id = cognito_username
             except ClientError as e:
                return jsonify(e.response), 400  # Bad request
                
