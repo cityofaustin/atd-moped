@@ -337,7 +337,10 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                             "success": "azure account email not found, skipping"
                 }
                 pass
-        
+        else:
+            cognito_response_sso = {
+                "success": "sso deletion skipped, user not government"
+            }
         delete_claims(user_email=user_email)
 
         response = {
