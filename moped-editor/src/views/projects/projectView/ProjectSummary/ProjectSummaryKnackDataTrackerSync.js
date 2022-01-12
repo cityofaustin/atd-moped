@@ -34,14 +34,13 @@ const ProjectSummaryKnackDataTrackerSync = ({
   refetch,
   snackbarHandle,
 }) => {
-
   let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
     process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW,
     project?.knackProjectId
   );
 
-  let knackSignalEndpointUrl = 
+  let knackSignalEndpointUrl =
     `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}` +
     `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_VIEW}/records`;
 
@@ -61,7 +60,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * because if you update the project number field, even with the same, extant number, Knack returns an error.
    * @returns string
    */
-  const buildBody = (signalIds) => {
+  const buildBody = signalIds => {
     let body = {};
 
     const field_map = {
@@ -79,7 +78,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
     console.log(signalIds);
     if (signalIds.length > 0) {
       // field_3861
-      body['field_3861'] = signalIds;
+      body["field_3861"] = signalIds;
     }
 
     console.log(body);
@@ -87,25 +86,25 @@ const ProjectSummaryKnackDataTrackerSync = ({
     return JSON.stringify(body);
   };
 
-  const buildSignalIdFilters = (project) => {
+  const buildSignalIdFilters = project => {
     // signals: scene_514 view_1483
     const signalIds = project.moped_proj_features.map(
       feature => feature.location.properties.signal_id
     );
 
     let getSignalFilter = {
-      'match': 'or',
-      'rules': signalIds.map(signalId => {
+      match: "or",
+      rules: signalIds.map(signalId => {
         return {
-          'field': 'field_199',
-          'operator': 'is',
-          'value': signalId,
-        }
+          field: "field_199",
+          operator: "is",
+          value: signalId,
+        };
       }),
     };
     return JSON.stringify(getSignalFilter);
     //return encodeURIComponent(JSON.stringify(getSignalFilter));
-  }
+  };
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
@@ -169,14 +168,17 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // nb: need to use conditional checks to see if we're going to need to fetch signalIds
       // pattern to follow: https://vijayt.com/post/conditional-promise-chaining-pattern-better-code/
 
-      fetch(knackSignalEndpointUrl + '?filters=' + buildSignalIdFilters(project), {
-        // Fetch will return a promise, which we'll use to start a chain of .then() steps
-        method: 'GET',
-        headers: buildHeaders,
-      })
+      fetch(
+        knackSignalEndpointUrl + "?filters=" + buildSignalIdFilters(project),
+        {
+          // Fetch will return a promise, which we'll use to start a chain of .then() steps
+          method: "GET",
+          headers: buildHeaders,
+        }
+      )
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
-          const signalIds = result.records.map(record => record.id)
+          const signalIds = result.records.map(record => record.id);
           return signalIds;
         })
         .then(signalIds => {
@@ -186,7 +188,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
             method: knackHttpMethod,
             headers: buildHeaders,
             body: buildBody(signalIds),
-          })})
+          });
+        })
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
           if (result.errors) {
