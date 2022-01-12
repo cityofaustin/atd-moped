@@ -28,11 +28,15 @@ const getHttpMethod = knackProjectId => {
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
+/**
+ * Function to map the signal IDs from a project object into an array and return the array length.
+ * @returns integer
+ */
 const countSignalsInProject = (project) => {
   const signalIds = project.moped_proj_features.map(
     feature => feature.location.properties.signal_id
   );
-  return signalIds.length;
+  return Promise.resolve(signalIds.length);
 }
 
 const ProjectSummaryKnackDataTrackerSync = ({
@@ -168,11 +172,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // creating new knack record execution branch
       project.currentKnackState = {};
 
-      const checkSignalIds = (project) => {
-        return Promise.resolve(countSignalsInProject(project));
-      };
-
-      checkSignalIds(project)
+      countSignalsInProject(project)
         .then(signalCount => {
           if (signalCount > 0) {
             return fetch(
@@ -187,8 +187,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             )
               .then(response => response.json()) // get the json payload and pass it along
               .then(result => {
-                const signalCount = countSignalsInProject(project);
-                let signalIds = [];
+                const signalIds = [];
                 if (signalCount > 0) {
                   signalIds = result.records.map(record => record.id);
                 }
