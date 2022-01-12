@@ -28,6 +28,13 @@ const getHttpMethod = knackProjectId => {
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
+const countSignalsInProject = (project) => {
+  const signalIds = project.moped_proj_features.map(
+    feature => feature.location.properties.signal_id
+  );
+  return signalIds.length;
+}
+
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   project,
@@ -175,7 +182,11 @@ const ProjectSummaryKnackDataTrackerSync = ({
       )
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
-          const signalIds = result.records.map(record => record.id);
+          const signalCount = countSignalsInProject(project);
+          let signalIds = [];
+          if (signalCount > 0) {
+            signalIds = result.records.map(record => record.id);
+          }
           return signalIds;
         })
         .then(signalIds => {
