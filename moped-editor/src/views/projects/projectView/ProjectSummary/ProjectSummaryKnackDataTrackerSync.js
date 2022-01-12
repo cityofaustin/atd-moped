@@ -182,15 +182,17 @@ const ProjectSummaryKnackDataTrackerSync = ({
           return signalIds;
         })
         .then(signalIds => {
-          //console.log(signalIds);
-          fetch(knackProjectEndpointUrl, {
+          return fetch(knackProjectEndpointUrl, {
             // Fetch will return a promise, which we'll use to start a chain of .then() steps
             method: knackHttpMethod,
             headers: buildHeaders,
             body: buildBody(signalIds),
           });
         })
-        .then(response => response.json()) // get the json payload and pass it along
+        .then(response => {
+          //console.log(response);
+          return response.json()
+       }) // get the json payload and pass it along
         .then(result => {
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
