@@ -9,6 +9,8 @@ on:
       - main
       - production
     paths:
+      - ".github/workflows/atd_moped_api.yml"
+      - ".github/workflows/aws-moped-api-helper.sh"
       - "moped-api/**"
   pull_request:
     paths:
