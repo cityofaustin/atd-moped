@@ -252,7 +252,31 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                         "message": "No password provided."
                     }
                 }), 400
-                
+
+            # If we have all we need, then we proceed
+            try:
+               cognito_response = cognito_client.admin_create_user(
+                   UserPoolId=USER_POOL,
+                   Username=email,
+                   TemporaryPassword=password,
+                   UserAttributes=[
+                       {"Name": "email", "Value": email},
+                       {"Name": "email_verified", "Value": "true"},
+                   ],
+               )
+               # Then  we must set the user password
+               cognito_username = cognito_response["User"]["Username"]
+               cognito_client.admin_set_user_password(
+                   UserPoolId=USER_POOL,
+                   Username=cognito_username,
+                   Password=password,
+                   Permanent=True,
+               )
+               # Copy the username to the UUID variable
+               user_cognito_uuid = cognito_username
+            except ClientError as e:
+               return jsonify(e.response), 400  # Bad request
+               
         # Retrieve current profile (to fetch old email)
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
         user_email_before_update = get_user_email_from_attr(user_attr=user_info)
