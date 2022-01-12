@@ -133,14 +133,51 @@ const ProjectSummaryKnackDataTrackerSync = ({
             // Reject the promise to fall through to the .catch() method
             return Promise.reject(result);
           } else {
+
+
+
+
+
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
+
+            return countSignalsInProject(project)
+            .then(signalCount => {
+              if (signalCount > 0) {
+                return fetch(
+                  knackSignalEndpointUrl +
+                    "?filters=" +
+                    buildSignalIdFilters(project),
+                  {
+                    // Fetch will return a promise, which we'll use to start a chain of .then() steps
+                    method: "GET",
+                    headers: buildHeaders,
+                  }
+                )
+                  .then(response => response.json()) // get the json payload and pass it along
+                  .then(result => {
+                    let signalIds = [];
+                    if (signalCount > 0) {
+                      signalIds = result.records.map(record => record.id);
+                    }
+                    return signalIds;
+                  });
+              } else {
+                return Promise.resolve([]);
+              }
+            })
+            .then(signalIds => {
+              console.log('about to act with: ' + knackHttpMethod);
             return fetch(knackProjectEndpointUrl, {
-              // fetch returns a Promise for the next step
               method: knackHttpMethod,
               headers: buildHeaders,
-              body: buildBody(),
+                body: buildBody(signalIds),
             });
+            });
+
+
+
+
           }
         })
         .then(response => response.json())
