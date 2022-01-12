@@ -330,9 +330,12 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
         if(str(user_email).lower().endswith("@austintexas.gov")):
             try:
                 cognito_response_sso = cognito_client.admin_delete_user(
-                                UserPoolId=USER_POOL, Username=f"azuread_{user_email}"
-                            )
-            except:
+                    UserPoolId=USER_POOL, Username=f"azuread_{user_email}"
+                )
+            except botocore.errorfactory.UserNotFoundException as e:
+                cognito_response_sso = {
+                            "success": "azure account email not found, skipping"
+                }
                 pass
         
         delete_claims(user_email=user_email)
