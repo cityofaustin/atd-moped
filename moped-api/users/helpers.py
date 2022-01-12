@@ -155,6 +155,14 @@ def db_update_user(user_profile: dict, search_by_email: bool = False) -> dict:
         }
     }
 
+    # Search by email if provided the flag
+    if search_by_email:
+        search_logic = {
+            "email": {
+                "_eq": user_profile["email"]
+            }
+        }
+
     response = run_query(
         query=GRAPHQL_UPDATE_USER,
         variables={
