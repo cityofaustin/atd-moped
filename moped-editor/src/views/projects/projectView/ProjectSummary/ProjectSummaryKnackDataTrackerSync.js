@@ -168,9 +168,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // creating new knack record execution branch
       project.currentKnackState = {};
 
-      // nb: need to use conditional checks to see if we're going to need to fetch signalIds
-      // pattern to follow: https://vijayt.com/post/conditional-promise-chaining-pattern-better-code/
-
       fetch(
         knackSignalEndpointUrl + "?filters=" + buildSignalIdFilters(project),
         {
