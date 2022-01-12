@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Link, Typography } from "@material-ui/core";
+import { Box, Grid, Link, Typography, Button } from "@material-ui/core";
 import { OpenInNew, Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
 
@@ -284,6 +284,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
             classes={classes}
             spanClassName={""}
           />
+        </Box>
+        <Box>
+          <Button
+            onClick={() => {
+              handleSync();
+            }}
+          >
+            Resync
+          </Button>
         </Box>
       </Grid>
     </>
