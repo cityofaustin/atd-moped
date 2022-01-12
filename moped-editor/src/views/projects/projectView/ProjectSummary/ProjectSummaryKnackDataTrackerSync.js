@@ -168,22 +168,35 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // creating new knack record execution branch
       project.currentKnackState = {};
 
-      fetch(
-        knackSignalEndpointUrl + "?filters=" + buildSignalIdFilters(project),
-        {
-          // Fetch will return a promise, which we'll use to start a chain of .then() steps
-          method: "GET",
-          headers: buildHeaders,
-        }
-      )
-        .then(response => response.json()) // get the json payload and pass it along
-        .then(result => {
-          const signalCount = countSignalsInProject(project);
-          let signalIds = [];
+      const checkSignalIds = (project) => {
+        return Promise.resolve(countSignalsInProject(project));
+      };
+
+      checkSignalIds(project)
+        .then(signalCount => {
           if (signalCount > 0) {
-            signalIds = result.records.map(record => record.id);
+            return fetch(
+              knackSignalEndpointUrl +
+                "?filters=" +
+                buildSignalIdFilters(project),
+              {
+                // Fetch will return a promise, which we'll use to start a chain of .then() steps
+                method: "GET",
+                headers: buildHeaders,
+              }
+            )
+              .then(response => response.json()) // get the json payload and pass it along
+              .then(result => {
+                const signalCount = countSignalsInProject(project);
+                let signalIds = [];
+                if (signalCount > 0) {
+                  signalIds = result.records.map(record => record.id);
+                }
+                return signalIds;
+              });
+          } else {
+            return Promise.resolve([]);
           }
-          return signalIds;
         })
         .then(signalIds => {
           return fetch(knackProjectEndpointUrl, {
