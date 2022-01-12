@@ -75,13 +75,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
       }
     });
 
-    console.log(signalIds);
     if (signalIds.length > 0) {
-      // field_3861
+      // field_3861 is the signalId connection field to the signals table
       body["field_3861"] = signalIds;
     }
-
-    console.log(body);
 
     return JSON.stringify(body);
   };
@@ -189,10 +186,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             body: buildBody(signalIds),
           });
         })
-        .then(response => {
-          //console.log(response);
-          return response.json()
-       }) // get the json payload and pass it along
+        .then(response => response.json())
         .then(result => {
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
