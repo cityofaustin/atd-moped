@@ -1168,24 +1168,6 @@ SELECT pg_catalog.setval('public.moped_project_roles_project_role_id_seq', 13, t
 
 
 --
--- TOC entry 6141 (class 0 OID 0)
--- Dependencies: 311
--- Name: moped_status_history_project_status_history_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_status_history_project_status_history_id_seq', 6, true);
-
-
---
--- TOC entry 6142 (class 0 OID 0)
--- Dependencies: 312
--- Name: moped_status_notes_status_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_status_notes_status_id_seq', 1, false);
-
-
---
 -- TOC entry 6143 (class 0 OID 0)
 -- Dependencies: 313
 -- Name: moped_status_status_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
