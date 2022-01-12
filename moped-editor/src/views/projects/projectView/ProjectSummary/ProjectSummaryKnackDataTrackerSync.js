@@ -180,7 +180,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
         })
         .then(signalIds => {
           return fetch(knackProjectEndpointUrl, {
-            // Fetch will return a promise, which we'll use to start a chain of .then() steps
             method: knackHttpMethod,
             headers: buildHeaders,
             body: buildBody(signalIds),
