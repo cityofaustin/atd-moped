@@ -215,6 +215,8 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         # Remove date_added, if provided, so we don't reset this field
         request.json.pop('date_added', None)
+        status_id = request.json.get("status_id", 0)
+        
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
