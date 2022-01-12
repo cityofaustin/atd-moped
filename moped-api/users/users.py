@@ -376,7 +376,7 @@ def user_update_password(id: str, claims: list) -> (Response, int):
             if e.response["Error"]["Code"] == "InvalidPasswordException":
                 return jsonify(e.response), 400  # Bad request
             else:
-                return jsonify(e.response), 500  # Internal Server Error
+                return jsonify(e.response), 400  # Internal Server Error
 
         response = {
             "success": {
