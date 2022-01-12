@@ -325,10 +325,13 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
         cognito_response = cognito_client.admin_delete_user(
             UserPoolId=USER_POOL, Username=id
         )
-        # Delete sso access
-        cognito_response_sso = cognito_client.admin_delete_user(
-            UserPoolId=USER_POOL, Username=f"azuread_{user_email}"
-        )
+
+        # Delete sso access, if the account exists
+        if(str(user_email).lower().endswith("@austintexas.gov")):
+            cognito_response_sso = cognito_client.admin_delete_user(
+                UserPoolId=USER_POOL, Username=f"azuread_{user_email}"
+            )
+
         delete_claims(user_email=user_email)
 
         response = {
