@@ -217,6 +217,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         request.json.pop('date_added', None)
         status_id = request.json.get("status_id", 0)
         email = request.json.get("email", None)
+        password = request.json.get("password", None)
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json,
