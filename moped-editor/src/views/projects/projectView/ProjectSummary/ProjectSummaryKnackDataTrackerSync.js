@@ -48,7 +48,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
   let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
     process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW,
-    project?.knackProjectId
+    project?.knack_project_id
   );
 
   let knackSignalEndpointUrl =
