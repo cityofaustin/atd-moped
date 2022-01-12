@@ -137,38 +137,38 @@ const ProjectSummaryKnackDataTrackerSync = ({
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
 
             return countSignalsInProject(project)
-            .then(signalCount => {
-              if (signalCount > 0) {
-                return fetch(
-                  knackSignalEndpointUrl +
-                    "?filters=" +
-                    buildSignalIdFilters(project),
-                  {
-                    // Fetch will return a promise, which we'll use to start a chain of .then() steps
-                    method: "GET",
-                    headers: buildHeaders,
-                  }
-                )
-                  .then(response => response.json()) // get the json payload and pass it along
-                  .then(result => {
-                    let signalIds = [];
-                    if (signalCount > 0) {
-                      signalIds = result.records.map(record => record.id);
+              .then(signalCount => {
+                if (signalCount > 0) {
+                  return fetch(
+                    knackSignalEndpointUrl +
+                      "?filters=" +
+                      buildSignalIdFilters(project),
+                    {
+                      // Fetch will return a promise, which we'll use to start a chain of .then() steps
+                      method: "GET",
+                      headers: buildHeaders,
                     }
-                    return signalIds;
-                  });
-              } else {
-                return Promise.resolve([]);
-              }
-            })
-            .then(signalIds => {
-              console.log('about to act with: ' + knackHttpMethod);
-              return fetch(knackProjectEndpointUrl, {
-                method: knackHttpMethod,
-                headers: buildHeaders,
-                body: buildBody(signalIds),
+                  )
+                    .then(response => response.json()) // get the json payload and pass it along
+                    .then(result => {
+                      let signalIds = [];
+                      if (signalCount > 0) {
+                        signalIds = result.records.map(record => record.id);
+                      }
+                      return signalIds;
+                    });
+                } else {
+                  return Promise.resolve([]);
+                }
+              })
+              .then(signalIds => {
+                console.log("about to act with: " + knackHttpMethod);
+                return fetch(knackProjectEndpointUrl, {
+                  method: knackHttpMethod,
+                  headers: buildHeaders,
+                  body: buildBody(signalIds),
+                });
               });
-            });
           }
         })
         .then(response => response.json())
