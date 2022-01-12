@@ -61,7 +61,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * because if you update the project number field, even with the same, extant number, Knack returns an error.
    * @returns string
    */
-  const buildBody = () => {
+  const buildBody = (signalIds) => {
     let body = {};
 
     const field_map = {
@@ -70,12 +70,19 @@ const ProjectSummaryKnackDataTrackerSync = ({
       field_4000: "current_status",
     };
 
-
     Object.keys(field_map).forEach(element => {
       if (project.currentKnackState[element] !== project[field_map[element]]) {
         body[element] = project[field_map[element]];
       }
     });
+
+    console.log(signalIds);
+    if (signalIds.length > 0) {
+      // field_3861
+      body['field_3861'] = signalIds;
+    }
+
+    console.log(body);
 
     return JSON.stringify(body);
   };
@@ -162,8 +169,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // nb: need to use conditional checks to see if we're going to need to fetch signalIds
       // pattern to follow: https://vijayt.com/post/conditional-promise-chaining-pattern-better-code/
 
-      let completeUrl = knackSignalEndpointUrl + '?filters=' + buildSignalIdFilters(project);
-
       fetch(knackSignalEndpointUrl + '?filters=' + buildSignalIdFilters(project), {
         // Fetch will return a promise, which we'll use to start a chain of .then() steps
         method: 'GET',
@@ -171,14 +176,17 @@ const ProjectSummaryKnackDataTrackerSync = ({
       })
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
-          console.log(result);
+          const signalIds = result.records.map(record => record.id)
+          return signalIds;
         })
-        .then(fetch(knackProjectEndpointUrl, {
-          // Fetch will return a promise, which we'll use to start a chain of .then() steps
-          method: knackHttpMethod,
-          headers: buildHeaders,
-          body: buildBody(),
-        }))
+        .then(signalIds => {
+          //console.log(signalIds);
+          fetch(knackProjectEndpointUrl, {
+            // Fetch will return a promise, which we'll use to start a chain of .then() steps
+            method: knackHttpMethod,
+            headers: buildHeaders,
+            body: buildBody(signalIds),
+          })})
         .then(response => response.json()) // get the json payload and pass it along
         .then(result => {
           if (result.errors) {
