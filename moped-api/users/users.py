@@ -263,7 +263,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                     UserAttributes=[
                         {"Name": "email", "Value": email},
                         {"Name": "email_verified", "Value": "true"},
-                   ],
+                    ],
                 )
                 # Then  we must set the user password
                 cognito_username = cognito_response["User"]["Username"]
