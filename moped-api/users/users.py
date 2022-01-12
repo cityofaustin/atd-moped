@@ -341,6 +341,8 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
             cognito_response_sso = {
                 "success": "sso deletion skipped, user not government"
             }
+
+        # Now delete the claims in DynamoDB
         delete_claims(user_email=user_email)
 
         response = {
