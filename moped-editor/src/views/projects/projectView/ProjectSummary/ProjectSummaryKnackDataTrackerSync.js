@@ -133,11 +133,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
             // Reject the promise to fall through to the .catch() method
             return Promise.reject(result);
           } else {
-
-
-
-
-
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
 
@@ -174,10 +169,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
                 body: buildBody(signalIds),
               });
             });
-
-
-
-
           }
         })
         .then(response => response.json())
