@@ -168,11 +168,11 @@ const ProjectSummaryKnackDataTrackerSync = ({
             })
             .then(signalIds => {
               console.log('about to act with: ' + knackHttpMethod);
-            return fetch(knackProjectEndpointUrl, {
-              method: knackHttpMethod,
-              headers: buildHeaders,
+              return fetch(knackProjectEndpointUrl, {
+                method: knackHttpMethod,
+                headers: buildHeaders,
                 body: buildBody(signalIds),
-            });
+              });
             });
 
 
@@ -243,6 +243,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
         })
         .then(response => response.json())
         .then(result => {
+          // I think this may need to be result?.errors
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
             // Reject this promise so we fall through to the .catch() method
