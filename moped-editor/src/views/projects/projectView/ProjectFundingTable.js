@@ -39,6 +39,54 @@ import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
+const useStyles = makeStyles(theme => ({
+  fieldGridItem: {
+    margin: theme.spacing(2),
+  },
+  linkIcon: {
+    fontSize: "1rem",
+  },
+  syncLinkIcon: {
+    fontSize: "1.2rem",
+  },
+  editIcon: {
+    cursor: "pointer",
+    margin: "0 .5rem",
+    fontSize: "20px",
+  },
+  editIconConfirm: {
+    cursor: "pointer",
+    margin: ".25rem 0",
+    fontSize: "24px",
+  },
+  fieldLabel: {
+    width: "100%",
+    color: theme.palette.text.secondary,
+    fontSize: ".8rem",
+  },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+  },
+  fieldLabelTextSpan: {
+    borderBottom: "1px dashed",
+    borderBottomColor: theme.palette.text.secondary,
+  },
+  fieldLabelLink: {
+    width: "calc(100% - 2rem)",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
+  fieldBox: {
+    width: "100%",
+  },
+  fieldBoxTypography: {
+    width: "100%",
+  },
+  fieldSelectItem: {
+    width: "calc(100% - 3rem)",
+  },
+}));
+
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
