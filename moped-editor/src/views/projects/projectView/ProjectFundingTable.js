@@ -37,6 +37,7 @@ import {
 
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
+import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
