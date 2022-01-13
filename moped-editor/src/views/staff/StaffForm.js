@@ -247,6 +247,18 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   };
 
   /**
+   * Activate User
+   */
+  const handleActivateUser = () => {
+    setModalState({
+      open: true,
+      title: "Activate user?",
+      message: "Do you want to activate this user?",
+      action: handleActivateConfirm,
+    });
+  };
+
+  /**
    * Clears the API errors window and closes it
    */
   const clearApiErrors = () => {
