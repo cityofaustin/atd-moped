@@ -435,7 +435,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   variant="contained"
                   onClick={() => setIsDeleteModalOpen(true)}
                 >
-                  Delete User
+                  Inactivate User
                 </Button>
               )}
             </>
