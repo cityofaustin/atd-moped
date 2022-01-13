@@ -420,45 +420,52 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Reset
                 </Button>
               )}
-              {editFormData && (
+              {editFormData && userStatusId === "1" && (
                 <Button
-                  className={classes.formDeleteButton}
+                  className={classes.formButton}
                   color="secondary"
                   variant="contained"
-                  onClick={() => setIsDeleteModalOpen(true)}
+                  onClick={handleDeactivateUser}
                 >
                   Inactivate User
+                </Button>
+              )}
+              {editFormData && userStatusId === "0" && (
+                <Button
+                  className={clsx(classes.formButton, classes.formButtonGreen)}
+                  variant="contained"
+                  onClick={handleActivateUser}
+                >
+                  Activate User
                 </Button>
               )}
             </>
           )}
           <Dialog
-            open={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
+            open={modalState?.open}
+            onClose={handleCloseModal}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Inactivate this user?"}
+              {modalState.title}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure that you want to inactivate this user?
+                {modalState.message}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button
-                onClick={() => setIsDeleteModalOpen(false)}
-                color="primary"
-                autoFocus
-              >
-                No
-              </Button>
+              {!modalState?.hideCloseButton && (
+                <Button onClick={handleCloseModal} color="primary" autoFocus>
+                  No
+                </Button>
+              )}
               {userApiLoading ? (
                 <CircularProgress />
               ) : (
-                <Button onClick={handleDeleteConfirm} color="primary">
-                  Yes
+                <Button onClick={modalState.action} color="primary">
+                  {modalState.actionButtonLabel || "Yes"}
                 </Button>
               )}
             </DialogActions>
