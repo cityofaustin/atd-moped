@@ -123,6 +123,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   } = useUserApi();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [modalState, setModalState] = useState(initialModalState);
   const [isApiErrorOpen, setIsApiErrorOpen] = useState(false);
 
   const {
