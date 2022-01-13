@@ -33,6 +33,11 @@ query get_all_projects {
     project_name
     current_status
     knack_project_id
+    moped_proj_features 
+      {
+        feature_id
+        location
+      }
   }
 }
 """
