@@ -211,7 +211,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const handleDeleteConfirm = () => {
     const requestPath = "/users/" + userCognitoId;
     const deleteCallback = () => {
-      setIsDeleteModalOpen(false);
+      handleCloseModal();
       navigate("/moped/staff/");
     };
 
