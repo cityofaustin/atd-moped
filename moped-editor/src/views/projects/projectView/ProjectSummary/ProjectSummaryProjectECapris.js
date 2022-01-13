@@ -78,7 +78,7 @@ const ProjectSummaryProjectECapris = ({
    * Resets the project website to original value
    */
   const handleProjectECaprisClose = () => {
-    setECapris(originalECaprisValue);
+    setECapris(originalValue);
     setEditMode(false);
   };
 
