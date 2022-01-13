@@ -56,6 +56,8 @@ const ProjectSummaryProjectECapris = ({
   refetch,
   classes,
   snackbarHandle,
+  noWrapper,
+  hideHeader,
 }) => {
   const originalECaprisValue =
     data?.moped_project?.[0]?.ecapris_subproject_id ?? null;
