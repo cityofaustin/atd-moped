@@ -384,25 +384,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
-          <FormControl component="fieldset">
-            <FormLabel id="statuses-label">Status</FormLabel>
-            <Controller
-              as={
-                <RadioGroup aria-label="statuses" name="status_id">
-                  {statuses.map(status => (
-                    <FormControlLabel
-                      key={status.value}
-                      value={status.value}
-                      control={<Radio />}
-                      label={status.name}
-                    />
-                  ))}
-                </RadioGroup>
-              }
-              name={"status_id"}
-              control={control}
-            />
-          </FormControl>
+          &nbsp;
         </Grid>
         <Grid item xs={12} md={6}>
           {!apiErrors && (userApiLoading || isSubmitting) ? (
