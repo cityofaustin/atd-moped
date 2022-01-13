@@ -343,9 +343,14 @@ const ProjectFundingTable = () => {
             {eCaprisId && (
               <Typography variant="h5" color="textPrimary">
                 eCAPRIS subproject ID:{" "}
-                <ExternalLink
-                  text={eCaprisId}
-                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisId}`}
+                <ProjectSummaryProjectECapris
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
+                  classes={classes}
+                  hideHeader
+                  noWrapper
                 />
               </Typography>
             )}
