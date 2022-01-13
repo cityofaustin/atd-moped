@@ -223,6 +223,30 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   };
 
   /**
+   * Handle Activate User Confirm
+   */
+  const handleActivateConfirm = () => {
+    const passwordValue = getValues("password");
+    if (
+      passwordValue === null ||
+      passwordValue.length === 0 ||
+      passwordValue === ""
+    ) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: "The password is required when activating a user.",
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else {
+      setValue("status_id", "1");
+      formEl?.current && formEl.current.submit();
+    }
+  };
+
+  /**
    * Clears the API errors window and closes it
    */
   const clearApiErrors = () => {
