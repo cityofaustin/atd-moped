@@ -63,7 +63,7 @@ const ProjectSummaryProjectECapris = ({
     data?.moped_project?.[0]?.ecapris_subproject_id ?? null
   );
   const [editMode, setEditMode] = useState(false);
-  const [eCapris, setECapris] = useState(originalECaprisValue);
+  const [eCapris, setECapris] = useState(originalValue);
 
   const [updateProjectECapris] = useMutation(
     PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID
