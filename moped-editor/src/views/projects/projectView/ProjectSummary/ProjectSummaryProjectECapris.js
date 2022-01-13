@@ -59,9 +59,9 @@ const ProjectSummaryProjectECapris = ({
   noWrapper,
   hideHeader,
 }) => {
-  const originalECaprisValue =
-    data?.moped_project?.[0]?.ecapris_subproject_id ?? null;
-
+  const [originalValue, setOriginalValue] = useState(
+    data?.moped_project?.[0]?.ecapris_subproject_id ?? null
+  );
   const [editMode, setEditMode] = useState(false);
   const [eCapris, setECapris] = useState(originalECaprisValue);
 
