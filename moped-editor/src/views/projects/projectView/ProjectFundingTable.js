@@ -318,33 +318,29 @@ const ProjectFundingTable = () => {
         }}
         editable={{
           onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                let newFundingItem = newData;
-                newFundingItem.project_id = projectId;
-                newFundingItem.added_by = getDatabaseId(user);
-
-                addProjectFunding({
-                  variables: {
-                    objects: newData,
-                  },
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem adding funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            addProjectFunding({
+              variables: {
+                objects: {
+                  ...newData,
+                  project_id: projectId,
+                  added_by: getDatabaseId(user),
+                  funding_status_id: 1,
+                },
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem adding funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+              }),
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
