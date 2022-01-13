@@ -162,6 +162,7 @@ const ProjectView = () => {
   };
 
   /**
+   * @function forceUpdate - Utilized to force a re-render of the entire component
    * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
