@@ -140,6 +140,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     errors,
     control,
     setValue,
+    getValues,
     formState,
     reset,
   } = useForm({
