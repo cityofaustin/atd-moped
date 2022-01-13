@@ -153,12 +153,18 @@ const ProjectSummaryProjectECapris = ({
           <ProjectSummaryLabel
             text={
               (isValidNumber(eCapris) && (
-                <Link
-                  href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-                  target={"_blank"}
-                >
-                  {eCapris} <OpenInNew className={classes.linkIcon} />
-                </Link>
+                <>
+                  <Typography variant={"span"} color={"primary"}>
+                    {eCapris}{" "}
+                  </Typography>
+                  <Link
+                    rel="noopener noreferrer"
+                    href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                    target={"_blank"}
+                  >
+                    <OpenInNew className={classes.linkIcon} />
+                  </Link>
+                </>
               )) ||
               "None"
             }
