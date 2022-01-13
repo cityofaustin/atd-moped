@@ -378,29 +378,24 @@ const ProjectFundingTable = () => {
               });
           },
           onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                deleteProjectFunding({
-                  variables: {
-                    proj_funding_id: oldData.proj_funding_id,
-                  },
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem deleting funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            deleteProjectFunding({
+              variables: {
+                proj_funding_id: oldData.proj_funding_id,
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem deleting funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+              }),
         }}
       />
       <Snackbar
