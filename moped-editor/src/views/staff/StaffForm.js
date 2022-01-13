@@ -447,11 +447,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Delete this user?"}
+              {"Inactivate this user?"}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure that you want to delete this user?
+                Are you sure that you want to inactivate this user?
               </DialogContentText>
             </DialogContent>
             <DialogActions>
