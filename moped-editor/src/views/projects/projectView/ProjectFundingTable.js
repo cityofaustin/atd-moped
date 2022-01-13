@@ -220,7 +220,6 @@ const ProjectFundingTable = () => {
           data={data.moped_fund_status}
         />
       ),
-      validate: rowData => (rowData.funding_status_id > 0 ? "" : "Required"),
     },
     {
       title: "FDU",
