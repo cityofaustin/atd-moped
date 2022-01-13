@@ -28,6 +28,7 @@ import {
   RadioGroup,
   Select,
 } from "@material-ui/core";
+import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   formSelect: {
@@ -35,11 +36,13 @@ const useStyles = makeStyles(theme => ({
   },
   formButton: {
     margin: theme.spacing(1),
-  },
-  formDeleteButton: {
-    margin: theme.spacing(1),
-    backgroundColor: "red",
     color: "white",
+  },
+  formButtonGreen: {
+    backgroundColor: theme.palette.success.main,
+    "&:hover": {
+      backgroundColor: theme.palette.success.dark,
+    },
   },
   hiddenTextField: {
     display: "none",
