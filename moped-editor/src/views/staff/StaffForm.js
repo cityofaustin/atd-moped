@@ -107,6 +107,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
+  const formEl = useRef();
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and
