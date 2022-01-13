@@ -65,7 +65,11 @@ const ProjectSummaryProjectECapris = ({
     const validNumber = isValidNumber(eCapris);
 
     if (!isEmpty && !validNumber) {
-      snackbarHandle(true, `Invalid eCapris value: ${eCapris} must be numeric.`, "error");
+      snackbarHandle(
+        true,
+        `Invalid eCapris value: ${eCapris} must be numeric.`,
+        "error"
+      );
       return;
     }
 
