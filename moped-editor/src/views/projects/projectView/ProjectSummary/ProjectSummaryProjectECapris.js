@@ -142,10 +142,11 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>
-        eCAPRIS Subproject ID
-      </Typography>
+    <WrapperComponent
+      classes={classes}
+      noWrapper={noWrapper}
+      hideHeader={hideHeader}
+    >
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -198,7 +199,7 @@ const ProjectSummaryProjectECapris = ({
           />
         )}
       </Box>
-    </Grid>
+    </WrapperComponent>
   );
 };
 
