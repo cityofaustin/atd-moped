@@ -257,6 +257,18 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       action: handleActivateConfirm,
     });
   };
+  
+  /**
+   * Handles the deactivation of user
+   */
+  const handleDeactivateUser = () => {
+    setModalState({
+      open: true,
+      title: "Inactivate this user?",
+      message: "Are you sure that you want to inactivate this user?",
+      action: handleDeleteConfirm,
+    });
+  };
 
   /**
    * Clears the API errors window and closes it
