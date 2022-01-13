@@ -146,6 +146,14 @@ const ProjectFundingTable = () => {
     ];
   };
 
+  const snackbarHandle = (open = true, message, severity = "success") => {
+    setSnackbarState({
+      open: open,
+      message: message,
+      severity: severity,
+    });
+  };
+
   /**
    * Lookup object formatted from GraphQL query data response into the
    * shape that <MaterialTable> expects
