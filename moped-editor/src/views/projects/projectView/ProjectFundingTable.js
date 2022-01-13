@@ -26,7 +26,6 @@ import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ExternalLink from "../../../components/ExternalLink";
 
 import {
   FUNDING_QUERY,
