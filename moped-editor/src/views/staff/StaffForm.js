@@ -64,11 +64,6 @@ const roles = [
   { value: "moped-admin", name: "Admin" },
 ];
 
-const statuses = [
-  { value: "1", name: "Active" },
-  { value: "0", name: "Inactive" },
-];
-
 // Pass editFormData to conditionally validate if adding or editing
 const staffValidationSchema = isNewUser =>
   yup.object().shape({
