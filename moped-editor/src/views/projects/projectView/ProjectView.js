@@ -170,7 +170,6 @@ const ProjectView = () => {
    * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
-  const [, forceUpdate] = useReducer(x => x + 1, 0);
   const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
