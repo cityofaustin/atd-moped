@@ -18,6 +18,29 @@ import { useMutation } from "@apollo/client";
 import { OpenInNew } from "@material-ui/icons";
 
 /**
+ * Custom wrapper for the eCapris edit field
+ * @param {JSX.Element} children - Any children
+ * @param {boolean} noWrapper - If false, it provides a null wrapper
+ * @param {boolean} hideHeader - If false, it hides the subproject id header
+ * @param {Object} classes - Class object containing styles
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const WrapperComponent = ({ children, noWrapper, hideHeader, classes }) =>
+  noWrapper ? (
+    <>{children}</>
+  ) : (
+    <Grid item xs={12} className={classes.fieldGridItem}>
+      {!hideHeader && (
+        <Typography className={classes.fieldLabel}>
+          eCAPRIS Subproject ID
+        </Typography>
+      )}
+      {children}
+    </Grid>
+  );
+
+/**
  * ProjectSummaryProjectECapris Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
