@@ -257,7 +257,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       action: handleActivateConfirm,
     });
   };
-  
+
   /**
    * Handles the deactivation of user
    */
@@ -268,6 +268,13 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       message: "Are you sure that you want to inactivate this user?",
       action: handleDeleteConfirm,
     });
+  };
+  
+  /**
+   * Closes the modal
+   */
+  const handleCloseModal = () => {
+    setModalState(initialModalState);
   };
 
   /**
