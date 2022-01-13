@@ -230,11 +230,6 @@ const ProjectFundingTable = () => {
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
       type: "currency",
-      validate: row => {
-        // test string input is a normal integer.
-        // https://stackoverflow.com/questions/10834796/validate-that-a-string-is-a-positive-integer
-        return /^\+?(0|[1-9]\d*)$/.test(row.funding_amount);
-      },
     },
   ];
 
