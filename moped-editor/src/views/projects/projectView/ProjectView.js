@@ -208,7 +208,8 @@ const ProjectView = () => {
    * @param {int} newTab - The number of the tab
    */
   const handleChange = (event, newTab) => {
-    if (newTab === 0) refetch();
+    // While the refetch works, it doesn't force a component re-render. For now we use forceUpdate...
+    if (newTab === 0) refetch().then(() => forceUpdate());
     setActiveTab(newTab);
     history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
   };
