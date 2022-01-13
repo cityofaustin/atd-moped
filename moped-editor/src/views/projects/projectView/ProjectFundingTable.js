@@ -46,6 +46,8 @@ const ProjectFundingTable = () => {
    * */
   const addActionRef = React.useRef();
 
+  const classes = useStyles();
+
   /**
    * User Hook
    * @type {object} CognitoUserSession
