@@ -341,45 +341,42 @@ const ProjectFundingTable = () => {
                   severity: "error",
                 });
               }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                let updateProjectFundingData = newData;
+          onRowUpdate: (newData, oldData) => {
+            const updateProjectFundingData = newData;
 
-                // Remove unexpected variables
-                delete updateProjectFundingData.__typename;
-                delete updateProjectFundingData.added_by;
-                delete updateProjectFundingData.date_added;
-                // Format edited funding values to number value
-                updateProjectFundingData.funding_amount = Number(
-                  newData.funding_amount
-                );
-                // add fallback of empty strings instead of null value
-                updateProjectFundingData.fund_dept_unit =
-                  newData.fund_dept_unit || "";
-                updateProjectFundingData.funding_description =
-                  newData.funding_description || "";
-                updateProjectFundingData.funding_program_id =
-                  newData.funding_program_id || 0;
+            // Remove unexpected variables
+            delete updateProjectFundingData.__typename;
+            delete updateProjectFundingData.added_by;
+            delete updateProjectFundingData.date_added;
+            // Format edited funding values to number value
+            updateProjectFundingData.funding_amount = Number(
+              newData.funding_amount
+            );
+            // add fallback of empty strings instead of null value
+            updateProjectFundingData.fund_dept_unit =
+              newData.fund_dept_unit || "";
+            updateProjectFundingData.funding_description =
+              newData.funding_description || "";
+            updateProjectFundingData.funding_program_id =
+              newData.funding_program_id || 0;
 
-                updateProjectFunding({
-                  variables: updateProjectFundingData,
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem updating funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            return updateProjectFunding({
+              variables: updateProjectFundingData,
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem updating funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+              });
+          },
           onRowDelete: oldData =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
