@@ -51,6 +51,15 @@ const ProjectSummaryContractor = ({
     setEditMode(false);
   };
 
+  /**
+  /**
+   * Updates the state of the contractor value
+   * @param {Object} e - Event object
+   */
+  const handleProjectContractorChange = e => {
+    setContractor(e.target.value);
+  };
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>
