@@ -103,6 +103,10 @@ for moped_project in moped_data["data"]["moped_project"]:
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
 
+    if not moped_signals == knack_signals:
+        update_needed = True
+        knack_data[KNACK_OBJECT_SIGNALS] = list(moped_signals)
+        
     if update_needed:
         logger.debug(
             f"""Need to update knack for Moped project {moped_project["project_id"]}"""
