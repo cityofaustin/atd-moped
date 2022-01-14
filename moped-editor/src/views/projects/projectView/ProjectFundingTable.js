@@ -355,6 +355,7 @@ const ProjectFundingTable = () => {
               // else add "Add ..." button
               return (
                 <Button
+                  className={classes.fundingButton}
                   variant="contained"
                   color="primary"
                   size="large"
