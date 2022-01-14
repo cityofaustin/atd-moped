@@ -99,6 +99,14 @@ const ProjectSummaryProjectDO = ({
     setEditMode(false);
   };
 
+  /**
+   * Updates the state of the purchase order number value
+   * @param {Object} e - Event object
+   */
+  const handleProjectPurchaseOrderNumberChange = e => {
+    setProjectPurchaseOrderNumber(e.target.value);
+  };
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>DO #</Typography>
