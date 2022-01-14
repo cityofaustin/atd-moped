@@ -432,14 +432,16 @@ const ProjectFundingTable = () => {
                   />
                 </li>
               ))}
-              <li key={`add-task-order`}>
-                <Tooltip title="Add New Task Order">
-                  <ControlPointIcon
-                    className={classes.editIconFunding}
-                    onClick={handleAddTaskOrder}
-                  />
-                </Tooltip>
-              </li>
+              {!addTaskOrderMode && (
+                <li key={`add-task-order`}>
+                  <Tooltip title="Add New Task Order">
+                    <ControlPointIcon
+                      className={classes.editIconFunding}
+                      onClick={handleAddTaskOrder}
+                    />
+                  </Tooltip>
+                </li>
+              )}
               {addTaskOrderMode && (
                 <TaskOrderAutocomplete
                   props={{ onChange: handleTaskOrderOnChange }}
