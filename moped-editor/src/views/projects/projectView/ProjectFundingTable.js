@@ -421,6 +421,14 @@ const ProjectFundingTable = () => {
                   />
                 </li>
               ))}
+              <li key={`add-task-order`}>
+                <Tooltip title="Add New Task Order">
+                  <ControlPointIcon
+                    className={classes.editIconFunding}
+                    onClick={handleAddTaskOrder}
+                  />
+                </Tooltip>
+              </li>
             </Box>
           </div>
         }
