@@ -148,7 +148,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     reset,
   } = useForm({
     defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema(isNewUser)),
+    resolver: yupResolver(staffValidationSchema(isNewUser, userStatusId)),
   });
 
   const { isSubmitting, dirtyFields } = formState;
