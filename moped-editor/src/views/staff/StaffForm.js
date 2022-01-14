@@ -107,7 +107,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
-  const formEl = useRef();
+  const submitButtonEl = useRef();
   const userStatusId = editFormData?.status_id ?? -1;
 
   /**
