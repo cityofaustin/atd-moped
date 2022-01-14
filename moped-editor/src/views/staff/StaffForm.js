@@ -523,7 +523,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Reset
                 </Button>
               )}
-              {editFormData && userStatusId === "1" && (
+              {editFormData && userStatusId === 1 && (
                 <Button
                   className={classes.formButton}
                   color="secondary"
