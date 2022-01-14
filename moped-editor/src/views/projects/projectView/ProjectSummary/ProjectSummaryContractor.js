@@ -8,7 +8,6 @@ import {
   PROJECT_CLEAR_CONTACTOR,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@material-ui/icons";
 
 /**
  * ProjectSummaryContractor Component
