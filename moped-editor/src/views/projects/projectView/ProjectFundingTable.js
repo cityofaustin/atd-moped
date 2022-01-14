@@ -161,6 +161,12 @@ const ProjectFundingTable = () => {
     ];
   };
 
+  /**
+   * An array of objects that contain the task order data
+   * @type {Array[Object]}
+   */
+  const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
+
   const snackbarHandle = (open = true, message, severity = "success") => {
     setSnackbarState({
       open: open,
