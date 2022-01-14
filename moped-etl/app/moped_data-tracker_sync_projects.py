@@ -42,13 +42,21 @@ query get_all_projects {
 }
 """
 
-# Take in a knack record and return the Knack internal IDs of any signals therein
+# Build a set of signal IDs connected to a knack projet record
 def build_signal_set_from_knack_record(record):
     signals = set()
     if record['Signals']: # KnackPy will have None in place if there are no signals
         for signal in record['Signals']:
             signals.add(signal['id'])
     return signals
+
+# Build a set of signals IDs associated to a moped project
+def build_signal_set_from_moped_record(record):
+    signals = set()
+    for feature in record['moped_proj_features']:
+        signals.add(feature['location']['properties']['id'])
+    return signals
+
 
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
