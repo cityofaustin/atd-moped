@@ -37,7 +37,6 @@ const useStyles = makeStyles(theme => ({
   },
   syncLinkIcon: {
     fontSize: "1.2rem",
-
   },
   editIcon: {
     cursor: "pointer",
