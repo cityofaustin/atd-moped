@@ -901,6 +901,17 @@ export const PROJECT_UPDATE_CONTACTOR = gql`
   }
 `;
 
+export const PROJECT_CLEAR_CONTACTOR = gql`
+  mutation UpdateProjectContractor($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { contractor: null }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 /**
  * Record the ID which Knack assigned a project when pushed to Data Tracker
  */
