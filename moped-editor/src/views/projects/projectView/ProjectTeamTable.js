@@ -229,16 +229,19 @@ const ProjectTeamTable = ({
     {
       title: "Notes",
       field: "notes",
-      editComponent: props => (
-        <TextField
-          id="notes"
-          name="notes"
-          multiline
-          inputProps={{ maxLength: 125 }}
-          value={props.value ?? ""}
-          onChange={e => props.onChange(e.target.value)}
-        />
-      ),
+      editComponent: props => {
+        const val = props.value ?? "";
+        return (
+          <TextField
+            id="notes"
+            name="notes"
+            multiline
+            inputProps={{ maxLength: 125 }}
+            value={val && val !== "null" ? val : ""}
+            onChange={e => props.onChange(e.target.value)}
+          />
+        );
+      },
     },
   ];
 
