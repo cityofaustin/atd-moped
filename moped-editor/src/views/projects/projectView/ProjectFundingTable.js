@@ -175,6 +175,12 @@ const ProjectFundingTable = () => {
     debugger;
   };
 
+  /**
+   *
+   * @param {boolean} open - The new state of open
+   * @param {String} message - The message for the snackbar
+   * @param {String} severity - The severity color of the snackbar
+   */
   const snackbarHandle = (open = true, message, severity = "success") => {
     setSnackbarState({
       open: open,
