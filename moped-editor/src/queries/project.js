@@ -926,6 +926,17 @@ export const PROJECT_UPDATE_PURCHASE_ORDER_NUMBER = gql`
   }
 `;
 
+export const PROJECT_CLEAR_PURCHASE_ORDER_NUMBER = gql`
+  mutation UpdateProjectOrderNumber($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { purchase_order_number: null }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 /**
  * Record the ID which Knack assigned a project when pushed to Data Tracker
  */
