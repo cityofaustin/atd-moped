@@ -84,7 +84,7 @@ const staffValidationSchema = (isNewUser, userStatusId) =>
       .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
-      is: () => isNewUser,
+      is: () => isNewUser || userStatusId !== 1,
       then: yup.string().required(),
       otherwise: yup.string(),
     }),
