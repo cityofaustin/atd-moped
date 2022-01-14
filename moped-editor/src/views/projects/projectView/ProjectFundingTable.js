@@ -440,6 +440,11 @@ const ProjectFundingTable = () => {
                   />
                 </Tooltip>
               </li>
+              {addTaskOrderMode && (
+                <TaskOrderAutocomplete
+                  props={{ onChange: handleTaskOrderOnChange }}
+                />
+              )}
             </Box>
           </div>
         }
