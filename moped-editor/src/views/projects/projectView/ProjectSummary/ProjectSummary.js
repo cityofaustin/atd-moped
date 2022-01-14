@@ -26,6 +26,7 @@ import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTracker
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
+import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
