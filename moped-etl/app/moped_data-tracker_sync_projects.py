@@ -42,6 +42,14 @@ query get_all_projects {
 }
 """
 
+def build_signal_list_from_record(record):
+    signals = []
+    if record['Signals']: # KnackPy will have None in place if there are no signals
+        for signal in knack_records[key]['Signals']:
+            signals.append(signal['id'])
+    print(signals)
+    return signals
+
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
 logger.debug(moped_data)
