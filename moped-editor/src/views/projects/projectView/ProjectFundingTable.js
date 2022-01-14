@@ -463,6 +463,13 @@ const ProjectFundingTable = () => {
                   >
                     check
                   </Icon>
+                  <Icon
+                    className={classes.editIconConfirm}
+                    onClick={handleNewTaskOrderCancel}
+                  >
+                    close
+                  </Icon>
+                </Box>
               )}
             </Box>
           </div>
