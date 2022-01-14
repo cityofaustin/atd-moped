@@ -533,7 +533,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Inactivate User
                 </Button>
               )}
-              {editFormData && userStatusId === "0" && (
+              {editFormData && userStatusId === 0 && (
                 <Button
                   className={clsx(classes.formButton, classes.formButtonGreen)}
                   variant="contained"
