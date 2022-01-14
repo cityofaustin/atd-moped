@@ -504,7 +504,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <>
               <Button
                 className={classes.formButton}
-                style={userStatusId === 1 ? {} : { display: "none" }}
+                style={userStatusId === 0 ? { display: "none" } : {}}
                 disabled={isSubmitting}
                 type="submit"
                 color="primary"
