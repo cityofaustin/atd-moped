@@ -206,6 +206,14 @@ const ProjectFundingTable = () => {
   };
 
   /**
+   * Cancel action for adding new task orders
+   */
+  const handleNewTaskOrderCancel = () => {
+    setNewTaskOrderList([]);
+    setAddTaskOrderMode(false);
+  };
+
+  /**
    *
    * @param {boolean} open - The new state of open
    * @param {String} message - The message for the snackbar
