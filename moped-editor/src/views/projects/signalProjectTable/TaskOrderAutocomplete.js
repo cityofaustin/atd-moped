@@ -42,6 +42,11 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
       getOptionSelected={(value, option) =>
         value.display_name === option.display_name
       }
+      renderTags={(tagValue, getTagProps) =>
+        tagValue.map((option, index) => (
+          <Chip label={option.display_name} {...getTagProps({ index })} />
+        ))
+      }
     />
   );
 };
