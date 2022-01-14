@@ -338,21 +338,18 @@ const ProjectFundingTable = () => {
             <Typography variant="h2" color="primary">
               Funding sources
             </Typography>
-
-            {eCaprisId && (
-              <Typography variant="h5" color="textPrimary">
-                eCAPRIS subproject ID:{" "}
-                <ProjectSummaryProjectECapris
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  snackbarHandle={snackbarHandle}
-                  classes={classes}
-                  hideHeader
-                  noWrapper
-                />
-              </Typography>
-            )}
+            <Typography variant="h5" color="textPrimary">
+              eCAPRIS subproject ID:{" "}
+              <ProjectSummaryProjectECapris
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                snackbarHandle={snackbarHandle}
+                classes={classes}
+                hideHeader
+                noWrapper
+              />
+            </Typography>
           </div>
         }
         options={{
