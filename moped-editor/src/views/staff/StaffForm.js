@@ -269,7 +269,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       action: handleDeleteConfirm,
     });
   };
-  
+
   /**
    * Closes the modal
    */
