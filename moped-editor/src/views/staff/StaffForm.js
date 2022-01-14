@@ -279,8 +279,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         message: (
           <Box display="flex" justifyContent="flex-start">
             <Typography>Please Wait...</Typography>
-            {"  "}
-            <CircularProgress size={"1.5rem"} />
           </Box>
         ),
         action: handleCloseModal,
