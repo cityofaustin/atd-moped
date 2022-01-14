@@ -202,6 +202,18 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectDO
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
                   project={data?.moped_project?.[0]}
