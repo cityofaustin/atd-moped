@@ -86,6 +86,11 @@ const useStyles = makeStyles(theme => ({
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
   },
+  fundingButton: {
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+  },
 }));
 
 const ProjectFundingTable = () => {
