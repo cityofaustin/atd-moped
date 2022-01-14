@@ -226,6 +226,15 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   };
 
   /**
+   * Makes sure the password looks ok
+   * @returns {boolean}
+   */
+  const passwordLooksGood = () =>
+    new RegExp(
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    ).test(getValues("password"));
+
+  /**
    * Handle Activate User Confirm
    */
   const handleActivateConfirm = () => {
