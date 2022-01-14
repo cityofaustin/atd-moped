@@ -35,6 +35,13 @@ const ProjectSummaryContractor = ({
   const [updateProjectContractor] = useMutation(PROJECT_UPDATE_CONTACTOR);
   const [clearProjectContractor] = useMutation(PROJECT_CLEAR_CONTACTOR);
 
+  // Track changes in data
+  useEffect(() => {
+    const newVal = data?.moped_project?.[0]?.contractor ?? null;
+    setOriginalValue(newVal);
+    setContractor(newVal);
+  }, [data]);
+
   /**
    * Resets the project contractor to original value
    */
