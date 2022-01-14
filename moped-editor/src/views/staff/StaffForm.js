@@ -462,6 +462,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                 type="submit"
                 color="primary"
                 variant="contained"
+                ref={submitButtonEl}
               >
                 Save
               </Button>
