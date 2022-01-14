@@ -247,16 +247,26 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    * Handle Activate User Confirm
    */
   const handleActivateConfirm = () => {
-    const passwordValue = getValues("password");
-    if (
-      passwordValue === null ||
-      passwordValue.length === 0 ||
-      passwordValue === ""
-    ) {
+    if (!passwordLooksGood()) {
       setModalState({
         open: true,
         title: "Error",
-        message: "The password is required when activating a user.",
+        message: (
+          <Typography>
+            The password is required when activating a user. It needs to be 8
+            characters long, it must include at least one lower-case,
+            upper-case, one number, and one symbol characters.
+          </Typography>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else if (!roleLooksGood()) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: "The role is required when activating a user.",
         action: handleCloseModal,
         actionButtonLabel: "Ok",
         hideCloseButton: true,
