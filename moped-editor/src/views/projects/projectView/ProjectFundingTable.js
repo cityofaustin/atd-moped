@@ -266,7 +266,7 @@ const ProjectFundingTable = () => {
    * Handles the click for adding new task orders
    */
   const handleAddTaskOrder = () => {
-    debugger;
+    setAddTaskOrderMode(true);
   };
 
   /**
