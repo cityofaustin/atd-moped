@@ -26,7 +26,6 @@ import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ExternalLink from "../../../components/ExternalLink";
 
 import {
   FUNDING_QUERY,
@@ -36,6 +35,56 @@ import {
 } from "../../../queries/funding";
 
 import { getDatabaseId, useUser } from "../../../auth/user";
+import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+
+const useStyles = makeStyles(theme => ({
+  fieldGridItem: {
+    margin: theme.spacing(2),
+  },
+  linkIcon: {
+    fontSize: "1rem",
+  },
+  syncLinkIcon: {
+    fontSize: "1.2rem",
+  },
+  editIcon: {
+    cursor: "pointer",
+    margin: "0 .5rem",
+    fontSize: "20px",
+  },
+  editIconConfirm: {
+    cursor: "pointer",
+    margin: ".25rem 0",
+    fontSize: "24px",
+  },
+  fieldLabel: {
+    width: "100%",
+    color: theme.palette.text.secondary,
+    fontSize: ".8rem",
+  },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+  },
+  fieldLabelTextSpan: {
+    borderBottom: "1px dashed",
+    borderBottomColor: theme.palette.text.secondary,
+  },
+  fieldLabelLink: {
+    width: "calc(100% - 2rem)",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
+  fieldBox: {
+    width: "100%",
+  },
+  fieldBoxTypography: {
+    width: "100%",
+  },
+  fieldSelectItem: {
+    width: "calc(100% - 3rem)",
+  },
+}));
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -43,6 +92,8 @@ const ProjectFundingTable = () => {
    * @type {object} addActionRef
    * */
   const addActionRef = React.useRef();
+
+  const classes = useStyles();
 
   /**
    * User Hook
@@ -77,8 +128,6 @@ const ProjectFundingTable = () => {
 
   if (loading || !data) return <CircularProgress />;
 
-  const eCaprisId = data.moped_project[0].ecapris_subproject_id;
-
   /**
    * Get lookup value for a given table using a row ID and returning a name
    * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
@@ -92,6 +141,14 @@ const ProjectFundingTable = () => {
     return data[lookupTable].find(item => item[`${attribute}_id`] === id)[
       `${attribute}_name`
     ];
+  };
+
+  const snackbarHandle = (open = true, message, severity = "success") => {
+    setSnackbarState({
+      open: open,
+      message: message,
+      severity: severity,
+    });
   };
 
   /**
@@ -220,7 +277,6 @@ const ProjectFundingTable = () => {
           data={data.moped_fund_status}
         />
       ),
-      validate: rowData => (rowData.funding_status_id > 0 ? "" : "Required"),
     },
     {
       title: "FDU",
@@ -231,11 +287,6 @@ const ProjectFundingTable = () => {
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
       type: "currency",
-      validate: row => {
-        // test string input is a normal integer.
-        // https://stackoverflow.com/questions/10834796/validate-that-a-string-is-a-positive-integer
-        return /^\+?(0|[1-9]\d*)$/.test(row.funding_amount);
-      },
     },
   ];
 
@@ -285,16 +336,18 @@ const ProjectFundingTable = () => {
             <Typography variant="h2" color="primary">
               Funding sources
             </Typography>
-
-            {eCaprisId && (
-              <Typography variant="h5" color="textPrimary">
-                eCAPRIS subproject ID:{" "}
-                <ExternalLink
-                  text={eCaprisId}
-                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCaprisId}`}
-                />
-              </Typography>
-            )}
+            <Typography variant="h5" color="textPrimary">
+              eCAPRIS subproject ID:{" "}
+              <ProjectSummaryProjectECapris
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                snackbarHandle={snackbarHandle}
+                classes={classes}
+                hideHeader
+                noWrapper
+              />
+            </Typography>
           </div>
         }
         options={{
@@ -324,96 +377,84 @@ const ProjectFundingTable = () => {
         }}
         editable={{
           onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                let newFundingItem = newData;
-                newFundingItem.project_id = projectId;
-                newFundingItem.added_by = getDatabaseId(user);
-
-                addProjectFunding({
-                  variables: {
-                    objects: newData,
-                  },
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem adding funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            addProjectFunding({
+              variables: {
+                objects: {
+                  ...newData,
+                  project_id: projectId,
+                  added_by: getDatabaseId(user),
+                  funding_status_id: 1,
+                },
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem adding funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
+              }),
+          onRowUpdate: (newData, oldData) => {
+            const updateProjectFundingData = newData;
 
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
-          onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                let updateProjectFundingData = newData;
+            // Remove unexpected variables
+            delete updateProjectFundingData.__typename;
+            delete updateProjectFundingData.added_by;
+            delete updateProjectFundingData.date_added;
+            // Format edited funding values to number value
+            updateProjectFundingData.funding_amount = Number(
+              newData.funding_amount
+            );
+            // add fallback of empty strings instead of null value
+            updateProjectFundingData.fund_dept_unit =
+              newData.fund_dept_unit || "";
+            updateProjectFundingData.funding_description =
+              newData.funding_description || "";
+            updateProjectFundingData.funding_program_id =
+              newData.funding_program_id || 0;
 
-                // Remove unexpected variables
-                delete updateProjectFundingData.__typename;
-                delete updateProjectFundingData.added_by;
-                delete updateProjectFundingData.date_added;
-                // Format edited funding values to number value
-                updateProjectFundingData.funding_amount = Number(
-                  newData.funding_amount
-                );
-                // add fallback of empty strings instead of null value
-                updateProjectFundingData.fund_dept_unit =
-                  newData.fund_dept_unit || "";
-                updateProjectFundingData.funding_description =
-                  newData.funding_description || "";
-                updateProjectFundingData.funding_program_id =
-                  newData.funding_program_id || 0;
-
-                updateProjectFunding({
-                  variables: updateProjectFundingData,
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem updating funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            return updateProjectFunding({
+              variables: updateProjectFundingData,
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem updating funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+              });
+          },
           onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                deleteProjectFunding({
-                  variables: {
-                    proj_funding_id: oldData.proj_funding_id,
-                  },
-                }).catch(error => {
-                  setSnackbarState({
-                    open: true,
-                    message: (
-                      <span>
-                        There was a problem deleting funding. Error message:{" "}
-                        {error.message}
-                      </span>
-                    ),
-                    severity: "error",
-                  });
+            deleteProjectFunding({
+              variables: {
+                proj_funding_id: oldData.proj_funding_id,
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem deleting funding. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
                 });
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+              }),
         }}
       />
       <Snackbar
