@@ -21,21 +21,23 @@ import { OpenInNew } from "@material-ui/icons";
  * Custom wrapper for the eCapris edit field
  * @param {JSX.Element} children - Any children
  * @param {boolean} noWrapper - If false, it provides a null wrapper
- * @param {boolean} hideHeader - If false, it hides the subproject id header
  * @param {Object} classes - Class object containing styles
  * @returns {JSX.Element}
  * @constructor
  */
-const WrapperComponent = ({ children, noWrapper, hideHeader, classes }) =>
+const WrapperComponent = ({ children, noWrapper, classes }) =>
   noWrapper ? (
-    <>{children}</>
+    <>
+      <Typography className={classes.fieldLabel}>
+        eCAPRIS Subproject ID
+      </Typography>
+      {children}
+    </>
   ) : (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      {!hideHeader && (
-        <Typography className={classes.fieldLabel}>
-          eCAPRIS Subproject ID
-        </Typography>
-      )}
+      <Typography className={classes.fieldLabel}>
+        eCAPRIS Subproject ID
+      </Typography>
       {children}
     </Grid>
   );
@@ -57,7 +59,6 @@ const ProjectSummaryProjectECapris = ({
   classes,
   snackbarHandle,
   noWrapper,
-  hideHeader,
 }) => {
   const [originalValue, setOriginalValue] = useState(
     data?.moped_project?.[0]?.ecapris_subproject_id ?? null
@@ -148,11 +149,7 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <WrapperComponent
-      classes={classes}
-      noWrapper={noWrapper}
-      hideHeader={hideHeader}
-    >
+    <WrapperComponent classes={classes} noWrapper={noWrapper}>
       <Box
         display="flex"
         justifyContent="flex-start"
