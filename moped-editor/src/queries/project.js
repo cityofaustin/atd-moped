@@ -56,7 +56,7 @@ export const SUMMARY_QUERY = gql`
         location
       }
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 }, status_id: {_eq: 1} }
+        where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
         order_by: { date_created: asc }
       ) {
         project_note_id
