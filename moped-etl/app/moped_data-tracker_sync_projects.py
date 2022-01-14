@@ -42,12 +42,12 @@ query get_all_projects {
 }
 """
 
+# Take in a knack record and return the Knack internal IDs of any signals therein
 def build_signal_list_from_record(record):
     signals = []
     if record['Signals']: # KnackPy will have None in place if there are no signals
-        for signal in knack_records[key]['Signals']:
+        for signal in record['Signals']:
             signals.append(signal['id'])
-    print(signals)
     return signals
 
 # Get Moped's current state of synchronized projects
