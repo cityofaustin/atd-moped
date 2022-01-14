@@ -22,7 +22,7 @@ KNACK_OBJECT_PROJECT_NAME = os.getenv("KNACK_OBJECT_PROJECT_NAME")
 KNACK_OBJECT_CURRENT_STATUS = os.getenv("KNACK_OBJECT_CURRENT_STATUS")
 KNACK_OBJECT_SIGNALS = os.getenv("KNACK_OBJECT_SIGNALS")
 
-# Define mapping between column names and knack column fields
+# Define mapping between column names and knack column fields; excluding connection fields
 knack_object_keys = {
     "project_id": KNACK_OBJECT_PROJECT_ID,
     "project_name": KNACK_OBJECT_PROJECT_NAME,
