@@ -52,6 +52,41 @@ const ProjectSummaryContractor = ({
   };
 
   /**
+   * Saves the new project contractor...
+   */
+  const handleProjectContractorSave = () => {
+    const isEmpty = (contractor ?? "").length === 0;
+
+    (isEmpty
+      ? clearProjectContractor({
+          variables: {
+            projectId: projectId,
+          },
+        })
+      : updateProjectContractor({
+          variables: {
+            projectId: projectId,
+            contractor: contractor,
+          },
+        })
+    )
+      .then(() => {
+        setEditMode(false);
+        refetch();
+        snackbarHandle(true, "Project contractor updated!", "success");
+      })
+      .catch(err => {
+        snackbarHandle(
+          true,
+          "Failed to update contractor: " + String(err),
+          "error"
+        );
+        handleProjectContractorClose();
+      });
+
+    setEditMode(false);
+  };
+
   /**
    * Updates the state of the contractor value
    * @param {Object} e - Event object
