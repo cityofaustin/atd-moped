@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularProgress } from "@material-ui/core";
+import { Chip, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import {
