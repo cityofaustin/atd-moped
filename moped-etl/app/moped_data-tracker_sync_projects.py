@@ -52,7 +52,7 @@ def build_signal_list_from_record(record):
 
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
-logger.debug(moped_data)
+#logger.debug(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
