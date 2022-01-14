@@ -297,7 +297,7 @@ const ProjectTeamTable = ({
         });
 
         // Upsert as usual
-        upsertProjectPersonnel({
+        return upsertProjectPersonnel({
           variables: {
             objects: personnelData,
           },
