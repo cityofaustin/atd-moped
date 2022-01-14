@@ -451,14 +451,9 @@ const ProjectTeamTable = ({
         icons={{ Delete: DeleteOutlineIcon }}
         editable={{
           onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].add(newData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .add(newData)
+              .then(() => refetch()),
           onRowUpdate: (newData, oldData) =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
