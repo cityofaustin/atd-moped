@@ -89,11 +89,6 @@ for record in records:
 for moped_project in moped_data["data"]["moped_project"]:
     update_needed = False
     knack_data = dict(knack_records[moped_project["project_id"]])
-    knack_signals = build_signal_set_from_knack_record(knack_records[moped_project["project_id"]])
-    #print(knack_signals)
-
-    moped_signals = build_signal_set_from_moped_record(moped_project)
-    #print(moped_signals)
 
     for key in knack_object_keys:
         if (
@@ -102,6 +97,9 @@ for moped_project in moped_data["data"]["moped_project"]:
         ):
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
+
+    knack_signals = build_signal_set_from_knack_record(knack_records[moped_project["project_id"]])
+    moped_signals = build_signal_set_from_moped_record(moped_project)
 
     if not moped_signals == knack_signals:
         update_needed = True
