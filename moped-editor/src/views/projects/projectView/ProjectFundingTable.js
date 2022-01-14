@@ -128,8 +128,6 @@ const ProjectFundingTable = () => {
 
   if (loading || !data) return <CircularProgress />;
 
-  const eCaprisId = data.moped_project[0].ecapris_subproject_id;
-
   /**
    * Get lookup value for a given table using a row ID and returning a name
    * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
