@@ -57,7 +57,6 @@ const ProjectSummaryProjectECapris = ({
   classes,
   snackbarHandle,
   noWrapper,
-  hideHeader,
 }) => {
   const [originalValue, setOriginalValue] = useState(
     data?.moped_project?.[0]?.ecapris_subproject_id ?? null
