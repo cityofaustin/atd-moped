@@ -41,6 +41,13 @@ const ProjectSummaryProjectDO = ({
     PROJECT_CLEAR_PURCHASE_ORDER_NUMBER
   );
 
+  // Track changes in data
+  useEffect(() => {
+    const newVal = data?.moped_project?.[0]?.purchase_order_number ?? null;
+    setOriginalValue(newVal);
+    setProjectPurchaseOrderNumber(newVal);
+  }, [data]);
+
   /**
    * Resets the project order number to original value
    */
