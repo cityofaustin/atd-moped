@@ -99,7 +99,6 @@ for record in records:
     if not record[KNACK_OBJECT_PROJECT_ID]:
         continue
     knack_records[record[KNACK_OBJECT_PROJECT_ID]] = record
-#logger.debug(knack_records)
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data["data"]["moped_project"]:
