@@ -138,6 +138,8 @@ const ProjectFundingTable = () => {
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
+  const [updateProjectTaskOrders] = useMutation(UPDATE_FUNDING_TASK_ORDERS);
+
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
     message: null,
