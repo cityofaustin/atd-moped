@@ -2,13 +2,11 @@
 
 import re
 import os
-import pprint
 import knackpy
 from process.request import run_query
 from process.logging import getLogger
 
 logger = getLogger("moped-knack-sync")
-pp = pprint.PrettyPrinter(indent=4)
 
 logger.debug("Syncing Moped Project Data to Data Tracker")
 
