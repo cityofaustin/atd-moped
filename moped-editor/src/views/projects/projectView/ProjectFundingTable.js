@@ -396,7 +396,7 @@ const ProjectFundingTable = () => {
                 noWrapper
               />
             </Typography>
-            <Box component={"ul"} className={classes.chipContainer} sm={6}>
+            <Box component={"ul"} className={classes.chipContainer}>
               {taskOrderData.map(task => (
                 <li key={task.id}>
                   <Chip
