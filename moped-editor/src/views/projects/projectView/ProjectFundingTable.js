@@ -91,6 +91,9 @@ const useStyles = makeStyles(theme => ({
     top: "1rem",
     right: "1rem",
   },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
 }));
 
 const ProjectFundingTable = () => {
