@@ -129,7 +129,6 @@ export const STATUS_QUERY = gql`
   }
 `;
 
-
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
