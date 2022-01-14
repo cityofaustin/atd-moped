@@ -264,6 +264,21 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     } else {
       setValue("status_id", "1");
       submitButtonEl.current.click();
+      setModalState({
+        open: true,
+        title: "Activating",
+        message: (
+          <Box display="flex" justifyContent="flex-start">
+            <Typography>Please Wait...</Typography>
+            {"  "}
+            <CircularProgress size={"1.5rem"} />
+          </Box>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: null,
+        hideActionButton: true,
+        hideCloseButton: true,
+      });
     }
   };
 
