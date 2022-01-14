@@ -167,6 +167,14 @@ const ProjectFundingTable = () => {
    */
   const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
 
+  /**
+   * Deletes a task order from the list
+   * @param {Object} task -The task to be deleted
+   */
+  const handleTaskOrderDelete = task => {
+    debugger;
+  };
+
   const snackbarHandle = (open = true, message, severity = "success") => {
     setSnackbarState({
       open: open,
