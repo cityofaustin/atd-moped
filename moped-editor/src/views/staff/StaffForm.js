@@ -242,7 +242,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       });
     } else {
       setValue("status_id", "1");
-      formEl?.current && formEl.current.submit();
+      submitButtonEl.current.click();
     }
   };
 
