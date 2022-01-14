@@ -72,11 +72,15 @@ for record in records:
     if not record[KNACK_OBJECT_PROJECT_ID]:
         continue
     knack_records[record[KNACK_OBJECT_PROJECT_ID]] = record
+#logger.debug(knack_records)
 
 # Iterate over projects, checking for data mismatches, indicating a needed update
 for moped_project in moped_data["data"]["moped_project"]:
     update_needed = False
     knack_data = dict(knack_records[moped_project["project_id"]])
+
+    knack_signals = build_signal_list_from_record(knack_records[moped_project["project_id"]])
+
     for key in knack_object_keys:
         if (
             not moped_project[key]
@@ -84,6 +88,7 @@ for moped_project in moped_data["data"]["moped_project"]:
         ):
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
+
     if update_needed:
         logger.debug(
             f"""Need to update knack for Moped project {moped_project["project_id"]}"""
@@ -92,4 +97,8 @@ for moped_project in moped_data["data"]["moped_project"]:
             method="update",
             data=knack_data,
             obj="object_" + KNACK_DATA_TRACKER_PROJECT_OBJECT,
+        )
+    else:
+        logger.debug(
+            f"""No update needed for Moped project {moped_project["project_id"]}"""
         )
