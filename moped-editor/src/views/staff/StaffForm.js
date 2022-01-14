@@ -470,6 +470,14 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           inputRef={register}
           className={classes.hiddenTextField}
         />
+        {/* This hidden field and its value is always 1 */}
+        <TextField
+            id="status-id"
+            name="status_id"
+            inputRef={register}
+            className={classes.hiddenTextField}
+            value={1}
+        />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
