@@ -235,6 +235,15 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     ).test(getValues("password"));
 
   /**
+   * Makes sure a role has been selected
+   * @returns {boolean}
+   */
+  const roleLooksGood = () =>
+    ["moped-viewer", "moped-editor", "moped-admin"].includes(
+      getValues("roles")
+    );
+
+  /**
    * Handle Activate User Confirm
    */
   const handleActivateConfirm = () => {
