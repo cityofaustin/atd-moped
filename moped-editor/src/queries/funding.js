@@ -81,3 +81,14 @@ export const ADD_PROJECT_FUNDING = gql`
     }
   }
 `;
+
+export const UPDATE_FUNDING_TASK_ORDERS = gql`
+  mutation AddProjectFunding($projectId: Int!, $taskOrders: jsonb!) {
+    update_moped_project(
+      _set: { task_order: $taskOrders }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
+    }
+  }
+`;
