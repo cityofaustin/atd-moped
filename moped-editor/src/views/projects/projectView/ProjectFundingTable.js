@@ -41,6 +41,7 @@ import {
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
