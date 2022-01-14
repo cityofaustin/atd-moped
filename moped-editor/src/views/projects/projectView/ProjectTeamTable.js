@@ -273,7 +273,7 @@ const ProjectTeamTable = ({
         const newState = personnelState.filter(
           item => item.user_id !== newData.user_id
         );
-        setPersonnelState([...newState, newData]);
+        return setPersonnelState([...newState, newData]);
       },
       delete: oldData => {
         const newState = personnelState.filter(
