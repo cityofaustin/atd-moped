@@ -264,7 +264,7 @@ const ProjectTeamTable = ({
           }
         });
 
-        setPersonnelState(
+        return setPersonnelState(
           [...newPersonnelState, activePersonnel].filter(item => item !== null)
         );
       },
