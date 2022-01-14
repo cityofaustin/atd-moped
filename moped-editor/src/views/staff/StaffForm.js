@@ -130,6 +130,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     message: null,
     action: null,
     actionButtonLabel: "Yes",
+    hideActionButton: false,
     hideCloseButton: false,
   };
 
