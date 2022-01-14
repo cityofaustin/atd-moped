@@ -542,9 +542,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
               {userApiLoading ? (
                 <CircularProgress />
               ) : (
-                <Button onClick={modalState.action} color="primary">
-                  {modalState.actionButtonLabel || "Yes"}
-                </Button>
+                !modalState?.hideActionButton && (
+                  <Button onClick={modalState?.action} color="primary">
+                    {modalState.actionButtonLabel || "Yes"}
+                  </Button>
+                )
               )}
             </DialogActions>
           </Dialog>
