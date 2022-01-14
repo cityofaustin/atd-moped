@@ -457,6 +457,12 @@ const ProjectFundingTable = () => {
                 <TaskOrderAutocomplete
                   props={{ onChange: handleTaskOrderOnChange }}
                 />
+                  <Icon
+                    className={classes.editIconConfirm}
+                    onClick={handleNewTaskOrderSave}
+                  >
+                    check
+                  </Icon>
               )}
             </Box>
           </div>
