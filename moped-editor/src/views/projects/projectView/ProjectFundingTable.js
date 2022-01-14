@@ -337,7 +337,6 @@ const ProjectFundingTable = () => {
               Funding sources
             </Typography>
             <Typography variant="h5" color="textPrimary">
-              eCAPRIS subproject ID:{" "}
               <ProjectSummaryProjectECapris
                 projectId={projectId}
                 data={data}
