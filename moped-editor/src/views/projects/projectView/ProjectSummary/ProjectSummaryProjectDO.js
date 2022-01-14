@@ -4,8 +4,6 @@ import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import {
-  PROJECT_UPDATE_CONTACTOR,
-  PROJECT_CLEAR_CONTACTOR,
   PROJECT_UPDATE_PURCHASE_ORDER_NUMBER,
   PROJECT_CLEAR_PURCHASE_ORDER_NUMBER,
 } from "../../../../queries/project";
