@@ -8,7 +8,6 @@ import {
   PROJECT_CLEAR_PURCHASE_ORDER_NUMBER,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@material-ui/icons";
 
 /**
  * ProjectSummaryProjectDO Component
