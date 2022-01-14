@@ -387,6 +387,8 @@ const ProjectFundingTable = () => {
                 noWrapper
               />
             </Typography>
+            <Box component={"ul"} className={classes.chipContainer} sm={6}>
+            </Box>
           </div>
         }
         options={{
