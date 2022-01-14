@@ -388,6 +388,16 @@ const ProjectFundingTable = () => {
               />
             </Typography>
             <Box component={"ul"} className={classes.chipContainer} sm={6}>
+              {taskOrderData.map(task => (
+                <li key={task.id}>
+                  <Chip
+                    // icon={icon}
+                    label={`${task.id} | ${task.name}`}
+                    onDelete={() => handleTaskOrderDelete(task)}
+                    className={classes.chip}
+                  />
+                </li>
+              ))}
             </Box>
           </div>
         }
