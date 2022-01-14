@@ -34,6 +34,7 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
+  UPDATE_FUNDING_TASK_ORDERS,
 } from "../../../queries/funding";
 
 import { getDatabaseId, useUser } from "../../../auth/user";
