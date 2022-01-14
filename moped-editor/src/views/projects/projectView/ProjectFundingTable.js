@@ -199,7 +199,9 @@ const ProjectFundingTable = () => {
    * Handle Task Order OnChange event
    * @param {Object} value - Data from the task order list
    */
-  const handleTaskOrderOnChange = e => {
+  const handleTaskOrderOnChange = value => {
+    setNewTaskOrderList(value);
+  };
     debugger;
   };
 
