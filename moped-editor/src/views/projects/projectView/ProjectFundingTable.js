@@ -174,9 +174,15 @@ const ProjectFundingTable = () => {
    * Deletes a task order from the list
    * @param {Object} task -The task to be deleted
    */
-  const handleTaskOrderDelete = task => {
-    debugger;
-  };
+  const handleTaskOrderDelete = task =>
+    updateProjectTaskOrders({
+      variables: {
+        projectId: projectId,
+        taskOrders: taskOrderData.filter(t => t.id !== task.id),
+      },
+    })
+      .then(() => refetch())
+      .catch(() => {});
 
   /**
    *
