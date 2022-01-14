@@ -91,6 +91,14 @@ const useStyles = makeStyles(theme => ({
     top: "1rem",
     right: "1rem",
   },
+  chipContainer: {
+    display: "flex",
+    justifyContent: "left",
+    flexWrap: "wrap",
+    listStyle: "none",
+    padding: "2rem 0",
+    margin: 0,
+  },
   chip: {
     margin: theme.spacing(0.5),
   },
