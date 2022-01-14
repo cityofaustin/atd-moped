@@ -155,6 +155,7 @@ const ProjectFundingTable = () => {
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
+  const [newTaskOrderList, setNewTaskOrderList] = useState([]);
 
   if (loading || !data) return <CircularProgress />;
 
