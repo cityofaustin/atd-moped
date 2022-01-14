@@ -110,7 +110,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
   const submitButtonEl = useRef();
-  const userStatusId = editFormData?.status_id ?? -1;
+  const userStatusId = Number(editFormData?.status_id ?? -1);
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and
