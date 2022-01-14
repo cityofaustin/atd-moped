@@ -343,7 +343,6 @@ const ProjectFundingTable = () => {
                 refetch={refetch}
                 snackbarHandle={snackbarHandle}
                 classes={classes}
-                hideHeader
                 noWrapper
               />
             </Typography>
