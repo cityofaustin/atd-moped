@@ -454,9 +454,10 @@ const ProjectFundingTable = () => {
                 </li>
               )}
               {addTaskOrderMode && (
+                <Box display="flex" justifyContent="flex-start">
                 <TaskOrderAutocomplete
                   props={{ onChange: handleTaskOrderOnChange }}
-                />
+                  />
                   <Icon
                     className={classes.editIconConfirm}
                     onClick={handleNewTaskOrderSave}
