@@ -25,16 +25,19 @@ import { OpenInNew } from "@material-ui/icons";
  * @returns {JSX.Element}
  * @constructor
  */
-const WrapperComponent = ({ children, noWrapper, hideHeader, classes }) =>
+const WrapperComponent = ({ children, noWrapper, classes }) =>
   noWrapper ? (
-    <>{children}</>
+    <>
+      <Typography className={classes.fieldLabel}>
+        eCAPRIS Subproject ID
+      </Typography>
+      {children}
+    </>
   ) : (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      {!hideHeader && (
-        <Typography className={classes.fieldLabel}>
-          eCAPRIS Subproject ID
-        </Typography>
-      )}
+      <Typography className={classes.fieldLabel}>
+        eCAPRIS Subproject ID
+      </Typography>
       {children}
     </Grid>
   );
