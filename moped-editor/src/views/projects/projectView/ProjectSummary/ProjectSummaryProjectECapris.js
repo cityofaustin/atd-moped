@@ -147,11 +147,7 @@ const ProjectSummaryProjectECapris = ({
   };
 
   return (
-    <WrapperComponent
-      classes={classes}
-      noWrapper={noWrapper}
-      hideHeader={hideHeader}
-    >
+    <WrapperComponent classes={classes} noWrapper={noWrapper}>
       <Box
         display="flex"
         justifyContent="flex-start"
