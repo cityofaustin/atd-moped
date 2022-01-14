@@ -45,16 +45,32 @@ query get_all_projects {
 }
 """
 
-# Build a set of signal IDs connected to a knack projet record
 def build_signal_set_from_knack_record(record):
+    """
+    Build a set of signal IDs connected to a knack projet record
+
+    Parameters:
+        Knack record (Record): A KnackPy record
+        
+    Returns:
+        Set: A set of all internal IDs used by Knack to for the signals
+    """
     signals = set()
     if record['Signals']: # KnackPy will have None in place if there are no signals
         for signal in record['Signals']:
             signals.add(signal['id'])
     return signals
 
-# Build a set of signals IDs associated to a moped project
 def build_signal_set_from_moped_record(record):
+    """
+    Build a set of signal IDs connected to a moped projet record
+
+    Parameters:
+        Moped Project (dictionary): A moped project as returned by graphql-engine
+        
+    Returns:
+        Set: A set of all internal IDs used by Knack to for the signals
+    """
     signals = set()
     for feature in record['moped_proj_features']:
         signals.add(feature['location']['properties']['id'])
