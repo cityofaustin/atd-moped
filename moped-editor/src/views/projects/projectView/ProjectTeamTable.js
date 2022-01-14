@@ -459,14 +459,9 @@ const ProjectTeamTable = ({
               .update(newData, oldData)
               .then(() => refetch()),
           onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].delete(oldData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .delete(oldData)
+              .then(() => refetch()),
         }}
       />
     </ApolloErrorHandler>
