@@ -455,14 +455,9 @@ const ProjectTeamTable = ({
               .add(newData)
               .then(() => refetch()),
           onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].update(newData, oldData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .update(newData, oldData)
+              .then(() => refetch()),
           onRowDelete: oldData =>
             new Promise((resolve, reject) => {
               setTimeout(() => {
