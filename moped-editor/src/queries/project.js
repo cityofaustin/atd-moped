@@ -912,6 +912,20 @@ export const PROJECT_CLEAR_CONTACTOR = gql`
   }
 `;
 
+export const PROJECT_UPDATE_PURCHASE_ORDER_NUMBER = gql`
+  mutation UpdateProjectOrderNumber(
+    $projectId: Int!
+    $purchase_order_number: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { purchase_order_number: $purchase_order_number }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 /**
  * Record the ID which Knack assigned a project when pushed to Data Tracker
  */
