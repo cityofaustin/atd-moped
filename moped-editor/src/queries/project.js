@@ -117,7 +117,7 @@ export const SUMMARY_QUERY = gql`
   }
 `;
 
-export const STATUS_QUERY = gql `
+export const STATUS_QUERY = gql`
   query StatusQuery {
     moped_status(
       where: { status_id: { _gt: 0 } }
