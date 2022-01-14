@@ -27,7 +27,7 @@ const ProjectSummaryContractor = ({
   snackbarHandle,
 }) => {
   // Instantiate Original Value
-  const [originalValue] = useState(
+  const [originalValue, setOriginalValue] = useState(
     data?.moped_project?.[0]?.contractor ?? null
   );
   const [editMode, setEditMode] = useState(false);
