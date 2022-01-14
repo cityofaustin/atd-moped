@@ -51,6 +51,14 @@ const ProjectSummaryProjectDO = ({
     PROJECT_CLEAR_PURCHASE_ORDER_NUMBER
   );
 
+  /**
+   * Resets the project order number to original value
+   */
+  const handleProjectOrderNumberClose = () => {
+    setProjectPurchaseOrderNumber(originalValue);
+    setEditMode(false);
+  };
+
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
