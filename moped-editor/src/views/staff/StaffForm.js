@@ -70,7 +70,7 @@ const roles = [
 ];
 
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = isNewUser =>
+const staffValidationSchema = (isNewUser, userStatusId) =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
