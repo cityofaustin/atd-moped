@@ -21,7 +21,6 @@ import { OpenInNew } from "@material-ui/icons";
  * Custom wrapper for the eCapris edit field
  * @param {JSX.Element} children - Any children
  * @param {boolean} noWrapper - If false, it provides a null wrapper
- * @param {boolean} hideHeader - If false, it hides the subproject id header
  * @param {Object} classes - Class object containing styles
  * @returns {JSX.Element}
  * @constructor
