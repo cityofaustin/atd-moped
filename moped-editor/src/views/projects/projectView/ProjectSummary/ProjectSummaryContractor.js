@@ -43,6 +43,14 @@ const ProjectSummaryContractor = ({
   const [updateProjectContractor] = useMutation(PROJECT_UPDATE_CONTACTOR);
   const [clearProjectContractor] = useMutation(PROJECT_CLEAR_CONTACTOR);
 
+  /**
+   * Resets the project contractor to original value
+   */
+  const handleProjectContractorClose = () => {
+    setContractor(originalValue);
+    setEditMode(false);
+  };
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>
