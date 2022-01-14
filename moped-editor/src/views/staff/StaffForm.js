@@ -290,7 +290,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   if (apiErrors && !isApiErrorOpen) setIsApiErrorOpen(true);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} ref={formEl}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <TextField
