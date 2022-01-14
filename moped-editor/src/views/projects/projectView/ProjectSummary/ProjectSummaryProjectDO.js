@@ -59,6 +59,45 @@ const ProjectSummaryProjectDO = ({
     setEditMode(false);
   };
 
+  /**
+   * Saves the new project order number...
+   */
+  const handleProjectOrderNumberSave = () => {
+    const isEmpty = (projectPurchaseOrderNumber ?? "").length === 0;
+
+    (isEmpty
+      ? clearProjectOrderNumber({
+          variables: {
+            projectId: projectId,
+          },
+        })
+      : updateProjectOrderNumber({
+          variables: {
+            projectId: projectId,
+            purchase_order_number: projectPurchaseOrderNumber,
+          },
+        })
+    )
+      .then(() => {
+        setEditMode(false);
+        refetch();
+        snackbarHandle(
+          true,
+          "Project purchase order number updated!",
+          "success"
+        );
+      })
+      .catch(err => {
+        snackbarHandle(
+          true,
+          "Failed to update purchase order number: " + String(err),
+          "error"
+        );
+        handleProjectOrderNumberClose();
+      });
+
+    setEditMode(false);
+  };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
