@@ -279,7 +279,7 @@ const ProjectTeamTable = ({
         const newState = personnelState.filter(
           item => item.user_id !== oldData.user_id
         );
-        setPersonnelState([...newState]);
+        return setPersonnelState([...newState]);
       },
     },
     false: {
