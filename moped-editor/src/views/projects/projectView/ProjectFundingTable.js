@@ -202,8 +202,24 @@ const ProjectFundingTable = () => {
   const handleTaskOrderOnChange = value => {
     setNewTaskOrderList(value);
   };
-    debugger;
-  };
+
+  /**
+   * Updates the task order list
+   */
+  const handleNewTaskOrderSave = () =>
+    updateProjectTaskOrders({
+      variables: {
+        projectId: projectId,
+        taskOrders: [
+          ...taskOrderData,
+          ...newTaskOrderList.filter(
+            n => !taskOrderData.find(t => t.id === n.id)
+          ),
+        ],
+      },
+    })
+      .then(() => refetch())
+      .then(() => handleNewTaskOrderCancel());
 
   /**
    * Cancel action for adding new task orders
