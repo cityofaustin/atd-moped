@@ -272,7 +272,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         hideCloseButton: true,
       });
     } else {
-      setValue("status_id", "1");
       submitButtonEl.current.click();
       setModalState({
         open: true,
