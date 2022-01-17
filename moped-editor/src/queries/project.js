@@ -48,13 +48,15 @@ export const SUMMARY_QUERY = gql`
       project_sponsor
       project_website
       status_id
+      contractor
+      purchase_order_number
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
         location
       }
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 }, status_id: {_eq: 1} }
+        where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
         order_by: { date_created: asc }
       ) {
         project_note_id
@@ -115,7 +117,7 @@ export const SUMMARY_QUERY = gql`
   }
 `;
 
-export const STATUS_QUERY = gql `
+export const STATUS_QUERY = gql`
   query StatusQuery {
     moped_status(
       where: { status_id: { _gt: 0 } }
@@ -126,7 +128,6 @@ export const STATUS_QUERY = gql `
     }
   }
 `;
-
 
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
@@ -883,6 +884,53 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { ecapris_subproject_id: null, capitally_funded: false }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_CONTACTOR = gql`
+  mutation UpdateProjectContractor($projectId: Int!, $contractor: String!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { contractor: $contractor }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_CONTACTOR = gql`
+  mutation UpdateProjectContractor($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { contractor: null }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_PURCHASE_ORDER_NUMBER = gql`
+  mutation UpdateProjectOrderNumber(
+    $projectId: Int!
+    $purchase_order_number: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { purchase_order_number: $purchase_order_number }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_PURCHASE_ORDER_NUMBER = gql`
+  mutation UpdateProjectOrderNumber($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { purchase_order_number: null }
     ) {
       affected_rows
     }

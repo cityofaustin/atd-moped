@@ -25,6 +25,8 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
+import ProjectSummaryContractor from "./ProjectSummaryContractor";
+import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -35,7 +37,6 @@ const useStyles = makeStyles(theme => ({
   },
   syncLinkIcon: {
     fontSize: "1.2rem",
-
   },
   editIcon: {
     cursor: "pointer",
@@ -183,6 +184,26 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={6}>
                 <ProjectSummaryProjectWebsite
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryContractor
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectDO
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
