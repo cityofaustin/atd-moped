@@ -492,14 +492,14 @@ const ProjectFundingTable = () => {
                   />
                   <div className={classes.editIconContainer}>
                     <IconButton
-                      className={classes.editIconConfirm}
+                      className={classes.editIconButton}
                       aria-label="Add"
                       onClick={handleNewTaskOrderSave}
                     >
                       <Icon fontSize={"small"}>check</Icon>
                     </IconButton>
                     <IconButton
-                      className={classes.editIconConfirm}
+                      className={classes.editIconButton}
                       aria-label="Cancel"
                       onClick={handleNewTaskOrderCancel}
                     >
