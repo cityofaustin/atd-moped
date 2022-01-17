@@ -83,6 +83,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
+    marginBottom: "8px",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -460,6 +461,9 @@ const ProjectFundingTable = () => {
               noWrapper
             />
             <Box component={"ul"} className={classes.chipContainer}>
+              <Typography className={classes.fieldLabel}>
+                Task order
+              </Typography>
               {taskOrderData.map(task => (
                 <li key={task.id}>
                   <Chip
