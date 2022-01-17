@@ -66,6 +66,10 @@ const useStyles = makeStyles(theme => ({
     margin: "0.5rem",
     fontSize: "1.5rem",
   },
+  editIconContainer: {
+    minWidth: "8rem",
+    marginLeft: "8px",
+  },
   editIconConfirm: {
     cursor: "pointer",
     margin: ".25rem 0",
