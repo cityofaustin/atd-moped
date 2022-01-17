@@ -446,16 +446,14 @@ const ProjectFundingTable = () => {
             <Typography variant="h2" color="primary">
               Funding sources
             </Typography>
-            <Typography variant="h5" color="textPrimary">
-              <ProjectSummaryProjectECapris
-                projectId={projectId}
-                data={data}
-                refetch={refetch}
-                snackbarHandle={snackbarHandle}
-                classes={classes}
-                noWrapper
-              />
-            </Typography>
+            <ProjectSummaryProjectECapris
+              projectId={projectId}
+              data={data}
+              refetch={refetch}
+              snackbarHandle={snackbarHandle}
+              classes={classes}
+              noWrapper
+            />
             <Box component={"ul"} className={classes.chipContainer}>
               {taskOrderData.map(task => (
                 <li key={task.id}>
