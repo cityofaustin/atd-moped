@@ -92,7 +92,7 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: "nowrap",
   },
   fieldBox: {
-    width: "100%",
+    maxWidth: "10rem",
   },
   fieldBoxTypography: {
     width: "100%",
