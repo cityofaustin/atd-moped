@@ -458,8 +458,7 @@ const ProjectFundingTable = () => {
               {taskOrderData.map(task => (
                 <li key={task.id}>
                   <Chip
-                    // icon={icon}
-                    label={`${task.id} | ${task.name}`}
+                    label={task.display_name}
                     onDelete={() => handleTaskOrderDelete(task)}
                     className={classes.chip}
                   />
