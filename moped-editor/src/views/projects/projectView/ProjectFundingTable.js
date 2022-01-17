@@ -116,6 +116,9 @@ const useStyles = makeStyles(theme => ({
   chip: {
     margin: theme.spacing(0.5),
   },
+  chipAddContainer: {
+    minWidth: "500px",
+  },
 }));
 
 const ProjectFundingTable = () => {
