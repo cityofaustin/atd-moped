@@ -4,12 +4,17 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
+  Box,
   Button,
+  Chip,
   CircularProgress,
+  Icon,
+  IconButton,
   MenuItem,
   Select,
   Snackbar,
   TextField,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
@@ -32,11 +37,14 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
+  UPDATE_FUNDING_TASK_ORDERS,
 } from "../../../queries/funding";
 
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
+import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -53,15 +61,29 @@ const useStyles = makeStyles(theme => ({
     margin: "0 .5rem",
     fontSize: "20px",
   },
+  editIconFunding: {
+    cursor: "pointer",
+    margin: "0.5rem",
+    fontSize: "1.5rem",
+  },
+  editIconContainer: {
+    minWidth: "8rem",
+    marginLeft: "8px",
+  },
   editIconConfirm: {
     cursor: "pointer",
-    margin: ".25rem 0",
+    margin: "0.25rem 0",
     fontSize: "24px",
+  },
+  editIconButton: {
+    margin: "8px 0",
+    padding: "8px",
   },
   fieldLabel: {
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
+    margin: "8px 0",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -76,13 +98,35 @@ const useStyles = makeStyles(theme => ({
     whiteSpace: "nowrap",
   },
   fieldBox: {
-    width: "100%",
+    maxWidth: "10rem",
   },
   fieldBoxTypography: {
     width: "100%",
   },
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
+  },
+  fundingButton: {
+    position: "absolute",
+    top: "1rem",
+    right: "1rem",
+  },
+  chipContainer: {
+    display: "flex",
+    justifyContent: "left",
+    flexWrap: "wrap",
+    listStyle: "none",
+    padding: "2rem 0",
+    margin: 0,
+  },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
+  chipAddContainer: {
+    minWidth: "500px",
+  },
+  chipAddMultiselect: {
+    width: "100%",
   },
 }));
 
@@ -119,12 +163,16 @@ const ProjectFundingTable = () => {
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
+  const [updateProjectTaskOrders] = useMutation(UPDATE_FUNDING_TASK_ORDERS);
+
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
     message: null,
     severity: "success",
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
+  const [newTaskOrderList, setNewTaskOrderList] = useState([]);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -143,6 +191,66 @@ const ProjectFundingTable = () => {
     ];
   };
 
+  /**
+   * An array of objects that contain the task order data
+   * @type {Array[Object]}
+   */
+  const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
+
+  /**
+   * Deletes a task order from the list
+   * @param {Object} task -The task to be deleted
+   */
+  const handleTaskOrderDelete = task =>
+    updateProjectTaskOrders({
+      variables: {
+        projectId: projectId,
+        taskOrders: taskOrderData.filter(t => t.id !== task.id),
+      },
+    })
+      .then(() => refetch())
+      .catch(() => {});
+
+  /**
+   * Handle Task Order OnChange event
+   * @param {Object} value - Data from the task order list
+   */
+  const handleTaskOrderOnChange = value => {
+    setNewTaskOrderList(value);
+  };
+
+  /**
+   * Updates the task order list
+   */
+  const handleNewTaskOrderSave = () =>
+    updateProjectTaskOrders({
+      variables: {
+        projectId: projectId,
+        taskOrders: [
+          ...taskOrderData,
+          ...newTaskOrderList.filter(
+            n => !taskOrderData.find(t => t.id === n.id)
+          ),
+        ],
+      },
+    })
+      .then(() => refetch())
+      .then(() => handleNewTaskOrderCancel());
+
+  /**
+   * Cancel action for adding new task orders
+   */
+  const handleNewTaskOrderCancel = () => {
+    setNewTaskOrderList([]);
+    setAddTaskOrderMode(false);
+  };
+
+  /**
+   *
+   * @param {boolean} open - The new state of open
+   * @param {String} message - The message for the snackbar
+   * @param {String} severity - The severity color of the snackbar
+   */
   const snackbarHandle = (open = true, message, severity = "success") => {
     setSnackbarState({
       open: open,
@@ -196,6 +304,13 @@ const ProjectFundingTable = () => {
       )}
     </Select>
   );
+
+  /**
+   * Handles the click for adding new task orders
+   */
+  const handleAddTaskOrder = () => {
+    setAddTaskOrderMode(true);
+  };
 
   /**
    * Return Snackbar state to default, closed state
@@ -317,6 +432,7 @@ const ProjectFundingTable = () => {
               // else add "Add ..." button
               return (
                 <Button
+                  className={classes.fundingButton}
                   variant="contained"
                   color="primary"
                   size="large"
@@ -336,16 +452,67 @@ const ProjectFundingTable = () => {
             <Typography variant="h2" color="primary">
               Funding sources
             </Typography>
-            <Typography variant="h5" color="textPrimary">
-              <ProjectSummaryProjectECapris
-                projectId={projectId}
-                data={data}
-                refetch={refetch}
-                snackbarHandle={snackbarHandle}
-                classes={classes}
-                noWrapper
-              />
-            </Typography>
+            <ProjectSummaryProjectECapris
+              projectId={projectId}
+              data={data}
+              refetch={refetch}
+              snackbarHandle={snackbarHandle}
+              classes={classes}
+              noWrapper
+            />
+            <Box component={"ul"} className={classes.chipContainer}>
+              <Typography className={classes.fieldLabel}>
+                Task order
+              </Typography>
+              {taskOrderData.map(task => (
+                <li key={task.id}>
+                  <Chip
+                    label={task.display_name}
+                    onDelete={() => handleTaskOrderDelete(task)}
+                    className={classes.chip}
+                  />
+                </li>
+              ))}
+              {!addTaskOrderMode && (
+                <li key={`add-task-order`}>
+                  <Tooltip title="Add New Task Order">
+                    <ControlPointIcon
+                      className={classes.editIconFunding}
+                      onClick={handleAddTaskOrder}
+                    />
+                  </Tooltip>
+                </li>
+              )}
+              {addTaskOrderMode && (
+                <Box
+                  display="flex"
+                  justifyContent="flex-start"
+                  className={classes.chipAddContainer}
+                >
+                  <TaskOrderAutocomplete
+                    classes={classes.chipAddMultiselect}
+                    props={{ onChange: handleTaskOrderOnChange }}
+                    value={newTaskOrderList}
+                  />
+                  <div className={classes.editIconContainer}>
+                    <IconButton
+                      className={classes.editIconButton}
+                      aria-label="Add"
+                      onClick={handleNewTaskOrderSave}
+                    >
+                      <Icon fontSize={"small"}>check</Icon>
+                    </IconButton>
+                    <IconButton
+                      className={classes.editIconButton}
+                      aria-label="Cancel"
+                      onClick={handleNewTaskOrderCancel}
+                    >
+                      <Icon fontSize={"small"}>close</Icon>
+                    </IconButton>
+                  </div>
+                </Box>
+              )}
+            </Box>
           </div>
         }
         options={{

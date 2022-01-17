@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularProgress } from "@material-ui/core";
+import { Chip, CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import {
@@ -41,6 +41,11 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
       value={value ?? []}
       getOptionSelected={(value, option) =>
         value.display_name === option.display_name
+      }
+      renderTags={(tagValue, getTagProps) =>
+        tagValue.map((option, index) => (
+          <Chip label={option.display_name} {...getTagProps({ index })} />
+        ))
       }
     />
   );

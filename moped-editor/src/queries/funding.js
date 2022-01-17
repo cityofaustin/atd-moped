@@ -17,6 +17,7 @@ export const FUNDING_QUERY = gql`
     }
     moped_project(where: { project_id: { _eq: $projectId } }) {
       ecapris_subproject_id
+      task_order
     }
     moped_fund_sources {
       funding_source_id
@@ -77,6 +78,17 @@ export const ADD_PROJECT_FUNDING = gql`
       returning {
         proj_funding_id
       }
+    }
+  }
+`;
+
+export const UPDATE_FUNDING_TASK_ORDERS = gql`
+  mutation AddProjectFunding($projectId: Int!, $taskOrders: jsonb!) {
+    update_moped_project(
+      _set: { task_order: $taskOrders }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
     }
   }
 `;
