@@ -475,23 +475,32 @@ const ProjectFundingTable = () => {
                 </li>
               )}
               {addTaskOrderMode && (
-                <Box display="flex" justifyContent="flex-start">
+                <Box
+                  display="flex"
+                  justifyContent="flex-start"
+                  className={classes.chipAddContainer}
+                >
                   <TaskOrderAutocomplete
+                    classes={classes.chipAddMultiselect}
                     props={{ onChange: handleTaskOrderOnChange }}
                     value={newTaskOrderList}
                   />
-                  <Icon
-                    className={classes.editIconConfirm}
-                    onClick={handleNewTaskOrderSave}
-                  >
-                    check
-                  </Icon>
-                  <Icon
-                    className={classes.editIconConfirm}
-                    onClick={handleNewTaskOrderCancel}
-                  >
-                    close
-                  </Icon>
+                  <div className={classes.editIconContainer}>
+                    <IconButton
+                      className={classes.editIconConfirm}
+                      aria-label="Add"
+                      onClick={handleNewTaskOrderSave}
+                    >
+                      <Icon fontSize={"small"}>check</Icon>
+                    </IconButton>
+                    <IconButton
+                      className={classes.editIconConfirm}
+                      aria-label="Cancel"
+                      onClick={handleNewTaskOrderCancel}
+                    >
+                      <Icon fontSize={"small"}>close</Icon>
+                    </IconButton>
+                  </div>
                 </Box>
               )}
             </Box>
