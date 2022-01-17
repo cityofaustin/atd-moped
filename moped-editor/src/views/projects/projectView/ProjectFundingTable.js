@@ -119,6 +119,9 @@ const useStyles = makeStyles(theme => ({
   chipAddContainer: {
     minWidth: "500px",
   },
+  chipAddMultiselect: {
+    width: "100%",
+  },
 }));
 
 const ProjectFundingTable = () => {
