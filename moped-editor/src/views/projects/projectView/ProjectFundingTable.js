@@ -83,7 +83,7 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
-    marginBottom: "8px",
+    margin: "8px 0",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
