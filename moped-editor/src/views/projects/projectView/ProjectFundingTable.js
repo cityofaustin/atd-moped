@@ -71,9 +71,8 @@ const useStyles = makeStyles(theme => ({
     marginLeft: "8px",
   },
   editIconConfirm: {
-    cursor: "pointer",
-    margin: ".25rem 0",
-    fontSize: "24px",
+    margin: "8px 0",
+    padding: "8px",
   },
   fieldLabel: {
     width: "100%",
