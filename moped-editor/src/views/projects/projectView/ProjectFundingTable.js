@@ -22,6 +22,8 @@ import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import typography from "../../../theme/typography";
 
@@ -42,9 +44,9 @@ import {
 
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
+import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
+
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -412,6 +414,9 @@ const ProjectFundingTable = () => {
     {
       title: "Dept-unit",
       field: "dept_unit",
+      editComponent: props => (
+        <FundingDeptUnitAutocomplete props={props} value={props.value}/>
+      ),
     },
     {
       title: "Amount",
