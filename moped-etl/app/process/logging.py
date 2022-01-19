@@ -10,5 +10,4 @@ def getLogger(name, level=logging.INFO):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     logger.setLevel(level)
-    logger.setLevel(logging.DEBUG)
     return logger
