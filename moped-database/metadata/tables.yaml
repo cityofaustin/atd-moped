@@ -1945,6 +1945,8 @@
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -1960,6 +1962,8 @@
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -1975,6 +1979,8 @@
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -1984,12 +1990,13 @@
       - proj_funding_id
       - project_id
       filter: {}
-      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -1999,12 +2006,13 @@
       - proj_funding_id
       - project_id
       filter: {}
-      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -2014,13 +2022,14 @@
       - proj_funding_id
       - project_id
       filter: {}
-      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -2030,12 +2039,14 @@
       - proj_funding_id
       - project_id
       filter: {}
-      check: null
+      check: {}
   - role: moped-editor
     permission:
       columns:
       - added_by
       - date_added
+      - dept_unit
+      - fund
       - fund_dept_unit
       - funding_amount
       - funding_description
@@ -2045,7 +2056,7 @@
       - proj_funding_id
       - project_id
       filter: {}
-      check: null
+      check: {}
   event_triggers:
   - name: activity_log_moped_proj_fund_source
     definition:

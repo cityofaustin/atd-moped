@@ -9,6 +9,8 @@ export const FUNDING_QUERY = gql`
       added_by
       date_added
       fund_dept_unit
+      fund
+      dept_unit
       funding_amount
       funding_description
       funding_program_id

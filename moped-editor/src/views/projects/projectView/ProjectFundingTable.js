@@ -406,8 +406,12 @@ const ProjectFundingTable = () => {
       ),
     },
     {
-      title: "FDU",
-      field: "fund_dept_unit",
+      title: "Fund",
+      field: "fund",
+    },
+    {
+      title: "Dept-unit",
+      field: "dept_unit",
     },
     {
       title: "Amount",
