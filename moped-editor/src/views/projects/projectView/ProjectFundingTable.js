@@ -152,7 +152,7 @@ const ProjectFundingTable = () => {
 
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
-    // id 0 used when creating a new project, no project personnel will be returned
+    // id 0 used when creating a new project, no project funding will be returned
     variables: {
       projectId: projectId ?? 0,
     },
@@ -209,7 +209,18 @@ const ProjectFundingTable = () => {
       },
     })
       .then(() => refetch())
-      .catch(() => {});
+      .catch(error => {
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              There was a problem removing the task order. Error message:{" "}
+              {error.message}
+            </span>
+          ),
+          severity: "error",
+        });
+      });
 
   /**
    * Handle Task Order OnChange event
@@ -220,7 +231,8 @@ const ProjectFundingTable = () => {
   };
 
   /**
-   * Updates the task order list
+   * Triggers migration to Update the task order list
+   * Resets adding new task order to initial state
    */
   const handleNewTaskOrderSave = () =>
     updateProjectTaskOrders({
@@ -246,7 +258,7 @@ const ProjectFundingTable = () => {
   };
 
   /**
-   *
+   * Wrapper around snackbar state setter
    * @param {boolean} open - The new state of open
    * @param {String} message - The message for the snackbar
    * @param {String} severity - The severity color of the snackbar
@@ -461,9 +473,7 @@ const ProjectFundingTable = () => {
               noWrapper
             />
             <Box component={"ul"} className={classes.chipContainer}>
-              <Typography className={classes.fieldLabel}>
-                Task order
-              </Typography>
+              <Typography className={classes.fieldLabel}>Task order</Typography>
               {taskOrderData.map(task => (
                 <li key={task.id}>
                   <Chip

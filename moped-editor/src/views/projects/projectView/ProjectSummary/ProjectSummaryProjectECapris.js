@@ -183,7 +183,7 @@ const ProjectSummaryProjectECapris = ({
             text={
               (isValidNumber(eCapris) && (
                 <>
-                  <Typography variant={"span"} color={"primary"}>
+                  <Typography variant={"inherit"} color={"primary"}>
                     {eCapris}{" "}
                   </Typography>
                   <Link
