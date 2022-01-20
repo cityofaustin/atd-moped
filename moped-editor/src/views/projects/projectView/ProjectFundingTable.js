@@ -325,6 +325,42 @@ const ProjectFundingTable = () => {
   );
 
   /**
+   * Component for dropdown select for Funds
+   * @param {*} props
+   * @returns {React component}
+   */
+  const FundSelectComponent = props => (
+    <Select
+      id="moped_funds"
+      value={
+        props.value?.fund_id
+          ? `${props.value.fund_id} | ${props.value.fund_name}`
+          : ""
+      }
+    >
+      {props.data.map(item => (
+        <MenuItem
+          onChange={() => props.onChange(item)}
+          onClick={() => props.onChange(item)}
+          onKeyDown={e => handleKeyEvent(e)}
+          value={`${item.fund_id} | ${item.fund_name}`}
+          key={item.fund_id}
+        >
+          {`${item.fund_id} | ${item.fund_name}`}
+        </MenuItem>
+      ))}
+      <MenuItem
+        onChange={() => props.onChange(null)}
+        onClick={() => props.onChange(null)}
+        onKeyDown={e => handleKeyEvent(e)}
+        value=""
+      >
+        -
+      </MenuItem>
+    </Select>
+  );
+
+  /**
    * Handles the click for adding new task orders
    */
   const handleAddTaskOrder = () => {
@@ -415,20 +451,33 @@ const ProjectFundingTable = () => {
     {
       title: "Fund",
       field: "fund",
+      render: entry =>
+        !!entry.fund?.fund_name ? (
+          <>
+            <Typography>{entry.fund?.fund_id} |</Typography>
+            <Typography>{entry.fund?.fund_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
+      editComponent: props => (
+        <FundSelectComponent {...props} data={data.moped_funds} />
+      ),
     },
     {
       title: "Dept-unit",
       field: "dept_unit",
-      render: entry => (
-        !!entry.dept_unit?.unit_long_name ?
-        <>
-          <Typography>
-            {entry.dept_unit?.dept} | {entry.dept_unit?.unit} |
-          </Typography>
-          <Typography>{entry.dept_unit?.unit_long_name}</Typography>
-        </>
-        : ""
-      ),
+      render: entry =>
+        !!entry.dept_unit?.unit_long_name ? (
+          <>
+            <Typography>
+              {entry.dept_unit?.dept} | {entry.dept_unit?.unit} |
+            </Typography>
+            <Typography>{entry.dept_unit?.unit_long_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
       editComponent: props => (
         <FundingDeptUnitAutocomplete
           className={classes.deptAutocomplete}
