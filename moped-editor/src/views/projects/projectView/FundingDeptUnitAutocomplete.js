@@ -8,7 +8,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
 * Transportation Project Financial Codes
 */
 const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=9999";
+  "https://data.austintexas.gov/resource/bgrt-2m2z.json?dept_unit_status=Active&$limit=9999";
 
 const DeptUnitInput = (params, error = false, variant) => {
   return (
@@ -30,9 +30,14 @@ const DeptUnitInput = (params, error = false, variant) => {
  * * @param {Array} value - passes an array of objects, each representing a dept unit
  *  @return {JSX.Element}
  */
-const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
+const FundingDeptUnitAutocomplete = ({ className, props, value }) => {
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
   console.log(data)
+
+  const formatLabel = option => (
+    !!option.dept ?
+    `${option.dept} | ${option.unit} | ${option.unit_long_name} ` : ""
+  )
 
   if (loading) {
     return <CircularProgress color="primary" size={20} />;
@@ -44,10 +49,10 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
 
   return (
     <Autocomplete
-      // className={classes}
+      className={className}
       id="dept-unit-id"
       filterOptions={filterOptions}
-      getOptionLabel={option => option.unit_long_name ?? ""}
+      getOptionLabel={option => formatLabel(option)}
       onChange={(e, value) => props.onChange(value)}
       loading={loading}
       options={data}
@@ -56,11 +61,6 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       getOptionSelected={(value, option) =>
         value.unit_long_name === option.unit_long_name
       }
-      // renderTags={(tagValue, getTagProps) =>
-      //   tagValue.map((option, index) => (
-      //     <Chip label={option.display_name} {...getTagProps({ index })} />
-      //   ))
-      // }
     />
   );
 };

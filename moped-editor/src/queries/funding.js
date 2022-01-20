@@ -46,6 +46,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
     $funding_program_id: Int!
     $funding_source_id: Int!
     $funding_status_id: Int!
+    $dept_unit: jsonb!
   ) {
     update_moped_proj_funding(
       where: { proj_funding_id: { _eq: $proj_funding_id } }
@@ -56,6 +57,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
         funding_program_id: $funding_program_id
         funding_source_id: $funding_source_id
         funding_status_id: $funding_status_id
+        dept_unit: $dept_unit
       }
     ) {
       affected_rows

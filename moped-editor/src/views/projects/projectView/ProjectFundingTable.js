@@ -47,7 +47,6 @@ import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProject
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 
-
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
     margin: theme.spacing(2),
@@ -130,6 +129,12 @@ const useStyles = makeStyles(theme => ({
   chipAddMultiselect: {
     width: "100%",
   },
+  deptAutocomplete: {
+    width: "100%",
+    border: "1px red solid",
+    fontSize: ".875em",
+  },
+  // do i select the child styles via its parents?
 }));
 
 const ProjectFundingTable = () => {
@@ -414,8 +419,22 @@ const ProjectFundingTable = () => {
     {
       title: "Dept-unit",
       field: "dept_unit",
+      render: entry => (
+        !!entry.dept_unit?.unit_long_name ?
+        <>
+          <Typography>
+            {entry.dept_unit?.dept} | {entry.dept_unit?.unit} |
+          </Typography>
+          <Typography>{entry.dept_unit?.unit_long_name}</Typography>
+        </>
+        : ""
+      ),
       editComponent: props => (
-        <FundingDeptUnitAutocomplete props={props} value={props.value}/>
+        <FundingDeptUnitAutocomplete
+          className={classes.deptAutocomplete}
+          props={props}
+          value={props.value}
+        />
       ),
     },
     {
