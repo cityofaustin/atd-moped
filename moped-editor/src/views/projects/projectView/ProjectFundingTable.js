@@ -115,7 +115,11 @@ const ProjectFundingTable = () => {
    * @returns {React component}
    */
   const LookupSelectComponent = props => (
-    <Select id={props.name} value={props.value || ""}>
+    <Select
+      style={{ minWidth: "8em" }}
+      id={props.name}
+      value={props.value || ""}
+    >
       {props.data.map(item => (
         <MenuItem
           onChange={() => props.onChange(item[`${props.name}_id`])}

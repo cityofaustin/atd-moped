@@ -9,6 +9,8 @@ import {
   Link,
   TextField,
   Typography,
+  FormControl,
+  FormHelperText,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
@@ -177,16 +179,20 @@ const ProjectTeamTable = ({
       render: personnel => getPersonnelName(personnel.user_id),
       validate: rowData => !!rowData.user_id,
       editComponent: props => (
-        <Autocomplete
-          id="user_id"
-          name="user_id"
-          options={userIds}
-          getOptionLabel={option => getPersonnelName(option)}
-          getOptionSelected={(option, value) => option === value}
-          value={props.value}
-          onChange={(event, value) => props.onChange(value)}
-          renderInput={params => <TextField {...params} />}
-        />
+        <FormControl>
+          <Autocomplete
+            style={{ minWidth: "8em" }}
+            id="user_id"
+            name="user_id"
+            options={userIds}
+            getOptionLabel={option => getPersonnelName(option)}
+            getOptionSelected={(option, value) => option === value}
+            value={props.value}
+            onChange={(event, value) => props.onChange(value)}
+            renderInput={params => <TextField {...params} />}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
     },
     {

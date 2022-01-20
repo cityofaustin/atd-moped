@@ -12,6 +12,8 @@ import {
   Select,
   MenuItem,
   Typography,
+  FormControl,
+  FormHelperText,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
@@ -256,8 +258,21 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
   const DropDownSelectComponent = props => {
     // If the component name is phase_name, then assume phaseNameLookup values
+    // If the component name is milestone_name, then assume milestoneNameLookup values;
     // Otherwise assume null,
-    let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
+
+    let lookupValues;
+    let requiredField;
+
+    if (props.name === "phase_name") {
+      lookupValues = phaseNameLookup;
+      requiredField = true;
+    } else if (props.name === "milestone_name") {
+      lookupValues = milestoneNameLookup;
+      requiredField = true;
+    } else {
+      lookupValues = null;
+    }
 
     // If lookup values is null, then it is a sub-phase list we need to generate
     if (lookupValues === null) {
@@ -292,28 +307,31 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
     // Proceed normally and generate the drop-down
     return (
-      <Select id={props.name} value={props.value}>
-        {Object.keys(lookupValues).map(key => {
-          return (
-            <MenuItem
-              onChange={() => props.onChange(key)}
-              onClick={() => props.onChange(key)}
-              onKeyDown={e => handleKeyEvent(e)}
-              value={key}
-            >
-              {lookupValues[key]}
-            </MenuItem>
-          );
-        })}
-        <MenuItem
-          onChange={() => props.onChange("")}
-          onClick={() => props.onChange("")}
-          onKeyDown={e => handleKeyEvent(e)}
-          value=""
-        >
-          -
-        </MenuItem>
-      </Select>
+      <FormControl>
+        <Select id={props.name} value={props.value} style={{ minWidth: "8em" }}>
+          {Object.keys(lookupValues).map(key => {
+            return (
+              <MenuItem
+                onChange={() => props.onChange(key)}
+                onClick={() => props.onChange(key)}
+                onKeyDown={e => handleKeyEvent(e)}
+                value={key}
+              >
+                {lookupValues[key]}
+              </MenuItem>
+            );
+          })}
+          <MenuItem
+            onChange={() => props.onChange("")}
+            onClick={() => props.onChange("")}
+            onKeyDown={e => handleKeyEvent(e)}
+            value=""
+          >
+            -
+          </MenuItem>
+        </Select>
+        {requiredField && <FormHelperText>Required</FormHelperText>}
+      </FormControl>
     );
   };
 
@@ -382,9 +400,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
   const milestoneColumns = [
     {
-      title: "Milestone",
+      title: "Milestone name",
       field: "milestone_name",
       lookup: milestoneNameLookup,
+      editComponent: props => (
+        <DropDownSelectComponent
+          {...props}
+          name={"milestone_name"}
+          data={data}
+        />
+      ),
     },
     {
       title: "Description",

@@ -175,10 +175,10 @@ const ProjectFiles = props => {
       editComponent: props => (
         <FormControl >
           <Select  
-          id="file_description"
-          name="file_description"
-          value={props?.value}
-          onChange={e => props.onChange(e.target.value)}
+            id="file_description"
+            name="file_description"
+            value={props?.value}
+            onChange={e => props.onChange(e.target.value)}
           >
             <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
             <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
