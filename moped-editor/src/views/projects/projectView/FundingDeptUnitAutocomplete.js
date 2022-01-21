@@ -30,9 +30,10 @@ const DeptUnitInput = (params, error = false, variant) => {
  * * @param {Array} value - passes an array of objects, each representing a dept unit
  *  @return {JSX.Element}
  */
-const FundingDeptUnitAutocomplete = ({ className, props, value }) => {
+const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
   console.log(data)
+  console.log(classes)
 
   const formatLabel = option => (
     !!option.dept ?
@@ -49,7 +50,7 @@ const FundingDeptUnitAutocomplete = ({ className, props, value }) => {
 
   return (
     <Autocomplete
-      className={className}
+      className={classes}
       id="dept-unit-id"
       filterOptions={filterOptions}
       getOptionLabel={option => formatLabel(option)}

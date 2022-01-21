@@ -130,11 +130,19 @@ const useStyles = makeStyles(theme => ({
     width: "100%",
   },
   deptAutocomplete: {
-    width: "100%",
-    border: "1px red solid",
+    width: "300px",
     fontSize: ".875em",
+    "& .MuiAutocomplete-inputRoot": {
+      marginBottom: "16px"
+    },
+    "& .MuiFormLabel-root": {
+      color: theme.palette.text.primary
+    }
   },
-  // do i select the child styles via its parents?
+  fundSelectStyle: {
+    width: "8em",
+    border: "1px green solid"
+  }
 }));
 
 const ProjectFundingTable = () => {
@@ -337,6 +345,7 @@ const ProjectFundingTable = () => {
           ? `${props.value.fund_id} | ${props.value.fund_name}`
           : ""
       }
+      classes={classes.fundSelectStyle}
     >
       {props.data.map(item => (
         <MenuItem
@@ -480,7 +489,7 @@ const ProjectFundingTable = () => {
         ),
       editComponent: props => (
         <FundingDeptUnitAutocomplete
-          className={classes.deptAutocomplete}
+          classes={classes.deptAutocomplete}
           props={props}
           value={props.value}
         />
