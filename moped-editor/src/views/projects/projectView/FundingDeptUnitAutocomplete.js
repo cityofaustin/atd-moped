@@ -32,8 +32,6 @@ const DeptUnitInput = (params, error = false, variant) => {
  */
 const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
-  console.log(data)
-  console.log(classes)
 
   const formatLabel = option => (
     !!option.dept ?
