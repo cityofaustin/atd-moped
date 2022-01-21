@@ -2049,6 +2049,7 @@
       - proj_funding_id
       - project_id
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -2065,6 +2066,7 @@
       - proj_funding_id
       - project_id
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -2081,6 +2083,7 @@
       - proj_funding_id
       - project_id
       filter: {}
+      allow_aggregations: true
   update_permissions:
   - role: moped-admin
     permission:
@@ -2098,7 +2101,7 @@
       - proj_funding_id
       - project_id
       filter: {}
-      check: {}
+      check: null
   - role: moped-editor
     permission:
       columns:
@@ -2115,7 +2118,7 @@
       - proj_funding_id
       - project_id
       filter: {}
-      check: {}
+      check: null
   event_triggers:
   - name: activity_log_moped_proj_fund_source
     definition:
