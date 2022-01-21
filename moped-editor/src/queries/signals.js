@@ -46,7 +46,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         feature_id
         location
       }
-      moped_proj_funding {
+      moped_proj_funding (where: {funding_status_id : { _neq: 0 } }) {
         moped_fund_source {
           funding_source_name
         }
