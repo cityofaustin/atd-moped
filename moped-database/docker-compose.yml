@@ -3,26 +3,5 @@
 #
 
 version: '3.7'
-services:
-    #
-    # Local PostgreSQL database
-    #   Note: Attempted using the leanest version (alpine), feel free
-    #   to use any other image, as long as the port configuration
-    #   and access configuration (user, db, password) are all the same.
-    #
-    moped-pgsql:
-        image: postgis/postgis:12-master
-        volumes:
-            - moped-db-vol:/var/lib/postgresql/data
-        expose:
-            - 5432
-        ports:
-            - 5432:5432
-        environment:
-            - POSTGRES_USER=moped
-            - POSTGRES_PASSWORD=moped
-            - POSTGRES_DB=moped
 
-volumes:
-    moped-db-vol:
-        driver: local
+# Currently we have multiplatform images in the stack, and this file is reserved for when we do.
