@@ -1,6 +1,19 @@
 version: '3.7'
 services:
 
+    moped-pgsql:
+        image: "frankinaustin/postgis:12-3.2"
+        volumes:
+            - moped-db-vol:/var/lib/postgresql/data
+        expose:
+            - 5432
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=moped
+            - POSTGRES_PASSWORD=moped
+            - POSTGRES_DB=moped
+
     hasura:
         image: frankinaustin/graphql-engine-arm64:v1.3.3
         restart: always
