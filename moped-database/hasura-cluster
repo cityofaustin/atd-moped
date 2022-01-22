@@ -24,7 +24,6 @@ HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 #
 # Detect platform
 #
-
 function __get_platform() {
   PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
   echo "Detected platform: ${PLATFORM}";
