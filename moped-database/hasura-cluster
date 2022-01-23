@@ -19,7 +19,6 @@ function __get_platform() {
 
 function __set_postgresql_image() {
   __get_platform;
-  # bash is weird
   if [ $PLATFORM = "arm64" ]
     then
       HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
