@@ -8,6 +8,7 @@
 #
 set -o errexit
 
+# The following two functions need to be defined prior to execution
 
 #
 # Detect platform
@@ -29,10 +30,7 @@ function __set_postgresql_image() {
 }
 
 HIDE_HASURA_KIT_BANNER="FALSE";
-
-#HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
-__set_postgresql_image;
-
+__set_postgresql_image; # into HASURA_CLUSTER_POSTGRES_IMAGE
 HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 #                              ^^^^
 # Putting files in the .ssh configuration doesn't make sense.
