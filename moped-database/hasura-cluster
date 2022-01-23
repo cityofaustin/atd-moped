@@ -8,8 +8,31 @@
 #
 set -o errexit
 
+
+#
+# Detect platform
+#
+function __get_platform() {
+  PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
+  echo "Detected platform: ${PLATFORM}";
+}
+
+function __set_postgresql_image() {
+  __get_platform;
+  # bash is weird
+  if [ $PLATFORM = "arm64" ]
+    then
+      HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
+    else
+      HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
+    fi
+  echo "Database Docker Image: ${HASURA_CLUSTER_POSTGRES_IMAGE}"
+}
+
 HIDE_HASURA_KIT_BANNER="FALSE";
-HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
+
+#HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
+__set_postgresql_image;
 
 HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 #                              ^^^^
@@ -21,14 +44,6 @@ HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 # tech-debt: update installation directions / tooling to address file security 
 # with the chmod command and a location dedicated to moped dot files.
 
-
-#
-# Detect platform
-#
-function __get_platform() {
-  PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
-  echo "Detected platform: ${PLATFORM}";
-}
 
 #
 # Get timestamp
