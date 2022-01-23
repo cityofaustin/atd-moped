@@ -15,7 +15,8 @@ HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
 #                              ^^^^
 # Putting files in the .ssh configuration doesn't make sense.
 # The intent is to achieve storing them in a place with sensible
-# file permissions, but .ssh is where you keep crypto keys for openssh. 
+# file permissions, but .ssh is where you keep crypto keys and 
+# user-level config files for openssh. 
 #
 # tech-debt: update installation directions / tooling to address file security 
 # with the chmod command and a location dedicated to moped dot files.
