@@ -4,7 +4,7 @@
 
 version: '3.7'
 
-# Currently we have multiplatform images in the stack, and this file is reserved for when we do.
+# Currently we have no multiplatform images in the stack, and this file is reserved for when we do.
 
 
 # We do have a volume which is shared
