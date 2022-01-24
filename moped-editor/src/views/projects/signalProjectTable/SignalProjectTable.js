@@ -287,6 +287,10 @@ const SignalProjectTable = () => {
       title: "Project DO#",
       field: "purchase_order_number",
       emptyValue: "-",
+      render: entry =>
+        entry.purchase_order_number.trim().length === 0
+          ? "-"
+          : entry.purchase_order_number,
     },
     {
       title: "Project sponsor",
