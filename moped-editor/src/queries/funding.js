@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const FUNDING_QUERY = gql`
   query ProjectFunding($projectId: Int) {
     moped_proj_funding(
-      where: { project_id: { _eq: $projectId }, funding_status_id: { _gt: 0 } }
+      where: { project_id: { _eq: $projectId }, funding_status_id: { _neq: 0 } }
     ) {
       proj_funding_id
       added_by
@@ -17,6 +17,7 @@ export const FUNDING_QUERY = gql`
     }
     moped_project(where: { project_id: { _eq: $projectId } }) {
       ecapris_subproject_id
+      task_order
     }
     moped_fund_sources {
       funding_source_id
@@ -77,6 +78,17 @@ export const ADD_PROJECT_FUNDING = gql`
       returning {
         proj_funding_id
       }
+    }
+  }
+`;
+
+export const UPDATE_FUNDING_TASK_ORDERS = gql`
+  mutation AddProjectFunding($projectId: Int!, $taskOrders: jsonb!) {
+    update_moped_project(
+      _set: { task_order: $taskOrders }
+      where: { project_id: { _eq: $projectId } }
+    ) {
+      affected_rows
     }
   }
 `;

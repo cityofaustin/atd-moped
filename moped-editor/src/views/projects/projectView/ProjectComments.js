@@ -28,7 +28,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
 
-import "./ProjectComments.css"
+import "./ProjectComments.css";
 
 // Query
 import {
@@ -74,14 +74,19 @@ const useStyles = makeStyles(theme => ({
   },
   editDeleteButtons: {
     color: "#000000",
-  }
+  },
 }));
 
- // Lookup array to convert project note types to a human readable interpretation 
- // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = ['', 'Internal Note', 'Status Update', 'Timeline Notes'];
+// Lookup array to convert project note types to a human readable interpretation
+// The zeroth item in the list is intentionally blank; the notes are 1-indexed.
+const projectNoteTypes = [
+  "",
+  "Internal Note",
+  "Status Update",
+  "Timeline Notes",
+];
 
-const ProjectComments = () => {
+const ProjectComments = props => {
   const { projectId } = useParams();
   const { user } = useUser();
   const userHighestRole = getHighestRole(user);
@@ -122,6 +127,8 @@ const ProjectComments = () => {
     onCompleted() {
       setNoteText("");
       refetch();
+      // refetch the project summary query passed down from ProjectView
+      props.refetch();
       setCommentAddSuccess(true);
       setEditingComment(false);
       setTimeout(() => {
@@ -134,6 +141,8 @@ const ProjectComments = () => {
   const [deleteExistingComment] = useMutation(DELETE_PROJECT_COMMENT, {
     onCompleted() {
       refetch();
+      // refetch the project summary query passed down from ProjectView
+      props.refetch();
     },
   });
 
@@ -270,9 +279,10 @@ const ProjectComments = () => {
               {data.moped_proj_notes.length > 0 ? (
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
-                    let isNotLastItem = i < data.moped_proj_notes.length - 1;
-                    let editableComment = (userSessionData.user_id === item.added_by_user_id ||
-                                           userHighestRole === "moped-admin");
+                    const isNotLastItem = i < data.moped_proj_notes.length - 1;
+                    const editableComment =
+                      userSessionData.user_id === item.added_by_user_id ||
+                      userHighestRole === "moped-admin";
 
                     return (
                       <>
@@ -281,7 +291,9 @@ const ProjectComments = () => {
                             <Avatar />
                           </ListItemAvatar>
                           <ListItemText
-                            className={editableComment ? classes.editableComment : ""}
+                            className={
+                              editableComment ? classes.editableComment : ""
+                            }
                             primary={
                               <>
                                 <Typography className={classes.commentorText}>
@@ -302,7 +314,9 @@ const ProjectComments = () => {
                                   })}`}
                                 </Typography>
                                 <Typography className={classes.noteType}>
-                                  {` ${projectNoteTypes[item.project_note_type]}`}
+                                  {` ${
+                                    projectNoteTypes[item.project_note_type]
+                                  }`}
                                 </Typography>
                               </>
                             }
@@ -328,7 +342,9 @@ const ProjectComments = () => {
                           {// show edit/delete icons if comment authored by logged in user
                           // or user is admin
                           editableComment && (
-                            <ListItemSecondaryAction className={classes.editControls}>
+                            <ListItemSecondaryAction
+                              className={classes.editControls}
+                            >
                               {commentId !== item.project_note_id && (
                                 <IconButton
                                   edge="end"
@@ -337,7 +353,7 @@ const ProjectComments = () => {
                                     editComment(i, item.project_note_id)
                                   }
                                 >
-                                  <EditIcon 
+                                  <EditIcon
                                     className={classes.editDeleteButtons}
                                   />
                                 </IconButton>

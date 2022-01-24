@@ -3,7 +3,6 @@ import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import { stopReportingRuntimeErrors } from "react-error-overlay";
 
 import {
   createSummaryMapLayers,
@@ -60,7 +59,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
    * Let's throw an error intentionally if there are no features for a project.
    */
   if (featureCount < 1) {
-    stopReportingRuntimeErrors();
+    // Throw an error if this component was called without features to render.
     throw Error("Map error: Cannot render or edit maps with no features");
   }
 

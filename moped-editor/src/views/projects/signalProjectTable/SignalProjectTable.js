@@ -2,8 +2,13 @@ import React from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import {
   CardContent,
+  Checkbox,
   CircularProgress,
   Grid,
+  Input,
+  ListItemText,
+  MenuItem,
+  Select,
   TextField,
   Typography,
   makeStyles,
@@ -12,21 +17,27 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
 
 import Page from "src/components/Page";
+import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
 import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,
 } from "../../../queries/signals";
-import { PROJECT_UPDATE_SPONSOR } from "../../../queries/project";
+import {
+  PROJECT_UPDATE_SPONSOR,
+  PROJECT_UPDATE_TYPES,
+  UPDATE_PROJECT_TASK_ORDER,
+} from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
+import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
 
 const useStyles = makeStyles({
   signalsTable: {
     "& .MuiTableCell-root": {
       // override the default padding of 16px
-      padding: "14px",
+      padding: "10px",
     },
   },
   tableTypography: {
@@ -36,6 +47,7 @@ const useStyles = makeStyles({
 
 const SignalProjectTable = () => {
   const classes = useStyles();
+  const { height } = useWindowResize();
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -46,6 +58,8 @@ const SignalProjectTable = () => {
 
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+  const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
+  const [updateProjectTaskOrder] = useMutation(UPDATE_PROJECT_TASK_ORDER);
 
   if (error) {
     console.log(error);
@@ -54,7 +68,16 @@ const SignalProjectTable = () => {
     return <CircularProgress />;
   }
 
+  // lists needed for dropdown options
   const entityList = data?.moped_entity ?? [];
+  const typeList = data?.moped_types ?? [];
+  const typeDict = typeList.reduce(
+    (prev, curr) => ({
+      ...prev,
+      ...{ [curr.type_id]: curr.type_name },
+    }),
+    {}
+  );
 
   /**
    * Build data needed in Signals Material Table
@@ -89,7 +112,7 @@ const SignalProjectTable = () => {
     const project_types = [];
     if (project?.moped_project_types?.length) {
       project.moped_project_types.forEach(projType => {
-        project_types.push(projType?.moped_type?.type_name);
+        project_types.push(projType?.moped_type?.type_id);
       });
     }
     project["project_types"] = project_types;
@@ -171,7 +194,7 @@ const SignalProjectTable = () => {
       title: "Project name",
       field: "project_name",
       editable: "never",
-      cellStyle: { minWidth: "200px" },
+      cellStyle: { ...typographyStyle, minWidth: "200px" },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
@@ -190,8 +213,17 @@ const SignalProjectTable = () => {
     {
       title: "Project types",
       field: "project_types",
-      editable: "never",
-      render: entry => entry.project_types.join(", "),
+      customEdit: "projectTypes",
+      render: entry => {
+        if (entry?.project_types?.length) {
+          return (
+            <Typography className={classes.tableTypography}>
+              {entry.project_types.map(t => typeDict[t]).join(", ")}
+            </Typography>
+          );
+        }
+        return <Typography className={classes.tableTypography}>-</Typography>;
+      },
     },
     {
       title: "Current phase",
@@ -209,13 +241,28 @@ const SignalProjectTable = () => {
     {
       title: "Task order",
       field: "task_order",
-      // placeholder for task order issue
+      customEdit: "taskOrders",
+      emptyValue: "-",
+      render: entry => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        let content = entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+      },
     },
     {
       title: "Contractor/Contract",
       field: "contractor",
-      emptyValue: "blank",
-      render: entry => (entry.contractor === "" ? "blank" : entry.contractor),
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Status update",
@@ -239,14 +286,16 @@ const SignalProjectTable = () => {
     {
       title: "Project DO#",
       field: "purchase_order_number",
-      emptyValue: "blank",
+      emptyValue: "-",
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
       render: entry => (
         <Typography className={classes.tableTypography}>
-          {entry?.project_sponsor?.entity_name}
+          {entry?.project_sponsor?.entity_name === "None"
+            ? "-"
+            : entry?.project_sponsor?.entity_name}
         </Typography>
       ),
       customEdit: "projectSponsor",
@@ -278,7 +327,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Targeted construction start",
+      title: "Construction start",
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
@@ -297,7 +346,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Project completion date",
+      title: "Project completion",
       field: "completion_date",
       editable: "never",
       cellStyle: typographyStyle,
@@ -316,7 +365,7 @@ const SignalProjectTable = () => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
@@ -327,34 +376,10 @@ const SignalProjectTable = () => {
     },
   ];
 
+  /**
+   * projectActions functions object
+   */
   const projectActions = {
-    update: (newData, oldData) => {
-      // initialize update object with old data
-      const updatedProjectObject = {
-        ...oldData,
-      };
-      // Array of differences between new and old data
-      let differences = Object.keys(oldData).filter(
-        key => oldData[key] !== newData[key]
-      );
-
-      // Loop through the differences and assign newData values.
-      differences.forEach(diff => {
-        updatedProjectObject[diff] = newData[diff];
-      });
-
-      // Remove extraneous fields given by MaterialTable that
-      // Hasura doesn't need
-      delete updatedProjectObject.tableData;
-      delete updatedProjectObject.__typename;
-
-      updatedProjectObject["entity_id"] =
-        updatedProjectObject.project_sponsor.entity_id;
-
-      return updateSignalProject({
-        variables: updatedProjectObject,
-      });
-    },
     cellUpdate: (newData, oldData, rowData, columnDef) => {
       // if column definition has a custom edit component, use that mutation to update
       if (columnDef.customEdit === "projectSponsor") {
@@ -364,6 +389,31 @@ const SignalProjectTable = () => {
             entityId: newData.entity_id,
           },
         });
+      } else if (columnDef.customEdit === "projectTypes") {
+        const typeIdsToDelete = oldData.filter(t => !newData.includes(t));
+        const typeIdsToInsert = newData.filter(t => !oldData.includes(t));
+        const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
+          project_id: rowData.project_id,
+          project_type_id: type_id,
+          status_id: 1,
+        }));
+        // List of primary keys to delete
+        const typePksToDelete = rowData.moped_project_types
+          .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
+          .map(t => t.id);
+        return updateProjectTypes({
+          variables: {
+            types: typeObjectsToInsert,
+            deleteList: typePksToDelete,
+          },
+        });
+      } else if (columnDef.customEdit === "taskOrders") {
+        return updateProjectTaskOrder({
+          variables: {
+            taskOrder: newData,
+            projectId: rowData.project_id,
+          },
+        });
       } else {
         const updatedProjectObject = {
           ...rowData,
@@ -371,7 +421,7 @@ const SignalProjectTable = () => {
         updatedProjectObject[columnDef.field] = newData;
 
         updatedProjectObject["entity_id"] =
-          updatedProjectObject.project_sponsor.entity_id;
+          updatedProjectObject?.project_sponsor?.entity_id;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
@@ -385,6 +435,9 @@ const SignalProjectTable = () => {
     },
   };
 
+  /**
+   * Custom edit components
+   */
   const cellEditComponents = {
     projectSponsor: props => (
       <Autocomplete
@@ -400,6 +453,42 @@ const SignalProjectTable = () => {
           <TextField {...params} variant="standard" label={null} />
         )}
       />
+    ),
+    projectTypes: props => {
+      return (
+        <Select
+          multiple
+          value={props.value}
+          onChange={(event, value) => props.onChange(event.target.value)} //handleChange}
+          input={<Input />}
+          renderValue={type_ids => type_ids.map(t => typeDict[t]).join(", ")}
+          /*
+            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
+            this is fixed by overriding the function "getContentAnchorEl".
+                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
+          */
+          MenuProps={{
+            getContentAnchorEl: () => null,
+            style: {
+              maxHeight: 500,
+              width: 450,
+            },
+          }}
+        >
+          {typeList.map(type => (
+            <MenuItem key={type.type_id} value={type.type_id}>
+              <Checkbox
+                checked={props.value.includes(type.type_id)}
+                color={"primary"}
+              />
+              <ListItemText primary={type.type_name} />
+            </MenuItem>
+          ))}
+        </Select>
+      );
+    },
+    taskOrders: props => (
+      <TaskOrderAutocomplete props={props} value={props.value} />
     ),
   };
 
@@ -439,9 +528,19 @@ const SignalProjectTable = () => {
                 ...(data.moped_project.length < PAGING_DEFAULT_COUNT + 1 && {
                   paging: false,
                 }),
-                search: false,
+                search: true,
+                filtering: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
+                pageSize: 30,
+                headerStyle: {
+                  whiteSpace: "nowrap",
+                  position: "sticky",
+                  top: 0,
+                },
+                // maxBodyHeight is used in conjunction with headerStyle position:"sticky"
+                // maxBodyHeight is window height minus size of navbar, footer, table title, and table padding
+                maxBodyHeight: `${height - 210}px`,
               }}
               localization={{
                 header: {
@@ -449,11 +548,7 @@ const SignalProjectTable = () => {
                 },
               }}
               editable={{
-                onRowUpdate: (newData, oldData) => {
-                  return projectActions
-                    .update(newData, oldData)
-                    .then(() => refetch());
-                },
+                isEditable: () => false,
               }}
               cellEditable={{
                 cellStyle: { minWidth: "300px" },

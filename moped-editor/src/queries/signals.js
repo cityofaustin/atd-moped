@@ -17,8 +17,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
             }
             status_id: { _neq: 4 }
           }
-        ]
+        ],
+        status_id: {_neq: 6}
       }
+      order_by: {updated_at: desc_nulls_last}
     ) {
       project_id
       project_name
@@ -26,6 +28,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       contractor
       purchase_order_number
       project_sponsor
+      task_order
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 } }
         order_by: { date_created: desc }
@@ -43,14 +46,17 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         feature_id
         location
       }
-      moped_proj_funding {
+      moped_proj_funding (where: {funding_status_id : { _neq: 0 } }) {
         moped_fund_source {
           funding_source_name
         }
       }
-      moped_project_types {
+      moped_project_types(where: { status_id: { _eq: 1 } }) {
+        id
+        status_id
         moped_type {
           type_name
+          type_id
         }
       }
       moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
@@ -64,6 +70,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
     moped_entity {
       entity_id
       entity_name
+    }
+    moped_types {
+      type_id
+      type_name
     }
   }
 `;

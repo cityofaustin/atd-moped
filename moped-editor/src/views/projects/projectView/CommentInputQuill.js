@@ -40,8 +40,8 @@ const CommentInputQuill = ({
 
   return (
     <Container>
-      <Grid xs={12} sm={12} container direction="column" spacing={1}>
-        <Grid item>
+      <Grid container direction="column" spacing={1}>
+        <Grid item xs={12} sm={12}>
           <Box pt={2}>
             <ReactQuill
               theme="snow"

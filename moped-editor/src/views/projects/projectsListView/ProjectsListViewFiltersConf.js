@@ -52,19 +52,21 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "current_status",
-      label: "Currrent status",
+      name: "status_name",
+      label: "Current status",
       placeholder: "Current status",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
       name: "current_phase",
-      label: "Currrent phase",
+      label: "Current phase",
       placeholder: "Current phase",
       type: "string",
       operators: [
@@ -88,6 +90,32 @@ export const ProjectsListViewFiltersConf = {
         // " :" is always present even if there are no team members present
         "string_is_null_special_case",
         "string_is_not_null_special_case",
+      ],
+    },
+    {
+      name: "project_sponsor",
+      label: "Project sponsor",
+      placeholder: "Project sponsor",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "project_partner",
+      label: "Project partners",
+      placeholder: "Project partners",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
   ],

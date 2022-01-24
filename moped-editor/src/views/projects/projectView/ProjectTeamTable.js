@@ -229,16 +229,19 @@ const ProjectTeamTable = ({
     {
       title: "Notes",
       field: "notes",
-      editComponent: props => (
-        <TextField
-          id="notes"
-          name="notes"
-          multiline
-          inputProps={{ maxLength: 125 }}
-          value={props.value ?? ""}
-          onChange={e => props.onChange(e.target.value)}
-        />
-      ),
+      editComponent: props => {
+        const val = props.value ?? "";
+        return (
+          <TextField
+            id="notes"
+            name="notes"
+            multiline
+            inputProps={{ maxLength: 125 }}
+            value={val && val !== "null" ? val : ""}
+            onChange={e => props.onChange(e.target.value)}
+          />
+        );
+      },
     },
   ];
 
@@ -264,7 +267,7 @@ const ProjectTeamTable = ({
           }
         });
 
-        setPersonnelState(
+        return setPersonnelState(
           [...newPersonnelState, activePersonnel].filter(item => item !== null)
         );
       },
@@ -273,13 +276,13 @@ const ProjectTeamTable = ({
         const newState = personnelState.filter(
           item => item.user_id !== newData.user_id
         );
-        setPersonnelState([...newState, newData]);
+        return setPersonnelState([...newState, newData]);
       },
       delete: oldData => {
         const newState = personnelState.filter(
           item => item.user_id !== oldData.user_id
         );
-        setPersonnelState([...newState]);
+        return setPersonnelState([...newState]);
       },
     },
     false: {
@@ -297,7 +300,7 @@ const ProjectTeamTable = ({
         });
 
         // Upsert as usual
-        upsertProjectPersonnel({
+        return upsertProjectPersonnel({
           variables: {
             objects: personnelData,
           },
@@ -349,7 +352,7 @@ const ProjectTeamTable = ({
           }
         );
 
-        upsertProjectPersonnel({
+        return upsertProjectPersonnel({
           variables: {
             objects: updatedPersonnelData,
           },
@@ -368,7 +371,7 @@ const ProjectTeamTable = ({
         });
 
         // Upsert as usual
-        upsertProjectPersonnel({
+        return upsertProjectPersonnel({
           variables: {
             objects: updatedPersonnelData,
           },
@@ -451,32 +454,17 @@ const ProjectTeamTable = ({
         icons={{ Delete: DeleteOutlineIcon }}
         editable={{
           onRowAdd: newData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].add(newData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .add(newData)
+              .then(() => refetch()),
           onRowUpdate: (newData, oldData) =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].update(newData, oldData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .update(newData, oldData)
+              .then(() => refetch()),
           onRowDelete: oldData =>
-            new Promise((resolve, reject) => {
-              setTimeout(() => {
-                isNewProjectActions[isNewProject].delete(oldData);
-
-                setTimeout(() => refetch(), 501);
-                resolve();
-              }, 500);
-            }),
+            isNewProjectActions[isNewProject]
+              .delete(oldData)
+              .then(() => refetch()),
         }}
       />
     </ApolloErrorHandler>

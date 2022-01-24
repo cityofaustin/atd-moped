@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import ProjectSummaryCurrentPhase from "./ProjectSummaryCurrentPhase";
 import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
@@ -21,8 +20,13 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
-import ProjectSummaryCurrentStatus from "./ProjectSummaryCurrentStatus";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
+import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
+import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
+
+import { countFeatures } from "../../../../utils/mapHelpers";
+import ProjectSummaryContractor from "./ProjectSummaryContractor";
+import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -30,6 +34,9 @@ const useStyles = makeStyles(theme => ({
   },
   linkIcon: {
     fontSize: "1rem",
+  },
+  syncLinkIcon: {
+    fontSize: "1.2rem",
   },
   editIcon: {
     cursor: "pointer",
@@ -48,6 +55,10 @@ const useStyles = makeStyles(theme => ({
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
+  },
+  fieldLabelTextSpan: {
+    borderBottom: "1px dashed",
+    borderBottomColor: theme.palette.text.secondary,
   },
   fieldLabelLink: {
     width: "calc(100% - 2rem)",
@@ -78,7 +89,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [makeSureRefresh, setMakeSureRefresh] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [snackbarState, setSnackbarState] = useState(false);
 
@@ -103,8 +113,21 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
     projectFeatureRecords
   );
 
-  if (projectFeatureRecords.length === 0 && !makeSureRefresh)
-    setMakeSureRefresh(true);
+  const renderMap = () => {
+    if (countFeatures(projectFeatureCollection) < 1) {
+      return (
+        <ProjectSummaryMapFallback
+          projectId={projectId}
+          refetchProjectDetails={refetch}
+          mapData={projectFeatureCollection}
+        />
+      );
+    } else {
+      return (
+        <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+      );
+    }
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -129,31 +152,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               refetch={refetch}
               classes={classes}
             />
-            <ProjectSummaryCurrentPhase
-              projectId={projectId}
-              data={data}
-              classes={classes}
-            />
-            <Grid container spacing={0}>
-              <Grid item xs={6}>
-                <ProjectSummaryCurrentStatus
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ProjectSummaryProjectECapris
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-            </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryProjectSponsor
@@ -176,7 +174,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
-                <ProjectSummaryProjectWebsite
+                <ProjectSummaryProjectTypes
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
@@ -185,7 +183,52 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
               <Grid item xs={6}>
-                {null}
+                <ProjectSummaryProjectWebsite
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryContractor
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectDO
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryKnackDataTrackerSync
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryProjectECapris
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -204,9 +247,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 onReset={() => setMapError(false)}
                 resetKeys={[mapError]}
               >
-                <ProjectSummaryMap
-                  projectExtentGeoJSON={projectFeatureCollection}
-                />
+                {renderMap()}
               </ErrorBoundary>
             )}
           </Grid>
