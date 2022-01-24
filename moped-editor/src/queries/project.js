@@ -99,7 +99,7 @@ export const SUMMARY_QUERY = gql`
       phase_start
       phase_end
     }
-    moped_entity {
+    moped_entity(order_by: {entity_id: asc}) {
       entity_id
       entity_name
     }
