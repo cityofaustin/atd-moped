@@ -1168,14 +1168,6 @@ SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, fal
 SELECT pg_catalog.setval('public.moped_proj_fund_source_proj_fund_source_id_seq', 1, false);
 
 
---
--- TOC entry 6130 (class 0 OID 0)
--- Dependencies: 293
--- Name: moped_proj_groups_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_groups_group_id_seq', 1, false);
-
 
 --
 -- TOC entry 6131 (class 0 OID 0)
