@@ -283,7 +283,9 @@ const NavigationSearchInput = ({ input404Class }) => {
               <InputBase
                 placeholder="Project name, description or eCAPRIS ID"
                 classes={{
-                  root: input404Class ? classes.inputRoot404 : classes.inputRoot,
+                  root: input404Class
+                    ? classes.inputRoot404
+                    : classes.inputRoot,
                   input: classes.inputInput,
                   adornedStart: classes.adornedStart,
                   focused: classes.inputFocused,
@@ -304,12 +306,14 @@ const NavigationSearchInput = ({ input404Class }) => {
             anchorEl={searchResultsAnchor}
             onClose={handleDropdownClose}
             placement={"bottom-start"}
-            modifiers={!input404Class && {
-              offset: {
-                enabled: true,
-                offset: "0, 15",
-              },
-            }}
+            modifiers={
+              !input404Class && {
+                offset: {
+                  enabled: true,
+                  offset: "0, 15",
+                },
+              }
+            }
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             className={clsx(
