@@ -17,6 +17,7 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
 
 import Page from "src/components/Page";
+import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
 import {
   SIGNAL_PROJECTS_QUERY,
@@ -25,10 +26,12 @@ import {
 import {
   PROJECT_UPDATE_SPONSOR,
   PROJECT_UPDATE_TYPES,
+  UPDATE_PROJECT_TASK_ORDER,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
+import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
 
 const useStyles = makeStyles({
   signalsTable: {
@@ -44,6 +47,7 @@ const useStyles = makeStyles({
 
 const SignalProjectTable = () => {
   const classes = useStyles();
+  const { height } = useWindowResize();
   const { loading, error, data, refetch } = useQuery(SIGNAL_PROJECTS_QUERY, {
     fetchPolicy: "no-cache",
   });
@@ -55,6 +59,7 @@ const SignalProjectTable = () => {
   const [updateSignalProject] = useMutation(UPDATE_SIGNAL_PROJECT);
   const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
   const [updateProjectTypes] = useMutation(PROJECT_UPDATE_TYPES);
+  const [updateProjectTaskOrder] = useMutation(UPDATE_PROJECT_TASK_ORDER);
 
   if (error) {
     console.log(error);
@@ -113,7 +118,7 @@ const SignalProjectTable = () => {
     project["project_types"] = project_types;
 
     // project sponsor
-    project["project_sponsor"] = entityList.find(
+    project["project_sponsor_object"] = entityList.find(
       e => e.entity_id === project?.project_sponsor
     );
 
@@ -189,7 +194,7 @@ const SignalProjectTable = () => {
       title: "Project name",
       field: "project_name",
       editable: "never",
-      cellStyle: { minWidth: "200px" },
+      cellStyle: { ...typographyStyle, minWidth: "200px" },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
@@ -236,7 +241,22 @@ const SignalProjectTable = () => {
     {
       title: "Task order",
       field: "task_order",
-      // placeholder for task order issue
+      customEdit: "taskOrders",
+      emptyValue: "-",
+      render: entry => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        let content = entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+      },
     },
     {
       title: "Contractor/Contract",
@@ -267,15 +287,19 @@ const SignalProjectTable = () => {
       title: "Project DO#",
       field: "purchase_order_number",
       emptyValue: "-",
+      render: entry =>
+        entry.purchase_order_number.trim().length === 0
+          ? "-"
+          : entry.purchase_order_number,
     },
     {
       title: "Project sponsor",
-      field: "project_sponsor",
+      field: "project_sponsor_object",
       render: entry => (
         <Typography className={classes.tableTypography}>
-          {entry?.project_sponsor?.entity_name === "None"
+          {entry?.project_sponsor_object?.entity_name === "None"
             ? "-"
-            : entry?.project_sponsor?.entity_name}
+            : entry?.project_sponsor_object?.entity_name}
         </Typography>
       ),
       customEdit: "projectSponsor",
@@ -387,6 +411,13 @@ const SignalProjectTable = () => {
             deleteList: typePksToDelete,
           },
         });
+      } else if (columnDef.customEdit === "taskOrders") {
+        return updateProjectTaskOrder({
+          variables: {
+            taskOrder: newData,
+            projectId: rowData.project_id,
+          },
+        });
       } else {
         const updatedProjectObject = {
           ...rowData,
@@ -394,7 +425,7 @@ const SignalProjectTable = () => {
         updatedProjectObject[columnDef.field] = newData;
 
         updatedProjectObject["entity_id"] =
-          updatedProjectObject?.project_sponsor?.entity_id;
+          updatedProjectObject?.project_sponsor;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
@@ -460,6 +491,9 @@ const SignalProjectTable = () => {
         </Select>
       );
     },
+    taskOrders: props => (
+      <TaskOrderAutocomplete props={props} value={props.value} />
+    ),
   };
 
   return (
@@ -498,13 +532,19 @@ const SignalProjectTable = () => {
                 ...(data.moped_project.length < PAGING_DEFAULT_COUNT + 1 && {
                   paging: false,
                 }),
-                search: false,
+                search: true,
+                filtering: false,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
                 headerStyle: {
                   whiteSpace: "nowrap",
+                  position: "sticky",
+                  top: 0,
                 },
+                // maxBodyHeight is used in conjunction with headerStyle position:"sticky"
+                // maxBodyHeight is window height minus size of navbar, footer, table title, and table padding
+                maxBodyHeight: `${height - 210}px`,
               }}
               localization={{
                 header: {

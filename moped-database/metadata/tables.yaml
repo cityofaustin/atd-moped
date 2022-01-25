@@ -3596,6 +3596,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3607,10 +3608,11 @@
       - project_priority
       - project_sponsor
       - project_uuid
-      - purchase_order_number
       - project_website
+      - purchase_order_number
       - start_date
       - status_id
+      - task_order
       - timeline_id
       - updated_at
       backend_only: false
@@ -3628,6 +3630,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3639,10 +3642,11 @@
       - project_priority
       - project_sponsor
       - project_uuid
-      - purchase_order_number
       - project_website
+      - purchase_order_number
       - start_date
       - status_id
+      - task_order
       - timeline_id
       - updated_at
       backend_only: false
@@ -3660,6 +3664,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3671,74 +3676,79 @@
       - project_priority
       - project_sponsor
       - project_uuid
-      - purchase_order_number
       - project_website
+      - purchase_order_number
       - start_date
       - status_id
+      - task_order
       - timeline_id
       - updated_at
       filter: {}
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - contractor
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
+      - knack_project_id
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
       - project_sponsor
-      - project_uuid
-      - purchase_order_number
-      - project_website
-      - start_date
       - status_id
       - timeline_id
+      - task_order
+      - ecapris_subproject_id
+      - contractor
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - project_website
+      - purchase_order_number
+      - date_added
       - updated_at
+      - project_uuid
       filter: {}
   - role: moped-viewer
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - contractor
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
+      - knack_project_id
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
       - project_sponsor
-      - project_uuid
-      - purchase_order_number
-      - project_website
-      - start_date
       - status_id
       - timeline_id
+      - task_order
+      - ecapris_subproject_id
+      - contractor
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - project_website
+      - purchase_order_number
+      - date_added
       - updated_at
+      - project_uuid
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -3754,6 +3764,7 @@
       - end_date
       - fiscal_year
       - is_retired
+      - knack_project_id
       - milestone_id
       - project_description
       - project_description_public
@@ -3765,10 +3776,11 @@
       - project_priority
       - project_sponsor
       - project_uuid
-      - purchase_order_number
       - project_website
+      - purchase_order_number
       - start_date
       - status_id
+      - task_order
       - timeline_id
       - updated_at
       filter: {}
@@ -3776,33 +3788,35 @@
   - role: moped-editor
     permission:
       columns:
-      - added_by
       - capitally_funded
-      - contractor
-      - current_phase
-      - current_status
-      - date_added
-      - ecapris_subproject_id
-      - end_date
-      - fiscal_year
       - is_retired
+      - end_date
+      - start_date
+      - added_by
+      - knack_project_id
       - milestone_id
-      - project_description
-      - project_description_public
       - project_id
       - project_importance
       - project_length
-      - project_name
       - project_order
-      - project_priority
       - project_sponsor
-      - project_uuid
-      - purchase_order_number
-      - project_website
-      - start_date
       - status_id
       - timeline_id
+      - task_order
+      - ecapris_subproject_id
+      - contractor
+      - current_phase
+      - current_status
+      - fiscal_year
+      - project_description
+      - project_description_public
+      - project_name
+      - project_priority
+      - project_website
+      - purchase_order_number
+      - date_added
       - updated_at
+      - project_uuid
       filter: {}
       check: {}
   event_triggers:
@@ -4744,6 +4758,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}
@@ -4775,6 +4790,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}
@@ -4806,6 +4822,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}

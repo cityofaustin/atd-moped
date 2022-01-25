@@ -15,6 +15,7 @@ import {
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import { findHighestRole } from "../../auth/user";
+import NotFoundView from "../errors/NotFoundView";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -79,26 +80,31 @@ const EditStaffView = () => {
   };
 
   return (
-    <Page className={classes.root} title="Staff">
-      <Container maxWidth={false}>
-        <Box mt={3}>
-          <Card className={classes.root}>
-            <CardHeader title="Edit User" />
-            <Divider />
-            <CardContent>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <StaffForm
-                  editFormData={formatUserFormData(data.moped_users[0])}
-                  userCognitoId={data.moped_users[0].cognito_user_id}
-                />
-              )}
-            </CardContent>
-          </Card>
-        </Box>
-      </Container>
-    </Page>
+    <>
+      {data && !data?.moped_users?.length && <NotFoundView />}
+      {data && !!data?.moped_users?.length && (
+        <Page className={classes.root} title="Staff">
+          <Container maxWidth={false}>
+            <Box mt={3}>
+              <Card className={classes.root}>
+                <CardHeader title="Edit User" />
+                <Divider />
+                <CardContent>
+                  {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <StaffForm
+                      editFormData={formatUserFormData(data.moped_users[0])}
+                      userCognitoId={data.moped_users[0].cognito_user_id}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </Box>
+          </Container>
+        </Page>
+      )}
+    </>
   );
 };
 

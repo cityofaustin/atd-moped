@@ -9,24 +9,6 @@ import { TextField } from "@material-ui/core";
 export const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
 
-/*
-/ MUI autocomplete filter function which limits number of options rendered in select menu
-*/
-export const filterSignalOptions = (
-  options,
-  { inputValue, getOptionLabel }
-) => {
-  // limits options to ensure fast rendering
-  const limit = 40;
-  // applies the default autcomplete matching behavior plus our limit filter
-  const filteredOptions = options.filter(option =>
-    getOptionLabel(option)
-      .toLowerCase()
-      .includes(inputValue.toLowerCase())
-  );
-  return filteredOptions.slice(0, limit);
-};
-
 /**
  * MUI autocomplete getOptionSelected function to which matches input signal value to
  * select options.

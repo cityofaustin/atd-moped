@@ -99,9 +99,7 @@ def user_create_user(claims: list) -> (Response, int):
         json_data = request.json
         password = json_data["password"]
         email = json_data["email"]
-        cognito_response = {
-            "message": "User already existing in Cognito"
-        }
+        cognito_response = {"message": "User already existing in Cognito"}
 
         # Determine if the user already exists
         user_already_exists, user_cognito_uuid = cognito_user_exists(
@@ -142,7 +140,7 @@ def user_create_user(claims: list) -> (Response, int):
             elif e.response["Error"]["Code"] == "InvalidPasswordException":
                 return jsonify(e.response), 400  # Bad request
             else:
-                return jsonify(e.response), 500  # Internal Server Error
+                return jsonify(e.response), 400  # Internal Server Error
 
         # Generate the user profile for the database
         user_profile = generate_user_profile(
@@ -172,7 +170,7 @@ def user_create_user(claims: list) -> (Response, int):
             user_id=user_cognito_uuid,
             roles=roles,
             database_id=database_id,
-            workgroup_id=workgroup_id
+            workgroup_id=workgroup_id,
         )
         # Write database_id in django
         put_claims(
@@ -180,7 +178,7 @@ def user_create_user(claims: list) -> (Response, int):
             user_claims=user_claims,
             cognito_uuid=user_cognito_uuid,
             database_id=database_id,
-            workgroup_id=workgroup_id
+            workgroup_id=workgroup_id,
         )
 
         try:
@@ -214,15 +212,61 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         # Remove date_added, if provided, so we don't reset this field
-        request.json.pop('date_added', None)
+        request.json.pop("date_added", None)
+        status_id = request.json.get("status_id", 0)
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        reactivate_account = False
+
+        # Check if there is email provided
+        if email is None:
+            return jsonify({"error": {"message": "No email provided"}}), 400
 
         profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json,
-            ignore_fields=["password"]
+            user_profile=request.json, ignore_fields=["password"]
         )
 
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
+
+        # The status is active, check if the user exists
+        if status_id == 1:
+            try:
+                cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+                user_already_exists = True
+            except ClientError as e:
+                user_already_exists = False
+        # If the user doesn't exist and is now active, create it...
+        if user_already_exists == False and status_id == 1:
+            # Check if the password needs to be provided
+            if password is None or password == "":
+                return jsonify({"error": {"message": "No password provided."}}), 400
+
+            # If we have all we need, then we proceed
+            try:
+                cognito_response = cognito_client.admin_create_user(
+                    UserPoolId=USER_POOL,
+                    Username=email,
+                    TemporaryPassword=password,
+                    UserAttributes=[
+                        {"Name": "email", "Value": email},
+                        {"Name": "email_verified", "Value": "true"},
+                    ],
+                )
+                # Then  we must set the user password
+                cognito_username = cognito_response["User"]["Username"]
+                cognito_client.admin_set_user_password(
+                    UserPoolId=USER_POOL,
+                    Username=cognito_username,
+                    Password=password,
+                    Permanent=True,
+                )
+                # Copy the username to the UUID variable
+                user_cognito_uuid = cognito_username
+                id = cognito_username
+                reactivate_account = True
+            except ClientError as e:
+                return jsonify(e.response), 400  # Bad request
 
         # Retrieve current profile (to fetch old email)
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
@@ -233,7 +277,9 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         user_profile = generate_user_profile(cognito_id=id, json_data=request.json)
 
-        db_response = db_update_user(user_profile=user_profile)
+        db_response = db_update_user(
+            user_profile=user_profile, search_by_email=reactivate_account
+        )
 
         if "errors" in db_response:
             response = {
@@ -242,7 +288,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         # Check we received a database_id and workgroup_id from database
         database_id, workgroup_id = get_user_database_ids(response=db_response)
@@ -254,7 +300,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         updated_attributes = generate_cognito_attributes(user_profile=json_data)
 
@@ -273,7 +319,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                 user_id=id,
                 roles=roles,
                 database_id=database_id,
-                workgroup_id=workgroup_id
+                workgroup_id=workgroup_id,
             )
 
             put_claims(
@@ -281,7 +327,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
                 user_claims=user_claims,
                 cognito_uuid=id,
                 database_id=database_id,
-                workgroup_id=workgroup_id
+                workgroup_id=workgroup_id,
             )
 
         response = {
@@ -316,20 +362,40 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
                     "database": db_response,
                 }
             }
-            return jsonify(response), 500
+            return jsonify(response), 400
 
         user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
         user_email = get_user_email_from_attr(user_attr=user_info)
 
+        # Delete the cognito instance
         cognito_response = cognito_client.admin_delete_user(
             UserPoolId=USER_POOL, Username=id
         )
+
+        # Delete sso access, if the account exists
+        if str(user_email).lower().endswith("@austintexas.gov"):
+            try:
+                cognito_response_sso = cognito_client.admin_delete_user(
+                    UserPoolId=USER_POOL, Username=f"azuread_{user_email}"
+                )
+            except ClientError as e:
+                cognito_response_sso = {
+                    "success": f"azure account email not found, skipping",
+                    "message": str(e),
+                }
+        else:
+            cognito_response_sso = {
+                "success": "sso deletion skipped, user not government"
+            }
+
+        # Now delete the claims in DynamoDB
         delete_claims(user_email=user_email)
 
         response = {
             "success": {
                 "message": f"User deleted: {id}",
                 "cognito": cognito_response,
+                "cognito_sso": cognito_response_sso,
                 "database": db_response,
             }
         }
@@ -370,7 +436,7 @@ def user_update_password(id: str, claims: list) -> (Response, int):
             if e.response["Error"]["Code"] == "InvalidPasswordException":
                 return jsonify(e.response), 400  # Bad request
             else:
-                return jsonify(e.response), 500  # Internal Server Error
+                return jsonify(e.response), 400  # Internal Server Error
 
         response = {
             "success": {
