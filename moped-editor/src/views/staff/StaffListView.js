@@ -9,7 +9,7 @@ import {
 import Page from "src/components/Page";
 
 import { StaffListViewQueryConf } from "./StaffListViewQueryConf";
-import { GQLAbstract } from "atd-kickstand";
+import GQLAbstract from "../../libs/GQLAbstract";
 import GridTable from "../../components/GridTable/GridTable";
 
 const useStyles = makeStyles(theme => ({
