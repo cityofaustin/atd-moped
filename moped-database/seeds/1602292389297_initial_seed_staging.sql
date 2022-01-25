@@ -581,13 +581,6 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 -- INSERT INTO public.moped_entity (entity_uuid, workgroup_name, abbreviated_name, entity_id, affiliated_workgroup, date_added) VALUES ('f30415c5-0b5d-4d92-bb04-7c4f0ea13288', 'Capital Metro', 'CapMetro', 1, NULL, '2020-10-09 13:44:36.783377+00');
 
 
---
--- TOC entry 6043 (class 0 OID 21419)
--- Dependencies: 264
--- Data for Name: moped_fund_opp; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
 
 --
 -- TOC entry 6045 (class 0 OID 21427)
