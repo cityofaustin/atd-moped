@@ -1190,14 +1190,6 @@ SELECT pg_catalog.setval('public.moped_proj_dates_date_id_seq', 1, false);
 SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, false);
 
 
---
--- TOC entry 6127 (class 0 OID 0)
--- Dependencies: 288
--- Name: moped_proj_fund_opp_fund_opp_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_fund_opp_fund_opp_id_seq', 1, false);
-
 
 --
 -- TOC entry 6128 (class 0 OID 0)
