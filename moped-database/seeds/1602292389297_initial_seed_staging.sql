@@ -598,13 +598,6 @@ INSERT INTO public.moped_city_fiscal_years (fiscal_year_value, fiscal_year_start
 
 
 
---
--- TOC entry 6049 (class 0 OID 21443)
--- Dependencies: 270
--- Data for Name: moped_group; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
 
 --
 -- TOC entry 6085 (class 0 OID 21624)
