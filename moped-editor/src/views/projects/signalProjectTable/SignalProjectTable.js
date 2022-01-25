@@ -118,7 +118,7 @@ const SignalProjectTable = () => {
     project["project_types"] = project_types;
 
     // project sponsor
-    project["project_sponsor"] = entityList.find(
+    project["project_sponsor_object"] = entityList.find(
       e => e.entity_id === project?.project_sponsor
     );
 
@@ -294,12 +294,12 @@ const SignalProjectTable = () => {
     },
     {
       title: "Project sponsor",
-      field: "project_sponsor",
+      field: "project_sponsor_object",
       render: entry => (
         <Typography className={classes.tableTypography}>
-          {entry?.project_sponsor?.entity_name === "None"
+          {entry?.project_sponsor_object?.entity_name === "None"
             ? "-"
-            : entry?.project_sponsor?.entity_name}
+            : entry?.project_sponsor_object?.entity_name}
         </Typography>
       ),
       customEdit: "projectSponsor",
@@ -425,7 +425,7 @@ const SignalProjectTable = () => {
         updatedProjectObject[columnDef.field] = newData;
 
         updatedProjectObject["entity_id"] =
-          updatedProjectObject?.project_sponsor?.entity_id;
+          updatedProjectObject?.project_sponsor;
 
         // Remove extraneous fields given by MaterialTable that
         // Hasura doesn't need
