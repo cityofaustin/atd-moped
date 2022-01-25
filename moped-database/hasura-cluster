@@ -8,9 +8,39 @@
 #
 set -o errexit
 
+# The following two functions need to be defined prior to execution
+
+#
+# Detect platform
+#
+function __get_platform() {
+  PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
+  echo "Detected platform: ${PLATFORM}";
+}
+
+function __set_postgresql_image() {
+  __get_platform;
+  if [ $PLATFORM = "arm64" ]
+    then
+      HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
+    else
+      HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
+    fi
+  echo "Database Docker Image: ${HASURA_CLUSTER_POSTGRES_IMAGE}"
+}
+
 HIDE_HASURA_KIT_BANNER="FALSE";
-HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
+__set_postgresql_image; # into HASURA_CLUSTER_POSTGRES_IMAGE
 HASURA_CLUSTER_CONFIG="${HOME}/.ssh/hasura_cluster.json";
+#                              ^^^^
+# Putting files in the .ssh configuration directory may be confusing.
+# The intent is to achieve storing them in a place with sensible
+# file permissions, but .ssh is normally where you keep crypto keys 
+# and user-level config files for openssh. 
+#
+# tech-debt: update installation directions / tooling to address file security 
+# with the chmod command and a location dedicated to moped dot files.
+
 
 #
 # Get timestamp
@@ -493,9 +523,10 @@ function restore() {
 # Starts the cluster and does NOT run migrations...
 #
 function start_only() {
+  __get_platform;
   START_MODE=$1;
   if [[ "${START_MODE}" = "" ]]; then
-    docker-compose -f docker-compose.yml up -d;
+    docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml up -d;
   else
     docker-compose -f "${START_MODE}" up -d;
   fi;
@@ -577,7 +608,8 @@ function configure() {
 # Stops the cluster and removes any created volumes
 #
 function stop() {
-  docker-compose -f docker-compose.yml down --volumes --remove-orphans;
+  __get_platform;
+  docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml down --volumes --remove-orphans;
 }
 
 #
