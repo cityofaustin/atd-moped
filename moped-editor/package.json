@@ -12,7 +12,7 @@
     "start:development": "env-cmd -e development npm run start:local",
     "start:production": "env-cmd -e production npm run start:local",
     "build": "react-scripts build",
-    "build:local": "grep 'kickstand' package-lock.json && GENERATE_SOURCEMAP=false react-scripts build && cp _redirects build && cp -r build moped && mv moped build",
+    "build:local": "GENERATE_SOURCEMAP=false react-scripts build && cp _redirects build && cp -r build moped && mv moped build",
     "build:staging": "env-cmd -e staging npm run build:local",
     "build:development": "env-cmd -e development npm run build:local",
     "build:production": "env-cmd -e production npm run build:local",
