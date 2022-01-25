@@ -1087,15 +1087,6 @@ SELECT pg_catalog.setval('public.moped_financials_financials_id_seq', 1, false);
 
 
 --
--- TOC entry 6115 (class 0 OID 0)
--- Dependencies: 265
--- Name: moped_fund_opp_funding_opportunity_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_fund_opp_funding_opportunity_id_seq', 1, false);
-
-
---
 -- TOC entry 6116 (class 0 OID 0)
 -- Dependencies: 267
 -- Name: moped_fund_source_cat_funding_source_category_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
