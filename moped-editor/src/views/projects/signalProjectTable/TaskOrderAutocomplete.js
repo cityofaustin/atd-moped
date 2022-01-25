@@ -31,7 +31,7 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
     <Autocomplete
       multiple
       className={classes}
-      id="signal-id"
+      id="task-order-id"
       filterOptions={filterOptions}
       getOptionLabel={option => option.display_name}
       onChange={(e, value) => props.onChange(value)}

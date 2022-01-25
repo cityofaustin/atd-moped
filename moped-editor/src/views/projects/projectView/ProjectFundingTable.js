@@ -22,6 +22,8 @@ import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
 } from "@material-ui/icons";
+import makeStyles from "@material-ui/core/styles/makeStyles";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import typography from "../../../theme/typography";
 
@@ -42,9 +44,8 @@ import {
 
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
+import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -128,6 +129,20 @@ const useStyles = makeStyles(theme => ({
   chipAddMultiselect: {
     width: "100%",
   },
+  deptAutocomplete: {
+    width: "300px",
+    fontSize: ".875em",
+    "& .MuiAutocomplete-inputRoot": {
+      marginBottom: "16px"
+    },
+    "& .MuiFormLabel-root": {
+      color: theme.palette.text.primary
+    }
+  },
+  fundSelectStyle: {
+    width: "8em",
+    border: "1px green solid"
+  }
 }));
 
 const ProjectFundingTable = () => {
@@ -152,7 +167,7 @@ const ProjectFundingTable = () => {
 
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
-    // id 0 used when creating a new project, no project personnel will be returned
+    // id 0 used when creating a new project, no project funding will be returned
     variables: {
       projectId: projectId ?? 0,
     },
@@ -209,7 +224,18 @@ const ProjectFundingTable = () => {
       },
     })
       .then(() => refetch())
-      .catch(() => {});
+      .catch(error => {
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              There was a problem removing the task order. Error message:{" "}
+              {error.message}
+            </span>
+          ),
+          severity: "error",
+        });
+      });
 
   /**
    * Handle Task Order OnChange event
@@ -220,7 +246,8 @@ const ProjectFundingTable = () => {
   };
 
   /**
-   * Updates the task order list
+   * Triggers migration to Update the task order list
+   * Resets adding new task order to initial state
    */
   const handleNewTaskOrderSave = () =>
     updateProjectTaskOrders({
@@ -246,7 +273,7 @@ const ProjectFundingTable = () => {
   };
 
   /**
-   *
+   * Wrapper around snackbar state setter
    * @param {boolean} open - The new state of open
    * @param {String} message - The message for the snackbar
    * @param {String} severity - The severity color of the snackbar
@@ -302,6 +329,43 @@ const ProjectFundingTable = () => {
           -
         </MenuItem>
       )}
+    </Select>
+  );
+
+  /**
+   * Component for dropdown select for Funds
+   * @param {*} props
+   * @returns {React component}
+   */
+  const FundSelectComponent = props => (
+    <Select
+      id="moped_funds"
+      value={
+        props.value?.fund_id
+          ? `${props.value.fund_id} | ${props.value.fund_name}`
+          : ""
+      }
+      classes={classes.fundSelectStyle}
+    >
+      {props.data.map(item => (
+        <MenuItem
+          onChange={() => props.onChange(item)}
+          onClick={() => props.onChange(item)}
+          onKeyDown={e => handleKeyEvent(e)}
+          value={`${item.fund_id} | ${item.fund_name}`}
+          key={item.fund_id}
+        >
+          {`${item.fund_id} | ${item.fund_name}`}
+        </MenuItem>
+      ))}
+      <MenuItem
+        onChange={() => props.onChange(null)}
+        onClick={() => props.onChange(null)}
+        onKeyDown={e => handleKeyEvent(e)}
+        value=""
+      >
+        -
+      </MenuItem>
     </Select>
   );
 
@@ -394,8 +458,42 @@ const ProjectFundingTable = () => {
       ),
     },
     {
-      title: "FDU",
-      field: "fund_dept_unit",
+      title: "Fund",
+      field: "fund",
+      render: entry =>
+        !!entry.fund?.fund_name ? (
+          <>
+            <Typography>{entry.fund?.fund_id} |</Typography>
+            <Typography>{entry.fund?.fund_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
+      editComponent: props => (
+        <FundSelectComponent {...props} data={data.moped_funds} />
+      ),
+    },
+    {
+      title: "Dept-unit",
+      field: "dept_unit",
+      render: entry =>
+        !!entry.dept_unit?.unit_long_name ? (
+          <>
+            <Typography>
+              {entry.dept_unit?.dept} | {entry.dept_unit?.unit} |
+            </Typography>
+            <Typography>{entry.dept_unit?.unit_long_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
+      editComponent: props => (
+        <FundingDeptUnitAutocomplete
+          classes={classes.deptAutocomplete}
+          props={props}
+          value={props.value}
+        />
+      ),
     },
     {
       title: "Amount",
@@ -461,9 +559,7 @@ const ProjectFundingTable = () => {
               noWrapper
             />
             <Box component={"ul"} className={classes.chipContainer}>
-              <Typography className={classes.fieldLabel}>
-                Task order
-              </Typography>
+              <Typography className={classes.fieldLabel}>Task order</Typography>
               {taskOrderData.map(task => (
                 <li key={task.id}>
                   <Chip
