@@ -63,6 +63,7 @@
     "filepond-plugin-image-exif-orientation": "^1.0.3",
     "filepond-plugin-image-preview": "^3.1.4",
     "formik": "^2.1.5",
+    "graphql": "^15.8.0",
     "history": "^5.0.0",
     "html-react-parser": "^1.2.6",
     "lodash.foreach": "^4.5.0",
@@ -104,5 +105,8 @@
     "eslint-plugin-react": "^7.20.3",
     "eslint-plugin-react-hooks": "^2.5.1",
     "prettier": "^1.19.1"
+  },
+  "engines": {
+    "npm": ">=6.0.0"
   }
 }
