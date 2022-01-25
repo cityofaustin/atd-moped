@@ -264,41 +264,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_proj_fund_opp: {
-    label: "Funding Opportunity",
-    fields: {
-      fund_opp_name: {
-        icon: "",
-        label: "Name",
-        type: "text",
-      },
-      fund_opp_id: {
-        icon: "",
-        label: "Opportunity ID",
-        type: "int4",
-      },
-      project_id: {
-        icon: "",
-        label: "Project ID",
-        type: "int4",
-      },
-      added_by: {
-        icon: "",
-        label: "Added By",
-        type: "int4",
-      },
-      date_added: {
-        icon: "",
-        label: "Date Added",
-        type: "timestamptz",
-      },
-      proj_fund_opp_id: {
-        icon: "",
-        label: "Fund ID",
-        type: "int4",
-      },
-    },
-  },
   moped_proj_fund_source: {
     label: "Fund Source",
     fields: {
