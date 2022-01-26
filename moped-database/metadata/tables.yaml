@@ -2202,7 +2202,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2216,7 +2215,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2230,7 +2228,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2244,7 +2241,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2258,7 +2254,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2273,7 +2268,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2287,7 +2281,6 @@
       columns:
       - added_by
       - added_by_user_id
-      - comm_id
       - date_created
       - project_id
       - project_note
@@ -2306,7 +2299,6 @@
       update:
         columns:
         - added_by
-        - comm_id
         - project_id
         - project_note_id
         - project_note
