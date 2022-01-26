@@ -1129,13 +1129,6 @@ SELECT pg_catalog.setval('public.moped_proj_partners_proj_partner_id_seq', 1, fa
 
 SELECT pg_catalog.setval('public.moped_proj_personnel_project_personnel_id_seq', 212, true);
 
---
--- TOC entry 6137 (class 0 OID 0)
--- Dependencies: 305
--- Name: moped_proj_timeline_timeline_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_timeline_timeline_id_seq', 2, true);
 
 
 --
