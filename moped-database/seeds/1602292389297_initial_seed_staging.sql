@@ -940,14 +940,6 @@ INSERT INTO public.moped_proj_phases (phase_name, phase_description, phase_order
 
 
 --
--- TOC entry 6082 (class 0 OID 21609)
--- Dependencies: 303
--- Data for Name: moped_proj_status_notes; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
 -- TOC entry 6101 (class 0 OID 24648)
 -- Dependencies: 322
 -- Data for Name: moped_proj_subphases; Type: TABLE DATA; Schema: public; Owner: atd_moped
