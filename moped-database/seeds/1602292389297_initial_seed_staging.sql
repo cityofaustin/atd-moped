@@ -691,14 +691,6 @@ INSERT INTO public.moped_project (project_uuid, project_name, project_descriptio
 
 
 --
--- TOC entry 6057 (class 0 OID 21494)
--- Dependencies: 278
--- Data for Name: moped_proj_communication; Type: TABLE DATA; Schema: public; Owner: atd_moped
---
-
-
-
---
 -- TOC entry 6059 (class 0 OID 21502)
 -- Dependencies: 280
 -- Data for Name: moped_proj_components; Type: TABLE DATA; Schema: public; Owner: atd_moped
