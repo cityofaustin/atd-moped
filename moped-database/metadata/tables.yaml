@@ -490,6 +490,65 @@
     permission:
       filter: {}
 - table:
+    schema: public
+    name: moped_funds
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      backend_only: false
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      backend_only: false
+  select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      filter: {}
+  update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      filter: {}
+      check: {}
+  - role: moped-editor
+    permission:
+      columns:
+      - id
+      - fund_id
+      - fund_name
+      filter: {}
+      check: {}
+- table:
     name: moped_milestones
     schema: public
   insert_permissions:
