@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core";
 import Page from "src/components/Page";
 
 // Abstract
-import { GQLAbstract } from "atd-kickstand";
+import GQLAbstract from "../../../libs/GQLAbstract";
 import GridTable from "../../../components/GridTable/GridTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 
