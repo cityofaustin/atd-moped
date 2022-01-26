@@ -1108,14 +1108,6 @@ SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 
 
 SELECT pg_catalog.setval('public.moped_phases_phase_id_seq', 1, false);
 
---
--- TOC entry 6123 (class 0 OID 0)
--- Dependencies: 279
--- Name: moped_proj_communication_comm_id_seq; Type: SEQUENCE SET; Schema: public; Owner: atd_moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_communication_comm_id_seq', 1, false);
-
 
 --
 -- TOC entry 6125 (class 0 OID 0)
