@@ -19,7 +19,7 @@ function __get_platform() {
   # overloading the detected platform to work for linux machines
   if [ $PLATFORM = "GNU/Linux" ]
     then
-    PLATFORM = "x86_64";
+    PLATFORM="x86_64";
     fi
 
   echo "Detected platform: ${PLATFORM}";
