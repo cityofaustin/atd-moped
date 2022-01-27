@@ -68,7 +68,7 @@ const basemaps = {
  * ArcGIS Online feature service endpoint of the CTN line segments. Managed by DTS GIS team.
  */
 const ctnAGOLEndpoint =
-  "https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/Moped_CTN_Segments_08_23_2021/FeatureServer/0";
+  "https://services.arcgis.com/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Segments_MOPED_FS/FeatureServer/0";
 
 export const mapStyles = {
   statusOpacities: {
@@ -137,7 +137,8 @@ export const mapConfig = {
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_VTs_with_Line_Type/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        // "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_VTs_with_Line_Type/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Segments_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 14,
       isClickEditable: true,
       get layerStyleSpec() {
@@ -183,7 +184,8 @@ export const mapConfig = {
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
-        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        // "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Intersections_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 12,
       isClickEditable: true,
       get layerStyleSpec() {
