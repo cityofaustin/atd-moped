@@ -129,7 +129,7 @@ export const mapConfig = {
   geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   // List of layer configurations
   layerConfigs: {
-    CTN: {
+    "ATD_ADMIN.CTN": {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
       tooltipTextProperty: "FULL_STREET_NAME",
@@ -137,7 +137,6 @@ export const mapConfig = {
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
-        // "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Project_Extent_VTs_with_Line_Type/VectorTileServer/tile/{z}/{y}/{x}.pbf",
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Segments_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 14,
       isClickEditable: true,
@@ -177,14 +176,13 @@ export const mapConfig = {
         };
       },
     },
-    Project_Component_Points_prototype: {
+    "ATD_ADMIN.CTN_Intersections": {
       layerLabel: "Points",
       layerIdName: "project-component-points",
       featureIdProperty: "PROJECT_EXTENT_ID",
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
-        // "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/MOPED_intersection_points/VectorTileServer/tile/{z}/{y}/{x}.pbf",
         "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Intersections_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
       layerMaxLOD: 12,
       isClickEditable: true,
