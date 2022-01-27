@@ -4,7 +4,6 @@ import { CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
-  filterSignalOptions,
   useSignalChangeEffect,
   getSignalOptionLabel,
   getSignalOptionSelected,
@@ -12,6 +11,7 @@ import {
   renderSignalInput,
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
+import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
@@ -51,7 +51,7 @@ const SignalComponentAutocomplete = ({
     <Autocomplete
       className={classes}
       id="signal-id"
-      filterOptions={filterSignalOptions}
+      filterOptions={filterOptions}
       getOptionSelected={getSignalOptionSelected}
       // this label formatting mirrors the Data Tracker formatting
       getOptionLabel={getSignalOptionLabel}

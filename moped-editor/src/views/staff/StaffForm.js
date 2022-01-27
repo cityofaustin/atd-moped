@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { formatApiErrors, useUserApi } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
@@ -27,7 +27,10 @@ import {
   Radio,
   RadioGroup,
   Select,
+  Typography,
+  Box,
 } from "@material-ui/core";
+import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({
   formSelect: {
@@ -35,11 +38,13 @@ const useStyles = makeStyles(theme => ({
   },
   formButton: {
     margin: theme.spacing(1),
-  },
-  formDeleteButton: {
-    margin: theme.spacing(1),
-    backgroundColor: "red",
     color: "white",
+  },
+  formButtonGreen: {
+    backgroundColor: theme.palette.success.main,
+    "&:hover": {
+      backgroundColor: theme.palette.success.dark,
+    },
   },
   hiddenTextField: {
     display: "none",
@@ -64,13 +69,8 @@ const roles = [
   { value: "moped-admin", name: "Admin" },
 ];
 
-const statuses = [
-  { value: "1", name: "Active" },
-  { value: "0", name: "Inactive" },
-];
-
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = isNewUser =>
+const staffValidationSchema = (isNewUser, userStatusId) =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
@@ -84,7 +84,7 @@ const staffValidationSchema = isNewUser =>
       .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
-      is: () => isNewUser,
+      is: () => isNewUser || userStatusId !== 1,
       then: yup.string().required(),
       otherwise: yup.string(),
     }),
@@ -109,6 +109,8 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const classes = useStyles();
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
+  const submitButtonEl = useRef();
+  const userStatusId = Number(editFormData?.status_id ?? -1);
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and
@@ -122,7 +124,17 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     setLoading,
   } = useUserApi();
 
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const initialModalState = {
+    open: false,
+    title: null,
+    message: null,
+    action: null,
+    actionButtonLabel: "Yes",
+    hideActionButton: false,
+    hideCloseButton: false,
+  };
+
+  const [modalState, setModalState] = useState(initialModalState);
   const [isApiErrorOpen, setIsApiErrorOpen] = useState(false);
 
   const {
@@ -131,11 +143,12 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     errors,
     control,
     setValue,
+    getValues,
     formState,
     reset,
   } = useForm({
     defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema(isNewUser)),
+    resolver: yupResolver(staffValidationSchema(isNewUser, userStatusId)),
   });
 
   const { isSubmitting, dirtyFields } = formState;
@@ -201,7 +214,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   const handleDeleteConfirm = () => {
     const requestPath = "/users/" + userCognitoId;
     const deleteCallback = () => {
-      setIsDeleteModalOpen(false);
+      handleCloseModal();
       navigate("/moped/staff/");
     };
 
@@ -210,6 +223,101 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       path: requestPath,
       callback: deleteCallback,
     });
+  };
+
+  /**
+   * Makes sure the password looks ok
+   * @returns {boolean}
+   */
+  const passwordLooksGood = () =>
+    new RegExp(
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    ).test(getValues("password"));
+
+  /**
+   * Makes sure a role has been selected
+   * @returns {boolean}
+   */
+  const roleLooksGood = () =>
+    ["moped-viewer", "moped-editor", "moped-admin"].includes(
+      getValues("roles")
+    );
+
+  /**
+   * Handle Activate User Confirm
+   */
+  const handleActivateConfirm = () => {
+    if (!passwordLooksGood()) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: (
+          <Typography>
+            The password is required when activating a user. It needs to be 8
+            characters long, it must include at least one lower-case,
+            upper-case, one number, and one symbol characters.
+          </Typography>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else if (!roleLooksGood()) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: "The role is required when activating a user.",
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else {
+      submitButtonEl.current.click();
+      setModalState({
+        open: true,
+        title: "Activating",
+        message: (
+          <Box display="flex" justifyContent="flex-start">
+            <Typography>Please Wait...</Typography>
+          </Box>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: null,
+        hideActionButton: true,
+        hideCloseButton: true,
+      });
+    }
+  };
+
+  /**
+   * Activate User
+   */
+  const handleActivateUser = () => {
+    setModalState({
+      open: true,
+      title: "Activate user?",
+      message: "Do you want to activate this user?",
+      action: handleActivateConfirm,
+    });
+  };
+
+  /**
+   * Handles the deactivation of user
+   */
+  const handleDeactivateUser = () => {
+    setModalState({
+      open: true,
+      title: "Inactivate this user?",
+      message: "Are you sure that you want to inactivate this user?",
+      action: handleDeleteConfirm,
+    });
+  };
+
+  /**
+   * Closes the modal
+   */
+  const handleCloseModal = () => {
+    setModalState(initialModalState);
   };
 
   /**
@@ -362,6 +470,14 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           inputRef={register}
           className={classes.hiddenTextField}
         />
+        {/* This hidden field and its value is always 1 */}
+        <TextField
+            id="status-id"
+            name="status_id"
+            inputRef={register}
+            className={classes.hiddenTextField}
+            value={1}
+        />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
@@ -384,25 +500,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
-          <FormControl component="fieldset">
-            <FormLabel id="statuses-label">Status</FormLabel>
-            <Controller
-              as={
-                <RadioGroup aria-label="statuses" name="status_id">
-                  {statuses.map(status => (
-                    <FormControlLabel
-                      key={status.value}
-                      value={status.value}
-                      control={<Radio />}
-                      label={status.name}
-                    />
-                  ))}
-                </RadioGroup>
-              }
-              name={"status_id"}
-              control={control}
-            />
-          </FormControl>
+          &nbsp;
         </Grid>
         <Grid item xs={12} md={6}>
           {!apiErrors && (userApiLoading || isSubmitting) ? (
@@ -411,10 +509,12 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <>
               <Button
                 className={classes.formButton}
+                style={userStatusId === 0 ? { display: "none" } : {}}
                 disabled={isSubmitting}
                 type="submit"
                 color="primary"
                 variant="contained"
+                ref={submitButtonEl}
               >
                 Save
               </Button>
@@ -428,46 +528,55 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Reset
                 </Button>
               )}
-              {editFormData && (
+              {editFormData && userStatusId === 1 && (
                 <Button
-                  className={classes.formDeleteButton}
+                  className={classes.formButton}
                   color="secondary"
                   variant="contained"
-                  onClick={() => setIsDeleteModalOpen(true)}
+                  onClick={handleDeactivateUser}
                 >
-                  Delete User
+                  Inactivate User
+                </Button>
+              )}
+              {editFormData && userStatusId === 0 && (
+                <Button
+                  className={clsx(classes.formButton, classes.formButtonGreen)}
+                  variant="contained"
+                  onClick={handleActivateUser}
+                >
+                  Activate User
                 </Button>
               )}
             </>
           )}
           <Dialog
-            open={isDeleteModalOpen}
-            onClose={() => setIsDeleteModalOpen(false)}
+            open={modalState?.open}
+            onClose={handleCloseModal}
             aria-labelledby="alert-dialog-title"
             aria-describedby="alert-dialog-description"
           >
             <DialogTitle id="alert-dialog-title">
-              {"Delete this user?"}
+              {modalState.title}
             </DialogTitle>
             <DialogContent>
               <DialogContentText id="alert-dialog-description">
-                Are you sure that you want to delete this user?
+                {modalState.message}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button
-                onClick={() => setIsDeleteModalOpen(false)}
-                color="primary"
-                autoFocus
-              >
-                No
-              </Button>
+              {!modalState?.hideCloseButton && (
+                <Button onClick={handleCloseModal} color="primary" autoFocus>
+                  No
+                </Button>
+              )}
               {userApiLoading ? (
                 <CircularProgress />
               ) : (
-                <Button onClick={handleDeleteConfirm} color="primary">
-                  Yes
-                </Button>
+                !modalState?.hideActionButton && (
+                  <Button onClick={modalState?.action} color="primary">
+                    {modalState.actionButtonLabel || "Yes"}
+                  </Button>
+                )
               )}
             </DialogActions>
           </Dialog>
