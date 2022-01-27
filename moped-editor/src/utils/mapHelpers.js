@@ -179,7 +179,7 @@ export const mapConfig = {
     "ATD_ADMIN.CTN_Intersections": {
       layerLabel: "Points",
       layerIdName: "project-component-points",
-      featureIdProperty: "PROJECT_EXTENT_ID",
+      featureIdProperty: "INTERSECTIONID",
       layerOrder: 2,
       layerColor: theme.palette.secondary.main,
       layerUrl:
@@ -392,8 +392,12 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (feature, layerName) =>
-  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty];
+export const getFeatureId = (feature, layerName) =>{ // breadcrumb
+  console.log(feature)
+  console.log(feature.properties)
+  console.log(layerName)
+  return (feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]);
+}
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -699,13 +703,16 @@ export function useHoverLayer() {
   const [featureText, setFeatureText] = useState(null);
   const [featureId, setFeatureId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
-
+  console.log(featureId, " *** in state?")
+ 
   /**
    * Gets and sets data from a map feature used to populate and place a tooltip
    * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates
    */
   const handleLayerHover = e => {
     const layerSource = getLayerSource(e);
+
+    console.log("LAYER SOURCE: ", layerSource)
 
     // If a layer isn't hovered, reset state and don't proceed
     if (!layerSource) {
@@ -720,6 +727,7 @@ export function useHoverLayer() {
       srcEvent: { offsetX, offsetY },
     } = e;
     const featureId = getFeatureId(e.features[0], layerSource);
+    console.log(featureId)
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
     setFeatureText(hoveredFeatureText);
