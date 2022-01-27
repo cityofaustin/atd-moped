@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
@@ -212,16 +212,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         onKeyDown={e => handleKeyEvent(e)}
         InputLabelProps={{
           shrink: true,
-        }}
-        InputProps={{
-          endAdornment: (
-            <IconButton onClick={() => props.onChange(() => null)}>
-              <DeleteOutlineIcon />
-            </IconButton>
-          ),
-        }}
-        InputAdornmentProps={{
-          position: "start",
         }}
       />
     );
@@ -466,6 +456,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 data={data.moped_proj_phases}
                 // Action component customized as described in this gh-issue:
                 // https://github.com/mbrn/material-table/issues/2133
+                icons={{
+                  Edit: EditOutlinedIcon,
+                }}
                 components={{
                   EditRow: props => (
                     <MTableEditRow
@@ -706,6 +699,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
               <MaterialTable
                 columns={milestoneColumns}
                 data={data.moped_proj_milestones}
+                icons={{
+                  Edit: EditOutlinedIcon,
+                }}
                 components={{
                   EditRow: props => (
                     <MTableEditRow

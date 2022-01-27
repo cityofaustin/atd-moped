@@ -19,7 +19,8 @@ import typography from "../../../theme/typography";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import {
   AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon
+  DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import { useMutation, useQuery } from "@apollo/client";
 
@@ -138,7 +139,7 @@ const ProjectFiles = props => {
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
 
-  const fileTypes = ['', 'Funding', 'Plans', 'Estimates', 'Other'];
+  const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 
   /**
    * Column configuration for <MaterialTable>
@@ -147,9 +148,9 @@ const ProjectFiles = props => {
     {
       title: "Name",
       field: "file_name",
-      validate: (rowData) => {
+      validate: rowData => {
         return rowData.file_name.length > 0 ? true : false;
-        },
+      },
       render: record => (
         <Link
           className={classes.downloadLink}
@@ -173,17 +174,25 @@ const ProjectFiles = props => {
       field: "file_type",
       render: record => <span>{fileTypes[record?.file_type]}</span>,
       editComponent: props => (
-        <FormControl >
-          <Select  
+        <FormControl>
+          <Select
             id="file_description"
             name="file_description"
             value={props?.value}
             onChange={e => props.onChange(e.target.value)}
           >
-            <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
-            <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
-            <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
-            <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
+            <MenuItem value={1} className={classes.inputFieldAdornmentColor}>
+              Funding
+            </MenuItem>
+            <MenuItem value={2} className={classes.inputFieldAdornmentColor}>
+              Plans
+            </MenuItem>
+            <MenuItem value={3} className={classes.inputFieldAdornmentColor}>
+              Estimates
+            </MenuItem>
+            <MenuItem value={4} className={classes.inputFieldAdornmentColor}>
+              Other
+            </MenuItem>
           </Select>
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -286,7 +295,7 @@ const ProjectFiles = props => {
               }
             },
           }}
-          icons={{ Delete: DeleteOutlineIcon }}
+          icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{
             ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
               paging: false,

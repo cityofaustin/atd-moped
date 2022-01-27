@@ -16,6 +16,7 @@ import { Alert } from "@material-ui/lab";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import typography from "../../../theme/typography";
@@ -286,7 +287,11 @@ const ProjectFundingTable = () => {
         data={data.moped_proj_funding}
         title={
           <div>
-            <Typography variant="h2" color="primary">
+            <Typography
+              variant="h2"
+              color="primary"
+              style={{ paddingTop: "1em", paddingBottom: "1em" }}
+            >
               Funding sources
             </Typography>
 
@@ -325,6 +330,7 @@ const ProjectFundingTable = () => {
         }}
         icons={{
           Delete: DeleteOutlineIcon,
+          Edit: EditOutlinedIcon,
         }}
         editable={{
           onRowAdd: newData =>
