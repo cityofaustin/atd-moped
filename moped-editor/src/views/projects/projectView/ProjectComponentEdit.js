@@ -890,14 +890,13 @@ const ProjectComponentEdit = ({
                       selectedSubcomponents={selectedSubcomponents}
                       setSelectedSubcomponents={setSelectedSubcomponents}
                     />
-                    <Grid xs={12}>
+                    <Grid item xs={12}>
                       <TextField
                         className={classes.formTextField}
                         id="moped-component-description"
                         label="Description"
                         multiline
                         rows={4}
-                        defaultValue=""
                         variant="filled"
                         value={componentDescription ?? ""}
                         onChange={e => handleDescriptionKeyDown(e)}
@@ -905,14 +904,14 @@ const ProjectComponentEdit = ({
                       />
                     </Grid>
                     {!areMinimumFeaturesSet && (
-                      <Grid xs={12}>
+                      <Grid item xs={12}>
                         <Alert className={classes.mapAlert} severity="error">
                           You must select at least one feature for this
                           component.
                         </Alert>
                       </Grid>
                     )}
-                    <Grid xs={12} spacing={0}>
+                    <Grid item xs={12}>
                       <Button
                         className={classes.formButton}
                         variant="contained"
@@ -955,7 +954,7 @@ const ProjectComponentEdit = ({
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <Divider fullWidth className={classes.mapToolsDivider} />
+                  <Divider variant="fullWidth" className={classes.mapToolsDivider} />
                   <Button
                     onClick={() => setEditPanelCollapsed(false)}
                     startIcon={<KeyboardArrowUp />}
