@@ -1501,76 +1501,86 @@
     permission:
       check: {}
       columns:
-      - added_by
-      - date_added
-      - fund_dept_unit
-      - funding_amount
-      - funding_description
-      - funding_program_id
-      - funding_source_id
-      - funding_status_id
       - proj_funding_id
       - project_id
+      - date_added
+      - added_by
+      - funding_source_id
+      - funding_program_id
+      - funding_amount
+      - fund_dept_unit
+      - funding_description
+      - funding_status_id
+      - fund
+      - dept_unit
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       filter: {}
       allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -1578,30 +1588,34 @@
     permission:
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
       - added_by
-      - date_added
-      - fund_dept_unit
       - funding_amount
-      - funding_description
       - funding_program_id
       - funding_source_id
       - funding_status_id
-      - proj_funding_id
       - project_id
+      - proj_funding_id
+      - dept_unit
+      - fund
+      - fund_dept_unit
+      - funding_description
+      - date_added
       filter: {}
       check: null
   event_triggers:
