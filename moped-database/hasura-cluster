@@ -15,6 +15,13 @@ set -o errexit
 #
 function __get_platform() {
   PLATFORM=$(uname -a | rev | cut -d " " -f1 | rev);
+
+  # overloading the detected platform to work for linux machines
+  if [ $PLATFORM = "GNU/Linux" ]
+    then
+    PLATFORM="x86_64";
+    fi
+
   echo "Detected platform: ${PLATFORM}";
 }
 
