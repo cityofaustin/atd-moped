@@ -1,0 +1,14 @@
+{
+  "name": "cloudfront-cognito-at-edge",
+  "version": "1.0.0",
+  "description": "Authenticator for Moped's CloudFront distribution",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "CC0 1.0 Universal",
+  "dependencies": {
+    "cognito-at-edge": "^1.1.0"
+  }
+}

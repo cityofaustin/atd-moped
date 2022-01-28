@@ -20,7 +20,6 @@ Amplify.configure({
     mandatorySignIn: true,
     region: config.cognito.REGION,
     userPoolId: config.cognito.USER_POOL_ID,
-    identityPoolId: config.cognito.IDENTITY_POOL_ID,
     userPoolWebClientId: config.cognito.APP_CLIENT_ID,
     oauth: {
       domain: config.cognito.DOMAIN,
@@ -35,7 +34,17 @@ Amplify.configure({
       redirectSignOut: config.cognito.REDIRECT_SIGN_OUT,
       responseType: "code",
     },
-  }
+    ...(["production", "staging", "test"].includes(config.env.APP_ENVIRONMENT)
+      ? {
+          cookieStorage: {
+            expires: 30,
+            domain: window.location.hostname,
+            path: "/",
+            secure: true,
+          },
+        }
+      : {}),
+  },
 });
 
 ReactDOM.render(

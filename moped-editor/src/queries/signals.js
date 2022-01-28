@@ -1,5 +1,8 @@
 import { gql } from "@apollo/client";
 
+// Status ID 6 is archived (soft deleted)
+// Status ID 3 is cancelled
+
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
@@ -15,10 +18,15 @@ export const SIGNAL_PROJECTS_QUERY = gql`
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
             }
-            status_id: { _neq: 4 }
+            status_id: { _neq: 6 }
           }
-        ],
-        status_id: {_neq: 6}
+          {
+            moped_proj_components: {
+              moped_components: { component_name: { _ilike: "signal" } }
+            }
+            status_id: { _neq: 3 }
+          }
+        ]
       }
       order_by: {updated_at: desc_nulls_last}
     ) {
@@ -28,6 +36,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       contractor
       purchase_order_number
       project_sponsor
+      task_order
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 } }
         order_by: { date_created: desc }
@@ -45,7 +54,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         feature_id
         location
       }
-      moped_proj_funding {
+      moped_proj_funding (where: {funding_status_id : { _neq: 0 } }) {
         moped_fund_source {
           funding_source_name
         }

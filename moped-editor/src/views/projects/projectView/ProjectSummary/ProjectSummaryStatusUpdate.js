@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
 
-import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Grid,
+  Icon,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@material-ui/core";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
@@ -169,10 +176,12 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         )}
         {/*Add New Button*/}
         {!statusUpdateEditable && (
-          <ControlPointIcon
-            className={classes.editIcon}
-            onClick={handleStatusUpdateAddNew}
-          />
+          <Tooltip title="Create new status update">
+            <ControlPointIcon
+              className={classes.editIcon}
+              onClick={handleStatusUpdateAddNew}
+            />
+          </Tooltip>
         )}
         {/*Save Button*/}
         {statusUpdateEditable && (

@@ -213,6 +213,7 @@ const ProjectFiles = props => {
     },
     {
       title: "Uploaded by",
+      cellStyle: { fontFamily: typography.fontFamily },
       render: record => (
         <span>
           {record?.created_by
@@ -225,6 +226,7 @@ const ProjectFiles = props => {
     },
     {
       title: "Date uploaded",
+      cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) =>
         new Date(a?.create_date ?? 0) - new Date(b?.create_date ?? 0),
       render: record => (
@@ -239,6 +241,7 @@ const ProjectFiles = props => {
     },
     {
       title: "File size",
+      cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
       render: record => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>

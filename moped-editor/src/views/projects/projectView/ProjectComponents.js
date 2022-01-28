@@ -185,7 +185,6 @@ const ProjectComponents = () => {
         <ProjectComponentEdit
           componentId={selectedComp}
           handleCancelEdit={handleCancelEdit}
-          projectRefetchFeatures={refetch}
           projectFeatureCollection={featureFullCollection}
         />
       )}

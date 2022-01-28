@@ -41,6 +41,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import { IconButton } from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -248,21 +249,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
   const DropDownSelectComponent = props => {
     // If the component name is phase_name, then assume phaseNameLookup values
-    // If the component name is milestone_name, then assume milestoneNameLookup values;
     // Otherwise assume null,
 
-    let lookupValues;
-    let requiredField;
-
-    if (props.name === "phase_name") {
-      lookupValues = phaseNameLookup;
-      requiredField = true;
-    } else if (props.name === "milestone_name") {
-      lookupValues = milestoneNameLookup;
-      requiredField = true;
-    } else {
-      lookupValues = null;
-    }
+    let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
     // If lookup values is null, then it is a sub-phase list we need to generate
     if (lookupValues === null) {
@@ -392,12 +381,18 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Milestone name",
       field: "milestone_name",
-      lookup: milestoneNameLookup,
+      render: milestone => milestoneNameLookup[milestone.milestone_name],
+      validate: milestone => !!milestone.milestone_name,
       editComponent: props => (
-        <DropDownSelectComponent
-          {...props}
+        <Autocomplete
+          id={"milestone_name"}
           name={"milestone_name"}
-          data={data}
+          options={Object.keys(milestoneNameLookup)}
+          getOptionLabel={option => milestoneNameLookup[option]}
+          getOptionSelected={(option, value) => option === value}
+          value={props.value}
+          onChange={(event, value) => props.onChange(value)}
+          renderInput={params => <TextField {...params} />}
         />
       ),
     },

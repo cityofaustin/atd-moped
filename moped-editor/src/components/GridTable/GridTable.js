@@ -89,11 +89,19 @@ export const getSearchValue = (query, column, value) => {
  * GridTable Component for Material UI
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
+ * @param {String} searchTerm - The initial term
  * @param {Object} referenceData - optional, static data used in presentation
+ * @param {Object} customComponents - An object containing custom components
  * @return {JSX.Element}
  * @constructor
  */
-const GridTable = ({ title, query, searchTerm, referenceData }) => {
+const GridTable = ({
+  title,
+  query,
+  searchTerm,
+  referenceData,
+  customComponents,
+}) => {
   const classes = useStyles();
 
   /**
@@ -398,6 +406,7 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
         </Typography>
         {/*Toolbar Space*/}
         <GridTableToolbar>
+          {customComponents?.toolbar?.before}
           <GridTableSearch
             parentData={data}
             query={query}
@@ -411,8 +420,10 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
             }}
             filterQuery={filterQuery}
           />
+          {customComponents?.toolbar?.after}
         </GridTableToolbar>
         {/*Main Table Body*/}
+        {customComponents?.table?.before}
         <Paper className={classes.paper}>
           <Box mt={3}>
             {loading ? (
@@ -536,6 +547,7 @@ const GridTable = ({ title, query, searchTerm, referenceData }) => {
             )}
           </Box>
         </Paper>
+        {customComponents?.table?.after}
       </Container>
     </ApolloErrorHandler>
   );

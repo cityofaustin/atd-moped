@@ -33,5 +33,5 @@ export default {
   overline: {
     fontWeight: 500,
   },
-  fontFamily: "Roboto",
+  fontFamily: `"Roboto", san-serif`,
 };

@@ -10,7 +10,8 @@ on:
       - production
     paths:
       - "moped-database/**"
-      - ".github/workflows/**"
+      - ".github/workflows/atd_moped_database.yml"
+      - ".github/workflows/aws-moped-migrations-helper.sh"
 
 jobs:
   apply:

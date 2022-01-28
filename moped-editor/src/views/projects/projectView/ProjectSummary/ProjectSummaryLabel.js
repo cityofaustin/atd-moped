@@ -15,6 +15,7 @@ const ProjectSummaryLabel = ({
   classes,
   onClickEdit,
   className = null,
+  spanClassName = null,
 }) => {
   return (
     <>
@@ -22,7 +23,7 @@ const ProjectSummaryLabel = ({
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
-        <span className={classes.fieldLabelTextSpan}>{text}</span>
+        <span className={spanClassName ?? classes.fieldLabelTextSpan}>{text}</span>
       </Typography>
     </>
   );

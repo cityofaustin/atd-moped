@@ -1,2 +1,15 @@
 [build]
     ignore = "/bin/false"
+
+# Build Context Configuration:
+#   From: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
+#   Also: https://docs.netlify.com/configure-builds/environment-variables/
+[context.branch-deploy]
+    command = "echo 'Build Context Mode: Branch-Deploy' && npm run build:netlifypr"
+    [context.branch-deploy.environment]
+      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- branch-deploy"
+
+[context.deploy-preview]
+    command = "echo 'Build Context Mode: Deploy-Preview' && npm run build:netlifypr"
+    [context.deploy-preview.environment]
+      ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- deploy-preview"
