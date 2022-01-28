@@ -205,6 +205,7 @@ const handleSelectedFeatureUpdate = (
     const bboxLine = polygonToLine(bboxPolygon(bbox));
     const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
 
+    // todo: this will need to be updated to handle the changes in the project_extent_id
     if (intersectsWithBounds) {
       // this feature is rendered to the edge of the viewport and may (still) be fragmented.
       // we cannnot know with certainty, so we fetch it's complete geometry from AGOL to be

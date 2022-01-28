@@ -133,7 +133,7 @@ export const mapConfig = {
       layerLabel: "Streets",
       layerIdName: "ctn-lines",
       tooltipTextProperty: "FULL_STREET_NAME",
-      featureIdProperty: "PROJECT_EXTENT_ID",
+      featureIdProperty: "CTN_SEGMENT_ID",
       layerOrder: 1,
       layerColor: theme.palette.primary.main,
       layerUrl:
@@ -264,7 +264,7 @@ export const mapConfig = {
     projectFeatures: {
       layerLabel: "Project Features",
       layerIdName: "projectFeatures",
-      featureIdProperty: "PROJECT_EXTENT_ID",
+      featureIdProperty: "CTN_SEGMENT_ID",
       layerOrder: 5,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -296,7 +296,7 @@ export const mapConfig = {
       layerDrawn: false,
       layerLabel: "Project Points",
       layerIdName: "projectFeaturePoints",
-      featureIdProperty: "PROJECT_EXTENT_ID",
+      featureIdProperty: "INTERSECTIONID",
       layerOrder: 6,
       layerColor: theme.palette.grey["800"],
       layerMaxLOD: 12,
@@ -393,9 +393,7 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>{ // breadcrumb
-  console.log(feature)
   console.log(feature.properties)
-  console.log(layerName)
   return (feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]);
 }
 
@@ -703,7 +701,6 @@ export function useHoverLayer() {
   const [featureText, setFeatureText] = useState(null);
   const [featureId, setFeatureId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
-  console.log(featureId, " *** in state?")
  
   /**
    * Gets and sets data from a map feature used to populate and place a tooltip
@@ -711,8 +708,6 @@ export function useHoverLayer() {
    */
   const handleLayerHover = e => {
     const layerSource = getLayerSource(e);
-
-    console.log("LAYER SOURCE: ", layerSource)
 
     // If a layer isn't hovered, reset state and don't proceed
     if (!layerSource) {
@@ -727,7 +722,7 @@ export function useHoverLayer() {
       srcEvent: { offsetX, offsetY },
     } = e;
     const featureId = getFeatureId(e.features[0], layerSource);
-    console.log(featureId)
+    console.log("featureID: ", featureId)
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
     setFeatureText(hoveredFeatureText);
@@ -978,7 +973,7 @@ export const layerSelectStyles = {
 };
 
 /**
- * Generates a list of all layers that are drawn
+ * Generates a list of all layers that are user drawn
  */
 export const drawnLayerNames = Object.entries(mapConfig.layerConfigs)
   .filter(([layerName, layer]) => layer.layerDrawn)

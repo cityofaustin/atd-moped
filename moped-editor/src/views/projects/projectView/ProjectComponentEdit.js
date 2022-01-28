@@ -395,6 +395,8 @@ const ProjectComponentEdit = ({
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
     // Find new records that need to be inserted and create a feature record from them
+    // TODO: this needs to be updated to not depend on project_extent_id as its comparison
+    // since the properties can be also intersectionID or the other one
     const newFeaturesToInsert = editedFeatures
       .filter(
         newFeature =>
@@ -418,6 +420,7 @@ const ProjectComponentEdit = ({
               record =>
                 !editedFeatures.find(
                   feature =>
+                    // TODO: same here as above
                     feature.properties.PROJECT_EXTENT_ID ===
                     record.properties.PROJECT_EXTENT_ID
                 )
