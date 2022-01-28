@@ -40,7 +40,6 @@ import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import { IconButton } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 /**
@@ -308,7 +307,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
             -
           </MenuItem>
         </Select>
-        {requiredField && <FormHelperText>Required</FormHelperText>}
+        {props.name === "phase_name" && (
+          <FormHelperText>Required</FormHelperText>
+        )}
       </FormControl>
     );
   };
@@ -383,16 +384,20 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       render: milestone => milestoneNameLookup[milestone.milestone_name],
       validate: milestone => !!milestone.milestone_name,
       editComponent: props => (
-        <Autocomplete
-          id={"milestone_name"}
-          name={"milestone_name"}
-          options={Object.keys(milestoneNameLookup)}
-          getOptionLabel={option => milestoneNameLookup[option]}
-          getOptionSelected={(option, value) => option === value}
-          value={props.value}
-          onChange={(event, value) => props.onChange(value)}
-          renderInput={params => <TextField {...params} />}
-        />
+        <FormControl>
+          <Autocomplete
+            id={"milestone_name"}
+            name={"milestone_name"}
+            style={{ minWidth: "8em" }}
+            options={Object.keys(milestoneNameLookup)}
+            getOptionLabel={option => milestoneNameLookup[option]}
+            getOptionSelected={(option, value) => option === value}
+            value={props.value}
+            onChange={(event, value) => props.onChange(value)}
+            renderInput={params => <TextField {...params} />}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
     },
     {
