@@ -17,6 +17,7 @@ const ProjectSummaryLabel = ({
   className = null,
   spanClassName = null,
 }) => {
+  console.log(spanClassName)
   return (
     <>
       <Typography

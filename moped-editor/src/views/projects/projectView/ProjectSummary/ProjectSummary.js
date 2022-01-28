@@ -23,6 +23,7 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
+import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders"
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
@@ -227,6 +228,16 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   data={data}
                   refetch={refetch}
                   classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+                        <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkOrders
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>

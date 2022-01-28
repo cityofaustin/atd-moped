@@ -195,7 +195,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                   }
                   target={"_blank"}
                 >
-                  {"View in Data Tracker"}{" "}
+                  {project.knack_project_id}{" "}
                   <OpenInNew className={classes.linkIcon} />
                 </Link>
               )) || (
