@@ -182,7 +182,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
         <Typography className={classes.fieldLabel}>
-          Data Tracker signal IDs
+          Signal IDs
         </Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
@@ -206,7 +206,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                       handleSync();
                     }}
                   >
-                    {"Synchronize"}
+                    {"Synchronize with Data Tracker"}
                     <Autorenew
                       viewBox={"0 -4 22 26"}
                       className={classes.syncLinkIcon}
