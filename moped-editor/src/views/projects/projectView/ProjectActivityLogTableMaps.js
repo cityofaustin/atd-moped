@@ -304,41 +304,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_proj_location: {
-    label: "Project Location",
-    fields: {
-      location_id: {
-        icon: "",
-        label: "ID",
-        type: "int4",
-      },
-      feature_id: {
-        icon: "",
-        label: "Feature ID",
-        type: "text",
-      },
-      project_id: {
-        icon: "",
-        label: "Project ID",
-        type: "int4",
-      },
-      location_notes: {
-        icon: "",
-        label: "Notes",
-        type: "text",
-      },
-      shape: {
-        icon: "",
-        label: "Shape",
-        type: "text",
-      },
-      location_name: {
-        icon: "",
-        label: "Name",
-        type: "text",
-      },
-    },
-  },
   moped_proj_milestones: {
     label: "Project Milestone",
     fields: {
