@@ -250,7 +250,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const DropDownSelectComponent = props => {
     // If the component name is phase_name, then assume phaseNameLookup values
     // Otherwise assume null,
-
     let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
     // If lookup values is null, then it is a sub-phase list we need to generate
