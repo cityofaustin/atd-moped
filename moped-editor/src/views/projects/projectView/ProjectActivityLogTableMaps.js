@@ -667,52 +667,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_proj_status_notes: {
-    label: "Project Status Notes",
-    fields: {
-      date_added: {
-        icon: "",
-        label: "Date Added",
-        type: "timestamptz",
-      },
-      proj_status_id: {
-        icon: "",
-        label: "Status ID",
-        type: "int4",
-      },
-      added_by: {
-        icon: "",
-        label: "Added By",
-        type: "int4",
-      },
-      status_name: {
-        icon: "",
-        label: "Status Name",
-        type: "text",
-      },
-      project_id: {
-        icon: "",
-        label: "Project ID",
-        type: "int4",
-      },
-      date_written: {
-        icon: "",
-        label: "Date Written",
-        type: "date",
-      },
-      created_by_personnel: {
-        icon: "",
-        label: "Created By",
-        type: "text",
-      },
-      status_note: {
-        icon: "",
-        label: "Note",
-        type: "text",
-      },
-    },
-  },
-
   moped_proj_timeline: {
     label: "Project Timeline",
     fields: {
