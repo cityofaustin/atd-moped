@@ -393,7 +393,6 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @return {String} The ID of the polygon clicked or hovered
  */
 export const getFeatureId = (feature, layerName) =>{ // breadcrumb
-  console.log(feature.properties)
   return (feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]);
 }
 
@@ -722,7 +721,6 @@ export function useHoverLayer() {
       srcEvent: { offsetX, offsetY },
     } = e;
     const featureId = getFeatureId(e.features[0], layerSource);
-    console.log("featureID: ", featureId)
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
 
     setFeatureText(hoveredFeatureText);

@@ -394,6 +394,12 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
+    // how do we get the layer drawnbyuser, vs drawnbyuserline and drawnbyuserpoint
+    const featureIdPropertyName =
+      editedFeatures[0].properties.sourceLayer === "ATD_ADMIN.CTN" ||
+      editedFeatures[0].properties.sourceLayer === "drawnByUserLine"
+        ? "CTN_SEGMENT_ID"
+        : "INTERSECTIONID";
     // Find new records that need to be inserted and create a feature record from them
     // TODO: this needs to be updated to not depend on project_extent_id as its comparison
     // since the properties can be also intersectionID or the other one
@@ -402,8 +408,10 @@ const ProjectComponentEdit = ({
         newFeature =>
           !editFeatureComponents.find(
             existingRecord =>
-              newFeature?.properties?.PROJECT_EXTENT_ID ===
-              existingRecord.properties.PROJECT_EXTENT_ID
+              (newFeature?.properties?.PROJECT_EXTENT_ID ??
+                newFeature?.properties[featureIdPropertyName]) ===
+              (existingRecord.properties.PROJECT_EXTENT_ID ??
+                existingRecord.properties[featureIdPropertyName])
           )
       )
       .map(newFeature => ({
@@ -421,8 +429,10 @@ const ProjectComponentEdit = ({
                 !editedFeatures.find(
                   feature =>
                     // TODO: same here as above
-                    feature.properties.PROJECT_EXTENT_ID ===
-                    record.properties.PROJECT_EXTENT_ID
+                    (feature.properties.PROJECT_EXTENT_ID ??
+                      feature.properties[featureIdPropertyName]) ===
+                    (record.properties.PROJECT_EXTENT_ID ??
+                      record.properties[featureIdPropertyName])
                 )
             )
             .map(record => ({
@@ -957,7 +967,10 @@ const ProjectComponentEdit = ({
                   </Grid>
                 </Grid>
                 <Grid item xs={12}>
-                  <Divider variant="fullWidth" className={classes.mapToolsDivider} />
+                  <Divider
+                    variant="fullWidth"
+                    className={classes.mapToolsDivider}
+                  />
                   <Button
                     onClick={() => setEditPanelCollapsed(false)}
                     startIcon={<KeyboardArrowUp />}
