@@ -50,6 +50,7 @@ export const SUMMARY_QUERY = gql`
       status_id
       contractor
       purchase_order_number
+      work_assignment_id
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
