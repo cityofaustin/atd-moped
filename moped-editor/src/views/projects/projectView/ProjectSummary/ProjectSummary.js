@@ -232,7 +232,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 />
               </Grid>
             </Grid>
-                        <Grid container spacing={0}>
+            <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryWorkOrders
                   classes={classes}
