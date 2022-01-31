@@ -2466,6 +2466,13 @@
           name: moped_proj_phases
           schema: public
         column: project_id
+  - name: moped_project_types
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          schema: public
+          name: moped_project_types
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2500,6 +2507,7 @@
       - knack_project_id
       - purchase_order_number
       - task_order
+      - work_assignment_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2534,6 +2542,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2568,6 +2577,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   - role: moped-editor
     permission:
@@ -2601,6 +2611,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   - role: moped-viewer
     permission:
@@ -2634,6 +2645,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2668,6 +2680,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
       check: {}
   - role: moped-editor
@@ -2702,6 +2715,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
       check: {}
   event_triggers:
