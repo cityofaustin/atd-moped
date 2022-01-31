@@ -2466,13 +2466,6 @@
           name: moped_proj_phases
           schema: public
         column: project_id
-  - name: moped_project_types
-    using:
-      foreign_key_constraint_on:
-        column: project_id
-        table:
-          schema: public
-          name: moped_project_types
   insert_permissions:
   - role: moped-admin
     permission:
