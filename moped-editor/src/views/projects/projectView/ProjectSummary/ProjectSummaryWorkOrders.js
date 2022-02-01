@@ -46,7 +46,7 @@ const ProjectSummaryWorkOrders = ({
             </Link>
           }
           classes={classes}
-          spanClassName={""}
+          spanClassName={classes.fieldLabelTextSpanNoBorder}
         />
       </Box>
     </Grid>

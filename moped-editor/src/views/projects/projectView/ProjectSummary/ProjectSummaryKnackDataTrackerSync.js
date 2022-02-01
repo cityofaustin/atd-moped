@@ -5,6 +5,7 @@ import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
@@ -39,6 +40,14 @@ const ProjectSummaryKnackDataTrackerSync = ({
     process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
     project?.knackProjectId
   );
+
+  // Array of signals in project
+  const signals = project.moped_proj_features
+    .filter(feature => feature?.location?.properties?.signal_id)
+    .map(feature => ({
+      signal_id: feature.location.properties.signal_id,
+      knack_id: feature.location.properties.id,
+    }));
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
@@ -178,8 +187,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
     } // end of the creating new knack record branch
   };
 
-  console.log(project);
-
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
@@ -187,17 +194,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
             text={
-              (project.knack_project_id && (
-                <Link
-                  href={
-                    "https://atd.knack.com/amd#projects/project-details/" +
-                    project.knack_project_id
-                  }
-                  target={"_blank"}
-                >
-                  {project.knack_project_id}{" "}
-                  <OpenInNew className={classes.linkIcon} />
-                </Link>
+              (project.knack_project_id && signals.length > 0 && (
+                <RenderSignalLink signals={signals} />
               )) || (
                 <>
                   <Link
