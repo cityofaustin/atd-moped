@@ -2500,6 +2500,7 @@
       - knack_project_id
       - purchase_order_number
       - task_order
+      - work_assignment_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2534,6 +2535,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2568,6 +2570,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   - role: moped-editor
     permission:
@@ -2601,6 +2604,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   - role: moped-viewer
     permission:
@@ -2634,6 +2638,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2668,6 +2673,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
       check: {}
   - role: moped-editor
@@ -2702,6 +2708,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - work_assignment_id
       filter: {}
       check: {}
   event_triggers:
