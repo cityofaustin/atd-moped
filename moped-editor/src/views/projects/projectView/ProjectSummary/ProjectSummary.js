@@ -23,7 +23,7 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
-import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders"
+import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
@@ -61,6 +61,9 @@ const useStyles = makeStyles(theme => ({
   fieldLabelTextSpan: {
     borderBottom: "1px dashed",
     borderBottomColor: theme.palette.text.secondary,
+  },
+  fieldLabelTextSpanNoBorder: {
+    borderBottom: "inherit",
   },
   fieldLabelLink: {
     width: "calc(100% - 2rem)",

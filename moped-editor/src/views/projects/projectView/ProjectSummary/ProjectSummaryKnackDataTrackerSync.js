@@ -178,14 +178,12 @@ const ProjectSummaryKnackDataTrackerSync = ({
     } // end of the creating new knack record branch
   };
 
-  console.log(project)
+  console.log(project);
 
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>
-          Signal IDs
-        </Typography>
+        <Typography className={classes.fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
             text={
@@ -218,7 +216,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
               )
             }
             classes={classes}
-            spanClassName={""}
+            spanClassName={classes.fieldLabelTextSpanNoBorder}
           />
         </Box>
       </Grid>
