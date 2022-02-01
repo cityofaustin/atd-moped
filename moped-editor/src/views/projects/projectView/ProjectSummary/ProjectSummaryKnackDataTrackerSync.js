@@ -178,6 +178,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
     } // end of the creating new knack record branch
   };
 
+  console.log(project)
+
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
