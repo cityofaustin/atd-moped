@@ -4,13 +4,13 @@ import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import {
-  PROJECT_UPDATE_PURCHASE_ORDER_NUMBER,
-  PROJECT_CLEAR_PURCHASE_ORDER_NUMBER,
+  PROJECT_UPDATE_WORK_ASSIGNMENT_ID,
+  PROJECT_CLEAR_WORK_ASSIGNMENT_ID,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 
 /**
- * ProjectSummaryProjectDO Component
+ * ProjectSummaryWorkAssignmentID Component
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
@@ -19,7 +19,7 @@ import { useMutation } from "@apollo/client";
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryProjectDO = ({
+const ProjectSummaryWorkAssignmentID = ({
   projectId,
   data,
   refetch,
@@ -28,50 +28,50 @@ const ProjectSummaryProjectDO = ({
 }) => {
   // Instantiate Original Value
   const [originalValue, setOriginalValue] = useState(
-    data?.moped_project?.[0]?.purchase_order_number ?? null
+    data?.moped_project?.[0]?.work_assignment_id ?? ""
   );
   const [editMode, setEditMode] = useState(false);
-  const [projectPurchaseOrderNumber, setProjectPurchaseOrderNumber] = useState(
+  const [projectWorkAssignmentID, setProjectWorkAssignmentID] = useState(
     originalValue
   );
-  const [updateProjectOrderNumber] = useMutation(
-    PROJECT_UPDATE_PURCHASE_ORDER_NUMBER
+  const [updateWorkAssignmentID] = useMutation(
+    PROJECT_UPDATE_WORK_ASSIGNMENT_ID
   );
-  const [clearProjectOrderNumber] = useMutation(
-    PROJECT_CLEAR_PURCHASE_ORDER_NUMBER
+  const [clearWorkAssignmentID] = useMutation(
+    PROJECT_CLEAR_WORK_ASSIGNMENT_ID
   );
 
   // Track changes in data
   useEffect(() => {
-    const newVal = data?.moped_project?.[0]?.purchase_order_number ?? null;
+    const newVal = data?.moped_project?.[0]?.work_assignment_id ?? "";
     setOriginalValue(newVal);
-    setProjectPurchaseOrderNumber(newVal);
+    setProjectWorkAssignmentID(newVal);
   }, [data]);
 
   /**
    * Resets the project order number to original value
    */
-  const handleProjectOrderNumberClose = () => {
-    setProjectPurchaseOrderNumber(originalValue);
+  const handleWorkAssignmentIDClose = () => {
+    setProjectWorkAssignmentID(originalValue);
     setEditMode(false);
   };
 
   /**
    * Saves the new project order number...
    */
-  const handleProjectOrderNumberSave = () => {
-    const isEmpty = (projectPurchaseOrderNumber ?? "").length === 0;
+  const handleWorkAssignmentIDSave = () => {
+    const isEmpty = projectWorkAssignmentID.trim().length === 0;
 
     (isEmpty
-      ? clearProjectOrderNumber({
+      ? clearWorkAssignmentID({
           variables: {
             projectId: projectId,
           },
         })
-      : updateProjectOrderNumber({
+      : updateWorkAssignmentID({
           variables: {
             projectId: projectId,
-            purchase_order_number: projectPurchaseOrderNumber,
+            work_assignment_id: projectWorkAssignmentID,
           },
         })
     )
@@ -80,33 +80,33 @@ const ProjectSummaryProjectDO = ({
         refetch();
         snackbarHandle(
           true,
-          "Project purchase order number updated!",
+          "Project work assignment ID updated!",
           "success"
         );
       })
       .catch(err => {
         snackbarHandle(
           true,
-          "Failed to update purchase order number: " + String(err),
+          "Failed to update work assignment ID: " + String(err),
           "error"
         );
-        handleProjectOrderNumberClose();
+        handleWorkAssignmentIDClose();
       });
 
     setEditMode(false);
   };
 
   /**
-   * Updates the state of the purchase order number value
+   * Updates the state of the work assignmentID number value
    * @param {Object} e - Event object
    */
-  const handleProjectPurchaseOrderNumberChange = e => {
-    setProjectPurchaseOrderNumber(e.target.value);
+  const handleWorkAssignmentIDChange = e => {
+    setProjectWorkAssignmentID(e.target.value);
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>DO #</Typography>
+      <Typography className={classes.fieldLabel}>Work assignment ID</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -116,20 +116,20 @@ const ProjectSummaryProjectDO = ({
           <>
             <TextField
               fullWidth
-              id="moped-project-purchase-order"
+              id="moped-project-work-assignment"
               label={null}
-              onChange={handleProjectPurchaseOrderNumberChange}
-              value={projectPurchaseOrderNumber}
+              onChange={handleWorkAssignmentIDChange}
+              value={projectWorkAssignmentID}
             />
             <Icon
               className={classes.editIconConfirm}
-              onClick={handleProjectOrderNumberSave}
+              onClick={handleWorkAssignmentIDSave}
             >
               check
             </Icon>
             <Icon
               className={classes.editIconConfirm}
-              onClick={handleProjectOrderNumberClose}
+              onClick={handleWorkAssignmentIDClose}
             >
               close
             </Icon>
@@ -138,8 +138,8 @@ const ProjectSummaryProjectDO = ({
         {!editMode && (
           <ProjectSummaryLabel
             text={
-              (projectPurchaseOrderNumber ?? "").length > 0
-                ? projectPurchaseOrderNumber
+              projectWorkAssignmentID.length > 0
+                ? projectWorkAssignmentID
                 : "None"
             }
             classes={classes}
@@ -151,4 +151,4 @@ const ProjectSummaryProjectDO = ({
   );
 };
 
-export default ProjectSummaryProjectDO;
+export default ProjectSummaryWorkAssignmentID;
