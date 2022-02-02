@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Grid, Link, Typography } from "@material-ui/core";
-import { OpenInNew, Autorenew } from "@material-ui/icons";
+import { Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
@@ -194,9 +194,11 @@ const ProjectSummaryKnackDataTrackerSync = ({
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
             text={
+              // if a project has been synced with Knack and has signals associated, link to signals
               (project.knack_project_id && signals.length > 0 && (
                 <RenderSignalLink signals={signals} />
               )) || (
+                // otherwise render link to synchronize with knack
                 <>
                   <Link
                     className={classes.fieldLabelText}
