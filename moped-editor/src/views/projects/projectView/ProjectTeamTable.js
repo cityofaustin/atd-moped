@@ -182,7 +182,6 @@ const ProjectTeamTable = ({
       editComponent: props => (
         <FormControl>
           <Autocomplete
-            style={{ minWidth: "8em" }}
             id="user_id"
             name="user_id"
             options={userIds}

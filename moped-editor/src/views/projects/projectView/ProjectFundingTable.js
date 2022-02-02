@@ -555,7 +555,7 @@ const ProjectFundingTable = () => {
             <Typography
               variant="h2"
               color="primary"
-              style={{ paddingTop: "1em", paddingBottom: "1em" }}
+              style={{ paddingTop: "1em" }}
             >
               Funding sources
             </Typography>

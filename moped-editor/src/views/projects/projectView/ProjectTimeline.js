@@ -388,7 +388,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           <Autocomplete
             id={"milestone_name"}
             name={"milestone_name"}
-            style={{ minWidth: "8em" }}
             options={Object.keys(milestoneNameLookup)}
             getOptionLabel={option => milestoneNameLookup[option]}
             getOptionSelected={(option, value) => option === value}
