@@ -7,8 +7,7 @@ import { OpenInNew } from "@material-ui/icons";
 
 /**
  * ProjectSummaryWorkOrders Component
- * @param {Number} projectId - The id of the current project being viewed
- * @param {Object} data - The data object from the GraphQL query
+ * @param {Object} project - Current project being viewed
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
  * @param {function} snackbarHandle - The function to show the snackbar
@@ -51,6 +50,7 @@ const ProjectSummaryWorkOrders = ({
       </Box>
     </Grid>
   ) : (
+    // If there is no knack project url, render an empty grid space
     <Grid item xs={12} className={classes.fieldGridItem} />
   );
 };
