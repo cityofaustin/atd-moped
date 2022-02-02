@@ -22,7 +22,7 @@ const ProjectSummaryWorkOrders = ({
   snackbarHandle,
 }) => {
   const knackProjectURL = project?.knack_project_id
-    ? `https://atd.knack.com/amd#work-orders/?view_713_filters=%7B%22match%22%3A%22and%22%2C%22rules%22%3A%5B%7B%22field%22%3A%22field_4133%22%2C%22operator%22%3A%22is%22%2C%22value%22%3A%3C${project.knack_project_id}%3E%7D%5D%7D`
+    ? `https://atd.knack.com/amd#work-orders/?view_713_filters=%7B%22match%22%3A%22and%22%2C%22rules%22%3A%5B%7B%22field%22%3A%22field_4133%22%2C%22operator%22%3A%22is%22%2C%22value%22%3A%22${project.knack_project_id}%22%7D%5D%7D`
     : "";
 
   return knackProjectURL ? (
