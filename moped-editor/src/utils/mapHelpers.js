@@ -392,9 +392,8 @@ export const getLayerNames = () => Object.keys(mapConfig.layerConfigs);
  * @param {String} layerName - Name of layer to find lodash get path from layer config
  * @return {String} The ID of the polygon clicked or hovered
  */
-export const getFeatureId = (feature, layerName) =>{ // breadcrumb
-  return (feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty]);
-}
+export const getFeatureId = (feature, layerName) =>
+  feature.properties[mapConfig.layerConfigs[layerName].featureIdProperty];
 
 /**
  * Get a feature's property that contains text to show in a tooltip
@@ -700,7 +699,7 @@ export function useHoverLayer() {
   const [featureText, setFeatureText] = useState(null);
   const [featureId, setFeatureId] = useState(null);
   const [hoveredCoords, setHoveredCoords] = useState(null);
- 
+
   /**
    * Gets and sets data from a map feature used to populate and place a tooltip
    * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates

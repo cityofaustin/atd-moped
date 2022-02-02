@@ -394,15 +394,13 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-    // how do we get the layer drawnbyuser, vs drawnbyuserline and drawnbyuserpoint
+    // todo: how do we get the layer drawnbyuser, vs drawnbyuserline and drawnbyuserpoint
     const featureIdPropertyName =
       editedFeatures[0].properties.sourceLayer === "ATD_ADMIN.CTN" ||
       editedFeatures[0].properties.sourceLayer === "drawnByUserLine"
         ? "CTN_SEGMENT_ID"
         : "INTERSECTIONID";
     // Find new records that need to be inserted and create a feature record from them
-    // TODO: this needs to be updated to not depend on project_extent_id as its comparison
-    // since the properties can be also intersectionID or the other one
     const newFeaturesToInsert = editedFeatures
       .filter(
         newFeature =>
@@ -428,7 +426,6 @@ const ProjectComponentEdit = ({
               record =>
                 !editedFeatures.find(
                   feature =>
-                    // TODO: same here as above
                     (feature.properties.PROJECT_EXTENT_ID ??
                       feature.properties[featureIdPropertyName]) ===
                     (record.properties.PROJECT_EXTENT_ID ??
