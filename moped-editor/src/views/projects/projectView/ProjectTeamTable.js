@@ -180,7 +180,7 @@ const ProjectTeamTable = ({
       render: personnel => getPersonnelName(personnel.user_id),
       validate: rowData => !!rowData.user_id,
       editComponent: props => (
-        <FormControl>
+        <FormControl style={{ width: "100%" }}>
           <Autocomplete
             id="user_id"
             name="user_id"

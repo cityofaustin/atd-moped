@@ -384,7 +384,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       render: milestone => milestoneNameLookup[milestone.milestone_name],
       validate: milestone => !!milestone.milestone_name,
       editComponent: props => (
-        <FormControl>
+        <FormControl style={{ width: "100%" }}>
           <Autocomplete
             id={"milestone_name"}
             name={"milestone_name"}
