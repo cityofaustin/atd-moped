@@ -405,6 +405,8 @@ const ProjectComponentEdit = ({
         newFeature =>
           !editFeatureComponents.find(
             existingRecord =>
+              // checks the PROJECT_EXTENT_ID of a feature, if that doesn't exist,
+              // then it was saved as either the INTERSECTIONID or CTN_SEGMENT_ID
               (newFeature?.properties?.PROJECT_EXTENT_ID ??
                 newFeature?.properties[featureIdPropertyName]) ===
               (existingRecord.properties.PROJECT_EXTENT_ID ??

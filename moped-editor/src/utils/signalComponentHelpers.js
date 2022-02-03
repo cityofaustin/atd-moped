@@ -48,6 +48,8 @@ export const signalToFeatureCollection = signal => {
       properties: {
         ...signal?.properties,
         renderType: "Point",
+        // I was considering changing this to be INTERSECTIONID, but since the sourceLayer is being saved
+        // as "drawnByUser" and not "ATD_ADMIN.CTN_Intersections", I've left it as PROJECT_EXTENT_ID
         PROJECT_EXTENT_ID: featureUUID,
         sourceLayer: "drawnByUser",
       },
