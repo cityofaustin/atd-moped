@@ -74,8 +74,8 @@ const ProjectComponents = () => {
   });
 
   /**
-   * Retrieve and flatten a nested list of features that are associated with this project
-   * moped_proj_components -> moped_proj_features_components -> moped_proj_feature
+   * Retrieve a list of features that are associated with this project
+   * moped_proj_components -> moped_proj_feature
    */
   const projectFeatureRecords =
     data && data?.moped_proj_components

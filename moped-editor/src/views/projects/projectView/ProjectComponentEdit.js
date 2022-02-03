@@ -601,6 +601,7 @@ const ProjectComponentEdit = ({
    * Handles the deletion of the component from database
    */
   const handleComponentDelete = () => {
+    debugger;
     deleteProjectComponent({
       variables: {
         projComponentId: componentId,
@@ -743,7 +744,7 @@ const ProjectComponentEdit = ({
    * geojson collection that we can feed it to the map.
    */
   if (data && editFeatureComponents.length === 0) {
-    // First, we will need a list of all moped_proj_features_components and make it geojson
+    // First, we will need a list of all moped_proj_features and make it geojson
     const featuresFromComponents = (
       data?.moped_proj_components[0]?.moped_proj_features ?? []
     ).map(moped_proj_feature => {
