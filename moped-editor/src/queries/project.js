@@ -21,11 +21,9 @@ export const ADD_PROJECT = gql`
         completed
       }
       moped_proj_components {
-        moped_proj_features_components {
-          moped_proj_feature {
+          moped_proj_features {
             feature_id
           }
-        }
       }
     }
   }
@@ -100,7 +98,7 @@ export const SUMMARY_QUERY = gql`
       phase_start
       phase_end
     }
-    moped_entity(order_by: {entity_id: asc}) {
+    moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
     }
@@ -547,6 +545,43 @@ export const PROJECT_ARCHIVE = gql`
   }
 `;
 
+// export const COMPONENTS_QUERY = gql`
+//   query GetComponents($projectId: Int) {
+//     moped_proj_components(
+//       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+//     ) {
+//       project_component_id
+//       project_id
+//       component_id
+//       name
+//       description
+//       moped_components {
+//         component_type: component_name
+//         component_subtype
+//         line_representation
+//       }
+//       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
+//         status_id
+//         moped_subcomponent {
+//           subcomponent_id
+//           subcomponent_name
+//         }
+//       }
+//       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
+//         name
+//         moped_proj_component_id
+//         status_id
+//         moped_proj_feature {
+//           location
+//           feature_id
+//           status_id
+//         }
+//       }
+//     }
+//   }
+// `;
+
+// new query!
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
@@ -569,20 +604,70 @@ export const COMPONENTS_QUERY = gql`
           subcomponent_name
         }
       }
-      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-        name
-        moped_proj_component_id
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+        location
+        feature_id
         status_id
-        moped_proj_feature {
-          location
-          feature_id
-          status_id
-        }
       }
     }
   }
 `;
 
+// export const COMPONENT_DETAILS_QUERY = gql`
+//   query GetComponentDetails($componentId: Int!) {
+//     moped_proj_components(
+//       where: { project_component_id: { _eq: $componentId } }
+//     ) {
+//       component_id
+//       description
+//       name
+//       project_component_id
+//       project_id
+//       status_id
+//       moped_components {
+//         component_name
+//         component_id
+//         component_subtype
+//         line_representation
+//       }
+//       moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
+//         project_features_components_id
+//         moped_proj_features_id
+//         status_id
+//         moped_proj_feature {
+//           location
+//           feature_id
+//           status_id
+//           project_id
+//         }
+//       }
+//       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
+//         component_subcomponent_id
+//         project_component_id
+//         subcomponent_id
+//         status_id
+//         moped_subcomponent {
+//           subcomponent_id
+//           subcomponent_name
+//         }
+//       }
+//     }
+//     moped_subcomponents {
+//       subcomponent_name
+//       subcomponent_id
+//       component_id
+//     }
+//     moped_components {
+//       component_name
+//       component_subtype
+//       component_id
+//       line_representation
+//     }
+//   }
+// `;
+
+
+// new query!
 export const COMPONENT_DETAILS_QUERY = gql`
   query GetComponentDetails($componentId: Int!) {
     moped_proj_components(
@@ -600,16 +685,11 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_subtype
         line_representation
       }
-      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-        project_features_components_id
-        moped_proj_features_id
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+        location
+        feature_id
         status_id
-        moped_proj_feature {
-          location
-          feature_id
-          status_id
-          project_id
-        }
+        project_id
       }
       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
         component_subcomponent_id

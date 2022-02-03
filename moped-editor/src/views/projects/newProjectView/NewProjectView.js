@@ -185,10 +185,9 @@ const NewProjectView = () => {
           // if moped_proj_components exist, update features before setting project id
           if (moped_proj_components[0]) {
             // Retrieve the feature_ids that need to be updated
-            const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
-              featureComponent => featureComponent.moped_proj_feature.feature_id
+            const featuresToUpdate = moped_proj_components[0].moped_proj_features.map(
+              feature => feature.feature_id
             );
-
             // Persist the feature updates, we must.
             updateFeatures({
               variables: {

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { TextField } from "@material-ui/core";
 
-
 /*
  * Socrata Endpoint
  */
@@ -114,7 +113,11 @@ export const useSignalChangeEffect = (
 /*
 / Defines text input to render in MUI autocomplete
 */
-export const renderSignalInput = (params, signalError = false, variant="standard") => {
+export const renderSignalInput = (
+  params,
+  signalError = false,
+  variant = "standard"
+) => {
   return (
     <TextField
       {...params}
@@ -214,17 +217,10 @@ export const generateProjectComponent = (
     description: componentDef.description,
     component_id: componentDef.component_id,
     status_id: 1,
-    moped_proj_features_components: {
+    moped_proj_features: {
       data: featureCollection.features.map(feature => ({
-        name: componentDef.component_name,
-        description: componentDef.description,
         status_id: 1,
-        moped_proj_feature_object: {
-          data: {
-            status_id: 1,
-            location: feature,
-          },
-        },
+        location: feature,
       })),
     },
   };

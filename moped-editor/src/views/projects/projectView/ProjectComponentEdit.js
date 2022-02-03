@@ -519,31 +519,22 @@ const ProjectComponentEdit = ({
     const featureComponents = mapListOfChanges.map(feature => ({
       // Each feature component shares the status of it's child feature
       status_id: feature.status_id,
-      // Now we must determine if the feature has a nested `project_features_components_id` field
-      ...(feature?.properties?.project_features_components_id ?? null
+      // Now we must determine if the feature has a nested `moped_proj_feature_id` field
+      ...(feature?.properties?.moped_proj_feature_id ?? null
         ? // If so, then add it to the object, so that it can be upserted
           {
-            project_features_components_id:
-              feature.properties.project_features_components_id,
+            moped_proj_feature_id: feature.properties.moped_proj_feature_id,
           }
         : // If not, ignore it so that we can insert a new one
           {}),
-      // Create the moped_proj_feature_object key with conflict rules and data
-      moped_proj_feature_object: {
-        on_conflict: {
-          constraint: "moped_proj_features_pkey",
-          update_columns: ["location", "status_id"],
-        },
-        // This inserts into moped_proj_features, and assumes relationship with moped_proj_features_components
-        data: {
-          ...(feature.hasOwnProperty("feature_id")
-            ? { feature_id: feature.feature_id }
-            : {}),
-          project_id: Number.parseInt(projectId),
-          location: { ...feature },
-          status_id: feature.status_id,
-        },
-      },
+      // This inserts into moped_proj_features, and assumes relationship with moped_proj_components
+
+      ...(feature.hasOwnProperty("feature_id")
+        ? { feature_id: feature.feature_id }
+        : {}),
+      project_id: Number.parseInt(projectId),
+      location: { ...feature },
+      status_id: feature.status_id,
     }));
 
     // 2. Generate a list of subcomponent upserts
@@ -589,21 +580,15 @@ const ProjectComponentEdit = ({
         Finally we inject the features components & geojson features
         as previously generated.
       */
-      moped_proj_features_components: {
+      moped_proj_features: {
         data: featureComponents,
         on_conflict: {
-          constraint: "moped_proj_features_components_pkey",
-          update_columns: [
-            "moped_proj_features_id",
-            "moped_proj_component_id",
-            "name",
-            "description",
-            "status_id",
-          ],
+          constraint: "moped_proj_features_pkey",
+          update_columns: ["status_id", "location"],
         },
       },
     };
-
+    debugger;
     // Finally we must run the graphql query and refetch
     updateProjectComponents({
       variables: {
@@ -760,21 +745,16 @@ const ProjectComponentEdit = ({
   if (data && editFeatureComponents.length === 0) {
     // First, we will need a list of all moped_proj_features_components and make it geojson
     const featuresFromComponents = (
-      data?.moped_proj_components[0]?.moped_proj_features_components ?? []
-    ).map(featureComponent => {
+      data?.moped_proj_components[0]?.moped_proj_features ?? []
+    ).map(moped_proj_feature => {
       // Retrieve the feature component's primary key
-      const {
-        moped_proj_features_id,
-        project_features_components_id,
-      } = featureComponent;
+      const { moped_proj_features_id } = moped_proj_feature;
       // Clone the geojson data from the feature component
       const newGeoJson = {
-        ...featureComponent.moped_proj_feature.location,
+        ...moped_proj_feature.location,
       };
       // Now go ahead and patch the primary key into the GeoJson properties
-      newGeoJson.properties.project_features_components_id = project_features_components_id;
       newGeoJson.properties.moped_proj_feature_id = moped_proj_features_id;
-
       return newGeoJson;
     });
 

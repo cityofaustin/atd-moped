@@ -85,14 +85,7 @@ const ProjectComponents = () => {
             // Append if current component is selected, or none are selected (0)
             ...(selectedComp === component.project_component_id ||
             selectedComp === 0
-              ? component.moped_proj_features_components.map(
-                  featureComponent => ({
-                    ...featureComponent.moped_proj_feature,
-                    project_features_components_id:
-                      featureComponent.project_features_components_id,
-                  })
-                )
-              : []),
+              ? component.moped_proj_features: []),
           ],
           []
         )
@@ -109,13 +102,7 @@ const ProjectComponents = () => {
           data.moped_proj_components.reduce(
             (accumulator, component) => [
               ...accumulator,
-              ...component.moped_proj_features_components.map(
-                featureComponent => ({
-                  ...featureComponent.moped_proj_feature,
-                  project_features_components_id:
-                    featureComponent.project_features_components_id,
-                })
-              ),
+              ...component.moped_proj_features,
             ],
             []
           )
