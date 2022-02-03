@@ -394,7 +394,6 @@ const ProjectComponentEdit = ({
    */
   const generateMapUpserts = () => {
     const editedFeatures = editFeatureCollection.features;
-    // todo: how do we get the layer drawnbyuser, vs drawnbyuserline and drawnbyuserpoint
     const featureIdPropertyName =
       editedFeatures[0].properties.sourceLayer === "ATD_ADMIN.CTN" ||
       editedFeatures[0].properties.sourceLayer === "drawnByUserLine"

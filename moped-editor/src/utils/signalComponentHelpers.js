@@ -25,7 +25,7 @@ export const getSignalOptionLabel = option =>
   `${option.properties.signal_id}: ${option.properties.location_name}`;
 
 /**
- * Immitate a "drawn point" feature from a traffic signal goejosn feature. Sets required
+ * Imitate a "drawn point" feature from a traffic signal geojson feature. Sets required
  * fields so that featureCollection can be used in the DB mutation on submit
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features

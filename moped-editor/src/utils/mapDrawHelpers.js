@@ -332,7 +332,7 @@ export function useMapDrawTools(
     (featureA?.geometry?.type ?? 1) === (featureB?.geometry?.type ?? 0);
 
   /**
-   * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
+   * Add existing user drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
     ref => {
