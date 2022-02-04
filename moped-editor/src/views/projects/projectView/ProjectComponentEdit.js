@@ -104,122 +104,16 @@ const EMPTY_FEATURE_COLLECTION = {
 };
 
 /**
- * Hook to generate a unique sorted list containing the names of available components
- * @param {Object[]} mopedComponents - the moped_components lookup table
+ * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
  */
-const useAvailableTypes = mopedComponents => {
-  const [availableTypes, setAvailableTypes] = useState([]);
+const useInitialTypeCounts = (mopedComponents, mopedSubcomponents) => {
+  const [initialTypeCounts, setInitialTypeCounts] = useState(null);
+
   useEffect(() => {
-    if (!mopedComponents) return;
-    let availableTypesNew = [
-      ...new Set(
-        mopedComponents.map(moped_component => moped_component.component_name)
-      ),
-    ].sort();
-    setAvailableTypes(availableTypesNew);
-  }, [mopedComponents]);
-  return availableTypes;
-};
+    if (!mopedComponents || !mopedComponents) return;
 
-/**
- * Hook to generate a list of components that are represented by lines ** note: highway can be either
- * @param {Object[]} mopedComponents - the moped_components lookup table
- */
-const useLineRepresentable = mopedComponents => {
-  const [lineRepresentable, setLineRepresentable] = useState([]);
-  useEffect(() => {
-    if (!mopedComponents) return;
-    let lineRepresentableNew = [
-      ...new Set(
-        mopedComponents.map(moped_component =>
-          moped_component?.line_representation
-            ? moped_component.component_name.toLowerCase()
-            : null
-        )
-      ),
-    ].filter(item => item);
-    setLineRepresentable(availableTypesNew);
-  }, [mopedComponents]);
-  return lineRepresentable;
-};
-
-/**
- * The project component editor
- * @param {Object} selectedProjectComponent - the selected moped_proj_component chosen in dropdown
- * @param {Object[]} mopedComponents - the moped_components lookup table
- * @param {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
- * @param {function} handleCancelEdit - The function to call if we need to cancel editing
- * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
- * @return {JSX.Element}
- * @constructor
- */
-const ProjectComponentEdit = ({
-  projectFeatureCollection,
-  selectedProjectComponent,
-  mopedComponents,
-  mopedSubcomponents,
-  handleCancelEdit,
-}) => {
-  const { projectId } = useParams();
-  const classes = useStyles();
-
-  // Template that should keep all features for this component
-  const emptyFeatureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
-
-  /**
-   * The State
-   * @type {Number} selectedComponentId - id of component chosen in dropdown
-   * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
-   * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
-   * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
-   * @type {Number[]} selectedSubcomponents - A number array containing the id of the selected subcomponents
-   * @type {String[]} availableSubtypes - An string list containing all available subtypes for the selected component
-   * @type {Object[]} editFeatureComponents - An object list containing the features for this component
-   * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
-   * @type {String} componentDescription - The description of this component
-   * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
-   * @type {boolean} editPanelCollapsed - If true, component picking panel is collapsed
-   * @type {boolean} editPanelCollapsedShow - If true, component picking panel is showing
-   * @constant
-   */
-  const [selectedComponentId, setSelectedComponentId] = useState(null);
-  const [selectedComponentType, setSelectedComponentType] = useState(null);
-  const [selectedComponentSubtype, setSelectedComponentSubtype] = useState(
-    null
-  );
-  const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
-  const [availableSubtypes, setAvailableSubtypes] = useState([]);
-  const [editFeatureCollection, setEditFeatureCollection] = useState(null);
-  const [drawLines, setDrawLines] = useState(null);
-
-  const [componentDescription, setComponentDescription] = useState(null);
-
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-
-  const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
-  const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
-
-  const projComponentId = selectedProjectComponent?.project_component_id;
-
-  const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
-
-  const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
-
-  /**
-   * saveActionState contains the current save state
-   * saveActionDispatch allows us to update the state via action (signal) dispatch.
-   */
-  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
-
-  /**
-   * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
-   */
-  const initialTypeCounts = mopedComponents // Do we have data?
-    ? // Yes, let's get the counts by using reduce
-      mopedComponents.reduce((accumulator, component, index) => {
+    let initialTypeCountsNew = mopedComponents.reduce(
+      (accumulator, component, index) => {
         // Retrieve the current component's values, in lower case
         const componentId = component?.component_id ?? null;
         const componentName = (component?.component_name ?? "").toLowerCase();
@@ -285,8 +179,95 @@ const ProjectComponentEdit = ({
             subcomponents: [...currentSubcomponents, ...componentSubcomponents],
           },
         };
-      }, {})
-    : {};
+      },
+      {}
+    );
+    setInitialTypeCounts(initialTypeCountsNew);
+  }, [mopedComponents]);
+
+  return initialTypeCounts;
+};
+
+/**
+ * The project component editor
+ * @param {Object} selectedProjectComponent - the selected moped_proj_component chosen in dropdown
+ * @param {Object[]} mopedComponents - the moped_components lookup table
+ * @param {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
+ * @param {function} handleCancelEdit - The function to call if we need to cancel editing
+ * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
+ * @param {Object[]} availableTypes - a unique sorted list containing the names of available components
+ * @param {Object[]} lineRepresentable - a list of components that are represented by lines
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
+const ProjectComponentEdit = ({
+  projectFeatureCollection,
+  selectedProjectComponent,
+  mopedComponents,
+  mopedSubcomponents,
+  handleCancelEdit,
+  availableTypes,
+  lineRepresentable,
+}) => {
+  const { projectId } = useParams();
+  const classes = useStyles();
+
+  // Template that should keep all features for this component
+  const emptyFeatureCollection = {
+    type: "FeatureCollection",
+    features: [],
+  };
+
+  /**
+   * The State
+   * @type {Number} selectedComponentId - id of component chosen in dropdown
+   * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
+   * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
+   * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
+   * @type {Number[]} selectedSubcomponents - A number array containing the id of the selected subcomponents
+   * @type {String[]} availableSubtypes - An string list containing all available subtypes for the selected component
+   * @type {Object[]} editFeatureComponents - An object list containing the features for this component
+   * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
+   * @type {String} componentDescription - The description of this component
+   * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
+   * @type {boolean} editPanelCollapsed - If true, component picking panel is collapsed
+   * @type {boolean} editPanelCollapsedShow - If true, component picking panel is showing
+   * @constant
+   */
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const [selectedComponentType, setSelectedComponentType] = useState(null);
+  const [selectedComponentSubtype, setSelectedComponentSubtype] = useState(
+    null
+  );
+  const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
+  const [availableSubtypes, setAvailableSubtypes] = useState([]);
+  const [editFeatureCollection, setEditFeatureCollection] = useState(null);
+  const [drawLines, setDrawLines] = useState(null);
+
+  const [componentDescription, setComponentDescription] = useState(null);
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
+  const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
+
+  const projComponentId = selectedProjectComponent?.project_component_id;
+
+  const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
+
+  const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
+
+  /**
+   * saveActionState contains the current save state
+   * saveActionDispatch allows us to update the state via action (signal) dispatch.
+   */
+  const { saveActionState, saveActionDispatch } = useSaveActionReducer();
+
+  const initialTypeCounts = useInitialTypeCounts(
+    mopedComponents,
+    mopedSubcomponents
+  );
 
   // Now check if we have any subcomponents in the DB
   const subcomponentsDB =
@@ -305,9 +286,6 @@ const ProjectComponentEdit = ({
         )
       : // Nothing to do here, no valid component is selected.
         [];
-
-  const availableTypes = useAvailableTypes(mopedComponents);
-  const lineRepresentable = useLineRepresentable(mopedComponents);
 
   /**
    * Generates a list of available subtypes for a given type name
