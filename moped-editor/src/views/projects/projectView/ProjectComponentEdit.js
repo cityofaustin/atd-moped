@@ -128,13 +128,6 @@ const ProjectComponentEdit = ({
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
-
-  // Template that should keep all features for this component
-  const emptyFeatureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
-
   /**
    * The State
    * @type {Number} selectedComponentId - id of component chosen in dropdown
