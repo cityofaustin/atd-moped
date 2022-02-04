@@ -21,6 +21,11 @@ import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMapView from "./ProjectComponentsMapView";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
+import {
+  useAvailableTypes,
+  useLineRepresentable,
+} from "../../../utils/projectComponentHelpers";
+
 import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
 import Alert from "@material-ui/lab/Alert";
@@ -53,46 +58,6 @@ const useStyles = makeStyles(theme => ({
   },
   componentButtonAddNew: {},
 }));
-
-/**
- * Hook to generate a unique sorted list containing the names of available components
- * @param {Object[]} mopedComponents - the moped_components lookup table
- */
-const useAvailableTypes = mopedComponents => {
-  const [availableTypes, setAvailableTypes] = useState([]);
-  useEffect(() => {
-    if (!mopedComponents) return;
-    let availableTypesNew = [
-      ...new Set(
-        mopedComponents.map(moped_component => moped_component.component_name)
-      ),
-    ].sort();
-    setAvailableTypes(availableTypesNew);
-  }, [mopedComponents]);
-  return availableTypes;
-};
-
-/**
- * Hook to generate a list of components that are represented by lines ** note: highway can be either
- * @param {Object[]} mopedComponents - the moped_components lookup table
- */
-const useLineRepresentable = mopedComponents => {
-  const [lineRepresentable, setLineRepresentable] = useState([]);
-  useEffect(() => {
-    if (!mopedComponents) return;
-    let lineRepresentableNew = [
-      ...new Set(
-        mopedComponents.map(moped_component =>
-          moped_component?.line_representation
-            ? moped_component.component_name.toLowerCase()
-            : null
-        )
-      ),
-    ].filter(item => item);
-    setLineRepresentable(lineRepresentableNew);
-  }, [mopedComponents]);
-  return lineRepresentable;
-};
 
 /**
  * Project Component Page
