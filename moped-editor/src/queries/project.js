@@ -545,37 +545,6 @@ export const PROJECT_ARCHIVE = gql`
   }
 `;
 
-// export const COMPONENTS_QUERY = gql`
-//   query GetComponents($projectId: Int) {
-//     moped_proj_components(
-//       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
-//     ) {
-//       project_component_id
-//       project_id
-//       component_id
-//       name
-//       description
-//       moped_components {
-//         component_type: component_name
-//         component_subtype
-//         line_representation
-//       }
-//       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
-//         status_id
-//         moped_subcomponent {
-//           subcomponent_id
-//           subcomponent_name
-//         }
-//       }
-//       moped_proj_features(where: { status_id: { _eq: 1 } }) {
-//         location
-//         feature_id
-//         status_id
-//       }
-//     }
-//   }
-// `;
-
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
