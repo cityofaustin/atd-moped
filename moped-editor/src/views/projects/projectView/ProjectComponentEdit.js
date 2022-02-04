@@ -27,7 +27,6 @@ import {
   countFeatures,
   mapConfig,
   useSaveActionReducer,
-  createFeatureCollectionFromProjectFeatures,
 } from "../../../utils/mapHelpers";
 import { useInitialTypeCounts } from "src/utils/projectComponentHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
@@ -110,7 +109,8 @@ const EMPTY_FEATURE_COLLECTION = {
  * @param {Object[]} mopedComponents - the moped_components lookup table
  * @param {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
- * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
+ * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON
+ * @param {Object} selectedComponentFeatureCollection - The selected component's feature collection GeoJSON
  * @param {Object[]} availableTypes - a unique sorted list containing the names of available components
  * @param {Object[]} lineRepresentable - a list of components that are represented by lines
  *
@@ -120,6 +120,7 @@ const EMPTY_FEATURE_COLLECTION = {
 const ProjectComponentEdit = ({
   projectFeatureCollection,
   selectedProjectComponent,
+  selectedComponentFeatureCollection,
   mopedComponents,
   mopedSubcomponents,
   handleCancelEdit,
@@ -513,13 +514,11 @@ const ProjectComponentEdit = ({
    * Initialize the feature collection that will track feature state throughought the editing session
    */
   useEffect(() => {
-    const componentFeatureCollection = selectedProjectComponent
-      ? createFeatureCollectionFromProjectFeatures(
-          selectedProjectComponent.moped_proj_features
-        )
+    const componentFeatureCollection = selectedComponentFeatureCollection
+      ? selectedComponentFeatureCollection
       : EMPTY_FEATURE_COLLECTION;
     setEditFeatureCollection(componentFeatureCollection);
-  }, [selectedProjectComponent]);
+  }, [selectedProjectComponent, selectedComponentFeatureCollection]);
 
   /**
    * We have to wait to hear from the map that it is finished saving

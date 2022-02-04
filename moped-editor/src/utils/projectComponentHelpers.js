@@ -1,4 +1,26 @@
 import { useEffect, useState } from "react";
+import { createFeatureCollectionFromProjectFeatures } from "./mapHelpers";
+
+/**
+ * Construct a FeatureCollection comprised of all moped_proj_components in the proejct. Used
+ * for representing the entire project on a map
+ * @param {Object[]} projectComponents - an array of moped_proj_component records with their
+ * respective moped_proj_features arrays
+ */
+export const createProjectFeatureCollection = projectComponents => {
+  // extract all features and flatten into a single list
+  const projectFeatures =
+    projectComponents
+      .map(projComponent => projComponent.moped_proj_features)
+      .flat() || [];
+
+  /**
+   * Build an all-inclusive list of components associated with this project
+   * Used in the static map view
+   * @type FeatureCollection {Object}
+   */
+  return createFeatureCollectionFromProjectFeatures(projectFeatures);
+};
 
 /**
  * Hook to generate a unique sorted list containing the names of available components

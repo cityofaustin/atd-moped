@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
+import { createProjectFeatureCollection } from "src/utils/projectComponentHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -110,7 +110,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   if (error) return `Error! ${error.message}`;
 
   const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
-  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
+  const projectFeatureCollection = createProjectFeatureCollection(
     projectComponents
   );
 
@@ -125,7 +125,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       );
     } else {
       return (
-        <ProjectSummaryMap projectFeatureCollection={projectFeatureCollection} />
+        <ProjectSummaryMap
+          projectFeatureCollection={projectFeatureCollection}
+        />
       );
     }
   };

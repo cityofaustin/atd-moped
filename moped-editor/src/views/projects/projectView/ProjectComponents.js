@@ -24,6 +24,7 @@ import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHe
 import {
   useAvailableTypes,
   useLineRepresentable,
+  createProjectFeatureCollection
 } from "../../../utils/projectComponentHelpers";
 
 import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
@@ -80,30 +81,16 @@ const ProjectComponents = () => {
     },
   });
 
-  /**
-   * Retrieve a list of features that are associated with this project
-   * moped_proj_components -> moped_proj_feature
-   */
-  const projectFeatureRecords =
-    data?.moped_proj_components
-      .map(projComponent => projComponent.moped_proj_features)
-      .flat() || [];
-
-  /**
-   * Build an all-inclusive list of components associated with this project
-   * Used in the static map view
-   * @type FeatureCollection {Object}
-   */
-  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
-    projectFeatureRecords
-  );
+  const projectFeatureCollection = data?.moped_proj_components
+    ? createProjectFeatureCollection(data.moped_proj_components)
+    : null;
 
   /**
    * Build a FeatureCollection for only the selected project component
    * Used in the static map view when zooming to a clicked component
    * @type FeatureCollection {Object}
    */
-  const projectComponentFeatureCollection = selectedProjectComponent
+  const selectedComponentFeatureCollection = selectedProjectComponent
     ? createFeatureCollectionFromProjectFeatures(
         selectedProjectComponent?.moped_proj_features
       )
@@ -165,6 +152,7 @@ const ProjectComponents = () => {
       {componentEditMode && (
         <ProjectComponentEdit
           selectedProjectComponent={selectedProjectComponent}
+          selectedComponentFeatureCollection={selectedComponentFeatureCollection}
           handleCancelEdit={handleCancelEdit}
           projectFeatureCollection={projectFeatureCollection}
           mopedComponents={data?.moped_components || []}
@@ -190,7 +178,7 @@ const ProjectComponents = () => {
           <ProjectComponentsMapView
             projectFeatureCollection={
               selectedProjectComponent
-                ? projectComponentFeatureCollection
+                ? selectedComponentFeatureCollection
                 : projectFeatureCollection
             }
             noPadding
