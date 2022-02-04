@@ -105,7 +105,7 @@ const EMPTY_FEATURE_COLLECTION = {
 
 /**
  * Hook to generate a unique sorted list containing the names of available components
-  * @param {Object[]} mopedComponents - the moped_components lookup table
+ * @param {Object[]} mopedComponents - the moped_components lookup table
  */
 const useAvailableTypes = mopedComponents => {
   const [availableTypes, setAvailableTypes] = useState([]);
@@ -117,9 +117,30 @@ const useAvailableTypes = mopedComponents => {
       ),
     ].sort();
     setAvailableTypes(availableTypesNew);
-
   }, [mopedComponents]);
   return availableTypes;
+};
+
+/**
+ * Hook to generate a list of components that are represented by lines ** note: highway can be either
+ * @param {Object[]} mopedComponents - the moped_components lookup table
+ */
+const useLineRepresentable = mopedComponents => {
+  const [lineRepresentable, setLineRepresentable] = useState([]);
+  useEffect(() => {
+    if (!mopedComponents) return;
+    let lineRepresentableNew = [
+      ...new Set(
+        mopedComponents.map(moped_component =>
+          moped_component?.line_representation
+            ? moped_component.component_name.toLowerCase()
+            : null
+        )
+      ),
+    ].filter(item => item);
+    setLineRepresentable(availableTypesNew);
+  }, [mopedComponents]);
+  return lineRepresentable;
 };
 
 /**
@@ -286,19 +307,7 @@ const ProjectComponentEdit = ({
         [];
 
   const availableTypes = useAvailableTypes(mopedComponents);
-
-  // list of components that are represented by lines ** note: highway can be either
-  const lineRepresentable = mopedComponents
-    ? [
-        ...new Set(
-          mopedComponents.map(moped_component =>
-            moped_component?.line_representation
-              ? moped_component.component_name.toLowerCase()
-              : null
-          )
-        ),
-      ].filter(item => item)
-    : [];
+  const lineRepresentable = useLineRepresentable(mopedComponents);
 
   /**
    * Generates a list of available subtypes for a given type name
@@ -748,7 +757,6 @@ const ProjectComponentEdit = ({
     return <CircularProgress color="inherit" />;
   }
 
-  console.log("EDIT_FC", editFeatureCollection);
   return (
     <Grid
       data-name={"moped-component-editor-grid"}
