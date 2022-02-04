@@ -20,7 +20,7 @@ import {
 import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectComponentsMapView from "./ProjectComponentsMapView";
-import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
+import { mergeFeatureCollections } from "../../../utils/mapHelpers";
 import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
 import ProjectComponentEdit from "./ProjectComponentEdit";
 import Alert from "@material-ui/lab/Alert";
@@ -63,7 +63,9 @@ const ProjectComponents = () => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [selectedComp, setSelectedComp] = useState(0);
+  const [selectedProjectComponent, setSelectedProjectComponent] = useState(
+    null
+  );
   const [mapError, setMapError] = useState(false);
   const [componentEditMode, setComponentEditMode] = useState(false);
 
@@ -74,61 +76,25 @@ const ProjectComponents = () => {
   });
 
   /**
-   * Retrieve a list of features that are associated with this project
-   * moped_proj_components -> moped_proj_feature
-   */
-  const projectFeatureRecords =
-    data && data?.moped_proj_components
-      ? data.moped_proj_components.reduce(
-          (accumulator, component) => [
-            ...accumulator,
-            // Append if current component is selected, or none are selected (0)
-            ...(selectedComp === component.project_component_id ||
-            selectedComp === 0
-              ? component.moped_proj_features: []),
-          ],
-          []
-        )
-      : [];
-
-  /**
    * Build an all-inclusive list of components associated with this project
    * Used in the edit component / editable map view
    * @type FeatureCollection {Object[]}
    */
-  const featureFullCollection =
-    data && data?.moped_proj_components
-      ? createFeatureCollectionFromProjectFeatures(
-          data.moped_proj_components.reduce(
-            (accumulator, component) => [
-              ...accumulator,
-              ...component.moped_proj_features,
-            ],
-            []
-          )
-        )
-      : [];
-
-  /**
-   * Build an all-inclusive list of components associated with this project
-   * Used in the static map view
-   * @type FeatureCollection {Object}
-   */
-  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
-    projectFeatureRecords
+  const projectFeatureCollection = mergeFeatureCollections(
+    data?.moped_proj_components || []
   );
 
   /**
    * Handles logic whenever a component is clicked, refreshes whatever is in memory and re-renders
-   * @param clickedComponentId - The Database id of the component in question
+   * @param clickedComponent - The component in question
    */
-  const handleComponentClick = clickedComponentId =>
-    setSelectedComp(clickedComponentId);
+  const handleComponentClick = clickedComponent =>
+    setSelectedProjectComponent(clickedComponent);
 
   /**
    * Resets the color of a selected component back to white
    */
-  const handleComponentClickAway = () => setSelectedComp(0);
+  const handleComponentClickAway = () => setSelectedProjectComponent(null);
 
   /**
    * Takes the user to the components details page / map edit mode
@@ -141,7 +107,7 @@ const ProjectComponents = () => {
    * Handles add component button logic
    */
   const handleAddNewComponentClick = () => {
-    setSelectedComp(0);
+    setSelectedProjectComponent(null);
     handleComponentDetailsClick();
   };
 
@@ -151,7 +117,7 @@ const ProjectComponents = () => {
   const handleCancelEdit = () => {
     refetch();
     setComponentEditMode(false);
-    setSelectedComp(0);
+    setSelectedProjectComponent(null);
   };
 
   /**
@@ -170,9 +136,11 @@ const ProjectComponents = () => {
     <ApolloErrorHandler errors={error}>
       {componentEditMode && (
         <ProjectComponentEdit
-          componentId={selectedComp}
+          selectedProjectComponent={selectedProjectComponent}
           handleCancelEdit={handleCancelEdit}
-          projectFeatureCollection={featureFullCollection}
+          projectFeatureCollection={projectFeatureCollection}
+          mopedComponents={data?.moped_components || []}
+          mopedSubcomponents={data?.moped_subcomponents || []}
         />
       )}
       {!componentEditMode && (
@@ -207,64 +175,73 @@ const ProjectComponents = () => {
             {componentsAvailable && (
               <ClickAwayListener onClickAway={handleComponentClickAway}>
                 <List className={classes.root}>
-                  {data.moped_proj_components.map((component, compIndex) => {
-                    const projComponentId = component.project_component_id;
-                    return (
-                      <ListItem
-                        key={"mcListItem-" + projComponentId}
-                        role={undefined}
-                        dense
-                        button
-                        onClick={() => handleComponentClick(projComponentId)}
-                        className={
-                          projComponentId === selectedComp
-                            ? classes.componentItemBlue
-                            : classes.componentItem
-                        }
-                      >
-                        <ListItemIcon>
-                          <Checkbox
-                            edge="start"
-                            className={classes.listItemCheckbox}
-                            checked={projComponentId === selectedComp}
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ "aria-labelledby": null }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          id={"mcListItemText-" + projComponentId}
-                          primary={component?.moped_components?.component_type}
-                          secondary={
-                            (component?.moped_components?.component_subtype ??
-                              "") +
-                            [
-                              ...new Set(
-                                component.moped_proj_components_subcomponents.map(
-                                  mpcs =>
-                                    mpcs.moped_subcomponent.subcomponent_name
-                                )
-                              ),
-                            ]
-                              .sort()
-                              .join(", ")
+                  {data.moped_proj_components.map(
+                    (projectComponent, compIndex) => {
+                      const projComponentId =
+                        projectComponent.project_component_id;
+                      return (
+                        <ListItem
+                          key={"mcListItem-" + projComponentId}
+                          role={undefined}
+                          dense
+                          button
+                          onClick={() => handleComponentClick(projectComponent)}
+                          className={
+                            projComponentId ===
+                            selectedProjectComponent?.project_component_id
+                              ? classes.componentItemBlue
+                              : classes.componentItem
                           }
-                        />
-                        <ListItemSecondaryAction
-                          onClick={() => {
-                            handleComponentClick(projComponentId);
-                            handleComponentDetailsClick();
-                          }}
                         >
-                          <IconButton edge="end" aria-label="comments">
-                            <ArrowForwardIos
-                              className={classes.listItemSecondaryAction}
+                          <ListItemIcon>
+                            <Checkbox
+                              edge="start"
+                              className={classes.listItemCheckbox}
+                              checked={
+                                projComponentId ===
+                                selectedProjectComponent?.project_component_id
+                              }
+                              tabIndex={-1}
+                              disableRipple
+                              inputProps={{ "aria-labelledby": null }}
                             />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    );
-                  })}
+                          </ListItemIcon>
+                          <ListItemText
+                            id={"mcListItemText-" + projComponentId}
+                            primary={
+                              projectComponent?.moped_components?.component_name
+                            }
+                            secondary={
+                              (projectComponent?.moped_components
+                                ?.component_subtype ?? "") +
+                              [
+                                ...new Set(
+                                  projectComponent.moped_proj_components_subcomponents.map(
+                                    mpcs =>
+                                      mpcs.moped_subcomponent.subcomponent_name
+                                  )
+                                ),
+                              ]
+                                .sort()
+                                .join(", ")
+                            }
+                          />
+                          <ListItemSecondaryAction
+                            onClick={() => {
+                              handleComponentClick(projectComponent);
+                              handleComponentDetailsClick();
+                            }}
+                          >
+                            <IconButton edge="end" aria-label="comments">
+                              <ArrowForwardIos
+                                className={classes.listItemSecondaryAction}
+                              />
+                            </IconButton>
+                          </ListItemSecondaryAction>
+                        </ListItem>
+                      );
+                    }
+                  )}
                 </List>
               </ClickAwayListener>
             )}

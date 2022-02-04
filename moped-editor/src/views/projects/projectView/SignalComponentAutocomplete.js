@@ -30,7 +30,6 @@ const SignalComponentAutocomplete = ({
 }) => {
   const [signal, setSignal] = useState(null);
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
-
   useInitialSignalComponentValue(editFeatureCollection, setSignal);
 
   useSignalChangeEffect(

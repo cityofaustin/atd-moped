@@ -318,11 +318,6 @@ export const mapConfig = {
   },
 };
 
-export const mapErrors = {
-  minimumLocations: "Select a location to save project",
-  failedToSave: "The map edit failed to save. Please try again.",
-};
-
 /**
  * Create a Mapbox LngLatBounds object from a bbox generated from a feature collection
  * @param {Object} featureCollection - A GeoJSON feature collection
@@ -416,30 +411,19 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
- * Create a GeoJSON feature collection from project features
- * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
+ * Create a GeoJSON feature collection from multiple components' featureCollections
+ * @param {array} projectComponents - An array of project's component's geoJSON featureCollections from moped_project.moped_proj_components.features
  * @return {object} A GeoJSON feature collection to display project features on a map
  */
-export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
-  type: "FeatureCollection",
-  features: projectFeatureRecords // Do we have a records object?
-    ? // We do, then unpack features
-      projectFeatureRecords.reduce(
-        (accumulator, feature) => [
-          // First copy the current state of the accumulator
-          ...accumulator,
-          // Then we must copy any individual feature (or features)
-          ...(feature.location.type === "FeatureCollection"
-            ? // We must unpack the features
-              feature.location.features
-            : // Provide the regular feature
-              [feature.location]),
-        ],
-        [] // Initial accumulator state
-      )
-    : // We don't, return empty array
-      [],
-});
+export const mergeFeatureCollections = projectComponents => {
+  const nestedFeatures = projectComponents.map(component => {
+    return component.feature_collection?.features || [];
+  });
+  return {
+    type: "FeatureCollection",
+    features: nestedFeatures.flat(),
+  };
+};
 
 /**
  * Create object with layer name keys and array values containing feature IDs for map styling

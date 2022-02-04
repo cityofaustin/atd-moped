@@ -213,7 +213,7 @@ const handleSelectedFeatureUpdate = (
       // safe. also considered turf.booleanWithin() and turf.booleanContains - not reliable.
       queryCtnFeatureService(selectedFeatureId).then(
         queriedFeatureCollection => {
-          // Update the selectedFeature geometry if a feature has been found. To potential
+          // Update the selectedFeature geometry if a feature has been found. Two potential
           // error cases are handled here:
           //    1. fetch error: queriedFeatureCollection is null
           //    2. feature is not found (queriedFeatureCollection.features is empty)
@@ -265,9 +265,10 @@ const NewProjectMap = ({
   isSignalComponent = false,
   drawLines = null,
 }) => {
+
   const classes = useStyles();
 
-  const featureCount = countFeatures(featureCollection);
+  const featureCount = featureCollection ? countFeatures(featureCollection) : 0;
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );

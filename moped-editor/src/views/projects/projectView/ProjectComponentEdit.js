@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import {
   Button,
   CircularProgress,
@@ -16,7 +16,6 @@ import {
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
-  COMPONENT_DETAILS_QUERY,
   UPDATE_MOPED_COMPONENT,
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
@@ -27,7 +26,6 @@ import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   countFeatures,
   mapConfig,
-  mapErrors,
   useSaveActionReducer,
 } from "../../../utils/mapHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
@@ -99,37 +97,37 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+const EMPTY_FEATURE_COLLECTION = {
+  type: "FeatureCollection",
+  features: [],
+};
+
 /**
  * The project component editor
- * @param {Number} componentId - The moped_proj_component id being edited. If adding new component, componentId is 0
+ * @type {Object} selectedProjectComponent - the selected moped_proj_component chosen in dropdown
+ * @type {Object[]} mopedComponents - the moped_components lookup table
+ * @type {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
  * @constructor
  */
 const ProjectComponentEdit = ({
-  componentId,
+  selectedProjectComponent,
+  mopedComponents,
+  mopedSubcomponents,
   handleCancelEdit,
   projectFeatureCollection = null,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
-
-  // Template that should keep all features for this component
-  const emptyFeatureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
-
   /**
    * The State
-   * @type {Number} selectedComponentId - id of component chosen in dropdown
    * @type {String} selectedComponentType - A string containing the name of the selected type in lowercase
    * @type {String} selectedComponentSubtype - A string containing the name of the selected subtype in lowercase
    * @type {String[]} selectedComponentSubtype - A string list containing all available subtypes for type
    * @type {Number[]} selectedSubcomponents - A number array containing the id of the selected subcomponents
    * @type {String[]} availableSubtypes - An string list containing all available subtypes for the selected component
-   * @type {Object[]} editFeatureComponents - An object list containing the features for this component
    * @type {Object} editFeatureCollection - The final GeoJson generated for all the the features in this component
    * @type {String} componentDescription - The description of this component
    * @type {boolean} deleteDialogOpen - If true, it displays the delete dialog, or hides it if false.
@@ -144,10 +142,7 @@ const ProjectComponentEdit = ({
   );
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
-  const [editFeatureComponents, setEditFeatureComponents] = useState([]);
-  const [editFeatureCollection, setEditFeatureCollection] = useState(
-    emptyFeatureCollection
-  );
+  const [editFeatureCollection, setEditFeatureCollection] = useState(null);
   const [drawLines, setDrawLines] = useState(null);
 
   const [componentDescription, setComponentDescription] = useState(null);
@@ -157,15 +152,17 @@ const ProjectComponentEdit = ({
   const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
-  /**
-   * Apollo hook functions
-   */
-  const { loading, data, error } = useQuery(COMPONENT_DETAILS_QUERY, {
-    variables: {
-      componentId: componentId,
-    },
-    fetchPolicy: "no-cache",
-  });
+  const projectComponentId = selectedProjectComponent?.project_component_id;
+
+  // /**
+  //  * Apollo hook functions
+  //  */
+  // const { loading, data, error } = useQuery(COMPONENT_DETAILS_QUERY, {
+  //   variables: {
+  //     componentId: componentId,
+  //   },
+  //   fetchPolicy: "no-cache",
+  // });
 
   const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
 
@@ -180,9 +177,9 @@ const ProjectComponentEdit = ({
   /**
    * Generates an initial list of component types, subtypes and counts (counts is total number of subtypes)
    */
-  const initialTypeCounts = data // Do we have data?
+  const initialTypeCounts = mopedComponents // Do we have data?
     ? // Yes, let's get the counts by using reduce
-      data.moped_components.reduce((accumulator, component, index) => {
+      mopedComponents.reduce((accumulator, component, index) => {
         // Retrieve the current component's values, in lower case
         const componentId = component?.component_id ?? null;
         const componentName = (component?.component_name ?? "").toLowerCase();
@@ -203,7 +200,7 @@ const ProjectComponentEdit = ({
           subcomponent => subcomponent.subcomponent_name
         );
 
-        const componentSubcomponents = data.moped_subcomponents.filter(
+        const componentSubcomponents = mopedSubcomponents.filter(
           subcomponent =>
             subcomponent.component_id === componentId &&
             !currentSubcomponentNames.includes(subcomponent.subcomponent_name)
@@ -258,9 +255,9 @@ const ProjectComponentEdit = ({
      * the user has not selected a component; which should never be the case. Do we have
      * a selected component? (is the count greater than zero?)
      */
-    (data?.moped_proj_components ?? []).length > 0
+    selectedProjectComponent
       ? // Yes, we have project a component, now gather a list of subcomponents for that component
-        data.moped_proj_components[0].moped_proj_components_subcomponents.map(
+        selectedProjectComponent.moped_proj_components_subcomponents.map(
           subcomponent => ({
             ...subcomponent.moped_subcomponent,
             component_subcomponent_id: subcomponent.component_subcomponent_id,
@@ -268,26 +265,24 @@ const ProjectComponentEdit = ({
         )
       : // Nothing to do here, no valid component is selected.
         [];
-
+  console.log("SUBDB_ ", subcomponentsDB)
   /**
    * This is a unique sorted list containing the names of available components
    * @type {String[]}
    */
-  const availableTypes = data
+  const availableTypes = mopedComponents
     ? [
         ...new Set(
-          data.moped_components.map(
-            moped_component => moped_component.component_name
-          )
+          mopedComponents.map(moped_component => moped_component.component_name)
         ),
       ].sort()
     : [];
 
   // list of components that are represented by lines ** note: highway can be either
-  const lineRepresentable = data
+  const lineRepresentable = mopedComponents
     ? [
         ...new Set(
-          data.moped_components.map(moped_component =>
+          mopedComponents.map(moped_component =>
             moped_component?.line_representation
               ? moped_component.component_name.toLowerCase()
               : null
@@ -321,7 +316,7 @@ const ProjectComponentEdit = ({
    * @return {number|null}
    */
   const getProjectComponentId = () =>
-    data?.moped_proj_components[0]?.project_component_id ?? null;
+    selectedProjectComponent?.project_component_id ?? null;
 
   /**
    * Handles the delete button click
@@ -390,67 +385,13 @@ const ProjectComponentEdit = ({
     Object.keys(initialTypeCounts[type]?.subtypes ?? {}).includes("");
 
   /**
-   * Calls upsert project features mutation, refetches data, and handles dialog close on success
-   */
-  const generateMapUpserts = () => {
-    const editedFeatures = editFeatureCollection.features;
-    const featureIdPropertyName =
-      editedFeatures[0].properties.sourceLayer === "ATD_ADMIN.CTN" ||
-      editedFeatures[0].properties.sourceLayer === "drawnByUserLine"
-        ? "CTN_SEGMENT_ID"
-        : "INTERSECTIONID";
-    // Find new records that need to be inserted and create a feature record from them
-    const newFeaturesToInsert = editedFeatures
-      .filter(
-        newFeature =>
-          !editFeatureComponents.find(
-            existingRecord =>
-              // checks the PROJECT_EXTENT_ID of a feature, if that doesn't exist,
-              // then it was saved as either the INTERSECTIONID or CTN_SEGMENT_ID
-              (newFeature?.properties?.PROJECT_EXTENT_ID ??
-                newFeature?.properties[featureIdPropertyName]) ===
-              (existingRecord.properties.PROJECT_EXTENT_ID ??
-                existingRecord.properties[featureIdPropertyName])
-          )
-      )
-      .map(newFeature => ({
-        ...newFeature,
-        status_id: 1,
-      }));
-
-    // Find existing records that need to be soft deleted, clean them, and set status to inactive
-    const existingFeaturesToDelete =
-      componentId !== 0
-        ? editFeatureComponents
-            .map(record => filterObjectByKeys(record, ["__typename"]))
-            .filter(
-              record =>
-                !editedFeatures.find(
-                  feature =>
-                    (feature.properties.PROJECT_EXTENT_ID ??
-                      feature.properties[featureIdPropertyName]) ===
-                    (record.properties.PROJECT_EXTENT_ID ??
-                      record.properties[featureIdPropertyName])
-                )
-            )
-            .map(record => ({
-              ...record,
-              feature_id: record.properties.moped_proj_feature_id,
-              status_id: 0,
-            }))
-        : []; // if this is a new component, there are no old records to update
-
-    return [...newFeaturesToInsert, ...existingFeaturesToDelete];
-  };
-
-  /**
    * Generates a list of subcomponents to be upserted in Hasura
    * @return {Object[]}
    */
   const generateSubcomponentUpserts = () => {
     // If there are no subcomponents, then remove them all if present.
     const removeAllSubcomponents = getAvailableSubcomponents().length === 0;
-
+    debugger;
     // Generate a list of subcomponents to be removed
     const removalList = subcomponentsDB.filter(
       // Check every old subcomponent
@@ -512,34 +453,9 @@ const ProjectComponentEdit = ({
     // Retrieve current project component id
     const projComponentId = getProjectComponentId();
 
-    // First, we need a list of map changes only
-    const mapListOfChanges = generateMapUpserts();
-
-    // For each change, we generate a list of feature component objects
-    const featureComponents = mapListOfChanges.map(feature => ({
-      // Each feature component shares the status of it's child feature
-      status_id: feature.status_id,
-      // Now we must determine if the feature has a nested `moped_proj_feature_id` field
-      ...(feature?.properties?.moped_proj_feature_id ?? null
-        ? // If so, then add it to the object, so that it can be upserted
-          {
-            moped_proj_feature_id: feature.properties.moped_proj_feature_id,
-          }
-        : // If not, ignore it so that we can insert a new one
-          {}),
-      // This inserts into moped_proj_features, and assumes relationship with moped_proj_components
-
-      ...(feature.hasOwnProperty("feature_id")
-        ? { feature_id: feature.feature_id }
-        : {}),
-      project_id: Number.parseInt(projectId),
-      location: { ...feature },
-      status_id: feature.status_id,
-    }));
-
-    // 2. Generate a list of subcomponent upserts
+    // Generate a list of subcomponent upserts
     const subcomponentChanges = generateSubcomponentUpserts();
-
+    console.log("SUBC CHANTES", subcomponentChanges);
     /**
      * This document represents all the variables Hasura needs
      * to create a moped_proj_component in Hasura. It uses Hasura's
@@ -580,15 +496,9 @@ const ProjectComponentEdit = ({
         Finally we inject the features components & geojson features
         as previously generated.
       */
-      moped_proj_features: {
-        data: featureComponents,
-        on_conflict: {
-          constraint: "moped_proj_features_pkey",
-          update_columns: ["status_id", "location"],
-        },
-      },
+      feature_collection: editFeatureCollection,
     };
-    debugger;
+    console.log("VPPPP!", variablePayload);
     // Finally we must run the graphql query and refetch
     updateProjectComponents({
       variables: {
@@ -601,10 +511,9 @@ const ProjectComponentEdit = ({
    * Handles the deletion of the component from database
    */
   const handleComponentDelete = () => {
-    debugger;
     deleteProjectComponent({
       variables: {
-        projComponentId: componentId,
+        projComponentId: selectedProjectComponent.project_component_id,
       },
     }).then(() => exitAndReload());
   };
@@ -614,14 +523,14 @@ const ProjectComponentEdit = ({
    */
   useEffect(() => {
     // If we have data, look to update the selected subcomponents
-    if (data && selectedComponentType !== null) {
+    if (selectedProjectComponent && selectedComponentType !== null) {
       setSelectedSubcomponents([...subcomponentsDB]);
     } else {
       // If the component id changes, clear out the value of selected subcomponents
       setSelectedSubcomponents([]);
     }
     // eslint-disable-next-line
-  }, [data, selectedComponentId, selectedComponentType]);
+  }, [selectedProjectComponent, selectedComponentId, selectedComponentType]);
 
   /**
    * Tracks any changes made to the selected type and subtype
@@ -654,6 +563,12 @@ const ProjectComponentEdit = ({
     // eslint-disable-next-line
   }, [selectedComponentType, selectedComponentSubtype]);
 
+  useEffect(() => {
+    const componentFeatureCollection =
+      selectedProjectComponent?.feature_collection || EMPTY_FEATURE_COLLECTION;
+    setEditFeatureCollection(componentFeatureCollection);
+  }, [selectedProjectComponent]);
+
   /**
    * We have to wait to hear from the map that it is finished saving
    * the features it contains
@@ -678,27 +593,25 @@ const ProjectComponentEdit = ({
     // eslint-disable-next-line
   }, [saveActionState]);
 
-  if (loading) return <CircularProgress />;
-  if (error) return <div>Error: {JSON.stringify(error)}</div>;
-
   /**
    * Returns true if the collection has a minimum of features, false otherwise.
    * @type {boolean}
    */
-  const areMinimumFeaturesSet =
-    countFeatures(editFeatureCollection) >= mapConfig.minimumFeaturesInProject;
+  const areMinimumFeaturesSet = editFeatureCollection
+    ? countFeatures(editFeatureCollection) >= mapConfig.minimumFeaturesInProject
+    : false;
 
   /**
    * Pre-populates the type and subtype for the existing data from DB
    */
-  if (data && initialTypeCounts && selectedComponentType === null) {
+  if (mopedComponents && initialTypeCounts && selectedComponentType === null) {
     // Get the component_id from the moped_proj_component table or make databaseComponent null
     const databaseComponent =
-      componentId > 0
-        ? data.moped_components.filter(
+      projectComponentId > 0
+        ? mopedComponents.filter(
             componentItem =>
               componentItem.component_id ===
-              data.moped_proj_components[0].component_id
+              selectedProjectComponent.component_id
           )[0]
         : null;
 
@@ -712,7 +625,7 @@ const ProjectComponentEdit = ({
       setSelectedComponentType(componentTypeDB);
 
     // If there is a componentId, then get subtypes
-    if (componentId > 0) {
+    if (projectComponentId) {
       // Now get the available subtypes
       const newStateAvailableSubTypes = getAvailableSubtypes(componentTypeDB);
       setAvailableSubtypes(newStateAvailableSubTypes);
@@ -725,57 +638,27 @@ const ProjectComponentEdit = ({
       }
       // check if selected component is represented by lines or points
       setDrawLines(
-        data.moped_proj_components[0].moped_components.line_representation
+        selectedProjectComponent.moped_components.line_representation
       );
     }
   }
 
   // Populate component description if available and state is empty
   if (
-    data &&
-    !!data?.moped_proj_components[0]?.description &&
+    selectedProjectComponent &&
+    !!selectedProjectComponent?.description &&
     componentDescription === null
   ) {
-    setComponentDescription(data?.moped_proj_components[0]?.description);
+    setComponentDescription(selectedProjectComponent.description);
   }
 
-  /**
-   * We need to populate the features we will need in order to build the
-   * geojson collection that we can feed it to the map.
-   */
-  if (data && editFeatureComponents.length === 0) {
-    // First, we will need a list of all moped_proj_features and make it geojson
-    const featuresFromComponents = (
-      data?.moped_proj_components[0]?.moped_proj_features ?? []
-    ).map(moped_proj_feature => {
-      // Retrieve the feature component's primary key
-      const { moped_proj_features_id } = moped_proj_feature;
-      // Clone the geojson data from the feature component
-      const newGeoJson = {
-        ...moped_proj_feature.location,
-      };
-      // Now go ahead and patch the primary key into the GeoJson properties
-      newGeoJson.properties.moped_proj_feature_id = moped_proj_features_id;
-      return newGeoJson;
-    });
-
-    /**
-     * Secondly, use emptyFeatureCollection as a template, then inject our previously rendered features
-     */
-    const featureCollectionFromComponents = {
-      ...emptyFeatureCollection,
-      features: featuresFromComponents,
-    };
-
-    // Unless we have features to work with, then leave it alone
-    if (featuresFromComponents.length > 0) {
-      setEditFeatureComponents(featuresFromComponents);
-      setEditFeatureCollection(featureCollectionFromComponents);
-    }
-  }
   const isSignalComponent = selectedComponentType
     ? selectedComponentType.toLowerCase() === "signal"
     : false;
+
+  if (!editFeatureCollection) {
+    return <CircularProgress color="inherit" />;
+  }
 
   return (
     <Grid
@@ -789,7 +672,7 @@ const ProjectComponentEdit = ({
         projectId={null}
         refetchProjectDetails={null}
         noPadding={true}
-        newFeature={componentId === 0}
+        newFeature={selectedProjectComponent}
         projectFeatureCollection={projectFeatureCollection}
         saveActionState={saveActionState}
         saveActionDispatch={saveActionDispatch}
@@ -815,10 +698,10 @@ const ProjectComponentEdit = ({
               in={editPanelCollapsed}
               onExited={() => setEditPanelCollapsedShow(true)}
             >
-              <Grid container>
-                <Grid item xs={12} className={classes.layerSelectBox}>
-                  <Grid container spacing={1} xs={12} style={{ margin: 0 }}>
-                    <Grid item xs={12}>
+              <Grid container spacing={2}>
+                <Grid item xs className={classes.layerSelectBox}>
+                  <Grid container spacing={2}>
+                    <Grid item xs>
                       <Autocomplete
                         id="moped-project-select"
                         className={classes.formSelect}
@@ -878,7 +761,7 @@ const ProjectComponentEdit = ({
                     )}
                     <ProjectComponentSubcomponents
                       componentId={selectedComponentId}
-                      subcomponentList={data?.moped_subcomponents}
+                      subcomponentList={mopedSubcomponents}
                       selectedSubcomponents={selectedSubcomponents}
                       setSelectedSubcomponents={setSelectedSubcomponents}
                     />
@@ -911,7 +794,6 @@ const ProjectComponentEdit = ({
                         onClick={() =>
                           saveActionDispatch({ type: "initiateFeatureSave" })
                         }
-                        // onClick={handleSaveButtonClick}
                         disabled={
                           !areMinimumFeaturesSet || selectedComponentId === null
                         }
@@ -930,7 +812,7 @@ const ProjectComponentEdit = ({
                       >
                         Cancel
                       </Button>
-                      {componentId > 0 && (
+                      {selectedProjectComponent && (
                         <Button
                           className={classes.formButton}
                           onClick={handleDeleteDialogClickOpen}
@@ -997,11 +879,6 @@ const ProjectComponentEdit = ({
           </>
         }
       />
-      {error && (
-        <Alert className={classes.mapAlert} severity="error">
-          {mapErrors.failedToSave}
-        </Alert>
-      )}
     </Grid>
   );
 };
