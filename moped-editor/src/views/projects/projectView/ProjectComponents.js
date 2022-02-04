@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
@@ -55,6 +55,46 @@ const useStyles = makeStyles(theme => ({
 }));
 
 /**
+ * Hook to generate a unique sorted list containing the names of available components
+ * @param {Object[]} mopedComponents - the moped_components lookup table
+ */
+const useAvailableTypes = mopedComponents => {
+  const [availableTypes, setAvailableTypes] = useState([]);
+  useEffect(() => {
+    if (!mopedComponents) return;
+    let availableTypesNew = [
+      ...new Set(
+        mopedComponents.map(moped_component => moped_component.component_name)
+      ),
+    ].sort();
+    setAvailableTypes(availableTypesNew);
+  }, [mopedComponents]);
+  return availableTypes;
+};
+
+/**
+ * Hook to generate a list of components that are represented by lines ** note: highway can be either
+ * @param {Object[]} mopedComponents - the moped_components lookup table
+ */
+const useLineRepresentable = mopedComponents => {
+  const [lineRepresentable, setLineRepresentable] = useState([]);
+  useEffect(() => {
+    if (!mopedComponents) return;
+    let lineRepresentableNew = [
+      ...new Set(
+        mopedComponents.map(moped_component =>
+          moped_component?.line_representation
+            ? moped_component.component_name.toLowerCase()
+            : null
+        )
+      ),
+    ].filter(item => item);
+    setLineRepresentable(lineRepresentableNew);
+  }, [mopedComponents]);
+  return lineRepresentable;
+};
+
+/**
  * Project Component Page
  * @return {JSX.Element}
  * @constructor
@@ -92,6 +132,9 @@ const ProjectComponents = () => {
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
     projectFeatureRecords
   );
+
+  const availableTypes = useAvailableTypes(data?.moped_components);
+  const lineRepresentable = useLineRepresentable(data?.moped_components);
 
   /**
    * Handles logic whenever a component is clicked, refreshes whatever is in memory and re-renders
@@ -150,6 +193,8 @@ const ProjectComponents = () => {
           projectFeatureCollection={projectFeatureCollection}
           mopedComponents={data?.moped_components || []}
           mopedSubcomponents={data?.moped_subcomponents || []}
+          lineRepresentable={lineRepresentable}
+          availableTypes={availableTypes}
         />
       )}
       {!componentEditMode && (
