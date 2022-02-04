@@ -393,6 +393,9 @@ const ProjectComponentEdit = ({
    * Calls upsert project features mutation, refetches data, and handles dialog close on success
    */
   const generateMapUpserts = () => {
+    // todo: fixup this
+    debugger;
+    
     const editedFeatures = editFeatureCollection.features;
     const featureIdPropertyName =
       editedFeatures[0].properties.sourceLayer === "ATD_ADMIN.CTN" ||
@@ -439,7 +442,7 @@ const ProjectComponentEdit = ({
               status_id: 0,
             }))
         : []; // if this is a new component, there are no old records to update
-
+    debugger;
     return [...newFeaturesToInsert, ...existingFeaturesToDelete];
   };
 
@@ -513,17 +516,17 @@ const ProjectComponentEdit = ({
     const projComponentId = getProjectComponentId();
 
     // First, we need a list of map changes only
-    const mapListOfChanges = generateMapUpserts();
+    const mapUpserts = generateMapUpserts();
 
     // For each change, we generate a list of feature component objects
-    const featureComponents = mapListOfChanges.map(feature => ({
+    const featureComponents = mapUpserts.map(feature => ({
       // Each feature component shares the status of it's child feature
       status_id: feature.status_id,
       // Now we must determine if the feature has a nested `moped_proj_feature_id` field
-      ...(feature?.properties?.moped_proj_feature_id ?? null
+      ...(feature.feature_id ?? null
         ? // If so, then add it to the object, so that it can be upserted
           {
-            moped_proj_feature_id: feature.properties.moped_proj_feature_id,
+            feature_id: feature.feature_id,
           }
         : // If not, ignore it so that we can insert a new one
           {}),
@@ -536,7 +539,7 @@ const ProjectComponentEdit = ({
       location: { ...feature },
       status_id: feature.status_id,
     }));
-
+    debugger;
     // 2. Generate a list of subcomponent upserts
     const subcomponentChanges = generateSubcomponentUpserts();
 
@@ -748,14 +751,12 @@ const ProjectComponentEdit = ({
     const featuresFromComponents = (
       data?.moped_proj_components[0]?.moped_proj_features ?? []
     ).map(moped_proj_feature => {
-      // Retrieve the feature component's primary key
-      const { moped_proj_features_id } = moped_proj_feature;
       // Clone the geojson data from the feature component
       const newGeoJson = {
         ...moped_proj_feature.location,
       };
       // Now go ahead and patch the primary key into the GeoJson properties
-      newGeoJson.properties.moped_proj_feature_id = moped_proj_features_id;
+      newGeoJson.feature_id = moped_proj_feature.feature_id;
       return newGeoJson;
     });
 
