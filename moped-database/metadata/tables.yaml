@@ -1050,7 +1050,7 @@
       check: {}
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1060,7 +1060,7 @@
       check: {}
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1070,7 +1070,7 @@
     permission:
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1079,7 +1079,7 @@
     permission:
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1088,7 +1088,7 @@
     permission:
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1098,7 +1098,7 @@
     permission:
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
@@ -1108,7 +1108,7 @@
     permission:
       columns:
       - feature_id
-      - location
+      - feature
       - project_component_id
       - project_id
       - status_id
