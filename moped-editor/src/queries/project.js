@@ -49,10 +49,11 @@ export const SUMMARY_QUERY = gql`
       contractor
       purchase_order_number
       work_assignment_id
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        feature_id
-        project_id
-        feature
+      moped_proj_components(where: { status_id: { _eq: 1 } }) {
+        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+          feature_id
+          feature
+        }
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
