@@ -220,7 +220,7 @@ export const generateProjectComponent = (
     moped_proj_features: {
       data: featureCollection.features.map(feature => ({
         status_id: 1,
-        location: feature,
+        feature: feature,
       })),
     },
   };
