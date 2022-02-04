@@ -122,7 +122,7 @@ export const useInitialTypeCounts = (mopedComponents, mopedSubcomponents) => {
       {}
     );
     setInitialTypeCounts(initialTypeCountsNew);
-  }, [mopedComponents]);
+  }, [mopedComponents, mopedSubcomponents]);
 
   return initialTypeCounts;
 };
