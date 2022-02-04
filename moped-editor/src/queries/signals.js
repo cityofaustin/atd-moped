@@ -52,7 +52,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       }
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
-        location
+        feature
       }
       moped_proj_funding (where: {funding_status_id : { _neq: 0 } }) {
         moped_fund_source {

@@ -96,12 +96,12 @@ const SignalProjectTable = () => {
     // Signal IDs
     const signal_ids = [];
     if (project?.moped_proj_features.length) {
-      project.moped_proj_features.forEach(feature => {
-        const signal = feature?.location?.properties?.signal_id;
+      project.moped_proj_features.forEach(projectFeature => {
+        const signal = projectFeature?.feature?.properties?.signal_id;
         if (signal) {
           signal_ids.push({
             signal_id: signal,
-            knack_id: feature.location.properties.id,
+            knack_id: projectFeature.feature.properties.id,
           });
         }
       });
