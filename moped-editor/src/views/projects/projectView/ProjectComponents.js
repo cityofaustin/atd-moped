@@ -98,6 +98,17 @@ const ProjectComponents = () => {
     projectFeatureRecords
   );
 
+  /**
+   * Build a FeatureCollection for only the selected project component
+   * Used in the static map view when zooming to a clicked component
+   * @type FeatureCollection {Object}
+   */
+  const projectComponentFeatureCollection = selectedProjectComponent
+    ? createFeatureCollectionFromProjectFeatures(
+        selectedProjectComponent?.moped_proj_features
+      )
+    : null;
+
   const availableTypes = useAvailableTypes(data?.moped_components);
   const lineRepresentable = useLineRepresentable(data?.moped_components);
 
@@ -177,7 +188,11 @@ const ProjectComponents = () => {
           resetKeys={[mapError]}
         >
           <ProjectComponentsMapView
-            projectFeatureCollection={projectFeatureCollection}
+            projectFeatureCollection={
+              selectedProjectComponent
+                ? projectComponentFeatureCollection
+                : projectFeatureCollection
+            }
             noPadding
           >
             <Button
