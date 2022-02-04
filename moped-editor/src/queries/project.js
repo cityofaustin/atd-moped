@@ -396,20 +396,6 @@ export const ADD_PROJECT_MILESTONE = gql`
   }
 `;
 
-export const UPSERT_PROJECT_EXTENT = gql`
-  mutation UpsertProjectExtent($upserts: [moped_proj_features_insert_input!]!) {
-    insert_moped_proj_features(
-      objects: $upserts
-      on_conflict: {
-        constraint: moped_proj_features_pkey
-        update_columns: status_id
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
