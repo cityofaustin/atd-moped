@@ -717,38 +717,6 @@ const ProjectComponentEdit = ({
     setComponentDescription(selectedProjectComponent?.description);
   }
 
-  // /**
-  //  * We need to populate the features we will need in order to build the
-  //  * geojson collection that we can feed it to the map.
-  //  */
-  // if (data && editFeatureComponents.length === 0) {
-  //   // First, we will need a list of all moped_proj_features and make it geojson
-  //   const featuresFromComponents = (
-  //     selectedProjectComponent?.moped_proj_features ?? []
-  //   ).map(moped_proj_feature => {
-  //     // Clone the geojson data from the feature component
-  //     const newGeoJson = {
-  //       ...moped_proj_feature.location,
-  //     };
-  //     // Now go ahead and patch the primary key into the GeoJson properties
-  //     newGeoJson.feature_id = moped_proj_feature.feature_id;
-  //     return newGeoJson;
-  //   });
-
-  //   /**
-  //    * Secondly, use emptyFeatureCollection as a template, then inject our previously rendered features
-  //    */
-  //   const featureCollectionFromComponents = {
-  //     ...emptyFeatureCollection,
-  //     features: featuresFromComponents,
-  //   };
-
-  //   // Unless we have features to work with, then leave it alone
-  //   if (featuresFromComponents.length > 0) {
-  //     setEditFeatureComponents(featuresFromComponents);
-  //     setEditFeatureCollection(featureCollectionFromComponents);
-  //   }
-  // }
   const isSignalComponent = selectedComponentType
     ? selectedComponentType.toLowerCase() === "signal"
     : false;
