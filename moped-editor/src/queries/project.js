@@ -52,7 +52,7 @@ export const SUMMARY_QUERY = gql`
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
-        location
+        feature
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
@@ -601,9 +601,10 @@ export const COMPONENTS_QUERY = gql`
         }
       }
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        location
+        feature
         feature_id
         status_id
+        project_component_id
       }
     }
     moped_subcomponents {
@@ -638,7 +639,7 @@ export const COMPONENT_DETAILS_QUERY = gql`
         line_representation
       }
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        location
+        feature
         feature_id
         status_id
         project_id

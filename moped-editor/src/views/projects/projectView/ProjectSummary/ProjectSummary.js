@@ -109,9 +109,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const projectFeatureRecords = data?.moped_project[0]?.moped_proj_features;
+  const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
   const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
-    projectFeatureRecords
+    projectComponents
   );
 
   const renderMap = () => {
@@ -125,7 +125,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       );
     } else {
       return (
-        <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+        <ProjectSummaryMap projectFeatureCollection={projectFeatureCollection} />
       );
     }
   };

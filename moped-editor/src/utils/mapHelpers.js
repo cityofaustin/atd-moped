@@ -416,30 +416,24 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
- * Create a GeoJSON feature collection from project features
+ * Create a GeoJSON feature collection from moped_proj_features
  * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
  * @return {object} A GeoJSON feature collection to display project features on a map
  */
-export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
-  type: "FeatureCollection",
-  features: projectFeatureRecords // Do we have a records object?
-    ? // We do, then unpack features
-      projectFeatureRecords.reduce(
-        (accumulator, feature) => [
-          // First copy the current state of the accumulator
-          ...accumulator,
-          // Then we must copy any individual feature (or features)
-          ...(feature.location.type === "FeatureCollection"
-            ? // We must unpack the features
-              feature.location.features
-            : // Provide the regular feature
-              [feature.location]),
-        ],
-        [] // Initial accumulator state
-      )
-    : // We don't, return empty array
-      [],
-});
+export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures => {
+  let featureCollection = { type: "FeatureCollection", features: [] };
+  mopedProjectFeatures.forEach(projectFeature => {
+    // add proj feature metadata to the feature itself
+    // these are stored outside of the feature.properties and serve
+    // as metadata that will be useful when handling map edits
+    let feature = { ...projectFeature.feature};
+    feature.feature_id = projectFeature.feature_id;
+    feature.project_component_id = projectFeature.project_component_id;
+    feature.status_id = projectFeature.status_id;
+    featureCollection.features.push(feature);
+  });
+  return featureCollection;
+};
 
 /**
  * Create object with layer name keys and array values containing feature IDs for map styling
