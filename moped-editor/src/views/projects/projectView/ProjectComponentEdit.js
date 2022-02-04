@@ -104,10 +104,29 @@ const EMPTY_FEATURE_COLLECTION = {
 };
 
 /**
+ * Hook to generate a unique sorted list containing the names of available components
+  * @param {Object[]} mopedComponents - the moped_components lookup table
+ */
+const useAvailableTypes = mopedComponents => {
+  const [availableTypes, setAvailableTypes] = useState([]);
+  useEffect(() => {
+    if (!mopedComponents) return;
+    let availableTypesNew = [
+      ...new Set(
+        mopedComponents.map(moped_component => moped_component.component_name)
+      ),
+    ].sort();
+    setAvailableTypes(availableTypesNew);
+
+  }, [mopedComponents]);
+  return availableTypes;
+};
+
+/**
  * The project component editor
- * @type {Object} selectedProjectComponent - the selected moped_proj_component chosen in dropdown
- * @type {Object[]} mopedComponents - the moped_components lookup table
- * @type {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
+ * @param {Object} selectedProjectComponent - the selected moped_proj_component chosen in dropdown
+ * @param {Object[]} mopedComponents - the moped_components lookup table
+ * @param {Object[]} mopedSubcomponents - the moped_subcomponents lookup table
  * @param {function} handleCancelEdit - The function to call if we need to cancel editing
  * @param {Object} projectFeatureCollection - The entire project's feature collection GeoJSON (optional)
  * @return {JSX.Element}
@@ -266,17 +285,7 @@ const ProjectComponentEdit = ({
       : // Nothing to do here, no valid component is selected.
         [];
 
-  /**
-   * This is a unique sorted list containing the names of available components
-   * @type {String[]}
-   */
-  const availableTypes = mopedComponents
-    ? [
-        ...new Set(
-          mopedComponents.map(moped_component => moped_component.component_name)
-        ),
-      ].sort()
-    : [];
+  const availableTypes = useAvailableTypes(mopedComponents);
 
   // list of components that are represented by lines ** note: highway can be either
   const lineRepresentable = mopedComponents
