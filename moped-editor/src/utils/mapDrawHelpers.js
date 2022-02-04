@@ -380,7 +380,7 @@ export function useMapDrawTools(
 
         return {
           ...feature,
-          id: featureUUID,
+        id: featureUUID,
           properties: {
             ...feature.properties,
             renderType: feature.geometry.type,
