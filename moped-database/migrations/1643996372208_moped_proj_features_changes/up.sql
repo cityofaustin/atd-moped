@@ -7,6 +7,7 @@ alter table "public"."moped_proj_features"
            references "public"."moped_proj_components"
            ("project_component_id") on update cascade on delete cascade;
 
-ALTER TABLE "public"."moped_proj_features" ALTER COLUMN "project_component_id" SET NOT NULL;
+-- this would ideal but will break in staging or prod
+-- ALTER TABLE "public"."moped_proj_features" ALTER COLUMN "project_component_id" SET NOT NULL;
 
 alter table "public"."moped_proj_features" rename column "location" to "feature";
