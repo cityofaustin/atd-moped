@@ -426,7 +426,7 @@ export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures =
     // add proj feature metadata to the feature itself
     // these are stored outside of the feature.properties and serve
     // as metadata that will be useful when handling map edits
-    let feature = { ...projectFeature.feature};
+    let feature = { ...projectFeature.feature };
     feature.feature_id = projectFeature.feature_id;
     feature.project_component_id = projectFeature.project_component_id;
     feature.status_id = projectFeature.status_id;
