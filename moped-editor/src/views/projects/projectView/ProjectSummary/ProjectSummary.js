@@ -23,6 +23,8 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
+import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
+import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
@@ -59,6 +61,9 @@ const useStyles = makeStyles(theme => ({
   fieldLabelTextSpan: {
     borderBottom: "1px dashed",
     borderBottomColor: theme.palette.text.secondary,
+  },
+  fieldLabelTextSpanNoBorder: {
+    borderBottom: "inherit",
   },
   fieldLabelLink: {
     width: "calc(100% - 2rem)",
@@ -215,6 +220,25 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkAssignmentID
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkOrders
                   classes={classes}
                   project={data?.moped_project?.[0]}
                   refetch={refetch}
