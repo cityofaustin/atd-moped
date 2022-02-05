@@ -17,7 +17,6 @@ import {
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
-  countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
   mapConfig,
@@ -157,8 +156,6 @@ const ProjectComponentsMapView = ({
   const mapRef = useRef();
   const mapGeocoderContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
-
-  const featureCount = countFeatures(projectFeatureCollection);
 
   const {
     visibleLayerIds,
