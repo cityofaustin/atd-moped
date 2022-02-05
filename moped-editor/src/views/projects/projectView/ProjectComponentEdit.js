@@ -317,10 +317,14 @@ const ProjectComponentEdit = ({
           return projectFeatureIds.indexOf(featureId) < 0;
         })
         .forEach(projectFeature => {
-          projectFeaturesToDelete.push({
-            ...projectFeature,
-            ...{ status_id: 0 },
-          });
+          // create a mutable copy of the feature
+          let featureToDelete = { ...projectFeature };
+          // set status to deleted (0)
+          featureToDelete.status_id = 0;
+          // remove __typename (a graphql artifact)
+          delete featureToDelete.__typename;
+          // add to delete array
+          projectFeaturesToDelete.push(featureToDelete);
         });
     }
     return [...projectFeaturesToCreateOrUpdate, ...projectFeaturesToDelete];
