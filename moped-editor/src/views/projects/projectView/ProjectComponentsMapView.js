@@ -17,7 +17,6 @@ import {
   MAPBOX_TOKEN,
   mapStyles,
   renderTooltip,
-  renderFeatureCount,
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
@@ -317,7 +316,6 @@ const ProjectComponentsMapView = ({
           mapStyle={mapStyle}
         />
       </ReactMapGL>
-      {renderFeatureCount(featureCount)}
     </Box>
   );
 };

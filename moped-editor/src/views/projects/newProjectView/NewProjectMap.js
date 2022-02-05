@@ -16,7 +16,6 @@ import {
 
 import {
   combineLineGeometries,
-  countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -37,7 +36,6 @@ import {
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
-  renderFeatureCount,
   useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
@@ -266,8 +264,6 @@ const NewProjectMap = ({
   drawLines = null,
 }) => {
   const classes = useStyles();
-
-  const featureCount = countFeatures(featureCollection);
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
@@ -570,9 +566,6 @@ const NewProjectMap = ({
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
-
-      {/* Feature Count */}
-      {renderFeatureCount(featureCount, isDrawing)}
     </Box>
   );
 };

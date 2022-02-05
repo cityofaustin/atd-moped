@@ -5,7 +5,6 @@ import combine from "@turf/combine";
 import theme from "../theme/index";
 import {
   Checkbox,
-  Typography,
   Button,
   Menu,
   MenuItem,
@@ -645,24 +644,6 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
       <span>{tooltipText.toLowerCase()}</span>
     </span>
   );
-
-/**
- * Build the JSX for the map feature count subtext
- * @param {Number} featureCount - The number of features in a project's feature collection
- * @return {JSX} The populated feature count text JSX
- */
-export const renderFeatureCount = (featureCount, isDrawing = false) => (
-  <Typography
-    style={{
-      fontSize: "0.875rem",
-      fontWeight: 500,
-      padding: ".5rem",
-    }}
-  >
-    {featureCount} location{featureCount === 1 ? "" : "s"} in this project -
-    Draw Mode: {isDrawing ? "On" : "Off"}
-  </Typography>
-);
 
 /**
  * Count the number of features in the project extent feature collection

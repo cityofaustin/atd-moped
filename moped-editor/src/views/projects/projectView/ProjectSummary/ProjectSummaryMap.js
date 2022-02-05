@@ -81,7 +81,9 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
               The getCursor callback will receive isHovering: true when hover over features of these layers */
-        interactiveLayerIds={getSummaryMapInteractiveIds(projectFeatureCollection)}
+        interactiveLayerIds={getSummaryMapInteractiveIds(
+          projectFeatureCollection
+        )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
@@ -95,7 +97,8 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
         */}
-        {projectFeatureCollection && createSummaryMapLayers(projectFeatureCollection)}
+        {projectFeatureCollection &&
+          createSummaryMapLayers(projectFeatureCollection)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
       </ReactMapGL>
