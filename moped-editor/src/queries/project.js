@@ -559,8 +559,6 @@ export const COMPONENTS_QUERY = gql`
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature
         feature_id
-        status_id
-        project_component_id
       }
     }
     moped_subcomponents {
