@@ -551,6 +551,9 @@ export const COMPONENTS_QUERY = gql`
       }
       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
         status_id
+        component_subcomponent_id
+        project_component_id
+        subcomponent_id
         moped_subcomponent {
           subcomponent_id
           subcomponent_name
