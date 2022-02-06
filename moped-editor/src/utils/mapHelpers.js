@@ -1014,6 +1014,27 @@ export const combineLineGeometries = features => {
 };
 
 /**
+ * Test the AGOL response JSON for errors. The API will return a 200
+ * response when a query fails.
+ * an error response looks like this:
+ * {
+ *   error: {
+ *      code: 400,
+ *      message: "",
+ *      details: ["'Invalid field: PROJECT_EXTENT_ID' parameter is invalid"],
+ *    },
+ * };
+ * @param {Object} jsonResponse - The response JSON from AGOL
+ * @return {Object} the response JSON, after logging an error if error
+ **/
+const handleAgolResponse = jsonResponse => {
+  if (jsonResponse?.error) {
+    console.error(`Error fetching geometry: ${JSON.stringify(jsonResponse)}`);
+  }
+  return jsonResponse;
+};
+
+/**
  * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
  * @param {String} projectExtentId - The unique ID of the feature to be queried
  * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
@@ -1021,8 +1042,8 @@ export const combineLineGeometries = features => {
  */
 export const queryCtnFeatureService = async function(projectExtentId) {
   const params = {
-    where: `PROJECT_EXTENT_ID=${projectExtentId}`,
-    outFields: "PROJECT_EXTENT_ID",
+    where: `CTN_SEGMENT_ID=${projectExtentId}`,
+    outFields: "CTN_SEGMENT_ID",
     geometryPrecision: 6,
     f: "pgeojson",
   };
@@ -1034,6 +1055,9 @@ export const queryCtnFeatureService = async function(projectExtentId) {
 
   return await fetch(url)
     .then(response => response.json())
+    .then(jsonResponse => {
+      return handleAgolResponse(jsonResponse);
+    })
     .catch(err => {
       console.log("Error fetching geometry: " + JSON.stringify(err));
       return null;
