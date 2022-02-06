@@ -295,7 +295,6 @@ const ProjectComponentEdit = ({
         if (feature.feature_id) {
           projectFeature.feature_id = feature.feature_id;
         }
-        projectFeature.project_id = Number.parseInt(projectId);
         projectFeature.feature = { ...feature };
         return projectFeature;
       }
