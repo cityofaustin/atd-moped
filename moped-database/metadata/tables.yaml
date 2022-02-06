@@ -1033,9 +1033,6 @@
   - name: moped_proj_component
     using:
       foreign_key_constraint_on: project_component_id
-  - name: moped_project
-    using:
-      foreign_key_constraint_on: project_id
   array_relationships:
   - name: moped_proj_features_components
     using:
@@ -1049,68 +1046,61 @@
     permission:
       check: {}
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       backend_only: false
   - role: moped-editor
     permission:
       check: {}
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       backend_only: false
   select_permissions:
   - role: moped-admin
     permission:
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       filter: {}
   - role: moped-editor
     permission:
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       filter: {}
   - role: moped-viewer
     permission:
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       filter: {}
   update_permissions:
   - role: moped-admin
     permission:
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       filter: {}
       check: null
   - role: moped-editor
     permission:
       columns:
-      - feature_id
       - feature
+      - feature_id
       - project_component_id
-      - project_id
       - status_id
       filter: {}
       check: null
@@ -2446,13 +2436,6 @@
       foreign_key_constraint_on:
         table:
           name: moped_project_types
-          schema: public
-        column: project_id
-  - name: moped_proj_features
-    using:
-      foreign_key_constraint_on:
-        table:
-          name: moped_proj_features
           schema: public
         column: project_id
   - name: moped_proj_funding
