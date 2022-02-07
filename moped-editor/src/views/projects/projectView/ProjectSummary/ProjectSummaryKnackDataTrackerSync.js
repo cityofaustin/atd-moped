@@ -94,11 +94,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase();
     });
 
-    Object.keys(fieldMap).forEach(element => {
-      if (project.currentKnackState[element] !== project[fieldMap[element]]) {
-        body[element] = project[fieldMap[element]];
-      }
-    });
+    Object.keys(fieldMap).forEach(element => { body[element] = project[fieldMap[element]]; });
 
     if (signalIds.length > 0) {
       // field_3861 is the signalId connection field to the signals table
