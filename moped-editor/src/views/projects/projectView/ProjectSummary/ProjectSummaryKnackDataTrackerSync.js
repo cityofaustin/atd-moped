@@ -87,12 +87,14 @@ const ProjectSummaryKnackDataTrackerSync = ({
     const fieldMap = {};
     Object.keys(process.env)
       .filter(envVariable => {
-      return envVariable.match(knackFieldsRegEx);
-    }).map(envVariable => {
-      return envVariable.match(knackFieldsRegEx);
-    }).forEach(regExResult => {
-      fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase();
-    });
+        return envVariable.match(knackFieldsRegEx);
+      })
+      .map(envVariable => {
+        return envVariable.match(knackFieldsRegEx);
+      })
+      .forEach(regExResult => {
+        fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase();
+      });
 
     Object.keys(fieldMap).forEach(element => { body[element] = project[fieldMap[element]]; });
 
