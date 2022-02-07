@@ -1,10 +1,11 @@
 import React from "react";
 import { Box, Grid, Link, Typography } from "@material-ui/core";
-import { OpenInNew, Autorenew } from "@material-ui/icons";
+import { Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
@@ -39,6 +40,14 @@ const ProjectSummaryKnackDataTrackerSync = ({
     process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
     project?.knackProjectId
   );
+
+  // Array of signals in project
+  const signals = project.moped_proj_features
+    .filter(feature => feature?.location?.properties?.signal_id)
+    .map(feature => ({
+      signal_id: feature.location.properties.signal_id,
+      knack_id: feature.location.properties.id,
+    }));
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
@@ -181,24 +190,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>
-          Data Tracker signal IDs
-        </Typography>
+        <Typography className={classes.fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
             text={
-              (project.knack_project_id && (
-                <Link
-                  href={
-                    "https://atd.knack.com/amd#projects/project-details/" +
-                    project.knack_project_id
-                  }
-                  target={"_blank"}
-                >
-                  {"View in Data Tracker"}{" "}
-                  <OpenInNew className={classes.linkIcon} />
-                </Link>
+              // if a project has been synced with Knack and has signals associated, link to signals
+              (project.knack_project_id && signals.length > 0 && (
+                <RenderSignalLink signals={signals} />
               )) || (
+                // otherwise render link to synchronize with knack
                 <>
                   <Link
                     className={classes.fieldLabelText}
@@ -206,7 +206,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                       handleSync();
                     }}
                   >
-                    {"Synchronize"}
+                    {"Synchronize with Data Tracker"}
                     <Autorenew
                       viewBox={"0 -4 22 26"}
                       className={classes.syncLinkIcon}
@@ -216,7 +216,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
               )
             }
             classes={classes}
-            spanClassName={""}
+            spanClassName={classes.fieldLabelTextSpanNoBorder}
           />
         </Box>
       </Grid>
