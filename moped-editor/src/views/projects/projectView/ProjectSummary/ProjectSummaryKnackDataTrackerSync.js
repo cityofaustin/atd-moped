@@ -84,24 +84,19 @@ const ProjectSummaryKnackDataTrackerSync = ({
     let body = {};
 
     const knackFieldsRegEx = /REACT_APP_KNACK_DATA_TRACKER_(\w+)_FIELD/;
-    const fieldsOfInterest = Object.keys(process.env)
+    const fieldMap = {};
+    Object.keys(process.env)
       .filter(envVariable => {
-      const found = envVariable.match(knackFieldsRegEx);
-      return found;
+      return envVariable.match(knackFieldsRegEx);
     }).map(envVariable => {
-      const found = envVariable.match(knackFieldsRegEx);
-      return found[1];
+      return envVariable.match(knackFieldsRegEx);
+    }).forEach(regExResult => {
+      fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase();
     });
 
-    const field_map = {
-      field_3998: "project_id",
-      field_3999: "project_name",
-      field_4000: "current_status",
-    };
-
-    Object.keys(field_map).forEach(element => {
-      if (project.currentKnackState[element] !== project[field_map[element]]) {
-        body[element] = project[field_map[element]];
+    Object.keys(fieldMap).forEach(element => {
+      if (project.currentKnackState[element] !== project[fieldMap[element]]) {
+        body[element] = project[fieldMap[element]];
       }
     });
 
