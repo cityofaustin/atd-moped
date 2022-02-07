@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Link, Typography } from "@material-ui/core";
+import { Box, Grid, Link, Typography, Button } from "@material-ui/core";
 import { Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
 
@@ -97,8 +97,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
     Object.keys(fieldMap).forEach(element => { body[element] = project[fieldMap[element]]; });
 
     if (signalIds.length > 0) {
-      // field_3861 is the signalId connection field to the signals table
-      body["field_3861"] = signalIds;
+      // REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION contains the signalId connection field to the signals table
+      body[process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION] = signalIds;
     }
 
     return JSON.stringify(body);
@@ -314,6 +314,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
             classes={classes}
             spanClassName={classes.fieldLabelTextSpanNoBorder}
           />
+        </Box>
+        <Box>
+          <Button
+            className={classes.fieldLabelText}
+            onClick={() => {
+              handleSync();
+            }}
+          >
+          Resync
+          </Button>
         </Box>
       </Grid>
     </>
