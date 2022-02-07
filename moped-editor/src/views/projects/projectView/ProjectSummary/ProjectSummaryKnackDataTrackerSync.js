@@ -42,12 +42,13 @@ const ProjectSummaryKnackDataTrackerSync = ({
   );
 
   // Array of signals in project
-  const signals = project.moped_proj_features
-    .filter(feature => feature?.location?.properties?.signal_id)
-    .map(feature => ({
-      signal_id: feature.location.properties.signal_id,
-      knack_id: feature.location.properties.id,
-    }));
+  const signals =
+    project?.moped_proj_components?.moped_proj_features
+      ?.filter(feature => feature?.feature?.properties?.signal_id)
+      .map(feature => ({
+        signal_id: feature.feature.properties.signal_id,
+        knack_id: feature.feature.properties.id,
+      })) || [];
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
