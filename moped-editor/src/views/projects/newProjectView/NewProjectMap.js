@@ -205,8 +205,6 @@ const handleSelectedFeatureUpdate = (
     const bboxLine = polygonToLine(bboxPolygon(bbox));
     const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
 
-    // queryCtnFeatureService queries on "where: `PROJECT_EXTENT_ID=${projectExtentId}`", Should this be
-    // updated to check for CTN_SEGMENT_ID?
     if (intersectsWithBounds) {
       // this feature is rendered to the edge of the viewport and may (still) be fragmented.
       // we cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
