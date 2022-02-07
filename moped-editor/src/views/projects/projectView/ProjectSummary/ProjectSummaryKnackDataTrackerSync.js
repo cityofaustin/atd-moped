@@ -83,6 +83,16 @@ const ProjectSummaryKnackDataTrackerSync = ({
   const buildBody = signalIds => {
     let body = {};
 
+    const knackFieldsRegEx = /REACT_APP_KNACK_DATA_TRACKER_(\w+)_FIELD/;
+    const fieldsOfInterest = Object.keys(process.env)
+      .filter(envVariable => {
+      const found = envVariable.match(knackFieldsRegEx);
+      return found;
+    }).map(envVariable => {
+      const found = envVariable.match(knackFieldsRegEx);
+      return found[1];
+    });
+
     const field_map = {
       field_3998: "project_id",
       field_3999: "project_name",
