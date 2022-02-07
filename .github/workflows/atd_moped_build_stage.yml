@@ -87,7 +87,6 @@ jobs:
           echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
           echo "MOPED_PRNUM: ${MOPED_PRNUM}"
           source $(pwd)/.github/workflows/aws-heroku-helper.sh
-          clone_hasura_repo
           build_database
           run_database_migration
   build_activity_log_sqs:
