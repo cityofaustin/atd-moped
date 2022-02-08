@@ -4,8 +4,6 @@ import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
-import KnackSync from "./KnackSync";
-
 import {
   Breadcrumbs,
   Link,
@@ -469,13 +467,6 @@ const ProjectView = () => {
                             horizontal: "center",
                           }}
                         >
-                          <KnackSync
-                            project={data.moped_project[0]}
-                            closeHandler={handleMenuClose}
-                            snackbarHandler={handleSnackbarOpen}
-                            refetch={refetch}
-                          />
-
                           <MenuItem
                             onClick={handleRenameClick}
                             className={classes.projectOptionsMenuItem}
