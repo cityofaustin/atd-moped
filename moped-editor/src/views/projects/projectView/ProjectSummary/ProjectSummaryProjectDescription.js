@@ -93,7 +93,7 @@ const ProjectSummaryProjectDescription = ({
               fullWidth
               multiline={true}
               rows={4}
-              id="moped-project-website"
+              id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
               value={description}
