@@ -628,17 +628,6 @@ export const DELETE_MOPED_COMPONENT = gql`
   }
 `;
 
-export const UPDATE_NEW_PROJ_FEATURES = gql`
-  mutation UpdateNewProjectFeatures($featureList: [Int!]!, $projectId: Int!) {
-    update_moped_proj_features(
-      where: { feature_id: { _in: $featureList } }
-      _set: { project_id: $projectId }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 /**
  * Inserts a project summary status update
  */

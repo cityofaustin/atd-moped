@@ -16,7 +16,6 @@ import { SIGNAL_COMPONENTS_QUERY } from "../../../queries/project";
 
 import {
   ADD_PROJECT,
-  UPDATE_NEW_PROJ_FEATURES,
 } from "../../../queries/project";
 
 import ProjectSaveButton from "./ProjectSaveButton";
@@ -100,7 +99,6 @@ const NewProjectView = () => {
    * Add Project Apollo Mutation
    */
   const [addProject] = useMutation(ADD_PROJECT);
-  const [updateFeatures] = useMutation(UPDATE_NEW_PROJ_FEATURES);
 
   /**
    * Timer Reference Object
