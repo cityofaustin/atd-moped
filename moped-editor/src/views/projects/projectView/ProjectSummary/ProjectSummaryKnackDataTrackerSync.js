@@ -142,8 +142,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
         .then(result => {
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-            // Reject the promise to fall through to the .catch() method
-            return Promise.reject(result);
+            // Throw error & cause the promise to fall through to the .catch() method
+            throw(result);
           } else {
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
@@ -187,7 +187,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
         .then(result => {
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
-            return Promise.reject(result);
+            throw(result);
           } else {
             // Successful HTTP Update request with meaningful results from Knack
             return Promise.resolve();
@@ -249,8 +249,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           // I think this may need to be result?.errors
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-            // Reject this promise so we fall through to the .catch() method
-            return Promise.reject(result);
+            throw(result);
           }
           return Promise.resolve(result); // pass result object onto next .then()
         })
