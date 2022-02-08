@@ -181,16 +181,6 @@ const ProjectView = () => {
   };
 
   /**
-   * Function which can be passed to child component to allow it to invoke a snackbar which
-   * will persist even after that child component has been deconstructed or otherwise hidden.
-   */
-  const handleSnackbarOpen = snackbarState => {
-    let snackbarStateCopy = { ...snackbarState };
-    snackbarStateCopy.open = true;
-    setSnackbarState(snackbarStateCopy);
-  };
-
-  /**
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
