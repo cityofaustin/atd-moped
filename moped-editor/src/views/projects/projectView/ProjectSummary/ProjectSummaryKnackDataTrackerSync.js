@@ -98,11 +98,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
         fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase();
       });
 
-    Object.keys(fieldMap).forEach(element => { body[element] = project[fieldMap[element]]; });
+    Object.keys(fieldMap).forEach(element => {
+      body[element] = project[fieldMap[element]];
+    });
 
     if (signalIds.length > 0) {
       // REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION contains the signalId connection field to the signals table
-      body[process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION] = signalIds;
+      body[
+        process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
+      ] = signalIds;
     }
 
     return JSON.stringify(body);
@@ -143,7 +147,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
             // Throw error & cause the promise to fall through to the .catch() method
-            throw(result);
+            throw result;
           } else {
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
@@ -187,7 +191,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
         .then(result => {
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
-            throw(result);
+            throw result;
           } else {
             // Successful HTTP Update request with meaningful results from Knack
             return true;
@@ -249,7 +253,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           // I think this may need to be result?.errors
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-            throw(result);
+            throw result;
           }
           return result;
         })
@@ -323,7 +327,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
               handleSync();
             }}
           >
-          Resync
+            Resync
           </Button>
         </Box>
       </Grid>
