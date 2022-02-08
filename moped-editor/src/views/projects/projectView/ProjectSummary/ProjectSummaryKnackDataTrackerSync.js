@@ -170,7 +170,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                       return signalIds;
                     });
                 } else {
-                  return Promise.resolve([]);
+                  return [];
                 }
               })
               .then(signalIds => {
@@ -190,7 +190,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             throw(result);
           } else {
             // Successful HTTP Update request with meaningful results from Knack
-            return Promise.resolve();
+            return true;
           }
         })
         .then(() => refetch()) // ask the application to update its status from our graphql endpoint
@@ -201,7 +201,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             "Success: Project updated in Data Tracker",
             "success"
           );
-          return Promise.resolve();
+          return true;
         })
         .catch(error => {
           // Failure, alert the user that we've encountered an error
@@ -234,7 +234,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                 return signalIds;
               });
           } else {
-            return Promise.resolve([]);
+            return [];
           }
         })
         .then(signalIds => {
@@ -251,7 +251,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
             throw(result);
           }
-          return Promise.resolve(result); // pass result object onto next .then()
+          return result;
         })
         .then(knack_record =>
           // We've got an ID from the Knack endpoint for this project, so record it in our database
@@ -270,7 +270,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             "Success: Project data pushed to Data Tracker",
             "success"
           );
-          return Promise.resolve();
+          return true;
         })
         .catch(error => {
           // Failure, alert the user that we've encountered an error
