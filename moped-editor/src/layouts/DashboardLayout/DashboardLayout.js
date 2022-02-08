@@ -32,6 +32,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DashboardLayout = () => {
+  console.log(process.env.NODE_ENV);
   const classes = useStyles();
   const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
