@@ -52,6 +52,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
     project?.knack_project_id
   );
 
+  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
+
   let knackSignalEndpointUrl =
     `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}` +
     `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_VIEW}/records`;
@@ -124,8 +126,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
     };
     return JSON.stringify(getSignalFilter);
   };
-
-  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   /**
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
