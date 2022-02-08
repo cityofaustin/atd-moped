@@ -187,9 +187,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
           if (result.errors) {
             // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
             throw result;
-          } else {
-            // Successful HTTP Update request with meaningful results from Knack
-            return true;
           }
         })
         .then(() => refetch()) // ask the application to update its status from our graphql endpoint
@@ -200,7 +197,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
             "Success: Project updated in Data Tracker",
             "success"
           );
-          return true;
         })
         .catch(error => {
           // Failure, alert the user that we've encountered an error
@@ -269,7 +265,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
             "Success: Project data pushed to Data Tracker",
             "success"
           );
-          return true;
         })
         .catch(error => {
           // Failure, alert the user that we've encountered an error
