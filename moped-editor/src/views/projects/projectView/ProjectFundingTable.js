@@ -21,6 +21,7 @@ import { Alert } from "@material-ui/lab";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
@@ -307,7 +308,11 @@ const ProjectFundingTable = () => {
    * @returns {React component}
    */
   const LookupSelectComponent = props => (
-    <Select id={props.name} value={props.value || ""}>
+    <Select
+      style={{ minWidth: "8em" }}
+      id={props.name}
+      value={props.value || ""}
+    >
       {props.data.map(item => (
         <MenuItem
           onChange={() => props.onChange(item[`${props.name}_id`])}
@@ -547,7 +552,11 @@ const ProjectFundingTable = () => {
         data={data.moped_proj_funding}
         title={
           <div>
-            <Typography variant="h2" color="primary">
+            <Typography
+              variant="h2"
+              color="primary"
+              style={{ paddingTop: "1em" }}
+            >
               Funding sources
             </Typography>
             <ProjectSummaryProjectECapris
@@ -635,6 +644,7 @@ const ProjectFundingTable = () => {
         }}
         icons={{
           Delete: DeleteOutlineIcon,
+          Edit: EditOutlinedIcon,
         }}
         editable={{
           onRowAdd: newData =>

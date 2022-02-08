@@ -335,7 +335,7 @@ function run_migration() {
   if [[ "$(__is_local)" != "TRUE" ]]; then
     echo "--------------------------------------------------------------------";
     echo " 🛑️ Non-Local environment detected. Aborting.";
-    echo " Switch back to your local environment: './hasura-console setenv local'";
+    echo " Switch back to your local environment: './hasura-cluster setenv local'";
     echo "--------------------------------------------------------------------";
     stop;
     exit 1;

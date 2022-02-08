@@ -9,10 +9,13 @@ import {
   Link,
   TextField,
   Typography,
+  FormControl,
+  FormHelperText,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import Autocomplete from "@material-ui/lab/Autocomplete";
@@ -177,16 +180,19 @@ const ProjectTeamTable = ({
       render: personnel => getPersonnelName(personnel.user_id),
       validate: rowData => !!rowData.user_id,
       editComponent: props => (
-        <Autocomplete
-          id="user_id"
-          name="user_id"
-          options={userIds}
-          getOptionLabel={option => getPersonnelName(option)}
-          getOptionSelected={(option, value) => option === value}
-          value={props.value}
-          onChange={(event, value) => props.onChange(value)}
-          renderInput={params => <TextField {...params} />}
-        />
+        <FormControl style={{ width: "100%" }}>
+          <Autocomplete
+            id="user_id"
+            name="user_id"
+            options={userIds}
+            getOptionLabel={option => getPersonnelName(option)}
+            getOptionSelected={(option, value) => option === value}
+            value={props.value}
+            onChange={(event, value) => props.onChange(value)}
+            renderInput={params => <TextField {...params} />}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
     },
     {
@@ -451,7 +457,7 @@ const ProjectTeamTable = ({
             ),
           },
         }}
-        icons={{ Delete: DeleteOutlineIcon }}
+        icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: newData =>
             isNewProjectActions[isNewProject]

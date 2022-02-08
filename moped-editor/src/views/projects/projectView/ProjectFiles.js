@@ -20,6 +20,7 @@ import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import { useMutation, useQuery } from "@apollo/client";
 
@@ -297,7 +298,7 @@ const ProjectFiles = props => {
               }
             },
           }}
-          icons={{ Delete: DeleteOutlineIcon }}
+          icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{
             ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
               paging: false,
