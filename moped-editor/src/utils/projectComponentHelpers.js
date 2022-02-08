@@ -71,7 +71,7 @@ export const useInitialTypeCounts = (mopedComponents, mopedSubcomponents) => {
   const [initialTypeCounts, setInitialTypeCounts] = useState(null);
 
   useEffect(() => {
-    if (!mopedComponents || !mopedComponents) return;
+    if (!mopedComponents || !mopedSubcomponents) return;
 
     let initialTypeCountsNew = mopedComponents.reduce(
       (accumulator, component, index) => {
