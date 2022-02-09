@@ -141,12 +141,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
         return result;
       })
       .then(knackRecord => {
-        // End of the chain; advise the user of success
-        snackbarHandle(
-          true,
-          "Success: Project updated in Data Tracker",
-          "success"
-        );
         // We've got an ID from the Knack endpoint for this project, so record it in our database
         // This ID will not have changed is we were merely updating a project
         mutateProjectKnackId({
