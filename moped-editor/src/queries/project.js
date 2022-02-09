@@ -50,6 +50,7 @@ export const SUMMARY_QUERY = gql`
       status_id
       contractor
       purchase_order_number
+      work_assignment_id
       moped_proj_features(where: { status_id: { _eq: 1 } }) {
         feature_id
         project_id
@@ -99,7 +100,7 @@ export const SUMMARY_QUERY = gql`
       phase_start
       phase_end
     }
-    moped_entity {
+    moped_entity(order_by: {entity_id: asc}) {
       entity_id
       entity_name
     }
@@ -931,6 +932,31 @@ export const PROJECT_CLEAR_PURCHASE_ORDER_NUMBER = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { purchase_order_number: null }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_WORK_ASSIGNMENT_ID = gql`
+  mutation UpdateWorkAssignmentID(
+    $projectId: Int!
+    $work_assignment_id: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { work_assignment_id: $work_assignment_id }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
+  mutation UpdateWorkAssignmentID($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { work_assignment_id: null }
     ) {
       affected_rows
     }

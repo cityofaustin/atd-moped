@@ -37,15 +37,6 @@ function build_editor() {
 # Database Deployment
 #
 
-function clone_hasura_repo() {
-  git clone https://github.com/hasura/graphql-engine-heroku;
-  echo "Patching graphql-engine-heroku/Dockerfile, before:";
-  head -1 graphql-engine-heroku/Dockerfile;
-  sed -ri "s/(2\...?\...?)/1.3.3/g" graphql-engine-heroku/Dockerfile;
-  echo "Patching graphql-engine-heroku/Dockerfile, after:";
-  head -1 graphql-engine-heroku/Dockerfile;
-}
-
 function heroku_commit_and_push() {
   echo "Working from dir: $(pwd)";
   echo "Removing existing .git file";
@@ -67,9 +58,11 @@ function build_database() {
   rm -rf "${HASURA_REPO_NAME}" || echo "Nothing to clean";
 
   print_header "Cloning Hasura Engine";
-  clone_hasura_repo;
+  git clone https://github.com/hasura/graphql-engine-heroku;
 
   cd "${HASURA_REPO_NAME}" || exit 1;
+  # checking out the commit where dockerfile uses graphql-engine v1.3.3
+  git checkout 87cbd11a397f58a159bd679a1280675ded5d9fe5;
 
   print_header "Destroying Current Application";
   {
