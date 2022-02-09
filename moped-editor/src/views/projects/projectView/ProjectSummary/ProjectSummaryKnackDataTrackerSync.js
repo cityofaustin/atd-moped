@@ -122,8 +122,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
    */
   const handleSync = () => {
     // The following code is capabale of handling a "re-sync" to knack for a given project.
-    // Currently, our /UI does not contain an element that allows a user to request a re-sync, but
-    // consensus code is ready to "re-sync" a project thanks to it's use of a dynamic knackHttpMethod
+    // Currently, our UI does not contain an element that allows a user to request a re-sync, but
+    // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
     console.log("HTTP method: " + knackHttpMethod);
     // POST (create) or PUT (update) a project record in Knack
     const signalIds = signals.map(signal => signal.knack_id);
