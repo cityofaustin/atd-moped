@@ -54,10 +54,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
-  let knackSignalEndpointUrl =
-    `https://api.knack.com/v1/pages/scene_${process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE}` +
-    `/views/view_${process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_VIEW}/records`;
-
   // Array of signals in project
   const signals = project.moped_proj_features
     .filter(feature => feature?.location?.properties?.signal_id)
@@ -107,25 +103,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
     return JSON.stringify(body);
   };
 
-  const buildSignalIdFilters = project => {
-    // signals: scene_514 view_1483
-    const signalIds = project.moped_proj_features.map(
-      feature => feature.location.properties.signal_id
-    );
-
-    let getSignalFilter = {
-      match: "or",
-      rules: signalIds.map(signalId => {
-        return {
-          field: "field_199",
-          operator: "is",
-          value: signalId,
-        };
-      }),
-    };
-    return JSON.stringify(getSignalFilter);
-  };
-
 
   const numberOfSignalsInProject = countSignalsInProject(project);
 
@@ -153,24 +130,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             Promise.resolve(numberOfSignalsInProject)
               .then(signalCount => {
                 if (signalCount > 0) {
-                  return fetch(
-                    knackSignalEndpointUrl +
-                      "?filters=" +
-                      buildSignalIdFilters(project),
-                    {
-                      // Fetch will return a promise, which we'll use to start a chain of .then() steps
-                      method: "GET",
-                      headers: buildHeaders,
-                    }
-                  )
-                    .then(response => response.json()) // get the json payload and pass it along
-                    .then(result => {
-                      let signalIds = [];
-                      if (signalCount > 0) {
-                        signalIds = result.records.map(record => record.id);
-                      }
-                      return signalIds;
-                    });
+                  return signals.map(signal => signal.knack_id);
                 } else {
                   return [];
                 }
@@ -213,24 +173,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       Promise.resolve(numberOfSignalsInProject)
         .then(signalCount => {
           if (signalCount > 0) {
-            return fetch(
-              knackSignalEndpointUrl +
-                "?filters=" +
-                buildSignalIdFilters(project),
-              {
-                // Fetch will return a promise, which we'll use to start a chain of .then() steps
-                method: "GET",
-                headers: buildHeaders,
-              }
-            )
-              .then(response => response.json()) // get the json payload and pass it along
-              .then(result => {
-                let signalIds = [];
-                if (signalCount > 0) {
-                  signalIds = result.records.map(record => record.id);
-                }
-                return signalIds;
-              });
+            return signals.map(signal => signal.knack_id);
           } else {
             return [];
           }
