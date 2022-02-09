@@ -126,6 +126,9 @@ const ProjectSummaryKnackDataTrackerSync = ({
     return JSON.stringify(getSignalFilter);
   };
 
+
+  const numberOfSignalsInProject = countSignalsInProject(project);
+
   /**
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
@@ -147,7 +150,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
             // Successful HTTP request with meaningful results from Knack
             project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
 
-            return countSignalsInProject(project)
+            Promise.resolve(numberOfSignalsInProject)
               .then(signalCount => {
                 if (signalCount > 0) {
                   return fetch(
@@ -207,7 +210,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       // creating new knack record execution branch
       project.currentKnackState = {};
 
-      countSignalsInProject(project)
+      Promise.resolve(numberOfSignalsInProject)
         .then(signalCount => {
           if (signalCount > 0) {
             return fetch(
