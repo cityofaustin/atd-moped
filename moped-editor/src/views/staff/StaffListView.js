@@ -9,7 +9,7 @@ import {
 import Page from "src/components/Page";
 
 import { StaffListViewQueryConf } from "./StaffListViewQueryConf";
-import { GQLAbstract } from "atd-kickstand";
+import GQLAbstract from "../../libs/GQLAbstract";
 import GridTable from "../../components/GridTable/GridTable";
 
 const useStyles = makeStyles(theme => ({
@@ -47,32 +47,32 @@ const StaffListView = () => {
   };
 
   return (
-      <Page className={classes.root} title="Staff">
-        <GridTable
-            title={"Staff"}
-            query={staffQuery}
-            toolbar={null}
-            customComponents={{
-              table: {
-                before: (
-                    <FormGroup className={classes.switch}>
-                      <FormControlLabel
-                          control={
-                            <Switch
-                                checked={showInactive}
-                                onChange={toggleShowInactive}
-                                color={"primary"}
-                            />
-                          }
-                          labelPlacement="start"
-                          label="Show Inactive Accounts"
-                      />
-                    </FormGroup>
-                ),
-              },
-            }}
-        />
-      </Page>
+    <Page className={classes.root} title="Staff">
+      <GridTable
+        title={"Staff"}
+        query={staffQuery}
+        toolbar={null}
+        customComponents={{
+          table: {
+            before: (
+              <FormGroup className={classes.switch}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showInactive}
+                      onChange={toggleShowInactive}
+                      color={"primary"}
+                    />
+                  }
+                  labelPlacement="start"
+                  label="Show Inactive Accounts"
+                />
+              </FormGroup>
+            ),
+          },
+        }}
+      />
+    </Page>
   );
 };
 
