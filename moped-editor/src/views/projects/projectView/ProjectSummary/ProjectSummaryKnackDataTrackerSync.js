@@ -111,6 +111,11 @@ const ProjectSummaryKnackDataTrackerSync = ({
    */
   const handleSync = () => {
     if (project.knack_project_id) {
+      
+      // The following code, contained in this block, handles a "re-sync" to knack for a given project. 
+      // Currently, our /UI does not contain an element that allows a user to request a re-sync, but 
+      // consensus is that this code may be useful enough in the future to warrant leaving it in-place. 
+
       // updating knack record
       fetch(knackProjectEndpointUrl, {
         // Fetch will return a promise, allowing us to start a chain of .then() calls
