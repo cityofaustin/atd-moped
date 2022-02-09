@@ -87,7 +87,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
     Object.keys(process.env)
       .filter(envVariable => envVariable.match(knackFieldsRegEx))
       .map(envVariable => envVariable.match(knackFieldsRegEx))
-      .forEach(regExResult => fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase());
+      .forEach(
+        regExResult =>
+          (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
+      );
 
     Object.keys(fieldMap).forEach(element => {
       body[element] = project[fieldMap[element]];
@@ -103,7 +106,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
     return JSON.stringify(body);
   };
 
-
   const numberOfSignalsInProject = countSignalsInProject(project);
 
   /**
@@ -111,10 +113,9 @@ const ProjectSummaryKnackDataTrackerSync = ({
    */
   const handleSync = () => {
     if (project.knack_project_id) {
-      
-      // The following code, contained in this block, handles a "re-sync" to knack for a given project. 
-      // Currently, our /UI does not contain an element that allows a user to request a re-sync, but 
-      // consensus is that this code may be useful enough in the future to warrant leaving it in-place. 
+      // The following code, contained in this block, handles a "re-sync" to knack for a given project.
+      // Currently, our /UI does not contain an element that allows a user to request a re-sync, but
+      // consensus is that this code may be useful enough in the future to warrant leaving it in-place.
 
       // updating knack record
       fetch(knackProjectEndpointUrl, {
