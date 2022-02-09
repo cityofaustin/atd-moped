@@ -82,7 +82,6 @@ export const LINE_MODES = [
   },
 ];
 
-
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
 
@@ -295,7 +294,7 @@ export function useMapDrawTools(
   };
 
   /**
-   * Returns true if lineStringA has the same coordinates as lineStringB
+   * Returns true if featurePointA has the same coordinates as featurePointB
    * @param featurePointA - A point to compare
    * @param featurePointB - Another point to compare against
    * @return {boolean}
@@ -507,7 +506,9 @@ export function useMapDrawTools(
         ...featureCollection.features
           .filter(
             // Keep the features that are not equal to featureIdToDelete
-            feature => get(feature, featureIdGetPath) !== featureIdToDelete
+            feature =>
+              !featureIdToDelete ||
+              get(feature, featureIdGetPath) !== featureIdToDelete
           )
           .filter(
             // Keep the features (points or lines) that are not duplicates
@@ -519,7 +520,6 @@ export function useMapDrawTools(
           ),
       ],
     };
-
     // Update our state
     setFeatureCollection(updatedFeatureCollection);
   };

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
+import { createProjectFeatureCollection } from "src/utils/projectComponentHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -57,6 +57,10 @@ const useStyles = makeStyles(theme => ({
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
+  },
+  knackFieldLabelText: {
+    width: "calc(100% - 2rem)",
+    cursor: "pointer",
   },
   fieldLabelTextSpan: {
     borderBottom: "1px dashed",
@@ -113,9 +117,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const projectFeatureRecords = data?.moped_project[0]?.moped_proj_features;
-  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
-    projectFeatureRecords
+  const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
+  const projectFeatureCollection = createProjectFeatureCollection(
+    projectComponents
   );
 
   const renderMap = () => {
@@ -129,7 +133,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       );
     } else {
       return (
-        <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+        <ProjectSummaryMap
+          projectFeatureCollection={projectFeatureCollection}
+        />
       );
     }
   };

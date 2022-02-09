@@ -5,7 +5,6 @@ import combine from "@turf/combine";
 import theme from "../theme/index";
 import {
   Checkbox,
-  Typography,
   Button,
   Menu,
   MenuItem,
@@ -416,30 +415,24 @@ export const getLayerSource = e =>
     e.features[0].properties["sourceLayer"]);
 
 /**
- * Create a GeoJSON feature collection from project features
+ * Create a GeoJSON feature collection from moped_proj_features
  * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
  * @return {object} A GeoJSON feature collection to display project features on a map
  */
-export const createFeatureCollectionFromProjectFeatures = projectFeatureRecords => ({
-  type: "FeatureCollection",
-  features: projectFeatureRecords // Do we have a records object?
-    ? // We do, then unpack features
-      projectFeatureRecords.reduce(
-        (accumulator, feature) => [
-          // First copy the current state of the accumulator
-          ...accumulator,
-          // Then we must copy any individual feature (or features)
-          ...(feature.location.type === "FeatureCollection"
-            ? // We must unpack the features
-              feature.location.features
-            : // Provide the regular feature
-              [feature.location]),
-        ],
-        [] // Initial accumulator state
-      )
-    : // We don't, return empty array
-      [],
-});
+export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures => {
+  let featureCollection = { type: "FeatureCollection", features: [] };
+  mopedProjectFeatures.forEach(projectFeature => {
+    // add proj feature metadata to the feature itself
+    // these are stored outside of the feature.properties and serve
+    // as metadata that will be useful when handling map edits
+    let feature = { ...projectFeature.feature };
+    feature.feature_id = projectFeature.feature_id;
+    feature.project_component_id = projectFeature.project_component_id;
+    feature.status_id = projectFeature.status_id;
+    featureCollection.features.push(feature);
+  });
+  return featureCollection;
+};
 
 /**
  * Create object with layer name keys and array values containing feature IDs for map styling
@@ -651,24 +644,6 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
       <span>{tooltipText.toLowerCase()}</span>
     </span>
   );
-
-/**
- * Build the JSX for the map feature count subtext
- * @param {Number} featureCount - The number of features in a project's feature collection
- * @return {JSX} The populated feature count text JSX
- */
-export const renderFeatureCount = (featureCount, isDrawing = false) => (
-  <Typography
-    style={{
-      fontSize: "0.875rem",
-      fontWeight: 500,
-      padding: ".5rem",
-    }}
-  >
-    {featureCount} location{featureCount === 1 ? "" : "s"} in this project -
-    Draw Mode: {isDrawing ? "On" : "Off"}
-  </Typography>
-);
 
 /**
  * Count the number of features in the project extent feature collection
@@ -1039,6 +1014,27 @@ export const combineLineGeometries = features => {
 };
 
 /**
+ * Test the AGOL response JSON for errors. The API will return a 200
+ * response when a query fails.
+ * an error response looks like this:
+ * {
+ *   error: {
+ *      code: 400,
+ *      message: "",
+ *      details: ["'Invalid field: PROJECT_EXTENT_ID' parameter is invalid"],
+ *    },
+ * };
+ * @param {Object} jsonResponse - The response JSON from AGOL
+ * @return {Object} the response JSON, after logging an error if error
+ **/
+const handleAgolResponse = jsonResponse => {
+  if (jsonResponse?.error) {
+    console.error(`Error fetching geometry: ${JSON.stringify(jsonResponse)}`);
+  }
+  return jsonResponse;
+};
+
+/**
  * Fetch a CTN geosjon feature from ArcGIS Online based on it's project_extent_id
  * @param {String} projectExtentId - The unique ID of the feature to be queried
  * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
@@ -1046,8 +1042,8 @@ export const combineLineGeometries = features => {
  */
 export const queryCtnFeatureService = async function(projectExtentId) {
   const params = {
-    where: `PROJECT_EXTENT_ID=${projectExtentId}`,
-    outFields: "PROJECT_EXTENT_ID",
+    where: `CTN_SEGMENT_ID=${projectExtentId}`,
+    outFields: "CTN_SEGMENT_ID",
     geometryPrecision: 6,
     f: "pgeojson",
   };
@@ -1059,6 +1055,9 @@ export const queryCtnFeatureService = async function(projectExtentId) {
 
   return await fetch(url)
     .then(response => response.json())
+    .then(jsonResponse => {
+      return handleAgolResponse(jsonResponse);
+    })
     .catch(err => {
       console.log("Error fetching geometry: " + JSON.stringify(err));
       return null;
