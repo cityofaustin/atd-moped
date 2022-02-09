@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import {
   Checkbox,
   FormControl,
+  FormHelperText,
   Input,
   ListItemText,
   MenuItem,
@@ -49,6 +50,7 @@ const ProjectTeamRoleMultiselect = ({
   return (
     <FormControl className={classes.formControl}>
       <Select
+        style={{ minWidth: "8em" }}
         labelId="team-role-multiselect-label"
         id="team-role-multiselect"
         multiple
@@ -79,6 +81,7 @@ const ProjectTeamRoleMultiselect = ({
           </MenuItem>
         ))}
       </Select>
+      <FormHelperText>Required</FormHelperText>
     </FormControl>
   );
 };
