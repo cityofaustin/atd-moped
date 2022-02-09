@@ -238,7 +238,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
                 // otherwise render link to synchronize with knack
                 <>
                   <Link
-                    className={classes.fieldLabelText}
+                    id="projectKnackSyncLink"
+                    className={classes.knackFieldLabelText}
                     onClick={() => {
                       handleSync();
                     }}

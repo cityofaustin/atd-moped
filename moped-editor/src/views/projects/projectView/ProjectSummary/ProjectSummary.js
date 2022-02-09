@@ -58,6 +58,10 @@ const useStyles = makeStyles(theme => ({
   fieldLabelText: {
     width: "calc(100% - 2rem)",
   },
+  knackFieldLabelText: {
+    width: "calc(100% - 2rem)",
+    cursor: "pointer",
+  },
   fieldLabelTextSpan: {
     borderBottom: "1px dashed",
     borderBottomColor: theme.palette.text.secondary,
