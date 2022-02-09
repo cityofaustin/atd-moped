@@ -16,7 +16,6 @@ import { SIGNAL_COMPONENTS_QUERY } from "../../../queries/project";
 
 import {
   ADD_PROJECT,
-  UPDATE_NEW_PROJ_FEATURES,
 } from "../../../queries/project";
 
 import ProjectSaveButton from "./ProjectSaveButton";
@@ -100,7 +99,6 @@ const NewProjectView = () => {
    * Add Project Apollo Mutation
    */
   const [addProject] = useMutation(ADD_PROJECT);
-  const [updateFeatures] = useMutation(UPDATE_NEW_PROJ_FEATURES);
 
   /**
    * Timer Reference Object
@@ -176,34 +174,9 @@ const NewProjectView = () => {
       })
         // On success
         .then(response => {
-          // Destructure the data we need from the response
-          const {
-            project_id,
-            moped_proj_components,
-          } = response.data.insert_moped_project_one;
-
-          // if moped_proj_components exist, update features before setting project id
-          if (moped_proj_components[0]) {
-            // Retrieve the feature_ids that need to be updated
-            const featuresToUpdate = moped_proj_components[0].moped_proj_features_components.map(
-              featureComponent => featureComponent.moped_proj_feature.feature_id
-            );
-
-            // Persist the feature updates, we must.
-            updateFeatures({
-              variables: {
-                featureList: featuresToUpdate,
-                projectId: project_id,
-              },
-            })
-              .then(() => setNewProjectId(project_id))
-              .catch(err => {
-                alert(err);
-                setNewProjectId(project_id);
-              });
-          } else {
-            setNewProjectId(project_id);
-          }
+          // Capture the project ID, which will be used to redirect to the Project Summary page
+          const { project_id } = response.data.insert_moped_project_one;
+          setNewProjectId(project_id);
         })
         // If there is an error, we must show it...
         .catch(err => {

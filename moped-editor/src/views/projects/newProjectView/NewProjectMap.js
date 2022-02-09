@@ -16,7 +16,6 @@ import {
 
 import {
   combineLineGeometries,
-  countFeatures,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
@@ -37,7 +36,6 @@ import {
   useFeatureCollectionToFitBounds,
   useHoverLayer,
   useLayerSelect,
-  renderFeatureCount,
   useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
@@ -173,7 +171,7 @@ const handleSelectedFeatureUpdate = (
   setFeatureCollection
 ) => {
   if (
-    selectedFeature.properties.sourceLayer === "CTN" &&
+    selectedFeature.properties.sourceLayer === "ATD_ADMIN.CTN" &&
     !selectedFeature._isPresent
   ) {
     // CTN (aka line) features that are being added to the feature collection may be clipped.
@@ -264,8 +262,6 @@ const NewProjectMap = ({
   drawLines = null,
 }) => {
   const classes = useStyles();
-
-  const featureCount = countFeatures(featureCollection);
   const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
     featureCollection
   );
@@ -509,11 +505,11 @@ const NewProjectMap = ({
             }
             if (
               drawLines === true &&
-              sourceName === "Project_Component_Points_prototype"
+              sourceName === "ATD_ADMIN.CTN_Intersections"
             ) {
               return null;
             }
-            if (drawLines === false && sourceName === "CTN") {
+            if (drawLines === false && sourceName === "ATD_ADMIN.CTN") {
               return null;
             }
             return config.layerUrl ? (
@@ -568,9 +564,6 @@ const NewProjectMap = ({
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
       </ReactMapGL>
-
-      {/* Feature Count */}
-      {renderFeatureCount(featureCount, isDrawing)}
     </Box>
   );
 };
