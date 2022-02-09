@@ -174,7 +174,7 @@ const NewProjectView = () => {
       })
         // On success
         .then(response => {
-          // Destructure the data we need from the response
+          // Capture the project ID, which will be used to redirect to the Project Summary page
           const { project_id } = response.data.insert_moped_project_one;
           setNewProjectId(project_id);
         })
