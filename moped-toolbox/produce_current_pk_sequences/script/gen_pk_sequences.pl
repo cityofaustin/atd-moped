@@ -58,8 +58,6 @@ while (my $table = $query->fetchrow_hashref) {
 
   print "FREAK OUT: no pk in " . $table->{'table_name'}, "\n" unless $pk->{'key_column'};
 
-  next unless $pk->{'key_column'} && $pk->{'constraint_name'};
-
   #print Dumper $pk, "\n";
 
   my $sql = "select max(" . $pk->{'key_column'}. ") from " . $table->{'table_name'};
@@ -67,6 +65,7 @@ while (my $table = $query->fetchrow_hashref) {
   $query->execute();
   my ($max_value) = $query->fetchrow_array;
 
+  # for empty tables
   $max_value = 1 unless $max_value; 
 
   my $sql = "SELECT pg_get_expr(d.adbin, d.adrelid) AS default_value
@@ -79,9 +78,7 @@ while (my $table = $query->fetchrow_hashref) {
   my $query = $pg->prepare($sql);
   $query->execute($pk->{'table_schema'} . '.' . $pk->{'table_name'}, $pk->{'key_column'});
   my $result = $query->fetchrow_hashref;
-
   #print $result->{'default_value'}, "\n";
-
 
   $result->{'default_value'} =~ /nextval\('(\w+)\'::regclass/;
   my $sequence_name = $1;
@@ -89,6 +86,7 @@ while (my $table = $query->fetchrow_hashref) {
 
   my $sql = "SELECT pg_catalog.setval('public." . $sequence_name . "', " . $max_value . ", true);";
   print $sql, "\n";
+
   my $sql = "SELECT pg_catalog.setval('public." . $sequence_name . "', ?, true);";
   #print $sql, "\n";
   my $query = $pg->prepare($sql);
