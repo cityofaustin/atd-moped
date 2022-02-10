@@ -3650,6 +3650,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}
@@ -3681,6 +3682,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}
@@ -3712,6 +3714,7 @@
       - project_uuid
       - start_date
       - status_id
+      - status_name
       - timeline_id
       - updated_at
       filter: {}
