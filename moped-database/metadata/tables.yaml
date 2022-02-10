@@ -2452,6 +2452,13 @@
           name: moped_proj_notes
           schema: public
         column: project_id
+  - name: moped_proj_partners
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: moped_proj_partners
+          schema: public
+        column: project_id
   - name: moped_proj_personnel
     using:
       foreign_key_constraint_on:
