@@ -29,10 +29,10 @@ const useStyles = makeStyles({
   },
 });
 
-const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
+const ProjectSummaryMap = ({ projectFeatureCollection }) => {
   const classes = useStyles();
   const mapRef = useRef();
-  const featureCount = countFeatures(projectExtentGeoJSON);
+  const featureCount = countFeatures(projectFeatureCollection);
 
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler
@@ -46,7 +46,7 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
    */
   const [viewport, setViewport] = useFeatureCollectionToFitBounds(
     mapRef,
-    projectExtentGeoJSON
+    projectFeatureCollection
   );
 
   /**
@@ -81,7 +81,9 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
               The getCursor callback will receive isHovering: true when hover over features of these layers */
-        interactiveLayerIds={getSummaryMapInteractiveIds(projectExtentGeoJSON)}
+        interactiveLayerIds={getSummaryMapInteractiveIds(
+          projectFeatureCollection
+        )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
@@ -95,7 +97,8 @@ const ProjectSummaryMap = ({ projectExtentGeoJSON }) => {
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
         */}
-        {projectExtentGeoJSON && createSummaryMapLayers(projectExtentGeoJSON)}
+        {projectFeatureCollection &&
+          createSummaryMapLayers(projectFeatureCollection)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
       </ReactMapGL>

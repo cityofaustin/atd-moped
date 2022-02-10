@@ -159,7 +159,7 @@ const ProjectSummaryProjectECapris = ({
           <>
             <TextField
               fullWidth
-              id="moped-project-website"
+              id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
               value={eCapris}
@@ -183,7 +183,7 @@ const ProjectSummaryProjectECapris = ({
             text={
               (isValidNumber(eCapris) && (
                 <>
-                  <Typography variant={"span"} color={"primary"}>
+                  <Typography variant={"inherit"} color={"primary"}>
                     {eCapris}{" "}
                   </Typography>
                   <Link

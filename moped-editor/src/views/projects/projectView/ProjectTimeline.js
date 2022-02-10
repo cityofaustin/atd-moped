@@ -12,10 +12,12 @@ import {
   Select,
   MenuItem,
   Typography,
+  FormControl,
+  FormHelperText,
 } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon,
+  EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
@@ -38,7 +40,6 @@ import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import { IconButton } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 /**
@@ -212,16 +213,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         InputLabelProps={{
           shrink: true,
         }}
-        InputProps={{
-          endAdornment: (
-            <IconButton onClick={() => props.onChange(() => null)}>
-              <DeleteOutlineIcon />
-            </IconButton>
-          ),
-        }}
-        InputAdornmentProps={{
-          position: "start",
-        }}
       />
     );
   };
@@ -293,28 +284,33 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
     // Proceed normally and generate the drop-down
     return (
-      <Select id={props.name} value={props.value}>
-        {Object.keys(lookupValues).map(key => {
-          return (
-            <MenuItem
-              onChange={() => props.onChange(key)}
-              onClick={() => props.onChange(key)}
-              onKeyDown={e => handleKeyEvent(e)}
-              value={key}
-            >
-              {lookupValues[key]}
-            </MenuItem>
-          );
-        })}
-        <MenuItem
-          onChange={() => props.onChange("")}
-          onClick={() => props.onChange("")}
-          onKeyDown={e => handleKeyEvent(e)}
-          value=""
-        >
-          -
-        </MenuItem>
-      </Select>
+      <FormControl>
+        <Select id={props.name} value={props.value} style={{ minWidth: "8em" }}>
+          {Object.keys(lookupValues).map(key => {
+            return (
+              <MenuItem
+                onChange={() => props.onChange(key)}
+                onClick={() => props.onChange(key)}
+                onKeyDown={e => handleKeyEvent(e)}
+                value={key}
+              >
+                {lookupValues[key]}
+              </MenuItem>
+            );
+          })}
+          <MenuItem
+            onChange={() => props.onChange("")}
+            onClick={() => props.onChange("")}
+            onKeyDown={e => handleKeyEvent(e)}
+            value=""
+          >
+            -
+          </MenuItem>
+        </Select>
+        {props.name === "phase_name" && (
+          <FormHelperText>Required</FormHelperText>
+        )}
+      </FormControl>
     );
   };
 
@@ -383,21 +379,24 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    */
   const milestoneColumns = [
     {
-      title: "Milestone",
+      title: "Milestone name",
       field: "milestone_name",
       render: milestone => milestoneNameLookup[milestone.milestone_name],
       validate: milestone => !!milestone.milestone_name,
       editComponent: props => (
-        <Autocomplete
-          id={"milestone_name"}
-          name={"milestone_name"}
-          options={Object.keys(milestoneNameLookup)}
-          getOptionLabel={option => milestoneNameLookup[option]}
-          getOptionSelected={(option, value) => option === value}
-          value={props.value}
-          onChange={(event, value) => props.onChange(value)}
-          renderInput={params => <TextField {...params} />}
-        />
+        <FormControl style={{ width: "100%" }}>
+          <Autocomplete
+            id={"milestone_name"}
+            name={"milestone_name"}
+            options={Object.keys(milestoneNameLookup)}
+            getOptionLabel={option => milestoneNameLookup[option]}
+            getOptionSelected={(option, value) => option === value}
+            value={props.value}
+            onChange={(event, value) => props.onChange(value)}
+            renderInput={params => <TextField {...params} />}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
     },
     {
@@ -455,6 +454,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 data={data.moped_proj_phases}
                 // Action component customized as described in this gh-issue:
                 // https://github.com/mbrn/material-table/issues/2133
+                icons={{
+                  Edit: EditOutlinedIcon,
+                }}
                 components={{
                   EditRow: props => (
                     <MTableEditRow
@@ -695,6 +697,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
               <MaterialTable
                 columns={milestoneColumns}
                 data={data.moped_proj_milestones}
+                icons={{
+                  Edit: EditOutlinedIcon,
+                }}
                 components={{
                   EditRow: props => (
                     <MTableEditRow

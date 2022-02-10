@@ -1,8 +1,8 @@
 {
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
-  "licence": "CC0 1.0 Universal",
-  "version": "0.13.0",
+  "license": "CC0 1.0 Universal",
+  "version": "1.0.0",
   "homepage": "/moped",
   "private": false,
   "scripts": {
@@ -63,6 +63,7 @@
     "filepond-plugin-image-exif-orientation": "^1.0.3",
     "filepond-plugin-image-preview": "^3.1.4",
     "formik": "^2.1.5",
+    "graphql": "^15.8.0",
     "history": "^5.0.0",
     "html-react-parser": "^1.2.6",
     "lodash.foreach": "^4.5.0",

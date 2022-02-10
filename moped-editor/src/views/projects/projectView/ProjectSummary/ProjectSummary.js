@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import { createFeatureCollectionFromProjectFeatures } from "../../../../utils/mapHelpers";
+import { createProjectFeatureCollection } from "src/utils/projectComponentHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -23,6 +23,8 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
+import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
+import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
@@ -56,9 +58,16 @@ const useStyles = makeStyles(theme => ({
   fieldLabelText: {
     width: "calc(100% - 2rem)",
   },
+  knackFieldLabelText: {
+    width: "calc(100% - 2rem)",
+    cursor: "pointer",
+  },
   fieldLabelTextSpan: {
     borderBottom: "1px dashed",
     borderBottomColor: theme.palette.text.secondary,
+  },
+  fieldLabelTextSpanNoBorder: {
+    borderBottom: "inherit",
   },
   fieldLabelLink: {
     width: "calc(100% - 2rem)",
@@ -108,9 +117,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
-  const projectFeatureRecords = data?.moped_project[0]?.moped_proj_features;
-  const projectFeatureCollection = createFeatureCollectionFromProjectFeatures(
-    projectFeatureRecords
+  const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
+  const projectFeatureCollection = createProjectFeatureCollection(
+    projectComponents
   );
 
   const renderMap = () => {
@@ -124,7 +133,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       );
     } else {
       return (
-        <ProjectSummaryMap projectExtentGeoJSON={projectFeatureCollection} />
+        <ProjectSummaryMap
+          projectFeatureCollection={projectFeatureCollection}
+        />
       );
     }
   };
@@ -215,6 +226,25 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid container spacing={0}>
               <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkAssignmentID
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkOrders
                   classes={classes}
                   project={data?.moped_project?.[0]}
                   refetch={refetch}

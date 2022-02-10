@@ -1,17 +1,18 @@
 import React from "react";
 import { Box, Grid, Link, Typography } from "@material-ui/core";
-import { OpenInNew, Autorenew } from "@material-ui/icons";
+import { Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
  * update or an initial sync.
  * @returns string
  */
-const buildUrl = (scene, view, knackProjectId) => {
+const buildProjectUrl = (scene, view, knackProjectId) => {
   let url = `https://api.knack.com/v1/pages/scene_${scene}/views/view_${view}/records`;
   if (knackProjectId) {
     // existing record
@@ -28,17 +29,52 @@ const getHttpMethod = knackProjectId => {
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
+/**
+ * Function to map the signal IDs from a project object into an array and return the array length.
+ * @returns integer
+ */
+const getProjectSignals = project => {
+  const allProjectFeatures = project.moped_proj_components
+    .map(projectComponent => {
+      // for each component, extract feature geojson from each project feature (moped_proj_features.feature)
+      // every feature must have a feature.feature jsonb, but we'll nullish chain just to be safe
+      return projectComponent.moped_proj_features.map(
+        feature => feature?.feature
+      );
+    })
+    // then flatten this array of feature arrays
+    .flat()
+    // and filter any undefined components, which should never happen
+    .filter(feature => feature);
+  // now filter our features for only those with a `signal_id` property
+  const allProjectSignals = allProjectFeatures.filter(
+    feature => feature.properties?.signal_id
+  );
+  // and shape the object we need to render links and such
+  return allProjectSignals.map(signal => {
+    return {
+      signal_id: signal.properties.signal_id,
+      knack_id: signal.properties.id,
+    };
+  });
+};
+
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   project,
   refetch,
   snackbarHandle,
 }) => {
-  let knackEndpointUrl = buildUrl(
+  let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
-    process.env.REACT_APP_KNACK_DATA_TRACKER_VIEW,
-    project?.knackProjectId
+    process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW,
+    project?.knack_project_id
   );
+
+  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
+
+  // Array of signals in project
+  const signals = getProjectSignals(project);
 
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
@@ -56,157 +92,101 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * because if you update the project number field, even with the same, extant number, Knack returns an error.
    * @returns string
    */
-  const buildBody = () => {
+  const buildBody = signalIds => {
     let body = {};
 
-    const field_map = {
-      field_3998: "project_id",
-      field_3999: "project_name",
-      field_4000: "current_status",
-    };
+    const knackFieldsRegEx = /REACT_APP_KNACK_DATA_TRACKER_(\w+)_FIELD/;
+    const fieldMap = {};
 
-    Object.keys(field_map).forEach(element => {
-      if (project.currentKnackState[element] !== project[field_map[element]]) {
-        body[element] = project[field_map[element]];
-      }
+    Object.keys(process.env)
+      .filter(envVariable => envVariable.match(knackFieldsRegEx))
+      .map(envVariable => envVariable.match(knackFieldsRegEx))
+      .forEach(
+        regExResult =>
+          (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
+      );
+
+    Object.keys(fieldMap).forEach(element => {
+      body[element] = project[fieldMap[element]];
     });
-
+    // REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION contains the signalId connection field to the signals table
+    // it's ok if the signalIds array is empty
+    body[
+      process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
+    ] = signalIds;
     return JSON.stringify(body);
   };
-
-  const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   /**
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
   const handleSync = () => {
-    if (project.knack_project_id) {
-      // updating knack record
-      fetch(knackEndpointUrl, {
-        // Fetch will return a promise, allowing us to start a chain of .then() calls
-        method: "GET",
-        headers: buildHeaders,
+    // The following code is capabale of handling a "re-sync" to knack for a given project.
+    // Currently, our UI does not contain an element that allows a user to request a re-sync, but
+    // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
+    console.log("HTTP method: " + knackHttpMethod);
+    // POST (create) or PUT (update) a project record in Knack
+    const signalIds = signals.map(signal => signal.knack_id);
+    return fetch(knackProjectEndpointUrl, {
+      method: knackHttpMethod,
+      headers: buildHeaders,
+      body: buildBody(signalIds),
+    })
+      .then(response => response.json())
+      .then(result => {
+        if (result.errors) {
+          // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
+          throw result;
+        }
+        return result;
       })
-        .then(response => response.json()) // get the json payload, passing it the next step
-        .then(result => {
-          if (result.errors) {
-            // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-            // Reject the promise to fall through to the .catch() method
-            return Promise.reject(result);
-          } else {
-            // Successful HTTP request with meaningful results from Knack
-            project.currentKnackState = result; // this assignment operates on `project` which is defined in broader scope than this function
-            return fetch(knackEndpointUrl, {
-              // fetch returns a Promise for the next step
-              method: knackHttpMethod,
-              headers: buildHeaders,
-              body: buildBody(),
-            });
-          }
-        })
-        .then(response => response.json())
-        .then(result => {
-          if (result.errors) {
-            // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
-            return Promise.reject(result);
-          } else {
-            // Successful HTTP Update request with meaningful results from Knack
-            return Promise.resolve();
-          }
-        })
-        .then(() => refetch()) // ask the application to update its status from our graphql endpoint
-        .then(() => {
-          // End of the chain; advise the user of success
-          snackbarHandle(
-            true,
-            "Success: Project updated in Data Tracker",
-            "success"
-          );
-          return Promise.resolve();
-        })
-        .catch(error => {
-          // Failure, alert the user that we've encountered an error
-          console.error(error);
-          snackbarHandle(true, "Error: Data Tracker update failed.", "warning");
+      .then(knackRecord => {
+        // We've got an ID from the Knack endpoint for this project, so record it in our database
+        // This ID will not have changed is we were merely updating a project
+        mutateProjectKnackId({
+          variables: {
+            project_id: project.project_id,
+            knack_id: knackRecord.record.id,
+          },
         });
-    } else {
-      // creating new knack record execution branch
-      project.currentKnackState = {};
-      fetch(knackEndpointUrl, {
-        // Fetch will return a promise, which we'll use to start a chain of .then() steps
-        method: knackHttpMethod,
-        headers: buildHeaders,
-        body: buildBody(),
       })
-        .then(response => response.json()) // get the json payload and pass it along
-        .then(result => {
-          if (result.errors) {
-            // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID.
-            // Reject this promise so we fall through to the .catch() method
-            return Promise.reject(result);
-          }
-          return Promise.resolve(result); // pass result object onto next .then()
-        })
-        .then(knack_record =>
-          // We've got an ID from the Knack endpoint for this project, so record it in our database
-          mutateProjectKnackId({
-            variables: {
-              project_id: project.project_id,
-              knack_id: knack_record.record.id,
-            },
-          })
-        )
-        .then(() => refetch()) // ask the application to update its status from our graphql endpoint
-        .then(() => {
-          // End of the chain; advise the user of success
-          snackbarHandle(
-            true,
-            "Success: Project data pushed to Data Tracker",
-            "success"
-          );
-          return Promise.resolve();
-        })
-        .catch(error => {
-          // Failure, alert the user that we've encountered an error
-          console.error(error);
-          snackbarHandle(
-            true,
-            "Error: Data Tracker initial sync failed.",
-            "warning"
-          );
-        });
-    } // end of the creating new knack record branch
+      .then(() => refetch()) // ask the application to update its status from our graphql endpoint
+      .then(() => {
+        // End of the chain; advise the user of success
+        snackbarHandle(
+          true,
+          "Success: Project data synchronized with Data Tracker",
+          "success"
+        );
+      })
+      .catch(error => {
+        // Failure, alert the user that we've encountered an error
+        console.error(error);
+        snackbarHandle(true, "Error: Data Tracker sync failed.", "warning");
+      });
   };
 
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>
-          Data Tracker signal IDs
-        </Typography>
+        <Typography className={classes.fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
             text={
-              (project.knack_project_id && (
-                <Link
-                  href={
-                    "https://atd.knack.com/amd#projects/project-details/" +
-                    project.knack_project_id
-                  }
-                  target={"_blank"}
-                >
-                  {"View in Data Tracker"}{" "}
-                  <OpenInNew className={classes.linkIcon} />
-                </Link>
+              // if a project has been synced with Knack and has signals associated, link to signals
+              (project.knack_project_id && signals.length > 0 && (
+                <RenderSignalLink signals={signals} />
               )) || (
+                // otherwise render link to synchronize with knack
                 <>
                   <Link
-                    className={classes.fieldLabelText}
+                    id="projectKnackSyncLink"
+                    className={classes.knackFieldLabelText}
                     onClick={() => {
                       handleSync();
                     }}
                   >
-                    {"Synchronize"}
+                    {"Synchronize with Data Tracker"}
                     <Autorenew
                       viewBox={"0 -4 22 26"}
                       className={classes.syncLinkIcon}
@@ -216,7 +196,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
               )
             }
             classes={classes}
-            spanClassName={""}
+            spanClassName={classes.fieldLabelTextSpanNoBorder}
           />
         </Box>
       </Grid>

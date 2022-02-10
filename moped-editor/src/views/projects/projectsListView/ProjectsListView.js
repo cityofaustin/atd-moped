@@ -11,9 +11,7 @@ import GQLAbstract from "../../../libs/GQLAbstract";
 import GridTable from "../../../components/GridTable/GridTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 
-import {
- STATUS_QUERY,
-} from "../../../queries/project";
+import { STATUS_QUERY } from "../../../queries/project";
 
 // Styles
 const useStyles = makeStyles(theme => ({

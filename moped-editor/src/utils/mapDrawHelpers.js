@@ -82,7 +82,6 @@ export const LINE_MODES = [
   },
 ];
 
-
 const STROKE_COLOR = theme.palette.primary.main;
 const FILL_COLOR = theme.palette.primary.main;
 
@@ -295,7 +294,7 @@ export function useMapDrawTools(
   };
 
   /**
-   * Returns true if lineStringA has the same coordinates as lineStringB
+   * Returns true if featurePointA has the same coordinates as featurePointB
    * @param featurePointA - A point to compare
    * @param featurePointB - Another point to compare against
    * @return {boolean}
@@ -332,7 +331,7 @@ export function useMapDrawTools(
     (featureA?.geometry?.type ?? 1) === (featureB?.geometry?.type ?? 0);
 
   /**
-   * Add existing drawn points in the project extent feature collection to the draw UI so they are editable
+   * Add existing user drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
     ref => {
@@ -343,6 +342,7 @@ export function useMapDrawTools(
         );
 
         // Collect all the features in the map
+        // getFeatures() is a react-map-gl-draw function
         const featuresAlreadyInDrawMap = ref.getFeatures();
 
         // Retrieve only the features that are present in state, but not the map
@@ -453,6 +453,7 @@ export function useMapDrawTools(
   /**
    * Deletes whatever object is selected
    * https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#options
+   * onSelect is "a callback when clicking a position when selectable set to true"
    * @param {object} selected - Holds data about the selected feature
    */
   const onSelect = selected => {
@@ -505,7 +506,9 @@ export function useMapDrawTools(
         ...featureCollection.features
           .filter(
             // Keep the features that are not equal to featureIdToDelete
-            feature => get(feature, featureIdGetPath) !== featureIdToDelete
+            feature =>
+              !featureIdToDelete ||
+              get(feature, featureIdGetPath) !== featureIdToDelete
           )
           .filter(
             // Keep the features (points or lines) that are not duplicates
@@ -517,7 +520,6 @@ export function useMapDrawTools(
           ),
       ],
     };
-
     // Update our state
     setFeatureCollection(updatedFeatureCollection);
   };

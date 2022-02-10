@@ -28,7 +28,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           }
         ]
       }
-      order_by: {updated_at: desc_nulls_last}
+      order_by: { updated_at: desc_nulls_last }
     ) {
       project_id
       project_name
@@ -50,11 +50,13 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        feature_id
-        location
+      moped_proj_components(where: { status_id: { _eq: 1 } }) {
+        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+          feature_id
+          feature
+        }
       }
-      moped_proj_funding (where: {funding_status_id : { _neq: 0 } }) {
+      moped_proj_funding(where: { funding_status_id: { _neq: 0 } }) {
         moped_fund_source {
           funding_source_name
         }

@@ -21,10 +21,8 @@ export const ADD_PROJECT = gql`
         completed
       }
       moped_proj_components {
-        moped_proj_features_components {
-          moped_proj_feature {
-            feature_id
-          }
+        moped_proj_features {
+          feature_id
         }
       }
     }
@@ -50,10 +48,12 @@ export const SUMMARY_QUERY = gql`
       status_id
       contractor
       purchase_order_number
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
-        feature_id
-        project_id
-        location
+      work_assignment_id
+      moped_proj_components(where: { status_id: { _eq: 1 } }) {
+        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+          feature_id
+          feature
+        }
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
@@ -99,7 +99,7 @@ export const SUMMARY_QUERY = gql`
       phase_start
       phase_end
     }
-    moped_entity {
+    moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
     }
@@ -396,20 +396,6 @@ export const ADD_PROJECT_MILESTONE = gql`
   }
 `;
 
-export const UPSERT_PROJECT_EXTENT = gql`
-  mutation UpsertProjectExtent($upserts: [moped_proj_features_insert_input!]!) {
-    insert_moped_proj_features(
-      objects: $upserts
-      on_conflict: {
-        constraint: moped_proj_features_pkey
-        update_columns: status_id
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(
@@ -546,79 +532,10 @@ export const PROJECT_ARCHIVE = gql`
   }
 `;
 
-export const PROJECT_CLEAR_MAP_DATA_TEMPLATE = `mutation ClearProjectMapData($projectId: Int!) {
-      update_moped_proj_features(
-        where: { project_id: { _eq: $projectId } }
-        _set: {
-          status_id: 0
-        }
-      ) {
-        affected_rows
-      }
-      insert_moped_proj_features(objects:[
-        {
-          project_id: $projectId,
-          location: {
-              id: "RANDOM_FEATURE_ID",
-              type: "Feature",
-              geometry: {
-                type: "Point",
-                coordinates: [-97.74280552637893, 30.26807489857954],
-              },
-              properties: {
-                renderType: "Point",
-                sourceLayer: "drawnByUser",
-                PROJECT_EXTENT_ID: "RANDOM_FEATURE_ID",
-              },
-            },
-          status_id: 1
-        }
-      ]) {
-        affected_rows
-      }
-    }
-`;
-
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
-    ) {
-      project_component_id
-      project_id
-      component_id
-      name
-      description
-      moped_components {
-        component_type: component_name
-        component_subtype
-        line_representation
-      }
-      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
-        status_id
-        moped_subcomponent {
-          subcomponent_id
-          subcomponent_name
-        }
-      }
-      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-        name
-        moped_proj_component_id
-        status_id
-        moped_proj_feature {
-          location
-          feature_id
-          status_id
-        }
-      }
-    }
-  }
-`;
-
-export const COMPONENT_DETAILS_QUERY = gql`
-  query GetComponentDetails($componentId: Int!) {
-    moped_proj_components(
-      where: { project_component_id: { _eq: $componentId } }
     ) {
       component_id
       description
@@ -632,26 +549,19 @@ export const COMPONENT_DETAILS_QUERY = gql`
         component_subtype
         line_representation
       }
-      moped_proj_features_components(where: { status_id: { _eq: 1 } }) {
-        project_features_components_id
-        moped_proj_features_id
-        status_id
-        moped_proj_feature {
-          location
-          feature_id
-          status_id
-          project_id
-        }
-      }
       moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
+        status_id
         component_subcomponent_id
         project_component_id
         subcomponent_id
-        status_id
         moped_subcomponent {
           subcomponent_id
           subcomponent_name
         }
+      }
+      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+        feature
+        feature_id
       }
     }
     moped_subcomponents {
@@ -709,34 +619,9 @@ export const DELETE_MOPED_COMPONENT = gql`
     ) {
       affected_rows
     }
-    update_moped_proj_features_components(
-      where: {
-        moped_proj_component: {
-          project_component_id: { _eq: $projComponentId }
-        }
-      }
-      _set: { status_id: 0 }
-    ) {
-      affected_rows
-    }
     update_moped_proj_features(
-      where: {
-        moped_proj_features_components: {
-          moped_proj_component_id: { _eq: $projComponentId }
-        }
-      }
+      where: { project_component_id: { _eq: $projComponentId } }
       _set: { status_id: 0 }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const UPDATE_NEW_PROJ_FEATURES = gql`
-  mutation UpdateNewProjectFeatures($featureList: [Int!]!, $projectId: Int!) {
-    update_moped_proj_features(
-      where: { feature_id: { _in: $featureList } }
-      _set: { project_id: $projectId }
     ) {
       affected_rows
     }
@@ -931,6 +816,31 @@ export const PROJECT_CLEAR_PURCHASE_ORDER_NUMBER = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { purchase_order_number: null }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_WORK_ASSIGNMENT_ID = gql`
+  mutation UpdateWorkAssignmentID(
+    $projectId: Int!
+    $work_assignment_id: String!
+  ) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { work_assignment_id: $work_assignment_id }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
+  mutation UpdateWorkAssignmentID($projectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { work_assignment_id: null }
     ) {
       affected_rows
     }

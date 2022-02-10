@@ -4,8 +4,6 @@ import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { makeStyles } from "@material-ui/core/styles";
 
-import KnackSync from "./KnackSync";
-
 import {
   Breadcrumbs,
   Link,
@@ -180,16 +178,6 @@ const ProjectView = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
-  };
-
-  /**
-   * Function which can be passed to child component to allow it to invoke a snackbar which
-   * will persist even after that child component has been deconstructed or otherwise hidden.
-   */
-  const handleSnackbarOpen = snackbarState => {
-    let snackbarStateCopy = { ...snackbarState };
-    snackbarStateCopy.open = true;
-    setSnackbarState(snackbarStateCopy);
   };
 
   /**
@@ -469,13 +457,6 @@ const ProjectView = () => {
                             horizontal: "center",
                           }}
                         >
-                          <KnackSync
-                            project={data.moped_project[0]}
-                            closeHandler={handleMenuClose}
-                            snackbarHandler={handleSnackbarOpen}
-                            refetch={refetch}
-                          />
-
                           <MenuItem
                             onClick={handleRenameClick}
                             className={classes.projectOptionsMenuItem}
