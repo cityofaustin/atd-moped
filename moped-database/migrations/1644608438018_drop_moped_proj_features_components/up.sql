@@ -1,0 +1,1 @@
+drop table moped_proj_features_components;
