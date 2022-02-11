@@ -19,7 +19,7 @@ const RenderSignalLink = ({ signals }) => {
         <React.Fragment key={signal.signal_id}>
           {signal?.knack_id ? (
             <Link
-              href={`https://atd.knack.com/amd#projects/signal-details/${signal.knack_id}`}
+              href={`https://atd.knack.com/amd#signals/signal-details/${signal.knack_id}`}
               target="_blank"
               rel="noopener noreferrer"
             >
