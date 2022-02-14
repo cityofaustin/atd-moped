@@ -2289,14 +2289,18 @@
         - phase_start
         - completed_by_user_id
         - completion_percentage
-        - phase_priority
+        - phase_id
         - phase_order
+        - phase_priority
         - project_id
         - project_phase_id
         - started_by_user_id
+        - status_id
+        - subphase_id
         - phase_description
         - phase_name
         - phase_status
+        - subphase_name
         - date_added
       enable_manual: false
     retry_conf:
