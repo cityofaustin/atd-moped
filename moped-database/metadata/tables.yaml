@@ -1247,39 +1247,6 @@
       - subproject_status
       filter: {}
       check: null
-  event_triggers:
-  - name: activity_log_moped_proj_financials
-    definition:
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - budget_available
-        - budget_previous
-        - budget_total
-        - expenses_previous
-        - expenses_total
-        - expenses_ytd
-        - financials_id
-        - project_id
-        - ecapris_subproject_id
-        - primary_funding_source
-        - subproject_name
-        - subproject_status
-        - last_updated
-      enable_manual: false
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - name: MOPED_API_EVENT_NAME
-      value: activity_log
 - table:
     name: moped_proj_fiscal_years
     schema: public
