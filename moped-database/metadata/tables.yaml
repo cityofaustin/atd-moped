@@ -1830,8 +1830,11 @@
       update:
         columns:
         - added_by
+        - added_by_user_id
         - project_id
         - project_note_id
+        - project_note_type
+        - status_id
         - project_note
         - date_created
       enable_manual: false
