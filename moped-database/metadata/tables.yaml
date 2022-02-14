@@ -824,6 +824,32 @@
       - status_id
       filter: {}
       check: {}
+  event_triggers:
+  - name: activity_log_moped_proj_components
+    definition:
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - component_id
+        - project_component_id
+        - project_id
+        - status_id
+        - description
+        - name
+      enable_manual: false
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - name: MOPED_API_EVENT_NAME
+      value: activity_log
 - table:
     name: moped_proj_components_subcomponents
     schema: public
