@@ -1952,6 +1952,7 @@
         - entity_id
         - project_id
         - proj_partner_id
+        - status_id
         - partner_name
         - date_added
       enable_manual: false
