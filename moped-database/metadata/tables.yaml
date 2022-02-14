@@ -2824,6 +2824,7 @@
         - is_scanned
         - created_by
         - file_size
+        - file_type
         - project_file_id
         - project_id
         - api_response
