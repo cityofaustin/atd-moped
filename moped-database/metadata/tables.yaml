@@ -2628,23 +2628,34 @@
       update:
         columns:
         - capitally_funded
+        - is_retired
         - end_date
         - start_date
         - added_by
+        - milestone_id
         - project_id
         - project_importance
         - project_length
         - project_order
+        - project_sponsor
+        - status_id
         - timeline_id
+        - task_order
+        - ecapris_subproject_id
+        - contractor
         - current_phase
         - current_status
-        - ecapris_subproject_id
         - fiscal_year
+        - knack_project_id
         - project_description
         - project_description_public
         - project_name
         - project_priority
+        - project_website
+        - purchase_order_number
+        - work_assignment_id
         - date_added
+        - updated_at
         - project_uuid
       enable_manual: false
     retry_conf:
