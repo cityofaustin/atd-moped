@@ -3018,8 +3018,10 @@
       update:
         columns:
         - added_by
+        - id
         - project_id
         - project_type_id
+        - status_id
         - date_added
       enable_manual: false
     retry_conf:
