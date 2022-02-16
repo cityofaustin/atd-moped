@@ -11,18 +11,21 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
+              status_id: {_eq: 1}
             }
             status_id: { _is_null: true }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
+              status_id: {_eq: 1}
             }
             status_id: { _neq: 6 }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
+              status_id: {_eq: 1}
             }
             status_id: { _neq: 3 }
           }
