@@ -2,7 +2,14 @@ import React from "react";
 import Link from "@material-ui/core/Link";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 
-const ExternalLink = ({ url, text, linkColor, underline }) => {
+const ExternalLink = ({
+  url,
+  text,
+  linkColor,
+  underline,
+  iconStyle = { fontSize: 16 },
+}) => {
+  console.log(iconStyle);
   return (
     <span>
       {!!text ? (
@@ -14,7 +21,7 @@ const ExternalLink = ({ url, text, linkColor, underline }) => {
           underline={underline ?? "hover"}
         >
           {text}
-          <OpenInNewIcon style={{ fontSize: 16 }} />
+          <OpenInNewIcon className={iconStyle} />
         </Link>
       ) : (
         <span>-</span>

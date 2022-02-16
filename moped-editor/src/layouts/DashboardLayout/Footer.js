@@ -9,6 +9,12 @@ const useStyles = makeStyles(theme => ({
     paddingLeft: theme.spacing(4),
     paddingBottom: theme.spacing(2),
   },
+  iconStyle: {
+    fontSize: "14px",
+    marginLeft: "2px",
+    position: "relative",
+    bottom: "-3px",
+  },
 }));
 
 const Footer = () => {
@@ -16,11 +22,12 @@ const Footer = () => {
   return (
     <div className={classes.root}>
       <Typography variant="caption" color="textSecondary">
-        Moped {" "}
+        Moped{" "}
         <ExternalLink
           text={`v${pckg.version}`}
           url={`https://github.com/cityofaustin/atd-moped/releases/tag/v${pckg.version}`}
           linkColor="inherit"
+          iconStyle={classes.iconStyle}
         />
       </Typography>
     </div>
