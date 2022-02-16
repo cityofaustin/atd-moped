@@ -1,12 +1,12 @@
 import { gql } from "@apollo/client";
 
-// Status ID 6 is archived (soft deleted)
 // Status ID 3 is cancelled
 
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
       where: {
+        is_retired: { _neq: true }
         _or: [
           {
             moped_proj_components: {
@@ -14,13 +14,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
               status_id: {_eq: 1}
             }
             status_id: { _is_null: true }
-          }
-          {
-            moped_proj_components: {
-              moped_components: { component_name: { _ilike: "signal" } }
-              status_id: {_eq: 1}
-            }
-            status_id: { _neq: 6 }
           }
           {
             moped_proj_components: {
