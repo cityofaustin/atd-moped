@@ -57,8 +57,8 @@ const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
   navStyle: {
     position: "absolute",
-    bottom: "3rem",
-    right: "1rem",
+    bottom: "6rem",
+    right: "3rem",
   },
   mapBox: {
     padding: 25,
@@ -121,7 +121,7 @@ const useStyles = makeStyles(theme => ({
   },
   speedDial: {
     right: "3.5rem !important",
-    bottom: "4.5rem !important",
+    bottom: "1.7rem !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
