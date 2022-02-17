@@ -33,6 +33,8 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = () => {
   console.log(process.env.NODE_ENV);
+  console.log(process.env.REACT_APP_HASURA_ENV);
+  console.log(process.env.APP_ENVIRONMENT);
   const classes = useStyles();
   const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
