@@ -14,6 +14,7 @@ import {
   MenuItem,
   makeStyles,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
@@ -100,6 +101,12 @@ const TopBar = ({ className, onOpen, ...rest }) => {
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
+      {process.env.REACT_APP_HASURA_ENV === "staging" && (
+        // If in staging environment, display info alert
+        <Alert severity="info">
+          Welcome to Moped Staging. This environment is for testing purposes.
+        </Alert>
+      )}
       <Toolbar>
         <RouterLink to="/moped">
           <Logo />
@@ -145,7 +152,7 @@ const TopBar = ({ className, onOpen, ...rest }) => {
             open={Boolean(avatarAnchorEl)}
             onClose={handleAvatarClose}
             anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-            transformOrigin={{ vertical: 'top', horizontal: 'right'}}
+            transformOrigin={{ vertical: "top", horizontal: "right" }}
             getContentAnchorEl={null}
           >
             <MenuItem

@@ -17,7 +17,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flex: "1 1 auto",
     overflow: "hidden",
-    paddingTop: 64,
+    // If in staging environment, add extra padding
+    // to make room for staging environment info alert
+    paddingTop: process.env.REACT_APP_HASURA_ENV === "staging" ? 114 : 64,
   },
   contentContainer: {
     display: "flex",
@@ -32,9 +34,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const DashboardLayout = () => {
-  console.log(process.env.NODE_ENV);
-  console.log(process.env.REACT_APP_HASURA_ENV);
-  console.log(process.env.APP_ENVIRONMENT);
   const classes = useStyles();
   const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
