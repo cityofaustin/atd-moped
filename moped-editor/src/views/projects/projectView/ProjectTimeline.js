@@ -742,6 +742,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       {
                         project_id: projectId,
                         status_id: 1,
+                        completed: false,
                       },
                       newData
                     );
