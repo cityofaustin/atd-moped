@@ -222,7 +222,7 @@ const SignalProjectTable = () => {
           return (
             <Typography
               className={classes.tableTypography}
-              style={{ maxWidth: "255px" }}
+              style={{ maxWidth: "155px" }}
             >
               {entry.project_types.map(t => typeDict[t]).join(", ")}
             </Typography>
