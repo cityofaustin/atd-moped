@@ -508,36 +508,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_project_roles: {
-    label: "",
-    fields: {
-      project_role_name: {
-        icon: "",
-        label: "",
-        type: "text",
-      },
-      project_role_id: {
-        icon: "",
-        label: "Role",
-        type: "int4",
-      },
-      date_added: {
-        icon: "",
-        label: "",
-        type: "timestamptz",
-      },
-      active_role: {
-        icon: "",
-        label: "",
-        type: "bool",
-      },
-      role_order: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-    },
-  },
   moped_status: {
     label: "",
     fields: {
