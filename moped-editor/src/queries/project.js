@@ -279,6 +279,7 @@ export const TIMELINE_QUERY = gql`
 
 export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
+    $phase_description: String
     $is_current_phase: Boolean
     $phase_start: date = null
     $phase_end: date = null
@@ -290,6 +291,7 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
       _set: {
+        phase_description: $phase_description
         is_current_phase: $is_current_phase
         phase_start: $phase_start
         phase_end: $phase_end
@@ -368,6 +370,7 @@ export const ADD_PROJECT_PHASE = gql`
     insert_moped_proj_phases(objects: $objects) {
       returning {
         phase_name
+        phase_description
         phase_start
         phase_end
         project_phase_id
@@ -376,7 +379,6 @@ export const ADD_PROJECT_PHASE = gql`
         completion_percentage
         completed
         status_id
-        phase_description
       }
     }
   }
