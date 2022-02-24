@@ -327,6 +327,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
+      title: "Description",
+      field: "phase_description",
+    },
+    {
       title: "Sub-phase name",
       field: "subphase_name",
       lookup: subphaseNameLookup,
@@ -337,6 +341,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           data={data}
         />
       ),
+    },
+    {
+      title: "Description",
+      field: "subphase_description",
     },
     {
       title: "Start date",
@@ -404,22 +412,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       field: "milestone_description",
     },
     {
-      title: "Completion estimate",
-      field: "milestone_estimate",
-      render: rowData =>
-        rowData.milestone_estimate
-          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
-          : undefined,
-      editComponent: props => (
-        <DateFieldEditComponent
-          {...props}
-          name="milestone_estimate"
-          label="Completion estimate"
-        />
-      ),
-    },
-    {
-      title: "Date completed",
+      title: "Date",
       field: "milestone_end",
       render: rowData =>
         rowData.milestone_end

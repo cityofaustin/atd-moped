@@ -19,6 +19,8 @@ export const ADD_PROJECT = gql`
         status_id
         completion_percentage
         completed
+        phase_description
+        subphase_description
       }
       moped_proj_components {
         moped_proj_features {
@@ -98,6 +100,8 @@ export const SUMMARY_QUERY = gql`
       project_id
       phase_start
       phase_end
+      phase_description
+      subphase_description
     }
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
@@ -250,6 +254,8 @@ export const TIMELINE_QUERY = gql`
       phase_end
       subphase_name
       subphase_id
+      phase_description
+      subphase_description
     }
     moped_milestones(where: { milestone_id: { _gt: 0 } }) {
       milestone_id
@@ -303,6 +309,8 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       subphase_id
       subphase_name
       is_current_phase
+      phase_description
+      subphase_description
     }
   }
 `;
@@ -372,6 +380,8 @@ export const ADD_PROJECT_PHASE = gql`
         completion_percentage
         completed
         status_id
+        phase_description
+        subphase_description
       }
     }
   }
