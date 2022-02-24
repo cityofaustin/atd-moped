@@ -207,11 +207,6 @@ export const ProjectActivityLogTableMaps = {
         label: "End Date",
         type: "date",
       },
-      days_left: {
-        icon: "",
-        label: "Days Left",
-        type: "int4",
-      },
       project_id: {
         icon: "",
         label: "Project ID",
@@ -252,30 +247,60 @@ export const ProjectActivityLogTableMaps = {
         label: "Date Added",
         type: "timestamptz",
       },
-      milestone_owner_id: {
-        icon: "",
-        label: "Owner ID",
-        type: "int4",
-      },
-      project_timeline_id: {
-        icon: "",
-        label: "Timeline ID",
-        type: "int4",
-      },
       milestone_privacy: {
         icon: "",
         label: "Privacy Flag",
         type: "bool",
       },
-      milestone_length: {
-        icon: "",
-        label: "Length",
-        type: "int4",
-      },
       milestone_start: {
         icon: "",
         label: "Start Date",
         type: "date",
+      },
+      completion_percentage: {
+        icon: "",
+        label: "Completion Percentage",
+        type: "integer",
+      },
+      milestone_status: {
+        icon: "",
+        label: "Milestone Status",
+        type: "text",
+      },
+      milestone_priority: {
+        icon: "",
+        label: "Milestone Priority",
+        type: "integer",
+      },
+      milestone_date_type: {
+        icon: "",
+        label: "Milestone Date Type",
+        type: "text",
+      },
+      milestone_related_phase_id: {
+        icon: "",
+        label: "Milestone Related Phase ID",
+        type: "integer",
+      },
+      started_by_user_id: {
+        icon: "",
+        label: "Started by User ID",
+        type: "integer",
+      },
+      completed_by_user_id: {
+        icon: "",
+        label: "Completed by User ID",
+        type: "integer",
+      },
+      milestone_estimate: {
+        icon: "",
+        label: "Milestone Estimate",
+        type: "timestampz",
+      },
+      status_id: {
+        icon: "",
+        label: "Status ID",
+        type: "integer",
       },
     },
   },
