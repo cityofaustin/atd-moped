@@ -419,7 +419,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_partners: {
     label: "Project Partner",
     fields: {
@@ -455,7 +454,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_personnel: {
     label: "Project Personnel",
     fields: {
@@ -515,7 +513,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_phases: {
     label: "Project Phases",
     fields: {
@@ -601,7 +598,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_sponsors: {
     label: "Project Sponsors",
     fields: {
@@ -697,7 +693,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_status: {
     label: "",
     fields: {
@@ -808,7 +803,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_categories: {
     label: "Project Category",
     fields: {
@@ -839,7 +833,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-
   moped_proj_components: {
     label: "Project Component",
     fields: {
