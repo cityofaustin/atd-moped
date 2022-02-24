@@ -327,10 +327,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
-      title: "Description",
-      field: "phase_description",
-    },
-    {
       title: "Sub-phase name",
       field: "subphase_name",
       lookup: subphaseNameLookup,
@@ -344,7 +340,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     },
     {
       title: "Description",
-      field: "subphase_description",
+      field: "phase_description",
     },
     {
       title: "Start date",
