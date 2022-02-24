@@ -508,26 +508,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_workgroup: {
-    label: "",
-    fields: {
-      workgroup_name: {
-        icon: "",
-        label: "",
-        type: "text",
-      },
-      workgroup_id: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-      date_added: {
-        icon: "",
-        label: "",
-        type: "timestamptz",
-      },
-    },
-  },
   moped_proj_categories: {
     label: "Project Category",
     fields: {
