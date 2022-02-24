@@ -382,6 +382,11 @@ export const ProjectActivityLogTableMaps = {
         label: "Project ID",
         type: "int4",
       },
+      status_id: {
+        icon: "",
+        label: "Status ID",
+        type: "integer",
+      },
     },
   },
   moped_proj_personnel: {
