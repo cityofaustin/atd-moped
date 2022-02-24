@@ -19,7 +19,6 @@ export const ADD_PROJECT = gql`
         status_id
         completion_percentage
         completed
-        phase_description
       }
       moped_proj_components {
         moped_proj_features {
@@ -99,7 +98,6 @@ export const SUMMARY_QUERY = gql`
       project_id
       phase_start
       phase_end
-      phase_description
     }
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
