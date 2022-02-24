@@ -569,6 +569,10 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+  moped_proj_funding: {
+  },
+  moped_project_types: {
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
