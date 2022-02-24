@@ -508,31 +508,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_status: {
-    label: "",
-    fields: {
-      status_id: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-      status_priority: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-      status_flag: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-      status_name: {
-        icon: "",
-        label: "",
-        type: "text",
-      },
-    },
-  },
   moped_users: {
     label: "",
     fields: {
