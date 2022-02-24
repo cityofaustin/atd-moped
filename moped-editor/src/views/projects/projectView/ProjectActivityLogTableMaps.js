@@ -551,12 +551,6 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_components: {
     label: "Project Component",
     fields: {
-      // This should be renamed to project_id
-      moped_project_id: {
-        icon: "",
-        label: "Project ID",
-        data_type: "int4",
-      },
       project_id: {
         icon: "",
         label: "Project ID",
@@ -567,40 +561,25 @@ export const ProjectActivityLogTableMaps = {
         label: "Component ID",
         data_type: "int4",
       },
-      component_length: {
+      component_id: {
         icon: "",
-        label: "Length",
-        data_type: "numeric",
+        label: "Component ID",
+        data_type: "integer",
       },
-      component_notes: {
+      name: {
         icon: "",
-        label: "Note",
+        label: "Name",
         data_type: "text",
       },
-      component_unique_id: {
+      description: {
         icon: "",
-        label: "Unique ID",
+        label: "Description",
         data_type: "text",
       },
-      component_unique_id_code: {
+      status_id: {
         icon: "",
-        label: "Unique ID Code",
-        data_type: "text",
-      },
-      date_added: {
-        icon: "",
-        label: "Date Added",
-        data_type: "timestamptz",
-      },
-      moped_proj_component_id: {
-        icon: "",
-        label: "ID",
-        data_type: "int4",
-      },
-      added_by: {
-        icon: "",
-        label: "Added By",
-        data_type: "int4",
+        label: "Status ID",
+        data_type: "integer",
       },
     },
   },
