@@ -149,51 +149,6 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_proj_fiscal_years: {
-    label: "Fiscal Year",
-    fields: {
-      fiscal_year_name: {
-        icon: "",
-        label: "Name",
-        type: "text",
-      },
-      fiscal_year_start: {
-        icon: "",
-        label: "Start",
-        type: "date",
-      },
-      fiscal_year_end: {
-        icon: "",
-        label: "End",
-        type: "date",
-      },
-      budget_total: {
-        icon: "",
-        label: "Total Budget",
-        type: "int4",
-      },
-      expenses_total: {
-        icon: "",
-        label: "Total Expenses",
-        type: "int4",
-      },
-      budget_available_at_end: {
-        icon: "",
-        label: "Budget Available At End",
-        type: "int4",
-      },
-      project_id: {
-        icon: "",
-        label: "",
-        type: "int4",
-      },
-      date_added: {
-        icon: "",
-        label: "Date Added",
-        type: "timestamptz",
-      },
-    },
-  },
   moped_proj_fund_source: {
     label: "Fund Source",
     fields: {
