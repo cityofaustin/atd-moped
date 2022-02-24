@@ -97,11 +97,6 @@ export const ProjectActivityLogTableMaps = {
         label: "Added by",
         data_type: "integer",
       },
-      project_extent_geojson: {
-        icon: "",
-        label: "Extent GeoJson Data",
-        data_type: "jsonb",
-      },
     },
   },
   moped_proj_entities: {
