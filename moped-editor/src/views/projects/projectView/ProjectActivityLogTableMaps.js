@@ -312,11 +312,6 @@ export const ProjectActivityLogTableMaps = {
         label: "Added By",
         type: "bpchar",
       },
-      comm_id: {
-        icon: "",
-        label: "Comm ID",
-        type: "int4",
-      },
       project_id: {
         icon: "",
         label: "Project ID",
@@ -336,6 +331,21 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Note",
         type: "text",
+      },
+      status_id: {
+        icon: "",
+        label: "Status ID",
+        type: "integer",
+      },      
+      added_by_user_id: {
+        icon: "",
+        label: "Added by User ID",
+        type: "integer",
+      },
+      project_note_type: {
+        icon: "",
+        label: "Project Note Type",
+        type: "integer",
       },
     },
   },
