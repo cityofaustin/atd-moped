@@ -97,6 +97,61 @@ export const ProjectActivityLogTableMaps = {
         label: "Added by",
         data_type: "integer",
       },
+      is_retired: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      milestone_id: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      status_id: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      updated_at: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      contractor: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      project_sponsor: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      project_website: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      knack_project_id: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      purchase_order_number: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      task_order: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
+      work_assignment_id: {
+        icon: "",
+        label: "",
+        data_type: "",
+      },
     },
   },
   moped_proj_entities: {
