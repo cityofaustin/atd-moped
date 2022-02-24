@@ -531,6 +531,21 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         type: "int4",
       },
+      status_id: {
+        icon: "",
+        label: "Status ID",
+        type: "integer",
+      }
+      subphase_name: {
+        icon: "",
+        label: "Subphase Name",
+        type: "text",
+      }
+      subphase_id: {
+        icon: "",
+        label: "Subphase ID",
+        type: "integer",
+      }
     },
   },
   moped_proj_components: {
