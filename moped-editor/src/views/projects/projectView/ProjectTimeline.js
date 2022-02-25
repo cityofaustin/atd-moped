@@ -408,7 +408,22 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       field: "milestone_description",
     },
     {
-      title: "Date",
+      title: "Completion estimate",
+      field: "milestone_estimate",
+      render: rowData =>
+        rowData.milestone_estimate
+          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
+          : undefined,
+      editComponent: props => (
+        <DateFieldEditComponent
+          {...props}
+          name="milestone_estimate"
+          label="Completion estimate"
+        />
+      ),
+    },
+    {
+      title: "Date completed",
       field: "milestone_end",
       render: rowData =>
         rowData.milestone_end
