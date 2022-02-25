@@ -659,6 +659,69 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_funding: {
+    label: "Moped Project Funding",
+    fields: {
+      proj_funding_id: {
+        icon: "",
+        label: "Project Funding ID",
+        data_type: "integer",
+      },
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "integer",
+      },
+      date_added: {
+        icon: "",
+        label: "Date Added",
+        data_type: "timestamptz",
+      },
+      added_by: {
+        icon: "",
+        label: "Added By",
+        data_type: "integer",
+      },
+      funding_source_id: {
+        icon: "",
+        label: "Funding Source ID",
+        data_type: "integer",
+      },
+      funding_program_id: {
+        icon: "",
+        label: "Funding Program ID",
+        data_type: "integer",
+      },
+      funding_amount: {
+        icon: "",
+        label: "Funding Amount",
+        data_type: "integer",
+      },
+      fund_dept_unit: {
+        icon: "",
+        label: "Fund Department Unit",
+        data_type: "text",
+      },
+      funding_description: {
+        icon: "",
+        label: "Funding Description",
+        data_type: "text",
+      },
+      funding_status_id: {
+        icon: "",
+        label: "Funding Status ID",
+        data_type: "integer",
+      },
+      fund: {
+        icon: "",
+        label: "Fund",
+        data_type: "jsonb",
+      },
+      dept_unit: {
+        icon: "",
+        label: "Department Unit",
+        data_type: "jsonb",
+      },
+    },
   },
   moped_project_types: {
   },
