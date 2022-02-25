@@ -96,6 +96,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Added by",
         data_type: "integer",
+        lookup: {
+          table: "moped_users",
+          fieldLabel: "user_id",
+          fieldValues: ["first_name", "last_name"],
+        },
       },
       is_retired: {
         icon: "",
@@ -106,6 +111,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Milestone ID",
         data_type: "integer",
+        lookup: {
+          table: "moped_proj_milestones",
+          fieldLabel: "project_milestone_id",
+          fieldValues: ["milestone_name"],
+        },
       },
       status_id: {
         icon: "",
