@@ -651,6 +651,11 @@ export const ProjectActivityLogTableMaps = {
         label: "Marked Deleted",
         data_type: "bool",
       },
+      file_type: {
+        icon: "",
+        label: "File Type",
+        data_type: "integer",
+      },
     },
   },
   moped_proj_funding: {
