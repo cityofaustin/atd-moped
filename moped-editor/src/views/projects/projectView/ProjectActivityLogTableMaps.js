@@ -724,6 +724,39 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_project_types: {
+    label: "Moped Project Types",
+    fields: {
+      project_id: {
+        icon: "",
+        label: "Project ID",
+        data_type: "integer",
+      },
+      project_type_id: {
+        icon: "",
+        label: "Project Type ID",
+        data_type: "integer",
+      },
+      date_added: {
+        icon: "",
+        label: "Date Added",
+        data_type: "timestamptz",
+      },
+      added_by: {
+        icon: "",
+        label: "Added By",
+        data_type: "integer",
+      },
+      id: {
+        icon: "",
+        label: "ID",
+        data_type: "integer",
+      },
+      status_id: {
+        icon: "",
+        label: "Status ID",
+        data_type: "integer",
+      },
+    },
   },
 };
 
