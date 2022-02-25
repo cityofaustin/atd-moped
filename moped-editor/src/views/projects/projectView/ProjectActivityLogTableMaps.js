@@ -124,7 +124,7 @@ export const ProjectActivityLogTableMaps = {
       },
       project_sponsor: {
         icon: "",
-        label: "Project Sponsor ID",
+        label: "Sponsor ID",
         data_type: "integer",
       },
       project_website: {
