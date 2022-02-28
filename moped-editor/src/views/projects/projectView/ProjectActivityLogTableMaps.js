@@ -894,6 +894,15 @@ export const ProjectActivityLogCreateDescriptions = {
       return '"' + shortNote  + '"' + " as a new note";
     }
   },
+  
+  moped_proj_partners: {
+    label: (record, userList) => {
+    console.log(record.record_data.event.data.new)
+      return '"' + record.record_data.event.data.new.partner_name + '"' + " as a new partner";
+    }
+  },
+  
+
   generic: {
     label: () => "Added",
   },
