@@ -875,6 +875,27 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_project_files: {
     label: record => `New file '${record.record_data.event.data.new.file_name}'`,
   },
+
+  moped_proj_milestones: {
+    label: (record, userList) => {
+      return '"' + record.record_data.event.data.new.milestone_description + '"' + " as a new milestone.";
+    }
+  },
+
+  moped_proj_notes: {
+    label: (record, userList) => {
+      console.log(record);
+
+      // remove HTML tags
+      const note = record.record_data.event.data.new.project_note.replace(/(<([^>]+)>)/gi, "");
+
+      const shortNote = note.length > 30 
+        ? note.substr(0, 30) + '...'
+        : note;
+
+      return '"' + shortNote  + '"' + " as a new note.";
+    }
+  },
   generic: {
     label: () => "Added",
   },
