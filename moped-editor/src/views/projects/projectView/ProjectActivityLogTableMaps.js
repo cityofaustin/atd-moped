@@ -111,11 +111,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "Milestone ID",
         data_type: "integer",
-        lookup: {
-          table: "moped_proj_milestones",
-          fieldLabel: "project_milestone_id",
-          fieldValues: ["milestone_name"],
-        },
+        //lookup: {
+          //table: "moped_proj_milestones",
+          //fieldLabel: "project_milestone_id",
+          //fieldValues: ["milestone_name"],
+        //},
       },
       status_id: {
         icon: "",
@@ -884,8 +884,6 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_notes: {
     label: (record, userList) => {
-      console.log(record);
-
       // remove HTML tags
       const note = record.record_data.event.data.new.project_note.replace(/(<([^>]+)>)/gi, "");
 
