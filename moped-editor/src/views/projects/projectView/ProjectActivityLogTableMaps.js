@@ -857,11 +857,13 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_project: {
     label: () => "Created Project",
   },
+
   moped_proj_personnel: {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] +
       " to Project Personnel",
   },
+
   moped_proj_phases: {
     label: record => {
       const recordData = record.record_data.event.data.new;
@@ -872,6 +874,7 @@ export const ProjectActivityLogCreateDescriptions = {
       return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
   },
+
   moped_project_files: {
     label: record => `New file '${record.record_data.event.data.new.file_name}'`,
   },
@@ -879,7 +882,7 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_milestones: {
     label: (record, userList) => {
       return '"' + record.record_data.event.data.new.milestone_description + '"' + " as a new milestone";
-    }
+    },
   },
 
   moped_proj_notes: {
@@ -892,7 +895,7 @@ export const ProjectActivityLogCreateDescriptions = {
         : note;
 
       return '"' + shortNote  + '"' + " as a new note";
-    }
+    },
   },
   
   moped_proj_partners: {
@@ -904,11 +907,20 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_personnel: {
     label: (record, userList) => {
       return userList[record.record_data.event.data.new.user_id] + " as a new team member";
-    }
+    },
+  },
+  
+  moped_proj_components: {
+    label: (record, userList) => {
+      return '"' + record.record_data.event.data.new.description + '"' + " as a new component";
+    },
   },
   
   generic: {
-    label: () => "Added",
+    label: (record) => { 
+      //console.log(record);
+      return 'Added';
+     },
   },
 };
 
