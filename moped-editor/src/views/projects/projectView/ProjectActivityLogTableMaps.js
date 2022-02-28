@@ -878,7 +878,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_milestones: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.milestone_description + '"' + " as a new milestone.";
+      return '"' + record.record_data.event.data.new.milestone_description + '"' + " as a new milestone";
     }
   },
 
@@ -891,7 +891,7 @@ export const ProjectActivityLogCreateDescriptions = {
         ? note.substr(0, 30) + '...'
         : note;
 
-      return '"' + shortNote  + '"' + " as a new note.";
+      return '"' + shortNote  + '"' + " as a new note";
     }
   },
   generic: {
