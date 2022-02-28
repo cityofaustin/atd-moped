@@ -904,12 +904,6 @@ export const ProjectActivityLogCreateDescriptions = {
     }
   },
   
-  moped_proj_personnel: {
-    label: (record, userList) => {
-      return userList[record.record_data.event.data.new.user_id] + " as a new team member";
-    },
-  },
-  
   moped_proj_components: {
     label: (record, userList) => {
       return '"' + record.record_data.event.data.new.description + '"' + " as a new component";
