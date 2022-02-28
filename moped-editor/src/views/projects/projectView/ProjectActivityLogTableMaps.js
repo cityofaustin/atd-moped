@@ -897,12 +897,16 @@ export const ProjectActivityLogCreateDescriptions = {
   
   moped_proj_partners: {
     label: (record, userList) => {
-    console.log(record.record_data.event.data.new)
       return '"' + record.record_data.event.data.new.partner_name + '"' + " as a new partner";
     }
   },
   
-
+  moped_proj_personnel: {
+    label: (record, userList) => {
+      return userList[record.record_data.event.data.new.user_id] + " as a new team member";
+    }
+  },
+  
   generic: {
     label: () => "Added",
   },
