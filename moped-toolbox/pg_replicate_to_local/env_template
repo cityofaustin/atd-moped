@@ -1,0 +1,5 @@
+# PostgreSQL parameters as made available by Heroku
+PGHOST=
+PGDATABASE=
+PGUSER=
+PGPASSWORD=
