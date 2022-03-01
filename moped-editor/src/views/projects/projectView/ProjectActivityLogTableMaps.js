@@ -909,6 +909,14 @@ export const ProjectActivityLogCreateDescriptions = {
       return '"' + record.record_data.event.data.new.description + "\" as a new component";
     },
   },
+
+  moped_proj_funding: {
+    label: (record, userList) => {
+      return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
+    },
+  },
+  
+
   
   generic: {
     label: (record) => { 
