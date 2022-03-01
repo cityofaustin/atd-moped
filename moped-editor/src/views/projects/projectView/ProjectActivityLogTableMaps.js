@@ -881,7 +881,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_milestones: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.milestone_description + '"' + " as a new milestone";
+      return '"' + record.record_data.event.data.new.milestone_description + "\" as a new milestone";
     },
   },
 
@@ -894,19 +894,19 @@ export const ProjectActivityLogCreateDescriptions = {
         ? note.substr(0, 30).trim() + '...'
         : note;
 
-      return '"' + shortNote  + '"' + " as a new note";
+      return '"' + shortNote  + "\" as a new note";
     },
   },
   
   moped_proj_partners: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.partner_name + '"' + " as a new partner";
+      return '"' + record.record_data.event.data.new.partner_name + "\" as a new partner";
     }
   },
   
   moped_proj_components: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.description + '"' + " as a new component";
+      return '"' + record.record_data.event.data.new.description + "\" as a new component";
     },
   },
   
