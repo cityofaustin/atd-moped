@@ -916,8 +916,6 @@ export const ProjectActivityLogCreateDescriptions = {
     },
   },
   
-
-  
   generic: {
     label: (record) => { 
       //console.log(record);
