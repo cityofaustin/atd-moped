@@ -891,7 +891,7 @@ export const ProjectActivityLogCreateDescriptions = {
       const note = record.record_data.event.data.new.project_note.replace(/(<([^>]+)>)/gi, "");
 
       const shortNote = note.length > 30 
-        ? note.substr(0, 30) + '...'
+        ? note.substr(0, 30).trim() + '...'
         : note;
 
       return '"' + shortNote  + '"' + " as a new note";
