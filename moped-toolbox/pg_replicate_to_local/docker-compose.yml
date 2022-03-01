@@ -1,0 +1,8 @@
+services:
+  utilities:
+    build: clone_utility
+    env_file:
+      - .env
+    volumes:
+      - ./workspace:/root/workspace
+      - ./scripts:/root/scripts
