@@ -1,0 +1,1 @@
+This file is used to hold open the `workspace` folder in the git repo.
