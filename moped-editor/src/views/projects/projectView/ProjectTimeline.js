@@ -132,9 +132,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   );
 
   /**
-   * Phase table lookup object formatted into the shape that <MaterialTable>
+   * Subphase table lookup object formatted into the shape that <MaterialTable>
    * expects.
-   * Ex: { construction: "Construction", hold: "Hold", ...}
+   * Ex: { bid: "Bid", "environmental study": "Environmental Study", ...}
    */
   const subphaseNameLookup = data.moped_subphases.reduce(
     (obj, item) =>
@@ -608,16 +608,18 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     })
                       .then(
                         () =>
-                          // If there was a change in phase_name or current_phase, update the project
+                          // If update to the phase object was to phase_name or current_phase
+                          // update the project's current_phase and current_status.
                           currentPhaseChanged
                             ? updateProjectStatus({
                                 variables: {
                                   projectId: projectId,
                                   projectUpdateInput: isCurrentPhase
                                     ? mappedProjectUpdateInput
-                                    // This will overwrite a current status and phase
-                                    // if the phase name is changed and its not a current_phase
-                                    : {
+                                    : // Note: This will overwrite a project's current_status and
+                                      // current_phase if the phase name is changed and its not a
+                                      // current_phase
+                                      {
                                         status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
