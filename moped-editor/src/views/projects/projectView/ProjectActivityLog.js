@@ -309,7 +309,9 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>{getCreationLabel(change, userList)}</b>
+                                    <b>
+                                      { getCreationLabel(change, userList) }
+                                    </b>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
