@@ -340,8 +340,8 @@ const ProjectActivityLog = () => {
                                               ]?.[changeItem.old] ||
                                               String(changeItem.old)}
                                           &quot;
-                                        </b>{" "}
-                                        to{" "}
+                                        </b>
+                                        &nbsp;to&nbsp;
                                         <b>
                                           &quot;
                                           {isFieldMapped(
