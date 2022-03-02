@@ -339,11 +339,29 @@ const ProjectActivityLog = () => {
                                         </b>
                                         &nbsp;from&nbsp;
                                         <b>
-                                          { fieldFormat(change, changeItem.old) } 
+                                        {isFieldMapped(
+                                            change.record_type,
+                                            changeItem.field
+                                          )
+                                            ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.old)
+                                              )
+                                            : fieldFormat(changeItem.old)}
                                         </b>
                                         &nbsp;to&nbsp;
                                         <b>
-                                          { fieldFormat(change, changeItem.new) } 
+                                        {isFieldMapped(
+                                            change.record_type,
+                                            changeItem.field
+                                          )
+                                            ? getMappedValue(
+                                                change.record_type,
+                                                changeItem.field,
+                                                String(changeItem.old)
+                                              )
+                                            : fieldFormat(changeItem.new)}
                                         </b>
                                       </>
                                     )}
