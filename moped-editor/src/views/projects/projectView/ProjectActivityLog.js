@@ -67,9 +67,6 @@ const useStyles = makeStyles(theme => ({
 
 
 const fieldFormat = (change, changeItem) => {
-  console.log(change);
-  console.log(changeItem);
-  console.log('--');
   if (changeItem === null) {
     return 'a null value'
   } else if (String(changeItem).length === 0) {
