@@ -881,7 +881,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_milestones: {
     label: (record, userList) => {
-      return fieldFormat(record.record_data.event.data.new.milestone_description) + " as a new milestone";
+      return fieldFormat(record.record_data.event.data.new.milestone_description, true) + " as a new milestone";
     },
   },
 
@@ -894,26 +894,26 @@ export const ProjectActivityLogCreateDescriptions = {
         ? note.substr(0, 30).trim() + '...'
         : note.trim();
 
-      return '"' + shortNote  + "\" as a new note";
+      return fieldFormat(shortNote, true)  + " as a new note";
     },
   },
   
   moped_proj_partners: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.partner_name + "\" as a new partner";
+      return fieldFormat(record.record_data.event.data.new.partner_name, true) + " as a new partner";
     }
   },
   
   moped_proj_components: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.description + "\" as a new component";
+      return fieldFormat(record.record_data.event.data.new.description, true) + " as a new component";
     },
   },
 
   moped_proj_funding: {
     label: (record, userList) => {
       //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
-      return "A new funding source" + (record.record_data.event.data.new.funding_description ? ": " + record.record_data.event.data.new.funding_description : ".");
+      return "A new funding source" + (record.record_data.event.data.new.funding_description ? ": " + record.record_data.event.data.new.funding_description : "");
     },
   },
   
@@ -1019,18 +1019,20 @@ export const getCreationLabel = (record, userList) => {
  * @param {string} the javascript variable (whatever type) you want represented as a string.
  * @return {string}
  */
-export const fieldFormat = (changeItem) => {
+export const fieldFormat = (changeItem, capitalize = false) => {
+  let result = "";
   if (changeItem === null) {
-    return 'a null value'
+    result = 'a null value';
   } else if (String(changeItem).length === 0) {
-    return 'an empty value'
+    result = 'an empty value';
   } else if (typeof(changeItem) === 'object') {
-    return 'a JavaScript object';
+    result = 'a JavaScript object';
   } else if (typeof(changeItem) === 'boolean') {
-    return String(changeItem);
+    result = String(changeItem);
   } else if (parseFloat(changeItem)) {
-    return String(changeItem);
+    result = String(changeItem);
   } else {
-    return '"' + changeItem + '"'
+    result = '"' + changeItem + '"';
   }
+  return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result;
 }
