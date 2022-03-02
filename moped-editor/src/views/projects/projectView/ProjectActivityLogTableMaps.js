@@ -4,22 +4,22 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       project_uuid: {
         icon: "",
-        label: "Unique ID",
+        label: "unique ID",
         data_type: "uuid",
       },
       project_name: {
         icon: "",
-        label: "Name",
+        label: "name",
         data_type: "text",
       },
       project_description: {
         icon: "",
-        label: "Description",
+        label: "description",
         data_type: "text",
       },
       project_description_public: {
         icon: "",
-        label: "Public description",
+        label: "public description",
         data_type: "text",
       },
       ecapris_subproject_id: {
@@ -29,17 +29,17 @@ export const ProjectActivityLogTableMaps = {
       },
       project_importance: {
         icon: "",
-        label: "Importance",
+        label: "importance",
         data_type: "integer",
       },
       project_order: {
         icon: "",
-        label: "Order",
+        label: "order",
         data_type: "integer",
       },
       current_status: {
         icon: "",
-        label: "Current status",
+        label: "current status",
         data_type: "text",
       },
       project_id: {
@@ -49,52 +49,52 @@ export const ProjectActivityLogTableMaps = {
       },
       timeline_id: {
         icon: "",
-        label: "Timeline",
+        label: "timeline",
         data_type: "integer",
       },
       current_phase: {
         icon: "",
-        label: "Phase",
+        label: "phase",
         data_type: "text",
       },
       end_date: {
         icon: "",
-        label: "End date",
+        label: "end date",
         data_type: "date",
       },
       project_length: {
-        label: "Length",
+        label: "length",
         icon: "",
         data_type: "integer",
       },
       start_date: {
         icon: "",
-        label: "Start date",
+        label: "start date",
         data_type: "date",
       },
       fiscal_year: {
         icon: "",
-        label: "Fiscal year",
+        label: "fiscal year",
         data_type: "text",
       },
       capitally_funded: {
         icon: "",
-        label: "Capitally funded",
+        label: "capitally funded",
         data_type: "boolean",
       },
       project_priority: {
         icon: "",
-        label: "Priority",
+        label: "priority",
         data_type: "text",
       },
       date_added: {
-        label: "Date added",
+        label: "date added",
         icon: "",
         data_type: "timestamp with time zone",
       },
       added_by: {
         icon: "",
-        label: "Added by",
+        label: "added by",
         data_type: "integer",
         lookup: {
           table: "moped_users",
@@ -104,12 +104,12 @@ export const ProjectActivityLogTableMaps = {
       },
       is_retired: {
         icon: "",
-        label: "Retired Status",
+        label: "retired status",
         data_type: "bool",
       },
       milestone_id: {
         icon: "",
-        label: "Milestone ID",
+        label: "milestone ID",
         data_type: "integer",
         //lookup: {
           //table: "moped_proj_milestones",
@@ -119,47 +119,47 @@ export const ProjectActivityLogTableMaps = {
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         data_type: "integer",
       },
       updated_at: {
         icon: "",
-        label: "Updated timestamp",
+        label: "updated timestamp",
         data_type: "timestamp with time zone",
       },
       contractor: {
         icon: "",
-        label: "Contractor",
+        label: "contractor",
         data_type: "text",
       },
       project_sponsor: {
         icon: "",
-        label: "Sponsor ID",
+        label: "sponsor ID",
         data_type: "integer",
       },
       project_website: {
         icon: "",
-        label: "Project website",
+        label: "project website",
         data_type: "text",
       },
       knack_project_id: {
         icon: "",
-        label: "Knack internal ID",
+        label: "knack internal ID",
         data_type: "text",
       },
       purchase_order_number: {
         icon: "",
-        label: "Purchase order number",
+        label: "purchase order number",
         data_type: "text",
       },
       task_order: {
         icon: "",
-        label: "Task order",
+        label: "task order",
         data_type: "jsonb",
       },
       work_assignment_id: {
         icon: "",
-        label: "Work assignment ID",
+        label: "work assignment ID",
         data_type: "text",
       },
     },
@@ -169,17 +169,17 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       project_sponsors: {
         icon: "",
-        label: "Sponsor",
+        label: "sponsor",
         type: "text",
       },
       entity_list_id: {
         icon: "",
-        label: "List ID",
+        label: "list ID",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         type: "timestamptz",
       },
       project_id: {
@@ -189,22 +189,22 @@ export const ProjectActivityLogTableMaps = {
       },
       project_personnel: {
         icon: "",
-        label: "Personnel",
+        label: "personnel",
         type: "text",
       },
       workgroups: {
         icon: "",
-        label: "Work groups",
+        label: "work groups",
         type: "int4",
       },
       partners: {
         icon: "",
-        label: "Partners",
+        label: "partners",
         type: "text",
       },
       project_groups: {
         icon: "",
-        label: "Groups",
+        label: "groups",
         type: "bpchar",
       },
     },
@@ -214,12 +214,12 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       milestone_end: {
         icon: "",
-        label: "End date",
+        label: "end date",
         type: "date",
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         type: "int4",
       },
       project_milestone_id: {
@@ -229,87 +229,87 @@ export const ProjectActivityLogTableMaps = {
       },
       completed: {
         icon: "",
-        label: "Completion",
+        label: "completion",
         type: "bool",
       },
       is_current_milestone: {
         icon: "",
-        label: "Current milestone marker",
+        label: "current milestone marker",
         type: "bool",
       },
       milestone_order: {
         icon: "",
-        label: "Order",
+        label: "order",
         type: "int4",
       },
       milestone_description: {
         icon: "",
-        label: "Description",
+        label: "description",
         type: "text",
       },
       milestone_name: {
         icon: "",
-        label: "Name",
+        label: "name",
         type: "text",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         type: "timestamptz",
       },
       milestone_privacy: {
         icon: "",
-        label: "Privacy flag",
+        label: "privacy flag",
         type: "bool",
       },
       milestone_start: {
         icon: "",
-        label: "Start date",
+        label: "start date",
         type: "date",
       },
       completion_percentage: {
         icon: "",
-        label: "Completion percentage",
+        label: "completion percentage",
         type: "integer",
       },
       milestone_status: {
         icon: "",
-        label: "Milestone status",
+        label: "status",
         type: "text",
       },
       milestone_priority: {
         icon: "",
-        label: "Milestone priority",
+        label: "priority",
         type: "integer",
       },
       milestone_date_type: {
         icon: "",
-        label: "Milestone date type",
+        label: "date type",
         type: "text",
       },
       milestone_related_phase_id: {
         icon: "",
-        label: "Milestone related phase ID",
+        label: "related phase ID",
         type: "integer",
       },
       started_by_user_id: {
         icon: "",
-        label: "Started by user ID",
+        label: "started by user ID",
         type: "integer",
       },
       completed_by_user_id: {
         icon: "",
-        label: "Completed by user ID",
+        label: "completed by user ID",
         type: "integer",
       },
       milestone_estimate: {
         icon: "",
-        label: "Milestone estimate",
+        label: "milestone estimate",
         type: "timestampz",
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         type: "integer",
       },
     },
@@ -319,42 +319,42 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       added_by: {
         icon: "",
-        label: "Added by",
+        label: "added by",
         type: "bpchar",
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         type: "int4",
       },
       project_note_id: {
         icon: "",
-        label: "Note ID",
+        label: "note ID",
         type: "int4",
       },
       date_created: {
         icon: "",
-        label: "Date created",
+        label: "date created",
         type: "timestamptz",
       },
       project_note: {
         icon: "",
-        label: "Note",
+        label: "note",
         type: "text",
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         type: "integer",
       },      
       added_by_user_id: {
         icon: "",
-        label: "Added by user ID",
+        label: "added by user ID",
         type: "integer",
       },
       project_note_type: {
         icon: "",
-        label: "Note type",
+        label: "note type",
         type: "integer",
       },
     },
@@ -364,37 +364,37 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       added_by: {
         icon: "",
-        label: "Added By",
+        label: "added By",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         type: "timestamptz",
       },
       proj_partner_id: {
         icon: "",
-        label: "Partner ID",
+        label: "partner ID",
         type: "int4",
       },
       partner_name: {
         icon: "",
-        label: "Name",
+        label: "name",
         type: "text",
       },
       entity_id: {
         icon: "",
-        label: "Entity ID",
+        label: "entity ID",
         type: "int4",
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         type: "int4",
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         type: "integer",
       },
     },
@@ -404,12 +404,12 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       added_by: {
         icon: "",
-        label: "Added by",
+        label: "added by",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         type: "timestamptz",
       },
       project_personnel_id: {
@@ -419,12 +419,12 @@ export const ProjectActivityLogTableMaps = {
       },
       notes: {
         icon: "",
-        label: "Notes",
+        label: "notes",
         type: "text",
       },
       status_id: {
         icon: "",
-        label: "Status",
+        label: "status",
         type: "int4",
         map: {
           0: "Inactive",
@@ -433,12 +433,12 @@ export const ProjectActivityLogTableMaps = {
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         type: "int4",
       },
       role_id: {
         icon: "",
-        label: "Role",
+        label: "role",
         type: "int4",
         lookup: {
           table: "moped_project_roles",
@@ -448,7 +448,7 @@ export const ProjectActivityLogTableMaps = {
       },
       user_id: {
         icon: "",
-        label: "User",
+        label: "user",
         type: "int4",
         lookup: {
           table: "moped_users",
@@ -463,77 +463,77 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       phase_order: {
         icon: "",
-        label: "Order",
+        label: "order",
         type: "int4",
       },
       phase_name: {
         icon: "",
-        label: "Name",
+        label: "name",
         type: "text",
       },
       phase_description: {
         icon: "",
-        label: "Description",
+        label: "description",
         type: "text",
       },
       completion_percentage: {
         icon: "",
-        label: "Completion percentage",
+        label: "completion percentage",
         type: "int4",
       },
       phase_status: {
         icon: "",
-        label: "Status",
+        label: "status",
         type: "text",
       },
       phase_privacy: {
         icon: "",
-        label: "Privacy",
+        label: "privacy",
         type: "bool",
       },
       phase_start: {
         icon: "",
-        label: "Start date",
+        label: "start date",
         type: "date",
       },
       phase_end: {
         icon: "",
-        label: "End date",
+        label: "end date",
         type: "date",
       },
       phase_priority: {
         icon: "",
-        label: "Priority",
+        label: "priority",
         type: "int4",
       },
       is_current_phase: {
         icon: "",
-        label: "Current phase marker",
+        label: "current phase marker",
         type: "bool",
       },
       completed: {
         icon: "",
-        label: "Completed",
+        label: "completed",
         type: "bool",
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         type: "int4",
       },
       started_by_user_id: {
         icon: "",
-        label: "Started by user ID",
+        label: "started by user ID",
         type: "int4",
       },
       completed_by_user_id: {
         icon: "",
-        label: "Completed by user ID",
+        label: "completed by user ID",
         type: "int4",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         type: "timestamptz",
       },
       project_phase_id: {
@@ -543,17 +543,17 @@ export const ProjectActivityLogTableMaps = {
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         type: "integer",
       },
       subphase_name: {
         icon: "",
-        label: "Subphase name",
+        label: "subphase name",
         type: "text",
       },
       subphase_id: {
         icon: "",
-        label: "Subphase ID",
+        label: "subphase ID",
         type: "integer",
       }
     },
@@ -563,32 +563,32 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "ID",
         data_type: "int4",
       },
       project_component_id: {
         icon: "",
-        label: "Project Component ID",
+        label: "component ID",
         data_type: "int4",
       },
       component_id: {
         icon: "",
-        label: "Component ID",
+        label: "component ID",
         data_type: "integer",
       },
       name: {
         icon: "",
-        label: "Name",
+        label: "name",
         data_type: "text",
       },
       description: {
         icon: "",
-        label: "Description",
+        label: "description",
         data_type: "text",
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         data_type: "integer",
       },
     },
@@ -608,32 +608,32 @@ export const ProjectActivityLogTableMaps = {
       },
       file_key: {
         icon: "",
-        label: "File name",
+        label: "file name",
         data_type: "text",
       },
       file_name: {
         icon: "",
-        label: "Title",
+        label: "title",
         data_type: "text",
       },
       file_description: {
         icon: "",
-        label: "Description",
+        label: "description",
         data_type: "text",
       },
       file_size: {
         icon: "",
-        label: "Size",
+        label: "size",
         data_type: "int4",
       },
       file_permissions: {
         icon: "",
-        label: "Permissions",
+        label: "permissions",
         data_type: "jsonb",
       },
       file_metadata: {
         icon: "",
-        label: "Metadata",
+        label: "metadata",
         data_type: "jsonb",
       },
       api_response: {
@@ -643,27 +643,27 @@ export const ProjectActivityLogTableMaps = {
       },
       created_by: {
         icon: "",
-        label: "Created by",
+        label: "created by",
         data_type: "int4",
       },
       create_date: {
         icon: "",
-        label: "Create date",
+        label: "create date",
         data_type: "date",
       },
       is_scanned: {
         icon: "",
-        label: "Marked scanned",
+        label: "scanned flag",
         data_type: "bool",
       },
       is_retired: {
         icon: "",
-        label: "Marked deleted",
+        label: "deleted flag",
         data_type: "bool",
       },
       file_type: {
         icon: "",
-        label: "File type",
+        label: "file type",
         data_type: "integer",
       },
     },
@@ -673,62 +673,62 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       proj_funding_id: {
         icon: "",
-        label: "Funding ID",
+        label: "funding ID",
         data_type: "integer",
       },
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         data_type: "integer",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         data_type: "timestamptz",
       },
       added_by: {
         icon: "",
-        label: "Added by",
+        label: "added by",
         data_type: "integer",
       },
       funding_source_id: {
         icon: "",
-        label: "Source ID",
+        label: "source ID",
         data_type: "integer",
       },
       funding_program_id: {
         icon: "",
-        label: "Program ID",
+        label: "program ID",
         data_type: "integer",
       },
       funding_amount: {
         icon: "",
-        label: "Amount",
+        label: "amount",
         data_type: "integer",
       },
       fund_dept_unit: {
         icon: "",
-        label: "Department unit",
+        label: "department unit",
         data_type: "text",
       },
       funding_description: {
         icon: "",
-        label: "Description",
+        label: "description",
         data_type: "text",
       },
       funding_status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         data_type: "integer",
       },
       fund: {
         icon: "",
-        label: "Fund",
+        label: "fund",
         data_type: "jsonb",
       },
       dept_unit: {
         icon: "",
-        label: "Department unit",
+        label: "department unit",
         data_type: "jsonb",
       },
     },
@@ -738,22 +738,22 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       project_id: {
         icon: "",
-        label: "Project ID",
+        label: "project ID",
         data_type: "integer",
       },
       project_type_id: {
         icon: "",
-        label: "Project type ID",
+        label: "project type ID",
         data_type: "integer",
       },
       date_added: {
         icon: "",
-        label: "Date added",
+        label: "date added",
         data_type: "timestamptz",
       },
       added_by: {
         icon: "",
-        label: "Added by",
+        label: "added by",
         data_type: "integer",
       },
       id: {
@@ -763,7 +763,7 @@ export const ProjectActivityLogTableMaps = {
       },
       status_id: {
         icon: "",
-        label: "Status ID",
+        label: "status ID",
         data_type: "integer",
       },
     },
