@@ -71,6 +71,10 @@ const fieldFormat = (changeItem) => {
     return 'a null value'
   } else if (String(changeItem).length === 0) {
     return 'an empty value'
+  } else if (typeof(changeItem) === 'object') {
+    return 'a JavaScript object';
+  } else if (typeof(changeItem) === 'boolean') {
+    return String(changeItem);
   } else if (parseFloat(changeItem)) {
     return String(changeItem);
   } else {
