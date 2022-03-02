@@ -310,6 +310,9 @@ const SignalProjectTable = () => {
     {
       title: "Project sponsor",
       field: "project_sponsor_object",
+      customFilterAndSearch: (term, rowData) => {
+        return rowData.project_sponsor_object.entity_name.toUpperCase().includes(term.toUpperCase());
+      },
       render: entry => (
         <Typography className={classes.tableTypography}>
           {entry?.project_sponsor_object?.entity_name === "None"
