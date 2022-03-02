@@ -66,7 +66,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const fieldFormat = (change, changeItem) => {
+const fieldFormat = (changeItem) => {
   if (changeItem === null) {
     return 'a null value'
   } else if (String(changeItem).length === 0) {
