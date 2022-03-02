@@ -2612,16 +2612,15 @@
         columns:
         - capitally_funded
         - end_date
-        - start_date
         - added_by
         - project_id
         - project_importance
         - project_length
         - project_order
         - timeline_id
+        - ecapris_subproject_id
         - current_phase
         - current_status
-        - ecapris_subproject_id
         - fiscal_year
         - project_description
         - project_description_public
