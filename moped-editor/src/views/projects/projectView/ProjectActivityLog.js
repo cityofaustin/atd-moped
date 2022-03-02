@@ -66,10 +66,6 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-
-
-
-
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -299,9 +295,7 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>
-                                      { getCreationLabel(change, userList) }
-                                    </b>
+                                    <b>{getCreationLabel(change, userList)}</b>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
@@ -331,7 +325,7 @@ const ProjectActivityLog = () => {
                                         </b>
                                         &nbsp;from&nbsp;
                                         <b>
-                                        {isFieldMapped(
+                                          {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
                                           )
@@ -344,7 +338,7 @@ const ProjectActivityLog = () => {
                                         </b>
                                         &nbsp;to&nbsp;
                                         <b>
-                                        {isFieldMapped(
+                                          {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
                                           )

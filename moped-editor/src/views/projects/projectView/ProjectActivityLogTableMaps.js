@@ -112,9 +112,9 @@ export const ProjectActivityLogTableMaps = {
         label: "milestone ID",
         data_type: "integer",
         //lookup: {
-          //table: "moped_proj_milestones",
-          //fieldLabel: "project_milestone_id",
-          //fieldValues: ["milestone_name"],
+        //table: "moped_proj_milestones",
+        //fieldLabel: "project_milestone_id",
+        //fieldValues: ["milestone_name"],
         //},
       },
       status_id: {
@@ -346,7 +346,7 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "status ID",
         type: "integer",
-      },      
+      },
       added_by_user_id: {
         icon: "",
         label: "added by user ID",
@@ -555,7 +555,7 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "subphase ID",
         type: "integer",
-      }
+      },
     },
   },
   moped_proj_components: {
@@ -860,8 +860,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_personnel: {
     label: (record, userList) =>
-      userList[`${record.record_data.event.data.new.user_id}`] +
-      " to the team",
+      userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
   },
 
   moped_proj_phases: {
@@ -876,52 +875,71 @@ export const ProjectActivityLogCreateDescriptions = {
   },
 
   moped_project_files: {
-    label: record => `New file '${record.record_data.event.data.new.file_name}'`,
+    label: record =>
+      `New file '${record.record_data.event.data.new.file_name}'`,
   },
 
   moped_proj_milestones: {
     label: (record, userList) => {
-      return fieldFormat(record.record_data.event.data.new.milestone_description, true) + " as a new milestone";
+      return (
+        fieldFormat(
+          record.record_data.event.data.new.milestone_description,
+          true
+        ) + " as a new milestone"
+      );
     },
   },
 
   moped_proj_notes: {
     label: (record, userList) => {
       // remove HTML tags
-      const note = record.record_data.event.data.new.project_note.replace(/(<([^>]+)>)/gi, "");
+      const note = record.record_data.event.data.new.project_note.replace(
+        /(<([^>]+)>)/gi,
+        ""
+      );
 
-      const shortNote = note.length > 30 
-        ? note.substr(0, 30).trim() + '...'
-        : note.trim();
+      const shortNote =
+        note.length > 30 ? note.substr(0, 30).trim() + "..." : note.trim();
 
-      return fieldFormat(shortNote, true)  + " as a new note";
+      return fieldFormat(shortNote, true) + " as a new note";
     },
   },
-  
+
   moped_proj_partners: {
     label: (record, userList) => {
-      return fieldFormat(record.record_data.event.data.new.partner_name, true) + " as a new partner";
-    }
+      return (
+        fieldFormat(record.record_data.event.data.new.partner_name, true) +
+        " as a new partner"
+      );
+    },
   },
-  
+
   moped_proj_components: {
     label: (record, userList) => {
-      return fieldFormat(record.record_data.event.data.new.description, true) + " as a new component";
+      return (
+        fieldFormat(record.record_data.event.data.new.description, true) +
+        " as a new component"
+      );
     },
   },
 
   moped_proj_funding: {
     label: (record, userList) => {
       //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
-      return "A new funding source" + (record.record_data.event.data.new.funding_description ? ": " + record.record_data.event.data.new.funding_description : "");
+      return (
+        "A new funding source" +
+        (record.record_data.event.data.new.funding_description
+          ? ": " + record.record_data.event.data.new.funding_description
+          : "")
+      );
     },
   },
-  
+
   generic: {
-    label: (record) => { 
+    label: record => {
       //console.log(record);
-      return 'Added';
-     },
+      return "Added";
+    },
   },
 };
 
@@ -1022,12 +1040,12 @@ export const getCreationLabel = (record, userList) => {
 export const fieldFormat = (changeItem, capitalize = false) => {
   let result = "";
   if (changeItem === null) {
-    result = 'a null value';
+    result = "a null value";
   } else if (String(changeItem).length === 0) {
-    result = 'an empty value';
-  } else if (typeof(changeItem) === 'object') {
-    result = 'a JavaScript object';
-  } else if (typeof(changeItem) === 'boolean') {
+    result = "an empty value";
+  } else if (typeof changeItem === "object") {
+    result = "a JavaScript object";
+  } else if (typeof changeItem === "boolean") {
     result = String(changeItem);
   } else if (parseFloat(changeItem)) {
     result = String(changeItem);
@@ -1035,4 +1053,4 @@ export const fieldFormat = (changeItem, capitalize = false) => {
     result = '"' + changeItem + '"';
   }
   return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result;
-}
+};
