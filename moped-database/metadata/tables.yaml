@@ -3501,3 +3501,6 @@
       - date_added
       filter: {}
       check: null
+- table:
+    schema: public
+    name: project_list_view
