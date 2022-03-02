@@ -892,7 +892,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
       const shortNote = note.length > 30 
         ? note.substr(0, 30).trim() + '...'
-        : note;
+        : note.trim();
 
       return '"' + shortNote  + "\" as a new note";
     },
