@@ -217,6 +217,12 @@ const SignalProjectTable = () => {
       title: "Project types",
       field: "project_types",
       customEdit: "projectTypes",
+      customFilterAndSearch: (term, rowData) => {
+        const displayProjectTypes = rowData.project_types
+          .map(t => typeDict[t])
+          .join(" ");
+        return displayProjectTypes.toUpperCase().includes(term.toUpperCase());
+      },
       render: entry => {
         if (entry?.project_types?.length) {
           return (
@@ -246,6 +252,12 @@ const SignalProjectTable = () => {
       field: "task_order",
       customEdit: "taskOrders",
       emptyValue: "-",
+      customFilterAndSearch: (term, rowData) => {
+        const displayTaskOrders = rowData.task_order
+          .map(taskOrder => taskOrder.display_name)
+          .join(" ");
+        return displayTaskOrders.toUpperCase().includes(term.toUpperCase());
+      },
       render: entry => {
         // Empty value won't work in some cases where task_order is an empty array.
         if (entry.task_order.length < 1) {
