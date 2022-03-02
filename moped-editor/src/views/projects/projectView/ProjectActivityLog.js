@@ -65,6 +65,23 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
+const fieldFormat = (change, changeItem) => {
+  console.log(change);
+  console.log(changeItem);
+  console.log('--');
+  if (changeItem === null) {
+    return 'a null value'
+  } else if (String(changeItem).length === 0) {
+    return 'an empty value'
+  } else if (parseFloat(changeItem)) {
+    return String(changeItem);
+  } else {
+    return '"' + changeItem + '"'
+  }
+}
+
+
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -322,42 +339,14 @@ const ProjectActivityLog = () => {
                                             change.record_type,
                                             changeItem.field
                                           )}
-                                        </b>{" "}
-                                        from{" "}
+                                        </b>
+                                        &nbsp;from&nbsp;
                                         <b>
-                                          &quot;
-                                          {isFieldMapped(
-                                            change.record_type,
-                                            changeItem.field
-                                          )
-                                            ? getMappedValue(
-                                                change.record_type,
-                                                changeItem.field,
-                                                String(changeItem.old)
-                                              )
-                                            : lookupMap?.[change.record_type]?.[
-                                                changeItem.field
-                                              ]?.[changeItem.old] ||
-                                              String(changeItem.old)}
-                                          &quot;
+                                          { fieldFormat(change, changeItem.old) } 
                                         </b>
                                         &nbsp;to&nbsp;
                                         <b>
-                                          &quot;
-                                          {isFieldMapped(
-                                            change.record_type,
-                                            changeItem.field
-                                          )
-                                            ? getMappedValue(
-                                                change.record_type,
-                                                changeItem.field,
-                                                String(changeItem.new)
-                                              )
-                                            : lookupMap?.[change.record_type]?.[
-                                                changeItem.field
-                                              ]?.[changeItem.new] ||
-                                              String(changeItem.new)}
-                                          &quot;
+                                          { fieldFormat(change, changeItem.new) } 
                                         </b>
                                       </>
                                     )}
