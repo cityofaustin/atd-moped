@@ -881,7 +881,7 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_milestones: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.milestone_description + "\" as a new milestone";
+      return fieldFormat(record.record_data.event.data.new.milestone_description) + " as a new milestone";
     },
   },
 
@@ -1013,3 +1013,24 @@ export const getCreationLabel = (record, userList) => {
 
   return label ? label(record, userList) : "Created";
 };
+
+/**
+ * Attempts to represent a number of possible data types from the database as a string
+ * @param {string} the javascript variable (whatever type) you want represented as a string.
+ * @return {string}
+ */
+export const fieldFormat = (changeItem) => {
+  if (changeItem === null) {
+    return 'a null value'
+  } else if (String(changeItem).length === 0) {
+    return 'an empty value'
+  } else if (typeof(changeItem) === 'object') {
+    return 'a JavaScript object';
+  } else if (typeof(changeItem) === 'boolean') {
+    return String(changeItem);
+  } else if (parseFloat(changeItem)) {
+    return String(changeItem);
+  } else {
+    return '"' + changeItem + '"'
+  }
+}

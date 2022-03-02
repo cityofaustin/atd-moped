@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
+  fieldFormat,
   getCreationLabel,
   getOperationName,
   getChangeIcon,
@@ -66,21 +67,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-const fieldFormat = (changeItem) => {
-  if (changeItem === null) {
-    return 'a null value'
-  } else if (String(changeItem).length === 0) {
-    return 'an empty value'
-  } else if (typeof(changeItem) === 'object') {
-    return 'a JavaScript object';
-  } else if (typeof(changeItem) === 'boolean') {
-    return String(changeItem);
-  } else if (parseFloat(changeItem)) {
-    return String(changeItem);
-  } else {
-    return '"' + changeItem + '"'
-  }
-}
+
 
 
 const ProjectActivityLog = () => {
