@@ -80,7 +80,6 @@ const ProjectActivityLog = () => {
     getLookups,
     lookupLoading,
     lookupError,
-    lookupMap,
   } = useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
