@@ -400,7 +400,7 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_personnel: {
-    label: "Personnel",
+    label: "Team",
     fields: {
       added_by: {
         icon: "",
@@ -861,7 +861,7 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_personnel: {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] +
-      " to Project Personnel",
+      " to the team",
   },
 
   moped_proj_phases: {
@@ -912,7 +912,8 @@ export const ProjectActivityLogCreateDescriptions = {
 
   moped_proj_funding: {
     label: (record, userList) => {
-      return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
+      //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
+      return "A new funding source" + (record.record_data.event.data.new.funding_description ? ": " + record.record_data.event.data.new.funding_description : ".");
     },
   },
   
