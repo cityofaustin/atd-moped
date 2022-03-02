@@ -669,7 +669,7 @@ export const ProjectActivityLogTableMaps = {
     },
   },
   moped_proj_funding: {
-    label: "Moped Project Funding",
+    label: "Fund",
     fields: {
       proj_funding_id: {
         icon: "",
@@ -708,12 +708,12 @@ export const ProjectActivityLogTableMaps = {
       },
       fund_dept_unit: {
         icon: "",
-        label: "Fund Department Unit",
+        label: "Department Unit",
         data_type: "text",
       },
       funding_description: {
         icon: "",
-        label: "Funding Description",
+        label: "Description",
         data_type: "text",
       },
       funding_status_id: {
