@@ -254,8 +254,10 @@ const SignalProjectTable = () => {
       emptyValue: "-",
       customFilterAndSearch: (term, rowData) => {
         const displayTaskOrders = rowData.task_order
-          .map(taskOrder => taskOrder.display_name)
-          .join(" ");
+          ? rowData.task_order
+              .map(taskOrder => taskOrder.display_name)
+              .join(" ")
+          : "";
         return displayTaskOrders.toUpperCase().includes(term.toUpperCase());
       },
       render: entry => {
@@ -311,7 +313,9 @@ const SignalProjectTable = () => {
       title: "Project sponsor",
       field: "project_sponsor_object",
       customFilterAndSearch: (term, rowData) => {
-        return rowData.project_sponsor_object.entity_name.toUpperCase().includes(term.toUpperCase());
+        return rowData.project_sponsor_object.entity_name
+          .toUpperCase()
+          .includes(term.toUpperCase());
       },
       render: entry => (
         <Typography className={classes.tableTypography}>
