@@ -35,11 +35,11 @@ function download_hasura_settings() {
 #
 function run_migration() {
   echo "----- MIGRATIONS STARTED -----";
-  hasura version;
+  hasura --skip-update-check version;
   echo "Applying migration";
-  hasura migrate apply;
+  hasura --skip-update-check migrate apply;
   echo "Applying metadata";
-  hasura metadata apply;
+  hasura --skip-update-check metadata apply;
   echo "----- MIGRATIONS FINISHED -----";
 }
 
