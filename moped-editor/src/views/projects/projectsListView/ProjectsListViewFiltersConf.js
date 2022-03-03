@@ -42,15 +42,15 @@ export const ProjectsListViewFiltersConf = {
         "*", // All of them (shortcut)
       ],
     },
-    {
-      name: "start_date",
-      label: "Start date",
-      placeholder: "Select date",
-      type: "date",
-      operators: [
-        "*", // All of them (shortcut)
-      ],
-    },
+    // {
+    //   name: "start_date",
+    //   label: "Start date",
+    //   placeholder: "Select date",
+    //   type: "date",
+    //   operators: [
+    //     "*", // All of them (shortcut)
+    //   ],
+    // },
     {
       name: "status_name",
       label: "Current status",

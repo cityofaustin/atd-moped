@@ -45,12 +45,12 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         },
         style: classes.fieldSelectCapitalize,
       },
-      start_date: {
-        label: "Start date",
-        type: "date",
-        placeholder: "Select date",
-        editable: true,
-      },
+      // start_date: {
+      //   label: "Start date",
+      //   type: "date",
+      //   placeholder: "Select date",
+      //   editable: true,
+      // },
       capitally_funded: {
         label: "Capital funding",
         type: "boolean",
