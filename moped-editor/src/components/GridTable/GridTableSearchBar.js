@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  Box,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -10,6 +11,7 @@ import {
   Icon,
   IconButton,
   makeStyles,
+  Typography,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
@@ -39,6 +41,17 @@ const useStyles = makeStyles(theme => ({
   },
   searchButton: {
     marginTop: "12px",
+  },
+  filtersList: {
+    padding: "8px",
+    marginRight: "12px",
+  },
+  filtersText: {
+    fontSize: ".9rem",
+  },
+  filtersSpan: {
+    fontWeight: 600,
+    textTransform: "uppercase",
   },
 }));
 
@@ -142,6 +155,14 @@ const GridTableSearchBar = ({
     }
   };
 
+  const filterStateActive = !!Object.keys(filterState.filterParameters).length;
+  const filtersApplied = [];
+  if (filterStateActive) {
+    Object.keys(filterState.filterParameters).map(parameter =>
+      filtersApplied.push(filterState.filterParameters[parameter]["label"])
+    );
+  }
+
   return (
     <>
       <TextField
@@ -167,12 +188,9 @@ const GridTableSearchBar = ({
               <IconButton
                 onClick={toggleAdvancedSearch}
                 className={clsx({
-                  [classes.tuneIcon]: !Object.keys(filterState.filterParameters)
-                    .length,
+                  [classes.tuneIcon]: !filterStateActive,
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
-                  [classes.advancedSearchActive]: !!Object.keys(
-                    filterState.filterParameters
-                  ).length,
+                  [classes.advancedSearchActive]: filterStateActive,
                 })}
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
@@ -184,6 +202,16 @@ const GridTableSearchBar = ({
         variant="outlined"
         value={searchFieldValue}
       />
+      {filterStateActive && (
+        <Box className={classes.filtersList}>
+          <Typography align="right" className={classes.filtersText}>
+            Filtered by{" "}
+            <span className={classes.filtersSpan}>{`${filtersApplied.join(
+              ", "
+            )}`}</span>
+          </Typography>
+        </Box>
+      )}
       <Hidden smUp>
         <Button
           className={classes.searchButton}

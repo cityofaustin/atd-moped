@@ -131,6 +131,7 @@ const GridTableFilters = ({
     value: null,
     type: null,
     specialNullValue: null,
+    label:null,
   };
 
   /**
@@ -181,6 +182,7 @@ const GridTableFilters = ({
         filtersNewState[filterId].field = fieldDetails.name;
         filtersNewState[filterId].type = fieldDetails.type;
         filtersNewState[filterId].placeholder = fieldDetails.placeholder;
+        filtersNewState[filterId].label = fieldDetails.label
 
         // Update Available Operators
         if (
