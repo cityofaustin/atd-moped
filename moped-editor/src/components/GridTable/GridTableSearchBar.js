@@ -22,12 +22,20 @@ import clsx from "clsx";
 const useStyles = makeStyles(theme => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
-    height: "44px",
-    width: "44px",
+    height: "40px",
+    width: "40px",
+    color: "rgba(0, 0, 0, 0.54)",
+  },
+  advancedSearchActive: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.background.paper,
+    height: "40px",
+    width: "40px",
   },
   tuneIcon: {
-    height: "44px",
-    width: "44px",
+    height: "40px",
+    width: "40px",
+    color: "rgba(0, 0, 0, 0.54)",
   },
   searchButton: {
     marginTop: "12px",
@@ -38,12 +46,16 @@ const useStyles = makeStyles(theme => ({
  * Renders a search bar with optional filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
  * @param {Object} searchState - The current state/state-modifier bundle for search
+ * @param {Object} filterState - The current state/state-modifier bundle for filter
+ * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
+ * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
  * @return {JSX.Element}
  * @constructor
  */
 const GridTableSearchBar = ({
   query,
   searchState,
+  filterState,
   toggleAdvancedSearch,
   advancedSearchAnchor,
 }) => {
@@ -154,8 +166,13 @@ const GridTableSearchBar = ({
             <InputAdornment position="end">
               <IconButton
                 onClick={toggleAdvancedSearch}
-                className={clsx(classes.tuneIcon, {
+                className={clsx({
+                  [classes.tuneIcon]: !Object.keys(filterState.filterParameters)
+                    .length,
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
+                  [classes.advancedSearchActive]: !!Object.keys(
+                    filterState.filterParameters
+                  ).length,
                 })}
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
