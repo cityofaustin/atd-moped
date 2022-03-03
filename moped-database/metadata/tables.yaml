@@ -3535,6 +3535,7 @@
       - project_partner
       - status_name
       filter: {}
+      allow_aggregations: true
   - role: moped-editor
     permission:
       columns:
@@ -3565,6 +3566,7 @@
       - updated_at
       - project_uuid
       filter: {}
+      allow_aggregations: true
   - role: moped-viewer
     permission:
       columns:
@@ -3595,3 +3597,4 @@
       - updated_at
       - project_uuid
       filter: {}
+      allow_aggregations: true
