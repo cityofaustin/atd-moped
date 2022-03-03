@@ -48,6 +48,7 @@ const useStyles = makeStyles(theme => ({
   },
   filtersText: {
     fontSize: ".9rem",
+    color: theme.palette.text.secondary,
   },
   filtersSpan: {
     fontWeight: 600,
