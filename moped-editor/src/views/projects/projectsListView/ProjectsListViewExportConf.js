@@ -35,9 +35,4 @@ export const ProjectsListViewExportConf = {
   project_partner: {
     label: "project_partner",
   },
-  start_date: {
-    label: "start_date",
-    filter: value =>
-      new Date(value).toLocaleDateString("en-US", { timeZone: "UTC" }),
-  },
 };

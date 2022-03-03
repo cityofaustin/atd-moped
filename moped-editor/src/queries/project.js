@@ -12,7 +12,6 @@ export const ADD_PROJECT = gql`
       ecapris_subproject_id
       fiscal_year
       capitally_funded
-      start_date
       moped_proj_phases {
         phase_name
         is_current_phase
@@ -35,7 +34,6 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
-      start_date
       current_phase
       current_status
       capitally_funded
