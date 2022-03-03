@@ -211,6 +211,12 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
+      customFilterAndSearch: (term, rowData) => {
+        const displaySignals = rowData.signal_ids
+          .map(s => s.signal_id)
+          .join(" ");
+        return displaySignals.includes(term);
+      },
       render: entry => <RenderSignalLink signals={entry.signal_ids} />,
     },
     {
