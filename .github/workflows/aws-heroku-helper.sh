@@ -146,18 +146,18 @@ function run_database_migration() {
   cat config.yaml;
 
   print_header "Apply Migrations";
-  hasura migrate apply \
+  hasura --skip-update-check migrate apply \
     --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
     --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Metadata";
-  hasura metadata apply \
+  hasura --skip-update-check metadata apply \
     --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
     --endpoint "${HASURA_SERVER_ENDPOINT}";
 
   print_header "Apply Seed data";
   {
-    hasura seeds apply \
+    hasura --skip-update-check seeds apply \
       --admin-secret "${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
       --endpoint "${HASURA_SERVER_ENDPOINT}";
   } || {
