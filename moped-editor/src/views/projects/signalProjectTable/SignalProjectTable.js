@@ -220,7 +220,10 @@ const SignalProjectTable = () => {
       render: entry => {
         if (entry?.project_types?.length) {
           return (
-            <Typography className={classes.tableTypography}>
+            <Typography
+              className={classes.tableTypography}
+              style={{ maxWidth: "155px" }}
+            >
               {entry.project_types.map(t => typeDict[t]).join(", ")}
             </Typography>
           );
@@ -527,7 +530,7 @@ const SignalProjectTable = () => {
               }}
               data={data.moped_project}
               title={
-                <Typography variant="h2" color="primary">
+                <Typography variant="h1" color="primary">
                   Signal projects
                 </Typography>
               }
@@ -540,6 +543,7 @@ const SignalProjectTable = () => {
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
+                pageSizeOptions: [10, 30, 100],
                 headerStyle: {
                   whiteSpace: "nowrap",
                   position: "sticky",
