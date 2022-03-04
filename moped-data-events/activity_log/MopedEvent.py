@@ -47,7 +47,7 @@ class MopedEvent:
           }) {
             affected_rows
           }
-          update_moped_project(where: {project_id: {_eq: $projectRecordId}}, _set: {updated_at: $timestamp}) {
+          update_moped_project(where: {project_id: {_eq: $recordProjectId}}, _set: {updated_at: $timestamp}) {
             affected_rows
           }
         }
