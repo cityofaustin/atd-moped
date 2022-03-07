@@ -121,7 +121,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
   const handleSync = () => {
-    // The following code is capabale of handling a "re-sync" to knack for a given project.
+    // The following code is capable of handling a "re-sync" to knack for a given project.
     // Currently, our UI does not contain an element that allows a user to request a re-sync, but
     // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
     console.log("HTTP method: " + knackHttpMethod);
