@@ -8,4 +8,4 @@ RUN apt-get install -y magic-wormhole vim aptitude
 
 WORKDIR /root
 #CMD tail -f /dev/null
-CMD /root/scripts/pull_down__db.sh
+CMD /root/scripts/pull_down_remote_db.sh
