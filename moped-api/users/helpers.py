@@ -284,7 +284,7 @@ def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
     # Retrieves the full list of users, but removes any azuread emails
     user_list_filtered = list(
         filter(
-            lambda user: "azuread_" not in user["Username"], user_list_response["Users"]
+            lambda user: "azuread_" not in user["Username"], user_list_response
         )
     )
     # Then we extract the emails and cognito_uuid into a list of tuples
