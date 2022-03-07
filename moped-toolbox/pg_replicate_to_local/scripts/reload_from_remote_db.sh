@@ -16,5 +16,5 @@ echo "CREATE EXTENSION postgis" | docker exec -i moped-database_moped-pgsql_1 ps
 # otherwise, you need the following line and to cast the UUIDs into ::text in the exported SQL
 #echo "CREATE EXTENSION pgcrypto" | docker exec -i moped-database_moped-pgsql_1 psql -U moped moped;
 
-cat workspace/heroku_db.sql | docker exec -i moped-database_moped-pgsql_1 psql -U moped -v ON_ERROR_STOP=ON moped;
+cat workspace/db.sql | docker exec -i moped-database_moped-pgsql_1 psql -U moped -v ON_ERROR_STOP=ON moped;
 docker-compose -f ../../moped-database/docker-compose.yml -f ../../moped-database/docker-compose.${PLATFORM}.yml up -d hasura;
