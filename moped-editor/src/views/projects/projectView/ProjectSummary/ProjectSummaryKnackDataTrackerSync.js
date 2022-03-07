@@ -142,7 +142,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       })
       .then(knackRecord => {
         // We've got an ID from the Knack endpoint for this project, so record it in our database
-        // This ID will not have changed is we were merely updating a project
+        // This ID will not have changed as we were merely updating a project
         mutateProjectKnackId({
           variables: {
             project_id: project.project_id,
