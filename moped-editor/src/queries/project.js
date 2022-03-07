@@ -864,6 +864,9 @@ export const UPDATE_PROJECT_KNACK_ID = gql`
   }
 `;
 
+/*
+ *   projectUpdateInput contains status_id, current_status, and current_phase
+ */
 export const PROJECT_UPDATE_STATUS = gql`
   mutation UpdateProjectPhase(
     $projectId: Int!
