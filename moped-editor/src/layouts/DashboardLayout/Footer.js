@@ -24,6 +24,7 @@ const Footer = () => {
       <Typography variant="caption" color="textSecondary">
         Moped{" "}
         <ExternalLink
+          // TODO: round this version number down to last minor release
           text={`v${pckg.version}`}
           url={`https://github.com/cityofaustin/atd-moped/releases/tag/v${pckg.version}`}
           linkColor="inherit"
