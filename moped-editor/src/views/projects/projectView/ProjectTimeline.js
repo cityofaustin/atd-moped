@@ -339,6 +339,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
+      title: "Description",
+      field: "phase_description",
+    },
+    {
       title: "Start date",
       field: "phase_start",
       render: rowData =>
@@ -402,6 +406,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Description",
       field: "milestone_description",
+      render: milestone => (
+        <div style={{ width: "400px" }}>{milestone.milestone_description}</div>
+      ),
     },
     {
       title: "Completion estimate",
