@@ -161,7 +161,6 @@ def user_create_user(claims: list) -> (Response, int):
 
         # Persist the profile in the database
         db_response = db_create_user(user_profile=user_profile)
-        print("DBRESPPNSE ", db_response)
 
         if "errors" in db_response:
             final_response = {
