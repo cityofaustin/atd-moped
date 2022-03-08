@@ -829,8 +829,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   search: false,
                   rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
-                  // tableLayout: "fixed",
-                  // columnResizable: true,
                 }}
                 localization={{
                   header: {
