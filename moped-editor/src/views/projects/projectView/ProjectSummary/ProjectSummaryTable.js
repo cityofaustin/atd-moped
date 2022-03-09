@@ -45,30 +45,11 @@ const ProjectSummaryTable = ({ data, loading, error, refetch }) => {
         },
         style: classes.fieldSelectCapitalize,
       },
-      construction_start: {
-        label: "Construction start",
-        type: "date",
-        placeholder: "Select date",
-        editable: true,
-      },
-      // {
-      //   title: "Construction start",
-      //   field: "construction_start",
-      //   editable: "never",
-      //   cellStyle: typographyStyle,
-      //   render: entry => (
-      //     <RenderFieldLink
-      //       projectId={entry.project_id}
-      //       value={
-      //         entry.construction_start
-      //           ? new Date(entry.construction_start).toLocaleDateString("en-US", {
-      //               timeZone: "UTC",
-      //             })
-      //           : ""
-      //       }
-      //       tab="timeline"
-      //     />
-      //   ),
+      // start_date: {
+      //   label: "Start date",
+      //   type: "date",
+      //   placeholder: "Select date",
+      //   editable: true,
       // },
       capitally_funded: {
         label: "Capital funding",
