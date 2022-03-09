@@ -263,7 +263,7 @@ def get_user_database_ids(response: dict) -> tuple:
     return (database_id, workgroup_id)
 
 
-def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
+def cognito_user_exists(user_list_response: list, user_email: str) -> tuple:
     """
     Retrieves the current list of users in Cognito, and returns True if it can find the
     specified user email. It returns False if it cannot find the user.

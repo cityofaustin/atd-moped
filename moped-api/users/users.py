@@ -44,7 +44,7 @@ def user_list_users() -> (Response, int):
         user_response = []
         for page in user_list_pages:
             for obj in page.get("Users", []):
-                user_response2.append(obj)
+                user_response.append(obj)
         user_list = list(
             filter(lambda user: "azuread_" not in user["Username"], user_response)
         )
