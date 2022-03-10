@@ -34,10 +34,29 @@ let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
  * @constructor
  */
 const ProjectsListView = () => {
+  console.log("project list view");
   const classes = useStyles();
   const navSearchTerm = useLocation()?.state?.searchTerm;
 
   const { data } = useQuery(STATUS_QUERY);
+
+    data?.moped_project.forEach(project => {
+      if (project?.moped_proj_phases?.length) {
+        console.log(project.moped_proj_phases[0]);
+      }
+      // Targeted Construction Start > moped_proj_phases where phase = Construction,
+      // display the phase start date, otherwise leave blank
+      // project["construction_start"] = null;
+      // if (project?.moped_proj_phases?.length) {
+      //   // check for construction phase
+      //   const constructionPhase = project.moped_proj_phases.find(
+      //     p => p.phase_name === "construction"
+      //   );
+      //   if (constructionPhase) {
+      //     project["construction_start"] = constructionPhase.phase_start;
+      //   }
+      // }
+    });
 
   return (
     <Page className={classes.root} title="Projects">
