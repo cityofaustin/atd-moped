@@ -6,4 +6,3 @@ INSERT INTO public.moped_project_roles (
         role_order
     ) VALUES
         (true, 'Signal engineer', 'Develops signal timing plans and monitors signal operations', 17);
-        
