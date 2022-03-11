@@ -111,11 +111,6 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "milestone ID",
         data_type: "integer",
-        //lookup: {
-        //table: "moped_proj_milestones",
-        //fieldLabel: "project_milestone_id",
-        //fieldValues: ["milestone_name"],
-        //},
       },
       status_id: {
         icon: "",
