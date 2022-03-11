@@ -345,7 +345,7 @@ const ProjectActivityLog = () => {
                                             ? getMappedValue(
                                                 change.record_type,
                                                 changeItem.field,
-                                                String(changeItem.old)
+                                                String(changeItem.new)
                                               )
                                             : fieldFormat(changeItem.new)}
                                         </b>
