@@ -857,12 +857,10 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_project: {
     label: () => "Created Project",
   },
-
   moped_proj_personnel: {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
   },
-
   moped_proj_phases: {
     label: record => {
       const recordData = record.record_data.event.data.new;
@@ -873,12 +871,10 @@ export const ProjectActivityLogCreateDescriptions = {
       return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
   },
-
   moped_project_files: {
     label: record =>
       `New file '${record.record_data.event.data.new.file_name}'`,
   },
-
   moped_proj_milestones: {
     label: (record, userList) => {
       return (
@@ -889,7 +885,6 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
-
   moped_proj_notes: {
     label: (record, userList) => {
       // remove HTML tags
@@ -904,7 +899,6 @@ export const ProjectActivityLogCreateDescriptions = {
       return fieldFormat(shortNote, true) + " as a new note";
     },
   },
-
   moped_proj_partners: {
     label: (record, userList) => {
       return (
@@ -913,7 +907,6 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
-
   moped_proj_components: {
     label: (record, userList) => {
       return (
@@ -922,7 +915,6 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
-
   moped_proj_funding: {
     label: (record, userList) => {
       //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
@@ -934,7 +926,6 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
-
   generic: {
     label: record => {
       //console.log(record);
