@@ -106,6 +106,13 @@ const ProjectSummaryKnackDataTrackerSync = ({
           (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
       );
 
+    console.log(project);
+
+    const url = process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+    body[ process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_URL ] = url;
+    body[ process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL ] = project.project_description;
+
+
     Object.keys(fieldMap).forEach(element => {
       body[element] = project[fieldMap[element]];
     });
@@ -114,6 +121,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
     body[
       process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
     ] = signalIds;
+    
+    console.log(body);
     return JSON.stringify(body);
   };
 
