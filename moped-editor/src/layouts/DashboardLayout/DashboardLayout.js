@@ -17,7 +17,9 @@ const useStyles = makeStyles(theme => ({
     display: "flex",
     flex: "1 1 auto",
     overflow: "hidden",
-    paddingTop: 64,
+    // If in staging environment, add extra padding
+    // to make room for staging environment info alert
+    paddingTop: process.env.REACT_APP_HASURA_ENV === "staging" ? 114 : 64,
   },
   contentContainer: {
     display: "flex",
