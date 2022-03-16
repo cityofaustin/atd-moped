@@ -323,6 +323,7 @@ const GridTableSearch = ({
               <GridTableSearchBar
                 query={query}
                 searchState={searchState}
+                filterState={filterState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
               />

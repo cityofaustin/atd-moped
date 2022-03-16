@@ -1,0 +1,3 @@
+knackpy==1.0.*
+requests
+arrow

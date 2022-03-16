@@ -747,13 +747,6 @@
           name: moped_proj_features
           schema: public
         column: project_component_id
-  - name: moped_proj_features_components
-    using:
-      foreign_key_constraint_on:
-        table:
-          name: moped_proj_features_components
-          schema: public
-        column: moped_proj_component_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -831,6 +824,32 @@
       - status_id
       filter: {}
       check: {}
+  event_triggers:
+  - name: activity_log_moped_proj_components
+    definition:
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - component_id
+        - project_component_id
+        - project_id
+        - status_id
+        - description
+        - name
+      enable_manual: false
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - name: MOPED_API_EVENT_NAME
+      value: activity_log
 - table:
     name: moped_proj_components_subcomponents
     schema: public
@@ -1033,14 +1052,6 @@
   - name: moped_proj_component
     using:
       foreign_key_constraint_on: project_component_id
-  array_relationships:
-  - name: moped_proj_features_components
-    using:
-      foreign_key_constraint_on:
-        table:
-          name: moped_proj_features_components
-          schema: public
-        column: moped_proj_features_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -1104,108 +1115,6 @@
       - status_id
       filter: {}
       check: null
-- table:
-    name: moped_proj_features_components
-    schema: public
-  object_relationships:
-  - name: moped_proj_component
-    using:
-      foreign_key_constraint_on: moped_proj_component_id
-  - name: moped_proj_feature
-    using:
-      manual_configuration:
-        remote_table:
-          name: moped_proj_features
-          schema: public
-        column_mapping:
-          moped_proj_features_id: feature_id
-  - name: moped_proj_feature_object
-    using:
-      foreign_key_constraint_on: moped_proj_features_id
-  insert_permissions:
-  - role: moped-admin
-    permission:
-      check: {}
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      backend_only: false
-  - role: moped-editor
-    permission:
-      check: {}
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      backend_only: false
-  select_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      filter: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      filter: {}
-  - role: moped-viewer
-    permission:
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      filter: {}
-  update_permissions:
-  - role: moped-admin
-    permission:
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      filter: {}
-      check: {}
-  - role: moped-editor
-    permission:
-      columns:
-      - project_features_components_id
-      - moped_proj_features_id
-      - moped_proj_component_id
-      - name
-      - description
-      - create_date
-      - status_id
-      filter: {}
-      check: {}
 - table:
     name: moped_proj_financials
     schema: public
@@ -1338,39 +1247,6 @@
       - subproject_status
       filter: {}
       check: null
-  event_triggers:
-  - name: activity_log_moped_proj_financials
-    definition:
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - budget_available
-        - budget_previous
-        - budget_total
-        - expenses_previous
-        - expenses_total
-        - expenses_ytd
-        - financials_id
-        - project_id
-        - ecapris_subproject_id
-        - primary_funding_source
-        - subproject_name
-        - subproject_status
-        - last_updated
-      enable_manual: false
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - name: MOPED_API_EVENT_NAME
-      value: activity_log
 - table:
     name: moped_proj_fiscal_years
     schema: public
@@ -1468,34 +1344,6 @@
       - date_added
       filter: {}
       check: null
-  event_triggers:
-  - name: activity_log_moped_proj_fiscal_years
-    definition:
-      insert:
-        columns: '*'
-      delete:
-        columns: '*'
-      update:
-        columns:
-        - fiscal_year_end
-        - fiscal_year_start
-        - budget_available_at_end
-        - budget_total
-        - expenses_total
-        - project_id
-        - fiscal_year_name
-        - date_added
-      enable_manual: false
-    retry_conf:
-      num_retries: 0
-      interval_sec: 10
-      timeout_sec: 60
-    webhook_from_env: MOPED_API_EVENTS_URL
-    headers:
-    - name: MOPED_API_APIKEY
-      value_from_env: MOPED_API_APIKEY
-    - name: MOPED_API_EVENT_NAME
-      value: activity_log
 - table:
     name: moped_proj_funding
     schema: public
@@ -1626,7 +1474,7 @@
       filter: {}
       check: null
   event_triggers:
-  - name: activity_log_moped_proj_fund_source
+  - name: activity_log_moped_proj_funding
     definition:
       insert:
         columns: '*'
@@ -1641,6 +1489,8 @@
         - funding_status_id
         - project_id
         - proj_funding_id
+        - dept_unit
+        - fund
         - fund_dept_unit
         - funding_description
         - date_added
@@ -1653,6 +1503,8 @@
     headers:
     - name: MOPED_API_APIKEY
       value_from_env: MOPED_API_APIKEY
+    - name: MOPED_API_EVENT_NAME
+      value: activity_log
 - table:
     name: moped_proj_milestones
     schema: public
@@ -1831,6 +1683,46 @@
       - status_id
       filter: {}
       check: {}
+  event_triggers:
+  - name: activity_log_moped_proj_milestones
+    definition:
+      insert:
+        columns: '*'
+      delete:
+        columns: '*'
+      update:
+        columns:
+        - completed
+        - is_current_milestone
+        - milestone_privacy
+        - milestone_end
+        - milestone_estimate
+        - milestone_start
+        - completed_by_user_id
+        - completion_percentage
+        - milestone_order
+        - milestone_priority
+        - milestone_related_phase_id
+        - project_id
+        - project_milestone_id
+        - started_by_user_id
+        - status_id
+        - milestone_date_type
+        - milestone_description
+        - milestone_name
+        - milestone_status
+        - date_added
+      enable_manual: false
+    retry_conf:
+      num_retries: 0
+      interval_sec: 10
+      timeout_sec: 60
+    webhook_from_env: MOPED_API_EVENTS_URL
+    headers:
+    - name: MOPED_API_APIKEY
+      value_from_env: MOPED_API_APIKEY
+    - name: MOPED_API_EVENT_NAME
+      value: activity_log
 - table:
     name: moped_proj_notes
     schema: public
@@ -1938,8 +1830,11 @@
       update:
         columns:
         - added_by
+        - added_by_user_id
         - project_id
         - project_note_id
+        - project_note_type
+        - status_id
         - project_note
         - date_created
       enable_manual: false
@@ -2057,6 +1952,7 @@
         - entity_id
         - project_id
         - proj_partner_id
+        - status_id
         - partner_name
         - date_added
       enable_manual: false
@@ -2393,14 +2289,18 @@
         - phase_start
         - completed_by_user_id
         - completion_percentage
-        - phase_priority
+        - phase_id
         - phase_order
+        - phase_priority
         - project_id
         - project_phase_id
         - started_by_user_id
+        - status_id
+        - subphase_id
         - phase_description
         - phase_name
         - phase_status
+        - subphase_name
         - date_added
       enable_manual: false
     retry_conf:
@@ -2728,23 +2628,34 @@
       update:
         columns:
         - capitally_funded
+        - is_retired
         - end_date
         - start_date
         - added_by
+        - milestone_id
         - project_id
         - project_importance
         - project_length
         - project_order
+        - project_sponsor
+        - status_id
         - timeline_id
+        - task_order
+        - ecapris_subproject_id
+        - contractor
         - current_phase
         - current_status
-        - ecapris_subproject_id
         - fiscal_year
+        - knack_project_id
         - project_description
         - project_description_public
         - project_name
         - project_priority
+        - project_website
+        - purchase_order_number
+        - work_assignment_id
         - date_added
+        - updated_at
         - project_uuid
       enable_manual: false
     retry_conf:
@@ -2913,6 +2824,7 @@
         - is_scanned
         - created_by
         - file_size
+        - file_type
         - project_file_id
         - project_id
         - api_response
@@ -3106,8 +3018,10 @@
       update:
         columns:
         - added_by
+        - id
         - project_id
         - project_type_id
+        - status_id
         - date_added
       enable_manual: false
     retry_conf:
