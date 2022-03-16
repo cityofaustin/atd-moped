@@ -1,4 +1,3 @@
-import React from "react";
 import React, { useEffect, useState } from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import ExternalLink from "../../components/ExternalLink";
@@ -9,12 +8,6 @@ const useStyles = makeStyles(theme => ({
     paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingBottom: theme.spacing(2),
-  },
-  iconStyle: {
-    fontSize: "14px",
-    marginLeft: "2px",
-    position: "relative",
-    bottom: "-3px",
   },
 }));
 
