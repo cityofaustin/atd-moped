@@ -1,4 +1,5 @@
 import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import ExternalLink from "../../components/ExternalLink";
 var pckg = require("../../../package.json");
@@ -19,16 +20,33 @@ const useStyles = makeStyles(theme => ({
 
 const Footer = () => {
   const classes = useStyles();
+  const [mostRecentTag, setMostRecentTag] = useState(`v${pckg.version}`); // use default tag
+
+  useEffect(() => {
+    getMostRecentGithubTags();
+  });
+
+  /**
+   * Async function that updates the mostRecentTag state based on API callto Github "tag" endpoint
+   */
+  const getMostRecentGithubTags = async () => {
+    const githubTagsApiEndpoint =
+      "https://api.github.com/repos/cityofaustin/atd-moped/tags";
+    const response = await fetch(githubTagsApiEndpoint);
+    const data = await response.json();
+    if (data) {
+      setMostRecentTag(data[0].name);
+    }
+  };
+
   return (
     <div className={classes.root}>
       <Typography variant="caption" color="textSecondary">
         Moped{" "}
         <ExternalLink
-          // TODO: round this version number down to last minor release
           text={`v${pckg.version}`}
-          url={`https://github.com/cityofaustin/atd-moped/releases/tag/v${pckg.version}`}
+          url={`https://github.com/cityofaustin/atd-moped/releases/tag/${mostRecentTag}`}
           linkColor="inherit"
-          iconStyle={classes.iconStyle}
         />
       </Typography>
     </div>
