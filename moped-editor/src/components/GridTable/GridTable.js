@@ -55,6 +55,9 @@ const useStyles = makeStyles(theme => ({
     "text-transform": "capitalize",
     "white-space": "pre-wrap",
   },
+  noResults: {
+    borderBottom: 0,
+  }
 }));
 
 /**
@@ -439,7 +442,16 @@ const GridTable = ({
                       handleTableHeaderClick={handleTableHeaderClick}
                     />
                     <TableBody>
-                      {data[query.table].map((row, rowIndex) => {
+                      {data[query.table].length < 1 ?
+/*                        <TableRow>
+                          <TableCell width={"100%"} className={classes.noResults}>*/
+                            <Typography align="center">
+                              {`No ${title.toLowerCase()} found`}
+                            </Typography>
+/*                          </TableCell>
+                        </TableRow>*/
+                        :
+                        data[query.table].map((row, rowIndex) => {
                         return (
                           <TableRow hover key={rowIndex}>
                             {query.columns.map(
