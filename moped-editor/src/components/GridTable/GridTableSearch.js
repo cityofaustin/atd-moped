@@ -33,9 +33,6 @@ const useStyles = makeStyles(theme => ({
   },
   downloadButtonGrid: {
     padding: "12px",
-    [theme.breakpoints.only("sm")]: {
-      padding: 0,
-    },
   },
   downloadCsvButton: {
     height: "43px",
@@ -69,10 +66,6 @@ const useStyles = makeStyles(theme => ({
   },
   gridSearchPadding: {
     padding: "12px",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "0px",
-      paddingTop: "0px",
-    },
   },
 }));
 
