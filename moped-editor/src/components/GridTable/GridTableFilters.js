@@ -57,6 +57,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       margin: 0,
     },
+    minWidth: "100px",
   },
   applyButton: {
     marginTop: theme.spacing(1),

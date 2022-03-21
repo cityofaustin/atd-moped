@@ -38,7 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
   },
   downloadCsvButton: {
-    height: "2.5rem",
+    height: "43px",
   },
   tabStyle: {
     margin: ".5rem",
