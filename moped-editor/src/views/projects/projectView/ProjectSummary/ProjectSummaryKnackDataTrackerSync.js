@@ -109,8 +109,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
     console.log(project);
 
     const url = process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+
+    const url_payload = {
+      "url": url,
+      "label": project.project_description,
+    };
+
     body[ process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_URL ] = url;
     body[ process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL ] = project.project_description;
+    body[ process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL ] = url_payload;
 
 
     Object.keys(fieldMap).forEach(element => {
