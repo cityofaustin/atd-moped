@@ -106,8 +106,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
           (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
       );
 
-    console.log(project);
-
     const url = process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
 
     const url_payload = {
@@ -129,7 +127,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
       process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
     ] = signalIds;
     
-    console.log(body);
     return JSON.stringify(body);
   };
 
