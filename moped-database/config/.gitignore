@@ -1,0 +1,6 @@
+*.*
+!.gitignore
+!primary_key_map.json
+!hasura.local.yaml
+!hasura_cluster_template.json
+!README.md

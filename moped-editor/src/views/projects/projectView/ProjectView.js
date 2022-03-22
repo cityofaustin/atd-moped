@@ -205,6 +205,8 @@ const ProjectView = () => {
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
   const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
+  // clearCurrentNoPhase sets current phase as null on moped_project
+  // and sets phases in moped_proj_phases as is_current_phase: false
   const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
 
   /**
@@ -333,23 +335,23 @@ const ProjectView = () => {
   };
 
   /**
-   * Finds the status_id for a phase name
+   * Finds the status_id for a status name
    * @param {string} phase - The name of the phase
    * @returns {number}
    */
-  const resolveStatusIdForPhase = phase =>
-    data?.moped_status.find(s => s.status_name.toLowerCase() === phase)
+  const resolveStatusIdForStatusName = status =>
+    data?.moped_status.find(s => s.status_name.toLowerCase() === status)
       .status_id ?? 1;
 
   /**
-   * Updates status of the current project
+   * Updates status of the current project to either on-hold or canceled
    */
-  const handleUpdateStatus = current_phase => {
+  const handleUpdateStatus = new_status => {
     updateStatus({
       variables: {
         projectId: projectId,
-        currentStatus: current_phase,
-        statusId: resolveStatusIdForPhase(current_phase),
+        currentStatus: new_status,
+        statusId: resolveStatusIdForStatusName(new_status),
       },
     })
       .then(() =>
@@ -364,7 +366,7 @@ const ProjectView = () => {
         // If there is an error, show it in the dialog
         setDialogContent(
           "Error",
-          `It appears there was an error while changing status to '${current_phase}', please contact the Data & Technology Services department. Reference: ${String(
+          `It appears there was an error while changing status to '${new_status}', please contact the Data & Technology Services department. Reference: ${String(
             err
           )}`,
           <Button onClick={handleDialogClose}>Close</Button>
