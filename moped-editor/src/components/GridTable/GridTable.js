@@ -56,8 +56,9 @@ const useStyles = makeStyles(theme => ({
     "white-space": "pre-wrap",
   },
   noResults: {
-    borderBottom: 0,
-  }
+    paddingTop: "25px",
+    paddingBottom: "16px",
+  },
 }));
 
 /**
@@ -442,104 +443,107 @@ const GridTable = ({
                       handleTableHeaderClick={handleTableHeaderClick}
                     />
                     <TableBody>
-                      {data[query.table].length < 1 ?
-/*                        <TableRow>
-                          <TableCell width={"100%"} className={classes.noResults}>*/
+                      {data[query.table].length < 1 ? (
+                        <TableRow>
+                          <Box className={classes.noResults}>
                             <Typography align="center">
-                              {`No ${title.toLowerCase()} found`}
+                              {query.config.noResultsMessage ??
+                                "No results found"}
                             </Typography>
-/*                          </TableCell>
-                        </TableRow>*/
-                        :
+                          </Box>
+                        </TableRow>
+                      ) : (
                         data[query.table].map((row, rowIndex) => {
-                        return (
-                          <TableRow hover key={rowIndex}>
-                            {query.columns.map(
-                              (column, columnIndex) =>
-                                // If column is hidden, don't render <td>
-                                !query.isHidden(column) && (
-                                  <TableCell
-                                    size="small"
-                                    key={columnIndex}
-                                    width={
-                                      query.config.columns[
-                                        column
-                                      ].hasOwnProperty("width")
-                                        ? query.config.columns[column].width
-                                        : 0
-                                    }
-                                    className={
-                                      query.config.columns[
-                                        column
-                                      ].hasOwnProperty("className")
-                                        ? query.config.columns[column].className
-                                        : classes.tableCell
-                                    }
-                                  >
-                                    {query.isPK(column) ? (
-                                      // If there is custom JSX for the PK single item button, render it
-                                      (query.config.customSingleItemButton &&
-                                        query.config.customSingleItemButton(
-                                          row[column]
-                                        )) || (
-                                        <RouterLink
-                                          to={`/${query.singleItem}/${row[column]}`}
-                                        >
-                                          {query.config.columns[
-                                            column
-                                          ].hasOwnProperty("icon") ? (
-                                            <Icon
-                                              color={
-                                                query.config.columns[column]
-                                                  .icon.color
-                                              }
-                                            >
-                                              {
-                                                query.config.columns[column]
-                                                  .icon.name
-                                              }
-                                            </Icon>
-                                          ) : (
-                                            row[column]
-                                          )}
-                                        </RouterLink>
-                                      )
-                                    ) : query.config.columns[column]?.link ? (
-                                      query.getFormattedValue(
-                                        column,
-                                        buildLinkData(row, column)
-                                      )
-                                    ) : isAlphanumeric(column) ? (
-                                      <>
-                                        {query.config.columns[
+                          return (
+                            <TableRow hover key={rowIndex}>
+                              {query.columns.map(
+                                (column, columnIndex) =>
+                                  // If column is hidden, don't render <td>
+                                  !query.isHidden(column) && (
+                                    <TableCell
+                                      size="small"
+                                      key={columnIndex}
+                                      width={
+                                        query.config.columns[
                                           column
-                                        ].hasOwnProperty("badge")
-                                          ? buildStatusBadge(
-                                              row[column],
-                                              row[
-                                                query.config.columns[column]
-                                                  .badge
-                                              ]
-                                            )
-                                          : query.getFormattedValue(
-                                              column,
+                                        ].hasOwnProperty("width")
+                                          ? query.config.columns[column].width
+                                          : 0
+                                      }
+                                      className={
+                                        query.config.columns[
+                                          column
+                                        ].hasOwnProperty("className")
+                                          ? query.config.columns[column]
+                                              .className
+                                          : classes.tableCell
+                                      }
+                                    >
+                                      {query.isPK(column) ? (
+                                        // If there is custom JSX for the PK single item button, render it
+                                        (query.config.customSingleItemButton &&
+                                          query.config.customSingleItemButton(
+                                            row[column]
+                                          )) || (
+                                          <RouterLink
+                                            to={`/${query.singleItem}/${row[column]}`}
+                                          >
+                                            {query.config.columns[
+                                              column
+                                            ].hasOwnProperty("icon") ? (
+                                              <Icon
+                                                color={
+                                                  query.config.columns[column]
+                                                    .icon.color
+                                                }
+                                              >
+                                                {
+                                                  query.config.columns[column]
+                                                    .icon.name
+                                                }
+                                              </Icon>
+                                            ) : (
                                               row[column]
                                             )}
-                                      </>
-                                    ) : (
-                                      // if column is not alphanumeric
-                                      // it is formatted like a nested query
-                                      query.getFormattedValue(
-                                        column,
-                                        getSummary(row, column.trim())
-                                      )
-                                    )}
-                                  </TableCell>
-                                )
-                            )}
-                          </TableRow>
-                        );
-                      })}
+                                          </RouterLink>
+                                        )
+                                      ) : query.config.columns[column]?.link ? (
+                                        query.getFormattedValue(
+                                          column,
+                                          buildLinkData(row, column)
+                                        )
+                                      ) : isAlphanumeric(column) ? (
+                                        <>
+                                          {query.config.columns[
+                                            column
+                                          ].hasOwnProperty("badge")
+                                            ? buildStatusBadge(
+                                                row[column],
+                                                row[
+                                                  query.config.columns[column]
+                                                    .badge
+                                                ]
+                                              )
+                                            : query.getFormattedValue(
+                                                column,
+                                                row[column]
+                                              )}
+                                        </>
+                                      ) : (
+                                        // if column is not alphanumeric
+                                        // it is formatted like a nested query
+                                        query.getFormattedValue(
+                                          column,
+                                          getSummary(row, column.trim())
+                                        )
+                                      )}
+                                    </TableCell>
+                                  )
+                              )}
+                            </TableRow>
+                          );
+                        })
+                      )}
                     </TableBody>
                   </Table>
                 </TableContainer>
