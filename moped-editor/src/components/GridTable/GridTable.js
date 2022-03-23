@@ -445,12 +445,12 @@ const GridTable = ({
                     <TableBody>
                       {data[query.table].length < 1 ? (
                         <TableRow>
-                          <Box className={classes.noResults}>
+                          <TableCell colSpan={8} className={classes.noResults}>
                             <Typography align="center">
                               {query.config.noResultsMessage ??
                                 "No results found"}
                             </Typography>
-                          </Box>
+                          </TableCell>
                         </TableRow>
                       ) : (
                         data[query.table].map((row, rowIndex) => {
