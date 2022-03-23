@@ -39,11 +39,14 @@ def user_list_users() -> (Response, int):
     if is_valid_user(current_cognito_jwt):
         cognito_client = boto3.client("cognito-idp")
 
-        user_response = cognito_client.list_users(UserPoolId=USER_POOL)
+        user_list_paginator = cognito_client.get_paginator("list_users")
+        user_list_pages = user_list_paginator.paginate(UserPoolId=USER_POOL)
+        user_response = []
+        for page in user_list_pages:
+            for obj in page.get("Users", []):
+                user_response.append(obj)
         user_list = list(
-            filter(
-                lambda user: "azuread_" not in user["Username"], user_response["Users"]
-            )
+            filter(lambda user: "azuread_" not in user["Username"], user_response)
         )
         return jsonify(user_list)
     else:
@@ -94,7 +97,12 @@ def user_create_user(claims: list) -> (Response, int):
             return jsonify({"error": profile_error_feedback}), 400
 
         # Gather the existing user list
-        user_list_response = cognito_client.list_users(UserPoolId=USER_POOL)
+        user_list_paginator = cognito_client.get_paginator("list_users")
+        user_list_pages = user_list_paginator.paginate(UserPoolId=USER_POOL)
+        user_list_response = []
+        for page in user_list_pages:
+            for obj in page.get("Users", []):
+                user_list_response.append(obj)
 
         json_data = request.json
         password = json_data["password"]
@@ -117,12 +125,13 @@ def user_create_user(claims: list) -> (Response, int):
                     UserPoolId=USER_POOL,
                     Username=email,
                     TemporaryPassword=password,
+                    MessageAction="SUPPRESS",
                     UserAttributes=[
                         {"Name": "email", "Value": email},
                         {"Name": "email_verified", "Value": "true"},
                     ],
                 )
-                # Then  we must set the user password
+                # Then we must set the user password
                 cognito_username = cognito_response["User"]["Username"]
                 cognito_client.admin_set_user_password(
                     UserPoolId=USER_POOL,
@@ -132,9 +141,8 @@ def user_create_user(claims: list) -> (Response, int):
                 )
                 # Copy the username to the UUID variable
                 user_cognito_uuid = cognito_username
-
-            # The account already exists in Cognito, skip this step
         except ClientError as e:
+            # The account already exists in Cognito, skip this step
             if e.response["Error"]["Code"] == "UsernameExistsException":
                 return jsonify(e.response), 400  # Bad request
             elif e.response["Error"]["Code"] == "InvalidPasswordException":
