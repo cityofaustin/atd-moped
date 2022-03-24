@@ -134,16 +134,16 @@ const useStyles = makeStyles(theme => ({
     width: "300px",
     fontSize: ".875em",
     "& .MuiAutocomplete-inputRoot": {
-      marginBottom: "16px"
+      marginBottom: "16px",
     },
     "& .MuiFormLabel-root": {
-      color: theme.palette.text.primary
-    }
+      color: theme.palette.text.primary,
+    },
   },
   fundSelectStyle: {
     width: "8em",
-    border: "1px green solid"
-  }
+    border: "1px green solid",
+  },
 }));
 
 const ProjectFundingTable = () => {
@@ -221,7 +221,7 @@ const ProjectFundingTable = () => {
     updateProjectTaskOrders({
       variables: {
         projectId: projectId,
-        taskOrders: taskOrderData.filter(t => t.id !== task.id),
+        taskOrders: taskOrderData.filter(t => t.task_order !== task.task_order),
       },
     })
       .then(() => refetch())
@@ -257,7 +257,7 @@ const ProjectFundingTable = () => {
         taskOrders: [
           ...taskOrderData,
           ...newTaskOrderList.filter(
-            n => !taskOrderData.find(t => t.id === n.id)
+            n => !taskOrderData.find(t => t.task_order === n.task_order)
           ),
         ],
       },
