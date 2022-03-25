@@ -52,6 +52,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
       // Remove any HTML tags
+      console.log(note);
+      console.log(data?.moped_project[0].moped_proj_notes[lastItem]["added_by"]);
       return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
     }
     return null;
