@@ -61,6 +61,8 @@ export const SUMMARY_QUERY = gql`
       ) {
         project_note_id
         project_note
+        added_by
+        date_created
       }
       moped_project_types(where: { status_id: { _eq: 1 } }) {
         id

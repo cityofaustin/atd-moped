@@ -43,7 +43,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * @param {String} fieldName - The name of the field to retrieve in the moped_proj_note object
    * @return {string|null}
    */
-  const getStatusUpdate = (fieldName = "project_note") => {
+  const getStatusUpdate = fieldName => {
     const lastItem =
       (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
@@ -52,8 +52,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
       // Remove any HTML tags
-      console.log(note);
-      console.log(data?.moped_project[0].moped_proj_notes[lastItem]["added_by"]);
       return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
     }
     return null;
@@ -62,7 +60,15 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   /**
    * Status Update State Variables
    */
-  const [statusUpdate, setStatusUpdate] = useState(getStatusUpdate());
+  const [statusUpdate, setStatusUpdate] = useState(
+    getStatusUpdate("project_note")
+  );
+  const [statusUpdateAuthor, setStatusUpdateAuthor] = useState(
+    getStatusUpdate("added_by")
+  );
+  const [statusUpdateDate, setStatusUpdateDate] = useState(
+    getStatusUpdate("date_created")
+  );
   const [statusUpdateAddNew, setStatusUpdateAddNew] = useState(false);
   const [statusUpdateEditable, setStatusUpdateEditable] = useState(false);
 
@@ -135,7 +141,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    */
   const handleStatusUpdateCancel = () => {
     // Retrieve original value
-    setStatusUpdate(getStatusUpdate());
+    setStatusUpdate(getStatusUpdate("project_note"));
     // Reset edit-mode state
     setStatusUpdateEditable(false);
     setStatusUpdateAddNew(false);
@@ -173,6 +179,11 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
               <span className={classes.fieldLabelTextSpan}>
                 {statusUpdate || "None"}
               </span>
+            </Typography>
+            <Typography className={classes.fieldBoxTypography}>
+              <span>{!!statusUpdate && statusUpdateAuthor}</span>
+              <span>{!!statusUpdate && statusUpdateDate}</span>
+
             </Typography>
           </Box>
         )}
