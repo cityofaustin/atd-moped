@@ -44,6 +44,8 @@ const ProjectSummaryProjectTypes = ({
     {}
   );
 
+  console.log(typeDict);
+
   // Original Types: array of moped_type objects
   const originalTypes = data?.moped_project[0]?.moped_project_types ?? [];
   // Original Types Ids: array of ids (ints)
