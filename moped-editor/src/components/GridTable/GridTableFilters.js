@@ -39,9 +39,10 @@ const useStyles = makeStyles(theme => ({
   },
   deleteButton: {
     marginTop: theme.spacing(1),
+    color: theme.palette.text.primary,
   },
   deleteIcon: {
-    fontSize: "2rem",
+    fontSize: "1em",
   },
   gridItemPadding: {
     paddingTop: "2px",
@@ -57,6 +58,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.down("sm")]: {
       margin: 0,
     },
+    minWidth: "100px",
   },
   applyButton: {
     marginTop: theme.spacing(1),
@@ -131,7 +133,7 @@ const GridTableFilters = ({
     value: null,
     type: null,
     specialNullValue: null,
-    label:null,
+    label: null,
   };
 
   /**
@@ -182,7 +184,7 @@ const GridTableFilters = ({
         filtersNewState[filterId].field = fieldDetails.name;
         filtersNewState[filterId].type = fieldDetails.type;
         filtersNewState[filterId].placeholder = fieldDetails.placeholder;
-        filtersNewState[filterId].label = fieldDetails.label
+        filtersNewState[filterId].label = fieldDetails.label;
 
         // Update Available Operators
         if (
@@ -418,7 +420,7 @@ const GridTableFilters = ({
               className={classes.filtersContainer}
             >
               {/*Select Field to search from drop-down menu*/}
-              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
+              <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <InputLabel
                     id={`filter-field-select-${filterId}-label`}
@@ -459,7 +461,7 @@ const GridTableFilters = ({
               </Grid>
 
               {/*Select the operator from drop-down menu*/}
-              <Grid item xs={12} lg={3} className={classes.gridItemPadding}>
+              <Grid item xs={12} md={3} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
@@ -497,7 +499,7 @@ const GridTableFilters = ({
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} lg={4} className={classes.gridItemPadding}>
+              <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl
                   fullWidth
                   variant="outlined"
@@ -521,8 +523,8 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Hidden mdDown>
-                <Grid item xs={12} lg={1} style={{ textAlign: "center" }}>
+              <Hidden smDown>
+                <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
@@ -531,11 +533,11 @@ const GridTableFilters = ({
                   </IconButton>
                 </Grid>
               </Hidden>
-              <Hidden lgUp>
+              <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
                     fullWidth
-                    className={classes.filterButton}
+                    className={classes.deleteButton}
                     variant="outlined"
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                   >
@@ -548,7 +550,7 @@ const GridTableFilters = ({
         );
       })}
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
-        <Grid item xs={12} lg={2}>
+        <Grid item xs={12} md={2}>
           <Button
             className={classes.bottomButton}
             fullWidth
@@ -560,7 +562,7 @@ const GridTableFilters = ({
             Add Filter
           </Button>
         </Grid>
-        <Grid item xs={12} lg={1}>
+        <Grid item xs={12} md={1}>
           {Object.keys(filterParameters).length > 0 && (
             <Button
               className={classes.bottomButton}
@@ -573,12 +575,12 @@ const GridTableFilters = ({
             </Button>
           )}
         </Grid>
-        <Hidden mdDown>
-          <Grid item xs={12} lg={7}>
+        <Hidden smDown>
+          <Grid item xs={12} md={7}>
             {""}
           </Grid>
         </Hidden>
-        <Grid item xs={12} lg={2}>
+        <Grid item xs={12} md={2}>
           {Object.keys(filterParameters).length > 0 && (
             <Grow in={handleApplyValidation() === null}>
               <Button
