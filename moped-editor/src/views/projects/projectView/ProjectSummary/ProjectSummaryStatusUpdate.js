@@ -176,8 +176,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             </Typography>
             <Typography className={classes.fieldBoxTypography}>
               <span>{!!statusUpdate && getStatusUpdate("added_by")}</span>
-              <span>{!!statusUpdate && getStatusUpdate("date_created")}</span>
-
+              <span>{!!statusUpdate && new Date(getStatusUpdate("date_created")).toLocaleDateString('en-us', {year:"numeric", month:"long", day:"numeric"})}</span>
             </Typography>
           </Box>
         )}
