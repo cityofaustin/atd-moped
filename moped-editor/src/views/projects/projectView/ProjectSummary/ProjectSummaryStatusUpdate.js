@@ -47,6 +47,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     const lastItem =
       (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
+      console.log(data?.moped_project[0].moped_proj_notes)
+      console.log(data?.moped_project[0].moped_proj_notes[lastItem])
       // Get the data from the note
       const note = data
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
@@ -181,8 +183,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
               </span>
             </Typography>
             <Typography className={classes.fieldBoxTypography}>
-              <span>{!!statusUpdate && statusUpdateAuthor}</span>
-              <span>{!!statusUpdate && statusUpdateDate}</span>
+              <span>{!!statusUpdate && getStatusUpdate("added_by")}</span>
+              <span>{!!statusUpdate && getStatusUpdate("date_created")}</span>
 
             </Typography>
           </Box>
