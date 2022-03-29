@@ -103,7 +103,7 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
-    moped_types {
+    moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
     }

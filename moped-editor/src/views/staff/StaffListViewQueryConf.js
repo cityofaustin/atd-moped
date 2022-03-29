@@ -22,6 +22,7 @@ export const StaffListViewQueryConf = {
   showExport: true,
   showNewItemButton: true,
   customNewItemButton: newItemButton,
+  noResultsMessage: "No staff found.",
   showPagination: false, // False disables pagination entirely
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
