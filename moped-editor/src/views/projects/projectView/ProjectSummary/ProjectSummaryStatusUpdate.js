@@ -47,8 +47,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     const lastItem =
       (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
-      console.log(data?.moped_project[0].moped_proj_notes)
-      console.log(data?.moped_project[0].moped_proj_notes[lastItem])
       // Get the data from the note
       const note = data
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
@@ -64,12 +62,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    */
   const [statusUpdate, setStatusUpdate] = useState(
     getStatusUpdate("project_note")
-  );
-  const [statusUpdateAuthor, setStatusUpdateAuthor] = useState(
-    getStatusUpdate("added_by")
-  );
-  const [statusUpdateDate, setStatusUpdateDate] = useState(
-    getStatusUpdate("date_created")
   );
   const [statusUpdateAddNew, setStatusUpdateAddNew] = useState(false);
   const [statusUpdateEditable, setStatusUpdateEditable] = useState(false);
