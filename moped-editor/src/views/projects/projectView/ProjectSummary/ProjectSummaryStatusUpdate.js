@@ -174,21 +174,22 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                 {statusUpdate || "None"}
               </span>
             </Typography>
-            <Typography>
-              <span className={classes.fieldAuthor}>
-                {!!statusUpdate && getStatusUpdate("added_by")}
-              </span>
-              <span className={classes.fieldLabel}>
-                {!!statusUpdate &&
-                  new Date(getStatusUpdate("date_created"))
+            {!!statusUpdate && (
+              <Typography>
+                <span className={classes.fieldAuthor}>
+                  {getStatusUpdate("added_by")}
+                </span>
+                <span className={classes.fieldLabel}>
+                  {new Date(getStatusUpdate("date_created"))
                     .toLocaleDateString("en-us", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })
                     .toUpperCase()}
-              </span>
-            </Typography>
+                </span>
+              </Typography>
+            )}
           </Box>
         )}
         {/*Add New Button*/}
