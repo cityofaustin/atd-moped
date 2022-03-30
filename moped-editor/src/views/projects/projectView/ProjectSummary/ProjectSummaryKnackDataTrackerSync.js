@@ -106,6 +106,21 @@ const ProjectSummaryKnackDataTrackerSync = ({
           (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
       );
 
+    const url =
+      process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+
+    const url_payload = {
+      url: url,
+      label: project.project_description,
+    };
+
+    body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_URL] = url;
+    body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL] =
+      project.project_description;
+    body[
+      process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL
+    ] = url_payload;
+
     Object.keys(fieldMap).forEach(element => {
       body[element] = project[fieldMap[element]];
     });
@@ -114,6 +129,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
     body[
       process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
     ] = signalIds;
+
     return JSON.stringify(body);
   };
 
@@ -121,7 +137,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
   const handleSync = () => {
-    // The following code is capabale of handling a "re-sync" to knack for a given project.
+    // The following code is capable of handling a "re-sync" to knack for a given project.
     // Currently, our UI does not contain an element that allows a user to request a re-sync, but
     // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
     console.log("HTTP method: " + knackHttpMethod);
@@ -142,7 +158,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
       })
       .then(knackRecord => {
         // We've got an ID from the Knack endpoint for this project, so record it in our database
-        // This ID will not have changed is we were merely updating a project
+        // This ID will not have changed as we were merely updating a project
         mutateProjectKnackId({
           variables: {
             project_id: project.project_id,

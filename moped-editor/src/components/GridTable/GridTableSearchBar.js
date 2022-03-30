@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import {
   Button,
+  Box,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -10,6 +11,7 @@ import {
   Icon,
   IconButton,
   makeStyles,
+  Typography,
 } from "@material-ui/core";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
@@ -22,15 +24,35 @@ import clsx from "clsx";
 const useStyles = makeStyles(theme => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
-    height: "44px",
-    width: "44px",
+    height: "33px",
+    width: "33px",
+    color: "rgba(0, 0, 0, 0.54)",
+  },
+  advancedSearchActive: {
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.background.paper,
+    height: "33px",
+    width: "33px",
   },
   tuneIcon: {
-    height: "44px",
-    width: "44px",
+    height: "33px",
+    width: "33px",
+    color: "rgba(0, 0, 0, 0.54)",
   },
   searchButton: {
     marginTop: "12px",
+  },
+  filtersList: {
+    padding: "8px",
+    marginRight: "12px",
+  },
+  filtersText: {
+    fontSize: ".9rem",
+    color: theme.palette.text.secondary,
+  },
+  filtersSpan: {
+    fontWeight: 600,
+    textTransform: "uppercase",
   },
 }));
 
@@ -38,12 +60,16 @@ const useStyles = makeStyles(theme => ({
  * Renders a search bar with optional filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
  * @param {Object} searchState - The current state/state-modifier bundle for search
+ * @param {Object} filterState - The current state/state-modifier bundle for filter
+ * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
+ * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
  * @return {JSX.Element}
  * @constructor
  */
 const GridTableSearchBar = ({
   query,
   searchState,
+  filterState,
   toggleAdvancedSearch,
   advancedSearchAnchor,
 }) => {
@@ -130,6 +156,14 @@ const GridTableSearchBar = ({
     }
   };
 
+  const filterStateActive = !!Object.keys(filterState.filterParameters).length;
+  const filtersApplied = [];
+  if (filterStateActive) {
+    Object.keys(filterState.filterParameters).map(parameter =>
+      filtersApplied.push(filterState.filterParameters[parameter]["label"])
+    );
+  }
+
   return (
     <>
       <TextField
@@ -154,8 +188,10 @@ const GridTableSearchBar = ({
             <InputAdornment position="end">
               <IconButton
                 onClick={toggleAdvancedSearch}
-                className={clsx(classes.tuneIcon, {
+                className={clsx({
+                  [classes.tuneIcon]: !filterStateActive,
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
+                  [classes.advancedSearchActive]: filterStateActive,
                 })}
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
@@ -167,6 +203,16 @@ const GridTableSearchBar = ({
         variant="outlined"
         value={searchFieldValue}
       />
+      {filterStateActive && (
+        <Box className={classes.filtersList}>
+          <Typography align="right" className={classes.filtersText}>
+            Filtered by{" "}
+            <span className={classes.filtersSpan}>{`${filtersApplied.join(
+              ", "
+            )}`}</span>
+          </Typography>
+        </Box>
+      )}
       <Hidden smUp>
         <Button
           className={classes.searchButton}

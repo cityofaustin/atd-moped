@@ -27,6 +27,7 @@ export const ProjectsListViewQueryConf = {
   showFilters: false,
   showExport: true,
   showNewItemButton: false,
+  noResultsMessage: "No projects found. Canceled projects are not shown.",
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],

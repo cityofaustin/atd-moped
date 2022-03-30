@@ -10,7 +10,6 @@ export function useUserApi() {
   const { user } = useUser();
 
   const requestApi = ({ method, path, payload, callback }) => {
-    // Use local API dev server for now
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
     const jwt = getJwt(user);

@@ -211,16 +211,31 @@ const SignalProjectTable = () => {
       editable: "never",
       // cell style font needs to be set if editable is never
       cellStyle: typographyStyle,
+      customFilterAndSearch: (term, rowData) => {
+        const displaySignals = rowData.signal_ids
+          .map(s => s.signal_id)
+          .join(" ");
+        return displaySignals.includes(term);
+      },
       render: entry => <RenderSignalLink signals={entry.signal_ids} />,
     },
     {
       title: "Project types",
       field: "project_types",
       customEdit: "projectTypes",
+      customFilterAndSearch: (term, rowData) => {
+        const displayProjectTypes = rowData.project_types
+          .map(t => typeDict[t])
+          .join(" ");
+        return displayProjectTypes.toUpperCase().includes(term.toUpperCase());
+      },
       render: entry => {
         if (entry?.project_types?.length) {
           return (
-            <Typography className={classes.tableTypography}>
+            <Typography
+              className={classes.tableTypography}
+              style={{ maxWidth: "155px" }}
+            >
               {entry.project_types.map(t => typeDict[t]).join(", ")}
             </Typography>
           );
@@ -246,6 +261,14 @@ const SignalProjectTable = () => {
       field: "task_order",
       customEdit: "taskOrders",
       emptyValue: "-",
+      customFilterAndSearch: (term, rowData) => {
+        const displayTaskOrders = rowData.task_order
+          ? rowData.task_order
+              .map(taskOrder => taskOrder.display_name)
+              .join(" ")
+          : "";
+        return displayTaskOrders.toUpperCase().includes(term.toUpperCase());
+      },
       render: entry => {
         // Empty value won't work in some cases where task_order is an empty array.
         if (entry.task_order.length < 1) {
@@ -298,6 +321,11 @@ const SignalProjectTable = () => {
     {
       title: "Project sponsor",
       field: "project_sponsor_object",
+      customFilterAndSearch: (term, rowData) => {
+        return rowData.project_sponsor_object.entity_name
+          .toUpperCase()
+          .includes(term.toUpperCase());
+      },
       render: entry => (
         <Typography className={classes.tableTypography}>
           {entry?.project_sponsor_object?.entity_name === "None"
@@ -527,7 +555,7 @@ const SignalProjectTable = () => {
               }}
               data={data.moped_project}
               title={
-                <Typography variant="h2" color="primary">
+                <Typography variant="h1" color="primary">
                   Signal projects
                 </Typography>
               }
@@ -536,10 +564,11 @@ const SignalProjectTable = () => {
                   paging: false,
                 }),
                 search: true,
-                filtering: false,
+                filtering: true,
                 rowStyle: typographyStyle,
                 actionsColumnIndex: -1,
                 pageSize: 30,
+                pageSizeOptions: [10, 30, 100],
                 headerStyle: {
                   whiteSpace: "nowrap",
                   position: "sticky",

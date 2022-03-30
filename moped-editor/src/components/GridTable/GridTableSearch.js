@@ -33,12 +33,9 @@ const useStyles = makeStyles(theme => ({
   },
   downloadButtonGrid: {
     padding: "12px",
-    [theme.breakpoints.only("sm")]: {
-      padding: 0,
-    },
   },
   downloadCsvButton: {
-    height: "2.5rem",
+    height: "43px",
   },
   tabStyle: {
     margin: ".5rem",
@@ -69,10 +66,6 @@ const useStyles = makeStyles(theme => ({
   },
   gridSearchPadding: {
     padding: "12px",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "0px",
-      paddingTop: "0px",
-    },
   },
 }));
 
@@ -323,6 +316,7 @@ const GridTableSearch = ({
               <GridTableSearchBar
                 query={query}
                 searchState={searchState}
+                filterState={filterState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
               />

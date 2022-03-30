@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
+  fieldFormat,
   getCreationLabel,
   getOperationName,
   getChangeIcon,
@@ -45,8 +46,12 @@ const useStyles = makeStyles(theme => ({
   tableCell: {
     verticalAlign: "top",
   },
+  updateGridEntries: {
+    display: "block",
+    padding: "0 0 0 .5rem",
+  },
   tableChangeItem: {
-    padding: "0 .5rem",
+    padding: "0 .5rem 0 0",
   },
   avatarSmall: {
     width: theme.spacing(4),
@@ -71,7 +76,6 @@ const ProjectActivityLog = () => {
     getLookups,
     lookupLoading,
     lookupError,
-    lookupMap,
   } = useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
@@ -281,7 +285,10 @@ const ProjectActivityLog = () => {
                             </Icon>
                           </Box>
                           <Box p={0} flexGrow={1}>
-                            <Grid container>
+                            <Grid
+                              container
+                              className={classes.updateGridEntries}
+                            >
                               {Array.isArray(change.description) &&
                                 change.description.length === 0 && (
                                   <Grid
@@ -315,10 +322,9 @@ const ProjectActivityLog = () => {
                                             change.record_type,
                                             changeItem.field
                                           )}
-                                        </b>{" "}
-                                        from{" "}
+                                        </b>
+                                        &nbsp;from&nbsp;
                                         <b>
-                                          &quot;
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -328,15 +334,10 @@ const ProjectActivityLog = () => {
                                                 changeItem.field,
                                                 String(changeItem.old)
                                               )
-                                            : lookupMap?.[change.record_type]?.[
-                                                changeItem.field
-                                              ]?.[changeItem.old] ||
-                                              String(changeItem.old)}
-                                          &quot;
-                                        </b>{" "}
-                                        to{" "}
+                                            : fieldFormat(changeItem.old)}
+                                        </b>
+                                        &nbsp;to&nbsp;
                                         <b>
-                                          &quot;
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -346,11 +347,7 @@ const ProjectActivityLog = () => {
                                                 changeItem.field,
                                                 String(changeItem.new)
                                               )
-                                            : lookupMap?.[change.record_type]?.[
-                                                changeItem.field
-                                              ]?.[changeItem.new] ||
-                                              String(changeItem.new)}
-                                          &quot;
+                                            : fieldFormat(changeItem.new)}
                                         </b>
                                       </>
                                     )}

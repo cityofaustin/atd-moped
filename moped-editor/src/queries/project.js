@@ -101,7 +101,7 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
-    moped_types {
+    moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
     }
@@ -257,6 +257,7 @@ export const TIMELINE_QUERY = gql`
       phase_end
       subphase_name
       subphase_id
+      phase_description
     }
     moped_milestones(where: { milestone_id: { _gt: 0 } }) {
       milestone_id
@@ -283,6 +284,7 @@ export const TIMELINE_QUERY = gql`
 
 export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
+    $phase_description: String
     $is_current_phase: Boolean
     $phase_start: date = null
     $phase_end: date = null
@@ -294,6 +296,7 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
       _set: {
+        phase_description: $phase_description
         is_current_phase: $is_current_phase
         phase_start: $phase_start
         phase_end: $phase_end
@@ -310,6 +313,7 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       subphase_id
       subphase_name
       is_current_phase
+      phase_description
     }
   }
 `;
@@ -371,6 +375,7 @@ export const ADD_PROJECT_PHASE = gql`
     insert_moped_proj_phases(objects: $objects) {
       returning {
         phase_name
+        phase_description
         phase_start
         phase_end
         project_phase_id
@@ -871,6 +876,9 @@ export const UPDATE_PROJECT_KNACK_ID = gql`
   }
 `;
 
+/*
+ *   projectUpdateInput contains status_id, current_status, and current_phase
+ */
 export const PROJECT_UPDATE_STATUS = gql`
   mutation UpdateProjectPhase(
     $projectId: Int!
