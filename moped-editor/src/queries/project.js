@@ -124,15 +124,6 @@ export const STATUS_QUERY = gql`
       status_id
       status_name
     }
-    moped_project {
-      moped_proj_phases(where: { phase_name: { _eq: "construction" } }) {
-        phase_name
-        is_current_phase
-        phase_start
-        phase_end
-        project_id
-      }
-    }
   }
 `;
 
