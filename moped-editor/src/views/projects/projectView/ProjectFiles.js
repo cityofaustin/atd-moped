@@ -16,7 +16,7 @@ import {
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import typography from "../../../theme/typography";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
