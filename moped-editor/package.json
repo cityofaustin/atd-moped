@@ -73,7 +73,6 @@
     "lodash.foreach": "^4.5.0",
     "lodash.get": "^4.4.2",
     "lodash.toarray": "^4.4.0",
-    "material-table": "^1.69.2",
     "nprogress": "^0.2.0",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
