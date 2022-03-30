@@ -14,7 +14,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import MaterialTable, { MTableEditRow, MTableEditField } from "material-table";
+import MaterialTable, { MTableEditRow, MTableEditField } from "@material-table/core";
 
 import Page from "src/components/Page";
 import { useWindowResize } from "src/utils/materialTableHelpers.js";

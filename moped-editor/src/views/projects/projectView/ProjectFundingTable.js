@@ -25,7 +25,7 @@ import {
 } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
