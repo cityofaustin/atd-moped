@@ -14,7 +14,6 @@ import {
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import typography from "../../../theme/typography";
 
-// Abstract & GridTable
 import { useQuery } from "@apollo/client";
 import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
@@ -24,6 +23,7 @@ import ExternalLink from "../../../components/ExternalLink";
 
 import MaterialTable from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
+import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 /**
  * GridTable Style
@@ -357,6 +357,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
+  console.log(query.query)
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -399,6 +401,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     search: false,
                     rowStyle: {
                       fontFamily: typography.fontFamily,
+                    },
+                    ...(data[query.table].length < PAGING_DEFAULT_COUNT + 1 && {
+                      paging: false,
+                    }),
+                    pageSize: 30,
+                    pageSizeOptions: [10, 30, 100],
+                    headerStyle: {
+                      whiteSpace: "nowrap",
+                      position: "sticky",
+                      top: 0,
                     },
                   }}
                 />
