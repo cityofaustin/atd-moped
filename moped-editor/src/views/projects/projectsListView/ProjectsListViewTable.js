@@ -135,14 +135,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
-  // // Set limit, offset and clear any 'Where' filters
-  // if (query.config.showPagination) {
-  //   query.limit = pagination.limit;
-  //   query.offset = pagination.offset;
-  // } else {
-  //   query.limit = 0;
-  // }
-
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
@@ -204,77 +196,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.setWhere(field, `${gqlOperator}: ${value}`);
   });
 
-  // /**
-  //  * Returns true if the input string is a valid alphanumeric object key
-  //  * @param {string} input - The string to be tested
-  //  * @returns {boolean}
-  //  */
-  // const isAlphanumeric = input => input.match(/^[0-9a-zA-Z\-_]+$/) !== null;
-
-  // /**
-  //  * Extracts a list of keys in a graphql expression
-  //  * @param {string} exp - The expression
-  //  * @returns {Array}
-  //  */
-  // const listKeys = exp =>
-  //   exp.split(/[{} ]+/).filter(n => isAlphanumeric(n) && n !== "");
-
-  // *
-  //  * Returns the value of a data structure based on the list of keys provided
-  //  * @param {object} obj - the item from the row section
-  //  * @param {Array} keys - the list of keys
-  //  * @returns {*}
-
-  // const responseValue = (obj, keys) => {
-  //   for (let k = 1; k < keys.length; k++) {
-  //     try {
-  //       obj = obj[keys[k]];
-  //     } catch {
-  //       obj = null;
-  //     }
-  //   }
-  //   return obj;
-  // };
-
-  // /**
-  //  * Extracts the value (or summary of values) for nested field names
-  //  * @param {object} obj - The dataset current object (the table row)
-  //  * @param {string} exp - The graphql expression (from the column name)
-  //  * @returns {string}
-  //  */
-  // const getSummary = (obj, exp) => {
-  //   let result = [];
-  //   let map = new Map();
-  //   const keys = listKeys(exp);
-
-  //   // First we need to get to the specific section of the dataset object
-  //   // The first key is the outermost nested part of the graphql query
-  //   const section = obj[keys[0]];
-
-  //   // Bypass value extraction if column value should be "stringified"
-  //   if (query.config.columns[exp]?.stringify) {
-  //     return JSON.stringify(section);
-  //   }
-
-  //   // If not an array, resolve its value
-  //   if (!Array.isArray(section)) {
-  //     // Return direct value
-  //     return responseValue(section, keys);
-  //   }
-
-  //   // If it is an array, resolve each and aggregate
-  //   for (let item of section) {
-  //     let val = responseValue(item, keys);
-
-  //     if (val !== null) {
-  //       map.set(val, true);
-  //       result.push(val);
-  //     }
-  //   }
-  //   // Merge all into a string
-  //   return result.join(", ");
-  // };
-
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
    * @param {string} phase - A project's current phase
@@ -297,8 +218,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.gql,
     query.config.options.useQuery
   );
-
-  console.log(data);
 
   const columns = [
     {
@@ -357,8 +276,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  console.log(query.query)
-
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -398,6 +315,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                   columns={columns}
                   data={data[query.table]}
                   options={{
+                    toolbar: false,
                     search: false,
                     rowStyle: {
                       fontFamily: typography.fontFamily,
