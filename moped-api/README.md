@@ -44,6 +44,8 @@ $ pip install -r requirements/development.txt
 
 This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.
 
+Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console.
+
 Running the API (with hot-reload)
 Once the installation of the requirements is done, you are ready to launch the application using this command:
 
@@ -147,7 +149,7 @@ from flask_cognito import cognito_auth_required, current_cognito_jwt
 ```
 1) **cognito_auth_required**: This is a decorator that populates the value of a global thread variable (local) with the decoded JWT token.
 
-2) **current_cognito_jwt**: This is a helper function, basically it can safely access the place in memory where the JWT token is stored. This is a lambda function that returns a class of type LocalProxy, which wraps the dictionary value we are looking for. To access the decoded token value as a dictionary, use the _get_current_objec() method.
+2) **current_cognito_jwt**: This is a helper function, basically it can safely access the place in memory where the JWT token is stored. This is a lambda function that returns a class of type LocalProxy, which wraps the dictionary value we are looking for. To access the decoded token value as a dictionary, use the `_get_current_object()` method.
 
 Example:
 ```python
@@ -174,7 +176,7 @@ def auth_example() -> str:
 ### Custom Decorators
 One thing I have discovered with Hasura and Cognito, is that the Hasura claims are not a normal JSON document, in fact, the JWT token wraps the Hasura claims in a nested JSON (JSON within a JSON), which can be inconvenient, but it is the way it works according to their documentation.
 
-To help with this, I’ve created a couple decorators and methods in the ./claims.py file, which can help with obtaining a normalized version of the token. One of them is called @normalize_claims , here is an example on how to use it:
+To help with this, I’ve created a couple decorators and methods in the ./claims.py file, which can help with obtaining a normalized version of the token. One of them is called `@normalize_claims`, here is an example on how to use it:
 
 ```python
 #

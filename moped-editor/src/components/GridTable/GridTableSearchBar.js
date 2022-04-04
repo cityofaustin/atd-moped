@@ -24,19 +24,19 @@ import clsx from "clsx";
 const useStyles = makeStyles(theme => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
-    height: "40px",
-    width: "40px",
+    height: "33px",
+    width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
   advancedSearchActive: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.background.paper,
-    height: "40px",
-    width: "40px",
+    height: "33px",
+    width: "33px",
   },
   tuneIcon: {
-    height: "40px",
-    width: "40px",
+    height: "33px",
+    width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
   searchButton: {

@@ -149,26 +149,16 @@ def db_update_user(user_profile: dict, search_by_email: bool = False) -> dict:
     :return dict: The response from the GraphQL server
     """
 
-    search_logic = {
-        "cognito_user_id": {
-            "_eq": user_profile["cognito_user_id"]
-        }
-    }
+    search_logic = {"cognito_user_id": {"_eq": user_profile["cognito_user_id"]}}
 
     # Search by email if provided the flag
     if search_by_email:
-        search_logic = {
-            "email": {
-                "_eq": user_profile["email"]
-            }
-        }
+        search_logic = {"email": {"_eq": user_profile["email"]}}
 
     response = run_query(
         query=GRAPHQL_UPDATE_USER,
         variables={
-            "userBoolExp": {
-                **search_logic
-            },
+            "userBoolExp": {**search_logic},
             "user": user_profile,
         },
     )
@@ -273,7 +263,7 @@ def get_user_database_ids(response: dict) -> tuple:
     return (database_id, workgroup_id)
 
 
-def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
+def cognito_user_exists(user_list_response: list, user_email: str) -> tuple:
     """
     Retrieves the current list of users in Cognito, and returns True if it can find the
     specified user email. It returns False if it cannot find the user.
@@ -283,9 +273,7 @@ def cognito_user_exists(user_list_response: dict, user_email: str) -> tuple:
     """
     # Retrieves the full list of users, but removes any azuread emails
     user_list_filtered = list(
-        filter(
-            lambda user: "azuread_" not in user["Username"], user_list_response["Users"]
-        )
+        filter(lambda user: "azuread_" not in user["Username"], user_list_response)
     )
     # Then we extract the emails and cognito_uuid into a list of tuples
     user_list = list(
