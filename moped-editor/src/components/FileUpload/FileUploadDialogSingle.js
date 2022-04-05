@@ -52,7 +52,7 @@ const FileUploadDialogSingle = props => {
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
    */
   const [fileName, setFileName] = useState(null);
-  const [fileType, setFileType] = useState('');
+  const [fileType, setFileType] = useState("");
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
@@ -106,12 +106,12 @@ const FileUploadDialogSingle = props => {
    */
   const clearState = () => {
     setFileName(null);
-    setFileType('');
+    setFileType("");
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
     setFileReady(false);
-  }
+  };
 
   /**
    * Handles the cancel button behavior
@@ -119,7 +119,7 @@ const FileUploadDialogSingle = props => {
   const handleCancel = () => {
     props.handleClickCloseUploadFile();
     clearState();
-  }
+  };
 
   /**
    * Handles the file save click
@@ -163,7 +163,7 @@ const FileUploadDialogSingle = props => {
     // Determine if the file is ready to be saved to DB
     const saveDisabled =
       fieldLength(fileName) === 0 ||
-      !Number.isInteger(fileType) || 
+      !Number.isInteger(fileType) ||
       fieldLength(fileKey) === 0 ||
       fileObject === null;
 
@@ -173,11 +173,10 @@ const FileUploadDialogSingle = props => {
       setFileReady(true);
     }
 
-    if(saveDisabled && fileReady) {
+    if (saveDisabled && fileReady) {
       setFileReady(false);
     }
   }, [fileName, fileType, fileDescription, fileKey, fileObject, fileReady]);
-
 
   return (
     <Dialog
@@ -191,7 +190,7 @@ const FileUploadDialogSingle = props => {
       </DialogTitle>
       <DialogContent>
         <Grid container>
-          <Grid xs={12} md={12}>
+          <Grid item xs={12} md={12}>
             <TextField
               className={classes.textField}
               id="standard-multiline-flexible"
@@ -203,18 +202,38 @@ const FileUploadDialogSingle = props => {
               fullWidth
             />
 
-            <FormControl >
+            <FormControl>
               <InputLabel>Type</InputLabel>
-              <Select  
+              <Select
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
                 onChange={handleFileTypeChange}
               >
-                <MenuItem value={1} className={classes.inputFieldAdornmentColor}>Funding</MenuItem>
-                <MenuItem value={2} className={classes.inputFieldAdornmentColor}>Plans</MenuItem>
-                <MenuItem value={3} className={classes.inputFieldAdornmentColor}>Estimates</MenuItem>
-                <MenuItem value={4} className={classes.inputFieldAdornmentColor}>Other</MenuItem>
+                <MenuItem
+                  value={1}
+                  className={classes.inputFieldAdornmentColor}
+                >
+                  Funding
+                </MenuItem>
+                <MenuItem
+                  value={2}
+                  className={classes.inputFieldAdornmentColor}
+                >
+                  Plans
+                </MenuItem>
+                <MenuItem
+                  value={3}
+                  className={classes.inputFieldAdornmentColor}
+                >
+                  Estimates
+                </MenuItem>
+                <MenuItem
+                  value={4}
+                  className={classes.inputFieldAdornmentColor}
+                >
+                  Other
+                </MenuItem>
               </Select>
             </FormControl>
 
@@ -229,7 +248,7 @@ const FileUploadDialogSingle = props => {
               fullWidth
             />
           </Grid>
-          <Grid xs={12} md={12} className={classes.fileUpload}>
+          <Grid item xs={12} md={12} className={classes.fileUpload}>
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
@@ -242,11 +261,7 @@ const FileUploadDialogSingle = props => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button
-          onClick={handleCancel}
-          color="primary"
-          autoFocus
-        >
+        <Button onClick={handleCancel} color="primary" autoFocus>
           Cancel
         </Button>
         <Button

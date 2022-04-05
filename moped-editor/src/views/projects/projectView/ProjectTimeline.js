@@ -19,7 +19,7 @@ import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
