@@ -67,11 +67,6 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         data_type: "integer",
       },
-      start_date: {
-        icon: "",
-        label: "start date",
-        data_type: "date",
-      },
       fiscal_year: {
         icon: "",
         label: "fiscal year",
