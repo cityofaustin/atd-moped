@@ -83,7 +83,6 @@ const projectNoteTypes = [
   "",
   "Internal Note",
   "Status Update",
-  "Timeline Notes",
 ];
 
 const ProjectComments = props => {
@@ -271,7 +270,6 @@ const ProjectComments = props => {
             <CommentButton noteTypeId={0}>All</CommentButton>
             <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
             <CommentButton noteTypeId={2}>Status Updates</CommentButton>
-            <CommentButton noteTypeId={3}>Timeline Notes</CommentButton>
           </Grid>
           {/*Now the notes*/}
           <Grid item xs={12}>
