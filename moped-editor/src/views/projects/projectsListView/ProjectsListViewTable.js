@@ -319,6 +319,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     search: false,
                     rowStyle: {
                       fontFamily: typography.fontFamily,
+                      fontSize: "14px",
                     },
                     ...(data[query.table].length < PAGING_DEFAULT_COUNT + 1 && {
                       paging: false,
@@ -326,9 +327,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     pageSize: 30,
                     pageSizeOptions: [10, 30, 100],
                     headerStyle: {
-                      whiteSpace: "nowrap",
-                      position: "sticky",
-                      top: 0,
+                      // material table header row has a zIndex of 10, which
+                      // is conflicting with the search/filter dropdown
+                      zIndex: 1,
                     },
                   }}
                 />
