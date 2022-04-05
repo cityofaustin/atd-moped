@@ -149,15 +149,6 @@ export const ProjectsListViewQueryConf = {
       },
       type: "string",
     },
-    start_date: {
-      searchable: false,
-      sortable: true,
-      label: "Start date",
-      width: "10%",
-      filter: value =>
-        new Date(value).toLocaleDateString("en-US", { timeZone: "UTC" }),
-      type: "date_iso",
-    },
     ecapris_subproject_id: {
       hidden: false,
       searchable: true,

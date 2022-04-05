@@ -58,6 +58,11 @@ const useStyles = makeStyles(theme => ({
   fieldLabelText: {
     width: "calc(100% - 2rem)",
   },
+  fieldAuthor: {
+    marginRight: ".25rem",
+    fontSize: ".8rem",
+    fontWeight: "bold"
+  },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
     cursor: "pointer",

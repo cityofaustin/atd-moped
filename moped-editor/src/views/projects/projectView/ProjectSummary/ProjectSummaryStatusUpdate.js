@@ -43,7 +43,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * @param {String} fieldName - The name of the field to retrieve in the moped_proj_note object
    * @return {string|null}
    */
-  const getStatusUpdate = (fieldName = "project_note") => {
+  const getStatusUpdate = fieldName => {
     const lastItem =
       (data?.moped_project[0]?.moped_proj_notes?.length ?? 0) - 1;
     if (lastItem >= 0) {
@@ -60,7 +60,9 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   /**
    * Status Update State Variables
    */
-  const [statusUpdate, setStatusUpdate] = useState(getStatusUpdate());
+  const [statusUpdate, setStatusUpdate] = useState(
+    getStatusUpdate("project_note")
+  );
   const [statusUpdateAddNew, setStatusUpdateAddNew] = useState(false);
   const [statusUpdateEditable, setStatusUpdateEditable] = useState(false);
 
@@ -133,7 +135,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    */
   const handleStatusUpdateCancel = () => {
     // Retrieve original value
-    setStatusUpdate(getStatusUpdate());
+    setStatusUpdate(getStatusUpdate("project_note"));
     // Reset edit-mode state
     setStatusUpdateEditable(false);
     setStatusUpdateAddNew(false);
@@ -172,6 +174,22 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                 {statusUpdate || "None"}
               </span>
             </Typography>
+            {!!statusUpdate && (
+              <Typography>
+                <span className={classes.fieldAuthor}>
+                  {getStatusUpdate("added_by")}
+                </span>
+                <span className={classes.fieldLabel}>
+                  {new Date(getStatusUpdate("date_created"))
+                    .toLocaleDateString("en-us", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
+                    .toUpperCase()}
+                </span>
+              </Typography>
+            )}
           </Box>
         )}
         {/*Add New Button*/}
