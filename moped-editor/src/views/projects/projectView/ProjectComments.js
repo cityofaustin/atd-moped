@@ -99,8 +99,6 @@ const ProjectComments = props => {
   const [noteType, setNoteType] = useState(0);
   const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
-  console.log(noteType, " the noteType is <------")
-
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: {
       projectNoteConditions: {
@@ -215,17 +213,15 @@ const ProjectComments = props => {
         project_note_type: { _eq: noteType },
       });
     }
-    console.log("im refetching")
     refetch();
   }, [noteType, setNoteTypeConditions, refetch]);
 
-  console.log("loading ", loading)
-  console.log("DATA ", data)
+  console.log("loading ", loading, "DATA ", data)
 
+  if (error) return console.log(error);
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
-  if (error) return console.log(error);
 
   /**
    * Defines the CommentButton with a toggle style-change behavior.
