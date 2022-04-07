@@ -79,11 +79,7 @@ const useStyles = makeStyles(theme => ({
 
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = [
-  "",
-  "Internal Note",
-  "Status Update",
-];
+const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = props => {
   const { projectId } = useParams();
@@ -216,12 +212,9 @@ const ProjectComments = props => {
     refetch();
   }, [noteType, setNoteTypeConditions, refetch]);
 
-  console.log("loading ", loading, "DATA ", data)
+  console.log("loading ", loading, "DATA ", data);
 
   if (error) return console.log(error);
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
 
   /**
    * Defines the CommentButton with a toggle style-change behavior.
@@ -275,14 +268,15 @@ const ProjectComments = props => {
           {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
-              {data.moped_proj_notes.length > 0 ? (
+              {loading ? (
+                <CircularProgress />
+              ) : data?.moped_proj_notes?.length > 0 ? (
                 <List className={classes.root}>
                   {data.moped_proj_notes.map((item, i) => {
                     const isNotLastItem = i < data.moped_proj_notes.length - 1;
                     const editableComment =
                       userSessionData.user_id === item.added_by_user_id ||
                       userHighestRole === "moped-admin";
-
                     return (
                       <React.Fragment key={item.project_note_id}>
                         <ListItem alignItems="flex-start">
