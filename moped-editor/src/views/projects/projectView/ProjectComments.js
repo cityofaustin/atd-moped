@@ -212,8 +212,6 @@ const ProjectComments = props => {
     refetch();
   }, [noteType, setNoteTypeConditions, refetch, data]);
 
-  console.log("loading ", loading, "DATA ", data);
-
   if (error) return console.log(error);
 
   /**
