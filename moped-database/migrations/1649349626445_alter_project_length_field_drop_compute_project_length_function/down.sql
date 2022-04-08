@@ -1,6 +1,3 @@
--- Add start_date column back
-ALTER TABLE "public"."moped_project" ADD COLUMN "start_date" date;
-
 -- Add compute_project_length function
 -- Name: compute_project_length(); Type: FUNCTION; Schema: public; Owner: -
 
