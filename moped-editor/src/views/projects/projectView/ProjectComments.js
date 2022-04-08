@@ -198,6 +198,8 @@ const ProjectComments = props => {
    */
   const filterNoteType = typeId => setNoteType(Number(typeId));
 
+  const mopedProjNotes = data?.moped_proj_notes;
+
   /**
    * Whenever noteType changes, we change the query conditions
    */
@@ -210,7 +212,7 @@ const ProjectComments = props => {
       });
     }
     refetch();
-  }, [noteType, setNoteTypeConditions, refetch, data]);
+  }, [noteType, setNoteTypeConditions, refetch, mopedProjNotes]);
 
   if (error) return console.log(error);
 
