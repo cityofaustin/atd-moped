@@ -92,6 +92,7 @@ const ProjectComments = props => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [displayNotes, setDisplayNotes] = useState({});
   const [noteType, setNoteType] = useState(0);
   const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
@@ -100,11 +101,15 @@ const ProjectComments = props => {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
         status_id: { _eq: Number(1) },
-        ...noteTypeConditions,
+        // ...noteTypeConditions,
       },
     },
     fetchPolicy: "no-cache",
   });
+
+  // setDisplayNotes(data);
+
+  console.log(displayNotes)
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -198,21 +203,28 @@ const ProjectComments = props => {
    */
   const filterNoteType = typeId => setNoteType(Number(typeId));
 
+  useEffect(() => {
+    if (!loading && data) {
+      setDisplayNotes(data.moped_proj_notes)
+    }
+  }, [loading, data]);
+
   const mopedProjNotes = data?.moped_proj_notes;
 
   /**
    * Whenever noteType changes, we change the query conditions
    */
+  console.log("noteType out of useEffect ", noteType)
   useEffect(() => {
+    console.log(noteType)
     if (noteType === 0) {
-      setNoteTypeConditions({});
+      console.log("RESET")
+      setDisplayNotes(mopedProjNotes);
     } else {
-      setNoteTypeConditions({
-        project_note_type: { _eq: noteType },
-      });
+      const filteredNotes = mopedProjNotes.filter(n => n.project_note_type === noteType)
+      setDisplayNotes(filteredNotes)
     }
-    refetch();
-  }, [noteType, setNoteTypeConditions, refetch, mopedProjNotes]);
+  }, [noteType, mopedProjNotes]);
 
   if (error) return console.log(error);
 
@@ -268,12 +280,12 @@ const ProjectComments = props => {
           {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
-              {loading ? (
+              {(loading || !displayNotes) ? (
                 <CircularProgress />
-              ) : data?.moped_proj_notes?.length > 0 ? (
+              ) : displayNotes.length > 0 ? (
                 <List className={classes.root}>
-                  {data.moped_proj_notes.map((item, i) => {
-                    const isNotLastItem = i < data.moped_proj_notes.length - 1;
+                  {displayNotes.map((item, i) => {
+                    const isNotLastItem = i < displayNotes.length - 1;
                     const editableComment =
                       userSessionData.user_id === item.added_by_user_id ||
                       userHighestRole === "moped-admin";
