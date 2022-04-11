@@ -94,22 +94,16 @@ const ProjectComments = props => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState({});
   const [noteType, setNoteType] = useState(0);
-  const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
         status_id: { _eq: Number(1) },
-        // ...noteTypeConditions,
       },
     },
     fetchPolicy: "no-cache",
   });
-
-  // setDisplayNotes(data);
-
-  console.log(displayNotes)
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -166,7 +160,7 @@ const ProjectComments = props => {
 
   const editComment = (index, project_note_id) => {
     setEditingComment(true);
-    setNoteText(data.moped_proj_notes[index].project_note);
+    setNoteText(displayNotes[index].project_note);
     setCommentId(project_note_id);
   };
 
@@ -214,11 +208,8 @@ const ProjectComments = props => {
   /**
    * Whenever noteType changes, we change the query conditions
    */
-  console.log("noteType out of useEffect ", noteType)
   useEffect(() => {
-    console.log(noteType)
     if (noteType === 0) {
-      console.log("RESET")
       setDisplayNotes(mopedProjNotes);
     } else {
       const filteredNotes = mopedProjNotes.filter(n => n.project_note_type === noteType)
