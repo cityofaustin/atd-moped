@@ -105,6 +105,8 @@ const ProjectComments = props => {
     fetchPolicy: "no-cache",
   });
 
+  const mopedProjNotes = data?.moped_proj_notes;
+
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
       setNoteText("");
@@ -197,23 +199,25 @@ const ProjectComments = props => {
    */
   const filterNoteType = typeId => setNoteType(Number(typeId));
 
+  // when the data changes, update the display notes state
   useEffect(() => {
     if (!loading && data) {
-      setDisplayNotes(data.moped_proj_notes)
+      setDisplayNotes(data.moped_proj_notes);
     }
   }, [loading, data]);
 
-  const mopedProjNotes = data?.moped_proj_notes;
-
   /**
-   * Whenever noteType changes, we change the query conditions
+   * Whenever noteType changes, filter the notes being displayed
    */
   useEffect(() => {
     if (noteType === 0) {
+      // show all the notes
       setDisplayNotes(mopedProjNotes);
     } else {
-      const filteredNotes = mopedProjNotes.filter(n => n.project_note_type === noteType)
-      setDisplayNotes(filteredNotes)
+      const filteredNotes = mopedProjNotes.filter(
+        n => n.project_note_type === noteType
+      );
+      setDisplayNotes(filteredNotes);
     }
   }, [noteType, mopedProjNotes]);
 
@@ -271,7 +275,7 @@ const ProjectComments = props => {
           {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
-              {(loading || !displayNotes) ? (
+              {loading || !displayNotes ? (
                 <CircularProgress />
               ) : displayNotes.length > 0 ? (
                 <List className={classes.root}>
