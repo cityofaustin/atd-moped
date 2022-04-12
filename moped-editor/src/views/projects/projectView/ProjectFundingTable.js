@@ -657,7 +657,7 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: getDatabaseId(user),
-                  funding_status_id: 1,
+                  funding_status_id: newData.funding_status_id || 1,
                 },
               },
             })
@@ -676,7 +676,6 @@ const ProjectFundingTable = () => {
               }),
           onRowUpdate: (newData, oldData) => {
             const updateProjectFundingData = newData;
-
             // Remove unexpected variables
             delete updateProjectFundingData.__typename;
             delete updateProjectFundingData.added_by;
