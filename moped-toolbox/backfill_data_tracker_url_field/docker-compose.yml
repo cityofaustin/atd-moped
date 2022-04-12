@@ -5,3 +5,5 @@ services:
     build: environment
     volumes:
       - ./app:/root/app
+    env_file:
+      - development_data_tracker.env
