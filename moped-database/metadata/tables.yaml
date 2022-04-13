@@ -3565,6 +3565,7 @@
       - project_sponsor
       - project_partner
       - status_name
+      - task_order
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3596,6 +3597,7 @@
       - date_added
       - updated_at
       - project_uuid
+      - task_order
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3627,5 +3629,6 @@
       - date_added
       - updated_at
       - project_uuid
+      - task_order
       filter: {}
       allow_aggregations: true

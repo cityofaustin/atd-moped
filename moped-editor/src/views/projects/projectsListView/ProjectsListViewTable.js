@@ -274,7 +274,31 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "updated_at",
       render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
     },
+    {
+      title: "Task order",
+      field: "task_order",
+      hidden: true,
+      emptyValue: "-",
+      render: entry => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry?.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        let content = entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+      },
+    },
   ];
+
+  if (data) {
+    console.log(data[query.table])
+  }
 
   return (
     <ApolloErrorHandler error={error}>
@@ -313,9 +337,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
               <Card className={classes.root}>
                 <MaterialTable
                   columns={columns}
+                  title=""
                   data={data[query.table]}
                   options={{
-                    toolbar: false,
                     search: false,
                     rowStyle: {
                       fontFamily: typography.fontFamily,
@@ -331,6 +355,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
                     },
+                    columnsButton:true,
                   }}
                 />
               </Card>

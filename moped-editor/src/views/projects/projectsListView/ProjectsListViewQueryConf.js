@@ -177,6 +177,9 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString("en-US"),
       type: "date_iso",
     },
+    task_order: {
+      type: "string",
+    }
   },
   order_by: { updated_at: "desc" },
   where: {
