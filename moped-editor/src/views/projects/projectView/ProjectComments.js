@@ -92,7 +92,7 @@ const ProjectComments = props => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
-  const [displayNotes, setDisplayNotes] = useState({});
+  const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(0);
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
