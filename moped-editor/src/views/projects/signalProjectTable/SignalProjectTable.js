@@ -34,12 +34,6 @@ import RenderSignalLink from "./RenderSignalLink";
 import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
 
 const useStyles = makeStyles({
-  signalsTable: {
-    "& .MuiTableCell-root": {
-      // override the default padding of 16px
-      padding: "10px",
-    },
-  },
   tableTypography: {
     fontSize: "14px",
   },

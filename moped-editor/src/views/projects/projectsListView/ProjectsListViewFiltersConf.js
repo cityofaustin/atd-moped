@@ -43,6 +43,19 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
+      name: "updated_at",
+      label: "Last modified",
+      placeholder: "Last modified",
+      type: "date",
+      operators: [
+        "date_equals",
+        "date_greater_than",
+        "date_greater_than_equal_to",
+        "date_less_than",
+        "date_less_than_equal_to",
+      ],
+    },
+    {
       name: "status_name",
       label: "Current status",
       placeholder: "Current status",
