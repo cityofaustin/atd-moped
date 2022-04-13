@@ -676,7 +676,7 @@ const ProjectFundingTable = () => {
               }),
           onRowUpdate: (newData, oldData) => {
             const updateProjectFundingData = newData;
-            
+
             // Remove unexpected variables
             delete updateProjectFundingData.__typename;
             delete updateProjectFundingData.added_by;
