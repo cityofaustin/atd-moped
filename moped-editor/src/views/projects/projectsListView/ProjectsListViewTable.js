@@ -300,11 +300,22 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: true,
       emptyValue: "-",
       render: entry => (entry.contractor === "" ? "-" : entry.contractor),
-    }
+    }, 
+    {
+      title: "Project DO#",
+      field: "purchase_order_number",
+      hidden: true,
+      emptyValue: "-",
+      render: entry =>
+        entry.purchase_order_number.trim().length === 0
+          ? "-"
+          : entry.purchase_order_number,
+    },
   ];
 
   if (data) {
     console.log(data[query.table])
+    console.log(query.query)
   }
 
   return (

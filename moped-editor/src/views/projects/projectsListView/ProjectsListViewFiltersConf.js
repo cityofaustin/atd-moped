@@ -148,6 +148,19 @@ export const ProjectsListViewFiltersConf = {
         "string_is_not_null",
       ],
     },
+    {
+      name: "purchase_order_number",
+      label: "Project DO",
+      placeholder: "Project DO",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
   ],
 
   operators: {
