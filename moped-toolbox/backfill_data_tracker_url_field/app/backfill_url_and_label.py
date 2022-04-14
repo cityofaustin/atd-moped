@@ -30,6 +30,7 @@ for knack_record in records:
     if knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]:
         print()
         project_id = knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]
+        print("This is a project ID: ", project_id)
         sql = """
           select * 
           from moped_project
@@ -46,11 +47,21 @@ for knack_record in records:
         print(moped_db_record["project_name"])
 
         knack_data = dict(knack_record)
+
         print(
             "Knack data prior to update: ",
             knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
         )
-        # knack_data["url"]
+
+        knack_data[os.getenv("KNACK_MOPED_URL_FIELD")]["label"] = moped_db_record[
+            "project_name"
+        ]
+
+        print(
+            "URL Payload to be sent to Knack: ",
+            knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
+        )
+
         record = knack.record(
             method="update", data=knack_data, obj=os.getenv("KNACK_PROJECT_VIEW")
         )
