@@ -46,7 +46,10 @@ for knack_record in records:
         print(moped_db_record["project_name"])
 
         knack_data = dict(knack_record)
-        print(knack_data[os.getenv("KNACK_MOPED_URL_FIELD")])
+        print(
+            "Knack data prior to update: ",
+            knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
+        )
         # knack_data["url"]
         record = knack.record(
             method="update", data=knack_data, obj=os.getenv("KNACK_PROJECT_VIEW")
