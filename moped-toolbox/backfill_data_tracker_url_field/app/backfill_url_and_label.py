@@ -36,3 +36,6 @@ for record in records:
         if not moped_record:
             continue
         cursor.close()
+
+        # print(moped_record)
+        print(moped_record["project_description"])
