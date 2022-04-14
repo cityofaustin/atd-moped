@@ -3567,6 +3567,7 @@
       - status_name
       - task_order
       - task_order_name
+      - contractor
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3600,6 +3601,7 @@
       - project_uuid
       - task_order
       - task_order_name
+      - contractor
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3633,5 +3635,6 @@
       - project_uuid
       - task_order
       - task_order_name
+      - contractor
       filter: {}
       allow_aggregations: true

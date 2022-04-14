@@ -294,6 +294,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         return <div style={{ maxWidth: "265px" }}>{content}</div>;
       },
     },
+    {
+      title: "Contractor/Contract",
+      field: "contractor",
+      hidden: true,
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
+    }
   ];
 
   if (data) {

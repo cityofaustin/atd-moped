@@ -177,11 +177,16 @@ export const ProjectsListViewQueryConf = {
       filter: value => new Date(value).toLocaleDateString("en-US"),
       type: "date_iso",
     },
+    // the following column configurations only work with material table and do not have the 
+    // necessary details to work with Grid Table
     task_order: {
       type: "string",
     },
     task_order_name:{
       type: "string",
+    },
+    contractor: {
+      type: "string"
     }
   },
   order_by: { updated_at: "desc" },
