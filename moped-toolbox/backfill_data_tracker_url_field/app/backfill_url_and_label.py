@@ -37,5 +37,12 @@ for record in records:
             continue
         cursor.close()
 
-        # print(moped_record)
-        print(moped_record["project_description"])
+        # print(moped_db_record)
+        print(moped_db_record["project_name"])
+
+        knack_data = dict(knack_record)
+        print(knack_data[os.getenv("KNACK_MOPED_URL_FIELD")])
+        # knack_data["url"]
+        record = app.record(
+            method="update", data=knack_data, obj=os.getenv("KNACK_PROJECT_VIEW")
+        )
