@@ -30,6 +30,8 @@ for knack_record in records:
           select * 
           from moped_project
           where project_id = %s
+          limit 1
+          order by moped_project.project_id
           """
         cursor = pg.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute(sql, (project_id,))
@@ -44,6 +46,6 @@ for knack_record in records:
         knack_data = dict(knack_record)
         print(knack_data[os.getenv("KNACK_MOPED_URL_FIELD")])
         # knack_data["url"]
-        record = app.record(
+        record = knack.record(
             method="update", data=knack_data, obj=os.getenv("KNACK_PROJECT_VIEW")
         )
