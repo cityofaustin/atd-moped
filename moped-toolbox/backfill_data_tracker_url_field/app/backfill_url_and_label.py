@@ -22,9 +22,10 @@ knack = knackpy.App(
 
 records = knack.get(os.getenv("KNACK_PROJECT_VIEW"))
 
-for record in records:
-    if record[os.getenv("KNACK_MOPED_ID_FIELD")]:
-        project_id = record[os.getenv("KNACK_MOPED_ID_FIELD")]
+for knack_record in records:
+    if knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]:
+        print()
+        project_id = knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]
         sql = """
           select * 
           from moped_project
