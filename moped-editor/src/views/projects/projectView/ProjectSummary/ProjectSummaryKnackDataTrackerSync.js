@@ -111,12 +111,12 @@ const ProjectSummaryKnackDataTrackerSync = ({
 
     const url_payload = {
       url: url,
-      label: project.project_description,
+      label: project.project_name,
     };
 
     body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_URL] = url;
     body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL] =
-      project.project_description;
+      project.project_name;
     body[
       process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL
     ] = url_payload;
