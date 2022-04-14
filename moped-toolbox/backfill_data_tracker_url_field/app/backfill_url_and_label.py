@@ -23,6 +23,8 @@ knack = knackpy.App(
 records = knack.get(os.getenv("KNACK_PROJECT_VIEW"))
 
 for knack_record in records:
+    if knack_record["moped_project_id"] == "156":
+        continue
     if knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]:
         print()
         project_id = knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]
@@ -30,8 +32,6 @@ for knack_record in records:
           select * 
           from moped_project
           where project_id = %s
-          limit 1
-          order by moped_project.project_id
           """
         cursor = pg.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute(sql, (project_id,))
