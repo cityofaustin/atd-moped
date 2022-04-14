@@ -32,8 +32,8 @@ for record in records:
           """
         cursor = pg.cursor(cursor_factory=psycopg2.extras.DictCursor)
         cursor.execute(sql, (project_id,))
-        moped_record = cursor.fetchone()
-        if not moped_record:
+        moped_db_record = cursor.fetchone()
+        if not moped_db_record:
             continue
         cursor.close()
 
