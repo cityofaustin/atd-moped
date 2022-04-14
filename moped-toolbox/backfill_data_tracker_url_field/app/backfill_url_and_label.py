@@ -53,9 +53,11 @@ for knack_record in records:
             knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
         )
 
-        knack_data[os.getenv("KNACK_MOPED_URL_FIELD")]["label"] = moped_db_record[
-            "project_name"
-        ]
+        knack_data[os.getenv("KNACK_MOPED_URL_FIELD")]["label"] = (
+            moped_db_record["project_name"]
+            if moped_db_record["project_name"]
+            else "View project in the Moped application"
+        )
 
         print(
             "URL Payload to be sent to Knack: ",
