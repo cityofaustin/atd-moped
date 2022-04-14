@@ -23,8 +23,10 @@ knack = knackpy.App(
 records = knack.get(os.getenv("KNACK_PROJECT_VIEW"))
 
 for knack_record in records:
-    if knack_record["moped_project_id"] == "156":
+    # this loop control is for developing against a specific project
+    if not knack_record[os.getenv("KNACK_MOPED_ID_FIELD")] == 156:
         continue
+
     if knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]:
         print()
         project_id = knack_record[os.getenv("KNACK_MOPED_ID_FIELD")]
