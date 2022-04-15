@@ -24,7 +24,6 @@ import ExternalLink from "../../../components/ExternalLink";
 
 import MaterialTable from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 /**
  * GridTable Style
@@ -337,11 +336,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    ...(data[query.table].length < PAGING_DEFAULT_COUNT + 1 && {
-                      paging: false,
-                    }),
-                    pageSize: 30,
-                    pageSizeOptions: [10, 30, 100],
+                    // ...(data[query.table].length < PAGING_DEFAULT_COUNT + 1 && {
+                    //   paging: false,
+                    // }),
+                    // pageSize: 30,
+                    // pageSizeOptions: [10, 30, 100],
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
