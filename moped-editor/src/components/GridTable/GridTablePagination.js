@@ -53,8 +53,8 @@ const GridTablePagination = ({ query, data, pagination, setPagination }) => {
       count={aggregateDataCount}
       rowsPerPage={pagination.limit}
       page={pagination.page}
-      onChangePage={handleChangePage}
-      onChangeRowsPerPage={handleChangeRowsPerPage}
+      onPageChange={handleChangePage}
+      onRowsPerPageChange={handleChangeRowsPerPage}
     />
   ) : null;
 };
