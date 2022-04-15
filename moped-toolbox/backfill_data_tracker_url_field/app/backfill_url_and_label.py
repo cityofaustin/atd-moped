@@ -57,26 +57,28 @@ for knack_record in records:
 
         print("Project Name from DB: ", moped_db_record["project_name"])
 
-        # step drawn from KnackPy usage guide
-        knack_data = dict(knack_record)
-
         print(
             "Knack data prior to update: ",
-            knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
+            knack_record[os.getenv("KNACK_MOPED_URL_FIELD")],
         )
 
-        knack_data[os.getenv("KNACK_MOPED_URL_FIELD")]["label"] = (
-            moped_db_record["project_name"]
-            if moped_db_record["project_name"]
-            else "View project in the Moped application"
-        )
+        # build out payload to send to knack
+        knack_payload = {
+            "id": knack_record["id"],
+            os.getenv("KNACK_MOPED_URL_FIELD"): {
+                "url": knack_record[os.getenv("KNACK_MOPED_URL_FIELD")]["url"],
+                "label": moped_db_record["project_name"]
+                if moped_db_record["project_name"]
+                else "View project in the Moped application",
+            },
+        }
 
         print(
             "URL Payload to be sent to Knack: ",
-            knack_data[os.getenv("KNACK_MOPED_URL_FIELD")],
+            knack_payload[os.getenv("KNACK_MOPED_URL_FIELD")],
         )
 
         # execute update of knack record:w
         record = knack.record(
-            method="update", data=knack_data, obj=os.getenv("KNACK_PROJECT_VIEW")
+            method="update", data=knack_payload, obj=os.getenv("KNACK_PROJECT_VIEW")
         )
