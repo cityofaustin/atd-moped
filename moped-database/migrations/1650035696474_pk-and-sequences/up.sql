@@ -5,3 +5,6 @@ ALTER TABLE moped_city_fiscal_years ALTER COLUMN id SET NOT NULL;
 CREATE SEQUENCE city_fiscal_years_id_seq AS INT INCREMENT BY 1 START WITH 7 OWNED BY moped_city_fiscal_years.id;
 ALTER TABLE moped_city_fiscal_years ALTER COLUMN id SET default nextval('city_fiscal_years_id_seq');
 ALTER TABLE moped_city_fiscal_years ADD CONSTRAINT moped_city_fiscal_years_pkey PRIMARY KEY (id);
+
+-- ✅ This is the form of a working, tested INSERT
+-- insert into moped_city_fiscal_years (fiscal_year_value, fiscal_year_start_date, fiscal_year_end_date, active_fy) values ('2038', null, null, true);
