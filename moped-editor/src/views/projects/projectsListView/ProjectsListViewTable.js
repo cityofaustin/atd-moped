@@ -17,6 +17,7 @@ import typography from "../../../theme/typography";
 import { useQuery } from "@apollo/client";
 import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
+import GridTablePagination from "../../../components/GridTable/GridTablePagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
@@ -94,6 +95,21 @@ export const getSearchValue = (query, column, value) => {
  */
 const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
+
+  /**
+   * @type {Object} pagination
+   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
+   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
+   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
+   * @function setPagination - Sets the state of pagination
+   * @default {{limit: query.limit, offset: query.offset, page: 0}}
+   */
+  const [pagination, setPagination] = useState({
+    limit: query.limit,
+    offset: query.offset,
+    page: 0,
+  });
+
 
   /**
    * Stores the string to search for and the column to search against
@@ -309,7 +325,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data ? (
+            ) : data ? 
               <Card className={classes.root}>
                 <MaterialTable
                   columns={columns}
@@ -332,9 +348,19 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       zIndex: 1,
                     },
                   }}
+                  components={{
+                    Pagination: props => (
+                      <GridTablePagination
+                        query={query}
+                        data={data}
+                        pagination={pagination}
+                        setPagination={setPagination}
+                      />
+                    ),
+                  }}
                 />
               </Card>
-            ) : (
+             : (
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
