@@ -150,6 +150,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
+  // Set limit, offset based on pagination state
+  if (query.config.showPagination) {
+    query.limit = pagination.limit;
+    query.offset = pagination.offset;
+  } else {
+    query.limit = 0;
+  }
+
+  // Resets the value of "where" "and" "or" to empty
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
@@ -336,11 +345,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    // ...(data[query.table].length < PAGING_DEFAULT_COUNT + 1 && {
-                    //   paging: false,
-                    // }),
-                    // pageSize: 30,
-                    // pageSizeOptions: [10, 30, 100],
+                    pageSize: query.limit,
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
