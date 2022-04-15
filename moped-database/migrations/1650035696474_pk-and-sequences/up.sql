@@ -1,0 +1,1 @@
+ALTER TABLE moped_city_fiscal_years ADD COLUMN id integer;
