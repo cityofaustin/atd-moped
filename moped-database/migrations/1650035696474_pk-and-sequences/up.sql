@@ -1,1 +1,2 @@
 ALTER TABLE moped_city_fiscal_years ADD COLUMN id integer;
+ALTER TABLE moped_city_fiscal_years DROP CONSTRAINT moped_city_fiscal_years_pkey;
