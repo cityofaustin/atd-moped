@@ -345,7 +345,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    pageSize: query.limit,
+                    pageSize: Math.min(query.limit, data[query.table].length),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
