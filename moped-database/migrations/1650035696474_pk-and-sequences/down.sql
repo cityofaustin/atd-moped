@@ -1,3 +1,5 @@
+ALTER TABLE moped_proj_fiscal_years DROP COLUMN id;
+
 ALTER TABLE moped_fund_programs DROP CONSTRAINT moped_fund_programs_pkey;
 
 ALTER TABLE moped_status ALTER COLUMN status_id SET default 0;
