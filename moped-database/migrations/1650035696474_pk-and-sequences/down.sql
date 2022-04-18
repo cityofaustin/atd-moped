@@ -1,7 +1,7 @@
 ALTER TABLE moped_phases ALTER COLUMN phase_id SET default 0;
 DROP SEQUENCE moped_phases_phase_id_seq;
 CREATE SEQUENCE moped_phases_phase_id_seq AS INT INCREMENT BY 1 START WITH 13 OWNED BY moped_phases.phase_id; -- recreate the unused sequence..
-ALTER TABLE moped_phases ADD CONSTRAINT moped_phases UNIQUE (phase_id);
+ALTER TABLE moped_phases ADD CONSTRAINT moped_phases_phase_id_key UNIQUE (phase_id);
 
 ALTER TABLE moped_city_fiscal_years DROP CONSTRAINT moped_city_fiscal_years_pkey;
 ALTER TABLE moped_city_fiscal_years ALTER COLUMN id DROP NOT NULL; 
