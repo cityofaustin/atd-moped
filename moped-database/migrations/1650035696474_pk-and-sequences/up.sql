@@ -12,3 +12,4 @@ ALTER TABLE moped_city_fiscal_years ADD CONSTRAINT moped_city_fiscal_years_pkey 
 ALTER TABLE moped_phases DROP CONSTRAINT moped_phases_phase_id_key;
 DROP SEQUENCE IF EXISTS moped_phases_phase_id_seq; -- There is an existing, unused sequence. Just drop it and recreate.
 CREATE SEQUENCE moped_phases_phase_id_seq AS INT INCREMENT BY 1 START WITH 13 OWNED BY moped_phases.phase_id;
+ALTER TABLE moped_phases ALTER COLUMN phase_id SET default nextval('moped_phases_phase_id_seq');
