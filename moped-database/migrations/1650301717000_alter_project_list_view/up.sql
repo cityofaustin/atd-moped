@@ -44,6 +44,6 @@ CREATE VIEW public.project_list_view AS
      LEFT JOIN public.moped_proj_partners mpp2 ON (((mp.project_id = mpp2.project_id) AND (mpp2.status_id = 1))))
      LEFT JOIN public.moped_entity me2 ON ((mpp2.entity_id = me2.entity_id)))
      left join jsonb_array_elements(mp.task_order) as task_order_filter on true
-     left join moped_proj_components mpc on mpc.project_id = mp.project_id
+     left join moped_proj_components mpc on mpc.project_id = mp.project_id and mpc.status_id = 1
      left join moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
   GROUP BY mp.project_uuid, mp.project_id, mp.project_name, mp.project_description, mp.project_description_public, mp.ecapris_subproject_id, mp.project_importance, mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.project_length, mp.fiscal_year, mp.capitally_funded, mp.project_priority, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, me.entity_name, mp.updated_at, mp.task_order, mp.contractor, mp.purchase_order_number;
