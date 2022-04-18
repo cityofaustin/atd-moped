@@ -1,3 +1,5 @@
+ALTER TABLE moped_fund_programs DROP CONSTRAINT moped_fund_programs_pkey;
+
 ALTER TABLE moped_status ALTER COLUMN status_id SET default 0;
 DROP SEQUENCE moped_status_status_id_seq;
 CREATE SEQUENCE moped_status_status_id_seq AS INT INCREMENT BY 1 START WITH 13 OWNED BY moped_status.status_id; -- recreate the unused sequence..

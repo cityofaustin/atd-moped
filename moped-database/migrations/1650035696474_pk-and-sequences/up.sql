@@ -24,3 +24,5 @@ ALTER TABLE moped_status ALTER COLUMN status_id SET default nextval('moped_statu
 
 -- ✅ This is the form of a working, tested INSERT
 -- insert into moped_status (status_name, status_flag, status_priority, status_description) values ('a name', 0, 0, 'a description');
+
+ALTER TABLE moped_fund_programs ADD CONSTRAINT moped_fund_programs_pkey PRIMARY KEY (funding_program_id);
