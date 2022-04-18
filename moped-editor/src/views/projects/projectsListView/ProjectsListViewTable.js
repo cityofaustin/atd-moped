@@ -21,6 +21,7 @@ import GridTablePagination from "../../../components/GridTable/GridTablePaginati
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
+import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
 import MaterialTable from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -108,7 +109,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     offset: query.offset,
     page: 0,
   });
-
 
   /**
    * Stores the string to search for and the column to search against
@@ -299,6 +299,28 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
     },
     {
+      title: "Signal IDs",
+      field: "project_feature",
+      render: entry => {
+        // if there are no features, project_feature is [null]
+        if (!entry.project_feature[0]) {
+          return "-";
+        } else {
+          const signalIds = [];
+          entry.project_feature.forEach(projectFeature => {
+            const signal = projectFeature?.properties?.signal_id;
+            if (signal) {
+              signalIds.push({
+                signal_id: signal,
+                knack_id: projectFeature.properties.id,
+              });
+            }
+          });
+          return <RenderSignalLink signals={signalIds} />;
+        }
+      },
+    },
+    {
       title: "Task order",
       field: "task_order",
       hidden: true,
@@ -324,7 +346,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: true,
       emptyValue: "-",
       render: entry => (entry.contractor === "" ? "-" : entry.contractor),
-    }, 
+    },
     {
       title: "Project DO#",
       field: "purchase_order_number",
@@ -338,8 +360,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   ];
 
   if (data) {
-    console.log(data[query.table])
-    console.log(query.query)
+    console.log(data[query.table]);
+    // console.log(query.query)
   }
 
   return (
@@ -375,7 +397,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data ? 
+            ) : data ? (
               <Card className={classes.root}>
                 <MaterialTable
                   columns={columns}
@@ -393,7 +415,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
                     },
-                    columnsButton:true,
+                    columnsButton: true,
                   }}
                   components={{
                     Pagination: props => (
@@ -407,7 +429,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                   }}
                 />
               </Card>
-             : (
+            ) : (
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
