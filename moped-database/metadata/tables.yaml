@@ -3569,6 +3569,7 @@
       - task_order_name
       - contractor
       - purchase_order_number
+      - project_feature
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3604,6 +3605,7 @@
       - task_order_name
       - contractor
       - purchase_order_number
+      - project_feature
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3639,5 +3641,6 @@
       - task_order_name
       - contractor
       - purchase_order_number
+      - project_feature
       filter: {}
       allow_aggregations: true
