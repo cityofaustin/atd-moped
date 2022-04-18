@@ -16,3 +16,11 @@ ALTER TABLE moped_phases ALTER COLUMN phase_id SET default nextval('moped_phases
 
 -- ✅ This is the form of a working, tested INSERT
 -- insert into moped_phases (phase_name, phase_description, phase_order, phase_average_length, required_phase)  values ('a name', 'a description', 0, 1, true);
+
+ALTER TABLE moped_status DROP CONSTRAINT moped_status_status_id_key;
+DROP SEQUENCE IF EXISTS moped_status_status_id_seq; -- There is an existing, unused sequence. Just drop it and recreate.
+CREATE SEQUENCE moped_status_status_id_seq AS INT INCREMENT BY 1 START WITH 7 OWNED BY moped_status.status_id;
+ALTER TABLE moped_status ALTER COLUMN status_id SET default nextval('moped_status_status_id_seq');
+
+-- ✅ This is the form of a working, tested INSERT
+-- insert into moped_status (status_name, status_flag, status_priority, status_description) values ('a name', 0, 0, 'a description');
