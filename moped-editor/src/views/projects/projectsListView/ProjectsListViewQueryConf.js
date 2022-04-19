@@ -193,6 +193,9 @@ export const ProjectsListViewQueryConf = {
     },
     project_feature: {
       type: "string" // also check this type
+    },
+    type_name: {
+      type: "string"
     }
   },
   order_by: { updated_at: "desc" },

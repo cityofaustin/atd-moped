@@ -357,6 +357,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           ? "-"
           : entry.purchase_order_number,
     },
+    {
+      title: "Project type",
+      field: "type_name",
+      hidden: true,
+      emptyValue: "-",
+    },
   ];
 
   if (data) {
