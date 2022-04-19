@@ -109,7 +109,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     page: 0,
   });
 
-
   /**
    * Stores the string to search for and the column to search against
    * @type {Object} search
@@ -270,6 +269,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Team members",
       field: "project_team_members",
+      cellStyle: { whiteSpace: "pre-wrap" },
       render: entry => renderProjectTeamMembers(entry.project_team_members),
     },
     {
@@ -281,7 +281,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
     {
       title: "Project partners",
-      field: "project_partners",
+      field: "project_partner",
+      emptyValue: "-",
     },
     {
       title: "eCAPRIS ID",
@@ -324,7 +325,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: true,
       emptyValue: "-",
       render: entry => (entry.contractor === "" ? "-" : entry.contractor),
-    }, 
+    },
     {
       title: "Project DO#",
       field: "purchase_order_number",
@@ -370,7 +371,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data ? 
+            ) : data ? (
               <Card className={classes.root}>
                 <MaterialTable
                   columns={columns}
@@ -388,7 +389,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
                     },
-                    columnsButton:true,
+                    columnsButton: true,
                   }}
                   components={{
                     Pagination: props => (
@@ -402,7 +403,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                   }}
                 />
               </Card>
-             : (
+            ) : (
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
