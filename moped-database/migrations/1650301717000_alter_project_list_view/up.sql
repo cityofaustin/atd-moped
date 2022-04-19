@@ -47,7 +47,8 @@ with moped_team_members as (
     string_agg(task_order_filter->>'display_name', ',') as task_order_name,
     mp.contractor,
     mp.purchase_order_number,
-    json_agg(mpf.feature) as project_feature
+    json_agg(mpf.feature) as project_feature,
+    mt.type_name
    FROM public.moped_project mp
    left join moped_team_members mtm on (mp.project_id = mtm.project_id)
      LEFT JOIN public.moped_entity me ON ((me.entity_id = mp.project_sponsor))
@@ -56,7 +57,9 @@ with moped_team_members as (
      left join jsonb_array_elements(mp.task_order) as task_order_filter on true
      left join moped_proj_components mpc on mpc.project_id = mp.project_id and mpc.status_id = 1
      left join moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
+     left join public.moped_project_types mpt on mpt.project_id = mp.project_id
+     left join public.moped_types mt on mpt.project_type_id = mt.type_id 
   GROUP BY mp.project_uuid, mp.project_id, mp.project_name, mp.project_description, mtm.project_team_members,
-mp.project_description_public, mp.ecapris_subproject_id, mp.project_importance,  mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.project_length, mp.fiscal_year, mp.capitally_funded, mp.project_priority, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, me.entity_name, mp.updated_at, mp.task_order, mp.contractor, mp.purchase_order_number;
+mp.project_description_public, mp.ecapris_subproject_id, mp.project_importance,  mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.project_length, mp.fiscal_year, mp.capitally_funded, mp.project_priority, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, me.entity_name, mp.updated_at, mp.task_order, mp.contractor, mp.purchase_order_number, mt.type_name;
 
 

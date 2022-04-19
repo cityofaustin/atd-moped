@@ -3570,6 +3570,7 @@
       - contractor
       - purchase_order_number
       - project_feature
+      - type_name
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3606,6 +3607,7 @@
       - contractor
       - purchase_order_number
       - project_feature
+      - type_name
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3642,5 +3644,6 @@
       - contractor
       - purchase_order_number
       - project_feature
+      - type_name
       filter: {}
       allow_aggregations: true
