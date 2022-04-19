@@ -4,7 +4,7 @@ CREATE VIEW public.project_list_view AS
 with moped_team_members as (
   select
     mpp.project_id,
-    string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
+    string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
    FROM 
     public.moped_proj_personnel mpp
         LEFT JOIN public.moped_users mu ON ((mpp.user_id = mu.user_id))
@@ -38,7 +38,7 @@ with moped_team_members as (
     mp.updated_at,
     mtm.project_team_members,
     me.entity_name AS project_sponsor,
-    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
+    string_agg(DISTINCT me2.entity_name, ', ') AS project_partner,
         CASE
             WHEN ((mp.status_id = 0) OR (mp.status_id IS NULL)) THEN NULL::text
             WHEN (mp.status_id = 1) THEN mp.current_phase
