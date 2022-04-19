@@ -337,11 +337,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  if (data) {
-    console.log(data[query.table])
-    console.log(query.query)
-  }
-
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
