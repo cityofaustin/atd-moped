@@ -52,6 +52,8 @@ import ProjectNameEditable from "./ProjectNameEditable";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
@@ -172,6 +174,7 @@ const ProjectView = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
@@ -459,6 +462,26 @@ const ProjectView = () => {
                             horizontal: "center",
                           }}
                         >
+                          <MenuItem
+                            onClick={() => setIsFollowing(!isFollowing)}
+                            className={classes.projectOptionsMenuItem}
+                            selected={false}
+                          >
+                            <ListItemIcon
+                              className={classes.projectOptionsMenuItemIcon}
+                            >
+                              {isFollowing ? (
+                                <BookmarkIcon />
+                              ) : (
+                                <BookmarkBorderIcon />
+                              )}
+                            </ListItemIcon>
+                            {isFollowing ? (
+                              <ListItemText primary="Unfollow" />
+                            ) : (
+                              <ListItemText primary="Follow" />
+                            )}
+                          </MenuItem>
                           <MenuItem
                             onClick={handleRenameClick}
                             className={classes.projectOptionsMenuItem}
