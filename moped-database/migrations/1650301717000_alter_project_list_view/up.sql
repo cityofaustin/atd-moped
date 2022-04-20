@@ -59,7 +59,31 @@ with moped_team_members as (
      left join moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
      left join public.moped_project_types mpt on mpt.project_id = mp.project_id
      left join public.moped_types mt on mpt.project_type_id = mt.type_id 
-  GROUP BY mp.project_uuid, mp.project_id, mp.project_name, mp.project_description, mtm.project_team_members,
-mp.project_description_public, mp.ecapris_subproject_id, mp.project_importance,  mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.project_length, mp.fiscal_year, mp.capitally_funded, mp.project_priority, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, me.entity_name, mp.updated_at, mp.task_order, mp.contractor, mp.purchase_order_number, mt.type_name;
-
-
+  GROUP BY mp.project_uuid,
+    mp.project_id,
+    mp.project_name,
+    mp.project_description,
+    mtm.project_team_members,
+    mp.project_description_public,
+    mp.ecapris_subproject_id,
+    mp.project_importance,
+    mp.project_order,
+    mp.current_status,
+    mp.timeline_id,
+    mp.current_phase,
+    mp.end_date,
+    mp.project_length,
+    mp.fiscal_year,
+    mp.capitally_funded,
+    mp.project_priority,
+    mp.date_added,
+    mp.added_by,
+    mp.is_retired,
+    mp.milestone_id,
+    mp.status_id,
+    me.entity_name,
+    mp.updated_at,
+    mp.task_order,
+    mp.contractor,
+    mp.purchase_order_number,
+    mt.type_name;
