@@ -270,6 +270,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Team members",
       field: "project_team_members",
+      cellStyle: { whiteSpace: "pre-wrap" },
       render: entry => renderProjectTeamMembers(entry.project_team_members),
     },
     {
@@ -281,7 +282,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
     {
       title: "Project partners",
-      field: "project_partners",
+      field: "project_partner",
+      emptyValue: "-",
     },
     {
       title: "eCAPRIS ID",
