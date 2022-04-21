@@ -22,6 +22,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
 import MaterialTable from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -150,6 +151,23 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
+  const defaultHiddenColumns = {
+    project_name: false,
+    current_phase: false,
+    project_team_members: false,
+    project_sponsor: false,
+    project_partner: false,
+    ecapris_subproject_id: false,
+    updated_at: false,
+    project_feature: false, // signal_ids
+    task_order: true,
+    contractor: true,
+    purchase_order_number: true,
+    type_name: true,
+  };
+
+  const [hiddenColumns, setHiddenColumns] = useState(defaultHiddenColumns);
+
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
     query.limit = pagination.limit;
@@ -247,6 +265,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Project name",
       field: "project_name",
+      hidden: hiddenColumns["project_name"],
       render: entry => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
@@ -264,18 +283,21 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Status",
       field: "current_phase",
+      hidden: hiddenColumns["current_phase"],
       render: entry =>
         buildStatusBadge(entry.current_phase, entry.current_status),
     },
     {
       title: "Team members",
       field: "project_team_members",
+      hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "pre-wrap" },
       render: entry => renderProjectTeamMembers(entry.project_team_members),
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
+      hidden: hiddenColumns["project_sponsor"],
       editable: "never",
       render: entry =>
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
@@ -283,11 +305,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Project partners",
       field: "project_partner",
+      hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
     },
     {
       title: "eCAPRIS ID",
       field: "ecapris_subproject_id",
+      hidden: hiddenColumns["ecapris_subproject_id"],
       render: entry => (
         <ExternalLink
           text={entry.ecapris_subproject_id}
@@ -298,11 +322,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Last modified",
       field: "updated_at",
+      hidden: hiddenColumns["updated_at"],
       render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
     },
     {
       title: "Signal IDs",
       field: "project_feature",
+      hidden: hiddenColumns["project_feature"],
       render: entry => {
         // if there are no features, project_feature is [null]
         if (!entry.project_feature[0]) {
@@ -325,7 +351,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Task order",
       field: "task_order",
-      hidden: true,
+      hidden: hiddenColumns["task_order"],
       emptyValue: "-",
       render: entry => {
         // Empty value won't work in some cases where task_order is an empty array.
@@ -345,14 +371,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Contractor/Contract",
       field: "contractor",
-      hidden: true,
+      hidden: hiddenColumns["contractor"],
       emptyValue: "-",
       render: entry => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Project DO#",
       field: "purchase_order_number",
-      hidden: true,
+      hidden: hiddenColumns["purchase_order_number"],
       emptyValue: "-",
       render: entry =>
         entry.purchase_order_number.trim().length === 0
@@ -362,7 +388,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Project type",
       field: "type_name",
-      hidden: true,
+      hidden: hiddenColumns["type_name"],
       emptyValue: "-",
     },
   ];
@@ -434,6 +460,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                         setPagination={setPagination}
                       />
                     ),
+                    Toolbar: props => {
+                      return (
+                        <ProjectsListViewTableToolbar
+                          columnConfiguration={hiddenColumns}
+                          setHiddenColumns={setHiddenColumns}
+                          {...props}
+                        />
+                      );
+                    },
                   }}
                 />
               </Card>
