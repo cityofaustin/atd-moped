@@ -401,6 +401,21 @@ export const ADD_PROJECT_MILESTONE = gql`
   }
 `;
 
+export const PROJECT_FOLLOW = gql`
+  mutation FollowProject(
+    $objects: [moped_user_followed_projects_insert_input!]!
+  ) {
+    insert_moped_user_followed_projects(objects: $objects) {
+      returning {
+        id
+        project_id
+        user_id
+      }
+    }
+  }
+`;
+
+
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
     moped_activity_log(

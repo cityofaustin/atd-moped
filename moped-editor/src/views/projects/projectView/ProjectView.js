@@ -45,11 +45,14 @@ import {
   PROJECT_CLEAR_NO_CURRENT_PHASE,
   PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
+  PROJECT_FOLLOW
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 import ProjectStatusBadge from "./ProjectStatusBadge";
+
+import { getSessionDatabaseData } from "../../../auth/user";
 
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
@@ -179,6 +182,8 @@ const ProjectView = () => {
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
 
+  const userSessionData = getSessionDatabaseData();
+
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
@@ -211,6 +216,11 @@ const ProjectView = () => {
   // clearCurrentNoPhase sets current phase as null on moped_project
   // and sets phases in moped_proj_phases as is_current_phase: false
   const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
+  const [followProject] = useMutation(PROJECT_FOLLOW);
+
+  // const followProject = data => {
+  //   console.log(data);
+  // };
 
   /**
    * Clears the dialog contents
@@ -377,6 +387,22 @@ const ProjectView = () => {
       });
   };
 
+  const handleFollowProject = () => {
+    console.log("follow project");
+    console.log(projectId);
+    console.log(userSessionData.user_id);
+    followProject({
+      variables: {
+        objects: [
+          {
+            project_id: projectId,
+            user_id: userSessionData.user_id,
+          }
+        ],
+      },
+    });
+  };
+
   /**
    * Establishes the project status for our badge
    */
@@ -463,7 +489,7 @@ const ProjectView = () => {
                           }}
                         >
                           <MenuItem
-                            onClick={() => setIsFollowing(!isFollowing)}
+                            onClick={() => handleFollowProject()}
                             className={classes.projectOptionsMenuItem}
                             selected={false}
                           >
