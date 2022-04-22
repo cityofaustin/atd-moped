@@ -24,7 +24,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
-import MaterialTable from "@material-table/core";
+import MaterialTable, { MTableBody } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 
 /**
@@ -96,6 +96,8 @@ export const getSearchValue = (query, column, value) => {
  */
 const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
+
+  const [tableData, setTableData] = useState([]);
 
   /**
    * @type {Object} pagination
@@ -402,11 +404,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   useEffect(() => {
     if (data) {
-      console.log("data update ", data[query.table].length)
+      setTableData([...data["project_list_view"]]);
     }
-  }, [data, query.table]);
+  }, [data]);
 
-  console.log("RENDERING", tableRef, tableRef?.current?.isRemoteData())
+  console.log(tableData);
+
+  console.log("RENDERING", tableRef, tableRef?.current?.isRemoteData());
+  console.log("******___>", tableRef?.current?.state);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -445,7 +450,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
               <Card className={classes.root}>
                 <MaterialTable
                   tableRef={tableRef}
-                  data={() => (data[query.table])}
+                  data={tableData}
+                  // data={query => (
+                  //   Promise.resolve({data: tableData, page: pagination.page, totalCount: data["project_list_view"].length})
+                  // )}
                   columns={columns}
                   title=""
                   options={{
@@ -472,12 +480,26 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       />
                     ),
                     Toolbar: props => {
-                      console.log(props)
                       return (
                         <ProjectsListViewTableToolbar
                           columnConfiguration={hiddenColumns}
                           setHiddenColumns={setHiddenColumns}
                           {...props}
+                        />
+                      );
+                    },
+                    Body: props => {
+                      console.log(props, props.renderData, props.pageSize);
+                      const added = tableData.map((row, index) => ({
+                        tableData: { id: index },
+                        ...row,
+                      }));
+                      console.log(added);
+                      return (
+                        <MTableBody
+                          {...props}
+                          renderData={added}
+                          pageSize={added.length}
                         />
                       );
                     },

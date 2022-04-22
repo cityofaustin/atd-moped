@@ -19,8 +19,6 @@ export function MTableToolbar(props) {
   };
 
 
-  console.log(props)
-  console.log(props.isRemoteData)
   return (
     <Toolbar ref={props.forwardedRef} className={classes.root}>
       <div className={classes.spacer} />
