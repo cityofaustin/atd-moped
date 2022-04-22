@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useRef } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import {
@@ -96,8 +96,6 @@ export const getSearchValue = (query, column, value) => {
  */
 const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
-
-  const [tableData, setTableData] = useState([]);
 
   /**
    * @type {Object} pagination
@@ -397,21 +395,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  if (data) {
-    console.log(data[query.table]);
-    // console.log(query.query)
-  }
-
-  useEffect(() => {
-    if (data) {
-      setTableData([...data["project_list_view"]]);
-    }
-  }, [data]);
-
-  console.log(tableData);
-
-  console.log("RENDERING", tableRef, tableRef?.current?.isRemoteData());
-  console.log("******___>", tableRef?.current?.state);
+  console.log("RENDERING", tableRef, tableRef?.current?.dataManager);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -446,14 +430,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data && data[query.table] ? (
+            ) : data && data["project_list_view"] ? (
               <Card className={classes.root}>
                 <MaterialTable
                   tableRef={tableRef}
-                  data={tableData}
-                  // data={query => (
-                  //   Promise.resolve({data: tableData, page: pagination.page, totalCount: data["project_list_view"].length})
-                  // )}
+                  data={data["project_list_view"]}
                   columns={columns}
                   title=""
                   options={{
@@ -489,17 +470,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       );
                     },
                     Body: props => {
-                      console.log(props, props.renderData, props.pageSize);
-                      const added = tableData.map((row, index) => ({
+                      const indexedData = data["project_list_view"].map((row, index) => ({
                         tableData: { id: index },
                         ...row,
                       }));
-                      console.log(added);
                       return (
                         <MTableBody
                           {...props}
-                          renderData={added}
-                          pageSize={added.length}
+                          renderData={indexedData}
+                          pageSize={indexedData.length}
                         />
                       );
                     },
