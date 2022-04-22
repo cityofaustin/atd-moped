@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import {
@@ -261,6 +261,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.config.options.useQuery
   );
 
+  const tableRef = useRef();
+
   const columns = [
     {
       title: "Project name",
@@ -398,6 +400,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     // console.log(query.query)
   }
 
+  useEffect(() => {
+    if (data) {
+      console.log("data update ", data[query.table].length)
+    }
+  }, [data, query.table]);
+
+  console.log("RENDERING", tableRef, tableRef?.current?.isRemoteData())
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -431,12 +441,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data ? (
+            ) : data && data[query.table] ? (
               <Card className={classes.root}>
                 <MaterialTable
+                  tableRef={tableRef}
+                  data={() => (data[query.table])}
                   columns={columns}
                   title=""
-                  data={data[query.table]}
                   options={{
                     search: false,
                     rowStyle: {
@@ -461,6 +472,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       />
                     ),
                     Toolbar: props => {
+                      console.log(props)
                       return (
                         <ProjectsListViewTableToolbar
                           columnConfiguration={hiddenColumns}
