@@ -1,7 +1,6 @@
 # Moped Editor
 
-Web application for intereacting with Moped data. 
-
+Web application for interacting with Moped data.
 
 ## Quick start
 
