@@ -109,7 +109,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     page: 0,
   });
 
-
   /**
    * Stores the string to search for and the column to search against
    * @type {Object} search
@@ -270,6 +269,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     {
       title: "Team members",
       field: "project_team_members",
+      cellStyle: { whiteSpace: "pre-wrap" },
       render: entry => renderProjectTeamMembers(entry.project_team_members),
     },
     {
@@ -281,7 +281,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
     {
       title: "Project partners",
-      field: "project_partners",
+      field: "project_partner",
+      emptyValue: "-",
     },
     {
       title: "eCAPRIS ID",
@@ -297,6 +298,43 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Last modified",
       field: "updated_at",
       render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
+    },
+    {
+      title: "Task order",
+      field: "task_order",
+      hidden: true,
+      emptyValue: "-",
+      render: entry => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (entry?.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        let content = entry.task_order
+          .map(taskOrder => {
+            return taskOrder.display_name;
+          })
+          .join(", ");
+
+        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+      },
+    },
+    {
+      title: "Contractor/Contract",
+      field: "contractor",
+      hidden: true,
+      emptyValue: "-",
+      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
+    },
+    {
+      title: "Project DO#",
+      field: "purchase_order_number",
+      hidden: true,
+      emptyValue: "-",
+      render: entry =>
+        entry.purchase_order_number.trim().length === 0
+          ? "-"
+          : entry.purchase_order_number,
     },
   ];
 
@@ -333,13 +371,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           <Box mt={3}>
             {loading ? (
               <CircularProgress />
-            ) : data ? 
+            ) : data ? (
               <Card className={classes.root}>
                 <MaterialTable
                   columns={columns}
+                  title=""
                   data={data[query.table]}
                   options={{
-                    toolbar: false,
                     search: false,
                     rowStyle: {
                       fontFamily: typography.fontFamily,
@@ -351,6 +389,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
                     },
+                    columnsButton: true,
                   }}
                   components={{
                     Pagination: props => (
@@ -364,7 +403,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                   }}
                 />
               </Card>
-             : (
+            ) : (
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
