@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  recovery_environment:
+    container_name: moped_backfill_url_field
+    build: environment
+    volumes:
+      - ./app:/root/app
+    env_file:
+      - development.env

@@ -314,7 +314,7 @@ const ProjectFundingTable = () => {
     <Select
       style={{ minWidth: "8em" }}
       id={props.name}
-      value={props.value || ""}
+      value={props.value || props.defaultValue}
     >
       {props.data.map(item => (
         <MenuItem
@@ -413,6 +413,7 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_source"}
+          defaultValue={""}
           data={data.moped_fund_sources}
         />
       ),
@@ -431,6 +432,7 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_program"}
+          defaultValue={""}
           data={data.moped_fund_programs}
         />
       ),
@@ -461,6 +463,7 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_status"}
+          defaultValue={1}
           data={data.moped_fund_status}
         />
       ),
@@ -657,7 +660,7 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: getDatabaseId(user),
-                  funding_status_id: 1,
+                  funding_status_id: newData.funding_status_id || 1,
                 },
               },
             })
