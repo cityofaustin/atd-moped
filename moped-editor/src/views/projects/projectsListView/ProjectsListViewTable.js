@@ -305,7 +305,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_feature",
       render: entry => {
         // if there are no features, project_feature is [null]
-        if (!entry.project_feature[0]) {
+        if (!entry?.project_feature[0]) {
           return "-";
         } else {
           const signalIds = [];
@@ -366,11 +366,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       emptyValue: "-",
     },
   ];
-
-  if (data) {
-    console.log(data[query.table]);
-    // console.log(query.query)
-  }
 
   return (
     <ApolloErrorHandler error={error}>
