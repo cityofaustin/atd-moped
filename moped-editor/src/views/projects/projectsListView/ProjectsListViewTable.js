@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import {
@@ -253,15 +253,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     />
   );
 
-  /**
-   * Data Management
-   */
+  // Data Management
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery
   );
-
-  const tableRef = useRef();
 
   const columns = [
     {
@@ -395,8 +391,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  console.log("RENDERING", tableRef, tableRef?.current?.dataManager);
-
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -433,7 +427,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
             ) : data && data["project_list_view"] ? (
               <Card className={classes.root}>
                 <MaterialTable
-                  tableRef={tableRef}
                   data={data["project_list_view"]}
                   columns={columns}
                   title=""
@@ -470,10 +463,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       );
                     },
                     Body: props => {
-                      const indexedData = data["project_list_view"].map((row, index) => ({
-                        tableData: { id: index },
-                        ...row,
-                      }));
+                      const indexedData = data["project_list_view"].map(
+                        (row, index) => ({
+                          tableData: { id: index },
+                          ...row,
+                        })
+                      );
                       return (
                         <MTableBody
                           {...props}
