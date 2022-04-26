@@ -45,7 +45,8 @@ import {
   PROJECT_CLEAR_NO_CURRENT_PHASE,
   PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
-  PROJECT_FOLLOW
+  PROJECT_FOLLOW,
+  PROJECT_UNFOLLOW,
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -177,12 +178,12 @@ const ProjectView = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
-  const [isFollowing, setIsFollowing] = useState(false);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
 
   const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id;
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
@@ -192,9 +193,11 @@ const ProjectView = () => {
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId },
+    variables: { projectId, userId },
     fetchPolicy: "no-cache",
   });
+
+  const isFollowing = data?.moped_user_followed_projects.length > 0;
 
   /**
    * Handles the click on a tab, which should trigger a change.
@@ -217,10 +220,7 @@ const ProjectView = () => {
   // and sets phases in moped_proj_phases as is_current_phase: false
   const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
   const [followProject] = useMutation(PROJECT_FOLLOW);
-
-  // const followProject = data => {
-  //   console.log(data);
-  // };
+  const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
   /**
    * Clears the dialog contents
@@ -388,19 +388,25 @@ const ProjectView = () => {
   };
 
   const handleFollowProject = () => {
-    console.log("follow project");
-    console.log(projectId);
-    console.log(userSessionData.user_id);
-    followProject({
-      variables: {
-        objects: [
-          {
-            project_id: projectId,
-            user_id: userSessionData.user_id,
-          }
-        ],
-      },
-    });
+    if (!isFollowing) {
+      followProject({
+        variables: {
+          objects: [
+            {
+              project_id: projectId,
+              user_id: userId,
+            },
+          ],
+        },
+      }).then(() => refetch());
+    } else {
+      unfollowProject({
+        variables: {
+          project_id: projectId,
+          user_id: userId,
+        },
+      }).then(() => refetch());
+    }
   };
 
   /**

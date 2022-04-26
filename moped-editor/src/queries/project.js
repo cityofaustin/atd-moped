@@ -29,7 +29,7 @@ export const ADD_PROJECT = gql`
 `;
 
 export const SUMMARY_QUERY = gql`
-  query ProjectSummary($projectId: Int) {
+  query ProjectSummary($projectId: Int, $userId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
       project_name
@@ -113,6 +113,13 @@ export const SUMMARY_QUERY = gql`
     ) {
       status_id
       status_name
+    }
+    moped_user_followed_projects(
+      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId} } 
+    ) {
+      project_id
+      user_id
+      id
     }
   }
 `;
@@ -415,6 +422,17 @@ export const PROJECT_FOLLOW = gql`
   }
 `;
 
+export const PROJECT_UNFOLLOW = gql`
+  mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
+    delete_moped_user_followed_projects(where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }) {
+      returning {
+        id
+        project_id
+        user_id
+      }
+    }
+  }
+`;
 
 export const PROJECT_ACTIVITY_LOG = gql`
   query getMopedProjectChanges($projectId: Int!) {
