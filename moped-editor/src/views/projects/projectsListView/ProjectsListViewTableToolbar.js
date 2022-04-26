@@ -10,14 +10,13 @@ import Tooltip from "@material-ui/core/Tooltip";
 import { withStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
 
-export function MTableToolbar(props) {
+export function ProjectsListViewTableToolbar(props) {
   const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
   const { classes } = props;
   const localization = {
-    ...MTableToolbar.defaultProps.localization,
+    ...ProjectsListViewTableToolbar.defaultProps.localization,
     ...props.localization,
   };
-
 
   return (
     <Toolbar ref={props.forwardedRef} className={classes.root}>
@@ -93,7 +92,6 @@ export function MTableToolbar(props) {
                       </li>
                     );
                   })}
-                  {/** End Add columns to the Columns Button Menu */}
                 </Menu>
               </span>
             )}
@@ -104,7 +102,7 @@ export function MTableToolbar(props) {
   );
 }
 
-MTableToolbar.defaultProps = {
+ProjectsListViewTableToolbar.defaultProps = {
   columns: [],
   columnsHiddenInColumnsButton: false, // By default, all columns are shown in the Columns Button (columns action when `options.columnsButton = true`)
   columnsButton: false,
@@ -136,7 +134,7 @@ const MTableToolbarRef = React.forwardRef(function MTableToolbarRef(
   props,
   ref
 ) {
-  return <MTableToolbar {...props} forwardedRef={ref} />;
+  return <ProjectsListViewTableToolbar {...props} forwardedRef={ref} />;
 });
 
 export default withStyles(styles, { name: "MTableToolbar" })(MTableToolbarRef);
