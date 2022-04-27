@@ -164,6 +164,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     contractor: true,
     purchase_order_number: true,
     type_name: true,
+    funding_source_name: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(defaultHiddenColumns);
@@ -389,7 +390,18 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
     },
+    {
+      title: "Funding source",
+      field: "funding_source_name",
+      hidden: hiddenColumns["funding_source_name"],
+      emptyValue: "-",
+    },
   ];
+
+  if (data) {
+      console.log(data["project_list_view"])
+  }
+
 
   return (
     <ApolloErrorHandler error={error}>

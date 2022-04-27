@@ -197,6 +197,9 @@ export const ProjectsListViewQueryConf = {
     type_name: {
       type: "string",
     },
+    funding_source_name: {
+      type: "string",
+    }
   },
   order_by: { updated_at: "desc" },
   where: {
