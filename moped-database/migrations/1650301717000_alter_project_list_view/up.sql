@@ -7,8 +7,8 @@ with project_person_list_lookup as (
     string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
    FROM 
     public.moped_proj_personnel mpp
-        LEFT JOIN public.moped_users mu ON ((mpp.user_id = mu.user_id))
-        LEFT JOIN public.moped_project_roles mpr ON ((mpp.role_id = mpr.project_role_id))
+        JOIN public.moped_users mu ON ((mpp.user_id = mu.user_id))
+        JOIN public.moped_project_roles mpr ON ((mpp.role_id = mpr.project_role_id))
       where (mpp.status_id = 1)
       group by mpp.project_id
 )
