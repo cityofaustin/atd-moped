@@ -28,6 +28,7 @@ import {
   ListItemIcon,
   ListItemText,
   Snackbar,
+  Tooltip,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -108,6 +109,17 @@ const useStyles = makeStyles(theme => ({
   },
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
+  },
+  followDiv: {
+    float: "right",
+  },
+  unfollowIcon: {
+    color: theme.palette.primary.main,
+    fontSize: "2rem",
+  },
+  followIcon: {
+    color: theme.palette.text.secondary,
+    fontSize: "2rem",
   },
 }));
 
@@ -437,13 +449,31 @@ const ProjectView = () => {
                 <div className={classes.root}>
                   <Box p={4} pb={2}>
                     <Grid container>
-                      <Grid item xs={12}>
+                      <Grid item xs={11}>
                         <Box pb={1}>
                           <Breadcrumbs aria-label="all-projects-breadcrumb">
                             <Link component={RouterLink} to={allProjectsLink}>
                               <strong>{"< ALL PROJECTS"}</strong>
                             </Link>
                           </Breadcrumbs>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={1} md={1}>
+                        <Box
+                          className={classes.followDiv}
+                          onClick={() => handleFollowProject()}
+                        >
+                          {isFollowing ? (
+                            <Tooltip title="Unfollow">
+                              <BookmarkIcon className={classes.unfollowIcon} />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip title="Follow">
+                              <BookmarkBorderIcon
+                                className={classes.followIcon}
+                              />
+                            </Tooltip>
+                          )}
                         </Box>
                       </Grid>
                       <Grid item xs={11} md={11} className={classes.title}>
@@ -494,26 +524,6 @@ const ProjectView = () => {
                             horizontal: "center",
                           }}
                         >
-                          <MenuItem
-                            onClick={() => handleFollowProject()}
-                            className={classes.projectOptionsMenuItem}
-                            selected={false}
-                          >
-                            <ListItemIcon
-                              className={classes.projectOptionsMenuItemIcon}
-                            >
-                              {isFollowing ? (
-                                <BookmarkIcon />
-                              ) : (
-                                <BookmarkBorderIcon />
-                              )}
-                            </ListItemIcon>
-                            {isFollowing ? (
-                              <ListItemText primary="Unfollow" />
-                            ) : (
-                              <ListItemText primary="Follow" />
-                            )}
-                          </MenuItem>
                           <MenuItem
                             onClick={handleRenameClick}
                             className={classes.projectOptionsMenuItem}
