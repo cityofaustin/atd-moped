@@ -11,12 +11,14 @@ import { withStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
 
 export function ProjectsListViewTableToolbar(props) {
-  const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
+  // const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
   const { classes } = props;
   const localization = {
     ...ProjectsListViewTableToolbar.defaultProps.localization,
     ...props.localization,
   };
+
+  console.log(props)
 
   return (
     <Toolbar ref={props.forwardedRef} className={classes.root}>
@@ -30,7 +32,7 @@ export function ProjectsListViewTableToolbar(props) {
                   <IconButton
                     color="inherit"
                     onClick={event =>
-                      setColumnsButtonAnchorEl(event.currentTarget)
+                      props.setColumnsButtonAnchorEl(event.currentTarget)
                     }
                     aria-label={localization.showColumnsAriaLabel}
                   >
@@ -38,9 +40,9 @@ export function ProjectsListViewTableToolbar(props) {
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  anchorEl={columnsButtonAnchorEl}
-                  open={Boolean(columnsButtonAnchorEl)}
-                  onClose={() => setColumnsButtonAnchorEl(null)}
+                  anchorEl={props.columnsButtonAnchorEl}
+                  open={Boolean(props.columnsButtonAnchorEl)}
+                  onClose={() => props.setColumnsButtonAnchorEl(null)}
                 >
                   <MenuItem
                     key={"text"}
@@ -80,10 +82,11 @@ export function ProjectsListViewTableToolbar(props) {
                             checked={!col.hidden}
                             id={`column-toggle-${col.tableData.id}`}
                             onChange={() => {
-                              props.setHiddenColumns({
-                                ...props.columnConfiguration,
-                                [col.field]: !col.hidden,
-                              });
+                              // props.setHiddenColumns({
+                              //   ...props.columnConfiguration,
+                              //   [col.field]: !col.hidden,
+                              // });
+                              props.toggleColumnConfig(col.field, !col.hidden)
                               props.onColumnsChanged(col, !col.hidden);
                             }}
                           />

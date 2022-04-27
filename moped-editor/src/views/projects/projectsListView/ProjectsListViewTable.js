@@ -168,6 +168,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   const [hiddenColumns, setHiddenColumns] = useState(defaultHiddenColumns);
 
+  const toggleColumnConfig = (field, hiddenState) => {
+    console.log("ferp")
+    setHiddenColumns({
+      ...hiddenColumns,
+      [field]: hiddenState,
+    });
+  }
+
+  const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
+
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
     query.limit = pagination.limit;
@@ -391,6 +401,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
+  console.log("rendering")
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -456,8 +468,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     Toolbar: props => {
                       return (
                         <ProjectsListViewTableToolbar
-                          columnConfiguration={hiddenColumns}
-                          setHiddenColumns={setHiddenColumns}
+                          // columnConfiguration={hiddenColumns}
+                          toggleColumnConfig={toggleColumnConfig}
+                          columnsButtonAnchorEl={columnsButtonAnchorEl}
+                          setColumnsButtonAnchorEl={setColumnsButtonAnchorEl}
                           {...props}
                         />
                       );
