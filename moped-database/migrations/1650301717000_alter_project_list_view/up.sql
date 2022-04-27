@@ -1,7 +1,7 @@
 drop view project_list_view;
 
 CREATE VIEW public.project_list_view AS
-with moped_team_members as (
+with project_person_list_lookup as (
   select
     mpp.project_id,
     string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
@@ -36,7 +36,7 @@ with moped_team_members as (
     mp.task_order,
     COALESCE(mp.status_id, 0) AS status_id,
     mp.updated_at,
-    mtm.project_team_members,
+    ppll.project_team_members,
     me.entity_name AS project_sponsor,
     string_agg(DISTINCT me2.entity_name, ', ') AS project_partner,
         CASE
@@ -50,20 +50,20 @@ with moped_team_members as (
     json_agg(mpf.feature) as project_feature,
     mt.type_name
    FROM public.moped_project mp
-   left join moped_team_members mtm on (mp.project_id = mtm.project_id)
-     LEFT JOIN public.moped_entity me ON ((me.entity_id = mp.project_sponsor))
-     LEFT JOIN public.moped_proj_partners mpp2 ON (((mp.project_id = mpp2.project_id) AND (mpp2.status_id = 1)))
-     LEFT JOIN public.moped_entity me2 ON ((mpp2.entity_id = me2.entity_id))
-     left join jsonb_array_elements(mp.task_order) as task_order_filter on true
-     left join moped_proj_components mpc on mpc.project_id = mp.project_id and mpc.status_id = 1
-     left join moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
-     left join public.moped_project_types mpt on mpt.project_id = mp.project_id
-     left join public.moped_types mt on mpt.project_type_id = mt.type_id 
+     LEFT JOIN project_person_list_lookup ppll on mp.project_id = ppll.project_id
+     LEFT JOIN public.moped_entity me ON me.entity_id = mp.project_sponsor
+     LEFT JOIN public.moped_proj_partners mpp2 ON (mp.project_id = mpp2.project_id AND mpp2.status_id = 1)
+     LEFT JOIN public.moped_entity me2 ON mpp2.entity_id = me2.entity_id
+     LEFT JOIN jsonb_array_elements(mp.task_order) as task_order_filter on true
+     LEFT JOIN moped_proj_components mpc on mpc.project_id = mp.project_id and mpc.status_id = 1
+     LEFT JOIN moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
+     LEFT JOIN public.moped_project_types mpt on mpt.project_id = mp.project_id
+     LEFT JOIN public.moped_types mt on mpt.project_type_id = mt.type_id 
   GROUP BY mp.project_uuid,
     mp.project_id,
     mp.project_name,
     mp.project_description,
-    mtm.project_team_members,
+    ppll.project_team_members,
     mp.project_description_public,
     mp.ecapris_subproject_id,
     mp.project_importance,
