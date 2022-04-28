@@ -11,14 +11,14 @@ import { withStyles } from "@material-ui/core/styles";
 import React, { useState } from "react";
 
 export function ProjectsListViewTableToolbar(props) {
-  // const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
+  const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
   const { classes } = props;
   const localization = {
     ...ProjectsListViewTableToolbar.defaultProps.localization,
     ...props.localization,
   };
 
-  console.log(props)
+  // console.log(props)
 
   return (
     <Toolbar ref={props.forwardedRef} className={classes.root}>
@@ -32,7 +32,7 @@ export function ProjectsListViewTableToolbar(props) {
                   <IconButton
                     color="inherit"
                     onClick={event =>
-                      props.setColumnsButtonAnchorEl(event.currentTarget)
+                      setColumnsButtonAnchorEl(event.currentTarget)
                     }
                     aria-label={localization.showColumnsAriaLabel}
                   >
@@ -40,9 +40,9 @@ export function ProjectsListViewTableToolbar(props) {
                   </IconButton>
                 </Tooltip>
                 <Menu
-                  anchorEl={props.columnsButtonAnchorEl}
-                  open={Boolean(props.columnsButtonAnchorEl)}
-                  onClose={() => props.setColumnsButtonAnchorEl(null)}
+                  anchorEl={columnsButtonAnchorEl}
+                  open={Boolean(columnsButtonAnchorEl)}
+                  onClose={() => setColumnsButtonAnchorEl(null)}
                 >
                   <MenuItem
                     key={"text"}
