@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import {
@@ -96,7 +96,6 @@ export const getSearchValue = (query, column, value) => {
  */
 const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const classes = useStyles();
-  const tableRef = useRef();
 
   /**
    * @type {Object} pagination
@@ -167,18 +166,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     type_name: true,
   };
 
-  const [hiddenColumns, setHiddenColumns] = useState(JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? defaultHiddenColumns);
+  const [hiddenColumns, setHiddenColumns] = useState(
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
+      defaultHiddenColumns
+  );
 
   const toggleColumnConfig = (field, hiddenState) => {
-    console.log("ferp")
-    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"))
-    console.log(storedConfig)
-    storedConfig = {...storedConfig, [field]: hiddenState}
-    console.log("new ", storedConfig)
-    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig))
-  }
-
-  const [columnsButtonAnchorEl, setColumnsButtonAnchorEl] = useState(null);
+    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+    storedConfig = { ...storedConfig, [field]: hiddenState };
+    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
+  };
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -403,16 +400,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  const dataManager = tableRef?.current?.dataManager;
-  let colConfig = {};
+  useEffect(() => {
+    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+    setHiddenColumns(storedConfig);
+  }, [data]);
 
-  useEffect(()=> {
-      console.log("useeffect ", localStorage.getItem("mopedColumnConfig"))
-      const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-      setHiddenColumns(storedConfig)
-  }, [data])
-
-  console.log(hiddenColumns["project_name"])
 
   return (
     <ApolloErrorHandler error={error}>
@@ -450,7 +442,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
             ) : data && data["project_list_view"] ? (
               <Card className={classes.root}>
                 <MaterialTable
-                  tableRef={tableRef}
                   data={data["project_list_view"]}
                   columns={columns}
                   title=""
@@ -480,10 +471,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     Toolbar: props => {
                       return (
                         <ProjectsListViewTableToolbar
-                          // columnConfiguration={hiddenColumns}
                           toggleColumnConfig={toggleColumnConfig}
-                          // columnsButtonAnchorEl={columnsButtonAnchorEl}
-                          // setColumnsButtonAnchorEl={setColumnsButtonAnchorEl}
                           {...props}
                         />
                       );
