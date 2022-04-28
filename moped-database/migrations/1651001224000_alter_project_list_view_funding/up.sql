@@ -1,25 +1,25 @@
 drop view project_list_view;
 
 CREATE VIEW public.project_list_view AS
-with moped_team_members as (
-  select
+with project_person_list_lookup as (
+  SELECT
     mpp.project_id,
     string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
    FROM 
     public.moped_proj_personnel mpp
-        LEFT JOIN public.moped_users mu ON ((mpp.user_id = mu.user_id))
-        LEFT JOIN public.moped_project_roles mpr ON ((mpp.role_id = mpr.project_role_id))
-      where (mpp.status_id = 1)
-      group by mpp.project_id
+        JOIN public.moped_users mu ON ((mpp.user_id = mu.user_id))
+        JOIN public.moped_project_roles mpr ON ((mpp.role_id = mpr.project_role_id))
+      WHERE (mpp.status_id = 1)
+      GROUP BY mpp.project_id
 ),
- moped_funding_sources as (
-  select
+ funding_sources_lookup as (
+  SELECT
     mpf.project_id,
     string_agg(mfs.funding_source_name, ', ') as funding_source_name
-  from
+  FROM
     moped_proj_funding mpf
-    left join moped_fund_sources mfs on mpf.funding_source_id = mfs.funding_source_id
-    group by mpf.project_id
+    LEFT JOIN moped_fund_sources mfs on mpf.funding_source_id = mfs.funding_source_id
+    GROUP BY mpf.project_id
 )
   SELECT 
     mp.project_uuid,
@@ -43,7 +43,7 @@ with moped_team_members as (
     mp.task_order,
     COALESCE(mp.status_id, 0) AS status_id,
     mp.updated_at,
-    mtm.project_team_members,
+    ppll.project_team_members,
     me.entity_name AS project_sponsor,
     string_agg(DISTINCT me2.entity_name, ', ') AS project_partner,
         CASE
@@ -56,10 +56,10 @@ with moped_team_members as (
     mp.purchase_order_number,
     json_agg(mpf.feature) as project_feature,
     mt.type_name,
-    mfs.funding_source_name
+    fsl.funding_source_name
    FROM public.moped_project mp
-   left join moped_team_members mtm on mp.project_id = mtm.project_id
-      left join moped_funding_sources mfs on mfs.project_id = mp.project_id
+     LEFT JOIN project_person_list_lookup ppll on mp.project_id = ppll.project_id
+     LEFT JOIN funding_sources_lookup fsl on fsl.project_id = mp.project_id
      LEFT JOIN public.moped_entity me ON me.entity_id = mp.project_sponsor
      LEFT JOIN public.moped_proj_partners mpp2 ON (mp.project_id = mpp2.project_id AND mpp2.status_id = 1)
      LEFT JOIN public.moped_entity me2 ON mpp2.entity_id = me2.entity_id
@@ -72,7 +72,7 @@ with moped_team_members as (
     mp.project_id,
     mp.project_name,
     mp.project_description,
-    mtm.project_team_members,
+    ppll.project_team_members,
     mp.project_description_public,
     mp.ecapris_subproject_id,
     mp.project_order,
@@ -93,4 +93,4 @@ with moped_team_members as (
     mp.contractor,
     mp.purchase_order_number,
     mt.type_name,
-    mfs.funding_source_name;
+    fsl.funding_source_name;
