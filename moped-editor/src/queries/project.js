@@ -119,7 +119,6 @@ export const SUMMARY_QUERY = gql`
     ) {
       project_id
       user_id
-      id
     }
   }
 `;
@@ -414,7 +413,6 @@ export const PROJECT_FOLLOW = gql`
   ) {
     insert_moped_user_followed_projects(objects: $objects) {
       returning {
-        id
         project_id
         user_id
       }
@@ -425,11 +423,7 @@ export const PROJECT_FOLLOW = gql`
 export const PROJECT_UNFOLLOW = gql`
   mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
     delete_moped_user_followed_projects(where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }) {
-      returning {
-        id
-        project_id
-        user_id
-      }
+      affected_rows
     }
   }
 `;
