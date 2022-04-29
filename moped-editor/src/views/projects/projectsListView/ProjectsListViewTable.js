@@ -402,7 +402,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    setHiddenColumns(storedConfig);
+    if (storedConfig) {
+      setHiddenColumns(storedConfig);
+    }
   }, [data]);
 
 

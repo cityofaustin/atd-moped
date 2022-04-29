@@ -18,8 +18,6 @@ export function ProjectsListViewTableToolbar(props) {
     ...props.localization,
   };
 
-  // console.log(props)
-
   return (
     <Toolbar ref={props.forwardedRef} className={classes.root}>
       <div className={classes.spacer} />
@@ -86,7 +84,7 @@ export function ProjectsListViewTableToolbar(props) {
                               //   ...props.columnConfiguration,
                               //   [col.field]: !col.hidden,
                               // });
-                              props.toggleColumnConfig(col.field, !col.hidden)
+                              props.toggleColumnConfig(col.field, !col.hidden);
                               props.onColumnsChanged(col, !col.hidden);
                             }}
                           />
