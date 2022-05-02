@@ -1,5 +1,6 @@
 DROP VIEW project_list_view;
 
+CREATE VIEW public.project_list_view AS
 with project_person_list_lookup as (
   SELECT
     mpp.project_id,
@@ -99,4 +100,4 @@ with project_person_list_lookup as (
     mp.purchase_order_number,
     mt.type_name,
     fsl.funding_source_name,
-    mpn.project_note ;
+    mpn.project_note;
