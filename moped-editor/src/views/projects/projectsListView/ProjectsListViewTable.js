@@ -165,6 +165,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     purchase_order_number: true,
     type_name: true,
     funding_source_name: true,
+    project_note: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -403,6 +404,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Funding source",
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
+      emptyValue: "-",
+    },
+    {
+      title: "Status update",
+      field: "project_note",
+      hidden: hiddenColumns["project_note"],
       emptyValue: "-",
     },
   ];
