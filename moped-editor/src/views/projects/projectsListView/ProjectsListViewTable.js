@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import {
@@ -167,7 +167,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     funding_source_name: true,
   };
 
-  const [hiddenColumns, setHiddenColumns] = useState(defaultHiddenColumns);
+  const [hiddenColumns, setHiddenColumns] = useState(
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
+      defaultHiddenColumns
+  );
+
+  const toggleColumnConfig = (field, hiddenState) => {
+    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+    storedConfig = { ...storedConfig, [field]: hiddenState };
+    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
+  };
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -398,10 +407,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
-  if (data) {
-      console.log(data["project_list_view"])
-  }
-
+  useEffect(() => {
+    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+    if (storedConfig) {
+      setHiddenColumns(storedConfig);
+    }
+  }, [data]);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -468,8 +479,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     Toolbar: props => {
                       return (
                         <ProjectsListViewTableToolbar
-                          columnConfiguration={hiddenColumns}
-                          setHiddenColumns={setHiddenColumns}
+                          toggleColumnConfig={toggleColumnConfig}
                           {...props}
                         />
                       );

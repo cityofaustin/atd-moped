@@ -80,10 +80,11 @@ export function ProjectsListViewTableToolbar(props) {
                             checked={!col.hidden}
                             id={`column-toggle-${col.tableData.id}`}
                             onChange={() => {
-                              props.setHiddenColumns({
-                                ...props.columnConfiguration,
-                                [col.field]: !col.hidden,
-                              });
+                              // props.setHiddenColumns({
+                              //   ...props.columnConfiguration,
+                              //   [col.field]: !col.hidden,
+                              // });
+                              props.toggleColumnConfig(col.field, !col.hidden);
                               props.onColumnsChanged(col, !col.hidden);
                             }}
                           />
