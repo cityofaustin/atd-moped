@@ -21,6 +21,7 @@ import GridTablePagination from "../../../components/GridTable/GridTablePaginati
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
+import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
 import MaterialTable from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -300,6 +301,28 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
     },
     {
+      title: "Signal IDs",
+      field: "project_feature",
+      render: entry => {
+        // if there are no features, project_feature is [null]
+        if (!entry?.project_feature[0]) {
+          return "-";
+        } else {
+          const signalIds = [];
+          entry.project_feature.forEach(projectFeature => {
+            const signal = projectFeature?.properties?.signal_id;
+            if (signal) {
+              signalIds.push({
+                signal_id: signal,
+                knack_id: projectFeature.properties.id,
+              });
+            }
+          });
+          return <RenderSignalLink signals={signalIds} />;
+        }
+      },
+    },
+    {
       title: "Task order",
       field: "task_order",
       hidden: true,
@@ -335,6 +358,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         entry.purchase_order_number.trim().length === 0
           ? "-"
           : entry.purchase_order_number,
+    },
+    {
+      title: "Project type",
+      field: "type_name",
+      hidden: true,
+      emptyValue: "-",
     },
   ];
 
