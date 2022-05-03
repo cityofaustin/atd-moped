@@ -449,7 +449,7 @@ const ProjectView = () => {
                 <div className={classes.root}>
                   <Box p={4} pb={2}>
                     <Grid container>
-                      <Grid item xs={11}>
+                      <Grid item xs={12}>
                         <Box pb={1}>
                           <Breadcrumbs aria-label="all-projects-breadcrumb">
                             <Link component={RouterLink} to={allProjectsLink}>
@@ -463,17 +463,15 @@ const ProjectView = () => {
                           className={classes.followDiv}
                           onClick={() => handleFollowProject()}
                         >
-                          {isFollowing ? (
-                            <Tooltip title="Unfollow">
+                          <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
+                            {isFollowing ? (
                               <BookmarkIcon className={classes.unfollowIcon} />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip title="Follow">
+                            ) : (
                               <BookmarkBorderIcon
                                 className={classes.followIcon}
                               />
-                            </Tooltip>
-                          )}
+                            )}
+                          </Tooltip>
                         </Box>
                       </Grid>
                       <Grid item xs={11} md={11} className={classes.title}>
