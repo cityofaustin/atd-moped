@@ -18,7 +18,7 @@ with project_person_list_lookup AS (
     string_agg(mfs.funding_source_name, ', ') AS funding_source_name
   FROM
     moped_proj_funding mpf
-    LEFT JOIN moped_fund_sources mfs on mpf.funding_source_id = mfs.funding_source_id
+    LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
     GROUP BY mpf.project_id
 )
   SELECT 
@@ -58,16 +58,16 @@ with project_person_list_lookup AS (
     mt.type_name,
     fsl.funding_source_name
    FROM public.moped_project mp
-     LEFT JOIN project_person_list_lookup ppll on mp.project_id = ppll.project_id
-     LEFT JOIN funding_sources_lookup fsl on fsl.project_id = mp.project_id
+     LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
+     LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
      LEFT JOIN public.moped_entity me ON me.entity_id = mp.project_sponsor
      LEFT JOIN public.moped_proj_partners mpp2 ON (mp.project_id = mpp2.project_id AND mpp2.status_id = 1)
      LEFT JOIN public.moped_entity me2 ON mpp2.entity_id = me2.entity_id
-     LEFT JOIN jsonb_array_elements(mp.task_order) AS task_order_filter on true
-     LEFT JOIN moped_proj_components mpc on mpc.project_id = mp.project_id and mpc.status_id = 1
-     LEFT JOIN moped_proj_features mpf on mpc.project_component_id = mpf.project_component_id
-     LEFT JOIN public.moped_project_types mpt on mpt.project_id = mp.project_id
-     LEFT JOIN public.moped_types mt on mpt.project_type_id = mt.type_id
+     LEFT JOIN jsonb_array_elements(mp.task_order) AS task_order_filter ON true
+     LEFT JOIN moped_proj_components mpc ON mpc.project_id = mp.project_id and mpc.status_id = 1
+     LEFT JOIN moped_proj_features mpf ON mpc.project_component_id = mpf.project_component_id
+     LEFT JOIN public.moped_project_types mpt ON mpt.project_id = mp.project_id
+     LEFT JOIN public.moped_types mt ON mpt.project_type_id = mt.type_id
   GROUP BY mp.project_uuid,
     mp.project_id,
     mp.project_name,

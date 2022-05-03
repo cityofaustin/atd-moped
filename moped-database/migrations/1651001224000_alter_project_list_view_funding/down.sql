@@ -87,4 +87,3 @@ WITH project_person_list_lookup AS (
     mp.contractor,
     mp.purchase_order_number,
     mt.type_name;
-    
