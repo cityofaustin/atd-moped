@@ -408,14 +408,10 @@ export const ADD_PROJECT_MILESTONE = gql`
 `;
 
 export const PROJECT_FOLLOW = gql`
-  mutation FollowProject(
-    $objects: [moped_user_followed_projects_insert_input!]!
-  ) {
-    insert_moped_user_followed_projects(objects: $objects) {
-      returning {
-        project_id
-        user_id
-      }
+  mutation FollowProject($object: moped_user_followed_projects_insert_input!) {
+    insert_moped_user_followed_projects_one(object: $object) {
+      project_id
+      user_id
     }
   }
 `;

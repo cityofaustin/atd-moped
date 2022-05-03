@@ -403,12 +403,10 @@ const ProjectView = () => {
     if (!isFollowing) {
       followProject({
         variables: {
-          objects: [
-            {
-              project_id: projectId,
-              user_id: userId,
-            },
-          ],
+          object: {
+            project_id: projectId,
+            user_id: userId,
+          },
         },
       }).then(() => refetch());
     } else {
@@ -449,7 +447,7 @@ const ProjectView = () => {
                 <div className={classes.root}>
                   <Box p={4} pb={2}>
                     <Grid container>
-                      <Grid item xs={12}>
+                      <Grid item xs={11}>
                         <Box pb={1}>
                           <Breadcrumbs aria-label="all-projects-breadcrumb">
                             <Link component={RouterLink} to={allProjectsLink}>
