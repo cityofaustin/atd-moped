@@ -1,5 +1,5 @@
 export const filterProjectTeamMembers = value => {
-  if (!value || value === " :") {
+  if (!value) {
     return "";
   }
   const namesArray = value.split(",");
