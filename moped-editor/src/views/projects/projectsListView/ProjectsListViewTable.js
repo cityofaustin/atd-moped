@@ -357,6 +357,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Signal IDs",
       field: "project_feature",
       hidden: hiddenColumns["project_feature"],
+      sorting: false,
       render: entry => {
         // if there are no features, project_feature is [null]
         if (!entry?.project_feature[0]) {
