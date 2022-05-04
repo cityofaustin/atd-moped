@@ -403,12 +403,10 @@ const ProjectView = () => {
     if (!isFollowing) {
       followProject({
         variables: {
-          objects: [
-            {
-              project_id: projectId,
-              user_id: userId,
-            },
-          ],
+          object: {
+            project_id: projectId,
+            user_id: userId,
+          },
         },
       }).then(() => refetch());
     } else {
@@ -463,17 +461,15 @@ const ProjectView = () => {
                           className={classes.followDiv}
                           onClick={() => handleFollowProject()}
                         >
-                          {isFollowing ? (
-                            <Tooltip title="Unfollow">
+                          <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
+                            {isFollowing ? (
                               <BookmarkIcon className={classes.unfollowIcon} />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip title="Follow">
+                            ) : (
                               <BookmarkBorderIcon
                                 className={classes.followIcon}
                               />
-                            </Tooltip>
-                          )}
+                            )}
+                          </Tooltip>
                         </Box>
                       </Grid>
                       <Grid item xs={11} md={11} className={classes.title}>

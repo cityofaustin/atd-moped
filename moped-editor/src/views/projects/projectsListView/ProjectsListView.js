@@ -8,7 +8,7 @@ import Page from "src/components/Page";
 
 // Abstract
 import GQLAbstract from "../../../libs/GQLAbstract";
-import GridTable from "../../../components/GridTable/GridTable";
+import ProjectsListViewTable from "./ProjectsListViewTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 
 import { STATUS_QUERY } from "../../../queries/project";
@@ -41,7 +41,7 @@ const ProjectsListView = () => {
 
   return (
     <Page className={classes.root} title="Projects">
-      <GridTable
+      <ProjectsListViewTable
         title={"Projects"}
         query={projectsQuery}
         searchTerm={navSearchTerm}

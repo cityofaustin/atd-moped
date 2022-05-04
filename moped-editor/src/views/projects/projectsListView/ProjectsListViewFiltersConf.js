@@ -90,10 +90,8 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        // Because of the way the SQL view concatanates the team members and roles
-        // " :" is always present even if there are no team members present
-        "string_is_null_special_case",
-        "string_is_not_null_special_case",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
@@ -113,6 +111,45 @@ export const ProjectsListViewFiltersConf = {
       name: "project_partner",
       label: "Project partners",
       placeholder: "Project partners",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "task_order_name",
+      label: "Task orders",
+      placeholder: "Task order",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "contractor",
+      label: "Contractor",
+      placeholder: "Contractor",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "purchase_order_number",
+      label: "Project DO",
+      placeholder: "Project DO",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
