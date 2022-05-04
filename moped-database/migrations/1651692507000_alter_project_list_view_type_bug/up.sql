@@ -21,7 +21,7 @@ with project_person_list_lookup as (
     LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
     GROUP BY mpf.project_id
 ),
-project_types_lookup as (
+project_type_lookup as (
   SELECT
     mpt.project_id,
     string_agg(mt.type_name, ', ') as type_name
