@@ -137,6 +137,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     column: "",
   });
 
+  // anchor element for advanced search popper in GridTableSearch to "attach" to
+  // State is handled here so we can listen for changes in a useeffect in this component
+  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
+
   // create URLSearchParams from url
   const filterQuery = new URLSearchParams(useLocation().search);
 
@@ -459,13 +463,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   /*
    * Store column configution before data change triggers page refresh
+   * or opening advanced search dropdown triggers page refresh
    */
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
     if (storedConfig) {
       setHiddenColumns(storedConfig);
     }
-  }, [data]);
+  }, [data, advancedSearchAnchor]);
+
 
   return (
     <ApolloErrorHandler error={error}>
@@ -493,6 +499,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
               setFilterParameters: setFilter,
             }}
             filterQuery={filterQuery}
+            advancedSearchAnchor={advancedSearchAnchor}
+            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           />
         </GridTableToolbar>
         {/*Main Table Body*/}

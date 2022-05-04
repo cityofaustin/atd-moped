@@ -88,13 +88,12 @@ const GridTableSearch = ({
   children,
   filterQuery,
   parentData = null,
+  advancedSearchAnchor,
+  setAdvancedSearchAnchor
 }) => {
   const classes = useStyles();
   const queryPath = useLocation().pathname;
   const divRef = React.useRef();
-
-  // anchor element for advanced search popper to "attach" to
-  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   /**
    * When True, the download csv dialog is open.

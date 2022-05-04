@@ -423,6 +423,8 @@ const GridTable = ({
               setFilterParameters: setFilter,
             }}
             filterQuery={filterQuery}
+            advancedSearchAnchor={advancedSearchAnchor}
+            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           />
           {customComponents?.toolbar?.after}
         </GridTableToolbar>
