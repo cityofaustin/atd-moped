@@ -180,7 +180,7 @@ export const ProjectsListViewQueryConf = {
     // the following column configurations only work with material table and do not have the
     // necessary details to work with Grid Table
     task_order: {
-      type: "Array",
+      type: "array",
     },
     task_order_name: {
       type: "string",
@@ -192,7 +192,7 @@ export const ProjectsListViewQueryConf = {
       type: "string",
     },
     project_feature: {
-      type: "Array",
+      type: "array",
     },
     type_name: {
       type: "string",
