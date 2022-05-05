@@ -12,6 +12,9 @@ import GridTable from "../../components/GridTable/GridTable";
 import { DashboardViewQueryConf } from "./DashboardViewQueryConf";
 
 import { STATUS_QUERY } from "../../queries/project";
+import { USER_FOLLOWED_PROJECTS_QUERY } from "../../queries/dashboard";
+
+import { getSessionDatabaseData } from "../../auth/user";
 
 // Styles
 const useStyles = makeStyles(theme => ({
@@ -37,17 +40,27 @@ const DashboardView = () => {
   const classes = useStyles();
   const navSearchTerm = useLocation()?.state?.searchTerm;
 
-  const { data } = useQuery(STATUS_QUERY);
+  const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id;
+
+  const { loading, error, data, refetch } = useQuery(USER_FOLLOWED_PROJECTS_QUERY, {
+    variables: { userId },
+    fetchPolicy: "no-cache",
+  });
+
+  console.log(data);
+
 
   return (
-    <Page className={classes.root} title="Dashboard">
-      <GridTable
-        title={"Dashboard"}
-        query={dashboardQuery}
-        searchTerm={navSearchTerm}
-        referenceData={data}
-      />
-    </Page>
+    <div></div>
+    // <Page className={classes.root} title="Dashboard">
+    //   <GridTable
+    //     title={"Dashboard"}
+    //     query={dashboardQuery}
+    //     searchTerm={navSearchTerm}
+    //     referenceData={data}
+    //   />
+    // </Page>
   );
 };
 

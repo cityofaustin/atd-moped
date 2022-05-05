@@ -79,98 +79,98 @@ export const DashboardViewQueryConf = {
         );
       },
     },
-    project_description: {
-      hidden: true,
-      searchable: true,
-      sortable: false,
-      label: "Project description",
-      search: {
-        label: "Search by project description",
-        operator: "_ilike",
-        quoted: true,
-        envelope: "%{VALUE}%",
-      },
-      width: "50%",
-      type: "String",
-    },
+    // project_description: {
+    //   hidden: true,
+    //   searchable: true,
+    //   sortable: false,
+    //   label: "Project description",
+    //   search: {
+    //     label: "Search by project description",
+    //     operator: "_ilike",
+    //     quoted: true,
+    //     envelope: "%{VALUE}%",
+    //   },
+    //   width: "50%",
+    //   type: "String",
+    // },
     current_status: {
       searchable: false,
       sortable: false,
-      hidden: true,
+      hidden: false,
       label: "Status",
       type: "String",
-      width: "5%",
+      width: "25%",
     },
-    status_id: {
-      hidden: true,
-      searchable: false,
-    },
-    current_phase: {
-      searchable: true,
-      sortable: false,
-      label: "Status",
-      width: "15%",
-      badge: "status_id",
-      search: {
-        label: "Search by current phase",
-        operator: "_ilike",
-        quoted: true,
-        envelope: "%{VALUE}%",
-      },
-      type: "string",
-    },
-    project_team_members: {
-      searchable: false,
-      sortable: false,
-      label: "Team members",
-      width: "20%",
-      filter: filterProjectTeamMembers,
-    },
-    project_sponsor: {
-      label: "Project sponsor",
-      searchable: true,
-      search: {
-        label: "Search by project sponsor",
-        operator: "_ilike",
-        quoted: true,
-        envelope: "%{VALUE}%",
-      },
-      type: "string",
-      filter: value => (value === "None" ? "-" : value),
-    },
-    project_partner: {
-      label: "Project partners",
-      searchable: true,
-      search: {
-        label: "Search by project partners",
-        operator: "_ilike",
-        quoted: true,
-        envelope: "%{VALUE}%",
-      },
-      type: "string",
-    },
-    ecapris_subproject_id: {
-      hidden: false,
-      searchable: true,
-      sortable: true,
-      label: "eCAPRIS ID",
-      filter: value => (
-        <ExternalLink
-          text={value}
-          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
-        />
-      ),
-      type: "number",
-      search: {
-        label: "Search by eCapris subproject id",
-        operator: "_eq",
-        quoted: false,
-        envelope: "%{VALUE}%",
-        invalidValueDefault: 0,
-      },
-    },
+    // status_id: {
+    //   hidden: true,
+    //   searchable: false,
+    // },
+    // current_phase: {
+    //   searchable: true,
+    //   sortable: false,
+    //   label: "Status",
+    //   width: "15%",
+    //   badge: "status_id",
+    //   search: {
+    //     label: "Search by current phase",
+    //     operator: "_ilike",
+    //     quoted: true,
+    //     envelope: "%{VALUE}%",
+    //   },
+    //   type: "string",
+    // },
+    // project_team_members: {
+    //   searchable: false,
+    //   sortable: false,
+    //   label: "Team members",
+    //   width: "20%",
+    //   filter: filterProjectTeamMembers,
+    // },
+    // project_sponsor: {
+    //   label: "Project sponsor",
+    //   searchable: true,
+    //   search: {
+    //     label: "Search by project sponsor",
+    //     operator: "_ilike",
+    //     quoted: true,
+    //     envelope: "%{VALUE}%",
+    //   },
+    //   type: "string",
+    //   filter: value => (value === "None" ? "-" : value),
+    // },
+    // project_partner: {
+    //   label: "Project partners",
+    //   searchable: true,
+    //   search: {
+    //     label: "Search by project partners",
+    //     operator: "_ilike",
+    //     quoted: true,
+    //     envelope: "%{VALUE}%",
+    //   },
+    //   type: "string",
+    // },
+    // ecapris_subproject_id: {
+    //   hidden: false,
+    //   searchable: true,
+    //   sortable: true,
+    //   label: "eCAPRIS ID",
+    //   filter: value => (
+    //     <ExternalLink
+    //       text={value}
+    //       url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
+    //     />
+    //   ),
+    //   type: "number",
+    //   search: {
+    //     label: "Search by eCapris subproject id",
+    //     operator: "_eq",
+    //     quoted: false,
+    //     envelope: "%{VALUE}%",
+    //     invalidValueDefault: 0,
+    //   },
+    // },
     updated_at: {
-      hidden: false,
+      hidden: true,
       searchable: false,
       sortable: true,
       label: "Last modified",
@@ -178,7 +178,7 @@ export const DashboardViewQueryConf = {
       type: "date_iso",
     },
   },
-  order_by: { updated_at: "desc" },
+  order_by: { project_name: "asc" },
   where: {
     is_retired: "_eq: false",
     status_id: "_neq: 3",
