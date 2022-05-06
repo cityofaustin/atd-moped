@@ -93,29 +93,7 @@ export const mapStyles = {
       [18, 25],
     ],
   },
-  // toolTipStyles: {
-  //   position: "absolute",
-  //   margin: 8,
-  //   padding: 6,
-  //   background: theme.palette.primary.main,
-  //   color: theme.palette.background.default,
-  //   maxWidth: 300,
-  //   fontSize: "0.875rem",
-  //   fontWeight: 500,
-  //   zIndex: 9,
-  //   pointerEvents: "none",
-  //   borderRadius: 6,
-  //   boxShadow: "0 0 1px 0 rgb(0 0 0 / 31%), 0 2px 2px -2px rgb(0 0 0 / 25%)",
-  //   textTransform: "capitalize",
-  //   fontFamily: "Roboto",
-  // },
-};
-
-/**
- * Common styles of tools presented in ProjectComponentsMap and ProjectComponentsMapView maps
- */
-export const makeCommonComponentsMapStyles = theme => ({
-  toolTip: {
+  toolTipStyles: {
     position: "absolute",
     margin: 8,
     padding: 6,
@@ -131,6 +109,12 @@ export const makeCommonComponentsMapStyles = theme => ({
     textTransform: "capitalize",
     fontFamily: "Roboto",
   },
+};
+
+/**
+ * Common styles of map components in ProjectComponentsMap and ProjectComponentsMapView
+ */
+export const makeCommonComponentsMapStyles = theme => ({
   layerSelectButton: {
     position: "absolute",
     top: ".5rem",
