@@ -71,8 +71,10 @@ export const useStyles = makeStyles(theme => ({
   },
   navStyle: {
     position: "absolute",
-    bottom: "3rem",
-    right: "1rem",
+    // bottom: "3rem",
+    // right: "1rem",
+    bottom: "6rem",
+    right: "3rem",
   },
   mapBox: {
     padding: 25,
@@ -97,8 +99,20 @@ export const useStyles = makeStyles(theme => ({
     },
   },
   speedDial: {
+    // right: "3.5rem !important",
+    // bottom: "4.5rem !important",
+    // position: "absolute",
+    // zIndex: 1,
+    // "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+    //   bottom: theme.spacing(2),
+    //   right: theme.spacing(2),
+    // },
+    // "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+    //   top: theme.spacing(2),
+    //   left: theme.spacing(2),
+    // },
     right: "3.5rem !important",
-    bottom: "4.5rem !important",
+    bottom: "1.7rem !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
