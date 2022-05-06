@@ -115,18 +115,6 @@ export const mapStyles = {
  * Common styles of map components in ProjectComponentsMap and ProjectComponentsMapView
  */
 export const makeCommonComponentsMapStyles = theme => ({
-  layerSelectButton: {
-    position: "absolute",
-    top: ".5rem",
-    right: "1rem",
-    zIndex: 1,
-    height: "3rem",
-    width: "184px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
   speedDial: {
     right: "3.5rem !important",
     bottom: "1.7rem !important",

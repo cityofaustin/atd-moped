@@ -44,6 +44,18 @@ const useStyles = makeStyles(theme => ({
     "-ms-overflow-style": "none" /* IE and Edge */,
     "scrollbar-width": "none" /* Firefox */,
   },
+  layerSelectButton: {
+    position: "absolute",
+    top: ".5rem",
+    right: "1rem",
+    zIndex: 1,
+    height: "3rem",
+    width: "184px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
   editButton: {
     position: "absolute",
     top: 8,

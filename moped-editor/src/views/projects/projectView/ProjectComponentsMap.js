@@ -46,6 +46,18 @@ import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
+  layerSelectButton: {
+    position: "absolute",
+    top: ".5rem",
+    right: "1rem",
+    zIndex: 1,
+    height: "3rem",
+    width: "206px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
