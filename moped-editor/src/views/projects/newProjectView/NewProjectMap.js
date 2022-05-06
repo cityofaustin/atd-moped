@@ -31,6 +31,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
+  makeCommonComponentsMapStyles,
   renderTooltip,
   queryCtnFeatureService,
   useFeatureCollectionToFitBounds,
@@ -45,18 +46,18 @@ import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
-  layerSelectButton: {
-    position: "absolute",
-    top: ".5rem",
-    right: "1rem",
-    zIndex: 1,
-    height: "3rem",
-    width: "206px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
+  // layerSelectButton: {
+  //   position: "absolute",
+  //   top: ".5rem",
+  //   right: "1rem",
+  //   zIndex: 1,
+  //   height: "3rem",
+  //   width: "184px",
+  //   backgroundColor: "white",
+  //   "&:hover": {
+  //     backgroundColor: "white",
+  //   },
+  // },
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
@@ -69,62 +70,49 @@ export const useStyles = makeStyles(theme => ({
       backgroundColor: "white",
     },
   },
-  navStyle: {
-    position: "absolute",
-    // bottom: "3rem",
-    // right: "1rem",
-    bottom: "6rem",
-    right: "3rem",
-  },
-  mapBox: {
-    padding: 25,
-    position: "relative",
-  },
-  mapBoxNoPadding: {
-    padding: 0,
-    position: "relative",
-  },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    width: "21rem",
-    left: "1rem",
-    top: ".5rem",
-    zIndex: 2,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
-  },
-  speedDial: {
-    // right: "3.5rem !important",
-    // bottom: "4.5rem !important",
-    // position: "absolute",
-    // zIndex: 1,
-    // "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-    //   bottom: theme.spacing(2),
-    //   right: theme.spacing(2),
-    // },
-    // "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-    //   top: theme.spacing(2),
-    //   left: theme.spacing(2),
-    // },
-    right: "3.5rem !important",
-    bottom: "1.7rem !important",
-    position: "absolute",
-    zIndex: 1,
-    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
-  },
+  // navStyle: {
+  //   position: "absolute",
+  //   bottom: "6rem",
+  //   right: "3rem",
+  // },
+  // mapBox: {
+  //   padding: 25,
+  //   position: "relative",
+  // },
+  // mapBoxNoPadding: {
+  //   padding: 0,
+  //   position: "relative",
+  // },
+  // geocoderContainer: {
+  //   display: "flex",
+  //   height: 50,
+  //   position: "absolute",
+  //   alignItems: "center",
+  //   width: "21rem",
+  //   left: "1rem",
+  //   top: ".5rem",
+  //   zIndex: 2,
+  //   // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
+  //   "@media (max-width:640px)": {
+  //     top: 32,
+  //   },
+  // },
+  // speedDial: {
+  //   right: "3.5rem !important",
+  //   bottom: "1.7rem !important",
+  //   position: "absolute",
+  //   zIndex: 1,
+  //   "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+  //     bottom: theme.spacing(2),
+  //     right: theme.spacing(2),
+  //   },
+  //   "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+  //     top: theme.spacing(2),
+  //     left: theme.spacing(2),
+  //   },
+  // },
   ...layerSelectStyles,
+  ...makeCommonComponentsMapStyles(theme),
 }));
 
 const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
