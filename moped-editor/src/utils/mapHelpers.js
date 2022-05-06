@@ -142,10 +142,6 @@ export const makeCommonComponentsMapStyles = theme => ({
     padding: 0,
     position: "relative",
   },
-  mapBoxNoPadding: {
-    padding: 0,
-    position: "relative",
-  },
   geocoderContainer: {
     display: "flex",
     height: 50,
