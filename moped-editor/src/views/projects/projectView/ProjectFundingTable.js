@@ -50,7 +50,7 @@ import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
-import FundingAmountTextField from "./FundingAmountTextField";
+import FundingAmountIntegerField from "./FundingAmountIntegerField";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -511,7 +511,7 @@ const ProjectFundingTable = () => {
       title: "Amount",
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
-      editComponent: props => <FundingAmountTextField {...props} />,
+      editComponent: props => <FundingAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
