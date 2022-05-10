@@ -6,8 +6,12 @@ export const USER_FOLLOWED_PROJECTS_QUERY = gql`
       project {
         project_id
         project_name
+        current_phase
         current_status
-        moped_proj_notes(where: { project_note_type: { _eq: 2 } }) {
+        moped_proj_notes(
+          where: { project_note_type: { _eq: 2 } } 
+          order_by: { date_created: desc }
+        ) {
           added_by
           project_note_type
           status_id
