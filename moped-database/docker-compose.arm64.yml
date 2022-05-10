@@ -6,7 +6,6 @@ services:
         image: "frankinaustin/postgis:12-3.2"
         volumes:
             - moped-db-vol:/var/lib/postgresql/data
-            #- ./postgres.local.conf:/etc/postgresql/postgresql.conf
         expose:
             - 5432
         ports:
