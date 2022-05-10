@@ -46,18 +46,21 @@ with project_person_list_lookup as (
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     string_agg(DISTINCT me2.entity_name, ', ') AS project_partner,
-        CASE
-            WHEN (mp.status_id = 0 OR mp.status_id IS NULL) THEN NULL::text
-            WHEN (mp.status_id = 1) THEN mp.current_phase
-            ELSE mp.current_status
-        END AS status_name,
+    CASE
+      WHEN (mp.status_id = 0 OR mp.status_id IS NULL) THEN NULL::text
+      WHEN (mp.status_id = 1) THEN mp.current_phase
+      ELSE mp.current_status
+    END AS status_name,
     string_agg(task_order_filter->>'display_name', ',') as task_order_name,
     mp.contractor,
     mp.purchase_order_number,
     json_agg(mpf.feature) as project_feature,
     mt.type_name,
     fsl.funding_source_name,
-    mpn.project_note
+    (SELECT mpn.project_note FROM moped_proj_notes mpn
+      WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2
+      ORDER BY mpn.date_created desc
+      LIMIT 1) as project_note
    FROM public.moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -69,11 +72,6 @@ with project_person_list_lookup as (
      LEFT JOIN moped_proj_features mpf ON mpc.project_component_id = mpf.project_component_id
      LEFT JOIN public.moped_project_types mpt ON mpt.project_id = mp.project_id
      LEFT JOIN public.moped_types mt ON mpt.project_type_id = mt.type_id
-     LEFT JOIN moped_proj_notes mpn ON mpn.project_note_id = 
-      (SELECT mpn2.project_note_id FROM moped_proj_notes mpn2 
-        WHERE mpn2.project_id = mp.project_id and mpn2.project_note_type = 2
-        ORDER BY mpn2.date_created desc
-      LIMIT 1)
   GROUP BY mp.project_uuid,
     mp.project_id,
     mp.project_name,
@@ -99,5 +97,4 @@ with project_person_list_lookup as (
     mp.contractor,
     mp.purchase_order_number,
     mt.type_name,
-    fsl.funding_source_name,
-    mpn.project_note;
+    fsl.funding_source_name;
