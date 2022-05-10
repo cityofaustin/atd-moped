@@ -3664,6 +3664,8 @@
       - type_name
       - funding_source_name
       - project_note
+      - construction_start_date
+      - completion_end_date
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3700,6 +3702,8 @@
       - type_name
       - funding_source_name
       - project_note
+      - construction_start_date
+      - completion_end_date
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3736,5 +3740,7 @@
       - type_name
       - funding_source_name
       - project_note
+      - construction_start_date
+      - completion_end_date
       filter: {}
       allow_aggregations: true

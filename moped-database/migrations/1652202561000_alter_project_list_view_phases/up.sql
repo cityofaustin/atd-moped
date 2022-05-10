@@ -57,27 +57,28 @@ with project_person_list_lookup as (
     json_agg(mpf.feature) as project_feature,
     mt.type_name,
     fsl.funding_source_name,
-    (SELECT mpn2.project_note FROM moped_proj_notes mpn2 
-      WHERE mpn2.project_id = mp.project_id and mpn2.project_note_type = 2
-      ORDER BY mpn2.date_created desc
-      LIMIT 1) as project_note,
-      ( -- get me the phase start of the most recently added construction phase entry
-    select phases.phase_start
-    from moped_proj_phases phases
-    where 1 = 1
+  ( -- get the most recent status_update (project note type 2)
+    SELECT mpn.project_note FROM moped_proj_notes mpn
+    WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2
+    ORDER BY mpn.date_created desc
+    LIMIT 1) as project_note,
+  ( -- get me the phase start of the most recently added construction phase entry
+    SELECT phases.phase_start
+    FROM moped_proj_phases phases
+    WHERE 1 = 1
       and phases.project_id = mp.project_id
       and phases.phase_name = 'construction'
-    order by phases.date_added desc
-    limit 1
+    ORDER BY phases.date_added desc
+    LIMIT 1
   )::date AS construction_start_date,
   ( -- get me the phase end of the most recently added completion phase entry
-    select phases.phase_end
-    from moped_proj_phases phases
-    where 1 = 1
+    SELECT phases.phase_end
+    FROM moped_proj_phases phases
+    WHERE 1 = 1
       and phases.project_id = mp.project_id
       and phases.phase_name = 'complete'
-    order by phases.date_added desc
-    limit 1
+    ORDER BY phases.date_added desc
+    LIMIT 1
   )::date AS completion_end_date
    FROM public.moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
