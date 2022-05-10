@@ -202,7 +202,13 @@ export const ProjectsListViewQueryConf = {
     },
     project_note: {
       type: "string",
-    }
+    },
+    construction_start_date: {
+      type: "date"
+    },
+    completion_end_date:{
+      type: "date"
+    },
   },
   order_by: { updated_at: "desc" },
   where: {

@@ -166,6 +166,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     type_name: true,
     funding_source_name: true,
     project_note: true,
+    construction_start_date: false,
+    completion_end_date: false,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -411,6 +413,20 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+    },
+    {
+      title: "Construction start",
+      field: "construction_start_date",
+      hidden: hiddenColumns["construction_start_date"],
+      emptyValue: "-",
+      render: entry => new Date(entry.construction_start_date).toLocaleDateString("en-GB")
+    },
+    {
+      title: "Project completion",
+      field: "project_completion_date",
+      hidden: hiddenColumns["project_completion_date"],
+      emptyValue: "-",
+      render: entry => new Date(entry.project_completion_date).toLocaleDateString("en-US")
     },
   ];
 
