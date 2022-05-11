@@ -4,18 +4,20 @@ CREATE VIEW public.project_list_view AS
 with project_person_list_lookup as (
   SELECT
     mpp.project_id,
-    string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members
+    string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ',') AS project_team_members,
+    (SELECT concat(mu.first_name, ' ', mu.last_name) WHERE mpr.project_role_name = 'Inspector') AS project_inspector,
+    (SELECT concat(mu.first_name, ' ', mu.last_name) WHERE mpr.project_role_name = 'Designer') AS project_designer
    FROM 
     public.moped_proj_personnel mpp
         JOIN public.moped_users mu ON mpp.user_id = mu.user_id
         JOIN public.moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
       WHERE (mpp.status_id = 1)
-      GROUP BY mpp.project_id
+      GROUP BY mpp.project_id, mu.first_name, mu.last_name, mpr.project_role_name
 ),
- funding_sources_lookup as (
+ funding_sources_lookup AS (
   SELECT
     mpf.project_id,
-    string_agg(mfs.funding_source_name, ', ') as funding_source_name
+    string_agg(mfs.funding_source_name, ', ') AS funding_source_name
   FROM
     moped_proj_funding mpf
     LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
@@ -79,7 +81,9 @@ with project_person_list_lookup as (
       and phases.phase_name = 'complete'
     ORDER BY phases.date_added desc
     LIMIT 1
-  )::date AS completion_end_date
+  )::date AS completion_end_date,
+  ppll.project_inspector,
+  ppll.project_designer
    FROM public.moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -116,4 +120,6 @@ with project_person_list_lookup as (
     mp.contractor,
     mp.purchase_order_number,
     mt.type_name,
-    fsl.funding_source_name;
+    fsl.funding_source_name,
+    ppll.project_inspector,
+    ppll.project_designer;

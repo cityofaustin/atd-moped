@@ -3666,6 +3666,8 @@
       - project_note
       - construction_start_date
       - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3704,6 +3706,8 @@
       - project_note
       - construction_start_date
       - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3742,5 +3746,7 @@
       - project_note
       - construction_start_date
       - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true

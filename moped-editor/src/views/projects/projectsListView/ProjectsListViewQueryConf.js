@@ -209,6 +209,12 @@ export const ProjectsListViewQueryConf = {
     completion_end_date:{
       type: "date"
     },
+    project_inspector: {
+      type: "string",
+    },
+    project_designer: {
+      type: "string",
+    },
   },
   order_by: { updated_at: "desc" },
   where: {

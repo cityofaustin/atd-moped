@@ -168,6 +168,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     project_note: true,
     construction_start_date: false,
     completion_end_date: false,
+    project_inspector: true,
+    project_designer: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -427,6 +429,18 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: hiddenColumns["project_completion_date"],
       emptyValue: "-",
       render: entry => new Date(entry.project_completion_date).toLocaleDateString("en-US")
+    },
+    {
+      title: "Designer",
+      field: "project_designer",
+      hidden: hiddenColumns["project_designer"],
+      emptyValue: "-",
+    },
+    {
+      title: "Inspector",
+      field: "project_inspector",
+      hidden: hiddenColumns["project_inspector"],
+      emptyValue: "-",
     },
   ];
 
