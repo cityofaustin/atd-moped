@@ -24,7 +24,7 @@ export const USER_FOLLOWED_PROJECTS_QUERY = gql`
 
 export const USER_PERSONNEL_PROJECTS_QUERY = gql`
   query UserPersonnelProjectsQuery($userId: Int) {
-    moped_proj_personnel(where: {user_id: {_eq: 1}}) {
+    moped_proj_personnel(where: { user_id: { _eq: $userId }, status_id: { _neq: 0 } }) {
         project_id
         user_id
         project {

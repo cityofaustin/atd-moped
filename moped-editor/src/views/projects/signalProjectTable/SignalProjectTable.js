@@ -73,9 +73,6 @@ const SignalProjectTable = () => {
     {}
   );
 
-  console.log(data);
-  console.log(data.moped_project);
-
   /**
    * Build data needed in Signals Material Table
    */
