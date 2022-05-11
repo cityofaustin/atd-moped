@@ -549,6 +549,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
+                        orderDirection={sort.order}
                       />
                     ),
                     Body: props => {
