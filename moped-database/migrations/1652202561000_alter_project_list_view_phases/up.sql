@@ -22,6 +22,15 @@ with project_person_list_lookup as (
     moped_proj_funding mpf
     LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
     GROUP BY mpf.project_id
+),
+project_type_lookup as (
+  SELECT
+    mpt.project_id,
+    string_agg(mt.type_name, ', ') as type_name
+  FROM
+     public.moped_project_types mpt
+     LEFT JOIN public.moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.status_id = 1
+     GROUP BY mpt.project_id
 )
   SELECT 
     mp.project_uuid,
@@ -57,8 +66,9 @@ with project_person_list_lookup as (
     mp.contractor,
     mp.purchase_order_number,
     json_agg(mpf.feature) as project_feature,
-    mt.type_name,
     fsl.funding_source_name,
+    ptl.type_name,
+    mpn.project_note,
   ( -- get the most recent status_update (project note type 2)
     SELECT mpn.project_note FROM moped_proj_notes mpn
     WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2
