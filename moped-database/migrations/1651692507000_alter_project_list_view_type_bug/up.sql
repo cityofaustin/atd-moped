@@ -66,7 +66,10 @@ project_type_lookup as (
     json_agg(mpf.feature) as project_feature,
     fsl.funding_source_name,
     ptl.type_name,
-    mpn.project_note
+    (SELECT mpn.project_note FROM moped_proj_notes mpn
+      WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2
+      ORDER BY mpn.date_created desc
+      LIMIT 1) as project_note
    FROM public.moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -77,11 +80,6 @@ project_type_lookup as (
      LEFT JOIN jsonb_array_elements(mp.task_order) as task_order_filter ON true
      LEFT JOIN moped_proj_components mpc ON mpc.project_id = mp.project_id and mpc.status_id = 1
      LEFT JOIN moped_proj_features mpf ON mpc.project_component_id = mpf.project_component_id
-     LEFT JOIN moped_proj_notes mpn ON mpn.project_note_id = 
-      (SELECT mpn2.project_note_id FROM moped_proj_notes mpn2 
-        WHERE mpn2.project_id = mp.project_id and mpn2.project_note_type = 2
-        ORDER BY mpn2.date_created desc
-      LIMIT 1)
   GROUP BY mp.project_uuid,
     mp.project_id,
     mp.project_name,
@@ -107,5 +105,4 @@ project_type_lookup as (
     mp.contractor,
     mp.purchase_order_number,
     ptl.type_name,
-    fsl.funding_source_name,
-    mpn.project_note;
+    fsl.funding_source_name;
