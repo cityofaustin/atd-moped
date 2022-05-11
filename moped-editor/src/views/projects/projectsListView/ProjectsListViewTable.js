@@ -419,7 +419,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "construction_start_date",
       hidden: hiddenColumns["construction_start_date"],
       emptyValue: "-",
-      render: entry => new Date(entry.construction_start_date).toLocaleDateString("en-GB")
+      render: entry => new Date(entry.construction_start_date).toLocaleDateString("en-US")
     },
     {
       title: "Project completion",
