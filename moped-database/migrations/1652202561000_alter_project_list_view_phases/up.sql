@@ -96,7 +96,7 @@ project_type_lookup as (
     join moped_project_roles roles ON personnel.role_id = roles.project_role_id
     where 1 = 1
       and roles.project_role_name = 'Inspector'
-      and users.status_id = 1
+      and personnel.status_id = 1
       and personnel.project_id = mp.project_id
    group by personnel.project_id) as project_inspector,
   ( -- get me a list of the designers for this project
@@ -106,7 +106,7 @@ project_type_lookup as (
     join moped_project_roles roles ON personnel.role_id = roles.project_role_id
     where 1 = 1
       and roles.project_role_name = 'Designer'
-      and users.status_id = 1
+      and personnel.status_id = 1
       and personnel.project_id = mp.project_id
     group by personnel.project_id) as project_designer
    FROM public.moped_project mp
