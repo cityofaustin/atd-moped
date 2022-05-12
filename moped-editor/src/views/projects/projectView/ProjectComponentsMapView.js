@@ -22,12 +22,14 @@ import {
   mapConfig,
   useLayerSelect,
   getLayerNames,
+  makeCommonComponentsMapStyles,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import Geocoder from "react-map-gl-geocoder";
-import NewProjectMapBaseMap from "../newProjectView/NewProjectMapBaseMap";
+import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
 const useStyles = makeStyles(theme => ({
+  toolTip: mapStyles.toolTipStyles,
   locationCountText: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -54,38 +56,10 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: "white",
     },
   },
-  toolTip: mapStyles.toolTipStyles,
-  navStyle: {
-    position: "absolute",
-    bottom: "6rem",
-    right: "3rem",
-  },
-  mapBox: {
-    padding: 25,
-    position: "relative",
-  },
-  mapBoxNoPadding: {
-    padding: 0,
-    position: "relative",
-  },
   editButton: {
     position: "absolute",
     top: 8,
     right: 8,
-  },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    width: "21rem",
-    left: "1rem",
-    top: ".5rem",
-    zIndex: 2,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
   },
   mapStyle: {
     position: "relative",
@@ -119,20 +93,7 @@ const useStyles = makeStyles(theme => ({
   mapToolsDivider: {
     marginTop: ".5rem",
   },
-  speedDial: {
-    right: "3.5rem !important",
-    bottom: "1.7rem !important",
-    position: "absolute",
-    zIndex: 1,
-    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
-  },
+  ...makeCommonComponentsMapStyles(theme),
 }));
 
 /**
@@ -307,7 +268,7 @@ const ProjectComponentsMapView = ({
 
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        <NewProjectMapBaseMap
+        <ProjectComponentsBaseMap
           containerRef={mapBasemapContainerRef}
           handleBasemapChange={handleBasemapChange}
           mapStyle={mapStyle}

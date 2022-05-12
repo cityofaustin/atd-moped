@@ -57,7 +57,7 @@ export const useStyles = makeStyles(theme => ({
  * @return {React.ReactPortal|null}
  * @constructor
  */
-const NewProjectMapBaseMap = ({
+const ProjectComponentsBaseMap = ({
   containerRef,
   handleBasemapChange,
   mapStyle,
@@ -141,4 +141,4 @@ const NewProjectMapBaseMap = ({
     : null;
 };
 
-export default NewProjectMapBaseMap;
+export default ProjectComponentsBaseMap;

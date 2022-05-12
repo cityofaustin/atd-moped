@@ -112,6 +112,53 @@ export const mapStyles = {
 };
 
 /**
+ * Common styles of map components in ProjectComponentsMap and ProjectComponentsMapView
+ */
+export const makeCommonComponentsMapStyles = theme => ({
+  speedDial: {
+    right: "3.5rem !important",
+    bottom: "1.7rem !important",
+    position: "absolute",
+    zIndex: 1,
+    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
+  },
+  navStyle: {
+    position: "absolute",
+    bottom: "6rem",
+    right: "3rem",
+  },
+  mapBox: {
+    padding: 25,
+    position: "relative",
+  },
+  mapBoxNoPadding: {
+    padding: 0,
+    position: "relative",
+  },
+  geocoderContainer: {
+    display: "flex",
+    height: 50,
+    position: "absolute",
+    alignItems: "center",
+    width: "21rem",
+    left: "1rem",
+    top: ".5rem",
+    zIndex: 2,
+    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
+    "@media (max-width:640px)": {
+      top: 32,
+    },
+  },
+});
+
+/**
  * Map Config
  * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, geocoderBbox: number[], mapboxDefaultMaxZoom: number, layerConfigs: Object}}
  */
