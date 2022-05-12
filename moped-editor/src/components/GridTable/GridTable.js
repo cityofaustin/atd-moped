@@ -149,6 +149,10 @@ const GridTable = ({
     column: "",
   });
 
+  // anchor element for advanced search popper in GridTableSearch to "attach" to
+  // State is handled here so we could listen for changes in a useeffect in this component
+  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
+
   // create URLSearchParams from url
   const filterQuery = new URLSearchParams(useLocation().search);
 
@@ -423,6 +427,8 @@ const GridTable = ({
               setFilterParameters: setFilter,
             }}
             filterQuery={filterQuery}
+            advancedSearchAnchor={advancedSearchAnchor}
+            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           />
           {customComponents?.toolbar?.after}
         </GridTableToolbar>
