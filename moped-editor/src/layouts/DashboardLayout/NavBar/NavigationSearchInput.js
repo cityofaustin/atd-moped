@@ -14,7 +14,7 @@ import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
-import { getSearchValue } from "../../../components/GridTable/GridTable.js";
+import { getSearchValue } from "../../../utils/gridTableHelpers";
 
 const useStyles = makeStyles(theme => ({
   root: {
