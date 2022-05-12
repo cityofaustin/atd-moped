@@ -24,7 +24,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
-import MaterialTable, { MTableBody } from "@material-table/core";
+import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 
 /**
@@ -112,6 +112,19 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   });
 
   /**
+   * Stores the column name and the order to order by
+   * @type {Object} sort
+   * @property {string} column - The column name in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or "" (default: "")
+   * @function setSort - Sets the state of sort
+   * @default {{value: "", column: ""}}
+   */
+  const [sort, setSort] = useState({
+    column: "",
+    order: "",
+  });
+
+  /**
    * Stores the string to search for and the column to search against
    * @type {Object} search
    * @property {string} value - The string to be searched for
@@ -123,6 +136,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     value: searchTerm ?? "",
     column: "",
   });
+
+  // anchor element for advanced search popper in GridTableSearch to "attach" to
+  // State is handled here so we can listen for changes in a useeffect in this component
+  const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   // create URLSearchParams from url
   const filterQuery = new URLSearchParams(useLocation().search);
@@ -176,6 +193,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     storedConfig = { ...storedConfig, [field]: hiddenState };
     localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
   };
+
+  /**
+   * Query Management
+   */
+  // Manage the ORDER BY clause of our query
+  if (sort.column !== "" && sort.order !== "") {
+    query.setOrder(sort.column, sort.order);
+  }
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -336,6 +361,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Signal IDs",
       field: "project_feature",
       hidden: hiddenColumns["project_feature"],
+      sorting: false,
       render: entry => {
         // if there are no features, project_feature is [null]
         if (!entry?.project_feature[0]) {
@@ -400,12 +426,51 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     },
   ];
 
+  /**
+   * Handles the header click for sorting asc/desc.
+   * @param {int} columnId
+   * @param {string} newOrderDirection
+   * Note: this is a GridTable function that we are using to override a Material Table sorting function
+   * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
+   **/
+  const handleTableHeaderClick = (columnId, newOrderDirection) => {
+    // Before anything, let's clear all current conditions
+    query.clearOrderBy();
+    const columnName = columns[columnId]?.field;
+
+    // If both column and order are empty...
+    if (sort.order === "" && sort.column === "") {
+      // First time sort is applied
+      setSort({
+        order: "asc",
+        column: columnName,
+      });
+    } else if (sort.column === columnName) {
+      // Else if the current sortColumn is the same as the new
+      // then invert values and repeat sort on column
+      setSort({
+        order: sort.order === "desc" ? "asc" : "desc",
+        column: columnName,
+      });
+    } else if (sort.column !== columnName) {
+      // Sort different column after initial sort, then reset
+      setSort({
+        order: "desc",
+        column: columnName,
+      });
+    }
+  };
+
+  /*
+   * Store column configution before data change triggers page refresh
+   * or opening advanced search dropdown triggers page refresh
+   */
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
     if (storedConfig) {
       setHiddenColumns(storedConfig);
     }
-  }, [data]);
+  }, [data, advancedSearchAnchor]);
 
 
   return (
@@ -434,6 +499,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
               setFilterParameters: setFilter,
             }}
             filterQuery={filterQuery}
+            advancedSearchAnchor={advancedSearchAnchor}
+            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           />
         </GridTableToolbar>
         {/*Main Table Body*/}
@@ -478,6 +545,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                         />
                       );
                     },
+                    Header: props => (
+                      <MTableHeader
+                        {...props}
+                        onOrderChange={handleTableHeaderClick}
+                        orderDirection={sort.order}
+                      />
+                    ),
                     Body: props => {
                       const indexedData = data["project_list_view"].map(
                         (row, index) => ({
