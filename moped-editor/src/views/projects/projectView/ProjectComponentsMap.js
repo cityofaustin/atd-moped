@@ -7,7 +7,7 @@ import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
-import "./NewProjectMap.css";
+import "./ProjectComponentsMap.css";
 
 import {
   NewProjectDrawnLinesInvisibleStyle,
@@ -31,6 +31,7 @@ import {
   MAPBOX_TOKEN,
   mapConfig,
   mapStyles,
+  makeCommonComponentsMapStyles,
   renderTooltip,
   queryCtnFeatureService,
   useFeatureCollectionToFitBounds,
@@ -41,7 +42,7 @@ import {
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
-import NewProjectMapBaseMap from "./NewProjectMapBaseMap";
+import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
 export const useStyles = makeStyles(theme => ({
   toolTip: mapStyles.toolTipStyles,
@@ -69,48 +70,8 @@ export const useStyles = makeStyles(theme => ({
       backgroundColor: "white",
     },
   },
-  navStyle: {
-    position: "absolute",
-    bottom: "3rem",
-    right: "1rem",
-  },
-  mapBox: {
-    padding: 25,
-    position: "relative",
-  },
-  mapBoxNoPadding: {
-    padding: 0,
-    position: "relative",
-  },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    width: "21rem",
-    left: "1rem",
-    top: ".5rem",
-    zIndex: 2,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
-  },
-  speedDial: {
-    right: "3.5rem !important",
-    bottom: "4.5rem !important",
-    position: "absolute",
-    zIndex: 1,
-    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
-  },
   ...layerSelectStyles,
+  ...makeCommonComponentsMapStyles(theme),
 }));
 
 const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
@@ -247,7 +208,7 @@ const handleSelectedFeatureUpdate = (
  * @return {JSX.Element}
  * @constructor
  */
-const NewProjectMap = ({
+const ProjectComponentsMap = ({
   featureCollection,
   setFeatureCollection,
   projectId = null,
@@ -479,7 +440,7 @@ const NewProjectMap = ({
         {/***************************************************************************
          BaseMap Speed Dial
          ***************************************************************************/}
-        <NewProjectMapBaseMap
+        <ProjectComponentsBaseMap
           containerRef={mapBasemapContainerRef}
           handleBasemapChange={handleBasemapChange}
           mapStyle={mapStyle}
@@ -568,4 +529,4 @@ const NewProjectMap = ({
   );
 };
 
-export default NewProjectMap;
+export default ProjectComponentsMap;
