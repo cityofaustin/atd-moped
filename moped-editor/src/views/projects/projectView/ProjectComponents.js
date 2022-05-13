@@ -24,11 +24,11 @@ import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHe
 import {
   useAvailableTypes,
   useLineRepresentable,
-  createProjectFeatureCollection
+  createProjectFeatureCollection,
 } from "../../../utils/projectComponentHelpers";
 
 import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
-import ProjectComponentEdit from "./ProjectComponentEdit";
+import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
 import Alert from "@material-ui/lab/Alert";
 import { ArrowForwardIos } from "@material-ui/icons";
 
@@ -150,9 +150,11 @@ const ProjectComponents = () => {
   return (
     <ApolloErrorHandler errors={error}>
       {componentEditMode && (
-        <ProjectComponentEdit
+        <ProjectComponentsMapEdit
           selectedProjectComponent={selectedProjectComponent}
-          selectedComponentFeatureCollection={selectedComponentFeatureCollection}
+          selectedComponentFeatureCollection={
+            selectedComponentFeatureCollection
+          }
           handleCancelEdit={handleCancelEdit}
           projectFeatureCollection={projectFeatureCollection}
           mopedComponents={data?.moped_components || []}

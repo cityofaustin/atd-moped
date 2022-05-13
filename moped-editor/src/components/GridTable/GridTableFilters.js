@@ -397,7 +397,7 @@ const GridTableFilters = ({
 
   return (
     <Grid>
-      <Grid container justify={"flex-end"}>
+      <Grid container justifyContent={"flex-end"}>
         <IconButton
           onClick={handleAdvancedSearchClose}
           className={classes.closeButton}
