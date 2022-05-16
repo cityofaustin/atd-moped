@@ -13,54 +13,24 @@ import {
  * @return {JSX.Element}
  */
 const FundingAmountIntegerField = ({ onChange, value }) => {
-  const setValidFundingAmount = number => {
+  const handleInputChange = event => {
+    const { value: inputValue } = event.target;
+
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
-    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(number);
+    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(inputValue);
 
     // Then, remove all non-integers
     const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
-    console.log(number, valueWithoutDecimals, valueWithIntegersOnly);
 
     onChange(valueWithIntegersOnly);
   };
-
-  const handleInputChange = event => {
-    const { value: inputValue } = event.target;
-    setValidFundingAmount(inputValue);
-    // onChange(inputValue);
-  };
-
-  // const handlePaste = event => {
-  //   // debugger;
-  //   const { value: pastedValue } = event.target;
-  //   setValidFundingAmount(pastedValue);
-  // };
-
-  // const filterNonIntegerKeys = event => {
-  //   // Handle some usability issues with number type field noted by MUI
-  //   // This also covers our need to allow only integers for this field
-  //   // https://mui.com/material-ui/react-text-field/#type-quot-number-quot
-  //   const unpermittedCharacters = ["+", "-", "e", "E", ".", "_", "=", ","];
-  //   const isKeyNonInteger = event.key.match(/[0-9]/g) === null;
-
-  //   // if (unpermittedCharacters.includes(event.key)) {
-  //   //   event.preventDefault();
-  //   // }
-  //   if (isKeyNonInteger) {
-  //     event.preventDefault();
-  //   }
-  // };
 
   return (
     <TextField
       id="funding_amount"
       name="funding_amount"
-      // type="number"
-      // InputProps={{ inputProps: { min: 0 } }}
       value={value}
       onChange={handleInputChange}
-      // onPaste={handlePaste}
-      // onKeyDown={filterNonIntegerKeys}
     />
   );
 };
