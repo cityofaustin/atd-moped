@@ -19,6 +19,7 @@ with project_person_list_lookup as (
   FROM
     moped_proj_funding mpf
     LEFT JOIN moped_fund_sources mfs on mpf.funding_source_id = mfs.funding_source_id
+    WHERE mpf.funding_status_id = 1
     GROUP BY mpf.project_id
 )
   SELECT 
