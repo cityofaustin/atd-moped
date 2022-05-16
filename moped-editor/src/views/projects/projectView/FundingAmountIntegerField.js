@@ -1,5 +1,9 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
+import {
+  removeDecimalsAndTrailingNumbers,
+  removeNonIntegers,
+} from "src/utils/numberFormatters";
 
 /**
  * MUI TextField wrapper that limits input to 0-9 for project funding amount
@@ -9,38 +13,54 @@ import { TextField } from "@material-ui/core";
  * @return {JSX.Element}
  */
 const FundingAmountIntegerField = ({ onChange, value }) => {
-  const handleInputChange = event => {
-    const { value } = event.target;
-
+  const setValidFundingAmount = number => {
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
-    const valueWithoutDecimals = value.replace(/[.](.*)/g, "");
+    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(number);
 
     // Then, remove all non-integers
-    const valueWithIntegersOnly = valueWithoutDecimals.replace(/[^0-9]/g, "");
+    const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
+    console.log(number, valueWithoutDecimals, valueWithIntegersOnly);
 
     onChange(valueWithIntegersOnly);
   };
 
-  const handleKeyPress = event => {
-    // Handle some usability issues with number type field noted by MUI
-    // This also covers our need to allow only integers for this field
-    // https://mui.com/material-ui/react-text-field/#type-quot-number-quot
-    const unpermittedCharacters = ["+", "-", "e", "E", "."];
-
-    if (unpermittedCharacters.includes(event.key)) {
-      event.preventDefault();
-    }
+  const handleInputChange = event => {
+    const { value: inputValue } = event.target;
+    setValidFundingAmount(inputValue);
+    // onChange(inputValue);
   };
+
+  // const handlePaste = event => {
+  //   // debugger;
+  //   const { value: pastedValue } = event.target;
+  //   setValidFundingAmount(pastedValue);
+  // };
+
+  // const filterNonIntegerKeys = event => {
+  //   // Handle some usability issues with number type field noted by MUI
+  //   // This also covers our need to allow only integers for this field
+  //   // https://mui.com/material-ui/react-text-field/#type-quot-number-quot
+  //   const unpermittedCharacters = ["+", "-", "e", "E", ".", "_", "=", ","];
+  //   const isKeyNonInteger = event.key.match(/[0-9]/g) === null;
+
+  //   // if (unpermittedCharacters.includes(event.key)) {
+  //   //   event.preventDefault();
+  //   // }
+  //   if (isKeyNonInteger) {
+  //     event.preventDefault();
+  //   }
+  // };
 
   return (
     <TextField
       id="funding_amount"
       name="funding_amount"
-      type="number"
-      InputProps={{ inputProps: { min: 0 } }}
+      // type="number"
+      // InputProps={{ inputProps: { min: 0 } }}
       value={value}
       onChange={handleInputChange}
-      onKeyPress={handleKeyPress}
+      // onPaste={handlePaste}
+      // onKeyDown={filterNonIntegerKeys}
     />
   );
 };

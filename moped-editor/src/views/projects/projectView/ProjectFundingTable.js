@@ -32,7 +32,7 @@ import MaterialTable, {
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { currencyFormatter } from "../../../utils/numberFormatter";
+import { currencyFormatter } from "../../../utils/numberFormatters";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
