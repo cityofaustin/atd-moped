@@ -19,6 +19,7 @@ with project_person_list_lookup as (
   FROM
     moped_proj_funding mpf
     LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
+    WHERE mpf.funding_status_id = 1
     GROUP BY mpf.project_id
 ),
 project_type_lookup as (
@@ -68,7 +69,7 @@ project_type_lookup as (
     ptl.type_name,
   ( -- get the most recent status_update (project note type 2)
     SELECT mpn.project_note FROM moped_proj_notes mpn
-    WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2
+    WHERE mpn.project_id = mp.project_id and mpn.project_note_type = 2 and mpn.status_id = 1
     ORDER BY mpn.date_created desc
     LIMIT 1) as project_note,
   ( -- get me the phase start of the most recently added construction phase entry
