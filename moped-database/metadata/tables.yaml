@@ -3663,6 +3663,7 @@
       - project_feature
       - type_name
       - funding_source_name
+      - project_note
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3698,6 +3699,7 @@
       - project_feature
       - type_name
       - funding_source_name
+      - project_note
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3733,5 +3735,6 @@
       - project_feature
       - type_name
       - funding_source_name
+      - project_note
       filter: {}
       allow_aggregations: true

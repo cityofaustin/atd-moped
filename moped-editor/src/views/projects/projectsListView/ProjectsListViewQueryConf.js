@@ -199,6 +199,9 @@ export const ProjectsListViewQueryConf = {
     },
     funding_source_name: {
       type: "string",
+    },
+    project_note: {
+      type: "string",
     }
   },
   order_by: { updated_at: "desc" },
