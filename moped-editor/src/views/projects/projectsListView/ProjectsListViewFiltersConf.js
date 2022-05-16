@@ -185,6 +185,58 @@ export const ProjectsListViewFiltersConf = {
         "string_is_not_null",
       ],
     },
+    {
+      name: "construction_start_date",
+      label: "Construction start",
+      placeholder: "Construction start",
+      type: "date",
+      operators: [
+        "date_equals",
+        "date_greater_than",
+        "date_greater_than_equal_to",
+        "date_less_than",
+        "date_less_than_equal_to",
+      ],
+    },
+    {
+      name: "completion_end_date",
+      label: "Project completion",
+      placeholder: "Project completion",
+      type: "date",
+      operators: [
+        "date_equals",
+        "date_greater_than",
+        "date_greater_than_equal_to",
+        "date_less_than",
+        "date_less_than_equal_to",
+      ],
+    },
+    {
+      name: "project_designer",
+      label: "Designer",
+      placeholder: "Designer",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "project_inspector",
+      label: "Inspector",
+      placeholder: "Inspector",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
   ],
 
   operators: {
