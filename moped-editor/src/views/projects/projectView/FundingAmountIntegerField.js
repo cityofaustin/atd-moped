@@ -29,6 +29,8 @@ const FundingAmountIntegerField = ({ onChange, value }) => {
     <TextField
       id="funding_amount"
       name="funding_amount"
+      type="text"
+      inputMode="numeric"
       value={value}
       onChange={handleInputChange}
     />
