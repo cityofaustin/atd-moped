@@ -199,7 +199,7 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "project_completion_date",
+      name: "completion_end_date",
       label: "Project completion",
       placeholder: "Project completion",
       type: "date",
