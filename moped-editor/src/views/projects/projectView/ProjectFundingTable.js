@@ -32,7 +32,7 @@ import MaterialTable, {
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { currencyFormatter } from "../../../utils/numberFormatter";
+import { currencyFormatter } from "../../../utils/numberFormatters";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
@@ -50,6 +50,7 @@ import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
+import FundingAmountIntegerField from "./FundingAmountIntegerField";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -510,6 +511,7 @@ const ProjectFundingTable = () => {
       title: "Amount",
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
+      editComponent: props => <FundingAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
