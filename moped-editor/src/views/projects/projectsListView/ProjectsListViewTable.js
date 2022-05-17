@@ -420,14 +420,20 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "construction_start_date",
       hidden: hiddenColumns["construction_start_date"],
       emptyValue: "-",
-      render: entry => new Date(entry.construction_start_date).toLocaleDateString("en-US")
+      render: entry =>
+        new Date(entry.construction_start_date).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
     },
     {
       title: "Project completion",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
-      render: entry => new Date(entry.completion_end_date).toLocaleDateString("en-US")
+      render: entry =>
+        new Date(entry.completion_end_date).toLocaleDateString("en-US", {
+          timeZone: "UTC",
+        }),
     },
     {
       title: "Designer",
