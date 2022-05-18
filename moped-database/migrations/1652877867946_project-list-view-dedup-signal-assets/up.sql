@@ -60,13 +60,14 @@ AS WITH project_person_list_lookup AS (
     mp.contractor,
     mp.purchase_order_number,
     COALESCE( -- coalese because this subquery can come back 'null' if there are no component assets
-     (SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
-      FROM moped_proj_components components   
-     LEFT JOIN moped_proj_features features 
-       ON (features.project_component_id = components.project_component_id)
-     WHERE TRUE
-       and components.status_id = 1
-       and components.project_id = mp.project_id),
+      ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
+        FROM moped_proj_components components   
+        LEFT JOIN moped_proj_features features 
+          ON (features.project_component_id = components.project_component_id)
+        WHERE TRUE
+          AND components.status_id = 1
+          AND components.project_id = mp.project_id
+        ),
       '{}'::json) as project_feature, -- close out that coalesce; if null, give us a empty json object
     fsl.funding_source_name,
     ptl.type_name,
@@ -81,7 +82,7 @@ AS WITH project_person_list_lookup AS (
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'construction'::text
       ORDER BY phases.date_added DESC
-         LIMIT 1) AS construction_start_date,
+      LIMIT 1) AS construction_start_date,
     ( SELECT phases.phase_end
       FROM moped_proj_phases phases
       WHERE true 
