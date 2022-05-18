@@ -19,7 +19,10 @@ import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, {
+  MTableEditRow,
+  MTableAction,
+} from "@material-table/core";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
@@ -194,44 +197,38 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   /**
    * DateFieldEditComponent - renders a Date type Calendar select
    * @param {object} props - Values passed through Material Table `editComponent`
-   * @param {string} name - Field name
-   * @param {string} label - Display label
    * @return {JSX.Element}
    * @constructor
    */
-
-  const DateFieldEditComponent = (props, name, label) => {
-    return (
-      <TextField
-        name={name}
-        label={label}
-        type="date"
-        variant="standard"
-        value={props.value}
-        onChange={e => props.onChange(e.target.value)}
-        onKeyDown={e => handleKeyEvent(e)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-    );
-  };
+  const DateFieldEditComponent = props => (
+    <TextField
+      name={props.name}
+      label={props.label}
+      type="date"
+      variant="standard"
+      value={props.value}
+      onChange={e => props.onChange(e.target.value)}
+      onKeyDown={e => handleKeyEvent(e)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
+  );
 
   /**
    * ToggleEditComponent - renders a toggle for True/False edit fields
    * @param {object} props - Values passed through Material Table `editComponent`
-   * @param {string} name - Field name
    * @return {JSX.Element}
    * @constructor
    */
-  const ToggleEditComponent = (props, name) => (
+  const ToggleEditComponent = props => (
     <Grid component="label" container alignItems="center" spacing={1}>
       <Grid item>
         <Switch
           checked={props.value}
           onChange={e => props.onChange(!props.value)}
           color="primary"
-          name={name}
+          name={props.name}
           inputProps={{ "aria-label": "primary checkbox" }}
           onKeyDown={e => handleKeyEvent(e)}
         />
@@ -285,7 +282,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     // Proceed normally and generate the drop-down
     return (
       <FormControl>
-        <Select id={props.name} value={props.value} style={{ minWidth: "8em" }}>
+        <Select
+          id={props.name}
+          value={props.value ?? ""}
+          style={{ minWidth: "8em" }}
+        >
           {Object.keys(lookupValues).map(key => {
             return (
               <MenuItem
@@ -293,6 +294,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                 onClick={() => props.onChange(key)}
                 onKeyDown={e => handleKeyEvent(e)}
                 value={key}
+                key={key}
               >
                 {lookupValues[key]}
               </MenuItem>
@@ -322,6 +324,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Phase name",
       field: "phase_name",
       lookup: phaseNameLookup,
+      validate: row => !!row.phase_name,
       editComponent: props => (
         <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
       ),

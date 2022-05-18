@@ -25,11 +25,14 @@ import {
 } from "@material-ui/icons";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, {
+  MTableEditRow,
+  MTableAction,
+} from "@material-table/core";
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { currencyFormatter } from "../../../utils/numberFormatter";
+import { currencyFormatter } from "../../../utils/numberFormatters";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
@@ -47,6 +50,7 @@ import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
+import FundingAmountIntegerField from "./FundingAmountIntegerField";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -311,7 +315,7 @@ const ProjectFundingTable = () => {
     <Select
       style={{ minWidth: "8em" }}
       id={props.name}
-      value={props.value || ""}
+      value={props.value || props.defaultValue}
     >
       {props.data.map(item => (
         <MenuItem
@@ -410,10 +414,11 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_source"}
+          defaultValue={""}
           data={data.moped_fund_sources}
         />
       ),
-      validate: rowData => (rowData.funding_source_id > 0 ? "" : "Required"),
+      validate: rowData => (!rowData.funding_source_id ? "Required" : true),
     },
     {
       title: "Program",
@@ -428,6 +433,7 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_program"}
+          defaultValue={""}
           data={data.moped_fund_programs}
         />
       ),
@@ -458,6 +464,7 @@ const ProjectFundingTable = () => {
         <LookupSelectComponent
           {...props}
           name={"funding_status"}
+          defaultValue={1}
           data={data.moped_fund_status}
         />
       ),
@@ -504,6 +511,7 @@ const ProjectFundingTable = () => {
       title: "Amount",
       field: "funding_amount",
       render: row => currencyFormatter.format(row.funding_amount),
+      editComponent: props => <FundingAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
@@ -654,7 +662,7 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: getDatabaseId(user),
-                  funding_status_id: 1,
+                  funding_status_id: newData.funding_status_id || 1,
                 },
               },
             })

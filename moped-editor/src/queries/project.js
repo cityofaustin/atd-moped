@@ -12,7 +12,6 @@ export const ADD_PROJECT = gql`
       ecapris_subproject_id
       fiscal_year
       capitally_funded
-      start_date
       moped_proj_phases {
         phase_name
         is_current_phase
@@ -30,12 +29,11 @@ export const ADD_PROJECT = gql`
 `;
 
 export const SUMMARY_QUERY = gql`
-  query ProjectSummary($projectId: Int) {
+  query ProjectSummary($projectId: Int, $userId: Int) {
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
       project_name
       project_description
-      start_date
       current_phase
       current_status
       capitally_funded
@@ -61,6 +59,8 @@ export const SUMMARY_QUERY = gql`
       ) {
         project_note_id
         project_note
+        added_by
+        date_created
       }
       moped_project_types(where: { status_id: { _eq: 1 } }) {
         id
@@ -113,6 +113,12 @@ export const SUMMARY_QUERY = gql`
     ) {
       status_id
       status_name
+    }
+    moped_user_followed_projects(
+      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId} } 
+    ) {
+      project_id
+      user_id
     }
   }
 `;
@@ -397,6 +403,23 @@ export const ADD_PROJECT_MILESTONE = gql`
         project_id
         status_id
       }
+    }
+  }
+`;
+
+export const PROJECT_FOLLOW = gql`
+  mutation FollowProject($object: moped_user_followed_projects_insert_input!) {
+    insert_moped_user_followed_projects_one(object: $object) {
+      project_id
+      user_id
+    }
+  }
+`;
+
+export const PROJECT_UNFOLLOW = gql`
+  mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
+    delete_moped_user_followed_projects(where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }) {
+      affected_rows
     }
   }
 `;

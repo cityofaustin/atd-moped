@@ -79,12 +79,7 @@ const useStyles = makeStyles(theme => ({
 
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = [
-  "",
-  "Internal Note",
-  "Status Update",
-  "Timeline Notes",
-];
+const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = props => {
   const { projectId } = useParams();
@@ -97,19 +92,20 @@ const ProjectComments = props => {
   const [commentAddSuccess, setCommentAddSuccess] = useState(false);
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
+  const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(0);
-  const [noteTypeConditions, setNoteTypeConditions] = useState({});
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
         status_id: { _eq: Number(1) },
-        ...noteTypeConditions,
       },
     },
     fetchPolicy: "no-cache",
   });
+
+  const mopedProjNotes = data?.moped_proj_notes;
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -166,7 +162,7 @@ const ProjectComments = props => {
 
   const editComment = (index, project_note_id) => {
     setEditingComment(true);
-    setNoteText(data.moped_proj_notes[index].project_note);
+    setNoteText(displayNotes[index].project_note);
     setCommentId(project_note_id);
   };
 
@@ -203,23 +199,28 @@ const ProjectComments = props => {
    */
   const filterNoteType = typeId => setNoteType(Number(typeId));
 
+  // when the data changes, update the display notes state
+  useEffect(() => {
+    if (!loading && data) {
+      setDisplayNotes(data.moped_proj_notes);
+    }
+  }, [loading, data]);
+
   /**
-   * Whenever noteType changes, we change the query conditions
+   * Whenever noteType changes, filter the notes being displayed
    */
   useEffect(() => {
     if (noteType === 0) {
-      setNoteTypeConditions({});
+      // show all the notes
+      setDisplayNotes(mopedProjNotes);
     } else {
-      setNoteTypeConditions({
-        project_note_type: { _eq: noteType },
-      });
+      const filteredNotes = mopedProjNotes.filter(
+        n => n.project_note_type === noteType
+      );
+      setDisplayNotes(filteredNotes);
     }
-    refetch();
-  }, [noteType, setNoteTypeConditions, refetch]);
+  }, [noteType, mopedProjNotes]);
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
   if (error) return console.log(error);
 
   /**
@@ -230,7 +231,6 @@ const ProjectComments = props => {
    */
   const CommentButton = props => (
     <Button
-      {...props}
       color="primary"
       className={classes.showButtonItem}
       variant={noteType === props.noteTypeId ? "contained" : "outlined"}
@@ -271,21 +271,21 @@ const ProjectComments = props => {
             <CommentButton noteTypeId={0}>All</CommentButton>
             <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
             <CommentButton noteTypeId={2}>Status Updates</CommentButton>
-            <CommentButton noteTypeId={3}>Timeline Notes</CommentButton>
           </Grid>
           {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
-              {data.moped_proj_notes.length > 0 ? (
+              {loading || !displayNotes ? (
+                <CircularProgress />
+              ) : displayNotes.length > 0 ? (
                 <List className={classes.root}>
-                  {data.moped_proj_notes.map((item, i) => {
-                    const isNotLastItem = i < data.moped_proj_notes.length - 1;
+                  {displayNotes.map((item, i) => {
+                    const isNotLastItem = i < displayNotes.length - 1;
                     const editableComment =
                       userSessionData.user_id === item.added_by_user_id ||
                       userHighestRole === "moped-admin";
-
                     return (
-                      <>
+                      <React.Fragment key={item.project_note_id}>
                         <ListItem alignItems="flex-start">
                           <ListItemAvatar>
                             <Avatar />
@@ -375,7 +375,7 @@ const ProjectComments = props => {
                           )}
                         </ListItem>
                         {isNotLastItem && <Divider component="li" />}
-                      </>
+                      </React.Fragment>
                     );
                   })}
                 </List>

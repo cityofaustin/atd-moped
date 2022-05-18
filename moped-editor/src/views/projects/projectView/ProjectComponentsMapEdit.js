@@ -21,7 +21,7 @@ import {
 } from "../../../queries/project";
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
-import NewProjectMap from "../newProjectView/NewProjectMap";
+import ProjectComponentsMap from "./ProjectComponentsMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   countFeatures,
@@ -117,7 +117,7 @@ const EMPTY_FEATURE_COLLECTION = {
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectComponentEdit = ({
+const ProjectComponentsMapEdit = ({
   projectFeatureCollection,
   selectedProjectComponent,
   selectedComponentFeatureCollection,
@@ -619,8 +619,8 @@ const ProjectComponentEdit = ({
       data-name={"moped-component-editor-grid"}
       className={classes.mapStyle}
     >
-      <NewProjectMap
-        data-name={"moped-component-editor-newprojectmap"}
+      <ProjectComponentsMap
+        data-name={"moped-component-editor-ProjectComponentsMap"}
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
         projectId={null}
@@ -838,4 +838,4 @@ const ProjectComponentEdit = ({
   );
 };
 
-export default ProjectComponentEdit;
+export default ProjectComponentsMapEdit;

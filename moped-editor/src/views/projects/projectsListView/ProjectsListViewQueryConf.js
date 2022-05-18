@@ -149,15 +149,6 @@ export const ProjectsListViewQueryConf = {
       },
       type: "string",
     },
-    start_date: {
-      searchable: false,
-      sortable: true,
-      label: "Start date",
-      width: "10%",
-      filter: value =>
-        new Date(value).toLocaleDateString("en-US", { timeZone: "UTC" }),
-      type: "date_iso",
-    },
     ecapris_subproject_id: {
       hidden: false,
       searchable: true,
@@ -185,6 +176,44 @@ export const ProjectsListViewQueryConf = {
       label: "Last modified",
       filter: value => new Date(value).toLocaleDateString("en-US"),
       type: "date_iso",
+    },
+    // the following column configurations only work with material table and do not have the
+    // necessary details to work with Grid Table
+    task_order: {
+      type: "array",
+    },
+    task_order_name: {
+      type: "string",
+    },
+    contractor: {
+      type: "string",
+    },
+    purchase_order_number: {
+      type: "string",
+    },
+    project_feature: {
+      type: "array",
+    },
+    type_name: {
+      type: "string",
+    },
+    funding_source_name: {
+      type: "string",
+    },
+    project_note: {
+      type: "string",
+    },
+    construction_start_date: {
+      type: "date"
+    },
+    completion_end_date:{
+      type: "date"
+    },
+    project_inspector: {
+      type: "string",
+    },
+    project_designer: {
+      type: "string",
     },
   },
   order_by: { updated_at: "desc" },

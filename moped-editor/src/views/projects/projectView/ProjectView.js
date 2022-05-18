@@ -28,6 +28,7 @@ import {
   ListItemIcon,
   ListItemText,
   Snackbar,
+  Tooltip,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -45,13 +46,19 @@ import {
   PROJECT_CLEAR_NO_CURRENT_PHASE,
   PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
+  PROJECT_FOLLOW,
+  PROJECT_UNFOLLOW,
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
+import { getSessionDatabaseData } from "../../../auth/user";
+
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
 import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
@@ -102,6 +109,17 @@ const useStyles = makeStyles(theme => ({
   },
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
+  },
+  followDiv: {
+    float: "right",
+  },
+  unfollowIcon: {
+    color: theme.palette.primary.main,
+    fontSize: "2rem",
+  },
+  followIcon: {
+    color: theme.palette.text.secondary,
+    fontSize: "2rem",
   },
 }));
 
@@ -176,6 +194,9 @@ const ProjectView = () => {
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
 
+  const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id;
+
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
@@ -184,9 +205,11 @@ const ProjectView = () => {
    * The query to gather the project summary data
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
-    variables: { projectId },
+    variables: { projectId, userId },
     fetchPolicy: "no-cache",
   });
+
+  const isFollowing = data?.moped_user_followed_projects.length > 0;
 
   /**
    * Handles the click on a tab, which should trigger a change.
@@ -208,6 +231,8 @@ const ProjectView = () => {
   // clearCurrentNoPhase sets current phase as null on moped_project
   // and sets phases in moped_proj_phases as is_current_phase: false
   const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
+  const [followProject] = useMutation(PROJECT_FOLLOW);
+  const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
   /**
    * Clears the dialog contents
@@ -374,6 +399,26 @@ const ProjectView = () => {
       });
   };
 
+  const handleFollowProject = () => {
+    if (!isFollowing) {
+      followProject({
+        variables: {
+          object: {
+            project_id: projectId,
+            user_id: userId,
+          },
+        },
+      }).then(() => refetch());
+    } else {
+      unfollowProject({
+        variables: {
+          project_id: projectId,
+          user_id: userId,
+        },
+      }).then(() => refetch());
+    }
+  };
+
   /**
    * Establishes the project status for our badge
    */
@@ -402,13 +447,29 @@ const ProjectView = () => {
                 <div className={classes.root}>
                   <Box p={4} pb={2}>
                     <Grid container>
-                      <Grid item xs={12}>
+                      <Grid item xs={11}>
                         <Box pb={1}>
                           <Breadcrumbs aria-label="all-projects-breadcrumb">
                             <Link component={RouterLink} to={allProjectsLink}>
                               <strong>{"< ALL PROJECTS"}</strong>
                             </Link>
                           </Breadcrumbs>
+                        </Box>
+                      </Grid>
+                      <Grid item xs={1} md={1}>
+                        <Box
+                          className={classes.followDiv}
+                          onClick={() => handleFollowProject()}
+                        >
+                          <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
+                            {isFollowing ? (
+                              <BookmarkIcon className={classes.unfollowIcon} />
+                            ) : (
+                              <BookmarkBorderIcon
+                                className={classes.followIcon}
+                              />
+                            )}
+                          </Tooltip>
                         </Box>
                       </Grid>
                       <Grid item xs={11} md={11} className={classes.title}>

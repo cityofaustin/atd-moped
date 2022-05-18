@@ -17,7 +17,7 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
-import MaterialTable, { MTableEditRow, MTableAction } from "material-table";
+import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
