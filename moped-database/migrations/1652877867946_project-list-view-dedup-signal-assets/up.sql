@@ -59,7 +59,7 @@ AS WITH project_person_list_lookup AS (
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     mp.contractor,
     mp.purchase_order_number,
-    COALESCE( -- coalese because this subquery can come back 'null' if there are no component assets
+    COALESCE( -- coalesce because this subquery can come back 'null' if there are no component assets
       ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
         LEFT JOIN moped_proj_features features 
@@ -71,36 +71,47 @@ AS WITH project_person_list_lookup AS (
       '{}'::json) as project_feature, -- close out that coalesce; if null, give us a empty json object
     fsl.funding_source_name,
     ptl.type_name,
-    ( SELECT mpn.project_note
+    ( -- get the most recent status_update (project note type 2)
+      SELECT mpn.project_note
       FROM moped_proj_notes mpn
         WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.status_id = 1
         ORDER BY mpn.date_created DESC
         LIMIT 1) AS project_note,
-    ( SELECT phases.phase_start
+    ( -- get me the phase start of the most recently added construction phase entry
+      SELECT phases.phase_start
       FROM moped_proj_phases phases
       WHERE true
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'construction'::text
       ORDER BY phases.date_added DESC
       LIMIT 1) AS construction_start_date,
-    ( SELECT phases.phase_end
+    ( -- get me the phase end of the most recently added completion phase entry
+      SELECT phases.phase_end
       FROM moped_proj_phases phases
       WHERE true 
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'complete'::text
       ORDER BY phases.date_added DESC
       LIMIT 1) AS completion_end_date,
-    ( SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
+    ( -- get me a list of the inspectors for this project
+      SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel personnel
         JOIN moped_users users ON personnel.user_id = users.user_id
         JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
-      WHERE 1 = 1 AND roles.project_role_name = 'Inspector'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
+      WHERE 1 = 1
+        AND roles.project_role_name = 'Inspector'::text
+        AND personnel.status_id = 1
+        AND personnel.project_id = mp.project_id
       GROUP BY personnel.project_id) AS project_inspector,
-    ( SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
+    ( -- get me a list of the designers for this project
+      SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel personnel
         JOIN moped_users users ON personnel.user_id = users.user_id
         JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
-      WHERE 1 = 1 AND roles.project_role_name = 'Designer'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
+      WHERE 1 = 1
+        AND roles.project_role_name = 'Designer'::text
+        AND personnel.status_id = 1
+        AND personnel.project_id = mp.project_id
       GROUP BY personnel.project_id) AS project_designer
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
