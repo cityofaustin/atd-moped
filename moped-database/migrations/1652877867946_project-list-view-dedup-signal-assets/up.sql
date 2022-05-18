@@ -3,27 +3,30 @@ drop view project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
-         SELECT mpp.project_id,
-            string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
-           FROM moped_proj_personnel mpp
-             JOIN moped_users mu ON mpp.user_id = mu.user_id
-             JOIN moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
-          WHERE mpp.status_id = 1
-          GROUP BY mpp.project_id
-        ), funding_sources_lookup AS (
-         SELECT mpf_1.project_id,
-            string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
-           FROM moped_proj_funding mpf_1
-             LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
-          WHERE mpf_1.funding_status_id = 1
-          GROUP BY mpf_1.project_id
-        ), project_type_lookup AS (
-         SELECT mpt.project_id,
-            string_agg(mt.type_name, ', '::text) AS type_name
-           FROM moped_project_types mpt
-             LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.status_id = 1
-          GROUP BY mpt.project_id
-        )
+    SELECT
+      mpp.project_id,
+      string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
+    FROM moped_proj_personnel mpp
+      JOIN moped_users mu ON mpp.user_id = mu.user_id
+      JOIN moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
+    WHERE mpp.status_id = 1
+    GROUP BY mpp.project_id
+  ), funding_sources_lookup AS (
+    SELECT 
+      mpf_1.project_id,
+      string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
+    FROM moped_proj_funding mpf_1
+      LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
+    WHERE mpf_1.funding_status_id = 1
+    GROUP BY mpf_1.project_id
+  ), project_type_lookup AS (
+    SELECT
+      mpt.project_id,
+      string_agg(mt.type_name, ', '::text) AS type_name
+      FROM moped_project_types mpt
+        LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.status_id = 1
+    GROUP BY mpt.project_id
+  )
  SELECT mp.project_uuid,
     mp.project_id,
     mp.project_name,
@@ -48,11 +51,11 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
-        CASE
-            WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL::text
-            WHEN mp.status_id = 1 THEN mp.current_phase
-            ELSE mp.current_status
-        END AS status_name,
+    CASE
+        WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL::text
+        WHEN mp.status_id = 1 THEN mp.current_phase
+        ELSE mp.current_status
+    END AS status_name,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     mp.contractor,
     mp.purchase_order_number,
@@ -63,36 +66,41 @@ AS WITH project_person_list_lookup AS (
        ON (features.project_component_id = components.project_component_id)
      WHERE TRUE
        and components.status_id = 1
-       and components.project_id = mp.project_id), '{}'::json) as project_feature, -- close out that coalese; if null, give us a empty json object
+       and components.project_id = mp.project_id),
+      '{}'::json) as project_feature, -- close out that coalesce; if null, give us a empty json object
     fsl.funding_source_name,
     ptl.type_name,
     ( SELECT mpn.project_note
-           FROM moped_proj_notes mpn
-          WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.status_id = 1
-          ORDER BY mpn.date_created DESC
-         LIMIT 1) AS project_note,
+      FROM moped_proj_notes mpn
+        WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.status_id = 1
+        ORDER BY mpn.date_created DESC
+        LIMIT 1) AS project_note,
     ( SELECT phases.phase_start
-           FROM moped_proj_phases phases
-          WHERE 1 = 1 AND phases.project_id = mp.project_id AND phases.phase_name = 'construction'::text
-          ORDER BY phases.date_added DESC
+      FROM moped_proj_phases phases
+      WHERE true
+        AND phases.project_id = mp.project_id 
+        AND phases.phase_name = 'construction'::text
+      ORDER BY phases.date_added DESC
          LIMIT 1) AS construction_start_date,
     ( SELECT phases.phase_end
-           FROM moped_proj_phases phases
-          WHERE 1 = 1 AND phases.project_id = mp.project_id AND phases.phase_name = 'complete'::text
-          ORDER BY phases.date_added DESC
-         LIMIT 1) AS completion_end_date,
+      FROM moped_proj_phases phases
+      WHERE true 
+        AND phases.project_id = mp.project_id 
+        AND phases.phase_name = 'complete'::text
+      ORDER BY phases.date_added DESC
+      LIMIT 1) AS completion_end_date,
     ( SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-           FROM moped_proj_personnel personnel
-             JOIN moped_users users ON personnel.user_id = users.user_id
-             JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
-          WHERE 1 = 1 AND roles.project_role_name = 'Inspector'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
-          GROUP BY personnel.project_id) AS project_inspector,
+      FROM moped_proj_personnel personnel
+        JOIN moped_users users ON personnel.user_id = users.user_id
+        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
+      WHERE 1 = 1 AND roles.project_role_name = 'Inspector'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
+      GROUP BY personnel.project_id) AS project_inspector,
     ( SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-           FROM moped_proj_personnel personnel
-             JOIN moped_users users ON personnel.user_id = users.user_id
-             JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
-          WHERE 1 = 1 AND roles.project_role_name = 'Designer'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
-          GROUP BY personnel.project_id) AS project_designer
+      FROM moped_proj_personnel personnel
+        JOIN moped_users users ON personnel.user_id = users.user_id
+        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
+      WHERE 1 = 1 AND roles.project_role_name = 'Designer'::text AND personnel.status_id = 1 AND personnel.project_id = mp.project_id
+      GROUP BY personnel.project_id) AS project_designer
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
