@@ -28,7 +28,7 @@ export const formatTimeStampZType = timeStampZString => {
  * @param {String} timeStampZString - Timestampz string in ISO format
  * @return {String} Date formatted as Month DD, YYYY
  */
-export const makeUSExpandedFormDateFromTimeStamp = timeStampZString => {
+export const makeUSExpandedFormDateFromTimeStampZ = timeStampZString => {
   const dateObject = new Date(timeStampZString);
   return dateObject.toLocaleDateString("en-US", {
     year: "numeric",
@@ -43,7 +43,7 @@ export const makeUSExpandedFormDateFromTimeStamp = timeStampZString => {
  * @param {String} timeStampZString - Timestampz string in ISO format
  * @return {String} Time formatted as HH:MM XM
  */
-export const makeHourAndMinutesFromTimeStamp = timeStampZString => {
+export const makeHourAndMinutesFromTimeStampZ = timeStampZString => {
   const dateObject = new Date(timeStampZString);
   return dateObject.toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -57,7 +57,7 @@ export const makeHourAndMinutesFromTimeStamp = timeStampZString => {
  * @param {String} timeStampZString - Timestampz string in ISO format
  * @return {String} Time formatted as HH:MM:SS XM
  */
-export const makeFullTimeFromTimeStamp = timeStampZString => {
+export const makeFullTimeFromTimeStampZ = timeStampZString => {
   const dateObject = new Date(timeStampZString);
   return dateObject.toLocaleTimeString("en-US", {
     hour: "numeric",

@@ -20,7 +20,7 @@ import { Alert } from "@material-ui/lab";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import { formatTimeStampZType } from "src/utils/dateAndTime";
+import { formatDateType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -199,7 +199,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     switch (fieldType) {
       case "date":
-        formattedValue = formatTimeStampZType(formattedValue);
+        formattedValue = formatDateType(formattedValue);
         break;
       case "boolean":
         formattedValue = formattedValue === true;

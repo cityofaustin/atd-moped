@@ -38,8 +38,8 @@ import {
   DELETE_PROJECT_COMMENT,
 } from "../../../queries/comments";
 import {
-  makeHourAndMinutesFromTimeStamp,
-  makeUSExpandedFormDateFromTimeStamp,
+  makeHourAndMinutesFromTimeStampZ,
+  makeUSExpandedFormDateFromTimeStampZ,
 } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
@@ -304,9 +304,9 @@ const ProjectComments = props => {
                                   {item.added_by}
                                 </Typography>
                                 <Typography className={classes.commentDate}>
-                                  {` - ${makeUSExpandedFormDateFromTimeStamp(
+                                  {` - ${makeUSExpandedFormDateFromTimeStampZ(
                                     item.date_created
-                                  )} ${makeHourAndMinutesFromTimeStamp(
+                                  )} ${makeHourAndMinutesFromTimeStampZ(
                                     item.date_created
                                   )}`}
                                 </Typography>

@@ -17,7 +17,7 @@ import {
 } from "../../../../queries/project";
 
 import { getSessionDatabaseData } from "../../../../auth/user";
-import { makeUSExpandedFormDateFromTimeStamp } from "../../../../utils/dateAndTime";
+import { makeUSExpandedFormDateFromTimeStampZ } from "../../../../utils/dateAndTime";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -181,7 +181,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                   {getStatusUpdate("added_by")}
                 </span>
                 <span className={classes.fieldLabel}>
-                  {makeUSExpandedFormDateFromTimeStamp(
+                  {makeUSExpandedFormDateFromTimeStampZ(
                     getStatusUpdate("date_created")
                   ).toUpperCase()}
                 </span>
