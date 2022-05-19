@@ -16,7 +16,10 @@ import {
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import typography from "../../../theme/typography";
-import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
+import MaterialTable, {
+  MTableEditRow,
+  MTableAction,
+} from "@material-table/core";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
@@ -36,6 +39,7 @@ import {
 import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import { formatTimeStampZType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -232,9 +236,7 @@ const ProjectFiles = props => {
       render: record => (
         <span>
           {record?.create_date
-            ? new Date(record.create_date).toLocaleString("en-US", {
-                timeZone: "UTC",
-              })
+            ? formatTimeStampZType(record.create_date)
             : "N/A"}
         </span>
       ),
