@@ -37,6 +37,10 @@ import {
   UPDATE_PROJECT_COMMENT,
   DELETE_PROJECT_COMMENT,
 } from "../../../queries/comments";
+import {
+  makeHourAndMinutesFromTimeStamp,
+  makeUSExpandedFormDateFromTimeStamp,
+} from "src/utils/dates";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -300,18 +304,11 @@ const ProjectComments = props => {
                                   {item.added_by}
                                 </Typography>
                                 <Typography className={classes.commentDate}>
-                                  {` - ${new Date(
+                                  {` - ${makeUSExpandedFormDateFromTimeStamp(
                                     item.date_created
-                                  ).toLocaleDateString("en-US", {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })} ${new Date(
+                                  )} ${makeHourAndMinutesFromTimeStamp(
                                     item.date_created
-                                  ).toLocaleTimeString("en-US", {
-                                    hour: "numeric",
-                                    minute: "numeric",
-                                  })}`}
+                                  )}`}
                                 </Typography>
                                 <Typography className={classes.noteType}>
                                   {` ${
