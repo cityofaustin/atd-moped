@@ -4,6 +4,7 @@ import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
+import { formatTimeStampZType } from "src/utils/dates";
 
 /**
  * The Query configuration (now also including filters)
@@ -174,7 +175,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => new Date(value).toLocaleDateString("en-US"),
+      filter: value => formatTimeStampZType(value),
       type: "date_iso",
     },
     // the following column configurations only work with material table and do not have the
@@ -204,10 +205,10 @@ export const ProjectsListViewQueryConf = {
       type: "string",
     },
     construction_start_date: {
-      type: "date"
+      type: "date",
     },
-    completion_end_date:{
-      type: "date"
+    completion_end_date: {
+      type: "date",
     },
     project_inspector: {
       type: "string",
