@@ -17,7 +17,7 @@ import {
 } from "../../../../queries/project";
 
 import { getSessionDatabaseData } from "../../../../auth/user";
-import { makeUSExpandedFormDateFromTimeStamp } from "../../../../utils/dates";
+import { makeUSExpandedFormDateFromTimeStamp } from "../../../../utils/dateAndTime";
 
 /**
  * ProjectSummaryStatusUpdate Component

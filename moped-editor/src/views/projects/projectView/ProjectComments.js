@@ -40,7 +40,7 @@ import {
 import {
   makeHourAndMinutesFromTimeStamp,
   makeUSExpandedFormDateFromTimeStamp,
-} from "src/utils/dates";
+} from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   root: {

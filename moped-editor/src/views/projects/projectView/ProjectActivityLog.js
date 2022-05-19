@@ -38,7 +38,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatTimeStampZType } from "src/utils/dates";
+import { formatTimeStampZType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   table: {

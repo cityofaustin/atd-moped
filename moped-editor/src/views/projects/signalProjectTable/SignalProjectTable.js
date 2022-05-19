@@ -22,7 +22,7 @@ import MaterialTable, {
 import Page from "src/components/Page";
 import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
-import { formatDateType, formatTimeStampZType } from "src/utils/dates";
+import { formatDateType, formatTimeStampZType } from "src/utils/dateAndTime";
 import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,

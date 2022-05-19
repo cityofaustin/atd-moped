@@ -27,7 +27,7 @@ import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
-import { formatDateType, formatTimeStampZType } from "src/utils/dates";
+import { formatDateType, formatTimeStampZType } from "src/utils/dateAndTime";
 
 /**
  * GridTable Style
