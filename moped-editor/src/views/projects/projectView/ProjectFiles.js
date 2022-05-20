@@ -39,7 +39,10 @@ import {
 import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { formatTimeStampZType } from "src/utils/dateAndTime";
+import {
+  formatTimeStampZType,
+  makeFullTimeFromTimeStampZ,
+} from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -236,7 +239,9 @@ const ProjectFiles = props => {
       render: record => (
         <span>
           {record?.create_date
-            ? formatTimeStampZType(record.create_date)
+            ? `${formatTimeStampZType(
+                record.create_date
+              )}, ${makeFullTimeFromTimeStampZ(record.create_date)}`
             : "N/A"}
         </span>
       ),
