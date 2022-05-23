@@ -1522,15 +1522,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1547,15 +1546,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1572,15 +1570,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1596,15 +1593,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1620,15 +1616,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1645,15 +1640,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1670,15 +1664,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1699,6 +1692,7 @@
         columns:
         - completed
         - is_current_milestone
+        - milestone_id
         - milestone_privacy
         - milestone_end
         - milestone_estimate
@@ -1707,14 +1701,12 @@
         - completion_percentage
         - milestone_order
         - milestone_priority
-        - milestone_related_phase_id
         - project_id
         - project_milestone_id
         - started_by_user_id
         - status_id
         - milestone_date_type
         - milestone_description
-        - milestone_name
         - milestone_status
         - date_added
     retry_conf:
