@@ -1508,6 +1508,10 @@
 - table:
     schema: public
     name: moped_proj_milestones
+  object_relationships:
+  - name: moped_milestone
+    using:
+      foreign_key_constraint_on: milestone_id
   insert_permissions:
   - role: moped-admin
     permission:
