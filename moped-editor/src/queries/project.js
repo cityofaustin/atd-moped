@@ -266,13 +266,16 @@ export const TIMELINE_QUERY = gql`
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
       order_by: { milestone_end: desc }
     ) {
-      milestone_name
+      milestone_id
       milestone_description
       milestone_estimate
       milestone_end
       completed
       project_milestone_id
       project_id
+      moped_milestone {
+        milestone_name
+      }
     }
     moped_status {
       status_id
@@ -324,7 +327,7 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
     $milestone_estimate: date = null
     $milestone_end: date = null
     $project_milestone_id: Int!
-    $milestone_name: String!
+    $milestone_id: Int!
   ) {
     update_moped_proj_milestones_by_pk(
       pk_columns: { project_milestone_id: $project_milestone_id }
@@ -333,12 +336,11 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
         completed: $completed
         milestone_estimate: $milestone_estimate
         milestone_end: $milestone_end
-        milestone_name: $milestone_name
+        milestone_id: $milestone_id
       }
     ) {
       project_id
       project_milestone_id
-      milestone_name
       milestone_estimate
       milestone_end
       completed
@@ -394,7 +396,7 @@ export const ADD_PROJECT_MILESTONE = gql`
   ) {
     insert_moped_proj_milestones(objects: $objects) {
       returning {
-        milestone_name
+        milestone_id
         milestone_description
         milestone_estimate
         milestone_end

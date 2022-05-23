@@ -1,5 +1,5 @@
 -- add milestone_id column to moped_proj_milestones
-ALTER TABLE moped_proj_milestones ADD COLUMN milestone_id integer;
+ALTER TABLE moped_proj_milestones ADD COLUMN milestone_id integer NOT null;
 
 -- get milestone_id based on milestone_name
 update moped_proj_milestones mpm
