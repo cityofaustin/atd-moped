@@ -22,7 +22,7 @@ import MaterialTable, {
 import Page from "src/components/Page";
 import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
-import { formatDateType, formatTimeStampZType } from "src/utils/dateAndTime";
+import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,
@@ -396,7 +396,7 @@ const SignalProjectTable = () => {
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry => formatTimeStampZType(entry.updated_at),
+      render: entry => formatTimeStampTZType(entry.updated_at),
     },
   ];
 

@@ -4,7 +4,7 @@ import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
-import { formatTimeStampZType } from "src/utils/dateAndTime";
+import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * The Query configuration (now also including filters)
@@ -175,7 +175,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => formatTimeStampZType(value),
+      filter: value => formatTimeStampTZType(value),
       type: "date_iso",
     },
     // the following column configurations only work with material table and do not have the

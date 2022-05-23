@@ -27,7 +27,7 @@ import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
-import { formatDateType, formatTimeStampZType } from "src/utils/dateAndTime";
+import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * GridTable Style
@@ -335,7 +335,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Last modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
-      render: entry => formatTimeStampZType(entry.updated_at),
+      render: entry => formatTimeStampTZType(entry.updated_at),
     },
     {
       title: "Signal IDs",

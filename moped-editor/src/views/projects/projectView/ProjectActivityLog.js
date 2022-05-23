@@ -38,7 +38,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatTimeStampZType } from "src/utils/dateAndTime";
+import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -225,7 +225,7 @@ const ProjectActivityLog = () => {
                         width="5%"
                         className={classes.tableCell}
                       >
-                        {formatTimeStampZType(change.created_at)}
+                        {formatTimeStampTZType(change.created_at)}
                       </TableCell>
                       <TableCell
                         align="left"

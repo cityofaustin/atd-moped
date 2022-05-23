@@ -31,8 +31,8 @@ import {
 import { PROJECT_ACTIVITY_LOG_DETAILS } from "../../../queries/project";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import {
-  formatTimeStampZType,
-  makeFullTimeFromTimeStampZ,
+  formatTimeStampTZType,
+  makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
@@ -111,12 +111,12 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   };
 
   const getDateTime = data => {
-    const timestampz = data?.moped_activity_log[0]?.created_at;
+    const timestamptz = data?.moped_activity_log[0]?.created_at;
 
     try {
-      return `${formatTimeStampZType(timestampz)}, ${makeFullTimeFromTimeStampZ(
-        timestampz
-      )}`;
+      return `${formatTimeStampTZType(
+        timestamptz
+      )}, ${makeFullTimeFromTimeStampTZ(timestamptz)}`;
     } catch {
       return null;
     }
