@@ -99,7 +99,7 @@ const ProjectComments = props => {
     variables: {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
-        status_id: { _eq: Number(1) },
+        is_deleted: { _eq: false },
       },
     },
     fetchPolicy: "no-cache",
