@@ -1,4 +1,4 @@
--- drop milestone_name and milestone_related_phase_id since those can now be accessed through fk relationship
+-- replace dropped columns
 ALTER TABLE moped_proj_milestones ADD COLUMN milestone_name TEXT NOT NULL;
 ALTER TABLE moped_proj_milestones ADD COLUMN milestone_related_phase_id INT;
 
