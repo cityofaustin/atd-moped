@@ -15,6 +15,6 @@ ALTER TABLE moped_proj_milestones
     FOREIGN KEY (milestone_id)
     REFERENCES moped_milestones(milestone_id);
 
--- drop milestone_name and milestone_related_phase_id since those can now be accessed through fk relationship
+-- drop milestone_name since it can now be accessed through fk relationship
 ALTER TABLE moped_proj_milestones DROP COLUMN milestone_name;
-ALTER TABLE moped_proj_milestones DROP COLUMN milestone_related_phase_id;
+
