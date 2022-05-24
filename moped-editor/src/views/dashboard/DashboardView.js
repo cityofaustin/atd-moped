@@ -6,10 +6,8 @@ import {
   AppBar,
   Box,
   Card,
-  CardContent,
   CircularProgress,
   Container,
-  Divider,
   Grid,
   Tab,
   Tabs,
@@ -173,7 +171,6 @@ const DashboardView = () => {
   ];
 
   const handleChange = (event, newValue) => {
-    console.log(newValue);
     setActiveTab(newValue);
   };
 
