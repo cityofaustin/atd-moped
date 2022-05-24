@@ -3646,16 +3646,13 @@
       - project_description
       - project_description_public
       - ecapris_subproject_id
-      - project_importance
       - project_order
       - current_status
       - timeline_id
       - current_phase
       - end_date
-      - project_length
       - fiscal_year
       - capitally_funded
-      - project_priority
       - date_added
       - added_by
       - is_retired
@@ -3672,6 +3669,12 @@
       - purchase_order_number
       - project_feature
       - type_name
+      - funding_source_name
+      - project_note
+      - construction_start_date
+      - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3683,8 +3686,6 @@
       - added_by
       - milestone_id
       - project_id
-      - project_importance
-      - project_length
       - project_order
       - status_id
       - timeline_id
@@ -3696,7 +3697,6 @@
       - project_description_public
       - project_name
       - project_partner
-      - project_priority
       - project_sponsor
       - project_team_members
       - status_name
@@ -3709,6 +3709,12 @@
       - purchase_order_number
       - project_feature
       - type_name
+      - funding_source_name
+      - project_note
+      - construction_start_date
+      - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3720,8 +3726,6 @@
       - added_by
       - milestone_id
       - project_id
-      - project_importance
-      - project_length
       - project_order
       - status_id
       - timeline_id
@@ -3733,7 +3737,6 @@
       - project_description_public
       - project_name
       - project_partner
-      - project_priority
       - project_sponsor
       - project_team_members
       - status_name
@@ -3746,5 +3749,11 @@
       - purchase_order_number
       - project_feature
       - type_name
+      - funding_source_name
+      - project_note
+      - construction_start_date
+      - completion_end_date
+      - project_inspector
+      - project_designer
       filter: {}
       allow_aggregations: true

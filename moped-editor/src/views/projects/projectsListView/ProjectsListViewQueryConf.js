@@ -197,6 +197,24 @@ export const ProjectsListViewQueryConf = {
     type_name: {
       type: "string",
     },
+    funding_source_name: {
+      type: "string",
+    },
+    project_note: {
+      type: "string",
+    },
+    construction_start_date: {
+      type: "date"
+    },
+    completion_end_date:{
+      type: "date"
+    },
+    project_inspector: {
+      type: "string",
+    },
+    project_designer: {
+      type: "string",
+    },
   },
   order_by: { updated_at: "desc" },
   where: {
