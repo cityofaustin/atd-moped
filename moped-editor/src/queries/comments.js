@@ -13,6 +13,7 @@ export const COMMENTS_QUERY = gql`
       date_created
       project_note_id
       project_note_type
+      is_deleted
     }
   }
 `;
