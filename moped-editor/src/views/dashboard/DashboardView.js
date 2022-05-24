@@ -5,8 +5,11 @@ import { useQuery } from "@apollo/client";
 import {
   AppBar,
   Box,
+  Card,
   CardContent,
   CircularProgress,
+  Container,
+  Divider,
   Grid,
   Tab,
   Tabs,
@@ -31,17 +34,24 @@ import { STATUS_QUERY } from "../../queries/project";
 import { getSessionDatabaseData } from "../../auth/user";
 
 const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
   appBar: {
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.header,
+  },
+  cardWrapper: {
+    marginTop: theme.spacing(3),
   },
   selectedTab: {
     "&.Mui-selected": {
       color: theme.palette.text.primary,
     },
-    indicatorColor: {
-      backgroundColor: theme.palette.primary.light,
-    },
+  },
+  indicatorColor: {
+    backgroundColor: theme.palette.primary.light,
   },
 }));
 
@@ -74,33 +84,25 @@ const DashboardView = () => {
   };
 
   const [activeTab, setActiveTab] = useState(0);
-  // const [selectedQuery, setSelectedQuery] = useState(
-  //   USER_FOLLOWED_PROJECTS_QUERY
-  // );
-
-  console.log(TABS[activeTab]);
 
   const { loading, error, data } = useQuery(TABS[activeTab].query, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
 
-  const { referenceData } = useQuery(STATUS_QUERY);
-
   if (error) {
     console.log(error);
   }
-  if (loading || !data) {
-    return <CircularProgress />;
-  }
+
+  const { referenceData } = useQuery(STATUS_QUERY);
 
   let selectedData = [];
 
-  if (TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY) {
+  if (TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY && !!data) {
     selectedData = data.moped_user_followed_projects;
   }
 
-  if (TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY) {
+  if (TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY && !!data) {
     selectedData = data.moped_proj_personnel;
   }
 
@@ -176,58 +178,69 @@ const DashboardView = () => {
   };
 
   return (
-    <CardContent>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Page title={"Dashboard"}>
-            <MaterialTable
-              columns={columns}
-              data={selectedData}
-              localization={{
-                body: {
-                  emptyDataSourceMessage: (
-                    <Typography>
-                      {TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY &&
-                        "No projects to display. You have not followed any current projects."}
-                      {TABS[activeTab].query ===
-                        USER_PERSONNEL_PROJECTS_QUERY &&
-                        "No projects to display. You are not listed as a Team Member on any current projects."}
-                    </Typography>
-                  ),
-                },
-              }}
-              title={
-                <div>
-                  <Typography variant="h1" color="primary">
-                    Dashboard
-                  </Typography>
-                  <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <AppBar className={classes.appBar} position="static">
-                      <Tabs
-                        classes={{ indicator: classes.indicatorColor }}
-                        value={activeTab}
-                        onChange={handleChange}
-                      >
-                        {TABS.map((tab, i) => {
-                          return (
-                            <Tab
-                              className={classes.selectedTab}
-                              key={tab.label}
-                              label={tab.label}
-                              {...a11yProps(i)}
-                            />
-                          );
-                        })}
-                      </Tabs>
-                    </AppBar>
-                  </Box>
-                </div>
-              }
-            />
-          </Page>
-        </Grid>
-      </Grid>
-    </CardContent>
+    <Page title={"Dashboard"}>
+      <Container maxWidth="xl">
+        <Card className={classes.cardWrapper}>
+          <div className={classes.root}>
+            <Box pl={3} pt={3}>
+              <Grid container>
+                <Typography variant="h1" color="primary">
+                  Dashboard
+                </Typography>
+              </Grid>
+            </Box>
+            <div>
+              <Box p={3}>
+                <AppBar className={classes.appBar} position="static">
+                  <Tabs
+                    classes={{ indicator: classes.indicatorColor }}
+                    value={activeTab}
+                    onChange={handleChange}
+                  >
+                    {TABS.map((tab, i) => {
+                      return (
+                        <Tab
+                          className={classes.selectedTab}
+                          key={tab.label}
+                          label={tab.label}
+                          {...a11yProps(i)}
+                        />
+                      );
+                    })}
+                  </Tabs>
+                </AppBar>
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <MaterialTable
+                    columns={columns}
+                    data={selectedData}
+                    localization={{
+                      body: {
+                        emptyDataSourceMessage: (
+                          <Typography>
+                            {TABS[activeTab].query ===
+                              USER_FOLLOWED_PROJECTS_QUERY &&
+                              "No projects to display. You have not followed any current projects."}
+                            {TABS[activeTab].query ===
+                              USER_PERSONNEL_PROJECTS_QUERY &&
+                              "No projects to display. You are not listed as a Team Member on any current projects."}
+                          </Typography>
+                        ),
+                      },
+                    }}
+                    options={{
+                      search: false,
+                      toolbar: false,
+                    }}
+                  />
+                )}
+              </Box>
+            </div>
+          </div>
+        </Card>
+      </Container>
+    </Page>
   );
 };
 
