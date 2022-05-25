@@ -47,8 +47,8 @@ export const SUMMARY_QUERY = gql`
       contractor
       purchase_order_number
       work_assignment_id
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
           feature
         }
@@ -563,7 +563,7 @@ export const PROJECT_ARCHIVE = gql`
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       component_id
       description
@@ -577,7 +577,7 @@ export const COMPONENTS_QUERY = gql`
         component_subtype
         line_representation
       }
-      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
+      moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
         status_id
         component_subcomponent_id
         project_component_id
@@ -587,7 +587,7 @@ export const COMPONENTS_QUERY = gql`
           subcomponent_name
         }
       }
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_features(where: { is_deleted: { _eq: false } }) {
         feature
         feature_id
       }
@@ -625,7 +625,7 @@ export const UPDATE_MOPED_COMPONENT = gql`
       objects: $objects
       on_conflict: {
         constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, status_id]
+        update_columns: [component_id, description, is_deleted]
       }
     ) {
       affected_rows

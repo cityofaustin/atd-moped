@@ -414,7 +414,7 @@ const ProjectComponentsMapEdit = ({
       */
       name: "",
       project_id: Number.parseInt(projectId),
-      status_id: 1,
+      is_deleted: false,
       component_id: selectedComponentId,
       description: componentDescription,
       /*
