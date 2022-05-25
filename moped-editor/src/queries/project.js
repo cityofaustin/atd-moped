@@ -249,6 +249,7 @@ export const TIMELINE_QUERY = gql`
       order_by: { phase_start: desc }
     ) {
       phase_name
+      phase_id
       project_phase_id
       is_current_phase
       project_id

@@ -9,3 +9,5 @@ update moped_proj_phases mpp
 set subphase_id = subphases.subphase_id
 from moped_subphases subphases
 where mpp.subphase_name = LOWER(subphases.subphase_name)
+
+alter table moped_proj_phases alter column phase_name drop not null;

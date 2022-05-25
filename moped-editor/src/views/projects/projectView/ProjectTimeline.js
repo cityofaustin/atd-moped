@@ -103,18 +103,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @returns {Object} {status_id: , status_name} or undefined
    */
   const getStatusByPhaseName = phase_name =>
-    statusMap.find(s => s.status_name.toLowerCase() === phase_name);
+    statusMap.find(s => s.status_name.toLowerCase() === phase_name.toLowerCase());
 
   /**
-   * Phase table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { construction: "Construction", hold: "Hold", ...}
+   * Phase table lookup object formatted into the shape that Dropdown expects
+   * Ex: { 1: "Potential", 2: "Planned", ...}
    */
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.phase_name.toLowerCase()]:
-          item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
+        [item.phase_id]: item.phase_name,
       }),
     {}
   );
@@ -165,8 +163,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       );
 
   /**
-   * If new or updated phase has a current phase of true,
-   * set current phase of any other true phases to false
+   * If phaseObject has is_current_phase === true,
+   * set is_current_phase of any other true phases to false
    * to ensure there is only one active phase
    */
 
@@ -319,9 +317,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const phasesColumns = [
     {
       title: "Phase name",
-      field: "phase_name",
+      field: "phase_id",
       lookup: phaseNameLookup,
-      validate: row => !!row.phase_name,
+      validate: row => !!row.phase_id,
       editComponent: props => (
         <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
       ),
@@ -513,21 +511,21 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
-                    const newPhase = newPhaseObject?.phase_name;
-                    const statusMapped = getStatusByPhaseName(newPhase);
+                    const newPhaseName = phaseNameLookup[newPhaseObject?.phase_id];
+                    const statusMapped = getStatusByPhaseName(newPhaseName);
 
                     const projectUpdateInput = !!statusMapped
                       ? {
                           // There is a status with same name as phase
                           status_id: statusMapped.status_id,
                           current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhase.toLowerCase(),
+                          current_phase: newPhaseName.toLowerCase(),
                         }
                       : {
                           // There isn't
                           status_id: 1,
                           current_status: "active",
-                          current_phase: newPhase.toLowerCase(),
+                          current_phase: newPhaseName.toLowerCase(),
                         };
 
                     // Execute insert mutation, returns promise
