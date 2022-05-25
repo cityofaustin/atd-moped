@@ -103,7 +103,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @returns {Object} {status_id: , status_name} or undefined
    */
   const getStatusByPhaseName = phase_name =>
-    statusMap.find(s => s.status_name.toLowerCase() === phase_name.toLowerCase());
+    statusMap.find(
+      s => s.status_name.toLowerCase() === phase_name.toLowerCase()
+    );
 
   /**
    * Phase table lookup object formatted into the shape that Dropdown expects
@@ -137,9 +139,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const subphaseNameLookup = data.moped_subphases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.subphase_name.toLowerCase()]:
-          item.subphase_name.charAt(0).toUpperCase() +
-          item.subphase_name.slice(1),
+        [item.subphase_id]: item.subphase_name
       }),
     {}
   );
@@ -155,9 +155,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       .reduce(
         (obj, item) =>
           Object.assign(obj, {
-            [item.subphase_name.toLowerCase()]:
-              item.subphase_name.charAt(0).toUpperCase() +
-              item.subphase_name.slice(1),
+            [item.subphase_id]: item.subphase_name
           }),
         {}
       );
@@ -239,8 +237,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @constructor
    */
   const DropDownSelectComponent = props => {
-    // If the component name is phase_name, then assume phaseNameLookup values
-    // Otherwise assume null,
+    // If the component name is phase_name, then use phaseNameLookup values, otherwise set as null
     let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
     // If lookup values is null, then it is a sub-phase list we need to generate
@@ -248,12 +245,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       // First retrieve the sub-phase id's from moped_phases for that specific row
       const allowedSubphaseIds = props.data.moped_phases
         .filter(
-          item =>
-            // filter out any phases that are not the one we selected
-            (item?.phase_name ?? "").toLowerCase() ===
-            // props.rowData.phase_name is the row's phase name
-            // which could be null if nothing is selected
-            (props.rowData?.phase_name ?? "").toLowerCase()
+          // filter for selected phase, props.rowData.phase_id could be null if nothing is selected
+          item => item?.phase_id === Number(props.rowData?.phase_id ?? 0)
         )
         .reduce(
           // Then using reduce, aggregate the sub-phase ids from whatever array is left
@@ -326,7 +319,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     },
     {
       title: "Sub-phase name",
-      field: "subphase_name",
+      field: "subphase_id",
       lookup: subphaseNameLookup,
       editComponent: props => (
         <DropDownSelectComponent
@@ -511,7 +504,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
-                    const newPhaseName = phaseNameLookup[newPhaseObject?.phase_id];
+                    const newPhaseName =
+                      phaseNameLookup[newPhaseObject?.phase_id];
                     const statusMapped = getStatusByPhaseName(newPhaseName);
 
                     const projectUpdateInput = !!statusMapped
