@@ -6,9 +6,11 @@ import {
   AppBar,
   Box,
   Card,
+  CardContent,
   CircularProgress,
   Container,
   Grid,
+  Link,
   Tab,
   Tabs,
   Typography,
@@ -22,6 +24,8 @@ import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 
 import typography from "../../theme/typography";
+
+import TrafficIcon from "@material-ui/icons/Traffic";
 
 import {
   USER_FOLLOWED_PROJECTS_QUERY,
@@ -187,7 +191,7 @@ const DashboardView = () => {
               </Grid>
             </Box>
             <div>
-              <Box p={3}>
+              <Box px={3} pt={3}>
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
                     classes={{ indicator: classes.indicatorColor }}
@@ -232,6 +236,33 @@ const DashboardView = () => {
                     }}
                   />
                 )}
+              </Box>
+            </div>
+            <div>
+              <Box px={3} pb={3}>
+                <Card className={classes.cardWrapper}>
+                  <CardContent>
+                    <Grid container>
+                      <Typography variant="h3">Views</Typography>
+                    </Grid>
+                    <Grid container>
+                      <Card className={classes.cardWrapper}>
+                        <CardContent>
+                          <Grid container>
+                            <Grid item xs={4}>
+                              <TrafficIcon />
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Link href="/moped/views/signal-projects">
+                                <Typography>Signal Projects</Typography>
+                              </Link>
+                            </Grid>
+                          </Grid>
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  </CardContent>
+                </Card>
               </Box>
             </div>
           </div>
