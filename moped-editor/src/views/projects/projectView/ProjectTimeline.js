@@ -120,16 +120,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   );
 
   /**
-   * Milestone table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { construction: "Construction", hold: "Hold", ...}
+   * Milestone table lookup object formatted into the shape that <Autocomplete> expects.
+   * Ex: { 1: "Award", 2: "Bid", ...}
    */
   const milestoneNameLookup = data.moped_milestones.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.milestone_name.toLowerCase()]:
-          item.milestone_name.charAt(0).toUpperCase() +
-          item.milestone_name.slice(1),
+        [item.milestone_id]: item.milestone_name,
       }),
     {}
   );
@@ -387,9 +384,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const milestoneColumns = [
     {
       title: "Milestone name",
-      field: "milestone_name",
-      render: milestone => milestoneNameLookup[milestone.milestone_name],
-      validate: milestone => !!milestone.milestone_name,
+      field: "milestone_id",
+      render: milestone => milestone.moped_milestone.milestone_name,
+      validate: milestone => !!milestone.milestone_id,
       editComponent: props => (
         <FormControl style={{ width: "100%" }}>
           <Autocomplete
