@@ -14,11 +14,15 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import MaterialTable, { MTableEditRow, MTableEditField } from "@material-table/core";
+import MaterialTable, {
+  MTableEditRow,
+  MTableEditField,
+} from "@material-table/core";
 
 import Page from "src/components/Page";
 import { useWindowResize } from "src/utils/materialTableHelpers.js";
 import typography from "../../../theme/typography";
+import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import {
   SIGNAL_PROJECTS_QUERY,
   UPDATE_SIGNAL_PROJECT,
@@ -365,9 +369,7 @@ const SignalProjectTable = () => {
           projectId={entry.project_id}
           value={
             entry.construction_start
-              ? new Date(entry.construction_start).toLocaleDateString("en-US", {
-                  timeZone: "UTC",
-                })
+              ? formatDateType(entry.construction_start)
               : ""
           }
           tab="timeline"
@@ -383,11 +385,7 @@ const SignalProjectTable = () => {
         <RenderFieldLink
           projectId={entry.project_id}
           value={
-            entry.completion_date
-              ? new Date(entry.completion_date).toLocaleDateString("en-US", {
-                  timeZone: "UTC",
-                })
-              : ""
+            entry.completion_date ? formatDateType(entry.completion_date) : ""
           }
           tab="timeline"
         />
@@ -398,10 +396,7 @@ const SignalProjectTable = () => {
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry =>
-        new Date(entry.updated_at).toLocaleDateString("en-US", {
-          timeZone: "UTC",
-        }),
+      render: entry => formatTimeStampTZType(entry.updated_at),
     },
   ];
 
