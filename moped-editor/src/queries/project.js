@@ -570,7 +570,6 @@ export const COMPONENTS_QUERY = gql`
       name
       project_component_id
       project_id
-      status_id
       moped_components {
         component_name
         component_id
@@ -578,7 +577,6 @@ export const COMPONENTS_QUERY = gql`
         line_representation
       }
       moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
-        status_id
         component_subcomponent_id
         project_component_id
         subcomponent_id

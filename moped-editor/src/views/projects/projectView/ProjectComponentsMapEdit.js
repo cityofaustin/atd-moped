@@ -291,7 +291,6 @@ const ProjectComponentsMapEdit = ({
     const projectFeaturesToCreateOrUpdate = editFeatureCollection.features.map(
       feature => {
         let projectFeature = {};
-        projectFeature.status_id = 1;
         if (feature.feature_id) {
           projectFeature.feature_id = feature.feature_id;
         }
@@ -319,7 +318,7 @@ const ProjectComponentsMapEdit = ({
           // create a mutable copy of the feature
           let featureToDelete = { ...projectFeature };
           // set status to deleted (0)
-          featureToDelete.status_id = 0;
+          featureToDelete.is_deleted = true;
           // remove __typename (a graphql artifact)
           delete featureToDelete.__typename;
           // add to delete array
@@ -360,10 +359,10 @@ const ProjectComponentsMapEdit = ({
     // Generate output, clean up & return
     return (
       [...insertionList, ...removalList] // Mix both insertion and removal list
-        // For each subcomponent, mark for deletion (status_id = 0) if component_subcomponent_id has a number
+        // For each subcomponent, mark for deletion (is_deleted = true) if component_subcomponent_id has a number
         .map(subcomponent => ({
           ...subcomponent,
-          status_id: isNaN(subcomponent?.component_subcomponent_id) ? 1 : 0,
+          is_deleted: true
         }))
         // Then remove certain objects by their key names from the output
         .map(record =>
@@ -414,7 +413,6 @@ const ProjectComponentsMapEdit = ({
       */
       name: "",
       project_id: Number.parseInt(projectId),
-      is_deleted: false,
       component_id: selectedComponentId,
       description: componentDescription,
       /*
@@ -433,7 +431,7 @@ const ProjectComponentsMapEdit = ({
           update_columns: [
             "project_component_id",
             "subcomponent_id",
-            "status_id",
+            "is_deleted",
           ],
         },
       },
@@ -445,7 +443,7 @@ const ProjectComponentsMapEdit = ({
         data: projectFeatures,
         on_conflict: {
           constraint: "moped_proj_features_pkey",
-          update_columns: ["status_id", "feature"],
+          update_columns: ["is_deleted", "feature"],
         },
       },
     };
