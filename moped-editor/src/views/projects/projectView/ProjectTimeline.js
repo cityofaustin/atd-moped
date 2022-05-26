@@ -568,13 +568,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }
                     });
 
-                    // If there the phase name or is_current_phase changed, then true.
+                    // Check if differences include phase_id or is_current_phase
                     const currentPhaseChanged =
                       differences.filter(value =>
-                        ["phase_name", "is_current_phase"].includes(value)
+                        ["phase_id", "is_current_phase"].includes(value)
                       ).length > 0;
 
-                    // We need to know if the current phase is active
+                    // We need to know if the updated phase is set as is_current_phase
                     const isCurrentPhase = !!newData?.is_current_phase;
 
                     // Remove extraneous fields given by MaterialTable that
@@ -582,23 +582,24 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.tableData;
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
+
                     updateExistingPhases(updatedPhaseObject);
 
-                    const newPhase = updatedPhaseObject?.phase_name.toLowerCase();
-                    const statusMapped = getStatusByPhaseName(newPhase);
+                    const newPhaseName = phaseNameLookup[updatedPhaseObject?.phase_id];
+                    const statusMapped = getStatusByPhaseName(newPhaseName);
 
                     const mappedProjectUpdateInput = !!statusMapped
                       ? {
                           // There is a status with same name as phase
                           status_id: statusMapped.status_id,
                           current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhase,
+                          current_phase: newPhaseName.toLowerCase(),
                         }
                       : {
                           // There isn't
                           status_id: 1,
                           current_status: "active",
-                          current_phase: newPhase,
+                          current_phase: newPhaseName.toLowerCase(),
                         };
 
                     // Execute update mutation, returns promise
