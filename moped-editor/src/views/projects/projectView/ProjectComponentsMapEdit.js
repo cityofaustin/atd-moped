@@ -317,7 +317,7 @@ const ProjectComponentsMapEdit = ({
         .forEach(projectFeature => {
           // create a mutable copy of the feature
           let featureToDelete = { ...projectFeature };
-          // set status to deleted (0)
+          // set status to deleted
           featureToDelete.is_deleted = true;
           // remove __typename (a graphql artifact)
           delete featureToDelete.__typename;
@@ -359,7 +359,7 @@ const ProjectComponentsMapEdit = ({
     // Generate output, clean up & return
     return (
       [...insertionList, ...removalList] // Mix both insertion and removal list
-        // For each subcomponent, mark for deletion (is_deleted = true) if component_subcomponent_id has a number
+        // For each subcomponent, mark for deletion if component_subcomponent_id has a number
         .map(subcomponent => ({
           ...subcomponent,
           is_deleted: true
