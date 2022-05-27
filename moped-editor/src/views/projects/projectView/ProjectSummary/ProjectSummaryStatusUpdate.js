@@ -107,7 +107,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                 project_id: Number(projectId),
                 added_by: addedBy,
                 project_note: statusUpdate,
-                status_id: 1,
                 project_note_type: 2,
               },
             }
