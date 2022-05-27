@@ -514,12 +514,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           status_id: statusMapped.status_id,
                           current_status: statusMapped.status_name.toLowerCase(),
                           current_phase: newPhaseName.toLowerCase(),
+                          current_phase_id: newPhaseObject.phase_id,
                         }
                       : {
                           // There isn't
                           status_id: 1,
                           current_status: "active",
                           current_phase: newPhaseName.toLowerCase(),
+                          current_phase_id: newPhaseObject.phase_id,
                         };
 
                     // Execute insert mutation, returns promise
@@ -594,12 +596,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                           status_id: statusMapped.status_id,
                           current_status: statusMapped.status_name.toLowerCase(),
                           current_phase: newPhaseName.toLowerCase(),
+                          current_phase_id: updatedPhaseObject.phase_id,
                         }
                       : {
                           // There isn't
                           status_id: 1,
                           current_status: "active",
                           current_phase: newPhaseName.toLowerCase(),
+                          current_phase_id: updatedPhaseObject.phase_id,
                         };
 
                     // Execute update mutation, returns promise
@@ -623,6 +627,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                         status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
+                                        // we don't have a phase id for active, since it is not an official phase
+                                        current_phase_id: null,
                                       },
                                 },
                               })
@@ -659,6 +665,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                     status_id: 1,
                                     current_status: "active",
                                     current_phase: "active",
+                                    // we don't have a phase id for active, since it is not an official phase
+                                    current_phase_id: null,
                                   },
                                 },
                               })
