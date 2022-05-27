@@ -1502,6 +1502,7 @@
         - fund_dept_unit
         - funding_description
         - date_added
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -1852,6 +1853,7 @@
         - status_id
         - project_note
         - date_created
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
