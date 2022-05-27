@@ -576,10 +576,10 @@ export const ProjectActivityLogTableMaps = {
         label: "description",
         data_type: "text",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        data_type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },

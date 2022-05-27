@@ -11,14 +11,14 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              status_id: {_eq: 1}
+              is_deleted: {_eq: false }
             }
             status_id: { _is_null: true }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              status_id: {_eq: 1}
+              is_deleted: {_eq: false }
             }
             status_id: { _neq: 3 }
           }
@@ -46,8 +46,8 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
           feature
         }
