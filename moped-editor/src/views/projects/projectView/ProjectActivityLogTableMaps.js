@@ -706,6 +706,11 @@ export const ProjectActivityLogTableMaps = {
         label: "description",
         data_type: "text",
       },
+      funding_status_id: {
+        icon: "",
+        label: "status ID",
+        data_type: "integer",
+      },
       is_deleted: {
         icon: "",
         label: "is deleted",
