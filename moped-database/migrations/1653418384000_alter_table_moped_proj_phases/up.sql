@@ -8,6 +8,14 @@ where mpp.phase_name = LOWER(phases.phase_name);
 update moped_proj_phases mpp
 set subphase_id = subphases.subphase_id
 from moped_subphases subphases
-where mpp.subphase_name = LOWER(subphases.subphase_name)
+where mpp.subphase_name = LOWER(subphases.subphase_name);
 
-alter table moped_proj_phases alter column phase_name drop not null;
+
+ALTER TABLE moped_project ADD COLUMN current_phase_id integer;
+
+-- set current_phase_id based on phase_name
+update moped_project mp
+set current_phase_id = phases.phase_id
+from moped_phases phases
+where mp.current_phase = LOWER(phases.phase_name);
+
