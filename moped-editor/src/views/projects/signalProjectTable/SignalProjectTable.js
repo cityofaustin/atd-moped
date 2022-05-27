@@ -419,7 +419,6 @@ const SignalProjectTable = () => {
         const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
           project_id: rowData.project_id,
           project_type_id: type_id,
-          status_id: 1,
         }));
         // List of primary keys to delete
         const typePksToDelete = rowData.moped_project_types

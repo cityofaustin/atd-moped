@@ -62,9 +62,8 @@ export const SUMMARY_QUERY = gql`
         added_by
         date_created
       }
-      moped_project_types(where: { status_id: { _eq: 1 } }) {
+      moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
-        status_id
         moped_type {
           type_name
           type_id
@@ -771,7 +770,7 @@ export const PROJECT_UPDATE_TYPES = gql`
     }
     update_moped_project_types(
       where: { id: { _in: $deleteList } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
