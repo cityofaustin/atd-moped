@@ -847,6 +847,7 @@
         - status_id
         - description
         - name
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
