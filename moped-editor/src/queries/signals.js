@@ -52,7 +52,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           feature
         }
       }
-      moped_proj_funding(where: { funding_status_id: { _neq: 0 } }) {
+      moped_proj_funding(where: { is_deleted: { _eq: false } }) {
         moped_fund_source {
           funding_source_name
         }
