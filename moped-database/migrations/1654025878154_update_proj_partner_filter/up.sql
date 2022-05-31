@@ -18,7 +18,7 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
          SELECT mpt.project_id,
             string_agg(mt.type_name, ', '::text) AS type_name
            FROM (moped_project_types mpt
-             LEFT JOIN moped_types mt ON (((mpt.project_type_id = mt.type_id) AND (mpt.status_id = 1))))
+             LEFT JOIN moped_types mt ON (((mpt.project_type_id = mt.type_id) AND (mpt.is_deleted = false))))
           GROUP BY mpt.project_id
         )
  SELECT mp.project_uuid,

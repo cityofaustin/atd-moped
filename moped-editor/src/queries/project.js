@@ -114,7 +114,7 @@ export const SUMMARY_QUERY = gql`
       status_name
     }
     moped_user_followed_projects(
-      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }
+      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId} } 
     ) {
       project_id
       user_id
