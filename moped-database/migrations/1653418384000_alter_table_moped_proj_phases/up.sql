@@ -22,3 +22,6 @@ where mp.current_phase = LOWER(phases.phase_name);
 -- Remove null constraint
 ALTER TABLE moped_proj_phases ALTER COLUMN phase_name DROP NOT NULL;
 
+COMMENT ON COLUMN moped_proj_phases.phase_name IS 'Deprecated phase name column';
+
+
