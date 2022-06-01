@@ -180,7 +180,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
             // Refetch data
             refetch();
             refetchSummary();
-          });
+          }).catch(err => {
+            console.error(err);
+          });;
         }
       });
     }
