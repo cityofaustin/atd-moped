@@ -9,5 +9,3 @@ ALTER TABLE moped_project DROP COLUMN current_phase_id;
 ALTER TABLE moped_proj_phases ALTER COLUMN phase_name SET NOT NULL;
 
 COMMENT ON COLUMN moped_proj_phases.phase_name IS NULL;
-
-
