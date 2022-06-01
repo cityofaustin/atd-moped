@@ -622,7 +622,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                         current_status: "active",
                                         current_phase: "active",
                                         // we don't have a phase id for active, since it is not an official phase
-                                        current_phase_id: null,
+                                        current_phase_id: 0,
                                       },
                                 },
                               })
@@ -660,7 +660,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                     current_status: "active",
                                     current_phase: "active",
                                     // we don't have a phase id for active, since it is not an official phase
-                                    current_phase_id: null,
+                                    current_phase_id: 0,
                                   },
                                 },
                               })
