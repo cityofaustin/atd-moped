@@ -2671,7 +2671,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2690,7 +2690,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2719,7 +2719,7 @@
       - file_permissions
       - file_size
       - file_type
-      - is_retired
+      - is_deleted
       - is_scanned
       - project_file_id
       - project_id
@@ -2727,7 +2727,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2745,7 +2745,7 @@
   - role: moped-viewer
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2764,7 +2764,7 @@
   - role: moped-admin
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2783,7 +2783,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2809,7 +2809,7 @@
         columns: '*'
       update:
         columns:
-        - is_retired
+        - is_deleted
         - is_scanned
         - created_by
         - file_size

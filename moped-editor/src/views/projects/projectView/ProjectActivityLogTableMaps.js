@@ -646,7 +646,7 @@ export const ProjectActivityLogTableMaps = {
         label: "scanned flag",
         data_type: "bool",
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
         label: "deleted flag",
         data_type: "bool",
