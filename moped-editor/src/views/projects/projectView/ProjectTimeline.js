@@ -189,7 +189,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   };
 
   /**
-   *
+   * Checks if phase being added or updated has a corresponding status and creates 
+   * update object accordingly
    * @param {string} mutationPhaseId - phase being added or updated in project phase table
    * @returns {Object} Object that will be used in updates to project status
    */
