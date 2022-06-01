@@ -2383,7 +2383,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2417,7 +2417,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2451,7 +2451,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2484,7 +2484,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2517,7 +2517,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2551,7 +2551,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2585,7 +2585,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2618,7 +2618,7 @@
       update:
         columns:
         - capitally_funded
-        - is_retired
+        - is_deleted
         - end_date
         - added_by
         - milestone_id
@@ -3644,7 +3644,7 @@
       - capitally_funded
       - date_added
       - added_by
-      - is_retired
+      - is_deleted
       - milestone_id
       - status_id
       - project_team_members
@@ -3670,7 +3670,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id
@@ -3710,7 +3710,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id

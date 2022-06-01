@@ -97,9 +97,9 @@ export const ProjectActivityLogTableMaps = {
           fieldValues: ["first_name", "last_name"],
         },
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
-        label: "retired status",
+        label: "soft delete status",
         data_type: "bool",
       },
       milestone_id: {
