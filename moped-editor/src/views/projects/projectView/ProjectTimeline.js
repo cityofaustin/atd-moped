@@ -139,7 +139,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const subphaseNameLookup = data.moped_subphases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.subphase_id]: item.subphase_name
+        [item.subphase_id]: item.subphase_name,
       }),
     {}
   );
@@ -155,7 +155,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       .reduce(
         (obj, item) =>
           Object.assign(obj, {
-            [item.subphase_id]: item.subphase_name
+            [item.subphase_id]: item.subphase_name,
           }),
         {}
       );
@@ -165,7 +165,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * set is_current_phase of any other true phases to false
    * to ensure there is only one active phase
    */
-
   const updateExistingPhases = phaseObject => {
     if (phaseObject.is_current_phase) {
       data.moped_proj_phases.forEach(phase => {
@@ -185,6 +184,32 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         }
       });
     }
+  };
+
+  /**
+   *
+   * @param {string} mutationPhaseId - phase being added or updated in project phase table
+   * @returns {Object} Object that will be used in updates to project status
+   */
+  const getProjectStatusUpdateObject = mutationPhaseId => {
+    const newPhaseName = phaseNameLookup[mutationPhaseId];
+    const statusMapped = getStatusByPhaseName(newPhaseName);
+
+    return !!statusMapped
+      ? {
+          // There is a status with same name as phase
+          status_id: statusMapped.status_id,
+          current_status: statusMapped.status_name.toLowerCase(),
+          current_phase: newPhaseName.toLowerCase(),
+          current_phase_id: mutationPhaseId,
+        }
+      : {
+          // There isn't a status that matches the phase
+          status_id: 1,
+          current_status: "active",
+          current_phase: newPhaseName.toLowerCase(),
+          current_phase_id: mutationPhaseId,
+        };
   };
 
   /**
@@ -504,25 +529,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
-                    const newPhaseName =
-                      phaseNameLookup[newPhaseObject?.phase_id];
-                    const statusMapped = getStatusByPhaseName(newPhaseName);
-
-                    const projectUpdateInput = !!statusMapped
-                      ? {
-                          // There is a status with same name as phase
-                          status_id: statusMapped.status_id,
-                          current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhaseName.toLowerCase(),
-                          current_phase_id: newPhaseObject.phase_id,
-                        }
-                      : {
-                          // There isn't
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: newPhaseName.toLowerCase(),
-                          current_phase_id: newPhaseObject.phase_id,
-                        };
+                    const projectUpdateInput = getProjectStatusUpdateObject(
+                      newPhaseObject?.phase_id
+                    );
 
                     // Execute insert mutation, returns promise
                     return addProjectPhase({
@@ -587,24 +596,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(updatedPhaseObject);
 
-                    const newPhaseName = phaseNameLookup[updatedPhaseObject?.phase_id];
-                    const statusMapped = getStatusByPhaseName(newPhaseName);
-
-                    const mappedProjectUpdateInput = !!statusMapped
-                      ? {
-                          // There is a status with same name as phase
-                          status_id: statusMapped.status_id,
-                          current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhaseName.toLowerCase(),
-                          current_phase_id: updatedPhaseObject.phase_id,
-                        }
-                      : {
-                          // There isn't
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: newPhaseName.toLowerCase(),
-                          current_phase_id: updatedPhaseObject.phase_id,
-                        };
+                    const mappedProjectUpdateInput = getProjectStatusUpdateObject(
+                      updatedPhaseObject?.phase_id
+                    );
 
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
@@ -620,7 +614,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                   projectId: projectId,
                                   projectUpdateInput: isCurrentPhase
                                     ? mappedProjectUpdateInput
-                                    : // Note: This will overwrite a project's current_status and
+                                    : // Note: Below will overwrite a project's current_status and
                                       // current_phase if the phase name is changed and its not a
                                       // current_phase
                                       {
