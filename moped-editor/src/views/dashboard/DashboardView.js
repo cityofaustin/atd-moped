@@ -102,9 +102,10 @@ const DashboardView = () => {
 
   if (TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY && !!data) {
     selectedData = data.moped_user_followed_projects;
-  }
-
-  if (TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY && !!data) {
+  } else if (
+    TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY &&
+    !!data
+  ) {
     selectedData = data.moped_proj_personnel;
   }
 

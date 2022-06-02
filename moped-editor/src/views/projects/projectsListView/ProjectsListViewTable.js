@@ -27,6 +27,7 @@ import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
+import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * GridTable Style
@@ -334,7 +335,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Last modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
-      render: entry => new Date(entry.updated_at).toLocaleDateString("en-US"),
+      render: entry => formatTimeStampTZType(entry.updated_at),
     },
     {
       title: "Signal IDs",
@@ -420,16 +421,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "construction_start_date",
       hidden: hiddenColumns["construction_start_date"],
       emptyValue: "-",
-      render: entry =>
-        new Date(entry.construction_start_date).toLocaleDateString("en-US"),
+      render: entry => formatDateType(entry.construction_start_date),
     },
     {
       title: "Project completion",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
-      render: entry =>
-        new Date(entry.completion_end_date).toLocaleDateString("en-US"),
+      render: entry => formatDateType(entry.completion_end_date),
     },
     {
       title: "Designer",
