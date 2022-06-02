@@ -25,6 +25,11 @@ const DefineProjectForm = ({
   };
 
   const typesList = typeData?.moped_types ?? [];
+  // We only have templates for types: Signal - New, Signal - Mod, PHB - New, PHB - Mod
+  // Filter out other types based on type_id
+  const templateTypesList = typesList.filter(object =>
+    [1, 2, 4, 5].includes(object.type_id)
+  );
 
   return (
     <form style={{ padding: 25 }}>
@@ -92,11 +97,12 @@ const DefineProjectForm = ({
         <Grid item xs={3}>
           <Autocomplete
             value={
-              typesList.filter(type => type.type_id === projectTypeId).type_name
+              templateTypesList.filter(type => type.type_id === projectTypeId)
+                .type_name
             }
             defaultValue={null}
-            id="add-project-autocomplete"
-            options={typesList}
+            id="specify-milestone-template-autocomplete"
+            options={templateTypesList}
             getOptionLabel={t => t.type_name}
             onChange={(event, newValue) => {
               setProjectTypeId(newValue.type_id);
@@ -105,7 +111,7 @@ const DefineProjectForm = ({
               <TextField
                 {...params}
                 variant="standard"
-                label={"Project type"}
+                label={"Timeline template"}
               />
             )}
           />

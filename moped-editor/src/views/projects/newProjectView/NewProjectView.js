@@ -201,9 +201,8 @@ const NewProjectView = () => {
           // Capture the project ID, which will be used to redirect to the Project Summary page
           const { project_id } = response.data.insert_moped_project_one;
           setNewProjectId(project_id);
-          // If projectId corresponds to Signal - New, Signal - Mod, PHB - New, PHB - Mod
-          // add milestones from template
-          if ([1, 2, 4, 5].includes(projectTypeId)) {
+          // if a project type has been specified, add the milestones from template
+          if (projectTypeId) {
             return addProjectMilestone({
               variables: {
                 objects: returnSignalPHBMilestoneTemplate(project_id),
