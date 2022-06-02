@@ -1988,6 +1988,7 @@
       - user_id
       - role_id
       - status_id
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -1998,6 +1999,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2011,6 +2013,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2023,6 +2026,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2035,6 +2039,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2048,6 +2053,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2061,6 +2067,7 @@
       - project_personnel_id
       - role_id
       - status_id
+      - is_deleted
       - user_id
       - notes
       - date_added
@@ -2081,6 +2088,7 @@
         - project_personnel_id
         - role_id
         - status_id
+        - is_deleted
         - user_id
         - notes
         - date_added
