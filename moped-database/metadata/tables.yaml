@@ -2381,6 +2381,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2415,6 +2416,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2449,6 +2451,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2482,6 +2485,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2515,6 +2519,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2549,6 +2554,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2583,6 +2589,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2636,6 +2643,7 @@
         - ecapris_subproject_id
         - contractor
         - current_phase
+        - current_phase_id
         - current_status
         - fiscal_year
         - knack_project_id
