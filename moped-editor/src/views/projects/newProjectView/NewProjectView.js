@@ -65,6 +65,7 @@ const NewProjectView = () => {
    */
   const [projectDetails, setProjectDetails] = useState({
     current_phase: "potential",
+    current_phase_id: 1,
     project_description: "",
     project_name: "",
     current_status: "potential",
@@ -152,7 +153,7 @@ const NewProjectView = () => {
           moped_proj_phases: {
             data: [
               {
-                phase_name: "potential",
+                phase_id: 1,
                 is_current_phase: true,
                 status_id: 1,
                 completion_percentage: 0,

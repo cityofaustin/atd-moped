@@ -103,18 +103,18 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @returns {Object} {status_id: , status_name} or undefined
    */
   const getStatusByPhaseName = phase_name =>
-    statusMap.find(s => s.status_name.toLowerCase() === phase_name);
+    statusMap.find(
+      s => s.status_name.toLowerCase() === phase_name.toLowerCase()
+    );
 
   /**
-   * Phase table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { construction: "Construction", hold: "Hold", ...}
+   * Phase table lookup object formatted into the shape that Dropdown expects
+   * Ex: { 1: "Potential", 2: "Planned", ...}
    */
   const phaseNameLookup = data.moped_phases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.phase_name.toLowerCase()]:
-          item.phase_name.charAt(0).toUpperCase() + item.phase_name.slice(1),
+        [item.phase_id]: item.phase_name,
       }),
     {}
   );
@@ -139,9 +139,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const subphaseNameLookup = data.moped_subphases.reduce(
     (obj, item) =>
       Object.assign(obj, {
-        [item.subphase_name.toLowerCase()]:
-          item.subphase_name.charAt(0).toUpperCase() +
-          item.subphase_name.slice(1),
+        [item.subphase_id]: item.subphase_name,
       }),
     {}
   );
@@ -157,19 +155,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       .reduce(
         (obj, item) =>
           Object.assign(obj, {
-            [item.subphase_name.toLowerCase()]:
-              item.subphase_name.charAt(0).toUpperCase() +
-              item.subphase_name.slice(1),
+            [item.subphase_id]: item.subphase_name,
           }),
         {}
       );
 
   /**
-   * If new or updated phase has a current phase of true,
-   * set current phase of any other true phases to false
+   * If phaseObject has is_current_phase === true,
+   * set is_current_phase of any other true phases to false
    * to ensure there is only one active phase
    */
-
   const updateExistingPhases = phaseObject => {
     if (phaseObject.is_current_phase) {
       data.moped_proj_phases.forEach(phase => {
@@ -185,10 +180,39 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
             // Refetch data
             refetch();
             refetchSummary();
-          });
+          }).catch(err => {
+            console.error(err);
+          });;
         }
       });
     }
+  };
+
+  /**
+   * Checks if phase being added or updated has a corresponding status and creates 
+   * update object accordingly
+   * @param {string} mutationPhaseId - phase being added or updated in project phase table
+   * @returns {Object} Object that will be used in updates to project status
+   */
+  const getProjectStatusUpdateObject = mutationPhaseId => {
+    const newPhaseName = phaseNameLookup[mutationPhaseId];
+    const statusMapped = getStatusByPhaseName(newPhaseName);
+
+    return !!statusMapped
+      ? {
+          // There is a status with same name as phase
+          status_id: statusMapped.status_id,
+          current_status: statusMapped.status_name.toLowerCase(),
+          current_phase: newPhaseName.toLowerCase(),
+          current_phase_id: mutationPhaseId,
+        }
+      : {
+          // There isn't a status that matches the phase
+          status_id: 1,
+          current_status: "active",
+          current_phase: newPhaseName.toLowerCase(),
+          current_phase_id: mutationPhaseId,
+        };
   };
 
   /**
@@ -241,8 +265,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @constructor
    */
   const DropDownSelectComponent = props => {
-    // If the component name is phase_name, then assume phaseNameLookup values
-    // Otherwise assume null,
+    // If the component name is phase_name, then use phaseNameLookup values, otherwise set as null
     let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
     // If lookup values is null, then it is a sub-phase list we need to generate
@@ -250,12 +273,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       // First retrieve the sub-phase id's from moped_phases for that specific row
       const allowedSubphaseIds = props.data.moped_phases
         .filter(
-          item =>
-            // filter out any phases that are not the one we selected
-            (item?.phase_name ?? "").toLowerCase() ===
-            // props.rowData.phase_name is the row's phase name
-            // which could be null if nothing is selected
-            (props.rowData?.phase_name ?? "").toLowerCase()
+          // filter for selected phase, props.rowData.phase_id could be null if nothing is selected
+          item => item?.phase_id === Number(props.rowData?.phase_id ?? 0)
         )
         .reduce(
           // Then using reduce, aggregate the sub-phase ids from whatever array is left
@@ -319,16 +338,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   const phasesColumns = [
     {
       title: "Phase name",
-      field: "phase_name",
+      field: "phase_id",
       lookup: phaseNameLookup,
-      validate: row => !!row.phase_name,
+      validate: row => !!row.phase_id,
       editComponent: props => (
         <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
       ),
     },
     {
       title: "Sub-phase name",
-      field: "subphase_name",
+      field: "subphase_id",
       lookup: subphaseNameLookup,
       editComponent: props => (
         <DropDownSelectComponent
@@ -513,22 +532,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(newPhaseObject);
 
-                    const newPhase = newPhaseObject?.phase_name;
-                    const statusMapped = getStatusByPhaseName(newPhase);
-
-                    const projectUpdateInput = !!statusMapped
-                      ? {
-                          // There is a status with same name as phase
-                          status_id: statusMapped.status_id,
-                          current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhase.toLowerCase(),
-                        }
-                      : {
-                          // There isn't
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: newPhase.toLowerCase(),
-                        };
+                    const projectUpdateInput = getProjectStatusUpdateObject(
+                      newPhaseObject?.phase_id
+                    );
 
                     // Execute insert mutation, returns promise
                     return addProjectPhase({
@@ -576,13 +582,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }
                     });
 
-                    // If there the phase name or is_current_phase changed, then true.
+                    // Check if differences include phase_id or is_current_phase
                     const currentPhaseChanged =
                       differences.filter(value =>
-                        ["phase_name", "is_current_phase"].includes(value)
+                        ["phase_id", "is_current_phase"].includes(value)
                       ).length > 0;
 
-                    // We need to know if the current phase is active
+                    // We need to know if the updated phase is set as is_current_phase
                     const isCurrentPhase = !!newData?.is_current_phase;
 
                     // Remove extraneous fields given by MaterialTable that
@@ -590,24 +596,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.tableData;
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
+
                     updateExistingPhases(updatedPhaseObject);
 
-                    const newPhase = updatedPhaseObject?.phase_name.toLowerCase();
-                    const statusMapped = getStatusByPhaseName(newPhase);
-
-                    const mappedProjectUpdateInput = !!statusMapped
-                      ? {
-                          // There is a status with same name as phase
-                          status_id: statusMapped.status_id,
-                          current_status: statusMapped.status_name.toLowerCase(),
-                          current_phase: newPhase,
-                        }
-                      : {
-                          // There isn't
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: newPhase,
-                        };
+                    const mappedProjectUpdateInput = getProjectStatusUpdateObject(
+                      updatedPhaseObject?.phase_id
+                    );
 
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
@@ -623,13 +617,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                   projectId: projectId,
                                   projectUpdateInput: isCurrentPhase
                                     ? mappedProjectUpdateInput
-                                    : // Note: This will overwrite a project's current_status and
+                                    : // Note: Below will overwrite a project's current_status and
                                       // current_phase if the phase name is changed and its not a
                                       // current_phase
                                       {
                                         status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
+                                        // we don't have a phase id for active, since it is not an official phase
+                                        current_phase_id: 0,
                                       },
                                 },
                               })
@@ -666,6 +662,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                     status_id: 1,
                                     current_status: "active",
                                     current_phase: "active",
+                                    // we don't have a phase id for active, since it is not an official phase
+                                    current_phase_id: 0,
                                   },
                                 },
                               })
