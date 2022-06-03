@@ -36,3 +36,5 @@ UPDATE public.moped_milestones SET milestone_order = 33 WHERE milestone_id = 33;
 
 -- Delete added moped_milestone records
 DELETE FROM public.moped_milestones WHERE milestone_id > 33;
+
+UPDATE moped_milestones SET related_phase_id = NULL where milestone_id = 31;
