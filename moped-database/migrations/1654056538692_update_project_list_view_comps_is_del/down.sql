@@ -1,3 +1,5 @@
+DROP VIEW project_list_view;
+
 CREATE OR REPLACE VIEW "public"."project_list_view" AS 
  WITH project_person_list_lookup AS (
          SELECT mpp.project_id,

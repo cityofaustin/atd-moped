@@ -337,17 +337,21 @@ const ProjectComponentsMapEdit = ({
     const removeAllSubcomponents = getAvailableSubcomponents().length === 0;
 
     // Generate a list of subcomponents to be removed
-    const removalList = subcomponentsDB.filter(
-      // Check every old subcomponent
-      oldSubcomponent =>
-        // If not found, mark it as true so it's part of the selectedSubcomponents list
-        removeAllSubcomponents ||
-        !selectedSubcomponents.find(
-          newSubcomponent =>
-            // Return true if we have found the old subcomponent in this list
-            oldSubcomponent.subcomponent_id === newSubcomponent.subcomponent_id
-        )
-    );
+    const removalList = subcomponentsDB
+      .filter(
+        // Check every old subcomponent
+        oldSubcomponent =>
+          // If not found, mark it as true so it's part of the selectedSubcomponents list
+          removeAllSubcomponents ||
+          !selectedSubcomponents.find(
+            newSubcomponent =>
+              // Return true if we have found the old subcomponent in this list
+              oldSubcomponent.subcomponent_id ===
+              newSubcomponent.subcomponent_id
+          )
+      )
+      // Mark remove list for deletion
+      .map(subcomponent => ({ ...subcomponent, is_deleted: true }));
 
     // Remove existing subcomponents, keep only those that need inserting
     const insertionList = selectedSubcomponents.filter(
@@ -359,11 +363,6 @@ const ProjectComponentsMapEdit = ({
     // Generate output, clean up & return
     return (
       [...insertionList, ...removalList] // Mix both insertion and removal list
-        // For each subcomponent, mark for deletion if component_subcomponent_id has a number
-        .map(subcomponent => ({
-          ...subcomponent,
-          is_deleted: true
-        }))
         // Then remove certain objects by their key names from the output
         .map(record =>
           filterObjectByKeys(record, [
