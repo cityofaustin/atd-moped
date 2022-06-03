@@ -134,7 +134,7 @@ const SignalProjectTable = () => {
       }
       // check for completion phase
       const completionPhase = project.moped_proj_phases.find(
-        p => p.phase_name === 11 // 11 is phase_id for complete
+        p => p.phase_id === 11 // 11 is phase_id for complete
       );
       if (completionPhase) {
         project["completion_date"] = completionPhase.phase_end;
