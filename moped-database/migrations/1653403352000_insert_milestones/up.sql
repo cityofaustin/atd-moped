@@ -29,3 +29,5 @@ INSERT INTO public.moped_milestones (
         ('Signal turn on', NULL, 9),
         ('Burn in period', 'typically 30 days', 10),
         ('Acceptance Letter', 'for signals constructed by others/documentation that burn in period is complete', 10);
+
+UPDATE moped_milestones SET related_phase_id = 6 where milestone_id = 31;

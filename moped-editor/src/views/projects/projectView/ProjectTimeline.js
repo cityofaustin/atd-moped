@@ -176,20 +176,22 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           // Execute update mutation, returns promise
           return updateProjectPhase({
             variables: phase,
-          }).then(() => {
-            // Refetch data
-            refetch();
-            refetchSummary();
-          }).catch(err => {
-            console.error(err);
-          });;
+          })
+            .then(() => {
+              // Refetch data
+              refetch();
+              refetchSummary();
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     }
   };
 
   /**
-   * Checks if phase being added or updated has a corresponding status and creates 
+   * Checks if phase being added or updated has a corresponding status and creates
    * update object accordingly
    * @param {string} mutationPhaseId - phase being added or updated in project phase table
    * @returns {Object} Object that will be used in updates to project status
@@ -428,6 +430,23 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       render: milestone => (
         <div style={{ width: "400px" }}>{milestone.milestone_description}</div>
       ),
+    },
+    {
+      title: "Related phase",
+      field: "moped_milestone",
+      customSort: (a, b) => {
+        const aPhaseName = phaseNameLookup[a.moped_milestone.related_phase_id];
+        const bPhaseName = phaseNameLookup[b.moped_milestone.related_phase_id];
+        if (aPhaseName > bPhaseName) {
+          return 1;
+        }
+        if (bPhaseName < aPhaseName) {
+          return -1;
+        }
+        return 0;
+      },
+      render: milestone =>
+        phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
     },
     {
       title: "Completion estimate",

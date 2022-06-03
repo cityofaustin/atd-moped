@@ -292,6 +292,7 @@ export const TIMELINE_QUERY = gql`
       project_id
       moped_milestone {
         milestone_name
+        related_phase_id
       }
     }
     moped_status {
