@@ -51,14 +51,14 @@ class GQLAbstract {
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpKey = (exp) => exp.split(/[{} ]+/, 1)[0].trim();
+  getExpKey = exp => exp.split(/[{} ]+/, 1)[0].trim();
 
   /**
    * Returns the value of a nested expression, usually another expression.
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpValue = (exp) =>
+  getExpValue = exp =>
     exp.substring(exp.indexOf("{") + 1, exp.lastIndexOf("}")).trim();
 
   /**
@@ -371,7 +371,7 @@ class GQLAbstract {
    * @returns {Array}
    */
   get columns() {
-    return this.getEntries("columns").map((k) => k[0]);
+    return this.getEntries("columns").map(k => k[0]);
   }
 
   /**
@@ -448,6 +448,8 @@ class GQLAbstract {
         "}"
     );
 
+    // Previous comment indicated we don't support a second tier ordering directive,
+    // but the following code appears to support it.
     if (this.config.order_by) {
       const orderBy = [];
       for (const [key, value] of this.getEntries("order_by")) {
@@ -545,7 +547,7 @@ class GQLAbstract {
     const aggregatesQueryArray = [];
 
     // For each config, create query, replace filters/columns, and push to aggregatesQueryArray
-    queryConfigArray.forEach((config) => {
+    queryConfigArray.forEach(config => {
       let query = `
       gqlAbstractTableAggregateName (
           gqlAbstractAggregateFilters
