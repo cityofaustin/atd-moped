@@ -227,8 +227,12 @@ class GQLAbstract {
    */
   setOrder(key, syntax) {
     if (this.config && this.config.order_by) {
-      // First, RESET the order_by value.
-      // - Our assumption is that there should only by 1 order_by at a time.
+      // First, RESET the order_by value, with the assumption
+      // that there should only by 1 order_by at a time.
+      // This assumption is a self-imposed subset of the GraphQL syntax
+      // which happens to make the removal of implicit ordering
+      // of order directives as implemented by Hasura in graphql-engine
+      // 2.0+ a non-issue for this app.
       this.config.order_by = {};
       // Now, set new key, syntax pair for order_by
       this.config.order_by[key] = syntax;
