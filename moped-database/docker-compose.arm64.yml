@@ -17,7 +17,7 @@ services:
         command: ["postgres", "-c", "jit=off"]
 
     hasura:
-        image: frankinaustin/graphql-engine-arm64:v1.3.3
+        image: hasura/graphql-engine:latest
         restart: always
         depends_on:
             - moped-pgsql
