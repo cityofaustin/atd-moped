@@ -440,7 +440,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         if (aPhaseName > bPhaseName) {
           return 1;
         }
-        if (bPhaseName < aPhaseName) {
+        if (aPhaseName < bPhaseName) {
           return -1;
         }
         return 0;
