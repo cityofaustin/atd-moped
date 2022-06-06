@@ -416,6 +416,10 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "is deleted",
         type: "boolean",
+        map: {
+          true: "Inactive",
+          false: "Active"
+        }
       },
       project_id: {
         icon: "",
