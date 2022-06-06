@@ -62,7 +62,7 @@ function build_database() {
 
   cd "${HASURA_REPO_NAME}" || exit 1;
   # checking out the commit where dockerfile uses graphql-engine v1.3.3
-  git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
+  # git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
 
   print_header "Destroying Current Application";
   {
