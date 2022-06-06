@@ -20,6 +20,7 @@ import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
+import DashboardEditModal from "./DashboardEditModal";
 
 import typography from "../../theme/typography";
 
@@ -168,6 +169,8 @@ const DashboardView = () => {
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       cellStyle: { ...typographyStyle, minWidth: "300px" },
+      render: entry =>
+        <DashboardEditModal displayText={entry.status_update}/>
     },
   ];
 
