@@ -6,9 +6,11 @@ import {
   AppBar,
   Box,
   Card,
+  CardContent,
   CircularProgress,
   Container,
   Grid,
+  Link,
   Tab,
   Tabs,
   Typography,
@@ -22,6 +24,8 @@ import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 
 import typography from "../../theme/typography";
+
+import TrafficIcon from "@material-ui/icons/Traffic";
 
 import {
   USER_FOLLOWED_PROJECTS_QUERY,
@@ -50,6 +54,13 @@ const useStyles = makeStyles(theme => ({
   },
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
+  },
+  viewsCard: {
+    display: "inline-flex",
+    padding: "24px",
+  },
+  cardTitle: {
+    paddingBottom: "16px",
   },
 }));
 
@@ -179,7 +190,7 @@ const DashboardView = () => {
     <Page title={"Dashboard"}>
       <Container maxWidth="xl">
         <Card className={classes.cardWrapper}>
-          <div className={classes.root}>
+          <Grid className={classes.root}>
             <Box pl={3} pt={3}>
               <Grid container>
                 <Typography variant="h1" color="primary">
@@ -187,8 +198,8 @@ const DashboardView = () => {
                 </Typography>
               </Grid>
             </Box>
-            <div>
-              <Box p={3}>
+            <Box px={3} pt={3}>
+              <Grid>
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
                     classes={{ indicator: classes.indicatorColor }}
@@ -233,9 +244,34 @@ const DashboardView = () => {
                     }}
                   />
                 )}
-              </Box>
-            </div>
-          </div>
+              </Grid>
+            </Box>
+            <Box px={3} pb={3}>
+              <Card className={classes.cardWrapper}>
+                <CardContent>
+                  <Grid className={classes.cardTitle}>
+                    <Typography variant="h3" color="primary">
+                      Views
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Link href="/moped/views/signal-projects" noWrap>
+                      <Card>
+                        <CardContent className={classes.viewsCard}>
+                          <Grid item xs={4}>
+                            <TrafficIcon />
+                          </Grid>
+                          <Grid item xs={8}>
+                            <Typography>Signal Projects</Typography>
+                          </Grid>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
         </Card>
       </Container>
     </Page>
