@@ -141,7 +141,7 @@ export const STATUS_QUERY = gql`
 
 export const TYPES_QUERY = gql`
   query TypeQuery {
-    moped_types {
+    moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
     }
