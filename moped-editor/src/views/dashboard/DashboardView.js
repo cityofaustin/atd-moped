@@ -255,18 +255,18 @@ const DashboardView = () => {
                     </Typography>
                   </Grid>
                   <Grid item xs={12} sm={6} md={3}>
-                    <Card>
-                      <CardContent className={classes.viewsCard}>
-                        <Grid item xs={4}>
-                          <TrafficIcon />
-                        </Grid>
-                        <Grid item xs={8}>
-                          <Link href="/moped/views/signal-projects" noWrap>
+                    <Link href="/moped/views/signal-projects" noWrap>
+                      <Card>
+                        <CardContent className={classes.viewsCard}>
+                          <Grid item xs={4}>
+                            <TrafficIcon />
+                          </Grid>
+                          <Grid item xs={8}>
                             <Typography>Signal Projects</Typography>
-                          </Link>
-                        </Grid>
-                      </CardContent>
-                    </Card>
+                          </Grid>
+                        </CardContent>
+                      </Card>
+                    </Link>
                   </Grid>
                 </CardContent>
               </Card>
