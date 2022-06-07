@@ -24,6 +24,10 @@ export const ADD_PROJECT = gql`
           feature_id
         }
       }
+      moped_project_types {
+        project_type_id
+        status_id
+      }
     }
   }
 `;
@@ -131,6 +135,15 @@ export const STATUS_QUERY = gql`
     ) {
       status_id
       status_name
+    }
+  }
+`;
+
+export const TYPES_QUERY = gql`
+  query TypeQuery {
+    moped_types(order_by: { type_name: asc }) {
+      type_id
+      type_name
     }
   }
 `;
@@ -265,7 +278,10 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
-      order_by: { milestone_end: desc }
+      order_by: [
+        { milestone_order: asc },
+        { milestone_end: desc }
+      ]
     ) {
       milestone_id
       milestone_description
@@ -276,6 +292,7 @@ export const TIMELINE_QUERY = gql`
       project_id
       moped_milestone {
         milestone_name
+        related_phase_id
       }
     }
     moped_status {
