@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
+import moment from "moment";
 
 // Material
 import {
@@ -62,6 +63,15 @@ const useStyles = makeStyles(theme => ({
   cardTitle: {
     paddingBottom: "16px",
   },
+  greeting: {
+    display: "block",
+  },
+  greetingText: {
+    color: theme.palette.text.secondary,
+  },
+  date: {
+    paddingTop: "4px",
+  },
 }));
 
 function a11yProps(index) {
@@ -85,6 +95,7 @@ const TABS = [
 const DashboardView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData.user_id;
+  const userName = userSessionData.first_name;
 
   const classes = useStyles();
   const typographyStyle = {
@@ -153,6 +164,22 @@ const DashboardView = () => {
     />
   );
 
+  /** Build custom user greeting
+   */
+  const date = moment();
+  const curHr = date.format("HH");
+  const dateFormatted = date.format("dddd - MMMM DD, YYYY");
+
+  const getTimeOfDay = curHr => {
+    if (curHr < 12) {
+      return "morning";
+    } else if (curHr < 18) {
+      return "afternoon";
+    } else {
+      return "evening";
+    }
+  };
+
   const columns = [
     {
       title: "Project name",
@@ -192,9 +219,12 @@ const DashboardView = () => {
         <Card className={classes.cardWrapper}>
           <Grid className={classes.root}>
             <Box pl={3} pt={3}>
-              <Grid container>
-                <Typography variant="h1" color="primary">
-                  Dashboard
+              <Grid className={classes.greeting}>
+                <Typography variant="h6" className={classes.greetingText}>
+                  {`Good ${getTimeOfDay(curHr)}, ${userName}!`}
+                </Typography>
+                <Typography variant="h3" className={classes.date}>
+                  {dateFormatted}
                 </Typography>
               </Grid>
             </Box>
