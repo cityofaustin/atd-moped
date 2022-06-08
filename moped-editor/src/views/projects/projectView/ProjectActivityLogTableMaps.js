@@ -854,12 +854,6 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_phases: {
     label: (record, userList, phaseList) => {
       const recordData = record.record_data.event.data.new;
-      console.log(recordData, phaseList)
-      //breadcrumb
-      // const phaseName = recordData.phase_name
-      //   .trim()
-      //   .toLowerCase()
-      //   .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
       const phaseName = phaseList[recordData?.phase_id] ?? "";
       return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
