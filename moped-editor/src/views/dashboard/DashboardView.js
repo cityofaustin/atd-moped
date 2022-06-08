@@ -176,7 +176,7 @@ const DashboardView = () => {
         return "morning";
       case curHr >= 12 && curHr < 18:
         return "afternoon";
-      case curHr >= 18:
+      default:
         return "evening";
     }
   };
