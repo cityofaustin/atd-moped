@@ -309,7 +309,7 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $phase_start: date = null
     $phase_end: date = null
     $project_phase_id: Int!
-    $phase_name: String
+    $phase_name: Int
     $subphase_id: Int = 0
     $subphase_name: String = null
   ) {
@@ -320,14 +320,14 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         is_current_phase: $is_current_phase
         phase_start: $phase_start
         phase_end: $phase_end
-        phase_name: $phase_name
+        phase_id: $phase_id
         subphase_id: $subphase_id
         subphase_name: $subphase_name
       }
     ) {
       project_id
       project_phase_id
-      phase_name
+      phase_id
       phase_start
       phase_end
       subphase_id
