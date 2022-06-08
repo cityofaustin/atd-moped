@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
-import moment from "moment";
+import { format } from "date-fns";
 
 // Material
 import {
@@ -166,9 +166,9 @@ const DashboardView = () => {
 
   /** Build custom user greeting
    */
-  const date = moment();
-  const curHr = date.format("HH");
-  const dateFormatted = date.format("dddd - MMMM DD, YYYY");
+  const date = new Date();
+  const curHr = format(date, "HH");
+  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
 
   const getTimeOfDay = curHr => {
     if (curHr < 12) {
