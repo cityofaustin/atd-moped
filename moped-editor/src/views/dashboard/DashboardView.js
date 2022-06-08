@@ -171,12 +171,13 @@ const DashboardView = () => {
   const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
 
   const getTimeOfDay = curHr => {
-    if (curHr < 12) {
-      return "morning";
-    } else if (curHr < 18) {
-      return "afternoon";
-    } else {
-      return "evening";
+    switch (true) {
+      case curHr < 12:
+        return "morning";
+      case curHr >= 12 && curHr < 18:
+        return "afternoon";
+      case curHr >= 18:
+        return "evening";
     }
   };
 
