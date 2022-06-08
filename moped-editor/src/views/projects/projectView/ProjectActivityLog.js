@@ -71,6 +71,7 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const userList = {};
+  const phaseList = {};
   const unknownUserNameValue = "Unknown User";
 
   const {
@@ -184,6 +185,9 @@ const ProjectActivityLog = () => {
     data["moped_users"].forEach(user => {
       userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
     });
+    data["moped_phases"].forEach(phase => {
+      phaseList[`${phase.phase_id}`] = phase.phase_name;
+    });
   }
 
   return (
@@ -288,7 +292,7 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>{getCreationLabel(change, userList)}</b>
+                                    <b>{getCreationLabel(change, userList, phaseList)}</b>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
