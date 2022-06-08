@@ -298,7 +298,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     }
 
     // empty subphases can show up as 0, this removes warning in console
-    lookupValues = {...lookupValues, '0': ''}
+    lookupValues = { ...lookupValues, "0": "" };
 
     // Proceed normally and generate the drop-down
     return (
@@ -437,6 +437,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Related phase",
       field: "moped_milestone",
+      editable: "never",
+      cellStyle: {
+        fontFamily: typography.fontFamily,
+        fontSize: "14px",
+      },
       customSort: (a, b) => {
         const aPhaseName = phaseNameLookup[a.moped_milestone.related_phase_id];
         const bPhaseName = phaseNameLookup[b.moped_milestone.related_phase_id];
@@ -549,7 +554,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         completed: false,
                         status_id: 1,
                         // temporary until project phase normalization is complete
-                        phase_name: phaseNameLookup[newData?.phase_id].toLowerCase()
+                        phase_name: phaseNameLookup[
+                          newData?.phase_id
+                        ].toLowerCase(),
                       },
                       newData
                     );
@@ -614,7 +621,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     // temporary workaround until phase normalization is complete
                     if (currentPhaseChanged) {
-                      updatedPhaseObject["phase_name"] = phaseNameLookup[newData.phase_id].toLowerCase()
+                      updatedPhaseObject["phase_name"] = phaseNameLookup[
+                        newData.phase_id
+                      ].toLowerCase();
                     }
 
                     // We need to know if the updated phase is set as is_current_phase
