@@ -471,6 +471,10 @@ export const PROJECT_ACTIVITY_LOG = gql`
       user_id
       email
     }
+    moped_phases {
+      phase_id
+      phase_name
+    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type
