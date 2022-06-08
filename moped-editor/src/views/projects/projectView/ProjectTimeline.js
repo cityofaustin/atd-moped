@@ -435,6 +435,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Related phase",
       field: "moped_milestone",
       editable: "never",
+      cellStyle: {
+        fontFamily: typography.fontFamily,
+        fontSize: "14px",
+      },
       customSort: (a, b) => {
         const aPhaseName = phaseNameLookup[a.moped_milestone.related_phase_id];
         const bPhaseName = phaseNameLookup[b.moped_milestone.related_phase_id];
