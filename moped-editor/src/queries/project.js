@@ -24,6 +24,10 @@ export const ADD_PROJECT = gql`
           feature_id
         }
       }
+      moped_project_types {
+        project_type_id
+        status_id
+      }
     }
   }
 `;
@@ -131,6 +135,15 @@ export const STATUS_QUERY = gql`
     ) {
       status_id
       status_name
+    }
+  }
+`;
+
+export const TYPES_QUERY = gql`
+  query TypeQuery {
+    moped_types(order_by: { type_name: asc }) {
+      type_id
+      type_name
     }
   }
 `;
@@ -249,6 +262,7 @@ export const TIMELINE_QUERY = gql`
       order_by: { phase_start: desc }
     ) {
       phase_name
+      phase_id
       project_phase_id
       is_current_phase
       project_id
@@ -264,7 +278,10 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
-      order_by: { milestone_end: desc }
+      order_by: [
+        { milestone_order: asc },
+        { milestone_end: desc }
+      ]
     ) {
       milestone_id
       milestone_description
@@ -275,6 +292,7 @@ export const TIMELINE_QUERY = gql`
       project_id
       moped_milestone {
         milestone_name
+        related_phase_id
       }
     }
     moped_status {
@@ -291,7 +309,7 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $phase_start: date = null
     $phase_end: date = null
     $project_phase_id: Int!
-    $phase_name: String!
+    $phase_id: Int
     $subphase_id: Int = 0
     $subphase_name: String = null
   ) {
@@ -302,14 +320,14 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         is_current_phase: $is_current_phase
         phase_start: $phase_start
         phase_end: $phase_end
-        phase_name: $phase_name
+        phase_id: $phase_id
         subphase_id: $subphase_id
         subphase_name: $subphase_name
       }
     ) {
       project_id
       project_phase_id
-      phase_name
+      phase_id
       phase_start
       phase_end
       subphase_id
@@ -452,6 +470,10 @@ export const PROJECT_ACTIVITY_LOG = gql`
       last_name
       user_id
       email
+    }
+    moped_phases {
+      phase_id
+      phase_name
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
