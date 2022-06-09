@@ -512,7 +512,7 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
 export const PROJECT_FILE_ATTACHMENTS = gql`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
-      where: { project_id: { _eq: $projectId }, is_retired: { _eq: false } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       project_file_id
       project_id
@@ -558,7 +558,7 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
   mutation DeleteProjectFileAttachment($fileId: Int!) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
-      _set: { is_retired: true }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -577,7 +577,7 @@ export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { is_retired: true }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
