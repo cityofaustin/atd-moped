@@ -220,10 +220,10 @@ const DashboardView = () => {
           <Grid className={classes.root}>
             <Box pl={3} pt={3}>
               <Grid className={classes.greeting}>
-                <Typography variant="h6" className={classes.greetingText}>
-                  {`Good ${getTimeOfDay(curHr)}, ${userName}!`}
+                <Typography className={classes.greetingText}>
+                  <strong>{`Good ${getTimeOfDay(curHr)}, ${userName}!`}</strong>
                 </Typography>
-                <Typography variant="h3" className={classes.date}>
+                <Typography variant="h1" className={classes.date}>
                   {dateFormatted}
                 </Typography>
               </Grid>
