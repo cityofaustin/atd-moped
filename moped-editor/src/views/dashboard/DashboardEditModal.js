@@ -1,42 +1,34 @@
-import React, {useState} from "react";
-import {
-  Typography,
-  Popper,
-  Paper
-} from "@material-ui/core";
+import React, { useState } from "react";
+import { Typography, Dialog, DialogTitle, DialogContent } from "@material-ui/core";
 
+const DashboardEditModal = ({ project, displayText }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-const DashboardEditModal = ({displayText}) => {
-  const divRef = React.useRef();
+  console.log(project);
 
-  // anchor element for dashboard edit modal to "attach" to
-  const [dashboardEditAnchor, setDashboardEditAnchor] = useState(null);
-
-  const handleDashboardEditClose = () => {
-    setDashboardEditAnchor(null);
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
   };
 
-  console.log(displayText)
+  console.log(displayText);
   return (
     <>
-    <Typography onClick={()=>setDashboardEditAnchor(divRef.current)}>
-      {displayText} HIHIHI
-    </Typography>
-    <Popper
-        id="DashboardEditModal"
-        open={Boolean(dashboardEditAnchor)}
-        anchorEl={dashboardEditAnchor}
-        onClose={handleDashboardEditClose}
-        placement={"bottom"}
-        // className={classes.advancedSearchRoot}
+      <Typography onClick={() => setIsDialogOpen(true)}>
+        {displayText}
+      </Typography>
+      <Dialog
+        open={isDialogOpen}
+        onClose={handleDialogClose}
+        fullWidth
+        maxWidth={"md"}
       >
-        <Paper> {//className={classes.advancedSearchPaper}>
-      }
-          "EDIT"
-        </Paper>
-      </Popper>
+        <DialogTitle>{project.project_name}</DialogTitle>
+        <DialogContent>
+          hi
+        </DialogContent>
+      </Dialog>
     </>
   );
-}
+};
 
 export default DashboardEditModal;

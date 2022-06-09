@@ -208,8 +208,12 @@ const DashboardView = () => {
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       cellStyle: { ...typographyStyle, minWidth: "300px" },
-      render: entry =>
-        <DashboardEditModal displayText={entry.status_update}/>
+      render: entry => (
+        <DashboardEditModal
+          project={entry.project}
+          displayText={entry.status_update}
+        />
+      ),
     },
   ];
 
