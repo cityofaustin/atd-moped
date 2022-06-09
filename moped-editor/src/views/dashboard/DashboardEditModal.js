@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Typography, Dialog, DialogTitle, DialogContent } from "@material-ui/core";
+import ProjectComments from "./../projects/projectView/ProjectComments"
 
 const DashboardEditModal = ({ project, displayText }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -24,7 +25,7 @@ const DashboardEditModal = ({ project, displayText }) => {
       >
         <DialogTitle>{project.project_name}</DialogTitle>
         <DialogContent>
-          hi
+          <ProjectComments />
         </DialogContent>
       </Dialog>
     </>
