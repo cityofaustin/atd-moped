@@ -1508,6 +1508,10 @@
 - table:
     schema: public
     name: moped_proj_milestones
+  object_relationships:
+  - name: moped_milestone
+    using:
+      foreign_key_constraint_on: milestone_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -1518,15 +1522,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1543,15 +1546,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1568,15 +1570,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1592,15 +1593,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1616,15 +1616,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1641,15 +1640,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1666,15 +1664,14 @@
       - completion_percentage
       - date_added
       - is_current_milestone
+      - milestone_id
       - milestone_date_type
       - milestone_description
       - milestone_end
       - milestone_estimate
-      - milestone_name
       - milestone_order
       - milestone_priority
       - milestone_privacy
-      - milestone_related_phase_id
       - milestone_start
       - milestone_status
       - project_id
@@ -1695,6 +1692,7 @@
         columns:
         - completed
         - is_current_milestone
+        - milestone_id
         - milestone_privacy
         - milestone_end
         - milestone_estimate
@@ -1703,14 +1701,12 @@
         - completion_percentage
         - milestone_order
         - milestone_priority
-        - milestone_related_phase_id
         - project_id
         - project_milestone_id
         - started_by_user_id
         - status_id
         - milestone_date_type
         - milestone_description
-        - milestone_name
         - milestone_status
         - date_added
     retry_conf:
@@ -1976,6 +1972,9 @@
   - name: moped_user
     using:
       foreign_key_constraint_on: user_id
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2382,6 +2381,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2416,6 +2416,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2450,6 +2451,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2483,6 +2485,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2516,6 +2519,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2550,6 +2554,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2584,6 +2589,7 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
@@ -2637,6 +2643,7 @@
         - ecapris_subproject_id
         - contractor
         - current_phase
+        - current_phase_id
         - current_status
         - fiscal_year
         - knack_project_id
@@ -3342,6 +3349,10 @@
 - table:
     schema: public
     name: moped_user_followed_projects
+  object_relationships:
+    - name: project
+      using:
+        foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:

@@ -38,6 +38,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
+import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -70,6 +71,7 @@ const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
   const userList = {};
+  const phaseList = {};
   const unknownUserNameValue = "Unknown User";
 
   const {
@@ -101,14 +103,6 @@ const ProjectActivityLog = () => {
   };
 
   if (loading || lookupLoading) return <CircularProgress />;
-
-  /**
-   * Formats the iso date into human-readable locale date.
-   * @param {string} date - The ISO date as a string
-   * @return {string}
-   */
-  const formatDate = date =>
-    new Date(date).toLocaleDateString("en-US", { timeZone: "UTC" });
 
   /**
    * Retrieve the user's full name or return an "N/A"
@@ -191,6 +185,9 @@ const ProjectActivityLog = () => {
     data["moped_users"].forEach(user => {
       userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
     });
+    data["moped_phases"].forEach(phase => {
+      phaseList[`${phase.phase_id}`] = phase.phase_name;
+    });
   }
 
   return (
@@ -232,7 +229,7 @@ const ProjectActivityLog = () => {
                         width="5%"
                         className={classes.tableCell}
                       >
-                        {formatDate(change.created_at)}
+                        {formatTimeStampTZType(change.created_at)}
                       </TableCell>
                       <TableCell
                         align="left"
@@ -295,7 +292,7 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>{getCreationLabel(change, userList)}</b>
+                                    <b>{getCreationLabel(change, userList, phaseList)}</b>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
