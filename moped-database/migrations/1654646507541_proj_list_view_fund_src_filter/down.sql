@@ -97,3 +97,4 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
      LEFT JOIN moped_entity me2 ON ((mpp2.entity_id = me2.entity_id)))
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON (true))
   GROUP BY mp.project_uuid, mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.project_description_public, mp.ecapris_subproject_id, mp.project_order, mp.current_status, mp.timeline_id, mp.current_phase, mp.end_date, mp.fiscal_year, mp.capitally_funded, mp.date_added, mp.added_by, mp.is_retired, mp.milestone_id, mp.status_id, me.entity_name, mp.updated_at, mp.task_order, mp.contractor, mp.purchase_order_number, ptl.type_name, fsl.funding_source_name;
+  
