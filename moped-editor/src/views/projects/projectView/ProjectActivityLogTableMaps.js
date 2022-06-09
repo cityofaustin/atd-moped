@@ -97,9 +97,9 @@ export const ProjectActivityLogTableMaps = {
           fieldValues: ["first_name", "last_name"],
         },
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
-        label: "retired status",
+        label: "soft delete status",
         data_type: "bool",
       },
       milestone_id: {
@@ -646,7 +646,7 @@ export const ProjectActivityLogTableMaps = {
         label: "scanned flag",
         data_type: "bool",
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
         label: "deleted flag",
         data_type: "bool",
@@ -857,12 +857,9 @@ export const ProjectActivityLogCreateDescriptions = {
       userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
   },
   moped_proj_phases: {
-    label: record => {
+    label: (record, userList, phaseList) => {
       const recordData = record.record_data.event.data.new;
-      const phaseName = recordData.phase_name
-        .trim()
-        .toLowerCase()
-        .replace(/\w\S*/g, w => w.replace(/^\w/, c => c.toUpperCase()));
+      const phaseName = phaseList[recordData?.phase_id] ?? "";
       return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
     },
   },
@@ -1007,7 +1004,7 @@ export const getOperationName = (event_type, record_type = "moped_project") => {
  * @param {string} record - The event record
  * @return {string}
  */
-export const getCreationLabel = (record, userList) => {
+export const getCreationLabel = (record, userList, phaseList) => {
   const recordType =
     record.record_type in ProjectActivityLogCreateDescriptions
       ? record.record_type
@@ -1015,7 +1012,7 @@ export const getCreationLabel = (record, userList) => {
 
   const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
 
-  return label ? label(record, userList) : "Created";
+  return label ? label(record, userList, phaseList) : "Created";
 };
 
 /**

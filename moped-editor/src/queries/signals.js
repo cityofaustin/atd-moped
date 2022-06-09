@@ -6,7 +6,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
       where: {
-        is_retired: { _neq: true }
+        is_deleted: { _eq: false }
         _or: [
           {
             moped_proj_components: {
@@ -42,6 +42,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       }
       moped_proj_phases {
         phase_name
+        phase_id
         is_current_phase
         phase_start
         phase_end

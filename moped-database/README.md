@@ -185,6 +185,11 @@ which contains the connection information for the local cluster. Notice the form
 you would need to create a new file called `hasura.staging.yaml`, provide all the info, 
 then run `$ hasura-cluster setenv staging` and `hasura console`.
 
+### Database Migrations
+
+#### Views
+
+To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](/views/README.md).
 
 ## Read the docs
 
