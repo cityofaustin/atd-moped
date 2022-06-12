@@ -60,6 +60,12 @@ function build_database() {
   print_header "Cloning Hasura Engine";
   git clone https://github.com/hasura/graphql-engine-heroku;
 
+  echo "Patching graphql-engine-heroku/Dockerfile, before:";
+  tail -n 4 graphql-engine-heroku/Dockerfile;
+  sed -ri "s/DATABASE_URL graphql-engine/DATABASE_URL HASURA_GRAPHQL_DATABASE_URL=\$DATABASE_URL graphql-engine/g" graphql-engine-heroku/Dockerfile;
+  echo "Patching graphql-engine-heroku/Dockerfile, after:";
+  tail -n 4 graphql-engine-heroku/Dockerfile;
+
   cd "${HASURA_REPO_NAME}" || exit 1;
   # checking out the commit where dockerfile uses graphql-engine v1.3.3
   # git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
@@ -75,12 +81,9 @@ function build_database() {
   print_header "Create new application";
   heroku apps:create "${APPLICATION_NAME}" --team=austin-dts --stack=container;
 
-  print_header "Create add-ons";
-  heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
 
   print_header "Change application configuration settings";
   heroku config:set --app="${APPLICATION_NAME}"  \
-    HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
     HASURA_GRAPHQL_ADMIN_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
@@ -90,12 +93,10 @@ function build_database() {
     MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" \
     &> /dev/null;
 
-
   echo "Done (muted result)";
 
-  #heroku config:set --app="${APPLICATION_NAME}"  \
-    #HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
-    #&> /dev/null;
+  print_header "Create add-ons";
+  heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
 
   print_header "Pushing Changes to Heroku";
   heroku_commit_and_push;
