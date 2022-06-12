@@ -86,6 +86,8 @@ function build_database() {
     MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" \
     &> /dev/null;
 
+  export
+
   echo "Done (muted result)";
 
   print_header "Create add-ons";
