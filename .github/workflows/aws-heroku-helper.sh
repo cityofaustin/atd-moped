@@ -60,6 +60,7 @@ function build_database() {
   print_header "Cloning Hasura Engine";
   git clone https://github.com/hasura/graphql-engine-heroku;
 
+  print_header "Specify DB URL in container entrypoint";
   echo "Patching graphql-engine-heroku/Dockerfile, before:";
   tail -n 4 graphql-engine-heroku/Dockerfile;
   sed -ri "s/DATABASE_URL graphql-engine/DATABASE_URL HASURA_GRAPHQL_DATABASE_URL=\$DATABASE_URL graphql-engine/g" graphql-engine-heroku/Dockerfile;
@@ -67,8 +68,6 @@ function build_database() {
   tail -n 4 graphql-engine-heroku/Dockerfile;
 
   cd "${HASURA_REPO_NAME}" || exit 1;
-  # checking out the commit where dockerfile uses graphql-engine v1.3.3
-  # git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
 
   print_header "Destroying Current Application";
   {
@@ -80,7 +79,6 @@ function build_database() {
 
   print_header "Create new application";
   heroku apps:create "${APPLICATION_NAME}" --team=austin-dts --stack=container;
-
 
   print_header "Change application configuration settings";
   heroku config:set --app="${APPLICATION_NAME}"  \
