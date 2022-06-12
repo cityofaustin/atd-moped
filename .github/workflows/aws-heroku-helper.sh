@@ -86,12 +86,13 @@ function build_database() {
     MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" \
     &> /dev/null;
 
-  export
 
   echo "Done (muted result)";
 
   print_header "Create add-ons";
   heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
+
+  export
 
   print_header "Pushing Changes to Heroku";
   heroku_commit_and_push;
