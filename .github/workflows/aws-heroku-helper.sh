@@ -75,8 +75,12 @@ function build_database() {
   print_header "Create new application";
   heroku apps:create "${APPLICATION_NAME}" --team=austin-dts --stack=container;
 
+  print_header "Create add-ons";
+  heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
+
   print_header "Change application configuration settings";
   heroku config:set --app="${APPLICATION_NAME}"  \
+    HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
     HASURA_GRAPHQL_DEV_MODE=false \
     HASURA_GRAPHQL_ENABLE_CONSOLE=true \
     HASURA_GRAPHQL_ADMIN_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_ADMIN_SECRET}" \
@@ -88,9 +92,6 @@ function build_database() {
 
 
   echo "Done (muted result)";
-
-  print_header "Create add-ons";
-  heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
 
   #heroku config:set --app="${APPLICATION_NAME}"  \
     #HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
