@@ -92,11 +92,9 @@ function build_database() {
   print_header "Create add-ons";
   heroku addons:create heroku-postgresql:hobby-dev -a "${APPLICATION_NAME}";
 
-  heroku config:set --app="${APPLICATION_NAME}"  \
-    HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
-    &> /dev/null;
-
-  export
+  #heroku config:set --app="${APPLICATION_NAME}"  \
+    #HASURA_GRAPHQL_DATABASE_URL=$DATABASE_URL \
+    #&> /dev/null;
 
   print_header "Pushing Changes to Heroku";
   heroku_commit_and_push;
