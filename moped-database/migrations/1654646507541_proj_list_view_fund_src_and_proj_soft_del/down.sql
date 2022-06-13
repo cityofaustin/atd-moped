@@ -1,3 +1,5 @@
+drop view project_list_view;
+
 CREATE OR REPLACE VIEW "public"."project_list_view" AS 
  WITH project_person_list_lookup AS (
          SELECT mpp.project_id,
@@ -12,7 +14,7 @@ CREATE OR REPLACE VIEW "public"."project_list_view" AS
             string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
            FROM (moped_proj_funding mpf_1
              LEFT JOIN moped_fund_sources mfs ON ((mpf_1.funding_source_id = mfs.funding_source_id)))
-          WHERE (mpf_1.funding_status_id != 0)
+          WHERE (mpf_1.funding_status_id = 1)
           GROUP BY mpf_1.project_id
         ), project_type_lookup AS (
          SELECT mpt.project_id,

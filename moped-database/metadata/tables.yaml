@@ -2387,7 +2387,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2422,7 +2422,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2457,7 +2457,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2491,7 +2491,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2525,7 +2525,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2560,7 +2560,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2595,7 +2595,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2628,7 +2628,7 @@
       update:
         columns:
         - capitally_funded
-        - is_retired
+        - is_deleted
         - end_date
         - added_by
         - milestone_id
@@ -2682,7 +2682,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2701,7 +2701,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2730,7 +2730,7 @@
       - file_permissions
       - file_size
       - file_type
-      - is_retired
+      - is_deleted
       - is_scanned
       - project_file_id
       - project_id
@@ -2738,7 +2738,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2756,7 +2756,7 @@
   - role: moped-viewer
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2775,7 +2775,7 @@
   - role: moped-admin
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2794,7 +2794,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2820,7 +2820,7 @@
         columns: '*'
       update:
         columns:
-        - is_retired
+        - is_deleted
         - is_scanned
         - created_by
         - file_size
@@ -3659,7 +3659,7 @@
       - capitally_funded
       - date_added
       - added_by
-      - is_retired
+      - is_deleted
       - milestone_id
       - status_id
       - project_team_members
@@ -3685,7 +3685,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id
@@ -3725,7 +3725,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id
