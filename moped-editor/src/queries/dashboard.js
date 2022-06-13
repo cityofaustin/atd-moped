@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const USER_FOLLOWED_PROJECTS_QUERY = gql`
   query UserFollowedProjectsQuery($userId: Int) {
-    moped_user_followed_projects(where: { user_id: { _eq: $userId }, project: { is_retired : { _neq: true } } }) {
+    moped_user_followed_projects(where: { user_id: { _eq: $userId }, project: { is_deleted : { _neq: true } } }) {
       project {
         project_id
         project_name
@@ -24,7 +24,7 @@ export const USER_FOLLOWED_PROJECTS_QUERY = gql`
 
 export const USER_PERSONNEL_PROJECTS_QUERY = gql`
   query UserPersonnelProjectsQuery($userId: Int) {
-    moped_proj_personnel(where: { user_id: { _eq: $userId }, status_id: { _neq: 0 }, project: { is_retired : { _neq: true } } }) {
+    moped_proj_personnel(where: { user_id: { _eq: $userId }, status_id: { _neq: 0 }, project: { is_deleted : { _neq: true } } }) {
         project_id
         user_id
         project {
