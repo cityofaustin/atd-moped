@@ -15,7 +15,7 @@ const DashboardEditModal = ({ project, displayText }) => {
   return (
     <>
       <Typography onClick={() => setIsDialogOpen(true)}>
-        {displayText}
+        {displayText.length > 0 ? displayText : `-`}
       </Typography>
       <Dialog
         open={isDialogOpen}
@@ -25,7 +25,7 @@ const DashboardEditModal = ({ project, displayText }) => {
       >
         <DialogTitle>{project.project_name}</DialogTitle>
         <DialogContent>
-          <ProjectComments />
+          <ProjectComments modal projectId={project.project_id}/>
         </DialogContent>
       </Dialog>
     </>

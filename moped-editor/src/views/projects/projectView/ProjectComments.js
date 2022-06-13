@@ -86,7 +86,9 @@ const useStyles = makeStyles(theme => ({
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = props => {
-  const { projectId } = useParams();
+  console.log(props)
+  const isStatusEditModal = props.modal;
+  let { projectId } = useParams();
   const { user } = useUser();
   const userHighestRole = getHighestRole(user);
   const classes = useStyles();
@@ -97,7 +99,12 @@ const ProjectComments = props => {
   const [editingComment, setEditingComment] = useState(false);
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
-  const [noteType, setNoteType] = useState(0);
+  const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+
+  // if component is being used in edit modal from dashboard
+  if (isStatusEditModal) {
+    projectId = props.projectId;
+  }
 
   const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
     variables: {
@@ -110,6 +117,8 @@ const ProjectComments = props => {
   });
 
   const mopedProjNotes = data?.moped_proj_notes;
+
+  console.log(projectId, mopedProjNotes)
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -157,7 +166,7 @@ const ProjectComments = props => {
             project_id: projectId,
             status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
-            project_note_type: 1,
+            project_note_type: isStatusEditModal ? 2 : 1,
           },
         ],
       },
@@ -218,9 +227,11 @@ const ProjectComments = props => {
       // show all the notes
       setDisplayNotes(mopedProjNotes);
     } else {
-      const filteredNotes = mopedProjNotes.filter(
+      // on first few renders, mopedProjNotes is still undefined.
+      // Check to see if array exists before trying to filter
+      const filteredNotes = mopedProjNotes ? mopedProjNotes.filter(
         n => n.project_note_type === noteType
-      );
+      ) : [];
       setDisplayNotes(filteredNotes);
     }
   }, [noteType, mopedProjNotes]);
@@ -266,16 +277,19 @@ const ProjectComments = props => {
             </Grid>
           )}
           {/*First the Filter Buttons*/}
-          <Grid item xs={12}>
-            <FormControlLabel
-              className={classes.showButtonItem}
-              label="Show"
-              control={<span />}
-            />
-            <CommentButton noteTypeId={0}>All</CommentButton>
-            <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
-            <CommentButton noteTypeId={2}>Status Updates</CommentButton>
-          </Grid>
+          {
+            !isStatusEditModal && 
+            <Grid item xs={12}>
+              <FormControlLabel
+                className={classes.showButtonItem}
+                label="Show"
+                control={<span />}
+              />
+              <CommentButton noteTypeId={0}>All</CommentButton>
+              <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
+              <CommentButton noteTypeId={2}>Status Updates</CommentButton>
+            </Grid>
+          }
           {/*Now the notes*/}
           <Grid item xs={12}>
             <Card>
