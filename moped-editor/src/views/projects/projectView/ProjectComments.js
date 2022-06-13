@@ -86,7 +86,6 @@ const useStyles = makeStyles(theme => ({
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = props => {
-  console.log(props)
   const isStatusEditModal = props.modal;
   let { projectId } = useParams();
   const { user } = useUser();
@@ -102,6 +101,7 @@ const ProjectComments = props => {
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
 
   // if component is being used in edit modal from dashboard
+  // get project id from props instead of url params
   if (isStatusEditModal) {
     projectId = props.projectId;
   }
@@ -118,8 +118,6 @@ const ProjectComments = props => {
 
   const mopedProjNotes = data?.moped_proj_notes;
 
-  console.log(projectId, mopedProjNotes)
-
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
       setNoteText("");
@@ -128,6 +126,9 @@ const ProjectComments = props => {
       setTimeout(() => {
         setCommentAddLoading(false);
         setCommentAddSuccess(false);
+        if (isStatusEditModal) {
+          props.closeModalDialog()
+        }
       }, 350);
     },
   });
@@ -136,8 +137,12 @@ const ProjectComments = props => {
     onCompleted() {
       setNoteText("");
       refetch();
-      // refetch the project summary query passed down from ProjectView
-      props.refetch();
+      if (isStatusEditModal) {
+        props.closeModalDialog()
+      } else {
+        // refetch the project summary query passed down from ProjectView
+        props.refetch();
+      }
       setCommentAddSuccess(true);
       setEditingComment(false);
       setTimeout(() => {
@@ -150,8 +155,12 @@ const ProjectComments = props => {
   const [deleteExistingComment] = useMutation(DELETE_PROJECT_COMMENT, {
     onCompleted() {
       refetch();
-      // refetch the project summary query passed down from ProjectView
-      props.refetch();
+      if (isStatusEditModal) {
+        props.closeModalDialog()
+      } else {
+        // refetch the project summary query passed down from ProjectView
+        props.refetch();
+      }
     },
   });
 

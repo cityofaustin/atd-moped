@@ -106,7 +106,7 @@ const DashboardView = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const { loading, error, data } = useQuery(TABS[activeTab].query, {
+  const { loading, error, data, refetch } = useQuery(TABS[activeTab].query, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
@@ -170,7 +170,6 @@ const DashboardView = () => {
   const date = new Date();
   const curHr = format(date, "HH");
   const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-
   const getTimeOfDay = curHr => {
     switch (true) {
       case curHr < 12:
@@ -212,6 +211,7 @@ const DashboardView = () => {
         <DashboardEditModal
           project={entry.project}
           displayText={entry.status_update}
+          queryRefetch={refetch}
         />
       ),
     },

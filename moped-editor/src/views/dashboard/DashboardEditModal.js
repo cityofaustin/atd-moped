@@ -1,17 +1,34 @@
 import React, { useState } from "react";
-import { Typography, Dialog, DialogTitle, DialogContent } from "@material-ui/core";
-import ProjectComments from "./../projects/projectView/ProjectComments"
+import {
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
+import { makeStyles } from "@material-ui/core/styles";
+import ProjectComments from "./../projects/projectView/ProjectComments";
 
-const DashboardEditModal = ({ project, displayText }) => {
+const useStyles = makeStyles(theme => ({
+  dialogTitle: {
+    color: theme.palette.primary.main,
+    fontFamily: theme.typography.fontFamily,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+}));
+
+const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
+  const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  console.log(project);
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
+    queryRefetch();
   };
 
-  console.log(displayText);
   return (
     <>
       <Typography onClick={() => setIsDialogOpen(true)}>
@@ -23,9 +40,18 @@ const DashboardEditModal = ({ project, displayText }) => {
         fullWidth
         maxWidth={"md"}
       >
-        <DialogTitle>{project.project_name}</DialogTitle>
+        <DialogTitle disableTypography className={classes.dialogTitle}>
+          <h4>{`Status update - ${project.project_name}`}</h4>
+          <IconButton onClick={() => handleDialogClose()}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
         <DialogContent>
-          <ProjectComments modal projectId={project.project_id}/>
+          <ProjectComments
+            modal
+            projectId={project.project_id}
+            closeModalDialog={handleDialogClose}
+          />
         </DialogContent>
       </Dialog>
     </>
