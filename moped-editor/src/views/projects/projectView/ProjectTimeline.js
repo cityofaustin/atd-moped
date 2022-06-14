@@ -426,13 +426,17 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           <FormHelperText>Required</FormHelperText>
         </FormControl>
       ),
+      width: "25%",
     },
     {
       title: "Description",
       field: "milestone_description",
       render: milestone => (
-        <div style={{ width: "400px" }}>{milestone.milestone_description}</div>
+        <div style={{ width: "350px"}}>
+          {milestone.milestone_description}
+        </div>
       ),
+      width: "25%",
     },
     {
       title: "Related phase",
@@ -455,6 +459,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       },
       render: milestone =>
         phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
+      width: "14%",
     },
     {
       title: "Completion estimate",
@@ -470,6 +475,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           label="Completion estimate"
         />
       ),
+      width: "13%",
     },
     {
       title: "Date completed",
@@ -485,6 +491,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           label="Date completed"
         />
       ),
+      width: "13%",
     },
     {
       title: "Complete",
@@ -493,6 +500,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <ToggleEditComponent {...props} name="completed" />
       ),
+      width: "10%",
     },
   ];
 
@@ -725,6 +733,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   search: false,
                   rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
+                  tableLayout: "fixed",
                 }}
                 localization={{
                   header: {
