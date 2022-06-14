@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
+import { format } from "date-fns";
 
 // Material
 import {
   AppBar,
   Box,
   Card,
+  CardContent,
   CircularProgress,
   Container,
   Grid,
+  Link,
   Tab,
   Tabs,
   Typography,
@@ -22,6 +25,8 @@ import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 
 import typography from "../../theme/typography";
+
+import TrafficIcon from "@material-ui/icons/Traffic";
 
 import {
   USER_FOLLOWED_PROJECTS_QUERY,
@@ -51,6 +56,22 @@ const useStyles = makeStyles(theme => ({
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
   },
+  viewsCard: {
+    display: "inline-flex",
+    padding: "24px",
+  },
+  cardTitle: {
+    paddingBottom: "16px",
+  },
+  greeting: {
+    display: "block",
+  },
+  greetingText: {
+    color: theme.palette.text.secondary,
+  },
+  date: {
+    paddingTop: "4px",
+  },
 }));
 
 function a11yProps(index) {
@@ -74,6 +95,7 @@ const TABS = [
 const DashboardView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData.user_id;
+  const userName = userSessionData.first_name;
 
   const classes = useStyles();
   const typographyStyle = {
@@ -142,6 +164,23 @@ const DashboardView = () => {
     />
   );
 
+  /** Build custom user greeting
+   */
+  const date = new Date();
+  const curHr = format(date, "HH");
+  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
+
+  const getTimeOfDay = curHr => {
+    switch (true) {
+      case curHr < 12:
+        return "morning";
+      case curHr >= 12 && curHr < 18:
+        return "afternoon";
+      default:
+        return "evening";
+    }
+  };
+
   const columns = [
     {
       title: "Project name",
@@ -179,16 +218,19 @@ const DashboardView = () => {
     <Page title={"Dashboard"}>
       <Container maxWidth="xl">
         <Card className={classes.cardWrapper}>
-          <div className={classes.root}>
+          <Grid className={classes.root}>
             <Box pl={3} pt={3}>
-              <Grid container>
-                <Typography variant="h1" color="primary">
-                  Dashboard
+              <Grid className={classes.greeting}>
+                <Typography variant="h6" className={classes.greetingText}>
+                  {`Good ${getTimeOfDay(curHr)}, ${userName}!`}
+                </Typography>
+                <Typography variant="h3" className={classes.date}>
+                  {dateFormatted}
                 </Typography>
               </Grid>
             </Box>
-            <div>
-              <Box p={3}>
+            <Box px={3} pt={3}>
+              <Grid>
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
                     classes={{ indicator: classes.indicatorColor }}
@@ -233,9 +275,34 @@ const DashboardView = () => {
                     }}
                   />
                 )}
-              </Box>
-            </div>
-          </div>
+              </Grid>
+            </Box>
+            <Box px={3} pb={3}>
+              <Card className={classes.cardWrapper}>
+                <CardContent>
+                  <Grid className={classes.cardTitle}>
+                    <Typography variant="h3" color="primary">
+                      Views
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Link href="/moped/views/signal-projects" noWrap>
+                      <Card>
+                        <CardContent className={classes.viewsCard}>
+                          <Grid item xs={4}>
+                            <TrafficIcon />
+                          </Grid>
+                          <Grid item xs={8}>
+                            <Typography>Signal Projects</Typography>
+                          </Grid>
+                        </CardContent>
+                      </Card>
+                    </Link>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
         </Card>
       </Container>
     </Page>

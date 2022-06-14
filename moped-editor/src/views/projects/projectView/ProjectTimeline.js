@@ -176,20 +176,22 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           // Execute update mutation, returns promise
           return updateProjectPhase({
             variables: phase,
-          }).then(() => {
-            // Refetch data
-            refetch();
-            refetchSummary();
-          }).catch(err => {
-            console.error(err);
-          });;
+          })
+            .then(() => {
+              // Refetch data
+              refetch();
+              refetchSummary();
+            })
+            .catch(err => {
+              console.error(err);
+            });
         }
       });
     }
   };
 
   /**
-   * Checks if phase being added or updated has a corresponding status and creates 
+   * Checks if phase being added or updated has a corresponding status and creates
    * update object accordingly
    * @param {string} mutationPhaseId - phase being added or updated in project phase table
    * @returns {Object} Object that will be used in updates to project status
@@ -294,6 +296,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         props.data.moped_subphases
       );
     }
+
+    // empty subphases can show up as 0, this removes warning in console
+    lookupValues = { ...lookupValues, "0": "" };
 
     // Proceed normally and generate the drop-down
     return (
@@ -430,6 +435,28 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       ),
     },
     {
+      title: "Related phase",
+      field: "moped_milestone",
+      editable: "never",
+      cellStyle: {
+        fontFamily: typography.fontFamily,
+        fontSize: "14px",
+      },
+      customSort: (a, b) => {
+        const aPhaseName = phaseNameLookup[a.moped_milestone.related_phase_id];
+        const bPhaseName = phaseNameLookup[b.moped_milestone.related_phase_id];
+        if (aPhaseName > bPhaseName) {
+          return 1;
+        }
+        if (aPhaseName < bPhaseName) {
+          return -1;
+        }
+        return 0;
+      },
+      render: milestone =>
+        phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
+    },
+    {
       title: "Completion estimate",
       field: "milestone_estimate",
       render: rowData =>
@@ -526,6 +553,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         completion_percentage: 0,
                         completed: false,
                         status_id: 1,
+                        // temporary until project phase normalization is complete
+                        phase_name: phaseNameLookup[
+                          newData?.phase_id
+                        ].toLowerCase(),
                       },
                       newData
                     );
@@ -587,6 +618,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       differences.filter(value =>
                         ["phase_id", "is_current_phase"].includes(value)
                       ).length > 0;
+
+                    // temporary workaround until phase normalization is complete
+                    if (currentPhaseChanged) {
+                      updatedPhaseObject["phase_name"] = phaseNameLookup[
+                        newData.phase_id
+                      ].toLowerCase();
+                    }
 
                     // We need to know if the updated phase is set as is_current_phase
                     const isCurrentPhase = !!newData?.is_current_phase;
