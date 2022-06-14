@@ -18,6 +18,9 @@ const useStyles = makeStyles(theme => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
 }));
 
 const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
@@ -31,7 +34,10 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
 
   return (
     <>
-      <Typography onClick={() => setIsDialogOpen(true)}>
+      <Typography
+        className={classes.statusUpdateText}
+        onClick={() => setIsDialogOpen(true)}
+      >
         {displayText.length > 0 ? displayText : `-`}
       </Typography>
       <Dialog
