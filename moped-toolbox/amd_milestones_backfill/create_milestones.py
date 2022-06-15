@@ -1,3 +1,6 @@
+"""The script inserts moped_proj_milestones into signal and PHB projects. It was created
+to backfill project milestones after implementing the milestone template feature for
+AMD: https://github.com/cityofaustin/atd-data-tech/issues/9102."""
 import argparse
 
 from utils import get_milestones, make_hasura_request
@@ -28,6 +31,14 @@ def exclude_existing_milestones(proj_milestones_current, proj_milestones_new):
 
 
 def main(env, max_date_added):
+    if env == "prod" and max_date_added != "2022-06-10":
+        raise ValueError(
+            """
+    Max date must be 2022-06-10 in production, this ensures we capture all projects created up to 
+    Moped v1.4 release, including one project created the day of the v1.4 release which needs
+    milestones added.
+        """
+        )
     projects = make_hasura_request(
         query=PROJECTS_QUERY,
         variables={"max_date_added": max_date_added},
@@ -71,7 +82,7 @@ if __name__ == "__main__":
         "--max-date-added",
         type=str,
         required=True,
-        help=f"The maximum project date_added which will be used to filter projects to update",
+        help=f"The maximum project date_added to include in this update: YYYY-MM-DD",
     )
     args = parser.parse_args()
     print("TODO: logging")
