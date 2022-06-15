@@ -43,7 +43,10 @@ def main(env, max_date_added):
 
         for m in TEMPLATE_MILESTONES:
             if m["milestone_id"] not in existing_milestone_ids:
-                new_milestone = dict(m).update(
+                # copy template milestone
+                new_milestone = dict(m)
+                # add default vals and project ID
+                new_milestone.update(
                     {"status_id": 1, "completed": False, "project_id": project_id}
                 )
                 proj_milestones_new.append(new_milestone)
