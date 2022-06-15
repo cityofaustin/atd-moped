@@ -5,8 +5,10 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
+  Tooltip,
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import { makeStyles } from "@material-ui/core/styles";
 import ProjectComments from "./../projects/projectView/ProjectComments";
 
@@ -20,6 +22,9 @@ const useStyles = makeStyles(theme => ({
   },
   statusUpdateText: {
     cursor: "pointer",
+  },
+  tooltipIcon: {
+    fontSize: "20px",
   },
 }));
 
@@ -38,7 +43,13 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
         className={classes.statusUpdateText}
         onClick={() => setIsDialogOpen(true)}
       >
-        {displayText.length > 0 ? displayText : `-`}
+        {displayText.length > 0 ? (
+          displayText
+        ) : (
+          <Tooltip placement="bottom-start" title="Create new status update">
+            <ControlPointIcon className={classes.tooltipIcon} />
+          </Tooltip>
+        )}
       </Typography>
       <Dialog
         open={isDialogOpen}
