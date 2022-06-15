@@ -2,6 +2,7 @@ import argparse
 
 from utils import get_milestones, make_hasura_request
 from queries import PROJECTS_QUERY, PROJ_MILESTONES_MUTATION
+from secrets import HASURA
 
 
 def exclude_existing_milestones(proj_milestones_current, proj_milestones_new):
@@ -30,9 +31,9 @@ def main(env, max_date_added):
     projects = make_hasura_request(
         query=PROJECTS_QUERY,
         variables={"max_date_added": max_date_added},
-        key="moped_project",
-        env=env,
-    )
+        endpoint=HASURA["hasura_graphql_endpoint"][env],
+        admin_secret=HASURA["hasura_graphql_admin_secret"][env],
+    )["moped_project"]
 
     for proj in projects:
         proj_milestones_new = get_milestones(project_id=proj["project_id"])
@@ -47,11 +48,11 @@ def main(env, max_date_added):
 
         print("todo: error handling")
         results = make_hasura_request(
-            env=env,
             query=PROJ_MILESTONES_MUTATION,
             variables={"objects": proj_milestones_new},
-            key="insert_moped_proj_milestones",
-        )
+            endpoint=HASURA["hasura_graphql_endpoint"][env],
+            admin_secret=HASURA["hasura_graphql_admin_secret"][env],
+        )["insert_moped_proj_milestones"]
         print(results)
 
 

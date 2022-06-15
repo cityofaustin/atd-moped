@@ -1,17 +1,14 @@
 import requests
-from secrets import HASURA
 
 
-def make_hasura_request(*, query, variables, key, env):
-    endpoint = HASURA["HASURA_GRAPHQL_ENDPOINT"][env]
-    admin_secret = HASURA["HASURA_GRAPHQL_ADMIN_SECRET"][env]
+def make_hasura_request(*, query, variables, endpoint, admin_secret):
     headers = {"X-Hasura-Admin-Secret": admin_secret}
     payload = {"query": query, "variables": variables}
     res = requests.post(endpoint, json=payload, headers=headers)
     res.raise_for_status()
     data = res.json()
     try:
-        return data["data"][key] if key else data["data"]
+        return data["data"]
     except KeyError:
         raise ValueError(data)
 
@@ -114,7 +111,7 @@ def get_milestones(*, project_id, status_id=1, completed=False):
 
     Args:
         project_id (int): moped_project.project_id
-        status_id (int, optional): moped_proj_milestone.status_id. Defaults to 1 (active). 
+        status_id (int, optional): moped_proj_milestone.status_id. Defaults to 1 (active).
         completed (bool, optional): moped_proj_milestone.completed. Defaults to False.
 
     Returns:
