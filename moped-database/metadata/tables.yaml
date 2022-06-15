@@ -1512,6 +1512,9 @@
   - name: moped_milestone
     using:
       foreign_key_constraint_on: milestone_id
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2372,6 +2375,13 @@
         table:
           schema: public
           name: moped_project_types
+  - name: moped_proj_milestones
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: moped_proj_milestones
+          schema: public
+        column: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2387,7 +2397,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2422,7 +2432,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2457,7 +2467,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2491,7 +2501,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2525,7 +2535,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2560,7 +2570,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2595,7 +2605,7 @@
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_deleted
+      - is_retired
       - knack_project_id
       - milestone_id
       - project_description
@@ -2628,7 +2638,7 @@
       update:
         columns:
         - capitally_funded
-        - is_deleted
+        - is_retired
         - end_date
         - added_by
         - milestone_id
@@ -2682,7 +2692,7 @@
     permission:
       check: {}
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2701,7 +2711,7 @@
     permission:
       check: {}
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2730,7 +2740,7 @@
       - file_permissions
       - file_size
       - file_type
-      - is_deleted
+      - is_retired
       - is_scanned
       - project_file_id
       - project_id
@@ -2738,7 +2748,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2756,7 +2766,7 @@
   - role: moped-viewer
     permission:
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2775,7 +2785,7 @@
   - role: moped-admin
     permission:
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2794,7 +2804,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_deleted
+      - is_retired
       - is_scanned
       - created_by
       - file_size
@@ -2820,7 +2830,7 @@
         columns: '*'
       update:
         columns:
-        - is_deleted
+        - is_retired
         - is_scanned
         - created_by
         - file_size
@@ -3659,7 +3669,7 @@
       - capitally_funded
       - date_added
       - added_by
-      - is_deleted
+      - is_retired
       - milestone_id
       - status_id
       - project_team_members
@@ -3685,7 +3695,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_deleted
+      - is_retired
       - end_date
       - added_by
       - milestone_id
@@ -3725,7 +3735,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_deleted
+      - is_retired
       - end_date
       - added_by
       - milestone_id
