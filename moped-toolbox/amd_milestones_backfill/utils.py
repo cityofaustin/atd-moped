@@ -109,6 +109,17 @@ MILESTONES = [
 
 
 def get_milestones(*, project_id, status_id=1, completed=False):
+    """Generate new moped_proj_milestones for a project based on our predefined project
+    template.
+
+    Args:
+        project_id (int): moped_project.project_id
+        status_id (int, optional): moped_proj_milestone.status_id. Defaults to 1 (active). 
+        completed (bool, optional): moped_proj_milestone.completed. Defaults to False.
+
+    Returns:
+        list: moped_proj_milestones ready to be inserted
+    """
     proj_milestones = []
     for m in MILESTONES:
         # create copy of each milestone
