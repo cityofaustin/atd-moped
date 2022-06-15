@@ -59,6 +59,7 @@ function build_database() {
 
   print_header "Cloning Hasura Engine";
   git clone https://github.com/hasura/graphql-engine-heroku;
+  git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
 
   print_header "Specify DB URL in container entrypoint";
   echo "Patching graphql-engine-heroku/Dockerfile, before:";
