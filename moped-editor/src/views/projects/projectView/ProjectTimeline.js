@@ -431,11 +431,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Description",
       field: "milestone_description",
-      render: milestone => (
-        <div style={{ width: "350px"}}>
-          {milestone.milestone_description}
-        </div>
-      ),
+      render: milestone => milestone.milestone_description,
       width: "25%",
     },
     {
