@@ -1,4 +1,18 @@
+import logging
+import sys
+
 import requests
+
+
+def get_logger(*, name, level=logging.INFO):
+    """Return a module logger that streams to stdout"""
+    logger = logging.getLogger(name)
+    handler = logging.StreamHandler(stream=sys.stdout)
+    formatter = logging.Formatter(fmt=" %(name)s.%(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(level)
+    return logger
 
 
 def make_hasura_request(*, query, variables, endpoint, admin_secret):
@@ -14,7 +28,7 @@ def make_hasura_request(*, query, variables, endpoint, admin_secret):
 
 
 # copied from atd-moped/moped-editor/src/utils/timelineTemplates.js
-MILESTONES = [
+TEMPLATE_MILESTONES = [
     {
         "milestone_id": 34,
         "milestone_order": 1,
@@ -103,27 +117,3 @@ MILESTONES = [
         "milestone_order": 21,
     },
 ]
-
-
-def get_milestones(*, project_id, status_id=1, completed=False):
-    """Generate new moped_proj_milestones for a project based on our predefined project
-    template.
-
-    Args:
-        project_id (int): moped_project.project_id
-        status_id (int, optional): moped_proj_milestone.status_id. Defaults to 1 (active).
-        completed (bool, optional): moped_proj_milestone.completed. Defaults to False.
-
-    Returns:
-        list: moped_proj_milestones ready to be inserted
-    """
-    proj_milestones = []
-    for m in MILESTONES:
-        # create copy of each milestone
-        proj_milestone = dict(m)
-        # set these values
-        proj_milestone["project_id"] = project_id
-        proj_milestone["status_id"] = status_id
-        proj_milestone["completed"] = False
-        proj_milestones.append(proj_milestone)
-    return proj_milestones

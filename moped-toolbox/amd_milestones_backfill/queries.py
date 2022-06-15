@@ -1,5 +1,14 @@
+"""
+Query projects which:
+- are not deleted
+- are not in a completed or post-construction phase
+- have a project type that matches the (currently) four project types which support
+  templates: Signal - Mod, Signal - New, PHB - Mod, PHB - New
+- were created on or prior to a user-supplied date ($max_date_added)
+"""
 PROJECTS_QUERY = """query NeedsMilestonesProjects($max_date_added: timestamptz!) {
 	moped_project(
+		order_by: { project_id: asc }
 		where: {
 			_and: [
 				# not-deleted projects only
@@ -30,12 +39,14 @@ PROJECTS_QUERY = """query NeedsMilestonesProjects($max_date_added: timestamptz!)
 				type_name
 			}
 		}
-		# exclude soft-deleted milestones - todo: check if soft delete work has changed this
-		moped_proj_milestones(where: { status_id: { _eq: 1 } }) {
-			moped_milestone {
-				milestone_id
-				milestone_name
-			}
+	}
+	# we don't currently have a hasura relationship between projects and milestones :/
+	# so download them all so we can join them manually
+	moped_proj_milestones(where: { status_id: { _eq: 1 } }) {
+		project_id
+		moped_milestone {
+			milestone_id
+			milestone_name
 		}
 	}
 }
