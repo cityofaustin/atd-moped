@@ -1368,6 +1368,7 @@
       - funding_status_id
       - fund
       - dept_unit
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -1385,6 +1386,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -1402,6 +1404,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -1419,6 +1422,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -1436,6 +1440,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -1454,6 +1459,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       check: null
   - role: moped-editor
@@ -1471,6 +1477,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       check: null
   event_triggers:
@@ -1495,6 +1502,7 @@
         - fund_dept_unit
         - funding_description
         - date_added
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -1730,6 +1738,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1743,6 +1752,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1756,6 +1766,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1769,6 +1780,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1782,6 +1794,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1796,6 +1809,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1809,6 +1823,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1834,6 +1849,7 @@
         - status_id
         - project_note
         - date_created
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10

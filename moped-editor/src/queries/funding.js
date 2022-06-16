@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const FUNDING_QUERY = gql`
   query ProjectFunding($projectId: Int) {
     moped_proj_funding(
-      where: { project_id: { _eq: $projectId }, funding_status_id: { _neq: 0 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_funding_id
       added_by
@@ -16,6 +16,7 @@ export const FUNDING_QUERY = gql`
       funding_program_id
       funding_source_id
       funding_status_id
+      is_deleted
     }
     moped_project(where: { project_id: { _eq: $projectId } }) {
       ecapris_subproject_id
@@ -74,7 +75,7 @@ export const UPDATE_PROJECT_FUNDING = gql`
 export const DELETE_PROJECT_FUNDING = gql`
   mutation DeleteProjectFunding($proj_funding_id: Int!) {
     update_moped_proj_funding(
-      _set: { funding_status_id: 0 }
+      _set: { is_deleted: true }
       where: { proj_funding_id: { _eq: $proj_funding_id } }
     ) {
       affected_rows

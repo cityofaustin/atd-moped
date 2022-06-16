@@ -34,7 +34,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_sponsor
       task_order
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 } }
+        where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
         order_by: { date_created: desc }
       ) {
         project_note_id
@@ -53,7 +53,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           feature
         }
       }
-      moped_proj_funding(where: { funding_status_id: { _neq: 0 } }) {
+      moped_proj_funding(where: { is_deleted: { _eq: false } }) {
         moped_fund_source {
           funding_source_name
         }

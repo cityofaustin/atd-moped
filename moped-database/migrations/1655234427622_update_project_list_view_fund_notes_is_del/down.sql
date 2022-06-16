@@ -17,7 +17,7 @@ AS WITH project_person_list_lookup AS (
       string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
     FROM moped_proj_funding mpf_1
       LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
-    WHERE mpf_1.is_deleted = false
+    WHERE mpf_1.funding_status_id != 0
     GROUP BY mpf_1.project_id
   ), project_type_lookup AS (
     SELECT
@@ -74,7 +74,7 @@ AS WITH project_person_list_lookup AS (
     ( -- get the most recent status_update (project note type 2)
       SELECT mpn.project_note
       FROM moped_proj_notes mpn
-        WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
+        WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.status_id = 1
         ORDER BY mpn.date_created DESC
         LIMIT 1) AS project_note,
     ( -- get me the phase start of the most recently added construction phase entry

@@ -109,7 +109,7 @@ const ProjectComments = props => {
     variables: {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
-        status_id: { _eq: Number(1) },
+        is_deleted: { _eq: false },
       },
     },
     fetchPolicy: "no-cache",
@@ -172,7 +172,6 @@ const ProjectComments = props => {
             added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
-            status_id: 1,
             added_by_user_id: Number(userSessionData.user_id),
             project_note_type: isStatusEditModal ? 2 : 1,
           },
