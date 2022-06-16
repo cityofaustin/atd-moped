@@ -23,7 +23,7 @@ jobs:
           python-version: "3.8"
           architecture: "x64"
       # Install node according to our .nvmrc file
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: './moped-editor/.nvmrc'
       # Then install the AWC CLI tools & boto3
