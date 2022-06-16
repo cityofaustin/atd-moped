@@ -59,10 +59,18 @@ function build_database() {
 
   print_header "Cloning Hasura Engine";
   git clone https://github.com/hasura/graphql-engine-heroku;
+  cd graphql-engine-heroku;
+  git checkout e947f74cf51ec586670140fc1181394c3d2f3300;
+  cd ..;
+
+  print_header "Specify DB URL in container entrypoint";
+  echo "Patching graphql-engine-heroku/Dockerfile, before:";
+  tail -n 4 graphql-engine-heroku/Dockerfile;
+  sed -ri "s/DATABASE_URL graphql-engine/DATABASE_URL HASURA_GRAPHQL_DATABASE_URL=\$DATABASE_URL graphql-engine/g" graphql-engine-heroku/Dockerfile;
+  echo "Patching graphql-engine-heroku/Dockerfile, after:";
+  tail -n 4 graphql-engine-heroku/Dockerfile;
 
   cd "${HASURA_REPO_NAME}" || exit 1;
-  # checking out the commit where dockerfile uses graphql-engine v1.3.3
-  git checkout 87cbd11a397f58a159bd679a1280675ded5d9fe5;
 
   print_header "Destroying Current Application";
   {
@@ -83,7 +91,8 @@ function build_database() {
     HASURA_GRAPHQL_JWT_SECRET="${ATD_MOPED_DEVSTAGE_HASURA_GRAPHQL_JWT_SECRET}" \
     MOPED_API_APIKEY="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_API_KEY}" \
     MOPED_API_EVENTS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_EVENTS_URL}" \
-    MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" &> /dev/null;
+    MOPED_API_ACTIONS_URL="${ATD_MOPED_DEVSTAGE_HASURA_MOPED_ACTIONS_URL}" \
+    &> /dev/null;
 
   echo "Done (muted result)";
 
