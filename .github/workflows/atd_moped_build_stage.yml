@@ -15,13 +15,13 @@ jobs:
     name: Build Editor
     runs-on: ubuntu-latest
     steps:
+      # Get the code first
+      - name: "Checkout"
+        uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: "3.8"
           architecture: "x64"
-      # Get the code first
-      - name: "Checkout"
-        uses: actions/checkout@v2
       # Install node according to our .nvmrc file
       - uses: actions/setup-node@v2
         with:
