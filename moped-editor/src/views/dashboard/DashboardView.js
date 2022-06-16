@@ -23,6 +23,7 @@ import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
+import DashboardEditModal from "./DashboardEditModal";
 
 import typography from "../../theme/typography";
 
@@ -105,7 +106,7 @@ const DashboardView = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const { loading, error, data } = useQuery(TABS[activeTab].query, {
+  const { loading, error, data, refetch } = useQuery(TABS[activeTab].query, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
@@ -169,7 +170,6 @@ const DashboardView = () => {
   const date = new Date();
   const curHr = format(date, "HH");
   const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-
   const getTimeOfDay = curHr => {
     switch (true) {
       case curHr < 12:
@@ -207,6 +207,13 @@ const DashboardView = () => {
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       cellStyle: { ...typographyStyle, minWidth: "300px" },
+      render: entry => (
+        <DashboardEditModal
+          project={entry.project}
+          displayText={entry.status_update}
+          queryRefetch={refetch}
+        />
+      ),
     },
   ];
 
