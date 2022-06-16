@@ -2338,6 +2338,9 @@
   - name: moped_status
     using:
       foreign_key_constraint_on: status_id
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: parent_project_id
   array_relationships:
   - name: moped_proj_components
     using:
@@ -2388,6 +2391,13 @@
         table:
           schema: public
           name: moped_project_types
+  - name: moped_projects
+    using:
+      foreign_key_constraint_on:
+        column: parent_project_id
+        table:
+          schema: public
+          name: moped_project
   insert_permissions:
   - role: moped-admin
     permission:
