@@ -2433,6 +2433,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -2468,6 +2469,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2503,6 +2505,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       filter: {}
   - role: moped-editor
     permission:
@@ -2537,6 +2540,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       filter: {}
   - role: moped-viewer
     permission:
@@ -2571,6 +2575,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2606,6 +2611,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       filter: {}
       check: {}
   - role: moped-editor
@@ -2641,6 +2647,7 @@
       - timeline_id
       - updated_at
       - work_assignment_id
+      - parent_project_id
       filter: {}
       check: {}
   event_triggers:
