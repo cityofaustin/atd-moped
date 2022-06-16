@@ -1,5 +1,6 @@
 import React from "react";
 import { TextField, Grid, InputLabel, Switch } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 import SignalAutocomplete from "./SignalAutocomplete";
 
 const DefineProjectForm = ({
@@ -13,12 +14,22 @@ const DefineProjectForm = ({
   signal,
   setSignal,
   signalError,
+  projectTypeId,
+  setProjectTypeId,
+  typeData,
 }) => {
   const handleFieldChange = (value, name) => {
     const updatedProjectDetails = { ...projectDetails, [name]: value };
 
     setProjectDetails(updatedProjectDetails);
   };
+
+  const typesList = typeData?.moped_types ?? [];
+  // We only have templates for types: Signal - New, Signal - Mod, PHB - New, PHB - Mod
+  // Filter out other types based on type_id
+  const templateTypesList = typesList.filter(object =>
+    [1, 2, 4, 5].includes(object.type_id)
+  );
 
   return (
     <form style={{ padding: 25 }}>
@@ -78,6 +89,31 @@ const DefineProjectForm = ({
             helperText="Required"
             InputLabelProps={{ required: false }}
             onChange={e => handleFieldChange(e.target.value, e.target.name)}
+          />
+        </Grid>
+      </Grid>
+
+      <Grid container spacing={3} style={{ margin: 20 }}>
+        <Grid item xs={3}>
+          <Autocomplete
+            value={
+              templateTypesList.filter(type => type.type_id === projectTypeId)
+                .type_name
+            }
+            defaultValue={null}
+            id="specify-milestone-template-autocomplete"
+            options={templateTypesList}
+            getOptionLabel={t => t.type_name}
+            onChange={(event, newValue) => {
+              setProjectTypeId(newValue.type_id);
+            }}
+            renderInput={params => (
+              <TextField
+                {...params}
+                variant="standard"
+                label={"Timeline template"}
+              />
+            )}
           />
         </Grid>
       </Grid>

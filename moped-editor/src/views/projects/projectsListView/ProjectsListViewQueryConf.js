@@ -4,6 +4,7 @@ import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
+import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * The Query configuration (now also including filters)
@@ -174,7 +175,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => new Date(value).toLocaleDateString("en-US"),
+      filter: value => formatTimeStampTZType(value),
       type: "date_iso",
     },
     // the following column configurations only work with material table and do not have the
@@ -204,10 +205,10 @@ export const ProjectsListViewQueryConf = {
       type: "string",
     },
     construction_start_date: {
-      type: "date"
+      type: "date",
     },
-    completion_end_date:{
-      type: "date"
+    completion_end_date: {
+      type: "date",
     },
     project_inspector: {
       type: "string",
@@ -216,9 +217,10 @@ export const ProjectsListViewQueryConf = {
       type: "string",
     },
   },
+  // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
   where: {
-    is_retired: "_eq: false",
+    is_deleted: "_eq: false",
     status_id: "_neq: 3",
   },
   or: null,

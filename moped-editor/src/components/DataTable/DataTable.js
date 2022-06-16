@@ -20,6 +20,7 @@ import { Alert } from "@material-ui/lab";
 
 import { gql, useMutation, useQuery } from "@apollo/client";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { formatDateType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -198,9 +199,7 @@ const DataTable = ({ fieldConfiguration, data, loading, error, refetch }) => {
 
     switch (fieldType) {
       case "date":
-        formattedValue = new Date(formattedValue).toLocaleDateString("en-US", {
-          timeZone: "UTC",
-        });
+        formattedValue = formatDateType(formattedValue);
         break;
       case "boolean":
         formattedValue = formattedValue === true;

@@ -17,6 +17,7 @@ import {
 } from "../../../../queries/project";
 
 import { getSessionDatabaseData } from "../../../../auth/user";
+import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAndTime";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -107,7 +108,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                 project_id: Number(projectId),
                 added_by: addedBy,
                 project_note: statusUpdate,
-                status_id: 1,
                 project_note_type: 2,
               },
             }
@@ -180,13 +180,9 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                   {getStatusUpdate("added_by")}
                 </span>
                 <span className={classes.fieldLabel}>
-                  {new Date(getStatusUpdate("date_created"))
-                    .toLocaleDateString("en-us", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                    .toUpperCase()}
+                  {makeUSExpandedFormDateFromTimeStampTZ(
+                    getStatusUpdate("date_created")
+                  ).toUpperCase()}
                 </span>
               </Typography>
             )}
