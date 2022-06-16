@@ -9,6 +9,7 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
+import parse from "html-react-parser";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
@@ -53,7 +54,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
       // Remove any HTML tags
-      return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
+      return note ? parse(note) : null;
     }
     return null;
   };

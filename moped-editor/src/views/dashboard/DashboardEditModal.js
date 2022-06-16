@@ -11,6 +11,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import { makeStyles } from "@material-ui/core/styles";
 import ProjectComments from "./../projects/projectView/ProjectComments";
+import parse from "html-react-parser";
 
 const useStyles = makeStyles(theme => ({
   dialogTitle: {
@@ -44,7 +45,7 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
         onClick={() => setIsDialogOpen(true)}
       >
         {displayText.length > 0 ? (
-          displayText
+          parse(displayText)
         ) : (
           <Tooltip placement="bottom-start" title="Create new status update">
             <ControlPointIcon className={classes.tooltipIcon} />

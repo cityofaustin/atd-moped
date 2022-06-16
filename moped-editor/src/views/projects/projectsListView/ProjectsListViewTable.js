@@ -28,6 +28,7 @@ import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
+import parse from "html-react-parser";
 
 /**
  * GridTable Style
@@ -415,6 +416,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+      render: entry => parse(entry.project_note),
     },
     {
       title: "Construction start",
