@@ -121,6 +121,7 @@ export const StaffListViewQueryConf = {
       type: "String",
     },
   },
+  // A single, un-nested order by directive ✅
   order_by: {
     first_name: "asc",
   },
