@@ -88,17 +88,9 @@ if __name__ == "__main__":
         "--max-date-added",
         type=str,
         required=True,
-        help=f"The maximum project date_added to include in this update in format YYYY-MM-DD (UTC). Must be '2022-06-09' in prod",
+        help=f"The maximum project date_added to include in this update. Formatted as a postgres-compliant timestamptz string",
     )
 
     args = parser.parse_args()
-
-    if args.env == "prod" and args.max_date_added != "2022-06-09":
-        raise ValueError(
-            """Max date must be 2022-06-09 in production, this ensures we capture all
-            projects created up to  Moped v1.4 release, including one project created the
-            day of the v1.4 release which needs milestones added.
-            """
-        )
 
     main(args.env, args.max_date_added)
