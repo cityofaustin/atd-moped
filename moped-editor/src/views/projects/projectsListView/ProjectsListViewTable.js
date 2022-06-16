@@ -7,7 +7,6 @@ import {
   CircularProgress,
   Container,
   Paper,
-  Typography,
 } from "@material-ui/core";
 
 // Styling
