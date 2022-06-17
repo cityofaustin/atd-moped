@@ -21,11 +21,11 @@ import MaterialTable, {
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-import { SUBPROJECT_QUERY } from "../../../queries/subproject";
+import { SUBPROJECT_QUERY } from "../../../../queries/subprojects";
 
 const SubprojectsTable = ({ projectId = null }) => {
   const addActionRef = React.useRef();
-  
+
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
@@ -33,11 +33,14 @@ const SubprojectsTable = ({ projectId = null }) => {
 
   if (loading || !data) return <CircularProgress />;
 
+  console.log(data)
 
   const columns = [
     {
       title: "Project ID",
       field: "project_id",
+      editable: "never",
+      // todo: give this a narrow width
     },
     {
       title: "Project name",
@@ -48,11 +51,11 @@ const SubprojectsTable = ({ projectId = null }) => {
           <Autocomplete
             id="project_name"
             name="project_name"
-            options={userIds}
-            // getOptionLabel={option => getPersonnelName(option)}
-            // getOptionSelected={(option, value) => option === value}
-            // value={props.value}
-            // onChange={(event, value) => props.onChange(value)}
+            options={data.subprojectOptions}
+            getOptionLabel={option => option.project_name}
+            getOptionSelected={(option, value) => option === value}
+            value={props.value}
+            onChange={(event, value) => props.onChange(value)}
             renderInput={params => <TextField {...params} />}
           />
           <FormHelperText>Required</FormHelperText>
@@ -62,13 +65,14 @@ const SubprojectsTable = ({ projectId = null }) => {
     {
       title: "Current status",
       field: "current_status",
+      editable: "never"
     },
   ];
 
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
-        data={data}
+        data={[]}
         columns={columns}
         components={{
           EditRow: props => (
