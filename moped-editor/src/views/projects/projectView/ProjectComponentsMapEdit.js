@@ -291,7 +291,6 @@ const ProjectComponentsMapEdit = ({
     const projectFeaturesToCreateOrUpdate = editFeatureCollection.features.map(
       feature => {
         let projectFeature = {};
-        projectFeature.status_id = 1;
         if (feature.feature_id) {
           projectFeature.feature_id = feature.feature_id;
         }
@@ -318,8 +317,8 @@ const ProjectComponentsMapEdit = ({
         .forEach(projectFeature => {
           // create a mutable copy of the feature
           let featureToDelete = { ...projectFeature };
-          // set status to deleted (0)
-          featureToDelete.status_id = 0;
+          // set status to deleted
+          featureToDelete.is_deleted = true;
           // remove __typename (a graphql artifact)
           delete featureToDelete.__typename;
           // add to delete array
@@ -338,17 +337,21 @@ const ProjectComponentsMapEdit = ({
     const removeAllSubcomponents = getAvailableSubcomponents().length === 0;
 
     // Generate a list of subcomponents to be removed
-    const removalList = subcomponentsDB.filter(
-      // Check every old subcomponent
-      oldSubcomponent =>
-        // If not found, mark it as true so it's part of the selectedSubcomponents list
-        removeAllSubcomponents ||
-        !selectedSubcomponents.find(
-          newSubcomponent =>
-            // Return true if we have found the old subcomponent in this list
-            oldSubcomponent.subcomponent_id === newSubcomponent.subcomponent_id
-        )
-    );
+    const removalList = subcomponentsDB
+      .filter(
+        // Check every old subcomponent
+        oldSubcomponent =>
+          // If not found, mark it as true so it's part of the selectedSubcomponents list
+          removeAllSubcomponents ||
+          !selectedSubcomponents.find(
+            newSubcomponent =>
+              // Return true if we have found the old subcomponent in this list
+              oldSubcomponent.subcomponent_id ===
+              newSubcomponent.subcomponent_id
+          )
+      )
+      // Mark remove list for deletion
+      .map(subcomponent => ({ ...subcomponent, is_deleted: true }));
 
     // Remove existing subcomponents, keep only those that need inserting
     const insertionList = selectedSubcomponents.filter(
@@ -360,11 +363,6 @@ const ProjectComponentsMapEdit = ({
     // Generate output, clean up & return
     return (
       [...insertionList, ...removalList] // Mix both insertion and removal list
-        // For each subcomponent, mark for deletion (status_id = 0) if component_subcomponent_id has a number
-        .map(subcomponent => ({
-          ...subcomponent,
-          status_id: isNaN(subcomponent?.component_subcomponent_id) ? 1 : 0,
-        }))
         // Then remove certain objects by their key names from the output
         .map(record =>
           filterObjectByKeys(record, [
@@ -414,7 +412,6 @@ const ProjectComponentsMapEdit = ({
       */
       name: "",
       project_id: Number.parseInt(projectId),
-      status_id: 1,
       component_id: selectedComponentId,
       description: componentDescription,
       /*
@@ -433,7 +430,7 @@ const ProjectComponentsMapEdit = ({
           update_columns: [
             "project_component_id",
             "subcomponent_id",
-            "status_id",
+            "is_deleted",
           ],
         },
       },
@@ -445,7 +442,7 @@ const ProjectComponentsMapEdit = ({
         data: projectFeatures,
         on_conflict: {
           constraint: "moped_proj_features_pkey",
-          update_columns: ["status_id", "feature"],
+          update_columns: ["is_deleted", "feature"],
         },
       },
     };

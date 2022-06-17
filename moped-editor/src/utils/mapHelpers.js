@@ -475,7 +475,6 @@ export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures =
     let feature = { ...projectFeature.feature };
     feature.feature_id = projectFeature.feature_id;
     feature.project_component_id = projectFeature.project_component_id;
-    feature.status_id = projectFeature.status_id;
     featureCollection.features.push(feature);
   });
   return featureCollection;

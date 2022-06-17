@@ -758,6 +758,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -769,6 +770,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -780,6 +782,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       filter: {}
   - role: moped-editor
     permission:
@@ -790,6 +793,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       filter: {}
   - role: moped-viewer
     permission:
@@ -800,6 +804,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -811,6 +816,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       filter: {}
       check: {}
   - role: moped-editor
@@ -822,6 +828,7 @@
       - project_component_id
       - project_id
       - status_id
+      - is_deleted
       filter: {}
       check: {}
   event_triggers:
@@ -840,6 +847,7 @@
         - status_id
         - description
         - name
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -863,6 +871,7 @@
       check: {}
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -872,6 +881,7 @@
       check: {}
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -881,6 +891,7 @@
     permission:
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -889,6 +900,7 @@
     permission:
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -897,6 +909,7 @@
     permission:
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -906,6 +919,7 @@
     permission:
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -915,6 +929,7 @@
     permission:
       columns:
       - component_subcomponent_id
+      - is_deleted
       - project_component_id
       - status_id
       - subcomponent_id
@@ -1059,6 +1074,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       backend_only: false
@@ -1068,6 +1084,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       backend_only: false
@@ -1077,6 +1094,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       filter: {}
@@ -1085,6 +1103,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       filter: {}
@@ -1093,6 +1112,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       filter: {}
@@ -1102,6 +1122,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       filter: {}
@@ -1111,6 +1132,7 @@
       columns:
       - feature
       - feature_id
+      - is_deleted
       - project_component_id
       - status_id
       filter: {}
@@ -1368,6 +1390,7 @@
       - funding_status_id
       - fund
       - dept_unit
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -1385,6 +1408,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -1402,6 +1426,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -1419,6 +1444,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -1436,6 +1462,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -1454,6 +1481,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       check: null
   - role: moped-editor
@@ -1471,6 +1499,7 @@
       - fund_dept_unit
       - funding_description
       - date_added
+      - is_deleted
       filter: {}
       check: null
   event_triggers:
@@ -1495,6 +1524,7 @@
         - fund_dept_unit
         - funding_description
         - date_added
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -1730,6 +1760,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1743,6 +1774,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1756,6 +1788,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1769,6 +1802,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1782,6 +1816,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1796,6 +1831,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1809,6 +1845,7 @@
       - added_by
       - added_by_user_id
       - date_created
+      - is_deleted
       - project_id
       - project_note
       - project_note_id
@@ -1834,6 +1871,7 @@
         - status_id
         - project_note
         - date_created
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -1980,6 +2018,9 @@
   - name: moped_user
     using:
       foreign_key_constraint_on: user_id
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2386,12 +2427,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2420,12 +2462,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2454,12 +2497,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2487,12 +2531,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2520,12 +2565,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2554,12 +2600,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2588,12 +2635,13 @@
       - capitally_funded
       - contractor
       - current_phase
+      - current_phase_id
       - current_status
       - date_added
       - ecapris_subproject_id
       - end_date
       - fiscal_year
-      - is_retired
+      - is_deleted
       - knack_project_id
       - milestone_id
       - project_description
@@ -2626,7 +2674,7 @@
       update:
         columns:
         - capitally_funded
-        - is_retired
+        - is_deleted
         - end_date
         - added_by
         - milestone_id
@@ -2641,6 +2689,7 @@
         - ecapris_subproject_id
         - contractor
         - current_phase
+        - current_phase_id
         - current_status
         - fiscal_year
         - knack_project_id
@@ -2679,7 +2728,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2698,7 +2747,7 @@
     permission:
       check: {}
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2727,7 +2776,7 @@
       - file_permissions
       - file_size
       - file_type
-      - is_retired
+      - is_deleted
       - is_scanned
       - project_file_id
       - project_id
@@ -2735,7 +2784,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2753,7 +2802,7 @@
   - role: moped-viewer
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2772,7 +2821,7 @@
   - role: moped-admin
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2791,7 +2840,7 @@
   - role: moped-editor
     permission:
       columns:
-      - is_retired
+      - is_deleted
       - is_scanned
       - created_by
       - file_size
@@ -2817,7 +2866,7 @@
         columns: '*'
       update:
         columns:
-        - is_retired
+        - is_deleted
         - is_scanned
         - created_by
         - file_size
@@ -3354,6 +3403,10 @@
 - table:
     schema: public
     name: moped_user_followed_projects
+  object_relationships:
+    - name: project
+      using:
+        foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -3660,7 +3713,7 @@
       - capitally_funded
       - date_added
       - added_by
-      - is_retired
+      - is_deleted
       - milestone_id
       - status_id
       - project_team_members
@@ -3686,7 +3739,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id
@@ -3726,7 +3779,7 @@
     permission:
       columns:
       - capitally_funded
-      - is_retired
+      - is_deleted
       - end_date
       - added_by
       - milestone_id
