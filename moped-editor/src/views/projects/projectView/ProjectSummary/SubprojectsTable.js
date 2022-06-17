@@ -1,23 +1,38 @@
 import React from "react";
+import { useQuery, useMutation } from "@apollo/client";
 
-import { Button, Typography } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  FormControl,
+  FormHelperText,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
-
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-const SubprojectsTable = ({ projectId = null }) => {
-  const error = "";
-  const data = [];
+import { SUBPROJECT_QUERY } from "../../../queries/subproject";
 
+const SubprojectsTable = ({ projectId = null }) => {
   const addActionRef = React.useRef();
+  
+  const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
+    variables: { projectId: projectId },
+    fetchPolicy: "no-cache",
+  });
+
+  if (loading || !data) return <CircularProgress />;
+
 
   const columns = [
     {
@@ -27,6 +42,22 @@ const SubprojectsTable = ({ projectId = null }) => {
     {
       title: "Project name",
       field: "project_name",
+      validate: entry => !!entry.project_name,
+      editComponent: props => (
+        <FormControl style={{ width: "100%" }}>
+          <Autocomplete
+            id="project_name"
+            name="project_name"
+            options={userIds}
+            // getOptionLabel={option => getPersonnelName(option)}
+            // getOptionSelected={(option, value) => option === value}
+            // value={props.value}
+            // onChange={(event, value) => props.onChange(value)}
+            renderInput={params => <TextField {...params} />}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
+      ),
     },
     {
       title: "Current status",
@@ -52,7 +83,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             />
           ),
           Action: props => {
-            console.log(props)
+            console.log(props);
             // If isn't the add action
             if (
               typeof props.action === typeof Function ||
@@ -97,9 +128,9 @@ const SubprojectsTable = ({ projectId = null }) => {
           },
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
-        editable ={{
+        editable={{
           onRowAdd: newData => console.log(newData),
-          onRowDelete: oldData => console.log(oldData)
+          onRowDelete: oldData => console.log(oldData),
         }}
       />
     </ApolloErrorHandler>

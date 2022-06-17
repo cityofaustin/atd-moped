@@ -2423,7 +2423,7 @@
           name: moped_proj_milestones
           schema: public
         column: project_id
-    - name: moped_projects
+  - name: moped_projects
     using:
       foreign_key_constraint_on:
         column: parent_project_id
