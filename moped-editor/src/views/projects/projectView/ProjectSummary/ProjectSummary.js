@@ -29,6 +29,7 @@ import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
 import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
+import SubprojectsTable from "./SubprojectsTable";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -285,6 +286,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 {renderMap()}
               </ErrorBoundary>
             )}
+          </Grid>
+          <Grid item xs={12}>
+            <SubprojectsTable />
           </Grid>
         </Grid>
       </CardContent>
