@@ -51,8 +51,8 @@ export const SUMMARY_QUERY = gql`
       contractor
       purchase_order_number
       work_assignment_id
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
           feature
         }
@@ -587,22 +587,20 @@ export const PROJECT_ARCHIVE = gql`
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       component_id
       description
       name
       project_component_id
       project_id
-      status_id
       moped_components {
         component_name
         component_id
         component_subtype
         line_representation
       }
-      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
-        status_id
+      moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
         component_subcomponent_id
         project_component_id
         subcomponent_id
@@ -611,7 +609,7 @@ export const COMPONENTS_QUERY = gql`
           subcomponent_name
         }
       }
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_features(where: { is_deleted: { _eq: false } }) {
         feature
         feature_id
       }
@@ -649,7 +647,7 @@ export const UPDATE_MOPED_COMPONENT = gql`
       objects: $objects
       on_conflict: {
         constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, status_id]
+        update_columns: [component_id, description, is_deleted]
       }
     ) {
       affected_rows
@@ -661,19 +659,19 @@ export const DELETE_MOPED_COMPONENT = gql`
   mutation DeleteMopedComponent($projComponentId: Int!) {
     update_moped_proj_components(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
     update_moped_proj_features(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }

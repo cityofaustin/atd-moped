@@ -216,10 +216,8 @@ export const generateProjectComponent = (
     name: componentDef.component_name,
     description: componentDef.description,
     component_id: componentDef.component_id,
-    status_id: 1,
     moped_proj_features: {
       data: featureCollection.features.map(feature => ({
-        status_id: 1,
         feature: feature,
       })),
     },

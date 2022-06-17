@@ -65,7 +65,7 @@ AS WITH project_person_list_lookup AS (
         LEFT JOIN moped_proj_features features 
           ON (features.project_component_id = components.project_component_id)
         WHERE TRUE
-          AND components.is_deleted = false
+          AND components.status_id = 1
           AND components.project_id = mp.project_id
         ),
       '{}'::json) as project_feature, -- close out that coalesce; if null, give us a empty json object
