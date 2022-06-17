@@ -26,6 +26,8 @@ The docker image does not automatically run the script when it is instantiated f
 This tool inserts `moped_proj_milestones` records into signal and PHB projects. It was created
 to backfill project milestones after implementing the milestone template feature for issue [#9102](https://github.com/cityofaustin/atd-data-tech/issues/9102).
 
+*Be aware that this script depends on database schema values which are in flux at the time of writing. In particular, the use of `status_id` to identify deleted records may be changd in a future release. Make sure this script aligns with your current database schema*
+
 ### Usage instructions
 
 1. Create a python 3.x environment with `requests` installed.
