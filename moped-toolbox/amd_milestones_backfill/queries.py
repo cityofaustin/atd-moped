@@ -20,10 +20,13 @@ PROJECTS_QUERY = """query NeedsMilestonesProjects($max_date_added: timestamptz!)
 						{ current_phase: { _nilike: "post-construction" } }
 					]
 				}
-				# must contain at least one project type related to signals or PHBs
+				# must contain at least one not-deleted project type related to signals or PHBs
 				{
 					moped_project_types: {
-						moped_type: { type_name: { _similar: "%(Signal|PHB)%" } }
+						_and: [
+							{ moped_type: { type_name: { _similar: "%(Signal|PHB)%" } } }
+							{ status_id: { _eq: 1 } }
+						]
 					}
 				}
 				# only projects added before specified date - so as to filter on pre-v1.4 release
