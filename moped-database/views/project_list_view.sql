@@ -1,4 +1,3 @@
--- public.project_list_view source
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
