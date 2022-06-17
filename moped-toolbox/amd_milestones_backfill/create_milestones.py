@@ -52,7 +52,7 @@ def main(env, max_date_added):
                 proj_milestones_new.append(new_milestone)
 
         if not proj_milestones_new:
-            logger.info(f"#{project_id}: skipping because it has all milestones")
+            logger.info(f"Project #{project_id}: skipping because it has all milestones")
             continue
 
         logger.info(
