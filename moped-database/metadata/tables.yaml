@@ -1542,6 +1542,9 @@
   - name: moped_milestone
     using:
       foreign_key_constraint_on: milestone_id
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
   insert_permissions:
   - role: moped-admin
     permission:
@@ -2410,6 +2413,13 @@
         table:
           schema: public
           name: moped_project_types
+  - name: moped_proj_milestones
+    using:
+      foreign_key_constraint_on:
+        table:
+          name: moped_proj_milestones
+          schema: public
+        column: project_id
   insert_permissions:
   - role: moped-admin
     permission:
