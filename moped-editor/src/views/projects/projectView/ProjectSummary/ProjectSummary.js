@@ -288,9 +288,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             )}
           </Grid>
           <Grid item xs={12}>
-            {// todo: if this project has a parent project id, dont render this table. 
+            {// If this project has a parent project id, dont render this table. 
             // do we render a message?  
-            }<SubprojectsTable projectId={projectId}/>
+            !data.moped_project[0].parent_project_id && <SubprojectsTable projectId={projectId}/>
+            }
           </Grid>
         </Grid>
       </CardContent>

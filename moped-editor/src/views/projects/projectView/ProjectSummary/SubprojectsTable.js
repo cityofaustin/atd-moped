@@ -39,9 +39,6 @@ const SubprojectsTable = ({ projectId = null }) => {
   if (error) console.error(error)
   if (loading || !data) return <CircularProgress />;
 
-  console.log(data)
-  console.log(data.subprojects[0].moped_projects)
-
   const columns = [
     {
       title: "Project ID",
