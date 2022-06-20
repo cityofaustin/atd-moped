@@ -290,7 +290,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12}>
             {// todo: if this project has a parent project id, dont render this table. 
             // do we render a message?  
-            }<SubprojectsTable />
+            }<SubprojectsTable projectId={projectId}/>
           </Grid>
         </Grid>
       </CardContent>

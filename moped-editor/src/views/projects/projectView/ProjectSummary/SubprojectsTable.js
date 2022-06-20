@@ -21,7 +21,7 @@ import MaterialTable, {
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-import { SUBPROJECT_QUERY } from "../../../../queries/subprojects";
+import { SUBPROJECT_QUERY, UPDATE_PROJECT_SUBPROJECT } from "../../../../queries/subprojects";
 
 const SubprojectsTable = ({ projectId = null }) => {
   const addActionRef = React.useRef();
@@ -31,6 +31,9 @@ const SubprojectsTable = ({ projectId = null }) => {
     fetchPolicy: "no-cache",
   });
 
+  const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
+
+  if (error) console.error(error)
   if (loading || !data) return <CircularProgress />;
 
   console.log(data)
@@ -40,11 +43,12 @@ const SubprojectsTable = ({ projectId = null }) => {
       title: "Project ID",
       field: "project_id",
       editable: "never",
-      // todo: give this a narrow width
+      width: "15%"
     },
     {
       title: "Project name",
       field: "project_name",
+      width: "50%",
       validate: entry => !!entry.project_name,
       editComponent: props => (
         <FormControl style={{ width: "100%" }}>
@@ -65,7 +69,8 @@ const SubprojectsTable = ({ projectId = null }) => {
     {
       title: "Current status",
       field: "current_status",
-      editable: "never"
+      editable: "never",
+      width: "35%"
     },
   ];
 
@@ -87,7 +92,6 @@ const SubprojectsTable = ({ projectId = null }) => {
             />
           ),
           Action: props => {
-            console.log(props);
             // If isn't the add action
             if (
               typeof props.action === typeof Function ||
@@ -120,6 +124,7 @@ const SubprojectsTable = ({ projectId = null }) => {
           search: false,
           // rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+          tableLayout: "fixed",
         }}
         localization={{
           header: {
@@ -133,7 +138,18 @@ const SubprojectsTable = ({ projectId = null }) => {
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
-          onRowAdd: newData => console.log(newData),
+          onRowAdd: newData => {
+            console.log(newData?.project_name?.project_id)
+            const childProjectId = newData?.project_name?.project_id;
+                    return updateProjectSubproject({
+                      variables: {
+                        parentProjectId: projectId,
+                        childProjectId: childProjectId,
+                      },
+                    }).then(() => {
+                      refetch();
+                    }).catch(error => console.error(error)) ;
+          },
           onRowDelete: oldData => console.log(oldData),
         }}
       />
