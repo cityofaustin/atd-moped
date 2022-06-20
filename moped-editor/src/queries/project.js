@@ -825,7 +825,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   }
 `;
 
-export const PROJECT_UPDATE_CONTACTOR = gql`
+export const PROJECT_UPDATE_CONTRACTOR = gql`
   mutation UpdateProjectContractor($projectId: Int!, $contractor: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -836,7 +836,7 @@ export const PROJECT_UPDATE_CONTACTOR = gql`
   }
 `;
 
-export const PROJECT_CLEAR_CONTACTOR = gql`
+export const PROJECT_CLEAR_CONTRACTOR = gql`
   mutation UpdateProjectContractor($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
