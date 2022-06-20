@@ -7,6 +7,8 @@ export const SUBPROJECT_QUERY = gql`
       moped_projects {
         project_name
         project_id
+        status_id
+        current_phase
       }
     }
     subprojectOptions: moped_project(where: {
@@ -20,6 +22,13 @@ export const SUBPROJECT_QUERY = gql`
       project_id
       project_name
     }
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_id
+      status_name
+    }
   }
 `;
 
@@ -28,6 +37,17 @@ export const UPDATE_PROJECT_SUBPROJECT = gql`
     update_moped_project(
       where: { project_id: { _eq: $childProjectId } }
       _set: { parent_project_id: $parentProjectId }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const DELETE_PROJECT_SUBPROJECT = gql`
+  mutation UpdateProjectSubproject($childProjectId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $childProjectId } }
+      _set: { parent_project_id: null }
     ) {
       affected_rows
     }

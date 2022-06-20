@@ -20,8 +20,10 @@ import MaterialTable, {
   MTableAction,
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
+import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 
-import { SUBPROJECT_QUERY, UPDATE_PROJECT_SUBPROJECT } from "../../../../queries/subprojects";
+import { SUBPROJECT_QUERY, UPDATE_PROJECT_SUBPROJECT, DELETE_PROJECT_SUBPROJECT } from "../../../../queries/subprojects";
+import typography from "../../../../theme/typography";
 
 const SubprojectsTable = ({ projectId = null }) => {
   const addActionRef = React.useRef();
@@ -32,11 +34,13 @@ const SubprojectsTable = ({ projectId = null }) => {
   });
 
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
+  const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
 
   if (error) console.error(error)
   if (loading || !data) return <CircularProgress />;
 
   console.log(data)
+  console.log(data.subprojects[0].moped_projects)
 
   const columns = [
     {
@@ -70,14 +74,21 @@ const SubprojectsTable = ({ projectId = null }) => {
       title: "Current status",
       field: "current_status",
       editable: "never",
-      width: "35%"
+      width: "30%",
+      render: entry => (
+        <ProjectStatusBadge
+          status={entry.status_id}
+          phase={entry.current_phase}
+          projectStatuses={data?.moped_status ?? []}
+          condensed/>
+      )
     },
   ];
 
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
-        data={[]}
+        data={data.subprojects[0]?.moped_projects ?? []}
         columns={columns}
         components={{
           EditRow: props => (
@@ -122,7 +133,7 @@ const SubprojectsTable = ({ projectId = null }) => {
         options={{
           paging: false,
           search: false,
-          // rowStyle: { fontFamily: typography.fontFamily },
+          rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
           tableLayout: "fixed",
         }}
@@ -139,18 +150,26 @@ const SubprojectsTable = ({ projectId = null }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: newData => {
-            console.log(newData?.project_name?.project_id)
             const childProjectId = newData?.project_name?.project_id;
-                    return updateProjectSubproject({
-                      variables: {
-                        parentProjectId: projectId,
-                        childProjectId: childProjectId,
-                      },
-                    }).then(() => {
-                      refetch();
-                    }).catch(error => console.error(error)) ;
+              return updateProjectSubproject({
+                variables: {
+                  parentProjectId: projectId,
+                  childProjectId: childProjectId,
+                },
+                }).then(() => {
+                  refetch();
+                }).catch(error => console.error(error));
           },
-          onRowDelete: oldData => console.log(oldData),
+          onRowDelete: newData => {
+            const childProjectId = newData?.project_id;
+              return deleteProjectSubproject({
+                variables: {
+                    childProjectId: childProjectId,
+                  },
+                }).then(() => {
+                  refetch();
+                }).catch(error => console.error(error));
+          }
         }}
       />
     </ApolloErrorHandler>
