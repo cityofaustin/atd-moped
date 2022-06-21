@@ -96,7 +96,7 @@ const SubprojectsTable = ({ projectId = null }) => {
       <MaterialTable
         data={data.subprojects[0]?.moped_projects ?? []}
         columns={columns}
-        style={{padding:"8px"}}
+        style={{ padding: "8px" }}
         components={{
           // Note: in our other instances of Material Table, we bypass submitting the form on enter
           // In this table, since we currently only have one field to select, enter will submit the form
@@ -143,6 +143,9 @@ const SubprojectsTable = ({ projectId = null }) => {
             emptyDataSourceMessage: (
               <Typography variant="body1">No subprojects to display</Typography>
             ),
+            editRow: {
+              deleteText: "Are you sure you want to remove this subproject?",
+            },
           },
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
