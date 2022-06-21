@@ -96,7 +96,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * Direct access to the moped_status array
    */
   const statusMap = data?.moped_status ?? [];
-  console.log(statusMap)
 
   /**
    * Retrieves the moped_status values from the statusMap array

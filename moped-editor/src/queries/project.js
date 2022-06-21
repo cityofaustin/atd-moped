@@ -15,7 +15,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_name
         is_current_phase
-        status_id
         completion_percentage
         completed
       }
@@ -401,7 +400,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_id
         completion_percentage
         completed
-        status_id
       }
     }
   }
@@ -420,7 +418,6 @@ export const ADD_PROJECT_MILESTONE = gql`
         completed
         project_milestone_id
         project_id
-        status_id
       }
     }
   }

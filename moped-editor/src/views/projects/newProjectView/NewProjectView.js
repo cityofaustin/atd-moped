@@ -156,7 +156,6 @@ const NewProjectView = () => {
                 phase_name: "potential",
                 phase_id: 1,
                 is_current_phase: true,
-                status_id: 1,
                 completion_percentage: 0,
                 completed: false,
                 phase_start: format(Date.now(), "yyyy-MM-dd"),
