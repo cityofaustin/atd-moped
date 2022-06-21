@@ -58,9 +58,8 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           funding_source_name
         }
       }
-      moped_project_types(where: { status_id: { _eq: 1 } }) {
+      moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
-        status_id
         moped_type {
           type_name
           type_id

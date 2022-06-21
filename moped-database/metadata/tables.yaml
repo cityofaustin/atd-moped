@@ -1900,6 +1900,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1912,6 +1913,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1924,6 +1926,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1935,6 +1938,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1946,6 +1950,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1958,6 +1963,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1970,6 +1976,7 @@
       - added_by
       - date_added
       - entity_id
+      - is_deleted
       - partner_name
       - proj_partner_id
       - project_id
@@ -1988,6 +1995,7 @@
         columns:
         - added_by
         - entity_id
+        - is_deleted
         - project_id
         - proj_partner_id
         - status_id
@@ -3004,6 +3012,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3015,6 +3024,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3025,6 +3035,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3035,6 +3046,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3045,6 +3057,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3056,6 +3069,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3067,6 +3081,7 @@
       - added_by
       - date_added
       - id
+      - is_deleted
       - project_id
       - project_type_id
       - status_id
@@ -3084,6 +3099,7 @@
         columns:
         - added_by
         - id
+        - is_deleted
         - project_id
         - project_type_id
         - status_id

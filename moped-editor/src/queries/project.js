@@ -67,9 +67,8 @@ export const SUMMARY_QUERY = gql`
         added_by
         date_created
       }
-      moped_project_types(where: { status_id: { _eq: 1 } }) {
+      moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
-        status_id
         moped_type {
           type_name
           type_id
@@ -77,7 +76,7 @@ export const SUMMARY_QUERY = gql`
       }
     }
     moped_proj_partners(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_partner_id
       project_id
@@ -439,7 +438,9 @@ export const PROJECT_FOLLOW = gql`
 
 export const PROJECT_UNFOLLOW = gql`
   mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
-    delete_moped_user_followed_projects(where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }) {
+    delete_moped_user_followed_projects(
+      where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }
+    ) {
       affected_rows
     }
   }
@@ -736,7 +737,7 @@ export const PROJECT_UPDATE_PARTNERS = gql`
     }
     update_moped_proj_partners(
       where: { proj_partner_id: { _in: $deleteList } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -790,7 +791,7 @@ export const PROJECT_UPDATE_TYPES = gql`
     }
     update_moped_project_types(
       where: { id: { _in: $deleteList } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }

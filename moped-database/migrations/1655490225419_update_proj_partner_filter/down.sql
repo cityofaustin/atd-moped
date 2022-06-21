@@ -1,3 +1,4 @@
+-- public.project_list_view source
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -23,7 +24,7 @@ AS WITH project_person_list_lookup AS (
       mpt.project_id,
       string_agg(mt.type_name, ', '::text) AS type_name
       FROM moped_project_types mpt
-        LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
+        LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.status_id = 1
     GROUP BY mpt.project_id
   )
  SELECT mp.project_uuid,
@@ -117,7 +118,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
      LEFT JOIN project_type_lookup ptl ON ptl.project_id = mp.project_id
      LEFT JOIN moped_entity me ON me.entity_id = mp.project_sponsor
-     LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
+     LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.status_id = 1
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
   GROUP BY mp.project_uuid, 

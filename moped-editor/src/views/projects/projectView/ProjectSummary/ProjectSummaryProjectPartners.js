@@ -94,7 +94,6 @@ const ProjectSummaryProjectPartners = ({
       project_id: projectId,
       partner_name: entityDict[id],
       entity_id: id,
-      status_id: 1,
     }));
     // We need a final list of primary keys to delete
     const partnerPksToDelete = originalPartners
