@@ -1,0 +1,4 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- alter table "public"."moped_proj_milestones" add column "is_deleted" boolean
+--  not null default 'false';
