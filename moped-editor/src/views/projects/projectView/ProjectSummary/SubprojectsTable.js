@@ -23,7 +23,11 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
 
-import { SUBPROJECT_QUERY, UPDATE_PROJECT_SUBPROJECT, DELETE_PROJECT_SUBPROJECT } from "../../../../queries/subprojects";
+import {
+  SUBPROJECT_QUERY,
+  UPDATE_PROJECT_SUBPROJECT,
+  DELETE_PROJECT_SUBPROJECT,
+} from "../../../../queries/subprojects";
 import typography from "../../../../theme/typography";
 
 const SubprojectsTable = ({ projectId = null }) => {
@@ -37,7 +41,7 @@ const SubprojectsTable = ({ projectId = null }) => {
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
 
-  if (error) console.error(error)
+  if (error) console.error(error);
   if (loading || !data) return <CircularProgress />;
 
   const columns = [
@@ -45,30 +49,30 @@ const SubprojectsTable = ({ projectId = null }) => {
       title: "Project ID",
       field: "project_id",
       editable: "never",
-      width: "15%"
+      width: "15%",
     },
     {
       title: "Project name",
       field: "project_name",
       width: "45%",
-      validate: entry => !!entry.project_name,
-      render: entry => (
+      validate: (entry) => !!entry.project_name,
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_name}
         />
       ),
-      editComponent: props => (
+      editComponent: (props) => (
         <FormControl style={{ width: "100%" }}>
           <Autocomplete
             id="project_name"
             name="project_name"
             options={data.subprojectOptions}
-            getOptionLabel={option => option.project_name}
+            getOptionLabel={(option) => option.project_name}
             getOptionSelected={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={params => <TextField {...params} />}
+            renderInput={(params) => <TextField {...params} />}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -79,13 +83,14 @@ const SubprojectsTable = ({ projectId = null }) => {
       field: "current_status",
       editable: "never",
       width: "30%",
-      render: entry => (
+      render: (entry) => (
         <ProjectStatusBadge
           status={entry.status_id}
           phase={entry.current_phase}
           projectStatuses={data?.moped_status ?? []}
-          condensed/>
-      )
+          condensed
+        />
+      ),
     },
   ];
 
@@ -95,10 +100,10 @@ const SubprojectsTable = ({ projectId = null }) => {
         data={data.subprojects[0]?.moped_projects ?? []}
         columns={columns}
         components={{
-          EditRow: props => (
+          EditRow: (props) => (
             <MTableEditRow
               {...props}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                   // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -106,7 +111,7 @@ const SubprojectsTable = ({ projectId = null }) => {
               }}
             />
           ),
-          Action: props => {
+          Action: (props) => {
             // If isn't the add action
             if (
               typeof props.action === typeof Function ||
@@ -153,27 +158,31 @@ const SubprojectsTable = ({ projectId = null }) => {
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
-          onRowAdd: newData => {
+          onRowAdd: (newData) => {
             const childProjectId = newData?.project_name?.project_id;
-              return updateProjectSubproject({
-                variables: {
-                  parentProjectId: projectId,
-                  childProjectId: childProjectId,
-                },
-                }).then(() => {
-                  refetch();
-                }).catch(error => console.error(error));
+            return updateProjectSubproject({
+              variables: {
+                parentProjectId: projectId,
+                childProjectId: childProjectId,
+              },
+            })
+              .then(() => {
+                refetch();
+              })
+              .catch((error) => console.error(error));
           },
-          onRowDelete: newData => {
+          onRowDelete: (newData) => {
             const childProjectId = newData?.project_id;
-              return deleteProjectSubproject({
-                variables: {
-                    childProjectId: childProjectId,
-                  },
-                }).then(() => {
-                  refetch();
-                }).catch(error => console.error(error));
-          }
+            return deleteProjectSubproject({
+              variables: {
+                childProjectId: childProjectId,
+              },
+            })
+              .then(() => {
+                refetch();
+              })
+              .catch((error) => console.error(error));
+          },
         }}
       />
     </ApolloErrorHandler>
