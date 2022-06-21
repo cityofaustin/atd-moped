@@ -152,6 +152,11 @@ export const ProjectActivityLogTableMaps = {
         label: "work assignment ID",
         data_type: "text",
       },
+      parent_project_id: {
+        icon: "",
+        label: "parent project id",
+        data_type: "integer",
+      },
     },
   },
   moped_proj_entities: {

@@ -2730,6 +2730,7 @@
         - date_added
         - updated_at
         - project_uuid
+        - parent_project_id
     retry_conf:
       num_retries: 0
       interval_sec: 10
