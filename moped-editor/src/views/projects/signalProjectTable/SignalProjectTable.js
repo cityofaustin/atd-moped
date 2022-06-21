@@ -88,7 +88,7 @@ const SignalProjectTable = () => {
       const note = project.moped_proj_notes[0]["project_note"];
       // Remove any HTML tags
       project["status_update"] = note
-        ? parse(note)
+        ? parse(String(note))
         : "";
     }
 

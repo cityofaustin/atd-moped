@@ -45,7 +45,7 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
         onClick={() => setIsDialogOpen(true)}
       >
         {displayText.length > 0 ? (
-          parse(displayText)
+          parse(String(displayText))
         ) : (
           <Tooltip placement="bottom-start" title="Create new status update">
             <ControlPointIcon className={classes.tooltipIcon} />

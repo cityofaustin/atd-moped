@@ -416,7 +416,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
-      render: entry => parse(entry.project_note),
+      render: entry => parse(String(entry.project_note)),
     },
     {
       title: "Construction start",
