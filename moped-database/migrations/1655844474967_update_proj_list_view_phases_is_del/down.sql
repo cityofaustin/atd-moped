@@ -82,7 +82,6 @@ AS WITH project_person_list_lookup AS (
       WHERE true
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'construction'::text
-        AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS construction_start_date,
     ( -- get me the phase end of the most recently added completion phase entry
@@ -91,7 +90,6 @@ AS WITH project_person_list_lookup AS (
       WHERE true 
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'complete'::text
-        AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
