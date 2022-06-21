@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
@@ -53,8 +54,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
       const note = data
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
-      // Remove any HTML tags
-      return note ? parse(note) : null;
+      // Remove any HTML tags for status update string
+      return note && typeof(note) === "string" ? parse(note) : null;
     }
     return null;
   };
@@ -72,7 +73,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Handles updating the state for "status update"
    * @param {Object} event
    */
-  const handleStatusUpdateChange = event => setStatusUpdate(event.target.value);
+  const handleStatusUpdateChange = event => setStatusUpdate(DOMPurify.sanitize(noteText));
 
   /**
    * Handles the edit click for status update
