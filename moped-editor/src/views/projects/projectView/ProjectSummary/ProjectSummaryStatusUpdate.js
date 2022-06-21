@@ -73,7 +73,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Handles updating the state for "status update"
    * @param {Object} event
    */
-  const handleStatusUpdateChange = event => setStatusUpdate(DOMPurify.sanitize(noteText));
+  const handleStatusUpdateChange = event => setStatusUpdate(DOMPurify.sanitize(event.target.value));
 
   /**
    * Handles the edit click for status update
