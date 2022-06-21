@@ -257,7 +257,7 @@ export const TIMELINE_QUERY = gql`
       subphase_name
     }
     moped_proj_phases(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { phase_start: desc }
     ) {
       phase_name
@@ -276,7 +276,7 @@ export const TIMELINE_QUERY = gql`
       milestone_name
     }
     moped_proj_milestones(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: [
         { milestone_order: asc },
         { milestone_end: desc }
@@ -369,7 +369,7 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
 export const DELETE_PROJECT_PHASE = gql`
   mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
       where: { project_phase_id: { _eq: $project_phase_id } }
     ) {
       affected_rows
@@ -380,7 +380,7 @@ export const DELETE_PROJECT_PHASE = gql`
 export const DELETE_PROJECT_MILESTONE = gql`
   mutation DeleteProjectMilestone($project_milestone_id: Int!) {
     update_moped_proj_milestones(
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
       where: { project_milestone_id: { _eq: $project_milestone_id } }
     ) {
       affected_rows

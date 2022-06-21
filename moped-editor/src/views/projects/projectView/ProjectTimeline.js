@@ -96,6 +96,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * Direct access to the moped_status array
    */
   const statusMap = data?.moped_status ?? [];
+  console.log(statusMap)
 
   /**
    * Retrieves the moped_status values from the statusMap array
@@ -556,7 +557,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         project_id: projectId,
                         completion_percentage: 0,
                         completed: false,
-                        status_id: 1,
                         // temporary until project phase normalization is complete
                         phase_name: phaseNameLookup[
                           newData?.phase_id
@@ -663,7 +663,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                       // current_phase if the phase name is changed and its not a
                                       // current_phase
                                       {
-                                        status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
                                         // we don't have a phase id for active, since it is not an official phase
@@ -795,7 +794,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     const newMilestoneObject = Object.assign(
                       {
                         project_id: projectId,
-                        status_id: 1,
                         completed: false,
                       },
                       newData
