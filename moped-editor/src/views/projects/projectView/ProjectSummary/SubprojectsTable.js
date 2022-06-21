@@ -21,6 +21,7 @@ import MaterialTable, {
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
+import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
 
 import { SUBPROJECT_QUERY, UPDATE_PROJECT_SUBPROJECT, DELETE_PROJECT_SUBPROJECT } from "../../../../queries/subprojects";
 import typography from "../../../../theme/typography";
@@ -49,8 +50,14 @@ const SubprojectsTable = ({ projectId = null }) => {
     {
       title: "Project name",
       field: "project_name",
-      width: "50%",
+      width: "45%",
       validate: entry => !!entry.project_name,
+      render: entry => (
+        <RenderFieldLink
+          projectId={entry.project_id}
+          value={entry.project_name}
+        />
+      ),
       editComponent: props => (
         <FormControl style={{ width: "100%" }}>
           <Autocomplete
