@@ -55,7 +55,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
       // Remove any HTML tags for status update string
-      return note && typeof(note) === "string" ? parse(note) : null;
+      return note ? parse(String(note)) : null;
     }
     return null;
   };
