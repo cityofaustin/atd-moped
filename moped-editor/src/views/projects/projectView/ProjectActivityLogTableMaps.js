@@ -418,8 +418,8 @@ export const ProjectActivityLogTableMaps = {
         type: "boolean",
         map: {
           true: "Inactive",
-          false: "Active"
-        }
+          false: "Active",
+        },
       },
       project_id: {
         icon: "",
