@@ -15,10 +15,7 @@ import {
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-} from "@material-table/core";
+import MaterialTable, { MTableAction } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
@@ -99,18 +96,10 @@ const SubprojectsTable = ({ projectId = null }) => {
       <MaterialTable
         data={data.subprojects[0]?.moped_projects ?? []}
         columns={columns}
+        style={{padding:"8px"}}
         components={{
-          EditRow: (props) => (
-            <MTableEditRow
-              {...props}
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) {
-                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                }
-              }}
-            />
-          ),
+          // Note: in our other instances of Material Table, we bypass submitting the form on enter
+          // In this table, since we currently only have one field to select, enter will submit the form
           Action: (props) => {
             // If isn't the add action
             if (
