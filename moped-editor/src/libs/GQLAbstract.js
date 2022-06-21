@@ -51,14 +51,14 @@ class GQLAbstract {
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpKey = (exp) => exp.split(/[{} ]+/, 1)[0].trim();
+  getExpKey = exp => exp.split(/[{} ]+/, 1)[0].trim();
 
   /**
    * Returns the value of a nested expression, usually another expression.
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpValue = (exp) =>
+  getExpValue = exp =>
     exp.substring(exp.indexOf("{") + 1, exp.lastIndexOf("}")).trim();
 
   /**
@@ -227,8 +227,12 @@ class GQLAbstract {
    */
   setOrder(key, syntax) {
     if (this.config && this.config.order_by) {
-      // First, RESET the order_by value.
-      // - Our assumption is that there should only by 1 order_by at a time.
+      // First, RESET the order_by value, with the assumption
+      // that there should only by 1 order_by at a time.
+      // This assumption is a self-imposed subset of the GraphQL syntax
+      // which happens to make the removal of implicit ordering
+      // of order directives as implemented by Hasura in graphql-engine
+      // 2.0+ a non-issue for this app.
       this.config.order_by = {};
       // Now, set new key, syntax pair for order_by
       this.config.order_by[key] = syntax;
@@ -371,7 +375,7 @@ class GQLAbstract {
    * @returns {Array}
    */
   get columns() {
-    return this.getEntries("columns").map((k) => k[0]);
+    return this.getEntries("columns").map(k => k[0]);
   }
 
   /**
@@ -448,6 +452,8 @@ class GQLAbstract {
         "}"
     );
 
+    // Previous comment indicated we don't support a second tier ordering directive,
+    // but the following code appears to support it.
     if (this.config.order_by) {
       const orderBy = [];
       for (const [key, value] of this.getEntries("order_by")) {
@@ -545,7 +551,7 @@ class GQLAbstract {
     const aggregatesQueryArray = [];
 
     // For each config, create query, replace filters/columns, and push to aggregatesQueryArray
-    queryConfigArray.forEach((config) => {
+    queryConfigArray.forEach(config => {
       let query = `
       gqlAbstractTableAggregateName (
           gqlAbstractAggregateFilters

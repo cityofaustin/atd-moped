@@ -662,6 +662,7 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: getDatabaseId(user),
+                  // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
               },

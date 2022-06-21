@@ -12,11 +12,13 @@ import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
 import { useQuery, useMutation } from "@apollo/client";
-import { SIGNAL_COMPONENTS_QUERY } from "../../../queries/project";
-
 import {
+  SIGNAL_COMPONENTS_QUERY,
   ADD_PROJECT,
+  TYPES_QUERY,
+  ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
+import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 import {
@@ -60,34 +62,44 @@ const NewProjectView = () => {
    * @type {boolean} nameError - When true, it denotes an error in the name
    * @type {boolean} descriptionError - When true, it denotes an error in the project description
    * @type {Object} featureCollection - The final GeoJSON to be inserted into a component
-   * @type {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
-   * @type {Boolean} signalError - If the current signal value is in validation error
-   * @type {Boolean} fromSignalAsset - if signal autocomplete switch is active. If true,
-   *    the project name and featureCollection will be set from the `signal` value.
    */
   const [projectDetails, setProjectDetails] = useState({
     current_phase: "potential",
+    current_phase_id: 1,
     project_description: "",
     project_name: "",
     current_status: "potential",
     status_id: 2,
   });
-
-  const {
-    error: componentQueryError,
-    loading: componentQueryloading,
-    data: componentData,
-  } = useQuery(SIGNAL_COMPONENTS_QUERY);
-
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
   const [featureCollection, setFeatureCollection] = useState({
     type: "FeatureCollection",
     features: [],
   });
+  const [projectTypeId, setProjectTypeId] = useState(null);
+
+  /**
+   * Signals query
+   */
+  const {
+    error: componentQueryError,
+    loading: componentQueryloading,
+    data: componentData,
+  } = useQuery(SIGNAL_COMPONENTS_QUERY);
+
+  const {
+    error: typeQueryError,
+    loading: typeQueryLoading,
+    data: typeData,
+  } = useQuery(TYPES_QUERY);
 
   /**
    * Signal component state management
+   * @type {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
+   * @type {Boolean} signalError - If the current signal value is in validation error
+   * @type {Boolean} fromSignalAsset - if signal autocomplete switch is active. If true,
+   *    the project name and featureCollection will be set from the `signal` value.
    */
   const [signal, setSignal] = useState("");
   const [fromSignalAsset, setFromSignalAsset] = useState(false);
@@ -98,6 +110,8 @@ const NewProjectView = () => {
    * Add Project Apollo Mutation
    */
   const [addProject] = useMutation(ADD_PROJECT);
+
+  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
   /**
    * Timer Reference Object
@@ -140,6 +154,7 @@ const NewProjectView = () => {
             data: [
               {
                 phase_name: "potential",
+                phase_id: 1,
                 is_current_phase: true,
                 status_id: 1,
                 completion_percentage: 0,
@@ -162,6 +177,18 @@ const NewProjectView = () => {
                 },
               }
             : {}),
+          ...(projectTypeId
+            ? {
+                moped_project_types: {
+                  data: [
+                    {
+                      project_type_id: projectTypeId,
+                      status_id: 1,
+                    },
+                  ],
+                },
+              }
+            : {}),
         },
       };
 
@@ -176,6 +203,14 @@ const NewProjectView = () => {
           // Capture the project ID, which will be used to redirect to the Project Summary page
           const { project_id } = response.data.insert_moped_project_one;
           setNewProjectId(project_id);
+          // if a project type has been specified, add the milestones from template
+          if (projectTypeId) {
+            return addProjectMilestone({
+              variables: {
+                objects: returnSignalPHBMilestoneTemplate(project_id),
+              },
+            });
+          }
         })
         // If there is an error, we must show it...
         .catch(err => {
@@ -214,10 +249,11 @@ const NewProjectView = () => {
     }
   }, [success, newProjectId, navigate]);
 
-  if (componentQueryloading) {
+  if (componentQueryloading || typeQueryLoading) {
     return <CircularProgress />;
   }
   if (componentQueryError) return `Error! ${componentQueryError.message}`;
+  if (typeQueryError) return `Error! ${typeQueryError.message}`;
 
   return (
     <Page title="New project">
@@ -236,6 +272,9 @@ const NewProjectView = () => {
                 signal={signal}
                 signalError={signalError}
                 setSignal={setSignal}
+                projectTypeId={projectTypeId}
+                setProjectTypeId={setProjectTypeId}
+                typeData={typeData}
               />
               <Box pt={2} pl={2} className={classes.buttons}>
                 <ProjectSaveButton
