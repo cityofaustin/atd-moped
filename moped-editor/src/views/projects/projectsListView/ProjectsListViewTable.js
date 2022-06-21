@@ -297,7 +297,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
       render: entry =>
-        buildStatusBadge(entry.current_phase, entry.current_status),
+        buildStatusBadge(entry.current_phase, entry.status_id),
     },
     {
       title: "Team members",

@@ -206,9 +206,6 @@ const ProjectStatusBadge = ({
   const chipClasses = useChipStyles(statusProperties);
   const iconClasses = useFontColorStyles(statusProperties);
 
-  // If we don't have a status, then do not render.
-  if (!!!status) return null;
-
   /**
    * Create an abstract component pointer
    */
