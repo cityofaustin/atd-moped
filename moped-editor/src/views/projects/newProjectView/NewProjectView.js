@@ -182,7 +182,6 @@ const NewProjectView = () => {
                   data: [
                     {
                       project_type_id: projectTypeId,
-                      status_id: 1,
                     },
                   ],
                 },
