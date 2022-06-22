@@ -247,6 +247,7 @@ const GridTableFilters = ({
     if (filterId in filterParameters) {
       // Clone state
       const filtersNewState = { ...filterParameters };
+      console.log(operator)
 
       if (operator in query.config.filters.operators) {
         // Update Operator Value
@@ -411,6 +412,8 @@ const GridTableFilters = ({
         </Alert>
       )}
       {Object.keys(filterParameters).map(filterId => {
+        console.log(filterParameters)
+        console.log(filterId)
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -506,6 +509,7 @@ const GridTableFilters = ({
                   className={classes.formControl}
                 >
                   {isFilterNullType(filterParameters[filterId]) !== true && (
+                    // this is where the autocomplete would go?
                     <TextField
                       key={`filter-search-value-${filterId}`}
                       id={`filter-search-value-${filterId}`}
@@ -518,7 +522,7 @@ const GridTableFilters = ({
                         handleSearchValueChange(filterId, e.target.value)
                       }
                       variant="outlined"
-                      value={filterParameters[filterId].value}
+                      value={filterParameters[filterId].value ?? ""}
                     />
                   )}
                 </FormControl>
