@@ -257,7 +257,7 @@ const ProjectTeamTable = ({
   const isNewProjectActions = {
     true: {
       add: newData => {
-        let activePersonnel = { ...newData, status_id: 1 };
+        let activePersonnel = { ...newData };
         // Aggregate into a unique set if there is stuff already there
         const newPersonnelState = personnelState.map(item => {
           if (item.user_id === newData.user_id) {
@@ -300,7 +300,6 @@ const ProjectTeamTable = ({
             project_id: Number.parseInt(projectId),
             user_id: newData.user_id,
             role_id: roleId,
-            status_id: 1,
             notes: index === 0 ? newData.notes : "",
           };
         });
