@@ -32,6 +32,7 @@ import TrafficIcon from "@material-ui/icons/Traffic";
 import {
   USER_FOLLOWED_PROJECTS_QUERY,
   USER_PERSONNEL_PROJECTS_QUERY,
+  DASHBOARD_QUERY
 } from "../../queries/dashboard";
 import { STATUS_QUERY } from "../../queries/project";
 
@@ -114,6 +115,17 @@ const DashboardView = () => {
   if (error) {
     console.log(error);
   }
+
+  const { loadingDash, errorDash, dataDash, refetchDash } = useQuery(DASHBOARD_QUERY, {
+    variables: { userId },
+    fetchPolicy: "no-cache",
+  });
+
+  if (errorDash) {
+    console.log(errorDash);
+  }
+
+  console.log(dataDash);
 
   const { referenceData } = useQuery(STATUS_QUERY);
 
