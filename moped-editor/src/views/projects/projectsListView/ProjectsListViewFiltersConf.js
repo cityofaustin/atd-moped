@@ -43,6 +43,18 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
+      name: "type_name",
+      label: "Project type",
+      placeholder: "Enter Project type",
+      type: "string",
+      defaultOperator: "string_contains_case_insensitive",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
       name: "updated_at",
       label: "Last modified",
       placeholder: "Last modified",
