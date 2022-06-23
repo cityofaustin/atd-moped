@@ -5,7 +5,9 @@ import config from "../../config";
 import { useUser, getJwt } from "../../auth/user";
 
 // File Pond Library
-import { FilePond, File, registerPlugin } from "react-filepond";
+// @ts-ignore
+import { FilePond, registerPlugin } from "react-filepond";
+import { File } from "filepond"
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
