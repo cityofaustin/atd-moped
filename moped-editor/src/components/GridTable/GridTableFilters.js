@@ -17,7 +17,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
 
 /**
@@ -25,7 +25,7 @@ import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
  * @type {Object}
  * @constant
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   filterAlert: {
     margin: theme.spacing(1),
@@ -141,7 +141,7 @@ const GridTableFilters = ({
    * @param uuid
    * @return {Object}
    */
-  const generateEmptyField = uuid => {
+  const generateEmptyField = (uuid) => {
     return { ...defaultNewFieldState, id: uuid };
   };
 
@@ -151,7 +151,7 @@ const GridTableFilters = ({
    */
   const generateUuid = () => {
     let dt = new Date().getTime();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
       const r = (dt + Math.random() * 16) % 16 | 0;
       dt = Math.floor(dt / 16);
       return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
@@ -171,11 +171,15 @@ const GridTableFilters = ({
 
       // Find the field we need to gather options from
       const fieldIndex = query.config.filters.fields.findIndex(
-        filter => filter.name === field
+        (filter) => filter.name === field
       );
+
+      console.log(fieldIndex)
 
       // Gather field details
       const fieldDetails = query.config.filters.fields[fieldIndex];
+
+      console.log(fieldDetails)
 
       if (!fieldDetails) {
         filtersNewState[filterId] = generateEmptyField(filterId);
@@ -196,11 +200,11 @@ const GridTableFilters = ({
             query.config.filters.operators
           )
             .filter(
-              operator =>
+              (operator) =>
                 query.config.filters.operators[operator].type ===
                 fieldDetails.type
             )
-            .map(operator => {
+            .map((operator) => {
               return {
                 ...query.config.filters.operators[operator],
                 ...{ id: operator },
@@ -208,14 +212,13 @@ const GridTableFilters = ({
             });
         } else {
           // Append listed operators for that field
-          filtersNewState[
-            filterId
-          ].availableOperators = fieldDetails.operators.map(operator => {
-            return {
-              ...query.config.filters.operators[operator],
-              ...{ id: operator },
-            };
-          });
+          filtersNewState[filterId].availableOperators =
+            fieldDetails.operators.map((operator) => {
+              return {
+                ...query.config.filters.operators[operator],
+                ...{ id: operator },
+              };
+            });
         }
       }
 
@@ -247,7 +250,7 @@ const GridTableFilters = ({
     if (filterId in filterParameters) {
       // Clone state
       const filtersNewState = { ...filterParameters };
-      console.log(operator)
+      console.log(operator);
 
       if (operator in query.config.filters.operators) {
         // Update Operator Value
@@ -296,7 +299,7 @@ const GridTableFilters = ({
    * Deletes a filter from the state
    * @param {string} filterId - The UUID of the filter to be deleted
    */
-  const handleDeleteFilterButtonClick = filterId => {
+  const handleDeleteFilterButtonClick = (filterId) => {
     // Copy the state into a new object
     const filtersNewState = {
       ...filterParameters,
@@ -346,7 +349,7 @@ const GridTableFilters = ({
       if (Object.keys(filterParameters).length === 0) {
         feedback.push("• No filters have been added.");
       } else {
-        Object.keys(filterParameters).forEach(filterKey => {
+        Object.keys(filterParameters).forEach((filterKey) => {
           const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
@@ -382,7 +385,7 @@ const GridTableFilters = ({
    * @param {object} field - The field being checked
    * @returns {boolean}
    */
-  const isFilterNullType = field => {
+  const isFilterNullType = (field) => {
     return field.gqlOperator && field.gqlOperator.includes("is_null");
   };
 
@@ -411,9 +414,8 @@ const GridTableFilters = ({
           You don't have any search filters, add one below.
         </Alert>
       )}
-      {Object.keys(filterParameters).map(filterId => {
-        console.log(filterParameters)
-        console.log(filterId)
+      {Object.keys(filterParameters).map((filterId) => {
+        console.log(filterParameters[filterId])
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -431,35 +433,64 @@ const GridTableFilters = ({
                   >
                     Field
                   </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId={`filter-field-select-${filterId}`}
-                    id={`filter-field-select-${filterId}`}
+                  <Autocomplete
                     value={
                       filterParameters[filterId].field
-                        ? filterParameters[filterId].field
-                        : ""
+                         ? filterParameters[filterId].label
+                         : ""
                     }
-                    onChange={e =>
-                      handleFilterFieldMenuClick(filterId, e.target.value)
+                    defaultValue={null}
+                    id={`filter-field-select-${filterId}`}
+                    options={query.config.filters.fields}
+                    getOptionLabel={(t) => {
+                      return(t.label)
+                    }}
+                    onChange={(e, value) => {
+                      handleFilterFieldMenuClick(filterId, value.name)
                     }
-                    label="field"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {query.config.filters.fields.map((field, fieldIndex) => {
-                      return (
-                        <MenuItem
-                          value={field.name}
-                          key={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                          id={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                        >
-                          {field.label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
+                    }
+                    getOptionSelected={(option, value) => {
+                      console.log(option.name, value, option.name === value)
+                      return (option.name === value)}
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label={""}
+                      />
+                    )}
+                  />
+                  {// <Select
+                  //   fullWidth
+                  //   labelId={`filter-field-select-${filterId}`}
+                  //   id={`filter-field-select-${filterId}`}
+                  //   value={
+                  //     filterParameters[filterId].field
+                  //       ? filterParameters[filterId].field
+                  //       : ""
+                  //   }
+                  //   onChange={(e) => 
+                  //     handleFilterFieldMenuClick(filterId, e.target.value)
+                  //   }
+                  //   label="field"
+                  // >
+                  //   <MenuItem value="">
+                  //     <em>None</em>
+                  //   </MenuItem>
+                  //   {query.config.filters.fields.map((field, fieldIndex) => {
+                  //     return (
+                  //       <MenuItem
+                  //         value={field.name}
+                  //         key={`filter-field-select-item-${field.name}-${fieldIndex}`}
+                  //         id={`filter-field-select-item-${field.name}-${fieldIndex}`}
+                  //       >
+                  //         {field.label}
+                  //       </MenuItem>
+                  //     );
+                  //   })}
+                  // </Select>
+                }
                 </FormControl>
               </Grid>
 
@@ -481,7 +512,7 @@ const GridTableFilters = ({
                         ? filterParameters[filterId].operator
                         : ""
                     }
-                    onChange={e =>
+                    onChange={(e) =>
                       handleFilterOperatorClick(filterId, e.target.value)
                     }
                     label="field"
@@ -518,7 +549,7 @@ const GridTableFilters = ({
                           ? filterParameters[filterId].type
                           : "text"
                       }
-                      onChange={e =>
+                      onChange={(e) =>
                         handleSearchValueChange(filterId, e.target.value)
                       }
                       variant="outlined"
