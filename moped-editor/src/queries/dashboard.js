@@ -32,7 +32,7 @@ export const USER_PERSONNEL_PROJECTS_QUERY = gql`
     moped_proj_personnel(
       where: {
         user_id: { _eq: $userId }
-        status_id: { _neq: 0 }
+        is_deleted: { _eq: false }
         project: { is_deleted: { _eq: false } }
       }
     ) {

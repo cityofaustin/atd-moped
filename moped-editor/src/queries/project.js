@@ -150,7 +150,7 @@ export const TYPES_QUERY = gql`
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       user_id
       role_id
@@ -199,41 +199,10 @@ export const UPSERT_PROJECT_PERSONNEL = gql`
       objects: $objects
       on_conflict: {
         constraint: moped_proj_personnel_project_id_user_id_role_id_key
-        update_columns: [project_id, user_id, role_id, status_id, notes]
+        update_columns: [project_id, user_id, role_id, is_deleted, notes]
       }
     ) {
       affected_rows
-    }
-  }
-`;
-
-export const UPDATE_PROJECT_PERSONNEL = gql`
-  mutation UpdateProjectPersonnel(
-    $user_id: Int
-    $notes: String
-    $project_id: Int
-    $status_id: Int
-    $project_personnel_id: Int!
-    $date_added: timestamptz
-    $added_by: Int
-    $role_id: Int
-  ) {
-    update_moped_proj_personnel_by_pk(
-      pk_columns: { project_personnel_id: $project_personnel_id }
-      _set: {
-        user_id: $user_id
-        notes: $notes
-        project_id: $project_id
-        status_id: $status_id
-        project_personnel_id: $project_personnel_id
-        date_added: $date_added
-        added_by: $added_by
-        role_id: $role_id
-      }
-    ) {
-      user_id
-      role_id
-      notes
     }
   }
 `;
