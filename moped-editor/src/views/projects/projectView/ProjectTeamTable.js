@@ -257,7 +257,7 @@ const ProjectTeamTable = ({
   const isNewProjectActions = {
     true: {
       add: newData => {
-        let activePersonnel = { ...newData, status_id: 1 };
+        let activePersonnel = { ...newData };
         // Aggregate into a unique set if there is stuff already there
         const newPersonnelState = personnelState.map(item => {
           if (item.user_id === newData.user_id) {
@@ -300,7 +300,6 @@ const ProjectTeamTable = ({
             project_id: Number.parseInt(projectId),
             user_id: newData.user_id,
             role_id: roleId,
-            status_id: 1,
             notes: index === 0 ? newData.notes : "",
           };
         });
@@ -352,7 +351,7 @@ const ProjectTeamTable = ({
               project_id: Number.parseInt(projectId),
               user_id: currentTuple[0],
               role_id: currentTuple[1],
-              status_id: tuplesContain(orphanData, currentTuple) ? 0 : 1,
+              is_deleted: tuplesContain(orphanData, currentTuple) ? true : false,
               notes: index === 0 ? newData.notes : "",
             };
           }
@@ -365,13 +364,13 @@ const ProjectTeamTable = ({
         });
       },
       delete: oldData => {
-        // We will soft delete by marking as "status_id"
+        // We will soft delete by marking as is_deleted = true
         const updatedPersonnelData = oldData.role_id.map((roleId, index) => {
           return {
             project_id: Number.parseInt(projectId),
             user_id: oldData.user_id,
             role_id: roleId,
-            status_id: 0,
+            is_deleted: true,
             notes: index === 0 ? oldData.notes : "",
           };
         });
