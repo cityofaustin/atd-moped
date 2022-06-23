@@ -6,11 +6,11 @@ import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 export const useStyles = makeStyles(theme => ({
   speedDialStreets: {
     color: "black",
-    backgroundImage: "url(/moped/static/images/mapStreets.jpg) !important",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg) !important`,
   },
   speedDialAerial: {
     color: "white",
-    backgroundImage: "url(/moped/static/images/mapAerial.jpg) !important",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg) !important`,
   },
   mapStyleToggle: {
     position: "absolute",
