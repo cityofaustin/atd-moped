@@ -123,6 +123,7 @@ const ProjectComponentsBaseMap = ({
             tooltipTitle={"Streets Base Map"}
             tooltipPlacement={"top"}
             onClick={() => handleBasemapSpeedDialClose("streets")}
+            className={classes.speedDialStreets}
           />
           <SpeedDialAction
             key={"aerial"}
@@ -133,6 +134,7 @@ const ProjectComponentsBaseMap = ({
             }
             tooltipTitle={"Aerial Base Map"}
             tooltipPlacement={"top"}
+            className={classes.speedDialAerial}
             onClick={() => handleBasemapSpeedDialClose("aerial")}
           />
         </SpeedDial>,
