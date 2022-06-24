@@ -1,5 +1,7 @@
 {
-    "extends": [
-      "plugin:react-hooks/recommended"
-    ]
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": "error"
+  },
+  "extends": ["plugin:react-hooks/recommended", "plugin:prettier/recommended"]
 }
