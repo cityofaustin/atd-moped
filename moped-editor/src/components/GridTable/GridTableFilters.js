@@ -174,12 +174,8 @@ const GridTableFilters = ({
         (filter) => filter.name === field
       );
 
-      console.log(fieldIndex)
-
       // Gather field details
       const fieldDetails = query.config.filters.fields[fieldIndex];
-
-      console.log(fieldDetails)
 
       if (!fieldDetails) {
         filtersNewState[filterId] = generateEmptyField(filterId);
@@ -250,7 +246,6 @@ const GridTableFilters = ({
     if (filterId in filterParameters) {
       // Clone state
       const filtersNewState = { ...filterParameters };
-      console.log(operator);
 
       if (operator in query.config.filters.operators) {
         // Update Operator Value
@@ -415,7 +410,6 @@ const GridTableFilters = ({
         </Alert>
       )}
       {Object.keys(filterParameters).map((filterId) => {
-        console.log(filterParameters[filterId])
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -427,70 +421,25 @@ const GridTableFilters = ({
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
-                  <InputLabel
-                    id={`filter-field-select-${filterId}-label`}
-                    key={`filter-field-select-${filterId}-label`}
-                  >
-                    Field
-                  </InputLabel>
                   <Autocomplete
-                    value={
-                      filterParameters[filterId].field
-                         ? filterParameters[filterId].label
-                         : ""
-                    }
                     defaultValue={null}
                     id={`filter-field-select-${filterId}`}
                     options={query.config.filters.fields}
-                    getOptionLabel={(t) => {
-                      return(t.label)
-                    }}
+                    getOptionLabel={(t) => t.label}
                     onChange={(e, value) => {
-                      handleFilterFieldMenuClick(filterId, value.name)
-                    }
-                    }
-                    getOptionSelected={(option, value) => {
-                      console.log(option.name, value, option.name === value)
-                      return (option.name === value)}
+                      handleFilterFieldMenuClick(filterId, value.name);
+                    }}
+                    getOptionSelected={(option, value) =>
+                      option.name === value.name
                     }
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         variant="standard"
-                        label={""}
+                        label={"Field"}
                       />
                     )}
                   />
-                  {// <Select
-                  //   fullWidth
-                  //   labelId={`filter-field-select-${filterId}`}
-                  //   id={`filter-field-select-${filterId}`}
-                  //   value={
-                  //     filterParameters[filterId].field
-                  //       ? filterParameters[filterId].field
-                  //       : ""
-                  //   }
-                  //   onChange={(e) => 
-                  //     handleFilterFieldMenuClick(filterId, e.target.value)
-                  //   }
-                  //   label="field"
-                  // >
-                  //   <MenuItem value="">
-                  //     <em>None</em>
-                  //   </MenuItem>
-                  //   {query.config.filters.fields.map((field, fieldIndex) => {
-                  //     return (
-                  //       <MenuItem
-                  //         value={field.name}
-                  //         key={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                  //         id={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                  //       >
-                  //         {field.label}
-                  //       </MenuItem>
-                  //     );
-                  //   })}
-                  // </Select>
-                }
                 </FormControl>
               </Grid>
 
