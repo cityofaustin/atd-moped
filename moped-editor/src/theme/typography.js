@@ -1,4 +1,4 @@
-export default {
+const typography = {
   h1: {
     fontWeight: 500,
     fontSize: 29,
@@ -35,3 +35,5 @@ export default {
   },
   fontFamily: `"Roboto", san-serif`,
 };
+
+export default typography;
