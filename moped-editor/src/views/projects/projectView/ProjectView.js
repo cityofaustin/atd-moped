@@ -112,6 +112,7 @@ const useStyles = makeStyles(theme => ({
   },
   followDiv: {
     float: "right",
+    cursor: "pointer",
   },
   unfollowIcon: {
     color: theme.palette.primary.main,
