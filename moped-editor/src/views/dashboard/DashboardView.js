@@ -95,8 +95,8 @@ const TABS = [
 
 const DashboardView = () => {
   const userSessionData = getSessionDatabaseData();
-  const userId = userSessionData.user_id;
-  const userName = userSessionData.first_name;
+  const userId = userSessionData?.user_id;
+  const userName = userSessionData?.first_name;
 
   const classes = useStyles();
   const typographyStyle = {

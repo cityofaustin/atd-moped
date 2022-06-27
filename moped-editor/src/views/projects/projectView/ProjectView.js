@@ -196,7 +196,7 @@ const ProjectView = () => {
   const menuOpen = anchorElement ?? false;
 
   const userSessionData = getSessionDatabaseData();
-  const userId = userSessionData.user_id;
+  const userId = userSessionData?.user_id;
 
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
