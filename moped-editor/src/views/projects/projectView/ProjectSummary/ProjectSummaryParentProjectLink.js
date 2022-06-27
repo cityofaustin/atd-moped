@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from "@material-ui/core";
 import { NavLink as RouterLink } from "react-router-dom";
 
 /**
- * ProjectSummaryProjectDescription Component
+ * ProjectSummaryParentProjectLink Component
  * @param {Object} data - The data object from the GraphQL query
  * @param {Object} classes - The shared style settings
  * @returns {JSX.Element}
