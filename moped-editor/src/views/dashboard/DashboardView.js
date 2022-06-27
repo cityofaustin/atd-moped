@@ -15,9 +15,9 @@ import {
   Tab,
   Tabs,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import MaterialTable from "@material-table/core";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 import Page from "src/components/Page";
 
@@ -27,7 +27,7 @@ import DashboardEditModal from "./DashboardEditModal";
 
 import typography from "../../theme/typography";
 
-import TrafficIcon from "@material-ui/icons/Traffic";
+import TrafficIcon from "@mui/icons-material/Traffic";
 
 import {
   USER_FOLLOWED_PROJECTS_QUERY,

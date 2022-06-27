@@ -5,7 +5,7 @@ import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 import { createProjectFeatureCollection } from "src/utils/projectComponentHelpers";
 
-import { Grid, CardContent, CircularProgress } from "@material-ui/core";
+import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 /*
@@ -16,7 +16,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";

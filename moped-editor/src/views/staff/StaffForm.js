@@ -22,14 +22,14 @@ import {
   Grid,
   InputLabel,
   TextField,
-  makeStyles,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
   Typography,
   Box,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
 
 const useStyles = makeStyles(theme => ({

@@ -1,6 +1,6 @@
 import React from "react";
-import { makeStyles } from "@material-ui/core";
-import { ToggleButton } from "@material-ui/lab";
+import makeStyles from '@mui/styles/makeStyles';
+import { ToggleButton } from '@mui/material';
 
 export const useButtonStyles = makeStyles(theme => ({
   buttonImage: {

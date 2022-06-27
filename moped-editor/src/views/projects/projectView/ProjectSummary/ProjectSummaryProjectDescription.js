@@ -5,7 +5,7 @@ import {
   Icon,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 

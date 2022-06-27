@@ -1,7 +1,7 @@
 import React from "react";
 import Can from "../../auth/Can";
-import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
-import { Button, Icon } from "@material-ui/core";
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import { Button, Icon } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
 export const newItemButton = (

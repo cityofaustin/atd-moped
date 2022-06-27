@@ -14,11 +14,12 @@ import {
   Icon,
   IconButton,
   Grow,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { Alert } from "@material-ui/lab";
-import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
+import makeStyles from '@mui/styles/makeStyles';
+
+import { Alert } from '@mui/material';
+import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 
 /**
  * The styling for the filter components
@@ -49,13 +50,13 @@ const useStyles = makeStyles(theme => ({
     paddingBottom: "2px",
     paddingRight: "16px",
     paddingLeft: "16px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: 0,
     },
   },
   bottomButton: {
     margin: theme.spacing(1),
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       margin: 0,
     },
     minWidth: "100px",
@@ -70,7 +71,7 @@ const useStyles = makeStyles(theme => ({
   filtersContainer: {
     paddingLeft: "8px",
     marginBottom: "8px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: 0,
     },
   },
@@ -401,7 +402,7 @@ const GridTableFilters = ({
         <IconButton
           onClick={handleAdvancedSearchClose}
           className={classes.closeButton}
-        >
+          size="large">
           <Icon fontSize={"small"}>close</Icon>
         </IconButton>
       </Grid>
@@ -523,12 +524,12 @@ const GridTableFilters = ({
                   )}
                 </FormControl>
               </Grid>
-              <Hidden smDown>
+              <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
-                  >
+                    size="large">
                     <Icon className={classes.deleteIcon}>delete_outline</Icon>
                   </IconButton>
                 </Grid>
@@ -575,7 +576,7 @@ const GridTableFilters = ({
             </Button>
           )}
         </Grid>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Grid item xs={12} md={7}>
             {""}
           </Grid>

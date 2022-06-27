@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { TablePagination } from "@material-ui/core";
+import { TablePagination } from "@mui/material";
 
 /**
  * GridTablePagination Component

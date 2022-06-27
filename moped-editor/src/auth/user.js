@@ -8,7 +8,7 @@ import React, {
 
 import Amplify, { Auth } from "aws-amplify";
 
-import { colors } from "@material-ui/core";
+import { colors } from "@mui/material";
 
 import config from "../config";
 

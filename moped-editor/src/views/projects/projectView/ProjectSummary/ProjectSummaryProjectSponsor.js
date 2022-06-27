@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from '@mui/material';
 
 import { useMutation } from "@apollo/client";
 import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";

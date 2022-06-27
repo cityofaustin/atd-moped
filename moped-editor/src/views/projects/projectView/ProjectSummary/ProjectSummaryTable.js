@@ -1,8 +1,8 @@
 import React from "react";
 
 import DataTable from "../../../../components/DataTable/DataTable";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Box, Grid } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
+import { Box, Grid } from "@mui/material";
 
 import ExternalLink from "../../../../components/ExternalLink";
 

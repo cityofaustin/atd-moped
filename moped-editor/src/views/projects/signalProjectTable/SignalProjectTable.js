@@ -11,9 +11,9 @@ import {
   Select,
   TextField,
   Typography,
-  makeStyles,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import Autocomplete from '@mui/material/Autocomplete';
 import MaterialTable, {
   MTableEditRow,
   MTableEditField,
@@ -470,7 +470,7 @@ const SignalProjectTable = () => {
         options={entityList}
         getOptionLabel={e => e.entity_name}
         onChange={(event, value) => props.onChange(value)}
-        getOptionSelected={(option, value) =>
+        isOptionEqualToValue={(option, value) =>
           option.entity_id === value.entity_id
         }
         renderInput={params => (

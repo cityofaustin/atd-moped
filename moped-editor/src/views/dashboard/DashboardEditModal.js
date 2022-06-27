@@ -6,10 +6,10 @@ import {
   DialogContent,
   IconButton,
   Tooltip,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import makeStyles from '@mui/styles/makeStyles';
 import ProjectComments from "./../projects/projectView/ProjectComments";
 
 const useStyles = makeStyles(theme => ({
@@ -37,42 +37,40 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
     queryRefetch();
   };
 
-  return (
-    <>
-      <Typography
-        className={classes.statusUpdateText}
-        onClick={() => setIsDialogOpen(true)}
-      >
-        {displayText.length > 0 ? (
-          displayText
-        ) : (
-          <Tooltip placement="bottom-start" title="Create new status update">
-            <ControlPointIcon className={classes.tooltipIcon} />
-          </Tooltip>
-        )}
-      </Typography>
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        fullWidth
-        maxWidth={"md"}
-      >
-        <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Status update - ${project.project_name}`}</h4>
-          <IconButton onClick={() => handleDialogClose()}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <ProjectComments
-            modal
-            projectId={project.project_id}
-            closeModalDialog={handleDialogClose}
-          />
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+  return <>
+    <Typography
+      className={classes.statusUpdateText}
+      onClick={() => setIsDialogOpen(true)}
+    >
+      {displayText.length > 0 ? (
+        displayText
+      ) : (
+        <Tooltip placement="bottom-start" title="Create new status update">
+          <ControlPointIcon className={classes.tooltipIcon} />
+        </Tooltip>
+      )}
+    </Typography>
+    <Dialog
+      open={isDialogOpen}
+      onClose={handleDialogClose}
+      fullWidth
+      maxWidth={"md"}
+    >
+      <DialogTitle className={classes.dialogTitle}>
+        <h4>{`Status update - ${project.project_name}`}</h4>
+        <IconButton onClick={() => handleDialogClose()} size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <ProjectComments
+          modal
+          projectId={project.project_id}
+          closeModalDialog={handleDialogClose}
+        />
+      </DialogContent>
+    </Dialog>
+  </>;
 };
 
 export default DashboardEditModal;

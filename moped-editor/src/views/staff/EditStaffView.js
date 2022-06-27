@@ -3,16 +3,8 @@ import { useQuery, gql } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import StaffForm, { initialFormValues } from "./StaffForm";
 
-import {
-  Box,
-  Container,
-  Card,
-  CardHeader,
-  CardContent,
-  CircularProgress,
-  Divider,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Container, Card, CardHeader, CardContent, CircularProgress, Divider } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 import { findHighestRole } from "../../auth/user";
 import NotFoundView from "../errors/NotFoundView";

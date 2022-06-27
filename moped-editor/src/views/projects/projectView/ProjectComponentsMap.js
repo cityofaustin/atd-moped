@@ -1,7 +1,8 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import Geocoder from "react-map-gl-geocoder";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import bboxPolygon from "@turf/bbox-polygon";
 import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";

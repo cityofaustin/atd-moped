@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 
-import {
-  FormControlLabel,
-  FormGroup,
-  makeStyles,
-  Switch,
-} from "@material-ui/core";
+import { FormControlLabel, FormGroup, Switch } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 
 import { StaffListViewQueryConf } from "./StaffListViewQueryConf";

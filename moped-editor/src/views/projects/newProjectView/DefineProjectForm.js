@@ -1,6 +1,6 @@
 import React from "react";
-import { TextField, Grid, InputLabel, Switch } from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
+import { TextField, Grid, InputLabel, Switch } from "@mui/material";
+import { Autocomplete } from '@mui/material';
 import SignalAutocomplete from "./SignalAutocomplete";
 
 const DefineProjectForm = ({

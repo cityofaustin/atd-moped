@@ -14,12 +14,12 @@ import {
   Switch,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { Alert } from "@material-ui/lab";
+import { Alert } from '@mui/material';
 
 import { gql, useMutation, useQuery } from "@apollo/client";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import { formatDateType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles(theme => ({

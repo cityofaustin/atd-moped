@@ -13,8 +13,8 @@ import {
   Grid,
   Icon,
   TextField,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   UPDATE_MOPED_COMPONENT,
   DELETE_MOPED_COMPONENT,
@@ -22,7 +22,7 @@ import {
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import ProjectComponentsMap from "./ProjectComponentsMap";
-import { Alert, Autocomplete } from "@material-ui/lab";
+import { Alert, Autocomplete } from '@mui/material';
 import {
   countFeatures,
   mapConfig,
@@ -31,7 +31,7 @@ import {
 import { useInitialTypeCounts } from "src/utils/projectComponentHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -772,10 +772,8 @@ const ProjectComponentsMapEdit = ({
                           className={classes.formButton}
                           onClick={handleDeleteDialogClickOpen}
                           variant="outlined"
-                          color="default"
                           startIcon={<Icon>delete</Icon>}
-                          size="small"
-                        >
+                          size="small">
                           Delete
                         </Button>
                       )}
@@ -822,10 +820,8 @@ const ProjectComponentsMapEdit = ({
                   </Button>
                   <Button
                     onClick={handleDeleteDialogClickClose}
-                    color="default"
                     autoFocus
-                    startIcon={<Icon>cancel</Icon>}
-                  >
+                    startIcon={<Icon>cancel</Icon>}>
                     Cancel
                   </Button>
                 </DialogActions>

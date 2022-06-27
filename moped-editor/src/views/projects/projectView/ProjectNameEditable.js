@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Box,
   Grid,
@@ -7,9 +7,9 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { gql, useMutation } from "@apollo/client";
-import { Alert } from "@material-ui/lab";
+import { Alert } from '@mui/material';
 
 /**
  * GridTable Style

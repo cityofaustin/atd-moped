@@ -2,19 +2,9 @@ import React, { useState } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
-import {
-  AppBar,
-  Box,
-  Button,
-  Hidden,
-  Toolbar,
-  Tabs,
-  Tab,
-  Menu,
-  MenuItem,
-  makeStyles,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { AppBar, Box, Button, Hidden, Toolbar, Tabs, Tab, Menu, MenuItem } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert } from '@mui/material';
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
@@ -112,7 +102,7 @@ const TopBar = ({ className, ...rest }) => {
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Box>
             <Tabs className={classes.tabs} value={false}>
               {navigationItems.map(item => (
@@ -169,7 +159,7 @@ const TopBar = ({ className, ...rest }) => {
             </MenuItem>
           </Menu>
         </Box>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Box>
             <SupportMenu />
           </Box>

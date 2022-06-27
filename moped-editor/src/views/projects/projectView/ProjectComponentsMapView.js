@@ -1,13 +1,7 @@
 import React, { useCallback, useRef, useState } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
-import {
-  Box,
-  Button,
-  Collapse,
-  Divider,
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Button, Collapse, Divider, Grid } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import "mapbox-gl/dist/mapbox-gl.css";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
@@ -24,7 +18,7 @@ import {
   getLayerNames,
   makeCommonComponentsMapStyles,
 } from "../../../utils/mapHelpers";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import Geocoder from "react-map-gl-geocoder";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 

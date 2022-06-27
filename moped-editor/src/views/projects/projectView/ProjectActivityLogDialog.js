@@ -21,7 +21,7 @@ import {
   Avatar,
   FormControlLabel,
   Checkbox,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import {
   getRecordTypeLabel,
@@ -29,7 +29,7 @@ import {
 } from "./ProjectActivityLogTableMaps";
 
 import { PROJECT_ACTIVITY_LOG_DETAILS } from "../../../queries/project";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   formatTimeStampTZType,
   makeFullTimeFromTimeStampTZ,
@@ -220,7 +220,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
             color="inherit"
             onClick={handleClose}
             aria-label="close"
-          >
+            size="large">
             <Icon>close</Icon>
           </IconButton>
           <Typography variant="h5" className={classes.title}>

@@ -3,16 +3,9 @@ import { Layer, Source, WebMercatorViewport } from "react-map-gl";
 import bbox from "@turf/bbox";
 import combine from "@turf/combine";
 import theme from "../theme/index";
-import {
-  Checkbox,
-  Button,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
-  withStyles,
-} from "@material-ui/core";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import { Checkbox, Button, Menu, MenuItem, ListItemIcon, ListItemText } from "@mui/material";
+import withStyles from '@mui/styles/withStyles';
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import {
   mapSaveActionReducer,
   mapSaveActionInitialState,
@@ -918,13 +911,11 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         aria-controls="customized-menu"
         aria-haspopup="true"
         variant="outlined"
-        color="default"
         onClick={handleMenuItemClick}
         className={classes.layerSelectButton}
         startIcon={
           Boolean(anchorEl) ? <KeyboardArrowUp /> : <KeyboardArrowDown />
-        }
-      >
+        }>
         Map Features
       </Button>
       <StyledMenu

@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import MapDrawToolbarButton from "./MapDrawToolbarButton";
 
 import { MODES, POINT_MODES, LINE_MODES } from "../../../utils/mapDrawHelpers";
-import { ToggleButtonGroup } from "@material-ui/lab";
+import { ToggleButtonGroup } from '@mui/material';
 
 /**
  * Generates a draw toolbar for the map

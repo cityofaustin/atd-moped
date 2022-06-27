@@ -8,8 +8,8 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
+} from "@mui/material";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 
 import {
   PROJECT_SUMMARY_STATUS_UPDATE_INSERT,

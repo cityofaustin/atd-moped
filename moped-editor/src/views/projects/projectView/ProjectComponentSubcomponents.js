@@ -1,7 +1,7 @@
 import React from "react";
-import { Chip, Grid, TextField } from "@material-ui/core";
-import { Alert, Autocomplete } from "@material-ui/lab";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import { Chip, Grid, TextField } from "@mui/material";
+import { Alert, Autocomplete } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   alert: {
@@ -101,7 +101,7 @@ const ProjectComponentSubcomponents = ({
         options={availableSubcomponents}
         // The list changes depending on available subcomponents for that specific type
         getOptionLabel={option => option.subcomponent_name}
-        getOptionSelected={(option, value) =>
+        isOptionEqualToValue={(option, value) =>
           option.subcomponent_id === value.subcomponent_id
         }
         renderTags={(tagValue, getTagProps) =>

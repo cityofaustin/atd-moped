@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { IconButton, Menu, MenuItem } from "@material-ui/core";
+import { IconButton, Menu, MenuItem } from "@mui/material";
 import ExternalLink from "../../../components/ExternalLink";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
 export const helpItems = [
   {
@@ -43,35 +43,33 @@ const SupportMenu = () => {
     setSupportAnchorEl(null);
   };
 
-  return (
-    <>
-      <IconButton onClick={handleSupportClick}>
-        <HelpOutlineIcon />
-      </IconButton>
-      <Menu
-        id="mobileDropdown"
-        anchorEl={supportAnchorEl}
-        keepMounted
-        open={Boolean(supportAnchorEl)}
-        onClose={handleSupportClose}
-        // vertical point set explicity to match AvatarMenu location
-        anchorOrigin={{ vertical: 56, horizontal: "right" }}
-        // getContentAnchorEl needs to be null for the positioning to work
-        getContentAnchorEl={null}
-      >
-        {helpItems.map(item => (
-          <MenuItem key={item.href} onClick={handleSupportClose}>
-            <ExternalLink
-              url={item.href}
-              text={item.title}
-              linkColor="inherit"
-              underline="none"
-            />
-          </MenuItem>
-        ))}
-      </Menu>
-    </>
-  );
+  return <>
+    <IconButton onClick={handleSupportClick} size="large">
+      <HelpOutlineIcon />
+    </IconButton>
+    <Menu
+      id="mobileDropdown"
+      anchorEl={supportAnchorEl}
+      keepMounted
+      open={Boolean(supportAnchorEl)}
+      onClose={handleSupportClose}
+      // vertical point set explicity to match AvatarMenu location
+      anchorOrigin={{ vertical: 56, horizontal: "right" }}
+      // getContentAnchorEl needs to be null for the positioning to work
+      getContentAnchorEl={null}
+    >
+      {helpItems.map(item => (
+        <MenuItem key={item.href} onClick={handleSupportClose}>
+          <ExternalLink
+            url={item.href}
+            text={item.title}
+            linkColor="inherit"
+            underline="none"
+          />
+        </MenuItem>
+      ))}
+    </Menu>
+  </>;
 };
 
 export default SupportMenu;

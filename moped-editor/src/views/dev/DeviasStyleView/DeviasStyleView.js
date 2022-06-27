@@ -1,5 +1,6 @@
 import React from "react";
-import { Grid, Container, makeStyles, Typography } from "@material-ui/core";
+import { Grid, Container, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 import TypographyView from "./TypographyView";
 import ColorsView from "./ColorsView";

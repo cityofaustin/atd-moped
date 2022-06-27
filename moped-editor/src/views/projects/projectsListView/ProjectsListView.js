@@ -2,8 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 
-// Material
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 
 // Abstract

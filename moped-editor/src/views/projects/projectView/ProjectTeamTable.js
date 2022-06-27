@@ -11,14 +11,14 @@ import {
   Typography,
   FormControl,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import MaterialTable, { MTableEditRow, MTableAction } from "@material-table/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import typography from "../../../theme/typography";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
@@ -29,7 +29,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   infoIcon: {
@@ -186,7 +186,7 @@ const ProjectTeamTable = ({
             name="user_id"
             options={userIds}
             getOptionLabel={option => getPersonnelName(option)}
-            getOptionSelected={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
             renderInput={params => <TextField {...params} />}

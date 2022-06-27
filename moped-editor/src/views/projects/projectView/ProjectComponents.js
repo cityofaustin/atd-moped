@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { COMPONENTS_QUERY } from "../../../queries/project";
 import {
   CircularProgress,
@@ -15,7 +15,7 @@ import {
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { ErrorBoundary } from "react-error-boundary";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -29,8 +29,8 @@ import {
 
 import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
 import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
-import Alert from "@material-ui/lab/Alert";
-import { ArrowForwardIos } from "@material-ui/icons";
+import Alert from '@mui/material/Alert';
+import { ArrowForwardIos } from "@mui/icons-material";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -189,11 +189,9 @@ const ProjectComponents = () => {
               className={classes.componentButtonAddNew}
               onClick={handleAddNewComponentClick}
               variant="outlined"
-              color="default"
               size={"large"}
               startIcon={<Icon>add</Icon>}
-              fullWidth
-            >
+              fullWidth>
               Add new component
             </Button>
             {componentsAvailable && (
@@ -256,7 +254,7 @@ const ProjectComponents = () => {
                               handleComponentDetailsClick();
                             }}
                           >
-                            <IconButton edge="end" aria-label="comments">
+                            <IconButton edge="end" aria-label="comments" size="large">
                               <ArrowForwardIos
                                 className={classes.listItemSecondaryAction}
                               />

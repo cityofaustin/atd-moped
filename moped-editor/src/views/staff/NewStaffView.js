@@ -1,15 +1,8 @@
 import React from "react";
 import StaffForm from "./StaffForm";
 
-import {
-  Box,
-  Container,
-  Card,
-  CardHeader,
-  CardContent,
-  Divider,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Container, Card, CardHeader, CardContent, Divider } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 
 const useStyles = makeStyles(() => ({

@@ -1,7 +1,7 @@
 import React from "react";
-import Link from "@material-ui/core/Link";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import { makeStyles } from "@material-ui/core/styles";
+import Link from "@mui/material/Link";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
   openInNewIcon: {

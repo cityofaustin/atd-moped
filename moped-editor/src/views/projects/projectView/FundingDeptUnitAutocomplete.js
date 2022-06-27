@@ -1,6 +1,6 @@
 import React from "react";
-import { CircularProgress, TextField } from "@material-ui/core";
-import { Autocomplete, Alert } from "@material-ui/lab";
+import { CircularProgress, TextField } from "@mui/material";
+import { Autocomplete, Alert } from '@mui/material';
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
@@ -57,7 +57,7 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       options={data}
       renderInput={params => DeptUnitInput(params, null, "standard")}
       value={value ?? ""}
-      getOptionSelected={(value, option) =>
+      isOptionEqualToValue={(value, option) =>
         value.unit_long_name === option.unit_long_name
       }
     />

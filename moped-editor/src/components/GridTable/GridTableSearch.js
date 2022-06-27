@@ -15,12 +15,12 @@ import {
   Grid,
   Paper,
   Popper,
-} from "@material-ui/core";
-import SaveAltIcon from "@material-ui/icons/SaveAlt";
+} from "@mui/material";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
 import GridTableNewItem from "./GridTableNewItem";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import { get } from "lodash";
@@ -42,7 +42,7 @@ const useStyles = makeStyles(theme => ({
   },
   searchBarContainer: {
     padding: "2px",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down('sm')]: {
       paddingBottom: "12px",
     },
   },
@@ -51,7 +51,7 @@ const useStyles = makeStyles(theme => ({
     zIndex: "3",
     paddingLeft: "16px",
     paddingRight: "16px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: "23px",
       paddingRight: "14px",
     },

@@ -1,8 +1,8 @@
 import React from "react";
-import { Box, Button, Container, Grid } from "@material-ui/core";
+import { Box, Button, Container, Grid } from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
 const quillModules = {
