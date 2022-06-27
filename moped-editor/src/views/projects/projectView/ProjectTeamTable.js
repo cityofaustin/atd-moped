@@ -45,8 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectTeamTable = ({ projectId = null }) => {
-  const isNewProject = projectId === null;
+const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
@@ -249,87 +248,6 @@ const ProjectTeamTable = ({ projectId = null }) => {
     },
   ];
 
-  /**
-   * Data handlers for editable actions based on isNewProject boolean <MaterialTable>
-   */
-  const isNewProjectActions = {
-    false: {
-      update: (newData, oldData) => {
-        // Creates a set of tuples that contain the user id and the role comprised by the new state
-        const newStateTuples = newData.role_id.map((role_id) => [
-          newData.user_id,
-          role_id,
-        ]);
-
-        // Creates a set of tuples that contain the user id and role comprised by the old state
-        const oldStateTuples = oldData.role_id.map((role_id) => [
-          oldData.user_id,
-          role_id,
-        ]);
-
-        /**
-         * From the old state, we need to remove the tuples that are not present
-         * in the new state, these tuples are 'orphans' and need to be archived.
-         */
-        const orphanData = oldStateTuples.filter(
-          (oldTuple) => !tuplesContain(newStateTuples, oldTuple)
-        );
-
-        /**
-         * We must build a unique set of tuples so that there are no repeated
-         * operations run against the database
-         */
-        const uniqueSetOfTuples = [...newStateTuples, ...oldStateTuples].reduce(
-          (accumulator, item) => {
-            if (!tuplesContain(accumulator, item)) accumulator.push(item);
-            return accumulator;
-          },
-          []
-        );
-
-        // Removed ids means they are not present in new data,
-        const updatedPersonnelData = uniqueSetOfTuples.map(
-          (currentTuple, index) => {
-            return {
-              project_id: Number.parseInt(projectId),
-              user_id: currentTuple[0],
-              role_id: currentTuple[1],
-              is_deleted: tuplesContain(orphanData, currentTuple)
-                ? true
-                : false,
-              notes: index === 0 ? newData.notes : "",
-            };
-          }
-        );
-
-        return upsertProjectPersonnel({
-          variables: {
-            objects: updatedPersonnelData,
-          },
-        });
-      },
-      delete: (oldData) => {
-        // We will soft delete by marking as is_deleted = true
-        const updatedPersonnelData = oldData.role_id.map((roleId, index) => {
-          return {
-            project_id: Number.parseInt(projectId),
-            user_id: oldData.user_id,
-            role_id: roleId,
-            is_deleted: true,
-            notes: index === 0 ? oldData.notes : "",
-          };
-        });
-
-        // Upsert as usual
-        return upsertProjectPersonnel({
-          variables: {
-            objects: updatedPersonnelData,
-          },
-        });
-      },
-    },
-  };
-
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
@@ -397,7 +315,7 @@ const ProjectTeamTable = ({ projectId = null }) => {
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
-          onRowAdd: (newData) =>{
+          onRowAdd: (newData) => {
             // Our new data is unique, we will attempt upsert since
             // we may have existing data in our table
             const personnelData = newData.role_id.map((roleId, index) => {
@@ -414,16 +332,82 @@ const ProjectTeamTable = ({ projectId = null }) => {
               variables: {
                 objects: personnelData,
               },
-            }).then(()=>refetch());
+            }).then(() => refetch());
           },
-          onRowUpdate: (newData, oldData) =>
-            isNewProjectActions[isNewProject]
-              .update(newData, oldData)
-              .then(() => refetch()),
-          onRowDelete: (oldData) =>
-            isNewProjectActions[isNewProject]
-              .delete(oldData)
-              .then(() => refetch()),
+          onRowUpdate: (newData, oldData) => {
+            // Creates a set of tuples that contain the user id and the role comprised by the new state
+            const newStateTuples = newData.role_id.map((role_id) => [
+              newData.user_id,
+              role_id,
+            ]);
+
+            // Creates a set of tuples that contain the user id and role comprised by the old state
+            const oldStateTuples = oldData.role_id.map((role_id) => [
+              oldData.user_id,
+              role_id,
+            ]);
+
+            /**
+             * From the old state, we need to remove the tuples that are not present
+             * in the new state, these tuples are 'orphans' and need to be archived.
+             */
+            const orphanData = oldStateTuples.filter(
+              (oldTuple) => !tuplesContain(newStateTuples, oldTuple)
+            );
+
+            /**
+             * We must build a unique set of tuples so that there are no repeated
+             * operations run against the database
+             */
+            const uniqueSetOfTuples = [
+              ...newStateTuples,
+              ...oldStateTuples,
+            ].reduce((accumulator, item) => {
+              if (!tuplesContain(accumulator, item)) accumulator.push(item);
+              return accumulator;
+            }, []);
+
+            // Removed ids means they are not present in new data,
+            const updatedPersonnelData = uniqueSetOfTuples.map(
+              (currentTuple, index) => {
+                return {
+                  project_id: Number.parseInt(projectId),
+                  user_id: currentTuple[0],
+                  role_id: currentTuple[1],
+                  is_deleted: tuplesContain(orphanData, currentTuple)
+                    ? true
+                    : false,
+                  notes: index === 0 ? newData.notes : "",
+                };
+              }
+            );
+
+            return upsertProjectPersonnel({
+              variables: {
+                objects: updatedPersonnelData,
+              },
+            }).then(() => refetch());
+          },
+          onRowDelete: (oldData) => {
+            // We will soft delete by marking as is_deleted = true
+            const updatedPersonnelData = oldData.role_id.map(
+              (roleId, index) => {
+                return {
+                  project_id: Number.parseInt(projectId),
+                  user_id: oldData.user_id,
+                  role_id: roleId,
+                  is_deleted: true,
+                  notes: index === 0 ? oldData.notes : "",
+                };
+              }
+            );
+            // Upsert as usual
+            return upsertProjectPersonnel({
+              variables: {
+                objects: updatedPersonnelData,
+              },
+            }).then(() => refetch());
+          },
         }}
       />
     </ApolloErrorHandler>
