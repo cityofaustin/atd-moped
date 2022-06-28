@@ -125,6 +125,7 @@ const DashboardView = () => {
     console.log(errorDash);
   }
 
+  console.log(data);
   console.log(dataDash);
 
   const { referenceData } = useQuery(STATUS_QUERY);
