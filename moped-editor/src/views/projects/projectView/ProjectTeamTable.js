@@ -232,9 +232,9 @@ const ProjectTeamTable = ({ projectId }) => {
     {
       title: "Notes",
       field: "notes",
+      render: (props) => (props.notes === "null" ? "" : props.notes),
       editComponent: (props) => {
         const val = props.value ?? "";
-        console.log(val, val!=="null")
         return (
           <TextField
             id="notes"
