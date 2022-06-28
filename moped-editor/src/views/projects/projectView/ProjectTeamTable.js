@@ -184,7 +184,7 @@ const ProjectTeamTable = ({ projectId }) => {
             options={userIds}
             getOptionLabel={(option) => getPersonnelName(option)}
             getOptionSelected={(option, value) => option === value}
-            value={props.value}
+            value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
             renderInput={(params) => <TextField {...params} />}
           />
@@ -316,9 +316,11 @@ const ProjectTeamTable = ({ projectId }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
+            console.log(newData.role_id)
             // Our new data is unique, we will attempt upsert since
             // we may have existing data in our table
             const personnelData = newData.role_id.map((roleId, index) => {
+              console.log(index, newData.notes)
               return {
                 project_id: Number.parseInt(projectId),
                 user_id: newData.user_id,
