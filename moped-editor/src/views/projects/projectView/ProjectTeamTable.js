@@ -234,6 +234,7 @@ const ProjectTeamTable = ({ projectId }) => {
       field: "notes",
       editComponent: (props) => {
         const val = props.value ?? "";
+        console.log(val, val!=="null")
         return (
           <TextField
             id="notes"
@@ -316,11 +317,9 @@ const ProjectTeamTable = ({ projectId }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
-            console.log(newData.role_id)
             // Our new data is unique, we will attempt upsert since
             // we may have existing data in our table
             const personnelData = newData.role_id.map((roleId, index) => {
-              console.log(index, newData.notes)
               return {
                 project_id: Number.parseInt(projectId),
                 user_id: newData.user_id,
