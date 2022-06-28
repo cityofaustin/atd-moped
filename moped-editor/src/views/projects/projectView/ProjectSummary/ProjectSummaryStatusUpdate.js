@@ -73,7 +73,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Handles updating the state for "status update"
    * @param {Object} event
    */
-  const handleStatusUpdateChange = event => setStatusUpdate(DOMPurify.sanitize(event.target.value));
+  const handleStatusUpdateChange = event => setStatusUpdate(event.target.value);
 
   /**
    * Handles the edit click for status update
@@ -95,6 +95,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Handles saving the status update
    */
   const handleStatusUpdateSave = () => {
+    console.log("save new status")
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
     const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
@@ -109,14 +110,14 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
               statusUpdate: {
                 project_id: Number(projectId),
                 added_by: addedBy,
-                project_note: statusUpdate,
+                project_note: DOMPurify.sanitize(statusUpdate),
                 project_note_type: 2,
               },
             }
           : {
               project_note_id: { _eq: Number(commentId) },
               added_by: addedBy,
-              project_note: statusUpdate,
+              project_note: DOMPurify.sanitize(statusUpdate),
             }),
       },
     })
