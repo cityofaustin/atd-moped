@@ -29,11 +29,7 @@ import typography from "../../theme/typography";
 
 import TrafficIcon from "@material-ui/icons/Traffic";
 
-import {
-  USER_FOLLOWED_PROJECTS_QUERY,
-  USER_PERSONNEL_PROJECTS_QUERY,
-  DASHBOARD_QUERY
-} from "../../queries/dashboard";
+import { DASHBOARD_QUERY } from "../../queries/dashboard";
 import { STATUS_QUERY } from "../../queries/project";
 
 import { getSessionDatabaseData } from "../../auth/user";
@@ -86,11 +82,9 @@ function a11yProps(index) {
 const TABS = [
   {
     label: "My projects",
-    query: USER_PERSONNEL_PROJECTS_QUERY,
   },
   {
     label: "Following",
-    query: USER_FOLLOWED_PROJECTS_QUERY,
   },
 ];
 
@@ -107,7 +101,7 @@ const DashboardView = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const { loading, error, data, refetch } = useQuery(TABS[activeTab].query, {
+  const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
@@ -116,28 +110,13 @@ const DashboardView = () => {
     console.log(error);
   }
 
-  const { loadingDash, errorDash, dataDash, refetchDash } = useQuery(DASHBOARD_QUERY, {
-    variables: { userId },
-    fetchPolicy: "no-cache",
-  });
-
-  if (errorDash) {
-    console.log(errorDash);
-  }
-
-  console.log(data);
-  console.log(dataDash);
-
   const { referenceData } = useQuery(STATUS_QUERY);
 
   let selectedData = [];
 
-  if (TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY && !!data) {
+  if (TABS[activeTab].label === "Following" && !!data) {
     selectedData = data.moped_user_followed_projects;
-  } else if (
-    TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY &&
-    !!data
-  ) {
+  } else if (TABS[activeTab].label === "My projects" && !!data) {
     selectedData = data.moped_proj_personnel;
   }
 
@@ -279,11 +258,9 @@ const DashboardView = () => {
                       body: {
                         emptyDataSourceMessage: (
                           <Typography>
-                            {TABS[activeTab].query ===
-                              USER_FOLLOWED_PROJECTS_QUERY &&
+                            {TABS[activeTab].label === "Following" &&
                               "No projects to display. You have not followed any current projects."}
-                            {TABS[activeTab].query ===
-                              USER_PERSONNEL_PROJECTS_QUERY &&
+                            {TABS[activeTab].label === "My projects" &&
                               "No projects to display. You are not listed as a Team Member on any current projects."}
                           </Typography>
                         ),
