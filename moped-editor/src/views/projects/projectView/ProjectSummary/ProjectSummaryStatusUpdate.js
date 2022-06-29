@@ -141,6 +141,12 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     setStatusUpdateAddNew(false);
   };
 
+  /**
+   * Only allow the user who wrote the status to edit it
+   */
+  const editableComment =
+    userSessionData.user_id === parseInt(getStatusUpdate("added_by_user_id"));
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Box display="flex" justifyContent="flex-start">
@@ -168,7 +174,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             </Typography>
             <Typography
               className={classes.fieldBoxTypography}
-              onClick={handleStatusUpdateEdit}
+              onClick={editableComment ? handleStatusUpdateEdit : null}
             >
               <span className={classes.fieldLabelTextSpan}>
                 {statusUpdate || "None"}

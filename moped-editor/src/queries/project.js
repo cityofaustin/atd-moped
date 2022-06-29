@@ -64,6 +64,7 @@ export const SUMMARY_QUERY = gql`
         project_note_id
         project_note
         added_by
+        added_by_user_id
         date_created
       }
       moped_project_types(where: { is_deleted: { _eq: false } }) {

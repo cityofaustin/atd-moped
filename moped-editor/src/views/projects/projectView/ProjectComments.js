@@ -20,7 +20,7 @@ import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { getSessionDatabaseData, getHighestRole, useUser } from "src/auth/user";
+import { getSessionDatabaseData, useUser } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
@@ -88,7 +88,6 @@ const ProjectComments = props => {
   const isStatusEditModal = props.modal;
   let { projectId } = useParams();
   const { user } = useUser();
-  const userHighestRole = getHighestRole(user);
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
@@ -98,6 +97,8 @@ const ProjectComments = props => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+
+  console.log(props);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -304,9 +305,13 @@ const ProjectComments = props => {
               <List className={classes.root}>
                 {displayNotes.map((item, i) => {
                   const isNotLastItem = i < displayNotes.length - 1;
+                  {
+                    /**
+                     * Only allow the user who wrote the status to edit it
+                     */
+                  }
                   const editableComment =
-                    userSessionData.user_id === item.added_by_user_id ||
-                    userHighestRole === "moped-admin";
+                    userSessionData.user_id === item.added_by_user_id;
                   return (
                     <React.Fragment key={item.project_note_id}>
                       <ListItem alignItems="flex-start">
