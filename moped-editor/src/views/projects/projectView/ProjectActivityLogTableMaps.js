@@ -302,10 +302,10 @@ export const ProjectActivityLogTableMaps = {
         label: "milestone estimate",
         type: "timestampz",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },
@@ -536,10 +536,10 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         type: "int4",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
       subphase_name: {
         icon: "",

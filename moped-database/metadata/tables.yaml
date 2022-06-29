@@ -1569,6 +1569,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -1593,6 +1594,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -1617,6 +1619,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       filter: {}
   - role: moped-editor
     permission:
@@ -1640,6 +1643,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       filter: {}
   - role: moped-viewer
     permission:
@@ -1663,6 +1667,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -1687,6 +1692,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       filter: {}
       check: {}
   - role: moped-editor
@@ -1711,6 +1717,7 @@
       - project_milestone_id
       - started_by_user_id
       - status_id
+      - is_deleted
       filter: {}
       check: {}
   event_triggers:
@@ -1742,6 +1749,7 @@
         - milestone_description
         - milestone_status
         - date_added
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
@@ -2179,6 +2187,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       backend_only: false
   - role: moped-editor
     permission:
@@ -2204,6 +2213,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -2229,6 +2239,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       filter: {}
   - role: moped-editor
     permission:
@@ -2253,6 +2264,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       filter: {}
   - role: moped-viewer
     permission:
@@ -2277,6 +2289,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -2302,6 +2315,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       filter: {}
       check: {}
   - role: moped-editor
@@ -2327,6 +2341,7 @@
       - status_id
       - subphase_id
       - subphase_name
+      - is_deleted
       filter: {}
       check: {}
   event_triggers:
@@ -2359,6 +2374,7 @@
         - phase_status
         - subphase_name
         - date_added
+        - is_deleted
     retry_conf:
       num_retries: 0
       interval_sec: 10
