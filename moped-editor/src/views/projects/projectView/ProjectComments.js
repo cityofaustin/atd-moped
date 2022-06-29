@@ -20,7 +20,7 @@ import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
 
 import { makeStyles } from "@material-ui/core/styles";
-import { getSessionDatabaseData, useUser } from "src/auth/user";
+import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
@@ -302,11 +302,9 @@ const ProjectComments = props => {
               <List className={classes.root}>
                 {displayNotes.map((item, i) => {
                   const isNotLastItem = i < displayNotes.length - 1;
-                  {
-                    /**
-                     * Only allow the user who wrote the status to edit it
-                     */
-                  }
+                  /**
+                   * Only allow the user who wrote the status to edit it
+                   */
                   const editableComment =
                     userSessionData.user_id === item.added_by_user_id;
                   return (
