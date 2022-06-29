@@ -146,7 +146,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    */
   const editableComment =
     userSessionData.user_id === parseInt(getStatusUpdate("added_by_user_id"));
-
+  console.log(userSessionData.user_id);
+  console.log(parseInt(getStatusUpdate("added_by_user_id")));
   console.log(editableComment);
 
   return (

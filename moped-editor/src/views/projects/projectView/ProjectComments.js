@@ -307,6 +307,8 @@ const ProjectComments = props => {
                    */
                   const editableComment =
                     userSessionData.user_id === item.added_by_user_id;
+                  console.log(userSessionData.user_id);
+                  console.log(item.added_by_user_id);
                   console.log(editableComment);
                   return (
                     <React.Fragment key={item.project_note_id}>
