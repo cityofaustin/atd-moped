@@ -87,7 +87,6 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 const ProjectComments = props => {
   const isStatusEditModal = props.modal;
   let { projectId } = useParams();
-  const { user } = useUser();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
@@ -97,8 +96,6 @@ const ProjectComments = props => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
-
-  console.log(props);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
