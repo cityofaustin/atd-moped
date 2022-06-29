@@ -147,6 +147,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const editableComment =
     userSessionData.user_id === parseInt(getStatusUpdate("added_by_user_id"));
 
+  console.log(editableComment);
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Box display="flex" justifyContent="flex-start">
