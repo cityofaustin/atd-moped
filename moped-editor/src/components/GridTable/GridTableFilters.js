@@ -76,9 +76,6 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: 0,
     },
   },
-  autocompleteOption: {
-    padding: "16px",
-  }
 }));
 
 /**
@@ -226,7 +223,6 @@ const GridTableFilters = ({
             });
         }
 
-        // if field config has lookup table, request lookup tables
         if (fieldDetails.lookup) {
           filtersNewState[filterId].lookup_table =
             fieldDetails.lookup.table_name;
@@ -402,6 +398,17 @@ const GridTableFilters = ({
   };
 
   /**
+   * Returns true if Field has a lookup table associated with it and operator is case sensitive
+   */
+  const renderAutocompleteInput = (field) => {
+    return (
+      field.lookup_table &&
+      !loading &&
+      ["_eq", "_neq"].includes(field.gqlOperator)
+    );
+  };
+
+  /**
    * This side effect monitors the count of filters
    * if the count of filters is zero, then resets the state
    */
@@ -512,8 +519,8 @@ const GridTableFilters = ({
                   className={classes.formControl}
                 >
                   {isFilterNullType(filterParameters[filterId]) !== true &&
-                    (filterParameters[filterId].lookup_table && !loading ? (
-                      <Autocomplete // classes padding 16
+                    (renderAutocompleteInput(filterParameters[filterId]) ? (
+                      <Autocomplete
                         value={filterParameters[filterId].value || null}
                         options={data[filterParameters[filterId].lookup_table]}
                         getOptionLabel={(option) =>
@@ -542,7 +549,6 @@ const GridTableFilters = ({
                         renderInput={(params) => (
                           <TextField
                             {...params}
-                            classes={classes.autocompleteOption}
                             variant="standard"
                             label={"Option"}
                           />
