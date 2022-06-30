@@ -98,6 +98,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
     const userId = userSessionData.user_id
     const isStatusUpdateInsert = statusUpdateAddNew || !commentId;
+
     (isStatusUpdateInsert
       ? updateProjectStatusUpdateInsert
       : updateProjectStatusUpdateUpdate)({
