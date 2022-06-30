@@ -76,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: 0,
     },
   },
+  autocompleteOption: {
+    padding: "16px",
+  }
 }));
 
 /**
@@ -424,6 +427,7 @@ const GridTableFilters = ({
         </Alert>
       )}
       {Object.keys(filterParameters).map((filterId) => {
+        console.log(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -436,7 +440,7 @@ const GridTableFilters = ({
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <Autocomplete
-                    defaultValue={filterParameters[filterId].label || null}
+                    value={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
                     options={query.config.filters.fields}
                     getOptionLabel={(f) =>
@@ -510,10 +514,15 @@ const GridTableFilters = ({
                   {isFilterNullType(filterParameters[filterId]) !== true &&
                     (filterParameters[filterId].lookup_table && !loading ? (
                       <Autocomplete // classes padding 16
-                        defaultValue={null}
+                        value={filterParameters[filterId].value || null}
                         options={data[filterParameters[filterId].lookup_table]}
-                        getOptionLabel={(t) =>
-                          t[filterParameters[filterId].lookup_field]
+                        getOptionLabel={(option) =>
+                          Object.hasOwn(
+                            option,
+                            filterParameters[filterId].lookup_field
+                          )
+                            ? option[filterParameters[filterId].lookup_field]
+                            : option
                         }
                         onChange={(e, value) => {
                           handleSearchValueChange(
@@ -521,14 +530,21 @@ const GridTableFilters = ({
                             value[filterParameters[filterId].lookup_field]
                           );
                         }}
-                        getOptionSelected={(option, value) =>
-                          option.name === value.name
-                        }
+                        getOptionSelected={(option, value) => {
+                          if (Object.hasOwn(value, "name")) {
+                            return option.name === value.name;
+                          }
+                          return (
+                            option[filterParameters[filterId].lookup_field] ===
+                            value
+                          );
+                        }}
                         renderInput={(params) => (
                           <TextField
                             {...params}
+                            classes={classes.autocompleteOption}
                             variant="standard"
-                            label={""}
+                            label={"Option"}
                           />
                         )}
                       />
