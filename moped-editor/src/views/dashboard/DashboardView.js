@@ -129,6 +129,15 @@ const DashboardView = () => {
       project["project_id"] = project.project.project_id;
       project["current_phase"] = project.project.current_phase;
       project["current_status"] = project.project.current_status;
+      const milestonesTotal = project.project.moped_proj_milestones.length;
+      const milestonesCompleted = project.project.moped_proj_milestones.filter(
+        milestone => milestone.completed === true
+      ).length;
+      project[
+        "completed_milestones"
+      ] = `${milestonesCompleted}/${milestonesTotal}`;
+      project["completed_milestones_percentage"] =
+        (milestonesCompleted / milestonesTotal) * 100;
 
       // project status update equivalent to most recent project note
       project["status_update"] = "";
@@ -141,6 +150,8 @@ const DashboardView = () => {
       }
     });
   }
+
+  console.log(selectedData);
 
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
@@ -205,6 +216,17 @@ const DashboardView = () => {
           displayText={entry.status_update}
           queryRefetch={refetch}
         />
+      ),
+    },
+    {
+      title: "Milestones",
+      field: "completed_milestones",
+      render: entry => (
+        <div>
+        <CircularProgress variant="determinate" value={entry.completed_milestones_percentage}>
+        </CircularProgress>
+        <Typography>{entry.completed_milestones_percentage}</Typography>
+        </div>
       ),
     },
   ];
