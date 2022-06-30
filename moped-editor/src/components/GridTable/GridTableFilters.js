@@ -223,6 +223,7 @@ const GridTableFilters = ({
             });
         }
 
+        // if the field has a corresponding lookup table, add to filterState
         if (fieldDetails.lookup) {
           filtersNewState[filterId].lookup_table =
             fieldDetails.lookup.table_name;
@@ -434,7 +435,6 @@ const GridTableFilters = ({
         </Alert>
       )}
       {Object.keys(filterParameters).map((filterId) => {
-        console.log(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
