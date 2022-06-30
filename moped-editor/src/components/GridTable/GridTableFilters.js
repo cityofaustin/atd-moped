@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useQuery } from "@apollo/client";
 
 import {
   Button,
@@ -19,6 +20,7 @@ import {
 
 import { Alert, Autocomplete } from "@material-ui/lab";
 import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
+import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
 /**
  * The styling for the filter components
@@ -97,6 +99,10 @@ const GridTableFilters = ({
    */
   const classes = useStyles();
   const queryPath = useLocation().pathname;
+
+  const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
+
+  if (error) console.error(error);
 
   /**
    * The current local filter parameters
@@ -215,6 +221,14 @@ const GridTableFilters = ({
                 ...{ id: operator },
               };
             });
+        }
+
+        // if field config has lookup table, request lookup tables
+        if (fieldDetails.lookup) {
+          filtersNewState[filterId].lookup_table =
+            fieldDetails.lookup.table_name;
+          filtersNewState[filterId].lookup_field =
+            fieldDetails.lookup.field_name;
         }
       }
 
@@ -422,16 +436,21 @@ const GridTableFilters = ({
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
                   <Autocomplete
-                    defaultValue={null}
+                    defaultValue={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
                     options={query.config.filters.fields}
-                    getOptionLabel={(t) => t.label}
-                    onChange={(e, value) => {
-                      handleFilterFieldMenuClick(filterId, value.name);
-                    }}
-                    getOptionSelected={(option, value) =>
-                      option.name === value.name
+                    getOptionLabel={(f) =>
+                      Object.hasOwn(f, "label") ? f.label : f
                     }
+                    onChange={(e, value) => {
+                      handleFilterFieldMenuClick(filterId, value?.name);
+                    }}
+                    getOptionSelected={(option, value) => {
+                      if (Object.hasOwn(value, "name")) {
+                        return option.name === value.name;
+                      }
+                      return option.label === value;
+                    }}
                     renderInput={(params) => (
                       <TextField
                         {...params}
@@ -488,23 +507,47 @@ const GridTableFilters = ({
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  {isFilterNullType(filterParameters[filterId]) !== true && (
-                    // this is where the autocomplete would go?
-                    <TextField
-                      key={`filter-search-value-${filterId}`}
-                      id={`filter-search-value-${filterId}`}
-                      type={
-                        filterParameters[filterId].type
-                          ? filterParameters[filterId].type
-                          : "text"
-                      }
-                      onChange={(e) =>
-                        handleSearchValueChange(filterId, e.target.value)
-                      }
-                      variant="outlined"
-                      value={filterParameters[filterId].value ?? ""}
-                    />
-                  )}
+                  {isFilterNullType(filterParameters[filterId]) !== true &&
+                    (filterParameters[filterId].lookup_table && !loading ? (
+                      <Autocomplete // classes padding 16
+                        defaultValue={null}
+                        options={data[filterParameters[filterId].lookup_table]}
+                        getOptionLabel={(t) =>
+                          t[filterParameters[filterId].lookup_field]
+                        }
+                        onChange={(e, value) => {
+                          handleSearchValueChange(
+                            filterId,
+                            value[filterParameters[filterId].lookup_field]
+                          );
+                        }}
+                        getOptionSelected={(option, value) =>
+                          option.name === value.name
+                        }
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            label={""}
+                          />
+                        )}
+                      />
+                    ) : (
+                      <TextField
+                        key={`filter-search-value-${filterId}`}
+                        id={`filter-search-value-${filterId}`}
+                        type={
+                          filterParameters[filterId].type
+                            ? filterParameters[filterId].type
+                            : "text"
+                        }
+                        onChange={(e) =>
+                          handleSearchValueChange(filterId, e.target.value)
+                        }
+                        variant="outlined"
+                        value={filterParameters[filterId].value ?? ""}
+                      />
+                    ))}
                 </FormControl>
               </Grid>
               <Hidden smDown>
