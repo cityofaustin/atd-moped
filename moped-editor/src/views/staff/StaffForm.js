@@ -270,6 +270,8 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         hideCloseButton: true,
       });
     } else {
+      // Activate the user by clicking the Save button to submit the form
+      // TODO: Need to test if user reactivates successfully, where does is_deleted = false go?
       submitButtonEl.current.click();
       setModalState({
         open: true,
