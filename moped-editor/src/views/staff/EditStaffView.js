@@ -37,6 +37,7 @@ const GET_USER = gql`
       cognito_user_id
       email
       roles
+      is_deleted
     }
   }
 `;

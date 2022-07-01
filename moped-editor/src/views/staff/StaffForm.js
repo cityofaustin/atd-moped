@@ -69,7 +69,7 @@ const roles = [
 ];
 
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = (isNewUser, userStatusId) =>
+const staffValidationSchema = (isNewUser) =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
@@ -83,7 +83,7 @@ const staffValidationSchema = (isNewUser, userStatusId) =>
       .lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
-      is: () => isNewUser || userStatusId !== 1,
+      is: () => isNewUser,
       then: yup.string().required(),
       otherwise: yup.string(),
     }),
@@ -108,7 +108,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
   const submitButtonEl = useRef();
-  const userStatusId = Number(editFormData?.status_id ?? -1);
+  const is_deleted = editFormData?.is_deleted;
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and
@@ -146,7 +146,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     reset,
   } = useForm({
     defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema(isNewUser, userStatusId)),
+    resolver: yupResolver(staffValidationSchema(isNewUser)),
   });
 
   const { isSubmitting, dirtyFields } = formState;
@@ -499,7 +499,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <>
               <Button
                 className={classes.formButton}
-                style={userStatusId === 0 ? { display: "none" } : {}}
+                style={is_deleted === true ? { display: "none" } : {}}
                 disabled={isSubmitting}
                 type="submit"
                 color="primary"
@@ -518,7 +518,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Reset
                 </Button>
               )}
-              {editFormData && userStatusId === 1 && (
+              {editFormData && is_deleted === false && (
                 <Button
                   className={classes.formButton}
                   color="secondary"
@@ -528,7 +528,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                   Inactivate User
                 </Button>
               )}
-              {editFormData && userStatusId === 0 && (
+              {editFormData && is_deleted === true && (
                 <Button
                   className={clsx(classes.formButton, classes.formButtonGreen)}
                   variant="contained"
