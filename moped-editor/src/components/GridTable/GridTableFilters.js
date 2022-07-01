@@ -366,6 +366,8 @@ const GridTableFilters = ({
   const handleClearFilters = () => {
     setFilterParameters({});
     filterState.setFilterParameters({});
+    filterQuery.set("filter", btoa(JSON.stringify({})));
+    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
   };
 
   /**
