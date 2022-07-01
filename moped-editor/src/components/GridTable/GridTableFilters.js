@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
 
@@ -152,19 +153,6 @@ const GridTableFilters = ({
   };
 
   /**
-   * Generates a random UUID as a string
-   * @return {string}
-   */
-  const generateUuid = () => {
-    let dt = new Date().getTime();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-      const r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
-  };
-
-  /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
    */
   const renderAutocompleteInput = (field) => {
@@ -314,7 +302,7 @@ const GridTableFilters = ({
    */
   const handleAddFilterButtonClick = () => {
     // Generate a random UUID string
-    const uuid = generateUuid();
+    const uuid = uuidv4();
     // Clone state
     const filtersNewState = {
       ...filterParameters,
