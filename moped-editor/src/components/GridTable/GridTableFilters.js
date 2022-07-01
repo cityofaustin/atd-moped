@@ -165,6 +165,17 @@ const GridTableFilters = ({
   };
 
   /**
+   * Returns true if Field has a lookup table associated with it and operator is case sensitive
+   */
+  const renderAutocompleteInput = (field) => {
+    return (
+      field.lookup_table &&
+      !loading &&
+      ["_eq", "_neq"].includes(field.gqlOperator)
+    );
+  };
+
+  /**
    * Handles the click event on the field drop-down menu
    * @param {string} filterId - State FieldID to modify
    * @param {Object} field - The field object being clicked
@@ -278,6 +289,11 @@ const GridTableFilters = ({
         // Copy special null value if available
         filtersNewState[filterId].specialNullValue =
           query.config.filters.operators[operator].specialNullValue;
+
+        // if we are switching to an autocomplete input, clear the search value
+        if (renderAutocompleteInput(filtersNewState[filterId])) {
+          filtersNewState[filterId].value = null;
+        }
       } else {
         // Reset operator values
         filtersNewState[filterId].operator = null;
@@ -401,17 +417,6 @@ const GridTableFilters = ({
    */
   const isFilterNullType = (field) => {
     return field.gqlOperator && field.gqlOperator.includes("is_null");
-  };
-
-  /**
-   * Returns true if Field has a lookup table associated with it and operator is case sensitive
-   */
-  const renderAutocompleteInput = (field) => {
-    return (
-      field.lookup_table &&
-      !loading &&
-      ["_eq", "_neq"].includes(field.gqlOperator)
-    );
   };
 
   /**
