@@ -230,6 +230,11 @@ const GridTableFilters = ({
           filtersNewState[filterId].lookup_field =
             fieldDetails.lookup.field_name;
         }
+        // if it does not, reset the variables to null in case the user is editing an existing filter
+        else {
+          filtersNewState[filterId].lookup_table = null;
+          filtersNewState[filterId].lookup_field = null;
+        }
       }
 
       // Select the default operator, if not defined select first.
