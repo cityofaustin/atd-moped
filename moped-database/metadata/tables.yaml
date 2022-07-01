@@ -3576,6 +3576,7 @@
       - date_added
       - cognito_user_id
       - staff_uuid
+      - is_deleted
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -3595,6 +3596,7 @@
       - date_added
       - cognito_user_id
       - staff_uuid
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-editor
@@ -3614,6 +3616,7 @@
       - date_added
       - cognito_user_id
       - staff_uuid
+      - is_deleted
       filter: {}
       allow_aggregations: true
   - role: moped-viewer
@@ -3633,6 +3636,7 @@
       - date_added
       - cognito_user_id
       - staff_uuid
+      - is_deleted
       filter: {}
       allow_aggregations: true
   update_permissions:
@@ -3653,6 +3657,7 @@
       - email
       - roles
       - picture
+      - is_deleted
       filter: {}
       check: null
   - role: moped-editor
