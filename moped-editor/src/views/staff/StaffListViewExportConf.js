@@ -36,7 +36,7 @@ export const StaffListViewExportConf = {
         label: "is_coa_staff",
         filter: value => value === true ? "True" : "False",
     },
-    status_id: {
-        label: "status_id",
+    is_deleted: {
+        label: "is_deleted",
     },
 }

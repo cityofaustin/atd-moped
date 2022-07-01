@@ -60,7 +60,6 @@ export const initialFormValues = {
   workgroup: "",
   workgroup_id: "",
   roles: "moped-viewer",
-  status_id: "1",
 };
 
 const roles = [
@@ -89,7 +88,6 @@ const staffValidationSchema = (isNewUser, userStatusId) =>
       otherwise: yup.string(),
     }),
     roles: yup.string().required(),
-    status_id: yup.string().required(),
   });
 
 const fieldParsers = {
@@ -469,14 +467,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
           name="workgroup_id"
           inputRef={register}
           className={classes.hiddenTextField}
-        />
-        {/* This hidden field and its value is always 1 */}
-        <TextField
-            id="status-id"
-            name="status_id"
-            inputRef={register}
-            className={classes.hiddenTextField}
-            value={1}
         />
         <Grid item xs={12} md={6}>
           <FormControl component="fieldset">
