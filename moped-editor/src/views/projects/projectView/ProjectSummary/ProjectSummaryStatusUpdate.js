@@ -9,6 +9,8 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
@@ -52,8 +54,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
       const note = data
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
-      // Remove any HTML tags
-      return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
+      // Remove any HTML tags for status update string
+      return note ? parse(String(note)) : null;
     }
     return null;
   };
@@ -109,14 +111,14 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
                 project_id: Number(projectId),
                 added_by: addedBy,
                 added_by_user_id: userId,
-                project_note: statusUpdate,
+                project_note: DOMPurify.sanitize(statusUpdate),
                 project_note_type: 2,
               },
             }
           : {
               project_note_id: { _eq: Number(commentId) },
               added_by: addedBy,
-              project_note: statusUpdate,
+              project_note: DOMPurify.sanitize(statusUpdate),
             }),
       },
     })
