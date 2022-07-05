@@ -95,7 +95,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Handles saving the status update
    */
   const handleStatusUpdateSave = () => {
-    console.log("save new status")
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
     const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
