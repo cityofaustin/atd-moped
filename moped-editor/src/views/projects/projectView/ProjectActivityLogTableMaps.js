@@ -152,6 +152,11 @@ export const ProjectActivityLogTableMaps = {
         label: "work assignment ID",
         data_type: "text",
       },
+      parent_project_id: {
+        icon: "",
+        label: "parent project id",
+        data_type: "integer",
+      },
     },
   },
   moped_proj_entities: {
@@ -297,10 +302,10 @@ export const ProjectActivityLogTableMaps = {
         label: "milestone estimate",
         type: "timestampz",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },
@@ -412,13 +417,13 @@ export const ProjectActivityLogTableMaps = {
         label: "notes",
         type: "text",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status",
-        type: "int4",
+        label: "is deleted",
+        type: "boolean",
         map: {
-          0: "Inactive",
-          1: "Active",
+          true: "Inactive",
+          false: "Active",
         },
       },
       project_id: {
@@ -531,10 +536,10 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         type: "int4",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
       subphase_name: {
         icon: "",

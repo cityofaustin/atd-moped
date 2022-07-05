@@ -85,15 +85,14 @@
     "react-map-gl-draw": "^0.22.3",
     "react-map-gl-geocoder": "^2.1.6",
     "react-quill": "^2.0.0-beta.4",
-    "react-router": "^6.0.0-beta.0",
-    "react-router-dom": "^6.0.0-beta.0",
+    "react-router": "^6.3.0",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "^3.4.1",
     "styled-components": "^5.3.0",
     "uuid": "^8.3.2",
     "yup": "^0.29.3"
   },
   "devDependencies": {
-    "@hookform/devtools": "^2.2.1",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.2.0",
