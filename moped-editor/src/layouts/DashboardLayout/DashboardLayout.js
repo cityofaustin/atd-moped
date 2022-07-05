@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
 import { makeStyles } from "@material-ui/core";
-import NavBar from "./NavBar/NavBar";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
@@ -35,15 +34,13 @@ const useStyles = makeStyles(theme => ({
 
 const DashboardLayout = () => {
   const classes = useStyles();
-  const [isOpen, setOpen] = useState(false);
   const { user } = useUser();
 
   console.debug("user", user);
 
   return user ? (
     <div className={classes.root}>
-      <TopBar onOpen={() => setOpen(true)} />
-      <NavBar onClose={() => setOpen(false)} isOpen={isOpen} />
+      <TopBar />
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
