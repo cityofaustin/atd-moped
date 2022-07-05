@@ -5,6 +5,7 @@ export const DASHBOARD_QUERY = gql`
     moped_proj_personnel(
       where: {
         user_id: { _eq: $userId }
+        is_deleted: { _eq: false }
         project: { is_deleted: { _neq: true } }
       }
     ) {
