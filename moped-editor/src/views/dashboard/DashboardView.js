@@ -129,15 +129,17 @@ const DashboardView = () => {
       project["project_id"] = project.project.project_id;
       project["current_phase"] = project.project.current_phase;
       project["current_status"] = project.project.current_status;
+
+      /**
+       * Get percentage of milestones completed
+       */
       const milestonesTotal = project.project.moped_proj_milestones.length;
       const milestonesCompleted = project.project.moped_proj_milestones.filter(
         milestone => milestone.completed === true
       ).length;
-      project[
-        "completed_milestones"
-      ] = `${milestonesCompleted}/${milestonesTotal}`;
-      project["completed_milestones_percentage"] =
-        (milestonesCompleted / milestonesTotal) * 100;
+      project["completed_milestones_percentage"] = !!milestonesTotal
+        ? (milestonesCompleted / milestonesTotal) * 100
+        : 0;
 
       // project status update equivalent to most recent project note
       project["status_update"] = "";
@@ -150,8 +152,6 @@ const DashboardView = () => {
       }
     });
   }
-
-  console.log(selectedData);
 
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
@@ -189,27 +189,27 @@ const DashboardView = () => {
       title: "Project name",
       field: "project.project_name",
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "200px" },
+      cellStyle: { ...typographyStyle },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_name}
         />
       ),
+      width: "25%",
     },
     {
       title: "Status",
       field: "current_phase",
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "300px" },
       render: entry =>
         buildStatusBadge(entry.current_phase, entry.current_status),
+      width: "25%",
     },
     {
       title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "300px" },
       render: entry => (
         <DashboardEditModal
           project={entry.project}
@@ -217,17 +217,40 @@ const DashboardView = () => {
           queryRefetch={refetch}
         />
       ),
+      width: "25%",
     },
     {
-      title: "Milestones",
+      title: "Milestones completed",
       field: "completed_milestones",
       render: entry => (
-        <div>
-        <CircularProgress variant="determinate" value={entry.completed_milestones_percentage}>
-        </CircularProgress>
-        <Typography>{entry.completed_milestones_percentage}</Typography>
-        </div>
+        <Box sx={{ position: "relative", display: "inline-flex" }}>
+          <CircularProgress
+            variant="determinate"
+            value={entry.completed_milestones_percentage}
+          />
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: "absolute",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              variant="caption"
+              component="div"
+              color="text.secondary"
+            >
+              {`${Math.round(entry.completed_milestones_percentage)}%`}
+            </Typography>
+          </Box>
+        </Box>
       ),
+      width: "25%",
     },
   ];
 
@@ -291,6 +314,7 @@ const DashboardView = () => {
                     options={{
                       search: false,
                       toolbar: false,
+                      tableLayout: "fixed",
                     }}
                   />
                 )}

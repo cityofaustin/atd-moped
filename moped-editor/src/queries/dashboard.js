@@ -15,7 +15,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
-        moped_proj_milestones {
+        moped_proj_milestones(where: { is_deleted: { _neq: true } }) {
           project_id
           completed
         }
@@ -41,7 +41,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
-        moped_proj_milestones {
+        moped_proj_milestones(where: { is_deleted: { _neq: true } }) {
           project_id
           completed
         }
