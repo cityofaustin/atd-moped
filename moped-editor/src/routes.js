@@ -20,7 +20,7 @@ import DashboardView from "./views/dashboard/DashboardView";
 export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
   {
-    path: "/moped/session",
+    path: "moped/session",
     element: <MainLayout />,
     children: [
       { path: "signin", element: <LoginView /> },
@@ -28,12 +28,12 @@ export const routes = [
     ],
   },
   {
-    path: "/moped",
+    path: "moped",
     action: "moped:visit",
     element: <DashboardLayout />,
     children: [
       {
-        path: "/moped",
+        path: "/",
         action: "moped:visit",
         element: <Navigate to="/moped/projects" />,
       },
@@ -79,14 +79,14 @@ export const routes = [
       {
         path: "views/signal-projects",
         action: "projects:visit",
-        element: <SignalProjectTable />,
+        element: <SignalProjectTable />
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
   },
 ];
 
-const unprotectedRoutePaths = ["/", "/moped/session"];
+const unprotectedRoutePaths = ["/", "moped/session"];
 
 /**
  * Map through defined routes and child routes to wrap protected route elements with the Can component

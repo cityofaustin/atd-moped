@@ -29,7 +29,6 @@ import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
 import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
-import SubprojectsTable from "./SubprojectsTable";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -286,12 +285,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 {renderMap()}
               </ErrorBoundary>
             )}
-          </Grid>
-          <Grid item xs={12}>
-            {// If this project has a parent project id, dont render this table. 
-            // do we render a message?  
-            !data.moped_project[0].parent_project_id && <SubprojectsTable projectId={projectId}/>
-            }
           </Grid>
         </Grid>
       </CardContent>

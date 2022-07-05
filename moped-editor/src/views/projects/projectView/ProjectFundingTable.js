@@ -418,6 +418,7 @@ const ProjectFundingTable = () => {
           data={data.moped_fund_sources}
         />
       ),
+      validate: rowData => (!rowData.funding_source_id ? "Required" : true),
     },
     {
       title: "Program",

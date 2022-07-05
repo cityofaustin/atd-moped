@@ -65,7 +65,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           type_id
         }
       }
-      moped_proj_personnel(where: { is_deleted: { _eq: false } }) {
+      moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
         role_id
         moped_user {
           first_name

@@ -7,6 +7,7 @@ import {
   CircularProgress,
   Container,
   Paper,
+  Typography,
 } from "@material-ui/core";
 
 // Styling
@@ -38,6 +39,12 @@ const useStyles = makeStyles(theme => ({
   paper: {
     width: "100%",
     marginBottom: theme.spacing(1),
+  },
+  title: {
+    position: "relative",
+    top: "1.2rem",
+    left: "0.3rem",
+    "text-shadow": "1px 1px 0px white",
   },
   table: {
     minWidth: 750,
@@ -486,6 +493,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
+        {/*Title*/}
+        <Typography
+          variant="h1"
+          component="h1"
+          align="left"
+          className={classes.title}
+        >
+          {title}
+        </Typography>
         {/*Toolbar Space*/}
         <GridTableToolbar>
           <GridTableSearch

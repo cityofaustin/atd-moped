@@ -4,8 +4,8 @@ import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import {
-  PROJECT_UPDATE_CONTRACTOR,
-  PROJECT_CLEAR_CONTRACTOR,
+  PROJECT_UPDATE_CONTACTOR,
+  PROJECT_CLEAR_CONTACTOR,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 
@@ -32,8 +32,8 @@ const ProjectSummaryContractor = ({
   );
   const [editMode, setEditMode] = useState(false);
   const [contractor, setContractor] = useState(originalValue);
-  const [updateProjectContractor] = useMutation(PROJECT_UPDATE_CONTRACTOR);
-  const [clearProjectContractor] = useMutation(PROJECT_CLEAR_CONTRACTOR);
+  const [updateProjectContractor] = useMutation(PROJECT_UPDATE_CONTACTOR);
+  const [clearProjectContractor] = useMutation(PROJECT_CLEAR_CONTACTOR);
 
   // Track changes in data
   useEffect(() => {

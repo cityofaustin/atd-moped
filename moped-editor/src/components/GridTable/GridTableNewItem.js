@@ -13,16 +13,21 @@ import { NavLink as RouterLink } from "react-router-dom";
 const GridTableNewItem = ({ query }) => {
   return (
     <Box display="flex" justifyContent="flex-end">
-      {query.config.customNewItemButton || (
-        <Button
-          color="primary"
-          variant="contained"
-          component={RouterLink}
-          to={query.config.new_item}
-          startIcon={<Icon>add_circle</Icon>}
-        >
-          {query.config.new_item_label}
-        </Button>
+      {(query.config.showNewItemButton && query.config.customNewItemButton) ||
+        (query.config.showNewItemButton && (
+          <Button
+            color="primary"
+            variant="contained"
+            component={RouterLink}
+            to={query.config.new_item}
+            startIcon={<Icon>add_circle</Icon>}
+          >
+            {query.config.new_item_label}
+          </Button>
+        ))}
+      {// add empty div of equal height if there is no button to match styles
+      !query.config.showNewItemButton && (
+        <div style={{ height: "36.5px" }}></div>
       )}
     </Box>
   );

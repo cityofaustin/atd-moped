@@ -8,7 +8,7 @@ AS WITH project_person_list_lookup AS (
     FROM moped_proj_personnel mpp
       JOIN moped_users mu ON mpp.user_id = mu.user_id
       JOIN moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
-    WHERE mpp.is_deleted = false
+    WHERE mpp.status_id = 1
     GROUP BY mpp.project_id
   ), funding_sources_lookup AS (
     SELECT 
@@ -82,7 +82,6 @@ AS WITH project_person_list_lookup AS (
       WHERE true
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'construction'::text
-        AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS construction_start_date,
     ( -- get me the phase end of the most recently added completion phase entry
@@ -91,7 +90,6 @@ AS WITH project_person_list_lookup AS (
       WHERE true 
         AND phases.project_id = mp.project_id 
         AND phases.phase_name = 'complete'::text
-        AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
@@ -101,7 +99,7 @@ AS WITH project_person_list_lookup AS (
         JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
       WHERE 1 = 1
         AND roles.project_role_name = 'Inspector'::text
-        AND personnel.is_deleted = false
+        AND personnel.status_id = 1
         AND personnel.project_id = mp.project_id
       GROUP BY personnel.project_id) AS project_inspector,
     ( -- get me a list of the designers for this project
@@ -111,7 +109,7 @@ AS WITH project_person_list_lookup AS (
         JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
       WHERE 1 = 1
         AND roles.project_role_name = 'Designer'::text
-        AND personnel.is_deleted = false
+        AND personnel.status_id = 1
         AND personnel.project_id = mp.project_id
       GROUP BY personnel.project_id) AS project_designer
    FROM moped_project mp
