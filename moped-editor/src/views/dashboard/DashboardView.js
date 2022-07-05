@@ -139,13 +139,11 @@ const DashboardView = () => {
       project["current_status"] = project.project.current_status;
 
       // project status update equivalent to most recent project note
+      // html is parsed before being rendered in the DashboardEditModal component
       project["status_update"] = "";
       if (project?.project?.moped_proj_notes?.length) {
         const note = project.project.moped_proj_notes[0]["project_note"];
-        // Remove any HTML tags
-        project["status_update"] = note
-          ? String(note).replace(/(<([^>]+)>)/gi, "")
-          : "";
+        project["status_update"] = note ? note : ""
       }
     });
   }
