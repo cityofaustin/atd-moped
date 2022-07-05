@@ -48,7 +48,7 @@ Amplify.configure({
 });
 
 ReactDOM.render(
-  <BrowserRouter basename={"/moped"}>
+  <BrowserRouter>
     <UserProvider>
       <App />
     </UserProvider>

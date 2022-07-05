@@ -89,7 +89,7 @@ const GridTableSearch = ({
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
-  setAdvancedSearchAnchor
+  setAdvancedSearchAnchor,
 }) => {
   const classes = useStyles();
   const queryPath = useLocation().pathname;
@@ -299,9 +299,8 @@ const GridTableSearch = ({
 
   return (
     <div>
-      <GridTableNewItem query={query} />
+      {query.config.showNewItemButton && <GridTableNewItem query={query} />}
       {children}
-
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
