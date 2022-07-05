@@ -147,7 +147,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
    * Only allow the user who wrote the status to edit it
    */
   const editableComment =
-    userSessionData.user_id === parseInt(getStatusUpdate("added_by_user_id"));
+    userId === parseInt(getStatusUpdate("added_by_user_id"));
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
