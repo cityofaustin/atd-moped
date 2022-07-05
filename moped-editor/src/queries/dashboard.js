@@ -6,7 +6,7 @@ export const DASHBOARD_QUERY = gql`
       where: {
         user_id: { _eq: $userId }
         is_deleted: { _eq: false }
-        project: { is_deleted: { _neq: true } }
+        project: { is_deleted: { _eq: false } }
       }
     ) {
       project_id
@@ -16,7 +16,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
-        moped_proj_milestones(where: { is_deleted: { _neq: true } }) {
+        moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
         }
@@ -34,7 +34,7 @@ export const DASHBOARD_QUERY = gql`
     moped_user_followed_projects(
       where: {
         user_id: { _eq: $userId }
-        project: { is_deleted: { _neq: true } }
+        project: { is_deleted: { _eq: false } }
       }
     ) {
       project {
@@ -42,7 +42,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
-        moped_proj_milestones(where: { is_deleted: { _neq: true } }) {
+        moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
         }
