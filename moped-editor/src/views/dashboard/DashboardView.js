@@ -243,7 +243,6 @@ const DashboardView = () => {
             <Typography
               variant="caption"
               component="div"
-              color="text.secondary"
             >
               {`${Math.round(entry.completed_milestones_percentage)}%`}
             </Typography>
