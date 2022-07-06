@@ -1,3 +1,4 @@
+// https://mui.com/material-ui/guides/minimizing-bundle-size/#development-environment
 const plugins = [
   [
     "babel-plugin-import",

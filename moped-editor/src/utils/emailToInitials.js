@@ -1,4 +1,4 @@
-export default email => {
+const emailToInitials = (email) => {
   try {
     const subdomain = "austintexas.gov";
     if (!email.endsWith(subdomain)) return null;
@@ -12,3 +12,5 @@ export default email => {
     return null;
   }
 };
+
+export default emailToInitials;

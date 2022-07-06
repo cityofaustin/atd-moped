@@ -24,9 +24,6 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
   "browserslist": {
     "production": [
       ">0.3%",
@@ -87,24 +84,15 @@
     "react-quill": "^2.0.0-beta.4",
     "react-router": "^6.3.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^3.4.1",
+    "react-scripts": "^5.0.0",
     "styled-components": "^5.3.0",
     "uuid": "^8.3.2",
     "yup": "^0.29.3"
   },
-  "devDependencies": {
-    "babel-eslint": "^10.1.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.2.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jsx-a11y": "^6.3.1",
-    "eslint-plugin-prettier": "^3.1.4",
-    "eslint-plugin-react": "^7.20.3",
-    "eslint-plugin-react-hooks": "^2.5.1",
-    "prettier": "^1.19.1"
-  },
   "engines": {
     "npm": ">=6.0.0"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.13.5"
   }
 }
