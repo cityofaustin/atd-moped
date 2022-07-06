@@ -227,7 +227,6 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  const [clearParentProject] = useMutation(CLEAR_PARENT_PROJECT);
   const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
   // clearCurrentNoPhase sets current phase as null on moped_project
   // and sets phases in moped_proj_phases as is_current_phase: false
