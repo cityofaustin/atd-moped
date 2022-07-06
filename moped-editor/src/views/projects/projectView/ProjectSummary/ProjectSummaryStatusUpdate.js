@@ -32,6 +32,8 @@ import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAnd
  */
 const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id
+  const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
 
   const [updateProjectStatusUpdateInsert] = useMutation(
     PROJECT_SUMMARY_STATUS_UPDATE_INSERT
@@ -97,8 +99,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const handleStatusUpdateSave = () => {
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
-    const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
-    const userId = userSessionData.user_id
     const isStatusUpdateInsert = statusUpdateAddNew || !commentId;
 
     (isStatusUpdateInsert
@@ -148,7 +148,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   /**
    * Only allow the user who wrote the status to edit it
    */
-  const editableComment =
+  const isEditableComment =
     userId === parseInt(getStatusUpdate("added_by_user_id"));
 
   return (
@@ -178,7 +178,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             </Typography>
             <Typography
               className={classes.fieldBoxTypography}
-              onClick={editableComment ? handleStatusUpdateEdit : null}
+              onClick={isEditableComment ? handleStatusUpdateEdit : null}
             >
               <span className={classes.fieldLabelTextSpan}>
                 {statusUpdate || "None"}
