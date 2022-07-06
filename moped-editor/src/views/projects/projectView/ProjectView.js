@@ -49,7 +49,6 @@ import {
   PROJECT_FOLLOW,
   PROJECT_UNFOLLOW,
 } from "../../../queries/project";
-import { CLEAR_PARENT_PROJECT } from "../../../queries/subprojects";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
@@ -337,7 +336,6 @@ const ProjectView = () => {
     archiveProject({
       variables: { projectId },
     })
-      .then(() => clearParentProject({ variables: { projectId } }))
       .then(() => {
         // Do not close the dialog, redirect will take care
         window.location = "/moped/projects";

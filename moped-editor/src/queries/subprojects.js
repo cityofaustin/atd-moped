@@ -57,14 +57,3 @@ export const DELETE_PROJECT_SUBPROJECT = gql`
     }
   }
 `;
-
-export const CLEAR_PARENT_PROJECT = gql`
-  mutation ClearParentProject($projectId: Int!) {
-    update_moped_project(
-      where: { parent_project_id: { _eq: $projectId } }
-      _set: { parent_project_id: null }
-    ) {
-      affected_rows
-    }
-  }
-`;

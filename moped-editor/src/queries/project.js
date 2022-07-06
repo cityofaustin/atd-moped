@@ -549,6 +549,12 @@ export const PROJECT_ARCHIVE = gql`
     ) {
       affected_rows
     }
+    clear_parent_project: update_moped_project(
+      where: { parent_project_id: { _eq: $projectId } }
+      _set: { parent_project_id: null }
+      ) {
+        affected_rows
+    }
   }
 `;
 
