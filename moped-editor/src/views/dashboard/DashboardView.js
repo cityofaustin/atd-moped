@@ -30,7 +30,6 @@ import typography from "../../theme/typography";
 import TrafficIcon from "@material-ui/icons/Traffic";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
-import { STATUS_QUERY } from "../../queries/project";
 
 import { getSessionDatabaseData } from "../../auth/user";
 
@@ -110,8 +109,6 @@ const DashboardView = () => {
     console.log(error);
   }
 
-  const { referenceData } = useQuery(STATUS_QUERY);
-
   let selectedData = [];
 
   if (TABS[activeTab].label === "Following" && !!data) {
@@ -129,6 +126,7 @@ const DashboardView = () => {
       project["project_id"] = project.project.project_id;
       project["current_phase"] = project.project.current_phase;
       project["current_status"] = project.project.current_status;
+      project["status_id"] = project.project.status_id;
 
       /**
        * Get percentage of milestones completed
@@ -163,7 +161,7 @@ const DashboardView = () => {
     <ProjectStatusBadge
       status={statusId}
       phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
+      projectStatuses={data?.moped_status ?? []}
       condensed
     />
   );
@@ -203,7 +201,7 @@ const DashboardView = () => {
       field: "current_phase",
       editable: "never",
       render: entry =>
-        buildStatusBadge(entry.current_phase, entry.current_status),
+        buildStatusBadge(entry.current_phase, entry.status_id),
       width: "25%",
     },
     {

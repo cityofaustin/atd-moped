@@ -16,6 +16,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
+        status_id
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
@@ -42,6 +43,7 @@ export const DASHBOARD_QUERY = gql`
         project_name
         current_phase
         current_status
+        status_id
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
@@ -56,6 +58,13 @@ export const DASHBOARD_QUERY = gql`
           project_note
         }
       }
+    }
+    moped_status(
+      where: { status_id: { _gt: 0 } }
+      order_by: { status_order: asc }
+    ) {
+      status_id
+      status_name
     }
   }
 `;
