@@ -221,7 +221,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         # Remove date_added, if provided, so we don't reset this field
         request.json.pop("date_added", None)
-        is_deleted = request.json.get("is_deleted", false)
+        is_deleted = request.json.get("is_deleted", False)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
         reactivate_account = False
