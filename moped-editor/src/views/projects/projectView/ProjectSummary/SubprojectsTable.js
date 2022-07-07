@@ -66,8 +66,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             name="project_name"
             options={data.subprojectOptions}
             getOptionLabel={(option) => option.project_name}
-            getOptionSelected={(option, value) => option === value}
-            value={props.value}
+            value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
             renderInput={(params) => <TextField {...params} />}
           />

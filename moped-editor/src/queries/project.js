@@ -51,6 +51,9 @@ export const SUMMARY_QUERY = gql`
       purchase_order_number
       work_assignment_id
       parent_project_id
+      moped_project {
+        project_name
+      }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id

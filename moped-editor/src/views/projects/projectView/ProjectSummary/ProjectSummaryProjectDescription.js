@@ -38,7 +38,7 @@ const ProjectSummaryProjectDescription = ({
   const [updateProjectDescription] = useMutation(PROJECT_UPDATE_DESCRIPTION);
 
   /**
-   * Resets the project website to original value
+   * Resets the project description to original value
    */
   const handleProjectDescriptionClose = () => {
     setDescription(originalDescription);
@@ -46,7 +46,7 @@ const ProjectSummaryProjectDescription = ({
   };
 
   /**
-   * Saves the new project website...
+   * Saves the new project description...
    */
   const handleProjectDescriptionSave = () => {
     updateProjectDescription({
@@ -63,7 +63,7 @@ const ProjectSummaryProjectDescription = ({
       .catch(err => {
         snackbarHandle(
           true,
-          "Failed to update project website: " + String(err),
+          "Failed to update project description: " + String(err),
           "error"
         );
         handleProjectDescriptionClose();
@@ -72,7 +72,7 @@ const ProjectSummaryProjectDescription = ({
   };
 
   /**
-   * Updates the state of website
+   * Updates the description state
    * @param {Object} e - Event object
    */
   const handleProjectDescriptionChange = e => {
