@@ -69,7 +69,7 @@ const roles = [
 ];
 
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = (isNewUser) =>
+const staffValidationSchema = isNewUser =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
@@ -91,7 +91,6 @@ const staffValidationSchema = (isNewUser) =>
   });
 
 const fieldParsers = {
-  status_id: id => parseInt(id),
   workgroup_id: id => parseInt(id),
   roles: role => [role],
 };
@@ -172,6 +171,9 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     if (!dirtyFields?.password) {
       delete data.password;
     }
+
+    // Reactivation needs this value to pass with programmatic submission in handleActivateConfirm
+    data.is_deleted = false;
 
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
@@ -271,7 +273,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       });
     } else {
       // Activate the user by clicking the Save button to submit the form
-      // TODO: Need to test if user reactivates successfully, where does is_deleted = false go?
+      // is_deleted = false is passed in the triggered onSubmit handler
       submitButtonEl.current.click();
       setModalState({
         open: true,
