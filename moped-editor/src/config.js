@@ -1,4 +1,4 @@
-export default {
+const config = {
   env: {
     APP_CLOUDFRONT: process.env.REACT_APP_AWS_CLOUDFRONT,
     APP_ENVIRONMENT: process.env.REACT_APP_HASURA_ENV,
@@ -14,3 +14,5 @@ export default {
     USER_POOL_ID: process.env.REACT_APP_AWS_COGNITO_USER_POOL_ID,
   },
 };
+
+export default config;

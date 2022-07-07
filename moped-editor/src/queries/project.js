@@ -51,6 +51,9 @@ export const SUMMARY_QUERY = gql`
       purchase_order_number
       work_assignment_id
       parent_project_id
+      moped_project {
+        project_name
+      }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
@@ -926,6 +929,23 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
         task_order
         project_id
       }
+    }
+  }
+`;
+
+export const LOOKUP_TABLES_QUERY = gql`
+  query ProjectLookups {
+    moped_fund_sources {
+      funding_source_id
+      funding_source_name
+    }
+    moped_types(order_by: { type_name: asc }) {
+      type_id
+      type_name
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
     }
   }
 `;
