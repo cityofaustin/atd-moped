@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
+import { useQuery } from "@apollo/client";
 
 import {
   Button,
@@ -17,15 +19,16 @@ import {
   makeStyles,
 } from "@material-ui/core";
 
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
+import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
 /**
  * The styling for the filter components
  * @type {Object}
  * @constant
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {},
   filterAlert: {
     margin: theme.spacing(1),
@@ -98,6 +101,10 @@ const GridTableFilters = ({
   const classes = useStyles();
   const queryPath = useLocation().pathname;
 
+  const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
+
+  if (error) console.error(error);
+
   /**
    * The current local filter parameters
    * @type {Object} filterParameters - Contains all the current filters
@@ -141,21 +148,19 @@ const GridTableFilters = ({
    * @param uuid
    * @return {Object}
    */
-  const generateEmptyField = uuid => {
+  const generateEmptyField = (uuid) => {
     return { ...defaultNewFieldState, id: uuid };
   };
 
   /**
-   * Generates a random UUID as a string
-   * @return {string}
+   * Returns true if Field has a lookup table associated with it and operator is case sensitive
    */
-  const generateUuid = () => {
-    let dt = new Date().getTime();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      const r = (dt + Math.random() * 16) % 16 | 0;
-      dt = Math.floor(dt / 16);
-      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
+  const renderAutocompleteInput = (field) => {
+    return (
+      field.lookup_table &&
+      !loading &&
+      ["_eq", "_neq"].includes(field.gqlOperator)
+    );
   };
 
   /**
@@ -171,7 +176,7 @@ const GridTableFilters = ({
 
       // Find the field we need to gather options from
       const fieldIndex = query.config.filters.fields.findIndex(
-        filter => filter.name === field
+        (filter) => filter.name === field
       );
 
       // Gather field details
@@ -196,11 +201,11 @@ const GridTableFilters = ({
             query.config.filters.operators
           )
             .filter(
-              operator =>
+              (operator) =>
                 query.config.filters.operators[operator].type ===
                 fieldDetails.type
             )
-            .map(operator => {
+            .map((operator) => {
               return {
                 ...query.config.filters.operators[operator],
                 ...{ id: operator },
@@ -208,14 +213,26 @@ const GridTableFilters = ({
             });
         } else {
           // Append listed operators for that field
-          filtersNewState[
-            filterId
-          ].availableOperators = fieldDetails.operators.map(operator => {
-            return {
-              ...query.config.filters.operators[operator],
-              ...{ id: operator },
-            };
-          });
+          filtersNewState[filterId].availableOperators =
+            fieldDetails.operators.map((operator) => {
+              return {
+                ...query.config.filters.operators[operator],
+                ...{ id: operator },
+              };
+            });
+        }
+
+        // if the field has a corresponding lookup table, add to filterState
+        if (fieldDetails.lookup) {
+          filtersNewState[filterId].lookup_table =
+            fieldDetails.lookup.table_name;
+          filtersNewState[filterId].lookup_field =
+            fieldDetails.lookup.field_name;
+        }
+        // if it does not, reset the variables to null in case the user is editing an existing filter
+        else {
+          filtersNewState[filterId].lookup_table = null;
+          filtersNewState[filterId].lookup_field = null;
         }
       }
 
@@ -260,6 +277,11 @@ const GridTableFilters = ({
         // Copy special null value if available
         filtersNewState[filterId].specialNullValue =
           query.config.filters.operators[operator].specialNullValue;
+
+        // if we are switching to an autocomplete input, clear the search value
+        if (renderAutocompleteInput(filtersNewState[filterId])) {
+          filtersNewState[filterId].value = null;
+        }
       } else {
         // Reset operator values
         filtersNewState[filterId].operator = null;
@@ -280,7 +302,7 @@ const GridTableFilters = ({
    */
   const handleAddFilterButtonClick = () => {
     // Generate a random UUID string
-    const uuid = generateUuid();
+    const uuid = uuidv4();
     // Clone state
     const filtersNewState = {
       ...filterParameters,
@@ -295,7 +317,7 @@ const GridTableFilters = ({
    * Deletes a filter from the state
    * @param {string} filterId - The UUID of the filter to be deleted
    */
-  const handleDeleteFilterButtonClick = filterId => {
+  const handleDeleteFilterButtonClick = (filterId) => {
     // Copy the state into a new object
     const filtersNewState = {
       ...filterParameters,
@@ -332,6 +354,8 @@ const GridTableFilters = ({
   const handleClearFilters = () => {
     setFilterParameters({});
     filterState.setFilterParameters({});
+    filterQuery.set("filter", btoa(JSON.stringify({})));
+    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
   };
 
   /**
@@ -345,7 +369,7 @@ const GridTableFilters = ({
       if (Object.keys(filterParameters).length === 0) {
         feedback.push("• No filters have been added.");
       } else {
-        Object.keys(filterParameters).forEach(filterKey => {
+        Object.keys(filterParameters).forEach((filterKey) => {
           const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
@@ -381,7 +405,7 @@ const GridTableFilters = ({
    * @param {object} field - The field being checked
    * @returns {boolean}
    */
-  const isFilterNullType = field => {
+  const isFilterNullType = (field) => {
     return field.gqlOperator && field.gqlOperator.includes("is_null");
   };
 
@@ -410,7 +434,7 @@ const GridTableFilters = ({
           You don't have any search filters, add one below.
         </Alert>
       )}
-      {Object.keys(filterParameters).map(filterId => {
+      {Object.keys(filterParameters).map((filterId) => {
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -422,41 +446,30 @@ const GridTableFilters = ({
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl fullWidth className={classes.formControl}>
-                  <InputLabel
-                    id={`filter-field-select-${filterId}-label`}
-                    key={`filter-field-select-${filterId}-label`}
-                  >
-                    Field
-                  </InputLabel>
-                  <Select
-                    fullWidth
-                    labelId={`filter-field-select-${filterId}`}
+                  <Autocomplete
+                    value={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
-                    value={
-                      filterParameters[filterId].field
-                        ? filterParameters[filterId].field
-                        : ""
+                    options={query.config.filters.fields}
+                    getOptionLabel={(f) =>
+                      Object.hasOwn(f, "label") ? f.label : f
                     }
-                    onChange={e =>
-                      handleFilterFieldMenuClick(filterId, e.target.value)
-                    }
-                    label="field"
-                  >
-                    <MenuItem value="">
-                      <em>None</em>
-                    </MenuItem>
-                    {query.config.filters.fields.map((field, fieldIndex) => {
-                      return (
-                        <MenuItem
-                          value={field.name}
-                          key={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                          id={`filter-field-select-item-${field.name}-${fieldIndex}`}
-                        >
-                          {field.label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
+                    onChange={(e, value) => {
+                      handleFilterFieldMenuClick(filterId, value?.name);
+                    }}
+                    getOptionSelected={(option, value) => {
+                      if (Object.hasOwn(value, "name")) {
+                        return option.name === value.name;
+                      }
+                      return option.label === value;
+                    }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label={"Field"}
+                      />
+                    )}
+                  />
                 </FormControl>
               </Grid>
 
@@ -478,7 +491,7 @@ const GridTableFilters = ({
                         ? filterParameters[filterId].operator
                         : ""
                     }
-                    onChange={e =>
+                    onChange={(e) =>
                       handleFilterOperatorClick(filterId, e.target.value)
                     }
                     label="field"
@@ -505,22 +518,58 @@ const GridTableFilters = ({
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  {isFilterNullType(filterParameters[filterId]) !== true && (
-                    <TextField
-                      key={`filter-search-value-${filterId}`}
-                      id={`filter-search-value-${filterId}`}
-                      type={
-                        filterParameters[filterId].type
-                          ? filterParameters[filterId].type
-                          : "text"
-                      }
-                      onChange={e =>
-                        handleSearchValueChange(filterId, e.target.value)
-                      }
-                      variant="outlined"
-                      value={filterParameters[filterId].value ?? ""}
-                    />
-                  )}
+                  {isFilterNullType(filterParameters[filterId]) !== true &&
+                    (renderAutocompleteInput(filterParameters[filterId]) ? (
+                      <Autocomplete
+                        value={filterParameters[filterId].value || null}
+                        options={data[filterParameters[filterId].lookup_table]}
+                        getOptionLabel={(option) =>
+                          Object.hasOwn(
+                            option,
+                            filterParameters[filterId].lookup_field
+                          )
+                            ? option[filterParameters[filterId].lookup_field]
+                            : option
+                        }
+                        onChange={(e, value) => {
+                          handleSearchValueChange(
+                            filterId,
+                            value[filterParameters[filterId].lookup_field]
+                          );
+                        }}
+                        getOptionSelected={(option, value) => {
+                          if (Object.hasOwn(value, "name")) {
+                            return option.name === value.name;
+                          }
+                          return (
+                            option[filterParameters[filterId].lookup_field] ===
+                            value
+                          );
+                        }}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="standard"
+                            label={"Option"}
+                          />
+                        )}
+                      />
+                    ) : (
+                      <TextField
+                        key={`filter-search-value-${filterId}`}
+                        id={`filter-search-value-${filterId}`}
+                        type={
+                          filterParameters[filterId].type
+                            ? filterParameters[filterId].type
+                            : "text"
+                        }
+                        onChange={(e) =>
+                          handleSearchValueChange(filterId, e.target.value)
+                        }
+                        variant="outlined"
+                        value={filterParameters[filterId].value ?? ""}
+                      />
+                    ))}
                 </FormControl>
               </Grid>
               <Hidden smDown>
