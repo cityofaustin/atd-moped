@@ -221,7 +221,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         # Remove date_added, if provided, so we don't reset this field
         request.json.pop("date_added", None)
-        status_id = request.json.get("status_id", 0)
+        is_deleted = request.json.get("is_deleted", false)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
         reactivate_account = False
@@ -238,14 +238,14 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             return jsonify({"error": profile_error_feedback}), 400
 
         # The status is active, check if the user exists
-        if status_id == 1:
+        if is_deleted == False:
             try:
                 cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
                 user_already_exists = True
             except ClientError as e:
                 user_already_exists = False
         # If the user doesn't exist and is now active, create it...
-        if user_already_exists == False and status_id == 1:
+        if user_already_exists == False and is_deleted == False:
             # Check if the password needs to be provided
             if password is None or password == "":
                 return jsonify({"error": {"message": "No password provided."}}), 400

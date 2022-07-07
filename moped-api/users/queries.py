@@ -66,7 +66,7 @@ GRAPHQL_USER_EXISTS = """
         email
         user_id
         workgroup_id
-        status_id
+        is_deleted
       }
   }
 """

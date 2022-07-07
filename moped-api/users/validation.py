@@ -45,12 +45,10 @@ USER_VALIDATION_SCHEMA = {
         "nullable": True,
         "required": False,
     },
-    "status_id": {
-        "type": "number",
+    "is_deleted": {
+        "type": "boolean",
         "nullable": True,
         "required": False,
-        "min": 0,
-        "max": 100,
     },
     "title": {
         "type": "string",
