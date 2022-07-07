@@ -226,12 +226,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       return;
     }
 
-    // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-        console.log("is NULL")
-      // gqlOperator = envelope === "true" ? "_eq" : "_neq";
-      value = specialNullValue ? specialNullValue : envelope;
-            console.log(gqlOperator, value)
+      // Some fields when empty are not null but rather an empty string or "None"
+      if (specialNullValue) {
+        gqlOperator = envelope === "true" ? "_eq" : "_neq";
+        value = specialNullValue;
+      }
+      else {
+        value = envelope;
+      }
     } else {
       if (value !== null) {
         // If there is an envelope, insert value in envelope.

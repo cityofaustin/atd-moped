@@ -29,8 +29,24 @@ export const GridTableFiltersCommonOperators = {
   string_is_not_null: {
     operator: "_is_null",
     label: "is not blank",
-    description: "String field is not null",
+    description: "Selected field is not null",
     envelope: "false",
+    type: "string",
+  },
+  string_is_blank: {
+    operator: "_is_null",
+    label: "is blank",
+    description: "Selected field is blank",
+    envelope: "true",
+    specialNullValue: '""',
+    type: "string",
+  },
+  string_is_not_blank: {
+    operator: "_is_null",
+    label: "is not blank",
+    description: "Selected field is not blank",
+    envelope: "false",
+    specialNullValue: '""',
     type: "string",
   },
   string_is_null_special_case: {
@@ -38,7 +54,7 @@ export const GridTableFiltersCommonOperators = {
     label: "is blank",
     description: "Selected field does not have meaningful content",
     envelope: "true",
-    specialNullValue: '" :"',
+    specialNullValue: '"None"',
     type: "string",
   },
   string_is_not_null_special_case: {
@@ -46,7 +62,7 @@ export const GridTableFiltersCommonOperators = {
     label: "is not blank",
     description: "String field does not match special null value",
     envelope: "false",
-    specialNullValue: '" :"',
+    specialNullValue: '"None"',
     type: "string",
   },
   string_begins_with_case_insensitive: {
@@ -61,13 +77,6 @@ export const GridTableFiltersCommonOperators = {
     label: "ends with",
     description: "Field content ends with string (case-insensitive)",
     envelope: "%{VALUE}",
-    type: "string",
-  },
-  string_equals_case_insensitive: {
-    operator: "_ieq",
-    label: "is",
-    description: "Field content equals string (case-insensitive)",
-    envelope: null,
     type: "string",
   },
   number_equals: {
