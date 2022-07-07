@@ -933,3 +933,20 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
     }
   }
 `;
+
+export const LOOKUP_TABLES_QUERY = gql`
+  query ProjectLookups {
+    moped_fund_sources {
+      funding_source_id
+      funding_source_name
+    }
+    moped_types(order_by: { type_name: asc }) {
+      type_id
+      type_name
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
+    }
+  }
+`;
