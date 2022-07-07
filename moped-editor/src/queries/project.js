@@ -155,7 +155,6 @@ export const TEAM_QUERY = gql`
       user_id
       role_id
       notes
-      status_id
       project_id
       project_personnel_id
       date_added

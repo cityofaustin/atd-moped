@@ -29,7 +29,6 @@ const GET_USER = gql`
       is_coa_staff
       last_name
       staff_uuid
-      status_id
       title
       user_id
       workgroup
@@ -43,7 +42,6 @@ const GET_USER = gql`
 `;
 
 const fieldFormatters = {
-  status_id: id => id.toString(),
   workgroup_id: id => id.toString(),
   roles: roles => findHighestRole(roles),
 };
