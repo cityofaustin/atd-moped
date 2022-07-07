@@ -518,7 +518,7 @@ const GridTableFilters = ({
                         handleSearchValueChange(filterId, e.target.value)
                       }
                       variant="outlined"
-                      value={filterParameters[filterId].value}
+                      value={filterParameters[filterId].value ?? ""}
                     />
                   )}
                 </FormControl>

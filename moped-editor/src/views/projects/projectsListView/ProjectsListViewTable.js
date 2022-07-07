@@ -221,15 +221,25 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       specialNullValue,
     } = filters[filter];
 
+    console.log("env :", envelope,
+      field,
+      gqlOperator,
+      value,
+      type,
+      specialNullValue)
+
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
+      console.log("we is null")
       return;
     }
 
     // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
+            console.log("is NULL")
       gqlOperator = envelope === "true" ? "_eq" : "_neq";
-      value = specialNullValue ? specialNullValue : '""';
+      value = specialNullValue ? specialNullValue : null;
+            console.log(gqlOperator, value)
     } else {
       if (value !== null) {
         // If there is an envelope, insert value in envelope.
@@ -485,6 +495,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     }
   }, [data, advancedSearchAnchor]);
 
+    console.log(query.query)
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -558,7 +570,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     Body: props => {
                       const indexedData = data["project_list_view"].map(
                         (row, index) => ({
-                          tableData: { id: index },
+                          tableData: { id: index, uuid:row.project_id },
                           ...row,
                         })
                       );
