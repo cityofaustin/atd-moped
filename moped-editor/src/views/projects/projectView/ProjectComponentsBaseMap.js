@@ -6,11 +6,11 @@ import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 export const useStyles = makeStyles(theme => ({
   speedDialStreets: {
     color: "black",
-    backgroundImage: "url(/moped/static/images/mapStreets.jpg) !important",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg) !important`,
   },
   speedDialAerial: {
     color: "white",
-    backgroundImage: "url(/moped/static/images/mapAerial.jpg) !important",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg) !important`,
   },
   mapStyleToggle: {
     position: "absolute",
@@ -123,6 +123,7 @@ const ProjectComponentsBaseMap = ({
             tooltipTitle={"Streets Base Map"}
             tooltipPlacement={"top"}
             onClick={() => handleBasemapSpeedDialClose("streets")}
+            className={classes.speedDialStreets}
           />
           <SpeedDialAction
             key={"aerial"}
@@ -133,6 +134,7 @@ const ProjectComponentsBaseMap = ({
             }
             tooltipTitle={"Aerial Base Map"}
             tooltipPlacement={"top"}
+            className={classes.speedDialAerial}
             onClick={() => handleBasemapSpeedDialClose("aerial")}
           />
         </SpeedDial>,

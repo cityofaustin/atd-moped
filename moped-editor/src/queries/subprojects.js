@@ -38,22 +38,22 @@ export const UPDATE_PROJECT_SUBPROJECT = gql`
     $parentProjectId: Int!
     $childProjectId: Int!
   ) {
-    update_moped_project(
-      where: { project_id: { _eq: $childProjectId } }
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $childProjectId }
       _set: { parent_project_id: $parentProjectId }
     ) {
-      affected_rows
+      parent_project_id
     }
   }
 `;
 
 export const DELETE_PROJECT_SUBPROJECT = gql`
   mutation UpdateProjectSubproject($childProjectId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $childProjectId } }
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $childProjectId }
       _set: { parent_project_id: null }
     ) {
-      affected_rows
+      parent_project_id
     }
   }
 `;
