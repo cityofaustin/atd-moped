@@ -221,24 +221,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       specialNullValue,
     } = filters[filter];
 
-    console.log("env :", envelope,
-      field,
-      gqlOperator,
-      value,
-      type,
-      specialNullValue)
-
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
-      console.log("we is null")
       return;
     }
 
     // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-            console.log("is NULL")
-      gqlOperator = envelope === "true" ? "_eq" : "_neq";
-      value = specialNullValue ? specialNullValue : null;
+        console.log("is NULL")
+      // gqlOperator = envelope === "true" ? "_eq" : "_neq";
+      value = specialNullValue ? specialNullValue : envelope;
             console.log(gqlOperator, value)
     } else {
       if (value !== null) {
