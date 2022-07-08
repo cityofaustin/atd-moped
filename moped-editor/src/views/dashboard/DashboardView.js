@@ -29,11 +29,7 @@ import typography from "../../theme/typography";
 
 import TrafficIcon from "@material-ui/icons/Traffic";
 
-import {
-  USER_FOLLOWED_PROJECTS_QUERY,
-  USER_PERSONNEL_PROJECTS_QUERY,
-} from "../../queries/dashboard";
-import { STATUS_QUERY } from "../../queries/project";
+import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
 import { getSessionDatabaseData } from "../../auth/user";
 
@@ -85,11 +81,9 @@ function a11yProps(index) {
 const TABS = [
   {
     label: "My projects",
-    query: USER_PERSONNEL_PROJECTS_QUERY,
   },
   {
     label: "Following",
-    query: USER_FOLLOWED_PROJECTS_QUERY,
   },
 ];
 
@@ -106,7 +100,7 @@ const DashboardView = () => {
 
   const [activeTab, setActiveTab] = useState(0);
 
-  const { loading, error, data, refetch } = useQuery(TABS[activeTab].query, {
+  const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
@@ -115,16 +109,11 @@ const DashboardView = () => {
     console.log(error);
   }
 
-  const { referenceData } = useQuery(STATUS_QUERY);
-
   let selectedData = [];
 
-  if (TABS[activeTab].query === USER_FOLLOWED_PROJECTS_QUERY && !!data) {
+  if (TABS[activeTab].label === "Following" && !!data) {
     selectedData = data.moped_user_followed_projects;
-  } else if (
-    TABS[activeTab].query === USER_PERSONNEL_PROJECTS_QUERY &&
-    !!data
-  ) {
+  } else if (TABS[activeTab].label === "My projects" && !!data) {
     selectedData = data.moped_proj_personnel;
   }
 
@@ -137,6 +126,18 @@ const DashboardView = () => {
       project["project_id"] = project.project.project_id;
       project["current_phase"] = project.project.current_phase;
       project["current_status"] = project.project.current_status;
+      project["status_id"] = project.project.status_id;
+
+      /**
+       * Get percentage of milestones completed
+       */
+      const milestonesTotal = project.project.moped_proj_milestones.length;
+      const milestonesCompleted = project.project.moped_proj_milestones.filter(
+        milestone => milestone.completed === true
+      ).length;
+      project["completed_milestones_percentage"] = !!milestonesTotal
+        ? (milestonesCompleted / milestonesTotal) * 100
+        : 0;
 
       // project status update equivalent to most recent project note
       // html is parsed before being rendered in the DashboardEditModal component
@@ -158,7 +159,7 @@ const DashboardView = () => {
     <ProjectStatusBadge
       status={statusId}
       phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
+      projectStatuses={data?.moped_status ?? []}
       condensed
     />
   );
@@ -184,27 +185,27 @@ const DashboardView = () => {
       title: "Project name",
       field: "project.project_name",
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "200px" },
+      cellStyle: { ...typographyStyle },
       render: entry => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_name}
         />
       ),
+      width: "25%",
     },
     {
       title: "Status",
       field: "current_phase",
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "300px" },
       render: entry =>
-        buildStatusBadge(entry.current_phase, entry.current_status),
+        buildStatusBadge(entry.current_phase, entry.status_id),
+      width: "25%",
     },
     {
       title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
-      cellStyle: { ...typographyStyle, minWidth: "300px" },
       render: entry => (
         <DashboardEditModal
           project={entry.project}
@@ -212,6 +213,39 @@ const DashboardView = () => {
           queryRefetch={refetch}
         />
       ),
+      width: "25%",
+    },
+    {
+      title: "Milestones completed",
+      field: "completed_milestones",
+      render: entry => (
+        <Box sx={{ position: "relative", display: "inline-flex" }}>
+          <CircularProgress
+            variant="determinate"
+            value={entry.completed_milestones_percentage}
+          />
+          <Box
+            sx={{
+              top: 0,
+              left: 0,
+              bottom: 0,
+              right: 0,
+              position: "absolute",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Typography
+              variant="caption"
+              component="div"
+            >
+              {`${Math.round(entry.completed_milestones_percentage)}%`}
+            </Typography>
+          </Box>
+        </Box>
+      ),
+      width: "25%",
     },
   ];
 
@@ -264,11 +298,9 @@ const DashboardView = () => {
                       body: {
                         emptyDataSourceMessage: (
                           <Typography>
-                            {TABS[activeTab].query ===
-                              USER_FOLLOWED_PROJECTS_QUERY &&
+                            {TABS[activeTab].label === "Following" &&
                               "No projects to display. You have not followed any current projects."}
-                            {TABS[activeTab].query ===
-                              USER_PERSONNEL_PROJECTS_QUERY &&
+                            {TABS[activeTab].label === "My projects" &&
                               "No projects to display. You are not listed as a Team Member on any current projects."}
                           </Typography>
                         ),
@@ -277,6 +309,7 @@ const DashboardView = () => {
                     options={{
                       search: false,
                       toolbar: false,
+                      tableLayout: "fixed",
                     }}
                   />
                 )}
