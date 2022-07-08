@@ -65,7 +65,7 @@ import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
 import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -169,7 +169,7 @@ const ProjectView = () => {
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
   let activeTabIndex = !!query.get("tab")
-    ? TABS.findIndex(tab => tab.param === query.get("tab"))
+    ? TABS.findIndex((tab) => tab.param === query.get("tab"))
     : 0;
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -275,7 +275,7 @@ const ProjectView = () => {
    * Handles mouse event to open the menu
    * @param {Object} event - The mouse click event
    */
-  const handleMenuOpen = event => {
+  const handleMenuOpen = (event) => {
     setAnchorElement(event.currentTarget);
   };
 
@@ -340,7 +340,7 @@ const ProjectView = () => {
         // Do not close the dialog, redirect will take care
         window.location = "/moped/projects";
       })
-      .catch(err => {
+      .catch((err) => {
         // If there is an error, show it in the dialog
         setDialogContent(
           "Error",
@@ -365,14 +365,14 @@ const ProjectView = () => {
    * @param {string} phase - The name of the phase
    * @returns {number}
    */
-  const resolveStatusIdForStatusName = status =>
-    data?.moped_status.find(s => s.status_name.toLowerCase() === status)
+  const resolveStatusIdForStatusName = (status) =>
+    data?.moped_status.find((s) => s.status_name.toLowerCase() === status)
       .status_id ?? 1;
 
   /**
    * Updates status of the current project to either on-hold or canceled
    */
-  const handleUpdateStatus = new_status => {
+  const handleUpdateStatus = (new_status) => {
     updateStatus({
       variables: {
         projectId: projectId,
@@ -388,7 +388,7 @@ const ProjectView = () => {
         })
       )
       .then(() => refetch())
-      .catch(err => {
+      .catch((err) => {
         // If there is an error, show it in the dialog
         setDialogContent(
           "Error",
