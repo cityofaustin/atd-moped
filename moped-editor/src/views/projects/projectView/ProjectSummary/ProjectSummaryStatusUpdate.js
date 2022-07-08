@@ -32,6 +32,8 @@ import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAnd
  */
 const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id
+  const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
 
   const [updateProjectStatusUpdateInsert] = useMutation(
     PROJECT_SUMMARY_STATUS_UPDATE_INSERT
@@ -97,7 +99,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const handleStatusUpdateSave = () => {
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
-    const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
     const isStatusUpdateInsert = statusUpdateAddNew || !commentId;
 
     (isStatusUpdateInsert
@@ -109,6 +110,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
               statusUpdate: {
                 project_id: Number(projectId),
                 added_by: addedBy,
+                added_by_user_id: userId,
                 project_note: DOMPurify.sanitize(statusUpdate),
                 project_note_type: 2,
               },
@@ -143,6 +145,12 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     setStatusUpdateAddNew(false);
   };
 
+  /**
+   * Only allow the user who wrote the status to edit it
+   */
+  const isEditableComment =
+    userId === parseInt(getStatusUpdate("added_by_user_id"));
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Box display="flex" justifyContent="flex-start">
@@ -170,7 +178,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             </Typography>
             <Typography
               className={classes.fieldBoxTypography}
-              onClick={handleStatusUpdateEdit}
+              onClick={isEditableComment ? handleStatusUpdateEdit : null}
             >
               <span className={classes.fieldLabelTextSpan}>
                 {statusUpdate || "None"}
