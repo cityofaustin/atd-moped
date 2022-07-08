@@ -126,7 +126,7 @@ export const StaffListViewQueryConf = {
     first_name: "asc",
   },
   where: {
-    status_id: "_eq: 1",
+    is_deleted: "_eq: false",
   },
   limit: 25,
   offset: 0,
