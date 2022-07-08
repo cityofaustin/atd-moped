@@ -17,8 +17,11 @@ import {
   ADD_PROJECT,
   TYPES_QUERY,
   ADD_PROJECT_MILESTONE,
+  PROJECT_FOLLOW,
 } from "../../../queries/project";
 import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
+
+import { getSessionDatabaseData } from "../../../auth/user";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 import {
@@ -29,7 +32,7 @@ import {
 /**
  * Styles
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
@@ -55,6 +58,10 @@ const NewProjectView = () => {
 
   // Redirect handlers
   const navigate = useNavigate();
+
+  // user data
+  const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData?.user_id;
 
   /**
    * Form State
@@ -112,6 +119,7 @@ const NewProjectView = () => {
   const [addProject] = useMutation(ADD_PROJECT);
 
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
+  const [followProject] = useMutation(PROJECT_FOLLOW);
 
   /**
    * Timer Reference Object
@@ -197,10 +205,19 @@ const NewProjectView = () => {
         variables: variablePayload,
       })
         // On success
-        .then(response => {
+        .then((response) => {
           // Capture the project ID, which will be used to redirect to the Project Summary page
           const { project_id } = response.data.insert_moped_project_one;
           setNewProjectId(project_id);
+          // Add project to user's following list
+          followProject({
+            variables: {
+              object: {
+                project_id: project_id,
+                user_id: userId,
+              },
+            },
+          });
           // if a project type has been specified, add the milestones from template
           if (projectTypeId) {
             return addProjectMilestone({
@@ -211,7 +228,7 @@ const NewProjectView = () => {
           }
         })
         // If there is an error, we must show it...
-        .catch(err => {
+        .catch((err) => {
           alert(err);
           setLoading(false);
           setSuccess(false);
