@@ -759,6 +759,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       backend_only: false
   - role: moped-editor
     permission:
@@ -771,6 +772,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -783,6 +785,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       filter: {}
   - role: moped-editor
     permission:
@@ -794,6 +797,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       filter: {}
   - role: moped-viewer
     permission:
@@ -805,6 +809,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -817,6 +822,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       filter: {}
       check: {}
   - role: moped-editor
@@ -829,6 +835,7 @@
       - project_id
       - status_id
       - is_deleted
+      - interim_project_component_id
       filter: {}
       check: {}
   event_triggers:
