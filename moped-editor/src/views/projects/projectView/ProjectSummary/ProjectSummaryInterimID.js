@@ -74,7 +74,7 @@ const ProjectSummaryInterimID = ({
         refetch();
         snackbarHandle(true, "Project interim database ID updated!", "success");
       })
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(
           true,
           "Failed to update interim database ID " + String(err),
@@ -90,7 +90,7 @@ const ProjectSummaryInterimID = ({
    * Updates the state of the interim id value
    * @param {Object} e - Event object
    */
-  const handleProjectInterimIdChange = e => {
+  const handleProjectInterimIdChange = (e) => {
     setInterimId(e.target.value);
   };
 
@@ -112,6 +112,7 @@ const ProjectSummaryInterimID = ({
               label={null}
               onChange={handleProjectInterimIdChange}
               value={interimId}
+              inputProps={{ type: "number", inputmode: "numeric" }}
             />
             <Icon
               className={classes.editIconConfirm}
