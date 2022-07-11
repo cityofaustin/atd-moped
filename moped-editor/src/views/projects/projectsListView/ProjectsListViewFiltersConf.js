@@ -80,24 +80,9 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
-      name: "status_name",
-      label: "Current status",
-      placeholder: "Current status",
-      type: "string",
-      operators: [
-        "string_equals_case_sensitive",
-        "string_does_not_equal_case_sensitive",
-        "string_contains_case_insensitive",
-        "string_begins_with_case_insensitive",
-        "string_ends_with_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
-      ],
-    },
-    {
       name: "current_phase",
-      label: "Current phase",
-      placeholder: "Current phase",
+      label: "Status",
+      placeholder: "Status",
       type: "string",
       operators: [
         "string_equals_case_sensitive",
@@ -105,8 +90,8 @@ export const ProjectsListViewFiltersConf = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
+        "string_is_blank",
+        "string_is_not_blank",
       ],
     },
     {
@@ -139,8 +124,8 @@ export const ProjectsListViewFiltersConf = {
         "string_ends_with_case_insensitive",
         "string_equals_case_sensitive",
         "string_does_not_equal_case_sensitive",
-        "string_is_null",
-        "string_is_not_null",
+        "string_is_null_special_case",
+        "string_is_not_null_special_case",
       ],
     },
     {
