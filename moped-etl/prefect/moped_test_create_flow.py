@@ -15,9 +15,6 @@ import prefect
 import sys, os
 import subprocess
 
-from dotenv import load_dotenv
-
-load_dotenv()
 
 # Prefect
 from prefect import Flow, task
@@ -32,9 +29,9 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 # ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 # TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
-DATABASE_HOST = os.getenv("MOPED_TEST_HOSTNAME")
-DATABASE_USER = os.getenv("MOPED_TEST_USER")
-DATABASE_PASSWORD = os.getenv("MOPED_TEST_PASSWORD")
+DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
+DATABASE_USER = os.environ["MOPED_TEST_USER"]
+DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 
 
 # Logger instance
@@ -83,8 +80,6 @@ def create_database(database_name):
     pg.commit()
     cursor.close()
     pg.close()
-
-    password = os.getenv("MOPED_TEST_PASSWORD")
 
     # Connect to the new DB so we can update it
     db_pg = psycopg2.connect(
@@ -354,9 +349,9 @@ with Flow("Create Moped Environment") as flow:
     logger.info("Calling tasks")
 
     # Env var from GitHub action?
-    database_name = os.getenv("DATABASE_NAME")
-    create_database(database_name)
-    # remove_database(database_name)
+    database_name = os.environ["MOPED_TEST_DATABASE_NAME"]
+    #create_database(database_name)
+    #remove_database(database_name)
 
     basename = "test-ecs-cluster"
 
