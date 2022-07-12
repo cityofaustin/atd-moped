@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link as RouterLink, NavLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import {
@@ -23,6 +23,7 @@ import NavigationSearchInput from "./NavBar/NavigationSearchInput";
 import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
+import NavLink from "src/components/NavLink";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -79,7 +80,7 @@ export const navigationItems = [
   },
 ];
 
-const TopBar = ({ className, onOpen, ...rest }) => {
+const TopBar = ({ className, ...rest }) => {
   const classes = useStyles();
   const navigate = useNavigate();
   const { user } = useUser();

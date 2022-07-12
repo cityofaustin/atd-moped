@@ -15,7 +15,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_name
         is_current_phase
-        status_id
         completion_percentage
         completed
       }
@@ -51,24 +50,28 @@ export const SUMMARY_QUERY = gql`
       contractor
       purchase_order_number
       work_assignment_id
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      parent_project_id
+      moped_project {
+        project_name
+      }
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
           feature
         }
       }
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 }, status_id: { _eq: 1 } }
+        where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
         order_by: { date_created: asc }
       ) {
         project_note_id
         project_note
         added_by
+        added_by_user_id
         date_created
       }
-      moped_project_types(where: { status_id: { _eq: 1 } }) {
+      moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
-        status_id
         moped_type {
           type_name
           type_id
@@ -76,7 +79,7 @@ export const SUMMARY_QUERY = gql`
       }
     }
     moped_proj_partners(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_partner_id
       project_id
@@ -151,12 +154,11 @@ export const TYPES_QUERY = gql`
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       user_id
       role_id
       notes
-      status_id
       project_id
       project_personnel_id
       date_added
@@ -182,7 +184,7 @@ export const TEAM_QUERY = gql`
     }
     moped_users(
       order_by: { last_name: asc }
-      where: { status_id: { _eq: 1 } }
+      where: { is_deleted: { _eq: false } }
     ) {
       first_name
       last_name
@@ -200,41 +202,10 @@ export const UPSERT_PROJECT_PERSONNEL = gql`
       objects: $objects
       on_conflict: {
         constraint: moped_proj_personnel_project_id_user_id_role_id_key
-        update_columns: [project_id, user_id, role_id, status_id, notes]
+        update_columns: [project_id, user_id, role_id, is_deleted, notes]
       }
     ) {
       affected_rows
-    }
-  }
-`;
-
-export const UPDATE_PROJECT_PERSONNEL = gql`
-  mutation UpdateProjectPersonnel(
-    $user_id: Int
-    $notes: String
-    $project_id: Int
-    $status_id: Int
-    $project_personnel_id: Int!
-    $date_added: timestamptz
-    $added_by: Int
-    $role_id: Int
-  ) {
-    update_moped_proj_personnel_by_pk(
-      pk_columns: { project_personnel_id: $project_personnel_id }
-      _set: {
-        user_id: $user_id
-        notes: $notes
-        project_id: $project_id
-        status_id: $status_id
-        project_personnel_id: $project_personnel_id
-        date_added: $date_added
-        added_by: $added_by
-        role_id: $role_id
-      }
-    ) {
-      user_id
-      role_id
-      notes
     }
   }
 `;
@@ -258,7 +229,7 @@ export const TIMELINE_QUERY = gql`
       subphase_name
     }
     moped_proj_phases(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { phase_start: desc }
     ) {
       phase_name
@@ -277,7 +248,7 @@ export const TIMELINE_QUERY = gql`
       milestone_name
     }
     moped_proj_milestones(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: [
         { milestone_order: asc },
         { milestone_end: desc }
@@ -370,7 +341,7 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
 export const DELETE_PROJECT_PHASE = gql`
   mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
       where: { project_phase_id: { _eq: $project_phase_id } }
     ) {
       affected_rows
@@ -381,7 +352,7 @@ export const DELETE_PROJECT_PHASE = gql`
 export const DELETE_PROJECT_MILESTONE = gql`
   mutation DeleteProjectMilestone($project_milestone_id: Int!) {
     update_moped_proj_milestones(
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
       where: { project_milestone_id: { _eq: $project_milestone_id } }
     ) {
       affected_rows
@@ -402,7 +373,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_id
         completion_percentage
         completed
-        status_id
       }
     }
   }
@@ -421,7 +391,6 @@ export const ADD_PROJECT_MILESTONE = gql`
         completed
         project_milestone_id
         project_id
-        status_id
       }
     }
   }
@@ -438,7 +407,9 @@ export const PROJECT_FOLLOW = gql`
 
 export const PROJECT_UNFOLLOW = gql`
   mutation UnfollowProject($project_id: Int!, $user_id: Int!) {
-    delete_moped_user_followed_projects(where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }) {
+    delete_moped_user_followed_projects(
+      where: { project_id: { _eq: $project_id }, user_id: { _eq: $user_id } }
+    ) {
       affected_rows
     }
   }
@@ -465,7 +436,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where: { status_id: { _eq: 1 } }) {
+    moped_users(where: { is_deleted: { _eq: false } }) {
       first_name
       last_name
       user_id
@@ -512,7 +483,7 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
 export const PROJECT_FILE_ATTACHMENTS = gql`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
-      where: { project_id: { _eq: $projectId }, is_retired: { _eq: false } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       project_file_id
       project_id
@@ -558,7 +529,7 @@ export const PROJECT_FILE_ATTACHMENTS_DELETE = gql`
   mutation DeleteProjectFileAttachment($fileId: Int!) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
-      _set: { is_retired: true }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -577,9 +548,15 @@ export const PROJECT_ARCHIVE = gql`
   mutation ArchiveMopedProject($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { is_retired: true }
+      _set: { is_deleted: true }
     ) {
       affected_rows
+    }
+    clear_parent_project: update_moped_project(
+      where: { parent_project_id: { _eq: $projectId } }
+      _set: { parent_project_id: null }
+      ) {
+        affected_rows
     }
   }
 `;
@@ -587,22 +564,20 @@ export const PROJECT_ARCHIVE = gql`
 export const COMPONENTS_QUERY = gql`
   query GetComponents($projectId: Int) {
     moped_proj_components(
-      where: { project_id: { _eq: $projectId }, status_id: { _eq: 1 } }
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       component_id
       description
       name
       project_component_id
       project_id
-      status_id
       moped_components {
         component_name
         component_id
         component_subtype
         line_representation
       }
-      moped_proj_components_subcomponents(where: { status_id: { _eq: 1 } }) {
-        status_id
+      moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
         component_subcomponent_id
         project_component_id
         subcomponent_id
@@ -611,7 +586,7 @@ export const COMPONENTS_QUERY = gql`
           subcomponent_name
         }
       }
-      moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_features(where: { is_deleted: { _eq: false } }) {
         feature
         feature_id
       }
@@ -649,7 +624,7 @@ export const UPDATE_MOPED_COMPONENT = gql`
       objects: $objects
       on_conflict: {
         constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, status_id]
+        update_columns: [component_id, description, is_deleted]
       }
     ) {
       affected_rows
@@ -661,19 +636,19 @@ export const DELETE_MOPED_COMPONENT = gql`
   mutation DeleteMopedComponent($projComponentId: Int!) {
     update_moped_proj_components(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
     update_moped_proj_features(
       where: { project_component_id: { _eq: $projComponentId } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -737,7 +712,7 @@ export const PROJECT_UPDATE_PARTNERS = gql`
     }
     update_moped_proj_partners(
       where: { proj_partner_id: { _in: $deleteList } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -791,7 +766,7 @@ export const PROJECT_UPDATE_TYPES = gql`
     }
     update_moped_project_types(
       where: { id: { _in: $deleteList } }
-      _set: { status_id: 0 }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
@@ -827,7 +802,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   }
 `;
 
-export const PROJECT_UPDATE_CONTACTOR = gql`
+export const PROJECT_UPDATE_CONTRACTOR = gql`
   mutation UpdateProjectContractor($projectId: Int!, $contractor: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -838,7 +813,7 @@ export const PROJECT_UPDATE_CONTACTOR = gql`
   }
 `;
 
-export const PROJECT_CLEAR_CONTACTOR = gql`
+export const PROJECT_CLEAR_CONTRACTOR = gql`
   mutation UpdateProjectContractor($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
@@ -961,6 +936,23 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
         task_order
         project_id
       }
+    }
+  }
+`;
+
+export const LOOKUP_TABLES_QUERY = gql`
+  query ProjectLookups {
+    moped_fund_sources {
+      funding_source_id
+      funding_source_name
+    }
+    moped_types(order_by: { type_name: asc }) {
+      type_id
+      type_name
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
     }
   }
 `;

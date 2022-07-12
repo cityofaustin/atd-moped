@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import ExternalLink from "../../components/ExternalLink";
+import { get } from "lodash";
+
 var pckg = require("../../../package.json");
+
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -27,8 +30,10 @@ const Footer = () => {
       "https://api.github.com/repos/cityofaustin/atd-moped/tags";
     const response = await fetch(githubTagsApiEndpoint);
     const data = await response.json();
-    if (data) {
+    if (get(data, 0)) {
       setMostRecentTag(data[0].name);
+    } else {
+      setMostRecentTag(`v${pckg.version}`)
     }
   };
 

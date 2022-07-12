@@ -7,7 +7,6 @@ import {
   CircularProgress,
   Container,
   Paper,
-  Typography,
 } from "@material-ui/core";
 
 // Styling
@@ -28,23 +27,18 @@ import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
+import parse from "html-react-parser";
 
 /**
  * GridTable Style
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
   paper: {
     width: "100%",
     marginBottom: theme.spacing(1),
-  },
-  title: {
-    position: "relative",
-    top: "1.2rem",
-    left: "0.3rem",
-    "text-shadow": "1px 1px 0px white",
   },
   table: {
     minWidth: 750,
@@ -201,11 +195,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
      * add the to the Or list.
      */
     Object.keys(query.config.columns)
-      .filter(column => query.config.columns[column]?.searchable)
-      .forEach(column => {
-        const { operator, quoted, envelope } = query.config.columns[
-          column
-        ].search;
+      .filter((column) => query.config.columns[column]?.searchable)
+      .forEach((column) => {
+        const { operator, quoted, envelope } =
+          query.config.columns[column].search;
         const searchValue = getSearchValue(query, column, search.value);
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
@@ -217,25 +210,23 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
-  Object.keys(filters).forEach(filter => {
-    let {
-      envelope,
-      field,
-      gqlOperator,
-      value,
-      type,
-      specialNullValue,
-    } = filters[filter];
+  Object.keys(filters).forEach((filter) => {
+    let { envelope, field, gqlOperator, value, type, specialNullValue } =
+      filters[filter];
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
       return;
     }
 
-    // If the operator includes "is_null", we check for empty strings
     if (gqlOperator.includes("is_null")) {
-      gqlOperator = envelope === "true" ? "_eq" : "_neq";
-      value = specialNullValue ? specialNullValue : '""';
+      // Some fields when empty are not null but rather an empty string or "None"
+      if (specialNullValue) {
+        gqlOperator = envelope === "true" ? "_eq" : "_neq";
+        value = specialNullValue;
+      } else {
+        value = envelope;
+      }
     } else {
       if (value !== null) {
         // If there is an envelope, insert value in envelope.
@@ -278,7 +269,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Project name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
-      render: entry => (
+      render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
           state={{
@@ -296,22 +287,21 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Status",
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
-      render: entry =>
-        buildStatusBadge(entry.current_phase, entry.current_status),
+      render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
     },
     {
       title: "Team members",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "pre-wrap" },
-      render: entry => renderProjectTeamMembers(entry.project_team_members),
+      render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
       title: "Project sponsor",
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
-      render: entry =>
+      render: (entry) =>
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
     {
@@ -324,7 +314,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "eCAPRIS ID",
       field: "ecapris_subproject_id",
       hidden: hiddenColumns["ecapris_subproject_id"],
-      render: entry => (
+      render: (entry) => (
         <ExternalLink
           text={entry.ecapris_subproject_id}
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
@@ -335,20 +325,20 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Last modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
-      render: entry => formatTimeStampTZType(entry.updated_at),
+      render: (entry) => formatTimeStampTZType(entry.updated_at),
     },
     {
       title: "Signal IDs",
       field: "project_feature",
       hidden: hiddenColumns["project_feature"],
       sorting: false,
-      render: entry => {
+      render: (entry) => {
         // if there are no features, project_feature is [null]
         if (!entry?.project_feature[0]) {
           return "-";
         } else {
           const signalIds = [];
-          entry.project_feature.forEach(projectFeature => {
+          entry.project_feature.forEach((projectFeature) => {
             const signal = projectFeature?.properties?.signal_id;
             if (signal) {
               signalIds.push({
@@ -366,14 +356,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "task_order",
       hidden: hiddenColumns["task_order"],
       emptyValue: "-",
-      render: entry => {
+      render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
         if (entry?.task_order.length < 1) {
           return "-";
         }
         // Render values as a comma seperated string
         let content = entry.task_order
-          .map(taskOrder => {
+          .map((taskOrder) => {
             return taskOrder.display_name;
           })
           .join(", ");
@@ -386,14 +376,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "contractor",
       hidden: hiddenColumns["contractor"],
       emptyValue: "-",
-      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
+      render: (entry) => (entry.contractor === "" ? "-" : entry.contractor),
     },
     {
       title: "Project DO#",
       field: "purchase_order_number",
       hidden: hiddenColumns["purchase_order_number"],
       emptyValue: "-",
-      render: entry =>
+      render: (entry) =>
         entry.purchase_order_number.trim().length === 0
           ? "-"
           : entry.purchase_order_number,
@@ -415,20 +405,21 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+      render: (entry) => parse(String(entry.project_note)),
     },
     {
       title: "Construction start",
       field: "construction_start_date",
       hidden: hiddenColumns["construction_start_date"],
       emptyValue: "-",
-      render: entry => formatDateType(entry.construction_start_date),
+      render: (entry) => formatDateType(entry.construction_start_date),
     },
     {
       title: "Project completion",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
-      render: entry => formatDateType(entry.completion_end_date),
+      render: (entry) => formatDateType(entry.completion_end_date),
     },
     {
       title: "Designer",
@@ -493,15 +484,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        {/*Title*/}
-        <Typography
-          variant="h1"
-          component="h1"
-          align="left"
-          className={classes.title}
-        >
-          {title}
-        </Typography>
         {/*Toolbar Space*/}
         <GridTableToolbar>
           <GridTableSearch
@@ -546,7 +528,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                     columnsButton: true,
                   }}
                   components={{
-                    Pagination: props => (
+                    Pagination: (props) => (
                       <GridTablePagination
                         query={query}
                         data={data}
@@ -554,7 +536,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                         setPagination={setPagination}
                       />
                     ),
-                    Toolbar: props => {
+                    Toolbar: (props) => {
                       return (
                         <ProjectsListViewTableToolbar
                           toggleColumnConfig={toggleColumnConfig}
@@ -562,17 +544,20 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                         />
                       );
                     },
-                    Header: props => (
+                    Header: (props) => (
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
                         orderDirection={sort.order}
                       />
                     ),
-                    Body: props => {
+                    Body: (props) => {
+                      // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
+                      // we have configured MT to use local data but are technically using remote data
+                      // this results in inconsistencies with how MT displays filtered data
                       const indexedData = data["project_list_view"].map(
                         (row, index) => ({
-                          tableData: { id: index },
+                          tableData: { id: index, uuid: row.project_id },
                           ...row,
                         })
                       );

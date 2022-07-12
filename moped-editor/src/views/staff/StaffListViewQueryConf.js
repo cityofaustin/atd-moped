@@ -121,11 +121,12 @@ export const StaffListViewQueryConf = {
       type: "String",
     },
   },
+  // A single, un-nested order by directive ✅
   order_by: {
     first_name: "asc",
   },
   where: {
-    status_id: "_eq: 1",
+    is_deleted: "_eq: false",
   },
   limit: 25,
   offset: 0,

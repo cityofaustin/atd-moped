@@ -90,7 +90,6 @@ const ProjectSummaryProjectTypes = ({
     const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
       project_id: projectId,
       project_type_id: type_id,
-      status_id: 1,
     }));
 
     // List of primary keys to delete

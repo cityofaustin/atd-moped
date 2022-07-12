@@ -11,7 +11,6 @@ GRAPHQL_CREATE_USER = """
           update_columns:[
             cognito_user_id,
             date_added,
-            status_id,
             title,
             workgroup,
             workgroup_id,
@@ -46,7 +45,7 @@ GRAPHQL_UPDATE_USER = """
 
 GRAPHQL_DEACTIVATE_USER = """
     mutation update_moped_user($userBoolExp: moped_users_bool_exp!) {
-      update_moped_users(where: $userBoolExp, _set: { status_id: 0, cognito_user_id: null }) {
+      update_moped_users(where: $userBoolExp, _set: { is_deleted: true, cognito_user_id: null }) {
         affected_rows
         returning {
           user_id
@@ -67,7 +66,7 @@ GRAPHQL_USER_EXISTS = """
         email
         user_id
         workgroup_id
-        status_id
+        is_deleted
       }
   }
 """

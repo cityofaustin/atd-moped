@@ -5,7 +5,7 @@ import config from "../config";
  * @param {string} file_key - The full to the file in the bucket
  * @param {string} token - The JWT token to use against the API
  */
-export default (file_key, token) => {
+const downloadFileAttachment = (file_key, token) => {
   if (file_key) {
     // Remove forward slash if present
     if (file_key[0] === "/") file_key = file_key.substring(1);
@@ -17,19 +17,19 @@ export default (file_key, token) => {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then(response => {
+      .then((response) => {
         if (response.status === 200) {
           // We care
           response
             .json()
-            .then(data => {
+            .then((data) => {
               if (data?.download_url) {
                 window.location = data.download_url;
               } else {
                 console.log("Error Downloading File: No download URL");
               }
             })
-            .catch(err => {
+            .catch((err) => {
               console.log("Error Downloading File: " + JSON.stringify(err));
             });
         } else {
@@ -37,8 +37,10 @@ export default (file_key, token) => {
           console.log("Error: Unable to download file.");
         }
       })
-      .catch(err => {
+      .catch((err) => {
         console.log("Error Downloading File: " + JSON.stringify(err));
       });
   }
 };
+
+export default downloadFileAttachment;

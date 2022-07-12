@@ -298,7 +298,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     }
 
     // empty subphases can show up as 0, this removes warning in console
-    lookupValues = {...lookupValues, '0': ''}
+    lookupValues = { ...lookupValues, "0": "" };
 
     // Proceed normally and generate the drop-down
     return (
@@ -426,13 +426,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           <FormHelperText>Required</FormHelperText>
         </FormControl>
       ),
+      width: "25%",
     },
     {
       title: "Description",
       field: "milestone_description",
-      render: milestone => (
-        <div style={{ width: "400px" }}>{milestone.milestone_description}</div>
-      ),
+      render: milestone => milestone.milestone_description,
+      width: "25%",
     },
     {
       title: "Related phase",
@@ -455,6 +455,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       },
       render: milestone =>
         phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
+      width: "14%",
     },
     {
       title: "Completion estimate",
@@ -470,6 +471,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           label="Completion estimate"
         />
       ),
+      width: "13%",
     },
     {
       title: "Date completed",
@@ -485,6 +487,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           label="Date completed"
         />
       ),
+      width: "13%",
     },
     {
       title: "Complete",
@@ -493,6 +496,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       editComponent: props => (
         <ToggleEditComponent {...props} name="completed" />
       ),
+      width: "10%",
     },
   ];
 
@@ -552,9 +556,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         project_id: projectId,
                         completion_percentage: 0,
                         completed: false,
-                        status_id: 1,
                         // temporary until project phase normalization is complete
-                        phase_name: phaseNameLookup[newData?.phase_id].toLowerCase()
+                        phase_name: phaseNameLookup[
+                          newData?.phase_id
+                        ].toLowerCase(),
                       },
                       newData
                     );
@@ -619,7 +624,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     // temporary workaround until phase normalization is complete
                     if (currentPhaseChanged) {
-                      updatedPhaseObject["phase_name"] = phaseNameLookup[newData.phase_id].toLowerCase()
+                      updatedPhaseObject["phase_name"] = phaseNameLookup[
+                        newData.phase_id
+                      ].toLowerCase();
                     }
 
                     // We need to know if the updated phase is set as is_current_phase
@@ -655,7 +662,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                       // current_phase if the phase name is changed and its not a
                                       // current_phase
                                       {
-                                        status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
                                         // we don't have a phase id for active, since it is not an official phase
@@ -721,6 +727,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   search: false,
                   rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
+                  tableLayout: "fixed",
                 }}
                 localization={{
                   header: {
@@ -786,7 +793,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     const newMilestoneObject = Object.assign(
                       {
                         project_id: projectId,
-                        status_id: 1,
                         completed: false,
                       },
                       newData

@@ -18,6 +18,7 @@ import MaterialTable, {
   MTableEditRow,
   MTableEditField,
 } from "@material-table/core";
+import parse from "html-react-parser";
 
 import Page from "src/components/Page";
 import { useWindowResize } from "src/utils/materialTableHelpers.js";
@@ -87,7 +88,7 @@ const SignalProjectTable = () => {
       const note = project.moped_proj_notes[0]["project_note"];
       // Remove any HTML tags
       project["status_update"] = note
-        ? String(note).replace(/(<([^>]+)>)/gi, "")
+        ? parse(String(note))
         : "";
     }
 
@@ -419,7 +420,6 @@ const SignalProjectTable = () => {
         const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
           project_id: rowData.project_id,
           project_type_id: type_id,
-          status_id: 1,
         }));
         // List of primary keys to delete
         const typePksToDelete = rowData.moped_project_types

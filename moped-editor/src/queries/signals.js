@@ -6,19 +6,19 @@ export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
       where: {
-        is_retired: { _neq: true }
+        is_deleted: { _eq: false }
         _or: [
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              status_id: {_eq: 1}
+              is_deleted: {_eq: false }
             }
             status_id: { _is_null: true }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              status_id: {_eq: 1}
+              is_deleted: {_eq: false }
             }
             status_id: { _neq: 3 }
           }
@@ -34,7 +34,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_sponsor
       task_order
       moped_proj_notes(
-        where: { project_note_type: { _eq: 2 } }
+        where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
         order_by: { date_created: desc }
       ) {
         project_note_id
@@ -47,26 +47,25 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         phase_start
         phase_end
       }
-      moped_proj_components(where: { status_id: { _eq: 1 } }) {
-        moped_proj_features(where: { status_id: { _eq: 1 } }) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        moped_proj_features(where: { is_deleted: { _eq: false } }) {
           feature_id
           feature
         }
       }
-      moped_proj_funding(where: { funding_status_id: { _neq: 0 } }) {
+      moped_proj_funding(where: { is_deleted: { _eq: false } }) {
         moped_fund_source {
           funding_source_name
         }
       }
-      moped_project_types(where: { status_id: { _eq: 1 } }) {
+      moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
-        status_id
         moped_type {
           type_name
           type_id
         }
       }
-      moped_proj_personnel(where: { status_id: { _eq: 1 } }) {
+      moped_proj_personnel(where: { is_deleted: { _eq: false } }) {
         role_id
         moped_user {
           first_name

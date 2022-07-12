@@ -97,9 +97,9 @@ export const ProjectActivityLogTableMaps = {
           fieldValues: ["first_name", "last_name"],
         },
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
-        label: "retired status",
+        label: "soft delete status",
         data_type: "bool",
       },
       milestone_id: {
@@ -151,6 +151,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "work assignment ID",
         data_type: "text",
+      },
+      parent_project_id: {
+        icon: "",
+        label: "parent project id",
+        data_type: "integer",
       },
     },
   },
@@ -297,10 +302,10 @@ export const ProjectActivityLogTableMaps = {
         label: "milestone estimate",
         type: "timestampz",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },
@@ -332,10 +337,10 @@ export const ProjectActivityLogTableMaps = {
         label: "note",
         type: "text",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        type: "boolean",
       },
       added_by_user_id: {
         icon: "",
@@ -382,10 +387,10 @@ export const ProjectActivityLogTableMaps = {
         label: "project ID",
         type: "int4",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        type: "boolean",
       },
     },
   },
@@ -412,13 +417,13 @@ export const ProjectActivityLogTableMaps = {
         label: "notes",
         type: "text",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status",
-        type: "int4",
+        label: "is deleted",
+        type: "boolean",
         map: {
-          0: "Inactive",
-          1: "Active",
+          true: "Inactive",
+          false: "Active",
         },
       },
       project_id: {
@@ -531,10 +536,10 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         type: "int4",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
       subphase_name: {
         icon: "",
@@ -576,10 +581,10 @@ export const ProjectActivityLogTableMaps = {
         label: "description",
         data_type: "text",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        data_type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },
@@ -646,7 +651,7 @@ export const ProjectActivityLogTableMaps = {
         label: "scanned flag",
         data_type: "bool",
       },
-      is_retired: {
+      is_deleted: {
         icon: "",
         label: "deleted flag",
         data_type: "bool",
@@ -711,6 +716,11 @@ export const ProjectActivityLogTableMaps = {
         label: "status ID",
         data_type: "integer",
       },
+      is_deleted: {
+        icon: "",
+        label: "is deleted",
+        data_type: "boolean",
+      },
       fund: {
         icon: "",
         label: "fund",
@@ -751,10 +761,10 @@ export const ProjectActivityLogTableMaps = {
         label: "ID",
         data_type: "integer",
       },
-      status_id: {
+      is_deleted: {
         icon: "",
-        label: "status ID",
-        data_type: "integer",
+        label: "is deleted",
+        data_type: "boolean",
       },
     },
   },

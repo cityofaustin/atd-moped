@@ -20,6 +20,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
+import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
@@ -29,8 +30,9 @@ import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
 import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
+import SubprojectsTable from "./SubprojectsTable";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
   },
@@ -61,7 +63,7 @@ const useStyles = makeStyles(theme => ({
   fieldAuthor: {
     marginRight: ".25rem",
     fontSize: ".8rem",
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -123,9 +125,8 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   if (error) return `Error! ${error.message}`;
 
   const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
-  const projectFeatureCollection = createProjectFeatureCollection(
-    projectComponents
-  );
+  const projectFeatureCollection =
+    createProjectFeatureCollection(projectComponents);
 
   const renderMap = () => {
     if (countFeatures(projectFeatureCollection) < 1) {
@@ -161,6 +162,15 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               classes={classes}
               snackbarHandle={snackbarHandle}
             />
+            {data.moped_project[0]?.parent_project_id && (
+              <ProjectSummaryParentProjectLink
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                classes={classes}
+                snackbarHandle={snackbarHandle}
+              />
+            )}
             {/*Status Update Component*/}
             <ProjectSummaryStatusUpdate
               projectId={projectId}
@@ -284,6 +294,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               >
                 {renderMap()}
               </ErrorBoundary>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            {!data.moped_project[0].parent_project_id && (
+              <SubprojectsTable projectId={projectId} />
             )}
           </Grid>
         </Grid>

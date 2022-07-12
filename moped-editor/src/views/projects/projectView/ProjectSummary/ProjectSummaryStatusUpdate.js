@@ -9,6 +9,8 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
+import parse from "html-react-parser";
+import DOMPurify from "dompurify";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 
 import {
@@ -30,6 +32,8 @@ import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAnd
  */
 const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData.user_id
+  const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
 
   const [updateProjectStatusUpdateInsert] = useMutation(
     PROJECT_SUMMARY_STATUS_UPDATE_INSERT
@@ -52,8 +56,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
       const note = data
         ? data?.moped_project[0].moped_proj_notes[lastItem][fieldName] ?? ""
         : null;
-      // Remove any HTML tags
-      return note ? String(note).replace(/(<([^>]+)>)/gi, "") : null;
+      // Remove any HTML tags for status update string
+      return note ? parse(String(note)) : null;
     }
     return null;
   };
@@ -95,7 +99,6 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const handleStatusUpdateSave = () => {
     // Retrieve a commentId or get a null
     const commentId = getStatusUpdate("project_note_id");
-    const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
     const isStatusUpdateInsert = statusUpdateAddNew || !commentId;
 
     (isStatusUpdateInsert
@@ -107,15 +110,15 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
               statusUpdate: {
                 project_id: Number(projectId),
                 added_by: addedBy,
-                project_note: statusUpdate,
-                status_id: 1,
+                added_by_user_id: userId,
+                project_note: DOMPurify.sanitize(statusUpdate),
                 project_note_type: 2,
               },
             }
           : {
               project_note_id: { _eq: Number(commentId) },
               added_by: addedBy,
-              project_note: statusUpdate,
+              project_note: DOMPurify.sanitize(statusUpdate),
             }),
       },
     })
@@ -141,6 +144,12 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     setStatusUpdateEditable(false);
     setStatusUpdateAddNew(false);
   };
+
+  /**
+   * Only allow the user who wrote the status to edit it
+   */
+  const isEditableComment =
+    userId === parseInt(getStatusUpdate("added_by_user_id"));
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -169,7 +178,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             </Typography>
             <Typography
               className={classes.fieldBoxTypography}
-              onClick={handleStatusUpdateEdit}
+              onClick={isEditableComment ? handleStatusUpdateEdit : null}
             >
               <span className={classes.fieldLabelTextSpan}>
                 {statusUpdate || "None"}
