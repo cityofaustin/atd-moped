@@ -22,12 +22,12 @@ from prefect import Flow, task
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-# AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
-# AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-# VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
-# VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
-# ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
-# TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
+AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
+VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
+ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
+TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
 DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
 DATABASE_USER = os.environ["MOPED_TEST_USER"]
@@ -353,15 +353,15 @@ with Flow("Create Moped Environment") as flow:
     #create_database(database_name)
     #remove_database(database_name)
 
-    basename = "test-ecs-cluster"
+    basename = "flh-test-ecs-cluster"
 
     # cluster = {'cluster': {'clusterName': basename}}
     # remove_ecs_cluster(cluster)
 
-    # cluster = create_ecs_cluster(basename=basename)
-    # load_balancer = create_load_balancer(basename=basename)
-    # task_definition = create_task_definition(basename=basename)
-    # service = create_service(basename=basename)
+    cluster = create_ecs_cluster(basename=basename)
+    load_balancer = create_load_balancer(basename=basename)
+    task_definition = create_task_definition(basename=basename)
+    #service = create_service(basename=basename)
 
     # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
     # remove_task_definition = remove_task_definition(task_definition)
