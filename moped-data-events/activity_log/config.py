@@ -67,11 +67,11 @@ HASURA_EVENT_VALIDATION_SCHEMA = {
                 "type": "dict",
                 "schema": {
                     "trace_id": {
-                        "type": "integer",
+                        "type": "string",
                         "required": True,
                     },
                     "span_id": {
-                        "type": "integer",
+                        "type": "string",
                         "required": True,
                     }
                 },
