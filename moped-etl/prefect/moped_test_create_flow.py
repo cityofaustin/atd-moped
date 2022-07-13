@@ -341,12 +341,12 @@ def remove_activity_log_lambda():
 @task
 def create_moped_api_secrets_entry(basename):
     # Use boto3 to remove activity log event lambda
-    logger.info("Creating")
+    logger.info("Creating API secret config")
 
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
     secret = {
-        "COGNITO_REGION": "",
+        "COGNITO_REGION": "us-east-1",
         "COGNITO_USERPOOL_ID": "",
         "COGNITO_APP_CLIENT_ID": "",
         "COGNITO_DYNAMO_TABLE_NAME": "",
@@ -359,15 +359,25 @@ def create_moped_api_secrets_entry(basename):
         Name=f"MOPED_TEST_SYS_{basename}_API_CONFIG",
         Description=f"Moped Test API configuration for {basename}",
         SecretString=json.dumps(secret),
+        Tags=[
+            {"Key": "project", "Value": "atd-moped"},
+            {"Key": "environment", "Value": f"test-{basename}"},
+        ],
     )
     logger.info(response)
 
 
 @task
-def remove_moped_api_secrets_entry():
+def remove_moped_api_secrets_entry(arn):
     # Use boto3 to remove activity log event lambda
-    logger.info("removing activity log Lambda")
-    return True
+    logger.info("Removing API secret config")
+    client = boto3.client("secretsmanager", region_name="us-east-1")
+
+    response = client.delete_secret(
+        SecretId=f"MOPED_TEST_SYS_{basename}_API_CONFIG",
+        ForceDeleteWithoutRecovery=True,
+    )
+    logger.info(response)
 
 
 # Moped API tasks
@@ -411,10 +421,12 @@ with Flow("Create Moped Environment") as flow:
 
     if args.mike:
         # Env var from GitHub action?
-        basename = os.environ["MOPED_TEST_DATABASE_NAME"]
-        create_database(basename)
-        remove_database(basename)
-        create_moped_api(basename)
+        basename = "mike"
+        # create_database(basename)
+        # remove_database(basename)
+        # create_moped_api(basename)
+        # create_moped_api_secrets_entry(basename)
+        remove_moped_api_secrets_entry(basename)
 
     if args.frank:
         basename = "flh-test-ecs-cluster"
