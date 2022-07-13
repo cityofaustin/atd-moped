@@ -641,6 +641,14 @@
 - table:
     schema: public
     name: moped_phases
+  array_relationships:
+    - name: moped_subphases
+      using:
+        foreign_key_constraint_on:
+          column: related_phase_id
+          table:
+            schema: public
+            name: moped_subphases
   insert_permissions:
   - role: moped-admin
     permission:
@@ -3281,6 +3289,10 @@
 - table:
     schema: public
     name: moped_subphases
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: related_phase_id
   insert_permissions:
   - role: moped-admin
     permission:
