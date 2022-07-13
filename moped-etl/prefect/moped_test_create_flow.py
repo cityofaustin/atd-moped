@@ -9,9 +9,12 @@ Labels: TBD
 """
 
 import argparse
-parser = argparse.ArgumentParser(description='Prefect flow for Moped Editor Test Instance Deployment')
-parser.add_argument('-m', '--mike', help='Run Mike\'s tasks', action='store_true')
-parser.add_argument('-f', '--frank', help='Run Frank\'s tasks', action='store_true')
+
+parser = argparse.ArgumentParser(
+    description="Prefect flow for Moped Editor Test Instance Deployment"
+)
+parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
+parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
 args = parser.parse_args()
 print(args)
 
@@ -339,8 +342,27 @@ def remove_activity_log_lambda():
 api_task = ShellTask(stream_output=True)
 
 
-def create_moped_api():
+def create_moped_api(basename):
     # Deploy moped API using Zappa or the CloudFormation template that it generates
+    api_task(command="which zappa")
+    zappa_config = {
+        "moped_test": {
+            "app_function": "app.app",
+            "project_name": f"moped-test-{basename}",
+            "runtime": "python3.8",
+            "s3_bucket": "atd-apigateway",
+            "cors": True,
+            "aws_environment_variables": {
+                "MOPED_API_CURRENT_ENVIRONMENT": "TEST",
+                "MOPED_API_CONFIGURATION_SETTINGS": "",
+                "AWS_COGNITO_DYNAMO_TABLE_NAME": "",
+                "AWS_COGNITO_DYNAMO_SECRET_NAME": "",
+                "MOPED_API_HASURA_APIKEY": "",
+                "MOPED_API_HASURA_SQS_URL": "",
+                "MOPED_API_UPLOADS_S3_BUCKET": "",
+            },
+        }
+    }
     logger.info("creating Moped API Lambda")
 
 
@@ -356,9 +378,10 @@ with Flow("Create Moped Environment") as flow:
 
     if args.mike:
         # Env var from GitHub action?
-        database_name = os.environ["MOPED_TEST_DATABASE_NAME"]
-        create_database(database_name)
-        remove_database(database_name)
+        basename = os.environ["MOPED_TEST_DATABASE_NAME"]
+        create_database(basename)
+        remove_database(basename)
+        create_moped_api(basename)
 
     if args.frank:
         basename = "flh-test-ecs-cluster"
@@ -369,7 +392,7 @@ with Flow("Create Moped Environment") as flow:
         cluster = create_ecs_cluster(basename=basename)
         load_balancer = create_load_balancer(basename=basename)
         task_definition = create_task_definition(basename=basename)
-        #service = create_service(basename=basename)
+        # service = create_service(basename=basename)
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
         # remove_task_definition = remove_task_definition(task_definition)
