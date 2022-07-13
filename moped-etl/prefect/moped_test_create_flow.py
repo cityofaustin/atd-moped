@@ -13,7 +13,6 @@ parser = argparse.ArgumentParser(description='Prefect flow for Moped Editor Test
 parser.add_argument('-m', '--mike', help='Run Mike\'s tasks', action='store_true')
 parser.add_argument('-f', '--frank', help='Run Frank\'s tasks', action='store_true')
 args = parser.parse_args()
-print(args)
 
 from venv import create
 import json
