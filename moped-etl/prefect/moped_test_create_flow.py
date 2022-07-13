@@ -30,33 +30,29 @@ parser.add_argument('-m', '--mike', help='Run Mike\'s tasks', action='store_true
 parser.add_argument('-f', '--frank', help='Run Frank\'s tasks', action='store_true')
 args = parser.parse_args()
 
-from venv import create
-import json
-import boto3
-import prefect
-import os
 
+# setup some global variables from secrets. presently these are coming out of the environment,
+# but this will be modified to the prefect KV store system when they are set in stone.
 
-# Prefect
-from prefect import Flow, task
-
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
-
+# AWS credentials
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+
+# AWS ARN-like identifiers
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
+# Database connection parameters
 DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
 DATABASE_USER = os.environ["MOPED_TEST_USER"]
 DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 
-
-# Logger instance
+# set up the prefect logging system
 logger = prefect.context.get("logger")
+
+# Database Tasks
 
 # Frontend:
 # 1. When feature PR is opened, a deploy preview spins up and is linked in PR
@@ -149,6 +145,10 @@ def populate_database_with_production_data(database_name):
     logger.info(
         f"Populating {database_name} with production data".format(database_name)
     )
+
+
+
+# ECS Tasks
 
 
 @task
@@ -320,6 +320,9 @@ def create_service(basename, load_balancer):
     return create_service_result
 
 
+# Lambda & SQS tasks
+
+
 @task
 def create_activity_log_sqs():
     # Use boto3 to create SQS
@@ -364,7 +367,11 @@ def remove_moped_api():
     return True
 
 
-# Next, we define the flow (equivalent to a DAG).
+
+
+# The Flow itself
+
+
 with Flow("Create Moped Environment") as flow:
     # Calls tasks
     logger.info("Calling tasks")
