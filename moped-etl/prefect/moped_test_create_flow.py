@@ -21,6 +21,7 @@ load_dotenv()
 
 # Prefect
 from prefect import Flow, task
+from prefect.tasks.shell import ShellTask
 
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
@@ -333,16 +334,14 @@ def remove_activity_log_lambda():
 
 
 # Moped API tasks
+api_task = ShellTask(stream_output=True)
 
 
-@task
 def create_moped_api():
     # Deploy moped API using Zappa or the CloudFormation template that it generates
     logger.info("creating Moped API Lambda")
-    return True
 
 
-@task
 def remove_moped_api():
     # Remove CloudFormation stack that create_moped_api deployed with boto3
     return True
