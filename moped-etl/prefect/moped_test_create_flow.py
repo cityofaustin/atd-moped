@@ -18,8 +18,7 @@ from venv import create
 import json
 import boto3
 import prefect
-import sys, os
-import subprocess
+import os
 
 
 # Prefect
