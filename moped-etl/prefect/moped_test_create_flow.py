@@ -338,6 +338,38 @@ def remove_activity_log_lambda():
     return True
 
 
+@task
+def create_moped_api_secrets_entry(basename):
+    # Use boto3 to remove activity log event lambda
+    logger.info("Creating")
+
+    client = boto3.client("secretsmanager", region_name="us-east-1")
+
+    secret = {
+        "COGNITO_REGION": "",
+        "COGNITO_USERPOOL_ID": "",
+        "COGNITO_APP_CLIENT_ID": "",
+        "COGNITO_DYNAMO_TABLE_NAME": "",
+        "COGNITO_DYNAMO_SECRET_KEY": "",
+        "HASURA_HTTPS_ENDPOINT": "",
+        "HASURA_ADMIN_SECRET": "",
+    }
+
+    response = client.create_secret(
+        Name=f"MOPED_TEST_SYS_{basename}_API_CONFIG",
+        Description=f"Moped Test API configuration for {basename}",
+        SecretString=json.dumps(secret),
+    )
+    logger.info(response)
+
+
+@task
+def remove_moped_api_secrets_entry():
+    # Use boto3 to remove activity log event lambda
+    logger.info("removing activity log Lambda")
+    return True
+
+
 # Moped API tasks
 api_task = ShellTask(stream_output=True)
 
@@ -363,6 +395,7 @@ def create_moped_api(basename):
             },
         }
     }
+    zappa_config_json = json.dumps(zappa_config)
     logger.info("creating Moped API Lambda")
 
 
