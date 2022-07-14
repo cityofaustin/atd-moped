@@ -35,6 +35,9 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
+AWS_SECRETS_MANAGER_ARN_PREFIX = os.environ["AWS_SECRETS_MANAGER_ARN_PREFIX"]
+AWS_STAGING_DYNAMO_DB_ARN = os.environ["AWS_STAGING_DYNAMO_DB_ARN"]
+AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
@@ -387,10 +390,7 @@ def remove_moped_api_secrets_entry(basename):
 api_task = ShellTask(stream_output=True)
 
 
-def create_moped_api(basename):
-    # Deploy moped API using zappa
-
-    # Fill in the blanks in the zappa config with env vars
+def create_zappa_config(basename):
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
@@ -400,16 +400,35 @@ def create_moped_api(basename):
             "cors": True,
             "aws_environment_variables": {
                 "MOPED_API_CURRENT_ENVIRONMENT": "TEST",
-                "MOPED_API_CONFIGURATION_SETTINGS": "",
-                "AWS_COGNITO_DYNAMO_TABLE_NAME": "",
-                "AWS_COGNITO_DYNAMO_SECRET_NAME": "",
-                "MOPED_API_HASURA_APIKEY": "",
-                "MOPED_API_HASURA_SQS_URL": "",
-                "MOPED_API_UPLOADS_S3_BUCKET": "",
+                "MOPED_API_CONFIGURATION_SETTINGS": "thisisatest",
+                "AWS_COGNITO_DYNAMO_TABLE_NAME": "thisisatest",
+                "AWS_COGNITO_DYNAMO_SECRET_NAME": "thisisatest",
+                "MOPED_API_HASURA_APIKEY": "thisisatest",
+                "MOPED_API_HASURA_SQS_URL": "thisisatest",
+                "MOPED_API_UPLOADS_S3_BUCKET": "thisisatest",
             },
+            "extra_permissions": [
+                {
+                    "Effect": "Allow",
+                    "Action": "secretsmanager:GetSecretValue",
+                    "Resource": [
+                        f"{AWS_STAGING_DYNAMO_DB_ARN}",
+                        f"{AWS_SECRETS_MANAGER_ARN_PREFIX}:{basename}",
+                    ],
+                },
+                {
+                    "Effect": "Allow",
+                    "Action": "cognito-idp:*",
+                    "Resource": f"{AWS_STAGING_COGNITO_USER_POOL_ARN}",
+                },
+            ],
         }
     }
+    return zappa_config
 
+
+def create_moped_api(basename):
+    zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
     # Write Zappa config to moped-api project folder
@@ -419,15 +438,38 @@ def create_moped_api(basename):
     # zappa requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
     api_task(
-        command=f"python3 -m venv venv; . venv/bin/activate; (cd {api_project_path} && zappa deploy test); deactivate;"
+        command=f"""python3 -m venv venv;
+        . venv/bin/activate;
+        (cd {api_project_path} &&
+        pip install wheel &&
+        pip install -r ./requirements/moped_test.txt &&
+        zappa deploy {basename})
+        deactivate;
+        """
     )
-
-    logger.info("creating Moped API Lambda")
 
 
 def remove_moped_api():
     # Remove CloudFormation stack that create_moped_api deployed with boto3
-    return True
+    zappa_config = create_zappa_config(basename)
+    print(zappa_config)
+    api_project_path = "./atd-moped/moped-api/"
+
+    with open(f"{api_project_path}zappa_settings.json", "w") as f:
+        json.dump(zappa_config, f)
+
+    # zappa undeploy with auto-confirm delete flag
+    # zappa requires an active virtual environment
+    # then use a subshell to zappa undeploy in moped-api project folder
+    # api_task(
+    #     command=f"""python3 -m venv venv;
+    #     . venv/bin/activate;
+    #     (cd {api_project_path} &&
+    #     zappa undeploy {basename} --yes)
+    #     deactivate;
+    #     """
+    # )
+    api_task(command=f"(cd {api_project_path} && zappa undeploy {basename} --yes)")
 
 
 # Next, we define the flow (equivalent to a DAG).
