@@ -338,11 +338,16 @@ def remove_activity_log_lambda():
     return True
 
 
+def create_secret_name(basename):
+    return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
+
+
 @task
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
+    secret_name = create_secret_name(basename)
     secret = {
         "COGNITO_REGION": "us-east-1",
         "COGNITO_USERPOOL_ID": "",
@@ -354,7 +359,7 @@ def create_moped_api_secrets_entry(basename):
     }
 
     response = client.create_secret(
-        Name=f"MOPED_TEST_SYS_{basename}_API_CONFIG",
+        Name=secret_name,
         Description=f"Moped Test API configuration for {basename}",
         SecretString=json.dumps(secret),
         Tags=[
@@ -370,8 +375,9 @@ def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
+    secret_name = create_secret_name(basename)
     response = client.delete_secret(
-        SecretId=f"MOPED_TEST_SYS_{basename}_API_CONFIG",
+        SecretId=secret_name,
         ForceDeleteWithoutRecovery=True,
     )
     logger.info(response)
@@ -386,9 +392,9 @@ def create_moped_api(basename):
 
     # Fill in the blanks in the zappa config with env vars
     zappa_config = {
-        "moped_test": {
+        f"{basename}": {
             "app_function": "app.app",
-            "project_name": f"moped-test-{basename}",
+            "project_name": "atd-moped-test-prefect",
             "runtime": "python3.8",
             "s3_bucket": "atd-apigateway",
             "cors": True,
@@ -413,7 +419,7 @@ def create_moped_api(basename):
     # zappa requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
     api_task(
-        command=f"python3 -m venv venv; . venv/bin/activate; (cd {api_project_path} && zappa --version); deactivate;"
+        command=f"python3 -m venv venv; . venv/bin/activate; (cd {api_project_path} && zappa deploy test); deactivate;"
     )
 
     logger.info("creating Moped API Lambda")
