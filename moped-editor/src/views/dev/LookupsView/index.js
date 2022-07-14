@@ -35,7 +35,7 @@ const LookupsView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page title="Moped timeline entities">
+      <Page title="Moped lookup values">
         <Container maxWidth="xl">
           <Grid container spacing={3} className={classes.topMargin}>
             <Grid item xs={12}>
