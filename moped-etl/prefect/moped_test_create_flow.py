@@ -341,16 +341,11 @@ def remove_activity_log_lambda():
     return True
 
 
-def create_secret_name(basename):
-    return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
-
-
 @task
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
-    secret_name = create_secret_name(basename)
     secret = {
         "COGNITO_REGION": "us-east-1",
         "COGNITO_USERPOOL_ID": "",
@@ -362,7 +357,7 @@ def create_moped_api_secrets_entry(basename):
     }
 
     response = client.create_secret(
-        Name=secret_name,
+        Name=f"MOPED_TEST_SYS_API_CONFIG_{basename}",
         Description=f"Moped Test API configuration for {basename}",
         SecretString=json.dumps(secret),
         Tags=[
@@ -378,9 +373,8 @@ def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
-    secret_name = create_secret_name(basename)
     response = client.delete_secret(
-        SecretId=secret_name,
+        SecretId=f"MOPED_TEST_SYS_API_CONFIG_{basename}",
         ForceDeleteWithoutRecovery=True,
     )
     logger.info(response)
@@ -428,6 +422,7 @@ def create_zappa_config(basename):
 
 
 def create_moped_api(basename):
+    logger.info("Creating API")
     zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
@@ -435,7 +430,7 @@ def create_moped_api(basename):
     with open(f"{api_project_path}zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
 
-    # zappa requires an active virtual environment
+    # zappa deploy requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
     api_task(
         command=f"""python3 -m venv venv;
@@ -449,26 +444,16 @@ def create_moped_api(basename):
     )
 
 
-def remove_moped_api():
-    # Remove CloudFormation stack that create_moped_api deployed with boto3
+def remove_moped_api(basename):
+    logger.info("Removing API")
     zappa_config = create_zappa_config(basename)
-    print(zappa_config)
     api_project_path = "./atd-moped/moped-api/"
 
+    # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
 
     # zappa undeploy with auto-confirm delete flag
-    # zappa requires an active virtual environment
-    # then use a subshell to zappa undeploy in moped-api project folder
-    # api_task(
-    #     command=f"""python3 -m venv venv;
-    #     . venv/bin/activate;
-    #     (cd {api_project_path} &&
-    #     zappa undeploy {basename} --yes)
-    #     deactivate;
-    #     """
-    # )
     api_task(command=f"(cd {api_project_path} && zappa undeploy {basename} --yes)")
 
 
@@ -479,12 +464,13 @@ with Flow("Create Moped Environment") as flow:
 
     if args.mike:
         # Env var from GitHub action?
-        basename = "mike"
+        basename = "miketestone"
         # create_database(basename)
         # remove_database(basename)
-        # create_moped_api(basename)
         # create_moped_api_secrets_entry(basename)
         remove_moped_api_secrets_entry(basename)
+        # create_moped_api(basename)
+        remove_moped_api(basename)
 
     if args.frank:
         basename = "flh-test-ecs-cluster"
