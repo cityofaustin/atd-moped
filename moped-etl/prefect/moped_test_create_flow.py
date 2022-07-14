@@ -340,9 +340,7 @@ def remove_activity_log_lambda():
 
 @task
 def create_moped_api_secrets_entry(basename):
-    # Use boto3 to remove activity log event lambda
     logger.info("Creating API secret config")
-
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
     secret = {
@@ -368,8 +366,7 @@ def create_moped_api_secrets_entry(basename):
 
 
 @task
-def remove_moped_api_secrets_entry(arn):
-    # Use boto3 to remove activity log event lambda
+def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
@@ -385,8 +382,9 @@ api_task = ShellTask(stream_output=True)
 
 
 def create_moped_api(basename):
-    # Deploy moped API using Zappa or the CloudFormation template that it generates
-    api_task(command="which zappa")
+    # Deploy moped API using zappa
+
+    # Fill in the blanks in the zappa config with env vars
     zappa_config = {
         "moped_test": {
             "app_function": "app.app",
@@ -405,7 +403,19 @@ def create_moped_api(basename):
             },
         }
     }
-    zappa_config_json = json.dumps(zappa_config)
+
+    api_project_path = "./atd-moped/moped-api/"
+
+    # Write Zappa config to moped-api project folder
+    with open(f"{api_project_path}zappa_settings.json", "w") as f:
+        json.dump(zappa_config, f)
+
+    # zappa requires an active virtual environment
+    # then use a subshell to zappa deploy in moped-api project folder
+    api_task(
+        command=f"python3 -m venv venv; . venv/bin/activate; (cd {api_project_path} && zappa --version); deactivate;"
+    )
+
     logger.info("creating Moped API Lambda")
 
 
