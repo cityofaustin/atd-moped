@@ -940,6 +940,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
   }
 `;
 
+export const UPDATE_PROJECT_NAME_QUERY = gql`
+  mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { project_name: $projectName }
+    ) {
+      project_name
+    }
+  }
+`;
+
 export const LOOKUP_TABLES_QUERY = gql`
   query ProjectLookups {
     moped_fund_sources {
