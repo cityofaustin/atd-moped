@@ -10,7 +10,7 @@ import { makeStyles } from "@material-ui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import { TIMELINE_LOOKUPS_QUERY } from "src/queries/timelineLookups";
-import { NAMES } from "./settings";
+import { SETTINGS } from "./settings";
 
 const useStyles = makeStyles((theme) => ({
   topMargin: {
@@ -18,12 +18,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Page component which renders various Moped record types.
+ * To add a table to this page:
+ * 1. Add an entry to the ./settings/SETTINGS array with the appropriate definitions
+ * 2. Update the query that powers this view to include your data
+ * @returns { JSX } a page component
+ */
 const LookupsView = () => {
   const classes = useStyles();
   const { loading, error, data } = useQuery(TIMELINE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
-  const recordNames = data ? Object.keys(data) : null;
+
   if (loading) return <CircularProgress />;
 
   return (
@@ -35,23 +42,25 @@ const LookupsView = () => {
               <Typography variant="h1">Moped lookup values</Typography>
             </Grid>
           </Grid>
-          {recordNames &&
-            recordNames.map((name) => (
-              <Grid
-                container
-                spacing={3}
-                className={classes.topMargin}
-                component={Paper}
-                key={name}
-              >
-                <Grid item xs={12}>
-                  <Typography variant="h2">{NAMES[name]}</Typography>
-                </Grid>
-                <Grid item xs={12}>
-                  <RecordTable rows={data[name]} name={name} />
-                </Grid>
+          {SETTINGS.map((recordType) => (
+            <Grid
+              container
+              spacing={3}
+              className={classes.topMargin}
+              component={Paper}
+              key={recordType.key}
+            >
+              <Grid item xs={12}>
+                <Typography variant="h2">{recordType.label}</Typography>
               </Grid>
-            ))}
+              <Grid item xs={12}>
+                <RecordTable
+                  rows={data[recordType.key]}
+                  columns={recordType.columns}
+                />
+              </Grid>
+            </Grid>
+          ))}
         </Container>
       </Page>
     </ApolloErrorHandler>
