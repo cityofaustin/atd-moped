@@ -36,7 +36,13 @@ from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 AWS_SECRETS_MANAGER_ARN_PREFIX = os.environ["AWS_SECRETS_MANAGER_ARN_PREFIX"]
+AWS_STAGING_DYNAMO_DB_TABLE_NAME = os.environ["AWS_STAGING_DYNAMO_DB_TABLE_NAME"]
 AWS_STAGING_DYNAMO_DB_ARN = os.environ["AWS_STAGING_DYNAMO_DB_ARN"]
+AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME = os.environ[
+    "AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME"
+]
+AWS_STAGING_COGNITO_USER_POOL_ID = os.environ["AWS_STAGING_COGNITO_USER_POOL_ID"]
+AWS_STAGING_COGNITO_APP_ID = os.environ["AWS_STAGING_COGNITO_APP_ID"]
 AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
@@ -341,23 +347,28 @@ def remove_activity_log_lambda():
     return True
 
 
+def create_secret_name(basename):
+    return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
+
+
 @task
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
 
+    secret_name = create_secret_name(basename)
     secret = {
         "COGNITO_REGION": "us-east-1",
-        "COGNITO_USERPOOL_ID": "",
-        "COGNITO_APP_CLIENT_ID": "",
-        "COGNITO_DYNAMO_TABLE_NAME": "",
+        "COGNITO_USERPOOL_ID": AWS_STAGING_COGNITO_USER_POOL_ID,
+        "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
+        "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
         "COGNITO_DYNAMO_SECRET_KEY": "",
         "HASURA_HTTPS_ENDPOINT": "",
         "HASURA_ADMIN_SECRET": "",
     }
 
     response = client.create_secret(
-        Name=f"MOPED_TEST_SYS_API_CONFIG_{basename}",
+        Name=secret_name,
         Description=f"Moped Test API configuration for {basename}",
         SecretString=json.dumps(secret),
         Tags=[
@@ -372,9 +383,10 @@ def create_moped_api_secrets_entry(basename):
 def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
     client = boto3.client("secretsmanager", region_name="us-east-1")
+    secret_name = create_secret_name(basename)
 
     response = client.delete_secret(
-        SecretId=f"MOPED_TEST_SYS_API_CONFIG_{basename}",
+        SecretId=secret_name,
         ForceDeleteWithoutRecovery=True,
     )
     logger.info(response)
@@ -394,9 +406,9 @@ def create_zappa_config(basename):
             "cors": True,
             "aws_environment_variables": {
                 "MOPED_API_CURRENT_ENVIRONMENT": "TEST",
-                "MOPED_API_CONFIGURATION_SETTINGS": "thisisatest",
-                "AWS_COGNITO_DYNAMO_TABLE_NAME": "thisisatest",
-                "AWS_COGNITO_DYNAMO_SECRET_NAME": "thisisatest",
+                "MOPED_API_CONFIGURATION_SETTINGS": create_secret_name(basename),
+                "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
+                "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 "MOPED_API_HASURA_APIKEY": "thisisatest",
                 "MOPED_API_HASURA_SQS_URL": "thisisatest",
                 "MOPED_API_UPLOADS_S3_BUCKET": "thisisatest",
