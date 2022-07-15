@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
@@ -27,23 +27,13 @@ const ProjectSummaryInterimID = ({
   snackbarHandle,
 }) => {
 
-  console.log(data.moped_project[0])
   // Instantiate Original Value
-  const [originalValue, setOriginalValue] = useState(
+  const originalValue =
     data?.moped_project?.[0]?.interim_project_id ?? null
-  );
   const [editMode, setEditMode] = useState(false);
   const [interimId, setInterimId] = useState(originalValue);
   const [updateProjectInterimId] = useMutation(PROJECT_UPDATE_INTERIM_ID);
   const [clearProjectInterimId] = useMutation(PROJECT_CLEAR_INTERIM_ID);
-
-  // Track changes in data
-  useEffect(() => {
-    const newVal = data?.moped_project?.[0]?.interim_project_id ?? null;
-    setOriginalValue(newVal);
-    setInterimId(newVal);
-    console.log("using effect")
-  }, [data]);
 
   /**
    * Resets the project interim ID to original value
