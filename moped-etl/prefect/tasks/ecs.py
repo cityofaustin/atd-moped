@@ -143,9 +143,45 @@ def check_dns_status(dns_request):
     raise Exception("Unexpected DNS status: " + status)
 
    
+@task
+def create_certificate(basename, dns_status):
     logger.info("Creating TLS Certificate")
 
-    elb = boto3.client("elbv2")
+    acm = boto3.client('acm')
+
+    host = basename + "-graphql.moped-test.austinmobility.io"
+
+    certificate = acm.request_certificate(
+        DomainName=host,
+        ValidationMethod="DNS",
+    )
+
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(certificate)
+        print("")
+
+    return certificate
+   
+@task(max_retries=12, retry_delay=timedelta(seconds=10))
+def get_certificate_validation_parameters(tls_certificate):
+    logger.info("Validating TLS Certificate")
+
+    acm = boto3.client('acm')
+
+    certificate = acm.describe_certificate(CertificateArn=tls_certificate["CertificateArn"])
+    if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Name"]:
+        raise Exception("No Domain Validation Resource Record Options")
+
+    if True:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(certificate)
+        print("")
+
+    return certificate
+
 
     #certificate = elb.create_certificate(
         #DomainName=basename,
