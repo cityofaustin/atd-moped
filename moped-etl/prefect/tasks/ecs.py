@@ -174,7 +174,7 @@ def get_certificate_validation_parameters(tls_certificate):
     if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Name"]:
         raise Exception("No Domain Validation Resource Record Options")
 
-    if True:
+    if False:
         print("")
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(certificate)
@@ -182,21 +182,62 @@ def get_certificate_validation_parameters(tls_certificate):
 
     return certificate
 
+@task
+def add_cname_for_certificate_validation(parameters):
+    logger.info("Adding CNAME for TLS Certificate Validation")
 
-    #certificate = elb.create_certificate(
-        #DomainName=basename,
-        #ValidationMethod="DNS",
-    #)
+    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Name"]
+    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Value"]
 
-    return True
-   
+    route53 = boto3.client("route53")
+
+    record = route53.change_resource_record_sets(
+        HostedZoneId=R53_HOSTED_ZONE,
+        ChangeBatch={
+            "Changes": [
+                {
+                    "Action": "UPSERT",
+                    "ResourceRecordSet": {
+                        "Name": host,
+                        "Type": "CNAME",
+                        "TTL": 300,
+                        "ResourceRecords": [
+                            {"Value": target},
+                        ],
+                    },
+                },
+            ]
+        },
+    )
+
+    return record
+
+@task(max_retries=12, retry_delay=timedelta(seconds=10))
+def wait_for_valid_certificate(validation_record, tls_certificate):
+    logger.info("Waiting for TLS Certificate to be valid")
+
+    acm = boto3.client('acm')
+
+    certificate = acm.describe_certificate(CertificateArn=tls_certificate["CertificateArn"])
+
+    status = certificate["Certificate"]["Status"] 
+
+    print("TLS Certificate status: " + status)
+
+    if status == "ISSUED":
+        return certificate
+    if status == "PENDING_VALIDATION":
+        raise Exception("TLS Certificate Status is 'PENDING_VALIDATION' for request: " + certificate["CertificateArn"])
+
+    raise Exception("Unexpected TLS Certificate status: " + status)
+
 
 @task
 def create_load_balancer_listener(load_balancer, target_group):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
-    if True:
+    if False:
         print("")
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(target_group)
