@@ -102,9 +102,9 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @param {string} status - The name of the status
    * @returns {Object} {status_id: , status_name} or undefined
    */
-  const getStatusByPhaseName = phase_name =>
+  const getStatusByPhaseName = (phase_name) =>
     statusMap.find(
-      s => s.status_name.toLowerCase() === phase_name.toLowerCase()
+      (s) => s.status_name.toLowerCase() === phase_name.toLowerCase()
     );
 
   /**
@@ -130,7 +130,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       }),
     {}
   );
-
+  
   /**
    * Subphase table lookup object formatted into the shape that <MaterialTable>
    * expects.
@@ -145,29 +145,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   );
 
   /**
-   * Generates a filtered number of sub-phase lookup elements
-   * @param {Array} allowedSubphaseIds - An array of integers containing the allowed subphase ids
-   * @param {Object} moped_subphases - The data object containing all sub-phase data
-   */
-  const generateSubphaseLookup = (allowedSubphaseIds, moped_subphases) =>
-    moped_subphases
-      .filter(item => allowedSubphaseIds.includes(item.subphase_id))
-      .reduce(
-        (obj, item) =>
-          Object.assign(obj, {
-            [item.subphase_id]: item.subphase_name,
-          }),
-        {}
-      );
-
-  /**
    * If phaseObject has is_current_phase === true,
    * set is_current_phase of any other true phases to false
    * to ensure there is only one active phase
    */
-  const updateExistingPhases = phaseObject => {
+  const updateExistingPhases = (phaseObject) => {
     if (phaseObject.is_current_phase) {
-      data.moped_proj_phases.forEach(phase => {
+      data.moped_proj_phases.forEach((phase) => {
         if (
           phase.is_current_phase &&
           phase.project_phase_id !== phaseObject.project_phase_id
@@ -182,7 +166,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
               refetch();
               refetchSummary();
             })
-            .catch(err => {
+            .catch((err) => {
               console.error(err);
             });
         }
@@ -196,7 +180,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @param {string} mutationPhaseId - phase being added or updated in project phase table
    * @returns {Object} Object that will be used in updates to project status
    */
-  const getProjectStatusUpdateObject = mutationPhaseId => {
+  const getProjectStatusUpdateObject = (mutationPhaseId) => {
     const newPhaseName = phaseNameLookup[mutationPhaseId];
     const statusMapped = getStatusByPhaseName(newPhaseName);
 
@@ -223,15 +207,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DateFieldEditComponent = props => (
+  const DateFieldEditComponent = (props) => (
     <TextField
       name={props.name}
       label={props.label}
       type="date"
       variant="standard"
       value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-      onKeyDown={e => handleKeyEvent(e)}
+      onChange={(e) => props.onChange(e.target.value)}
+      onKeyDown={(e) => handleKeyEvent(e)}
       InputLabelProps={{
         shrink: true,
       }}
@@ -244,16 +228,16 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const ToggleEditComponent = props => (
+  const ToggleEditComponent = (props) => (
     <Grid component="label" container alignItems="center" spacing={1}>
       <Grid item>
         <Switch
           checked={props.value}
-          onChange={e => props.onChange(!props.value)}
+          onChange={(e) => props.onChange(!props.value)}
           color="primary"
           name={props.name}
           inputProps={{ "aria-label": "primary checkbox" }}
-          onKeyDown={e => handleKeyEvent(e)}
+          onKeyDown={(e) => handleKeyEvent(e)}
         />
       </Grid>
     </Grid>
@@ -266,39 +250,31 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
    * @return {JSX.Element}
    * @constructor
    */
-  const DropDownSelectComponent = props => {
+  const DropDownSelectComponent = (props) => {
     // If the component name is phase_name, then use phaseNameLookup values, otherwise set as null
     let lookupValues = props.name === "phase_name" ? phaseNameLookup : null;
 
     // If lookup values is null, then it is a sub-phase list we need to generate
     if (lookupValues === null) {
       // First retrieve the sub-phase id's from moped_phases for that specific row
-      const allowedSubphaseIds = props.data.moped_phases
-        .filter(
-          // filter for selected phase, props.rowData.phase_id could be null if nothing is selected
-          item => item?.phase_id === Number(props.rowData?.phase_id ?? 0)
-        )
-        .reduce(
-          // Then using reduce, aggregate the sub-phase ids from whatever array is left
-          (accumulator, item) =>
-            (accumulator = [...accumulator, ...(item?.subphases ?? [])]),
-          []
-        );
+      const allowedSubphases = props.data.moped_phases.find(
+        (item) => item?.phase_id === Number(props.rowData?.phase_id ?? 0)
+      )?.moped_subphases;
 
-      // If we are left with a zero-length array, hide the drop-down.
-      if (allowedSubphaseIds.length === 0) {
+      // If there are no subphases, hide the drop-down.
+      if (!allowedSubphases || allowedSubphases.length === 0) {
         return null;
       }
 
       // We have a usable array of sub-phase ids, generate lookup values,
-      lookupValues = generateSubphaseLookup(
-        allowedSubphaseIds,
-        props.data.moped_subphases
-      );
+      lookupValues = allowedSubphases.reduce((obj, subphase) => {
+        obj[subphase.subphase_id] = subphase.subphase_name;
+        return obj;
+      }, {});
     }
 
     // empty subphases can show up as 0, this removes warning in console
-    lookupValues = { ...lookupValues, "0": "" };
+    lookupValues = { ...lookupValues, 0: "" };
 
     // Proceed normally and generate the drop-down
     return (
@@ -308,12 +284,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           value={props.value ?? ""}
           style={{ minWidth: "8em" }}
         >
-          {Object.keys(lookupValues).map(key => {
+          {Object.keys(lookupValues).map((key) => {
             return (
               <MenuItem
                 onChange={() => props.onChange(key)}
                 onClick={() => props.onChange(key)}
-                onKeyDown={e => handleKeyEvent(e)}
+                onKeyDown={(e) => handleKeyEvent(e)}
                 value={key}
                 key={key}
               >
@@ -324,7 +300,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
           <MenuItem
             onChange={() => props.onChange("")}
             onClick={() => props.onChange("")}
-            onKeyDown={e => handleKeyEvent(e)}
+            onKeyDown={(e) => handleKeyEvent(e)}
             value=""
           >
             -
@@ -345,8 +321,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Phase name",
       field: "phase_id",
       lookup: phaseNameLookup,
-      validate: row => !!row.phase_id,
-      editComponent: props => (
+      validate: (row) => !!row.phase_id,
+      editComponent: (props) => (
         <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
       ),
     },
@@ -354,7 +330,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Sub-phase name",
       field: "subphase_id",
       lookup: subphaseNameLookup,
-      editComponent: props => (
+      editComponent: (props) => (
         <DropDownSelectComponent
           {...props}
           name={"subphase_name"}
@@ -369,11 +345,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Start date",
       field: "phase_start",
-      render: rowData =>
+      render: (rowData) =>
         rowData.phase_start
           ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
           : undefined,
-      editComponent: props => (
+      editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
           name="phase_start"
@@ -384,11 +360,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "End date",
       field: "phase_end",
-      render: rowData =>
+      render: (rowData) =>
         rowData.phase_end
           ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
           : undefined,
-      editComponent: props => (
+      editComponent: (props) => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
     },
@@ -396,7 +372,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Current",
       field: "is_current_phase",
       lookup: { true: "Yes", false: "No" },
-      editComponent: props => (
+      editComponent: (props) => (
         <ToggleEditComponent {...props} name="is_current_phase" />
       ),
     },
@@ -409,19 +385,19 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Milestone name",
       field: "milestone_id",
-      render: milestone => milestone.moped_milestone.milestone_name,
-      validate: milestone => !!milestone.milestone_id,
-      editComponent: props => (
+      render: (milestone) => milestone.moped_milestone.milestone_name,
+      validate: (milestone) => !!milestone.milestone_id,
+      editComponent: (props) => (
         <FormControl style={{ width: "100%" }}>
           <Autocomplete
             id={"milestone_name"}
             name={"milestone_name"}
             options={Object.keys(milestoneNameLookup)}
-            getOptionLabel={option => milestoneNameLookup[option]}
+            getOptionLabel={(option) => milestoneNameLookup[option]}
             getOptionSelected={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={params => <TextField {...params} />}
+            renderInput={(params) => <TextField {...params} />}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -431,7 +407,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Description",
       field: "milestone_description",
-      render: milestone => milestone.milestone_description,
+      render: (milestone) => milestone.milestone_description,
       width: "25%",
     },
     {
@@ -453,18 +429,18 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
         }
         return 0;
       },
-      render: milestone =>
+      render: (milestone) =>
         phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
       width: "14%",
     },
     {
       title: "Completion estimate",
       field: "milestone_estimate",
-      render: rowData =>
+      render: (rowData) =>
         rowData.milestone_estimate
           ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
           : undefined,
-      editComponent: props => (
+      editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
           name="milestone_estimate"
@@ -476,11 +452,11 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     {
       title: "Date completed",
       field: "milestone_end",
-      render: rowData =>
+      render: (rowData) =>
         rowData.milestone_end
           ? format(parseISO(rowData.milestone_end), "MM/dd/yyyy")
           : undefined,
-      editComponent: props => (
+      editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
           name="milestone_end"
@@ -493,7 +469,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       title: "Complete",
       field: "completed",
       lookup: { true: "Yes", false: "No" },
-      editComponent: props => (
+      editComponent: (props) => (
         <ToggleEditComponent {...props} name="completed" />
       ),
       width: "10%",
@@ -515,10 +491,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   Edit: EditOutlinedIcon,
                 }}
                 components={{
-                  EditRow: props => (
+                  EditRow: (props) => (
                     <MTableEditRow
                       {...props}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         if (e.keyCode === 13) {
                           // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                           // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -526,7 +502,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }}
                     />
                   ),
-                  Action: props => {
+                  Action: (props) => {
                     // If isn't the add action
                     if (
                       typeof props.action === typeof Function ||
@@ -550,16 +526,15 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   },
                 }}
                 editable={{
-                  onRowAdd: newData => {
+                  onRowAdd: (newData) => {
                     const newPhaseObject = Object.assign(
                       {
                         project_id: projectId,
                         completion_percentage: 0,
                         completed: false,
                         // temporary until project phase normalization is complete
-                        phase_name: phaseNameLookup[
-                          newData?.phase_id
-                        ].toLowerCase(),
+                        phase_name:
+                          phaseNameLookup[newData?.phase_id].toLowerCase(),
                       },
                       newData
                     );
@@ -598,13 +573,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     };
                     // Array of differences between new and old data
                     let differences = Object.keys(oldData).filter(
-                      key => oldData[key] !== newData[key]
+                      (key) => oldData[key] !== newData[key]
                     );
 
                     // Loop through the differences and assign newData values.
                     // If one of the Date fields is blanked out, coerce empty
                     // string to null.
-                    differences.forEach(diff => {
+                    differences.forEach((diff) => {
                       let shouldCoerceEmptyStringToNull =
                         newData[diff] === "" &&
                         (diff === "phase_start" || diff === "phase_end");
@@ -618,15 +593,14 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     // Check if differences include phase_id or is_current_phase
                     const currentPhaseChanged =
-                      differences.filter(value =>
+                      differences.filter((value) =>
                         ["phase_id", "is_current_phase"].includes(value)
                       ).length > 0;
 
                     // temporary workaround until phase normalization is complete
                     if (currentPhaseChanged) {
-                      updatedPhaseObject["phase_name"] = phaseNameLookup[
-                        newData.phase_id
-                      ].toLowerCase();
+                      updatedPhaseObject["phase_name"] =
+                        phaseNameLookup[newData.phase_id].toLowerCase();
                     }
 
                     // We need to know if the updated phase is set as is_current_phase
@@ -640,9 +614,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     updateExistingPhases(updatedPhaseObject);
 
-                    const mappedProjectUpdateInput = getProjectStatusUpdateObject(
-                      updatedPhaseObject?.phase_id
-                    );
+                    const mappedProjectUpdateInput =
+                      getProjectStatusUpdateObject(
+                        updatedPhaseObject?.phase_id
+                      );
 
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
@@ -677,7 +652,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         refetchSummary();
                       });
                   },
-                  onRowDelete: oldData => {
+                  onRowDelete: (oldData) => {
                     // Execute mutation to set current phase of phase to be deleted to false
                     // to ensure summary table stays up to date
                     const was_current_phase = !!oldData?.is_current_phase;
@@ -753,10 +728,10 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   Edit: EditOutlinedIcon,
                 }}
                 components={{
-                  EditRow: props => (
+                  EditRow: (props) => (
                     <MTableEditRow
                       {...props}
-                      onKeyDown={e => {
+                      onKeyDown={(e) => {
                         if (e.keyCode === 13) {
                           // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                           // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -764,7 +739,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       }}
                     />
                   ),
-                  Action: props => {
+                  Action: (props) => {
                     // If isn't the add action
                     if (
                       typeof props.action === typeof Function ||
@@ -788,7 +763,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                   },
                 }}
                 editable={{
-                  onRowAdd: newData => {
+                  onRowAdd: (newData) => {
                     // Merge input fields with required fields default data.
                     const newMilestoneObject = Object.assign(
                       {
@@ -815,13 +790,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
 
                     // Array of differences between new and old data
                     let differences = Object.keys(oldData).filter(
-                      key => oldData[key] !== newData[key]
+                      (key) => oldData[key] !== newData[key]
                     );
 
                     // Loop through the differences and assign newData values.
                     // If one of the Date fields is blanked out, coerce empty
                     // string to null.
-                    differences.forEach(diff => {
+                    differences.forEach((diff) => {
                       let shouldCoerceEmptyStringToNull =
                         newData[diff] === "" &&
                         (diff === "milestone_estimate" ||
@@ -848,7 +823,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       refetch();
                     });
                   },
-                  onRowDelete: oldData => {
+                  onRowDelete: (oldData) => {
                     // Execute delete mutation
                     return deleteProjectMilestone({
                       variables: {
