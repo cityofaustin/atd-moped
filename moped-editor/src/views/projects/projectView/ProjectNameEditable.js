@@ -8,8 +8,9 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Alert } from "@material-ui/lab";
+import { UPDATE_PROJECT_NAME_QUERY } from "../../../queries/project"
 
 /**
  * GridTable Style
@@ -50,7 +51,6 @@ const ProjectNameEditable = props => {
   };
 
   const initialProjectName = props?.projectName;
-  const [showEditIcon, setShowEditIcon] = useState(false);
   const [projectName, setProjectName] = useState(initialProjectName);
   const [projectNameBeforeEdit, setProjectNameBeforeEdit] = useState(
     projectName
@@ -63,26 +63,7 @@ const ProjectNameEditable = props => {
     setIsEditing(true);
   }
 
-  const updateProjectNameQuery = gql`
-    mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
-      update_moped_project(
-        where: { project_id: { _eq: $projectId } }
-        _set: { project_name: $projectName }
-      ) {
-        affected_rows
-      }
-    }
-  `;
-
-  const [updateProjectName] = useMutation(updateProjectNameQuery);
-
-  const handleMouseEnter = () => {
-    setShowEditIcon(true);
-  };
-
-  const handleMouseLeave = () => {
-    setShowEditIcon(false);
-  };
+  const [updateProjectName] = useMutation(UPDATE_PROJECT_NAME_QUERY);
 
   const handleProjectNameChange = e => {
     if (titleError) {
@@ -194,23 +175,14 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      {// if not Editing Project Name, show edit icon on mouse over of title
+      { // if not Editing Project Name, clicking on project title allows one to edit
       !isEditing && (
         <Typography
           color="textPrimary"
           variant="h1"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
+          onClick={() => setIsEditing(true)}
         >
           {projectName}
-          {showEditIcon && props?.editable && (
-            <Icon
-              className={classes.editIcon}
-              onClick={() => setIsEditing(true)}
-            >
-              create
-            </Icon>
-          )}
         </Typography>
       )}
       <Snackbar
