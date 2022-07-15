@@ -327,7 +327,7 @@
       columns:
       - funding_program_id
       - funding_program_name
-select_permissions:
+  select_permissions:
   - role: moped-admin
     permission:
       columns:
