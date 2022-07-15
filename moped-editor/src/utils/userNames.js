@@ -1,12 +1,5 @@
-// export const getInitials = (name = "") =>
-//   name
-//     .replace(/\s+/, " ")
-//     .split(" ")
-//     .slice(0, 2)
-//     .map(v => v && v[0].toUpperCase())
-//     .join("");
 // Fallback value for user without name set
-const unknownUserNameValue = "Unknown User";
+export const unknownUserNameValue = "Unknown User";
 
 /**
  * Retrieve the user's full name or return an "N/A"
@@ -28,8 +21,8 @@ export const getUserFullName = moped_user => {
  */
 export const getInitials = moped_user => {
   // Get any names if available
-  const firstInitial = moped_user?.first_name[0];
-  const lastInitial = moped_user?.last_name[0];
+  const firstInitial = moped_user?.first_name?.[0];
+  const lastInitial = moped_user?.last_name?.[0];
   const initials = `${firstInitial}${lastInitial}`;
 
   return firstInitial && lastInitial ? initials : null;
