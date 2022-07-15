@@ -146,7 +146,7 @@ const ProjectActivityLog = () => {
 
   if (data) {
     data["moped_users"].forEach(user => {
-      userList[`${user.user_id}`] = `${user.first_name} ${user.last_name}`;
+      userList[`${user.user_id}`] = getUserFullName(user);
     });
     data["moped_phases"].forEach(phase => {
       phaseList[`${phase.phase_id}`] = phase.phase_name;

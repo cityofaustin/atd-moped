@@ -34,6 +34,7 @@ import {
   formatTimeStampTZType,
   makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles(theme => ({
   appBar: {
@@ -100,11 +101,8 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
 
   const getUser = data => {
     try {
-      return (
-        data.moped_activity_log[0].moped_user.first_name +
-        " " +
-        data.moped_activity_log[0].moped_user.last_name
-      );
+      const moped_user = data.moped_activity_log[0].moped_user
+      return getUserFullName(moped_user);
     } catch {
       return null;
     }
