@@ -3116,7 +3116,7 @@
   event_triggers:
   - name: activity_log_moped_project_types
     definition:
-      enable_manul: false
+      enable_manual: false
       insert:
         columns: '*'
       delete:

@@ -103,3 +103,16 @@ export const UPDATE_FUNDING_TASK_ORDERS = gql`
     }
   }
 `;
+
+export const PURCHASE_ORDER_QUERY = gql`
+  query ProjectPurchaseOrder($projectId: Int) {
+    moped_purchase_order(
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+    ) {
+      vendor
+      id
+      purchase_order_number
+      description
+    }
+  }
+`;
