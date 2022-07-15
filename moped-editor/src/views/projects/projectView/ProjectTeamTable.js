@@ -33,6 +33,7 @@ import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -144,7 +145,7 @@ const ProjectTeamTable = ({ projectId }) => {
    */
   const getPersonnelName = (id) => {
     const user = getUserById(id);
-    return `${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`;
+    return getUserFullName(user);
   };
 
   /**

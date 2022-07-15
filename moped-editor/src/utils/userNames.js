@@ -28,19 +28,9 @@ export const getUserFullName = moped_user => {
  */
 export const getInitials = moped_user => {
   // Get any names if available
-  const name = getUserFullName(moped_user).trim();
+  const firstInitial = moped_user?.first_name[0];
+  const lastInitial = moped_user?.last_name[0];
+  const initials = `${firstInitial}${lastInitial}`;
 
-  // If no names are available, return null to force the generic humanoid avatar
-  if (name.length === 0 || name === unknownUserNameValue) return null;
-
-  // Else, extract initials
-  return name
-    .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
-    .replace(/ +/gi, " ")
-    .split(/ /)
-    .reduce((acc, item) => acc + item[0], "")
-    .concat(name.substr(1))
-    .concat(name)
-    .substr(0, 2)
-    .toUpperCase();
+  return firstInitial && lastInitial ? initials : null;
 };
