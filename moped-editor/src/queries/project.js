@@ -184,7 +184,6 @@ export const TEAM_QUERY = gql`
     }
     moped_users(
       order_by: { last_name: asc }
-      where: { is_deleted: { _eq: false } }
     ) {
       first_name
       last_name
@@ -436,7 +435,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where: { is_deleted: { _eq: false } }) {
+    moped_users {
       first_name
       last_name
       user_id
