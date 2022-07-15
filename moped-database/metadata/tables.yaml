@@ -3116,7 +3116,7 @@
   event_triggers:
   - name: activity_log_moped_project_types
     definition:
-      enable_manual: false
+      enable_manul: false
       insert:
         columns: '*'
       delete:
@@ -3151,6 +3151,74 @@
   - role: moped-admin
     permission:
       check: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  select_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-viewer
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  update_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
       columns:
       - id
       - vendor
