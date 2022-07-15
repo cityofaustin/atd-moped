@@ -3,11 +3,13 @@ import os
 import boto3
 import prefect
 from prefect import Flow, task
+import pprint
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
 # AWS ARN-like identifiers
+VPC_ID = os.environ["VPC_ID"]
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
@@ -61,6 +63,85 @@ def create_load_balancer(basename):
     )
 
     return create_elb_result
+
+@task
+def create_target_group(basename):
+    logger.info("Creating Target Group")
+
+    elb = boto3.client("elbv2")
+
+    # TODO create a health check for the target group
+
+    target_group = elb.create_target_group(
+        Name=basename,
+        Protocol="HTTP",
+        Port=8080,
+        VpcId=VPC_ID,
+    )
+
+    return target_group
+   
+@task
+def create_certificate(basename):
+    logger.info("Creating TLS Certificate")
+
+    elb = boto3.client("elbv2")
+
+    #certificate = elb.create_certificate(
+        #DomainName=basename,
+        #ValidationMethod="DNS",
+    #)
+
+    return True
+   
+
+@task
+def create_load_balancer_listener(load_balancer, target_group):
+    logger.info("Creating Load Balancer Listener")
+    elb = boto3.client("elbv2")
+
+    if True:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(target_group)
+        print("")
+
+    listeners = {"HTTP": None, "HTTPS": None}
+
+    listeners["HTTP"] = elb.create_listener(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+        Protocol="HTTP",
+        Port=80,
+        DefaultActions=[
+            {
+                "Type": "redirect",
+                "RedirectConfig": {
+                    "Protocol": "HTTPS",
+                    "Port": "443",
+                    "StatusCode": "HTTP_301",
+                    
+                },
+            },
+        ],
+    )
+
+    #listeners["HTTPS"] = elb.create_listener(
+        #LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+        #Protocol="HTTPS",
+        #Port=443,
+        #SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
+        
+        #DefaultActions=[
+            #{
+                #"Type": "forward",
+                #"TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
+                ##TODO figure out where i get or make a target group
+            #},
+        #],
+    #)
+
+    return listeners
+
 
 
 @task
@@ -136,17 +217,26 @@ def remove_task_definition(task_definition):
 
 # Activity log (SQS & Lambda) tasks
 
-
 @task
-def create_service(basename, load_balancer):
+def create_service(basename, load_balancer, task_definition):
+
+    return True
+
     # Create ECS service
     logger.info("Creating ECS service")
 
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(load_balancer)
+        print("")
+
     ecs = boto3.client("ecs", region_name="us-east-1")
+
     create_service_result = ecs.create_service(
         cluster=basename,
         serviceName=basename,
-        taskDefinition=basename,
+        taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
         placementStrategy=[
             {
@@ -156,25 +246,16 @@ def create_service(basename, load_balancer):
         ],
         loadBalancers=[
             {
-                "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/"
-                + basename
-                + "/1a2b3c4d5e6f7g",
+                "targetGroupArn": load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+                #"loadBalancerName": load_balancer["LoadBalancers"][0]["LoadBalancerName"],
                 "containerName": "graphql-engine",
                 "containerPort": 8080,
             },
         ],
-        healthCheckGroup={
-            "healthCheckGroupName": basename,
-            "healthCheckType": "ECS",
-            "interval": "30",
-            "timeout": "5",
-            "unhealthyThreshold": "3",
-            "healthyThreshold": "5",
-        },
         tags=[
             {
-                "Key": "name",
-                "Value": basename,
+                "key": "name",
+                "value": basename,
             },
         ],
     )
