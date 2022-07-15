@@ -44,6 +44,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
     },
   },
+  inactiveUserText: {
+    fontStyle: "italic"
+  }
 }));
 
 const ProjectTeamTable = ({ projectId }) => {
@@ -72,6 +75,7 @@ const ProjectTeamTable = ({ projectId }) => {
         currentTuple[0] === tupleItem[0] && currentTuple[1] === tupleItem[1]
     );
 
+  // Contains both active and inactive users
   const availableUsers = data.moped_users;
 
   // Get data from the team query payload
@@ -87,6 +91,7 @@ const ProjectTeamTable = ({ projectId }) => {
         role_id: [item.role_id],
         notes: item.notes,
         project_personnel_id: item.project_personnel_id,
+        is_deleted: item.is_deleted
       };
     } else {
       // Aggregate role_ids, and notes.
@@ -127,8 +132,10 @@ const ProjectTeamTable = ({ projectId }) => {
     {}
   );
 
-  // Options for Autocomplete form elements
-  const userIds = availableUsers.map((user) => user.user_id);
+  // Options for Autocomplete form elements filtered to active users only
+  const userIds = availableUsers
+    .filter(user => user.is_deleted === true)
+    .map(user => user.user_id);
 
   /**
    * Get a user object from the users array
@@ -175,7 +182,17 @@ const ProjectTeamTable = ({ projectId }) => {
     {
       title: "Name",
       field: "user_id",
-      render: (personnel) => getPersonnelName(personnel.user_id),
+      render: personnel => {
+        const { is_deleted } = personnel;
+
+        return is_deleted ? (
+          <Typography className={classes.inactiveUserText}>{`${getPersonnelName(
+            personnel.user_id
+          )} - Inactive`}</Typography>
+        ) : (
+          <Typography>{getPersonnelName(personnel.user_id)}</Typography>
+        );
+      },
       validate: (rowData) => !!rowData.user_id,
       editComponent: (props) => (
         <FormControl style={{ width: "100%" }}>
