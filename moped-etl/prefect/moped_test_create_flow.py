@@ -222,10 +222,9 @@ with Flow("Create Moped Environment") as flow:
         dns_status = check_dns_status(dns_request=dns_request)
         tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
         certificate_validation_parameters = get_certificate_validation_parameters(tls_certificate=tls_certificate)
-
-        add_cname_for_certificate_validation(parameters=certificate_validation_parameters)
-
-        #listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group)
+        validation_record = add_cname_for_certificate_validation(parameters=certificate_validation_parameters)
+        issued_certificate = wait_for_valid_certificate(validation_record=validation_record, tls_certificate=tls_certificate)
+        #listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group, certificate=issued_certificate)
         #task_definition = create_task_definition(basename=basename)
         #service = create_service(
             #basename=basename,
