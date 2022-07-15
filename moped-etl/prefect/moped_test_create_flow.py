@@ -216,9 +216,16 @@ with Flow("Create Moped Environment") as flow:
         # remove_ecs_cluster(cluster)
 
         cluster = create_ecs_cluster(basename=basename)
+        target_group = create_target_group(basename=basename)
+        tls_certificate = create_certificate(basename=basename)
         load_balancer = create_load_balancer(basename=basename)
+        listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group)
         task_definition = create_task_definition(basename=basename)
-        #service = create_service(basename=basename)
+        service = create_service(
+            basename=basename,
+            load_balancer=load_balancer,
+            task_definition=task_definition,
+            )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
         # remove_task_definition = remove_task_definition(task_definition)
