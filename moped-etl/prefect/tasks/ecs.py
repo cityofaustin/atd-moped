@@ -1,5 +1,6 @@
 import os
 
+from datetime import timedelta
 import boto3
 import prefect
 from prefect import Flow, task
@@ -9,6 +10,7 @@ import pprint
 logger = prefect.context.get("logger")
 
 # AWS ARN-like identifiers
+R53_HOSTED_ZONE = os.environ["R53_HOSTED_ZONE"]
 VPC_ID = os.environ["VPC_ID"]
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
@@ -82,7 +84,65 @@ def create_target_group(basename):
     return target_group
    
 @task
-def create_certificate(basename):
+def create_route53_cname(basename, load_balancer):
+    logger.info("Creating Route53 CNAME")
+
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(load_balancer)
+        print("")
+
+    host = basename + "-graphql.moped-test.austinmobility.io"
+    target = load_balancer["LoadBalancers"][0]["DNSName"]
+
+    route53 = boto3.client("route53")
+
+    record = route53.change_resource_record_sets(
+        HostedZoneId=R53_HOSTED_ZONE,
+        ChangeBatch={
+            "Changes": [
+                {
+                    "Action": "UPSERT",
+                    "ResourceRecordSet": {
+                        "Name": host,
+                        "Type": "CNAME",
+                        "TTL": 300,
+                        "ResourceRecords": [
+                            {"Value": target},
+                        ],
+                    },
+                },
+            ]
+        },
+    )
+
+    return record
+
+@task(max_retries=12, retry_delay=timedelta(seconds=10))
+def check_dns_status(dns_request):
+    logger.info("Checking DNS status")
+
+    route53 = boto3.client("route53")
+
+    dns_status = route53.get_change(Id=dns_request["ChangeInfo"]["Id"])
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(dns_status)
+        print("")
+    status = dns_status["ChangeInfo"]["Status"] 
+
+    print("DNS status: " + status)
+
+    if status == "INSYNC":
+        return dns_status
+    if status == "PENDING":
+        raise Exception("DNS Status is 'PENDING' for request: " + dns_request["ChangeInfo"]["Id"])
+
+    raise Exception("Unexpected DNS status: " + status)
+
+   
     logger.info("Creating TLS Certificate")
 
     elb = boto3.client("elbv2")
