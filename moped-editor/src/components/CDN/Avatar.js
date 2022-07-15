@@ -60,7 +60,7 @@ const CDNAvatar = ({
       src={imageSource}
       style={imageStyleOverride}
     >
-      {!!!useGenericAvatar && initials && initials.length > 0 ? (
+      {useGenericAvatar && initials && initials.length > 0 ? (
         <Typography className={largeInitials ? classes.userInitials : null}>
           {initials}
         </Typography>

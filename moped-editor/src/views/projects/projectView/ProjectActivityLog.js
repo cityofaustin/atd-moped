@@ -39,6 +39,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import { getUserFullName, getInitials } from "../../../utils/userNames";
 
 const useStyles = makeStyles(theme => ({
   table: {
@@ -72,7 +73,6 @@ const ProjectActivityLog = () => {
   const classes = useStyles();
   const userList = {};
   const phaseList = {};
-  const unknownUserNameValue = "Unknown User";
 
   const {
     getLookups,
@@ -103,43 +103,6 @@ const ProjectActivityLog = () => {
   };
 
   if (loading || lookupLoading) return <CircularProgress />;
-
-  /**
-   * Retrieve the user's full name or return an "N/A"
-   * @param {object} moped_user - The user object as provided by hasura
-   * @return {string}
-   */
-  const getUserFullName = moped_user => {
-    const firstName = moped_user?.first_name ?? "";
-    const lastName = moped_user?.last_name ?? "";
-    if (firstName.length === 0 && firstName.length === 0)
-      return unknownUserNameValue;
-    return `${firstName} ${lastName}`;
-  };
-
-  /**
-   * Safely returns the initials from a full name
-   * @param {object} moped_user - The full name of the user
-   * @return {string}
-   */
-  const getInitials = moped_user => {
-    // Get any names if available
-    const name = getUserFullName(moped_user).trim();
-
-    // If no names are available, return null to force the generic humanoid avatar
-    if (name.length === 0 || name === unknownUserNameValue) return null;
-
-    // Else, extract initials
-    return name
-      .replace(/[^A-Za-z0-9À-ÿ ]/gi, "")
-      .replace(/ +/gi, " ")
-      .split(/ /)
-      .reduce((acc, item) => acc + item[0], "")
-      .concat(name.substr(1))
-      .concat(name)
-      .substr(0, 2)
-      .toUpperCase();
-  };
 
   /**
    * Attempt to get the number of items we retrieved
@@ -292,7 +255,13 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>{getCreationLabel(change, userList, phaseList)}</b>
+                                    <b>
+                                      {getCreationLabel(
+                                        change,
+                                        userList,
+                                        phaseList
+                                      )}
+                                    </b>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
