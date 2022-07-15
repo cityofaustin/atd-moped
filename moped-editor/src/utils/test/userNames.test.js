@@ -24,23 +24,51 @@ const invalidUserObject = {
 describe("getFullUserName()", () => {
   it("returns a full name string from a user object", () => {
     const fullNameFromHasura = getUserFullName(userObjectFromHasura);
-    const fullNameFromLocalStorage = getUserFullName(atdMopedUserDbData);
-    const fullNameFromInvalidUserObject = getUserFullName(invalidUserObject);
 
     expect(fullNameFromHasura).toBe("Fozzie Bear");
+  });
+
+  it("returns a full name string from a Local Storage object", () => {
+    const fullNameFromLocalStorage = getUserFullName(atdMopedUserDbData);
+
     expect(fullNameFromLocalStorage).toBe("Bunsen Honeydew");
+  });
+
+  it("returns a fallback string from an invalid object", () => {
+    const fullNameFromInvalidUserObject = getUserFullName(invalidUserObject);
+
     expect(fullNameFromInvalidUserObject).toBe(unknownUserNameValue);
+  });
+
+  it("returns a fallback string from null", () => {
+    const fullNameFromNull = getUserFullName(null);
+
+    expect(fullNameFromNull).toBe(unknownUserNameValue);
   });
 });
 
 describe("getInitials()", () => {
   it("returns initials from a user object", () => {
     const initialsFromHasura = getInitials(userObjectFromHasura);
-    const initialsFromLocalStorage = getInitials(atdMopedUserDbData);
-    const initialsFromInvalidUserObject = getInitials(invalidUserObject);
 
     expect(initialsFromHasura).toBe("FB");
+  });
+
+  it("returns initials from a user object", () => {
+    const initialsFromLocalStorage = getInitials(atdMopedUserDbData);
+
     expect(initialsFromLocalStorage).toBe("BH");
+  });
+
+  it("returns initials from a user object", () => {
+    const initialsFromInvalidUserObject = getInitials(invalidUserObject);
+
     expect(initialsFromInvalidUserObject).toBe(null);
+  });
+
+  it("returns initials from a user object", () => {
+    const initialsFromNull = getInitials(null);
+
+    expect(initialsFromNull).toBe(null);
   });
 });
