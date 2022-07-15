@@ -51,6 +51,7 @@ export const SUMMARY_QUERY = gql`
       purchase_order_number
       work_assignment_id
       parent_project_id
+      interim_project_id
       moped_project {
         project_name
       }

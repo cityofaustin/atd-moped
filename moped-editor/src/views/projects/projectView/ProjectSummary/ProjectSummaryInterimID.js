@@ -26,6 +26,8 @@ const ProjectSummaryInterimID = ({
   classes,
   snackbarHandle,
 }) => {
+
+  console.log(data.moped_project[0])
   // Instantiate Original Value
   const [originalValue, setOriginalValue] = useState(
     data?.moped_project?.[0]?.interim_project_id ?? null
@@ -40,6 +42,7 @@ const ProjectSummaryInterimID = ({
     const newVal = data?.moped_project?.[0]?.interim_project_id ?? null;
     setOriginalValue(newVal);
     setInterimId(newVal);
+    console.log("using effect")
   }, [data]);
 
   /**
@@ -111,8 +114,8 @@ const ProjectSummaryInterimID = ({
               id="moped-project-interimID"
               label={null}
               onChange={handleProjectInterimIdChange}
-              value={interimId}
-              inputProps={{ type: "number", inputmode: "numeric" }}
+              value={interimId ?? ""}
+              inputProps={{ type: "number", inputMode: "numeric" }}
             />
             <Icon
               className={classes.editIconConfirm}
@@ -130,7 +133,7 @@ const ProjectSummaryInterimID = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={(interimId ?? "").length > 0 ? interimId : "None"}
+            text={interimId ?? "None"}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
