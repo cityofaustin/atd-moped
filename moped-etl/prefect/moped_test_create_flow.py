@@ -16,7 +16,7 @@ import prefect
 import psycopg2
 
 # import package components
-from prefect             import Flow, task
+from prefect import Flow, task
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from tasks.ecs import *
@@ -25,9 +25,12 @@ from tasks.ecs import *
 # Import and setup argparse.
 # This is intended to aid development and will be removed prior to PRing torward main.
 import argparse
-parser = argparse.ArgumentParser(description='Prefect flow for Moped Editor Test Instance Deployment')
-parser.add_argument('-m', '--mike', help='Run Mike\'s tasks', action='store_true')
-parser.add_argument('-f', '--frank', help='Run Frank\'s tasks', action='store_true')
+
+parser = argparse.ArgumentParser(
+    description="Prefect flow for Moped Editor Test Instance Deployment"
+)
+parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
+parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
 args = parser.parse_args()
 
 
@@ -141,10 +144,7 @@ def populate_database_with_production_data(database_name):
     )
 
 
-
 # ECS Tasks
-
-
 
 
 # Lambda & SQS tasks
@@ -194,8 +194,6 @@ def remove_moped_api():
     return True
 
 
-
-
 # The Flow itself
 
 
@@ -218,19 +216,27 @@ with Flow("Create Moped Environment") as flow:
         cluster = create_ecs_cluster(basename=basename)
         target_group = create_target_group(basename=basename)
         load_balancer = create_load_balancer(basename=basename)
-        dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
+        dns_request = create_route53_cname(
+            basename=basename, load_balancer=load_balancer
+        )
         dns_status = check_dns_status(dns_request=dns_request)
         tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
-        certificate_validation_parameters = get_certificate_validation_parameters(tls_certificate=tls_certificate)
-        validation_record = add_cname_for_certificate_validation(parameters=certificate_validation_parameters)
-        issued_certificate = wait_for_valid_certificate(validation_record=validation_record, tls_certificate=tls_certificate)
-        #listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group, certificate=issued_certificate)
-        #task_definition = create_task_definition(basename=basename)
-        #service = create_service(
-            #basename=basename,
-            #load_balancer=load_balancer,
-            #task_definition=task_definition,
-            #)
+        certificate_validation_parameters = get_certificate_validation_parameters(
+            tls_certificate=tls_certificate
+        )
+        validation_record = add_cname_for_certificate_validation(
+            parameters=certificate_validation_parameters
+        )
+        issued_certificate = wait_for_valid_certificate(
+            validation_record=validation_record, tls_certificate=tls_certificate
+        )
+        # listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group, certificate=issued_certificate)
+        # task_definition = create_task_definition(basename=basename)
+        # service = create_service(
+        # basename=basename,
+        # load_balancer=load_balancer,
+        # task_definition=task_definition,
+        # )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
         # remove_task_definition = remove_task_definition(task_definition)

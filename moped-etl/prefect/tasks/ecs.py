@@ -17,6 +17,7 @@ VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
+
 @task
 def create_ecs_cluster(basename):
     # Deploy ECS cluster
@@ -54,17 +55,13 @@ def create_load_balancer(basename):
         Subnets=[VPC_SUBNET_A, VPC_SUBNET_B],
         SecurityGroups=[ELB_SECURITY_GROUP],
         Scheme="internet-facing",
-        Tags=[
-            {
-                "Key": "name",
-                "Value": basename,
-            },
-        ],
+        Tags=[{"Key": "name", "Value": basename}],
         Type="application",
         IpAddressType="ipv4",
     )
 
     return create_elb_result
+
 
 @task
 def create_target_group(basename):
@@ -75,14 +72,12 @@ def create_target_group(basename):
     # TODO create a health check for the target group
 
     target_group = elb.create_target_group(
-        Name=basename,
-        Protocol="HTTP",
-        Port=8080,
-        VpcId=VPC_ID,
+        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID
     )
 
     return target_group
-   
+
+
 @task
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
@@ -108,16 +103,15 @@ def create_route53_cname(basename, load_balancer):
                         "Name": host,
                         "Type": "CNAME",
                         "TTL": 300,
-                        "ResourceRecords": [
-                            {"Value": target},
-                        ],
+                        "ResourceRecords": [{"Value": target}],
                     },
-                },
+                }
             ]
         },
     )
 
     return record
+
 
 @task(max_retries=12, retry_delay=timedelta(seconds=10))
 def check_dns_status(dns_request):
@@ -131,30 +125,29 @@ def check_dns_status(dns_request):
         pp = pprint.PrettyPrinter(indent=2)
         pp.pprint(dns_status)
         print("")
-    status = dns_status["ChangeInfo"]["Status"] 
+    status = dns_status["ChangeInfo"]["Status"]
 
     print("DNS status: " + status)
 
     if status == "INSYNC":
         return dns_status
     if status == "PENDING":
-        raise Exception("DNS Status is 'PENDING' for request: " + dns_request["ChangeInfo"]["Id"])
+        raise Exception(
+            "DNS Status is 'PENDING' for request: " + dns_request["ChangeInfo"]["Id"]
+        )
 
     raise Exception("Unexpected DNS status: " + status)
 
-   
+
 @task
 def create_certificate(basename, dns_status):
     logger.info("Creating TLS Certificate")
 
-    acm = boto3.client('acm')
+    acm = boto3.client("acm")
 
     host = basename + "-graphql.moped-test.austinmobility.io"
 
-    certificate = acm.request_certificate(
-        DomainName=host,
-        ValidationMethod="DNS",
-    )
+    certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
 
     if False:
         print("")
@@ -163,15 +156,20 @@ def create_certificate(basename, dns_status):
         print("")
 
     return certificate
-   
+
+
 @task(max_retries=12, retry_delay=timedelta(seconds=10))
 def get_certificate_validation_parameters(tls_certificate):
     logger.info("Validating TLS Certificate")
 
-    acm = boto3.client('acm')
+    acm = boto3.client("acm")
 
-    certificate = acm.describe_certificate(CertificateArn=tls_certificate["CertificateArn"])
-    if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Name"]:
+    certificate = acm.describe_certificate(
+        CertificateArn=tls_certificate["CertificateArn"]
+    )
+    if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
+        "Name"
+    ]:
         raise Exception("No Domain Validation Resource Record Options")
 
     if False:
@@ -182,12 +180,17 @@ def get_certificate_validation_parameters(tls_certificate):
 
     return certificate
 
+
 @task
 def add_cname_for_certificate_validation(parameters):
     logger.info("Adding CNAME for TLS Certificate Validation")
 
-    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Name"]
-    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"]["Value"]
+    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
+        "Name"
+    ]
+    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
+        "Value"
+    ]
 
     route53 = boto3.client("route53")
 
@@ -201,33 +204,37 @@ def add_cname_for_certificate_validation(parameters):
                         "Name": host,
                         "Type": "CNAME",
                         "TTL": 300,
-                        "ResourceRecords": [
-                            {"Value": target},
-                        ],
+                        "ResourceRecords": [{"Value": target}],
                     },
-                },
+                }
             ]
         },
     )
 
     return record
 
+
 @task(max_retries=12, retry_delay=timedelta(seconds=10))
 def wait_for_valid_certificate(validation_record, tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
-    acm = boto3.client('acm')
+    acm = boto3.client("acm")
 
-    certificate = acm.describe_certificate(CertificateArn=tls_certificate["CertificateArn"])
+    certificate = acm.describe_certificate(
+        CertificateArn=tls_certificate["CertificateArn"]
+    )
 
-    status = certificate["Certificate"]["Status"] 
+    status = certificate["Certificate"]["Status"]
 
     print("TLS Certificate status: " + status)
 
     if status == "ISSUED":
         return certificate
     if status == "PENDING_VALIDATION":
-        raise Exception("TLS Certificate Status is 'PENDING_VALIDATION' for request: " + certificate["CertificateArn"])
+        raise Exception(
+            "TLS Certificate Status is 'PENDING_VALIDATION' for request: "
+            + certificate["CertificateArn"]
+        )
 
     raise Exception("Unexpected TLS Certificate status: " + status)
 
@@ -256,29 +263,27 @@ def create_load_balancer_listener(load_balancer, target_group):
                     "Protocol": "HTTPS",
                     "Port": "443",
                     "StatusCode": "HTTP_301",
-                    
                 },
-            },
+            }
         ],
     )
 
-    #listeners["HTTPS"] = elb.create_listener(
-        #LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
-        #Protocol="HTTPS",
-        #Port=443,
-        #SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
-        
-        #DefaultActions=[
-            #{
-                #"Type": "forward",
-                #"TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
-                ##TODO figure out where i get or make a target group
-            #},
-        #],
-    #)
+    # listeners["HTTPS"] = elb.create_listener(
+    # LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+    # Protocol="HTTPS",
+    # Port=443,
+    # SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
+
+    # DefaultActions=[
+    # {
+    # "Type": "forward",
+    # "TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
+    ##TODO figure out where i get or make a target group
+    # },
+    # ],
+    # )
 
     return listeners
-
 
 
 @task
@@ -312,18 +317,12 @@ def create_task_definition(basename):
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
-                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"},
+                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
                 ],
                 "essential": True,
                 "environment": [
-                    {
-                        "name": "HASURA_GRAPHQL_ENABLE_CONSOLE",
-                        "value": "true",
-                    },
-                    {
-                        "name": "HASURA_GRAPHQL_ENABLE_TELEMETRY",
-                        "value": "false",
-                    },
+                    {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
+                    {"name": "HASURA_GRAPHQL_ENABLE_TELEMETRY", "value": "false"},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
@@ -333,7 +332,7 @@ def create_task_definition(basename):
                         "awslogs-stream-prefix": basename,
                     },
                 },
-            },
+            }
         ],
     )
 
@@ -353,6 +352,7 @@ def remove_task_definition(task_definition):
 
 
 # Activity log (SQS & Lambda) tasks
+
 
 @task
 def create_service(basename, load_balancer, task_definition):
@@ -376,25 +376,17 @@ def create_service(basename, load_balancer, task_definition):
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
         placementStrategy=[
-            {
-                "type": "spread",
-                "field": "attribute:ecs.availability-zone",
-            },
+            {"type": "spread", "field": "attribute:ecs.availability-zone"}
         ],
         loadBalancers=[
             {
                 "targetGroupArn": load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
-                #"loadBalancerName": load_balancer["LoadBalancers"][0]["LoadBalancerName"],
+                # "loadBalancerName": load_balancer["LoadBalancers"][0]["LoadBalancerName"],
                 "containerName": "graphql-engine",
                 "containerPort": 8080,
-            },
+            }
         ],
-        tags=[
-            {
-                "key": "name",
-                "value": basename,
-            },
-        ],
+        tags=[{"key": "name", "value": basename}],
     )
 
     return create_service_result
