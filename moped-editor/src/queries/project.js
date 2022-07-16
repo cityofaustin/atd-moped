@@ -169,6 +169,7 @@ export const TEAM_QUERY = gql`
         last_name
         workgroup_id
         user_id
+        is_deleted
       }
     }
     moped_workgroup {
@@ -183,11 +184,12 @@ export const TEAM_QUERY = gql`
       project_role_name
       project_role_description
     }
-    moped_users(order_by: { last_name: asc }) {
+    moped_users( order_by: { last_name: asc } ) {
       first_name
       last_name
       workgroup_id
       user_id
+      is_deleted
     }
   }
 `;

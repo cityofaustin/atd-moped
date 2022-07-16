@@ -75,7 +75,6 @@ const ProjectTeamTable = ({ projectId }) => {
         currentTuple[0] === tupleItem[0] && currentTuple[1] === tupleItem[1]
     );
 
-  // Contains both active and inactive users
   const availableUsers = data.moped_users;
 
   // Get data from the team query payload
@@ -91,7 +90,7 @@ const ProjectTeamTable = ({ projectId }) => {
         role_id: [item.role_id],
         notes: item.notes,
         project_personnel_id: item.project_personnel_id,
-        is_deleted: item.is_deleted
+        is_deleted: item.moped_user.is_deleted
       };
     } else {
       // Aggregate role_ids, and notes.
@@ -132,9 +131,10 @@ const ProjectTeamTable = ({ projectId }) => {
     {}
   );
 
-  // Options for Autocomplete form elements filtered to active users only
+  // Options for Autocomplete form elements
   const userIds = availableUsers
-    .filter(user => user.is_deleted === true)
+    .filter(user => { 
+      return user.is_deleted === false})
     .map(user => user.user_id);
 
   /**
@@ -184,6 +184,7 @@ const ProjectTeamTable = ({ projectId }) => {
       field: "user_id",
       render: personnel => {
         const { is_deleted } = personnel;
+        console.log(personnel)
 
         return is_deleted ? (
           <Typography className={classes.inactiveUserText}>{`${getPersonnelName(
