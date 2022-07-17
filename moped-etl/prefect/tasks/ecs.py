@@ -412,9 +412,6 @@ def remove_task_definition(task_definition):
     return response
 
 
-# Activity log (SQS & Lambda) tasks
-
-
 @task
 def create_service(basename, load_balancer, task_definition):
 
