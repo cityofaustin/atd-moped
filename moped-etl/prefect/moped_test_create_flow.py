@@ -262,12 +262,15 @@ with Flow("Create Moped Environment") as flow:
 
         task_definition = create_task_definition(basename=basename)
 
+        no_service = delete_service(basename=basename)
+
         service = create_service(
             basename=basename,
             load_balancer=load_balancer,
             task_definition=task_definition,
             target_group=target_group,
             listeners_token=listeners,
+            no_service_token=no_service,
         )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
