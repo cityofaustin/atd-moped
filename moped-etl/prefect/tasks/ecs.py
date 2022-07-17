@@ -4,7 +4,7 @@ from datetime import timedelta
 import boto3
 import prefect
 from prefect import Flow, task
-import pprint
+import pprint as pretty_printer
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -19,7 +19,7 @@ TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
 def pprint(string):
     print("")
-    pp = pprint.PrettyPrinter(indent=2)
+    pp = pretty_printer.PrettyPrinter(indent=2)
     pp.pprint(string)
     print("")
 
@@ -388,6 +388,7 @@ def create_service(basename, load_balancer, task_definition):
 
     if True:
         pprint(load_balancer)
+        pprint(target_group)
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
