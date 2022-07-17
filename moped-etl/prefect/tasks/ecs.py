@@ -222,6 +222,45 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
     raise Exception("Unexpected TLS Certificate status: " + status)
 
+@task
+def remove_route53_cname(validation_record, issued_certificate):
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(validation_record)
+        print("")
+        pp.pprint(issued_certificate)
+        print("")
+
+
+    logger.info("Removing CNAME TLS from Certificate Validation")
+
+    host = issued_certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
+        "Name"
+    ]
+    target = issued_certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
+        "Value"
+    ]
+
+    route53 = boto3.client("route53")
+
+    record = route53.change_resource_record_sets(
+        HostedZoneId=R53_HOSTED_ZONE,
+        ChangeBatch={
+            "Changes": [
+                {
+                    "Action": "DELETE",
+                    "ResourceRecordSet": {
+                        "Name": host,
+                        "Type": "CNAME",
+                        "TTL": 300,
+                        "ResourceRecords": [{"Value": target}],
+                    },
+                }
+            ]
+        },
+    )
+
 
 @task
 def create_load_balancer_listener(load_balancer, target_group, certificate):

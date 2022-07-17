@@ -230,6 +230,9 @@ with Flow("Create Moped Environment") as flow:
         issued_certificate = wait_for_valid_certificate(
             validation_record=validation_record, tls_certificate=tls_certificate
         )
+
+        removed_cname = remove_route53_cname(validation_record, issued_certificate)
+
         listeners = create_load_balancer_listener(
             load_balancer=load_balancer,
             target_group=target_group,
