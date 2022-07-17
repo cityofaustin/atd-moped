@@ -413,11 +413,11 @@ def remove_task_definition(task_definition):
 
 
 @task
-def create_service(basename, load_balancer, task_definition):
+def create_service(basename, load_balancer, task_definition, target_group, listeners_token):
 
     logger.info("Creating ECS service")
 
-    if True:
+    if False:
         pprint(load_balancer)
         pprint(target_group)
 
@@ -426,19 +426,24 @@ def create_service(basename, load_balancer, task_definition):
     create_service_result = ecs.create_service(
         cluster=basename,
         serviceName=basename,
+        launchType='FARGATE',
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
-        placementStrategy=[
-            {"type": "spread", "field": "attribute:ecs.availability-zone"}
-        ],
+        #placementStrategy=[ {"type": "spread", "field": "attribute:ecs.availability-zone"} ],
         loadBalancers=[
             {
-                "targetGroupArn": load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
-                # "loadBalancerName": load_balancer["LoadBalancers"][0]["LoadBalancerName"],
+                "targetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
                 "containerName": "graphql-engine",
                 "containerPort": 8080,
             }
         ],
+        networkConfiguration={
+            "awsvpcConfiguration": {
+                "subnets": [VPC_SUBNET_A, VPC_SUBNET_B],
+                "securityGroups": [ELB_SECURITY_GROUP],
+                "assignPublicIp": "DISABLED",
+            },
+        },
         tags=[{"key": "name", "value": basename}],
     )
 
