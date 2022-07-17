@@ -100,7 +100,7 @@ def remove_target_group(basename, load_balancer, no_listener_token):
 
 
 @task
-def create_target_group(basename):
+def create_target_group(basename, no_target_group_token, no_listener_token):
     logger.info("Creating Target Group")
 
     elb = boto3.client("elbv2")
@@ -108,7 +108,7 @@ def create_target_group(basename):
     # TODO create a health check for the target group
 
     target_group = elb.create_target_group(
-        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID
+        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
     )
 
     return target_group
