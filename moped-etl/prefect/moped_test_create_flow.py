@@ -214,19 +214,29 @@ with Flow("Create Moped Environment") as flow:
         # remove_ecs_cluster(cluster)
 
         cluster = create_ecs_cluster(basename=basename)
+
         target_group = create_target_group(basename=basename)
+
         load_balancer = create_load_balancer(basename=basename)
+
+        no_listeners = remove_all_listeners(load_balancer)
+
         dns_request = create_route53_cname(
             basename=basename, load_balancer=load_balancer
         )
+
         dns_status = check_dns_status(dns_request=dns_request)
+
         tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
+
         certificate_validation_parameters = get_certificate_validation_parameters(
             tls_certificate=tls_certificate
         )
+
         validation_record = add_cname_for_certificate_validation(
             parameters=certificate_validation_parameters
         )
+
         issued_certificate = wait_for_valid_certificate(
             validation_record=validation_record, tls_certificate=tls_certificate
         )
@@ -237,8 +247,11 @@ with Flow("Create Moped Environment") as flow:
             load_balancer=load_balancer,
             target_group=target_group,
             certificate=issued_certificate,
+            empty_listener_token=no_listeners,
         )
+
         task_definition = create_task_definition(basename=basename)
+
         service = create_service(
             basename=basename,
             load_balancer=load_balancer,
