@@ -292,10 +292,13 @@ def remove_all_listeners(load_balancer):
 
     elb = boto3.client("elbv2")
 
-    for listener in load_balancer["LoadBalancers"][0]["ListenerDescriptions"]:
+    listeners = elb.describe_listeners(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+    )
+
+    for listener in listeners["Listeners"]:
         elb.delete_listener(
-            LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
-            ListenerArn=listener["Listener"]["ListenerArn"],
+            ListenerArn=listener["ListenerArn"],
         )
 
     return True
