@@ -248,15 +248,6 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
         ],
     )
 
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(target_group)
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(certificate)
-        print("")
-
     listeners["HTTPS"] = elb.create_listener(
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
         Protocol="HTTPS",
