@@ -261,13 +261,24 @@ def remove_route53_cname(validation_record, issued_certificate):
         },
     )
 
-
 @task
-def create_load_balancer_listener(load_balancer, target_group, certificate):
-    logger.info("Creating Load Balancer Listener")
+def remove_all_listeners(load_balancer):
+    logger.info("Removing all listeners from load balancer")
+
     elb = boto3.client("elbv2")
 
+    for listener in load_balancer["LoadBalancers"][0]["ListenerDescriptions"]:
+        elb.delete_listener(
+            LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+            ListenerArn=listener["Listener"]["ListenerArn"],
+        )
 
+    return True
+
+@task
+def create_load_balancer_listener(load_balancer, target_group, certificate, empty_listener_token):
+    logger.info("Creating Load Balancer Listener")
+    elb = boto3.client("elbv2")
 
     listeners = {"HTTP": None, "HTTPS": None}
 
