@@ -17,6 +17,11 @@ VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
+def pprint(string):
+    print("")
+    pp = pprint.PrettyPrinter(indent=2)
+    pp.pprint(string)
+    print("")
 
 @task
 def create_ecs_cluster(basename):
@@ -157,10 +162,7 @@ def get_certificate_validation_parameters(tls_certificate):
         raise Exception("No Domain Validation Resource Record Options")
 
     if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(certificate)
-        print("")
+        pprint(certificate)
 
     return certificate
 
@@ -224,14 +226,6 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
 @task
 def remove_route53_cname(validation_record, issued_certificate):
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(validation_record)
-        print("")
-        pp.pprint(issued_certificate)
-        print("")
-
 
     logger.info("Removing CNAME TLS from Certificate Validation")
 
@@ -390,16 +384,10 @@ def remove_task_definition(task_definition):
 @task
 def create_service(basename, load_balancer, task_definition):
 
-    return True
-
-    # Create ECS service
     logger.info("Creating ECS service")
 
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(load_balancer)
-        print("")
+    if True:
+        pprint(load_balancer)
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
