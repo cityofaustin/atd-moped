@@ -412,19 +412,32 @@ def remove_task_definition(task_definition):
     return response
 
 @task
-def delete_service(basename):
+def set_desired_count_for_service(basename, count):
+    logger.info("Setting desired count for service")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+    response = ecs.update_service(
+        cluster=basename,
+        service=basename,
+        desiredCount=count,
+    )
+
+    return response
+
+@task
+def delete_service(basename, zero_scale_token):
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
     response = ecs.delete_service(
-        #cluster="moped-test", service=basename
+        cluster=basename, service=basename
     )
 
     return response
 
 
 @task
-def create_service(basename, load_balancer, task_definition, target_group, listeners_token):
+def create_service(basename, load_balancer, task_definition, target_group, listeners_token, no_service_token):
 
     logger.info("Creating ECS service")
 
