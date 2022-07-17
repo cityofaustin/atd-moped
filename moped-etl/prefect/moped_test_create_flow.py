@@ -230,13 +230,13 @@ with Flow("Create Moped Environment") as flow:
         issued_certificate = wait_for_valid_certificate(
             validation_record=validation_record, tls_certificate=tls_certificate
         )
-        # listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group, certificate=issued_certificate)
-        # task_definition = create_task_definition(basename=basename)
-        # service = create_service(
-        # basename=basename,
-        # load_balancer=load_balancer,
-        # task_definition=task_definition,
-        # )
+        listeners = create_load_balancer_listener(load_balancer=load_balancer, target_group=target_group, certificate=issued_certificate)
+        task_definition = create_task_definition(basename=basename)
+        service = create_service(
+            basename=basename,
+            load_balancer=load_balancer,
+            task_definition=task_definition,
+            )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
         # remove_task_definition = remove_task_definition(task_definition)

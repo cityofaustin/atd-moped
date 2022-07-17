@@ -240,15 +240,11 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
 
 @task
-def create_load_balancer_listener(load_balancer, target_group):
+def create_load_balancer_listener(load_balancer, target_group, certificate):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(target_group)
-        print("")
+
 
     listeners = {"HTTP": None, "HTTPS": None}
 
@@ -268,20 +264,32 @@ def create_load_balancer_listener(load_balancer, target_group):
         ],
     )
 
-    # listeners["HTTPS"] = elb.create_listener(
-    # LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
-    # Protocol="HTTPS",
-    # Port=443,
-    # SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
+    if False:
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(target_group)
+        print("")
+        pp = pprint.PrettyPrinter(indent=2)
+        pp.pprint(certificate)
+        print("")
 
-    # DefaultActions=[
-    # {
-    # "Type": "forward",
-    # "TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
-    ##TODO figure out where i get or make a target group
-    # },
-    # ],
-    # )
+    listeners["HTTPS"] = elb.create_listener(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
+        Protocol="HTTPS",
+        Port=443,
+        SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
+        DefaultActions=[
+            {
+            "Type": "forward",
+            "TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
+            },
+        ],
+        Certificates=[
+            {
+                "CertificateArn": certificate["Certificate"]["CertificateArn"],
+            }
+        ],
+    )
 
     return listeners
 
