@@ -215,11 +215,21 @@ with Flow("Create Moped Environment") as flow:
 
         cluster = create_ecs_cluster(basename=basename)
 
-        target_group = create_target_group(basename=basename)
-
         load_balancer = create_load_balancer(basename=basename)
 
         no_listeners = remove_all_listeners(load_balancer)
+
+        no_target_groups = remove_target_group(
+            basename=basename,
+            load_balancer=load_balancer,
+            no_listener_token=no_listeners,
+        )
+
+        target_group = create_target_group(
+            basename=basename,
+            no_target_group_token=no_target_groups,
+            no_listener_token=no_listeners,
+        )
 
         dns_request = create_route53_cname(
             basename=basename, load_balancer=load_balancer
@@ -256,6 +266,8 @@ with Flow("Create Moped Environment") as flow:
             basename=basename,
             load_balancer=load_balancer,
             task_definition=task_definition,
+            target_group=target_group,
+            listeners_token=listeners,
         )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
