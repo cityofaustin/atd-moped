@@ -67,6 +67,37 @@ def create_load_balancer(basename):
 
     return create_elb_result
 
+@task
+def remove_target_group(basename, load_balancer, no_listener_token):
+    logger.info("Removing target group")
+
+    elb = boto3.client("elbv2")
+
+    target_groups = elb.describe_target_groups(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+    )
+    
+    #print('Target groups:')
+    #pprint(target_groups)
+    
+    for target_group in target_groups["TargetGroups"]:
+
+        delete_target_group_result = elb.delete_target_group(
+            TargetGroupArn=target_group["TargetGroupArn"]
+        )
+    
+    return True
+    
+    target_group_arn = target_groups["TargetGroups"][0]["TargetGroupArn"]
+
+    print("Target Group ARN: " + target_group_arn)
+    delete_target_group_result = True
+    delete_target_group_result = elb.delete_target_group(
+        TargetGroupArn=target_group_arn
+    )
+
+    return delete_target_group_result
+
 
 @task
 def create_target_group(basename):
