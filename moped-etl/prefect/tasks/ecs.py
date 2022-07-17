@@ -82,12 +82,6 @@ def create_target_group(basename):
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
 
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(load_balancer)
-        print("")
-
     host = basename + "-graphql.moped-test.austinmobility.io"
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
@@ -120,11 +114,7 @@ def check_dns_status(dns_request):
     route53 = boto3.client("route53")
 
     dns_status = route53.get_change(Id=dns_request["ChangeInfo"]["Id"])
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(dns_status)
-        print("")
+
     status = dns_status["ChangeInfo"]["Status"]
 
     print("DNS status: " + status)
@@ -148,12 +138,6 @@ def create_certificate(basename, dns_status):
     host = basename + "-graphql.moped-test.austinmobility.io"
 
     certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
-
-    if False:
-        print("")
-        pp = pprint.PrettyPrinter(indent=2)
-        pp.pprint(certificate)
-        print("")
 
     return certificate
 
