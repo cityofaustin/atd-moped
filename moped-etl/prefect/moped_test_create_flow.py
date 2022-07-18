@@ -293,11 +293,6 @@ with Flow("Create Moped Environment") as flow:
             # no_service_token=no_service,
         )
 
-        # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
-        # remove_task_definition = remove_task_definition(task_definition)
-        # remove_load_balancer(load_balancer)
-        # remove_ecs_cluster(cluster)
-
 
 if __name__ == "__main__":
     flow.run()
