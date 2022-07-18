@@ -31,122 +31,23 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import {
   PURCHASE_ORDER_QUERY,
-  // UPDATE_PROJECT_FUNDING,
-  // ADD_PROJECT_FUNDING,
-  // DELETE_PROJECT_FUNDING,
-  // UPDATE_FUNDING_TASK_ORDERS,
+  UPDATE_PURCHASE_ORDER,
+  ADD_PURCHASE_ORDER,
+  DELETE_PURCHASE_ORDER,
 } from "../../../queries/funding";
 
 const useStyles = makeStyles(theme => ({
-  fieldGridItem: {
-    margin: theme.spacing(2),
-  },
-  linkIcon: {
-    fontSize: "1rem",
-  },
-  syncLinkIcon: {
-    fontSize: "1.2rem",
-  },
-  editIcon: {
-    cursor: "pointer",
-    margin: "0 .5rem",
-    fontSize: "20px",
-  },
-  editIconFunding: {
-    cursor: "pointer",
-    margin: "0.5rem",
-    fontSize: "1.5rem",
-  },
-  editIconContainer: {
-    minWidth: "8rem",
-    marginLeft: "8px",
-  },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: "0.25rem 0",
-    fontSize: "24px",
-  },
-  editIconButton: {
-    margin: "8px 0",
-    padding: "8px",
-  },
-  fieldLabel: {
-    width: "100%",
-    color: theme.palette.text.secondary,
-    fontSize: ".8rem",
-    margin: "8px 0",
-  },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-  },
-  fieldLabelTextSpan: {
-    borderBottom: "1px dashed",
-    borderBottomColor: theme.palette.text.secondary,
-  },
-  fieldLabelLink: {
-    width: "calc(100% - 2rem)",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-  },
-  fieldBox: {
-    maxWidth: "10rem",
-  },
-  fieldBoxTypography: {
-    width: "100%",
-  },
-  fieldSelectItem: {
-    width: "calc(100% - 3rem)",
-  },
-  fundingButton: {
+  addRecordButton: {
     position: "absolute",
     top: "1rem",
     right: "1rem",
   },
-  chipContainer: {
-    display: "flex",
-    justifyContent: "left",
-    flexWrap: "wrap",
-    listStyle: "none",
-    padding: "2rem 0",
-    margin: 0,
-  },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
-  chipAddContainer: {
-    minWidth: "500px",
-  },
-  chipAddMultiselect: {
-    width: "100%",
-  },
-  deptAutocomplete: {
-    width: "300px",
-    fontSize: ".875em",
-    "& .MuiAutocomplete-inputRoot": {
-      marginBottom: "16px",
-    },
-    "& .MuiFormLabel-root": {
-      color: theme.palette.text.primary,
-    },
-  },
-  fundSelectStyle: {
-    width: "8em",
-    border: "1px green solid",
-  },
 }));
 
 const ProjectPurchaseOrderTable = () => {
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
+  // addAction Ref - mutable ref object used to access add action button imperatively.
   const addActionRef = React.useRef();
-
   const classes = useStyles();
-
-  /** Params Hook
-   * @type {integer} projectId
-   * */
   const { projectId } = useParams();
 
   const { loading, error, data, refetch } = useQuery(PURCHASE_ORDER_QUERY, {
@@ -156,12 +57,9 @@ const ProjectPurchaseOrderTable = () => {
     fetchPolicy: "no-cache",
   });
 
-  console.log(data)
-  // const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
-  // const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
-  // const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
-
-  // const [updateProjectTaskOrders] = useMutation(UPDATE_FUNDING_TASK_ORDERS);
+  const [addPurchaseOrder] = useMutation(ADD_PURCHASE_ORDER);
+  const [updatePurchaseOrder] = useMutation(UPDATE_PURCHASE_ORDER);
+  const [deletePurchaseOrder] = useMutation(DELETE_PURCHASE_ORDER);
 
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
@@ -186,6 +84,10 @@ const ProjectPurchaseOrderTable = () => {
     {
       title: "Vendor",
       field: "vendor",
+    },
+    {
+      title: "DO #",
+      field: "purchase_order_number"
     },
     {
       title: "Description",
@@ -220,7 +122,7 @@ const ProjectPurchaseOrderTable = () => {
               // else add "Add ..." button
               return (
                 <Button
-                  className={classes.fundingButton}
+                  className={classes.addRecordButton}
                   variant="contained"
                   color="primary"
                   size="large"
@@ -273,9 +175,70 @@ const ProjectPurchaseOrderTable = () => {
           Edit: EditOutlinedIcon,
         }}
         editable={{
-          onRowAdd: newData =>  console.log(newData),
-          onRowUpdate: (newData, oldData) => console.log(newData, oldData),
-          onRowDelete: oldData => console.log(oldData)
+          onRowAdd: newData =>
+            addPurchaseOrder({
+              variables: {
+                objects: {
+                  ...newData,
+                  project_id: projectId,
+                },
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem adding the record. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
+                });
+              }),
+          onRowUpdate: (newData, oldData) => {
+            const updatePurchaseOrderData = newData;
+
+            // Remove unneeded variable
+            delete updatePurchaseOrderData.__typename;
+
+            return updatePurchaseOrder({
+              variables: updatePurchaseOrderData
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem updating record. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
+                });
+              });
+          },
+          onRowDelete: oldData =>
+           deletePurchaseOrder({
+              variables: {
+               id: oldData.id,
+              },
+            })
+              .then(() => refetch())
+              .catch(error => {
+                setSnackbarState({
+                  open: true,
+                  message: (
+                    <span>
+                      There was a problem deleting the reecord. Error message:{" "}
+                      {error.message}
+                    </span>
+                  ),
+                  severity: "error",
+                });
+              })
         }}
       />
       <Snackbar

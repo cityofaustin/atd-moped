@@ -108,11 +108,57 @@ export const PURCHASE_ORDER_QUERY = gql`
   query ProjectPurchaseOrder($projectId: Int) {
     moped_purchase_order(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      order_by: {id: asc}
     ) {
       vendor
       id
       purchase_order_number
       description
+    }
+  }
+`;
+
+export const ADD_PURCHASE_ORDER = gql`
+  mutation AddPurchaseOrder($objects: [moped_purchase_order_insert_input!]!) {
+    insert_moped_purchase_order(objects: $objects) {
+      returning {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_PURCHASE_ORDER = gql`
+  mutation UpdatePurchaseOrder(
+    $id: Int!
+    $vendor: String!
+    $purchase_order_number: String!
+    $description: String!
+  ) {
+    update_moped_purchase_order_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        vendor: $vendor
+        purchase_order_number: $purchase_order_number
+        description: $description
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const DELETE_PURCHASE_ORDER = gql`
+  mutation DeletePurchaseOrder(
+    $id: Int!
+  ) {
+    update_moped_purchase_order_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        is_deleted: true
+      }
+    ) {
+      id
     }
   }
 `;
