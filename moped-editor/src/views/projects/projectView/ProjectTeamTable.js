@@ -131,10 +131,9 @@ const ProjectTeamTable = ({ projectId }) => {
     {}
   );
 
-  // Options for Autocomplete form elements
+  // Options for Autocomplete form elements filtered to active users
   const userIds = availableUsers
-    .filter(user => { 
-      return user.is_deleted === false})
+    .filter(user => user.is_deleted === false)
     .map(user => user.user_id);
 
   /**
