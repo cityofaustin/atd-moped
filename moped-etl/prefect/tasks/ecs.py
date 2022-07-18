@@ -426,12 +426,15 @@ def remove_all_listeners(basename):
 
 
 @task
-def remove_load_balancer(load_balancer):
+def remove_load_balancer(basename, no_cluster_token):
     logger.info("removing Load Balancer")
 
     elb = boto3.client("elbv2")
+
+    load_balancers = elb.describe_load_balancers(Names=[basename])
+
     delete_elb_result = elb.delete_load_balancer(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+        LoadBalancerArn=load_balancers["LoadBalancers"][0]["LoadBalancerArn"]
     )
 
     return delete_elb_result

@@ -238,7 +238,7 @@ with Flow("Create Moped Environment") as flow:
 
         no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
 
-        #remove_load_balancer(load_balancer)
+        remove_load_balancer(basename=basename, no_cluster_token=no_cluster)
 
         logger.info("Done")
     if args.frank and args.provision:
