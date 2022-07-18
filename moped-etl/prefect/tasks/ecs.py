@@ -328,7 +328,12 @@ def create_task_definition(basename):
 
 @task
 def create_service(
-    basename, load_balancer, task_definition, target_group, listeners_token, cluster_token
+    basename,
+    load_balancer,
+    task_definition,
+    target_group,
+    listeners_token,
+    cluster_token,
 ):
 
     logger.info("Creating ECS service")

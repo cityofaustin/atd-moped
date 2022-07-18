@@ -205,8 +205,8 @@ def remove_moped_api():
 with Flow(
     "Moped Test Teardown and Build",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-    #state_handlers=[skip_if_running_handler],
-    ) as flow:
+    # state_handlers=[skip_if_running_handler],
+) as flow:
     # Calls tasks
     logger.info("Calling tasks")
 
@@ -216,12 +216,11 @@ with Flow(
         create_database(database_name)
         remove_database(database_name)
 
-
     do_teardown = True
 
     basename = "flh-test-ecs-cluster"
 
-    #if args.frank and args.decomission:
+    # if args.frank and args.decomission:
     if do_teardown:
         set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
@@ -261,18 +260,14 @@ with Flow(
             basename=basename, removed_hostname_token=removed_hostname
         )
 
-
-
-    #if args.frank and args.provision:
+    # if args.frank and args.provision:
     cluster = create_ecs_cluster(basename=basename)
 
     load_balancer = create_load_balancer(basename=basename)
 
     target_group = create_target_group(basename=basename)
 
-    dns_request = create_route53_cname(
-        basename=basename, load_balancer=load_balancer
-    )
+    dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
 
     dns_status = check_dns_status(dns_request=dns_request)
 
@@ -320,4 +315,4 @@ with Flow(
 
 if __name__ == "__main__":
     flow.run()
-    #flow.register(project_name='moped')
+    # flow.register(project_name='moped')
