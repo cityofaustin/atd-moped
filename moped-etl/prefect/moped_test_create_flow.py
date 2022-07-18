@@ -31,6 +31,8 @@ parser = argparse.ArgumentParser(
 )
 parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
 parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
+parser.add_argument("-p", "--provision", help="Provision", action="store_true")
+parser.add_argument("-r", "--reap", help="Reap", action="store_true")
 args = parser.parse_args()
 
 
@@ -207,7 +209,7 @@ with Flow("Create Moped Environment") as flow:
         create_database(database_name)
         remove_database(database_name)
 
-    if args.frank:
+    if args.frank and args.provision:
         basename = "flh-test-ecs-cluster"
 
         # cluster = {'cluster': {'clusterName': basename}}
