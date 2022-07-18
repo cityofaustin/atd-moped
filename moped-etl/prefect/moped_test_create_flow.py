@@ -264,9 +264,11 @@ with Flow("Create Moped Environment") as flow:
 
         set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
-        no_service = delete_service(
-            basename=basename, zero_scale_token=set_count_at_zero
+        drained_service = wait_for_service_to_be_drained(
+            basename=basename, count_token=set_count_at_zero
         )
+
+        no_service = delete_service(basename=basename, drained_token=drained_service)
 
         service = create_service(
             basename=basename,

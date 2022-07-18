@@ -109,6 +109,7 @@ def create_target_group(basename, no_target_group_token, no_listener_token):
 
     target_group = elb.create_target_group(
         Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
+        #Name=basename, Protocol="HTTP", Port=80, VpcId=VPC_ID, TargetType="ip"
     )
 
     return target_group
@@ -374,25 +375,27 @@ def create_task_definition(basename):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                "image": "hasura/graphql-engine:latest",
+                "image": "hasura/graphql-engine:v2.9.0-beta2",
+                #"image": "nginxdemos/hello:0.3",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
                     {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
+                    #{"containerPort": 80, "hostPort": 80, "protocol": "tcp"}
                 ],
                 "essential": True,
                 "environment": [
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
                     {"name": "HASURA_GRAPHQL_ENABLE_TELEMETRY", "value": "false"},
                 ],
-                "logConfiguration": {
-                    "logDriver": "awslogs",
-                    "options": {
-                        "awslogs-group": "moped-test",
-                        "awslogs-region": "us-east-1",
-                        "awslogs-stream-prefix": basename,
-                    },
-                },
+                #"logConfiguration": {
+                    #"logDriver": "awslogs",
+                    #"options": {
+                        #"awslogs-group": "moped-test",
+                        #"awslogs-region": "us-east-1",
+                        #"awslogs-stream-prefix": basename,
+                    #},
+                #},
             }
         ],
     )
@@ -416,16 +419,43 @@ def set_desired_count_for_service(basename, count):
     logger.info("Setting desired count for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
-    response = ecs.update_service(
+    
+    services = ecs.describe_services(
         cluster=basename,
-        service=basename,
-        desiredCount=count,
+        services=[basename],
     )
 
-    return response
+    #pprint(services)
+
+    if services["services"][0]["status"] == "ACTIVE":
+        response = ecs.update_service(
+            cluster=basename,
+            service=basename,
+            desiredCount=count,
+        )
+        return response
+
+    return True
+
+@task(max_retries=12, retry_delay=timedelta(seconds=10))
+def wait_for_service_to_be_drained(basename, count_token):
+    logger.info("Waiting for service to be drained")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    services = ecs.describe_services(
+        cluster=basename,
+        services=[basename],
+    )
+
+    if services["services"][0]["desiredCount"] > 0:
+        raise Exception("Unexpected DNS status: " + status)
+
+    return True
+
 
 @task
-def delete_service(basename, zero_scale_token):
+def delete_service(basename, drained_token):
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -453,12 +483,12 @@ def create_service(basename, load_balancer, task_definition, target_group, liste
         launchType='FARGATE',
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
-        #placementStrategy=[ {"type": "spread", "field": "attribute:ecs.availability-zone"} ],
         loadBalancers=[
             {
                 "targetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
                 "containerName": "graphql-engine",
                 "containerPort": 8080,
+                #"containerPort": 80,
             }
         ],
         networkConfiguration={
