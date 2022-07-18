@@ -16,12 +16,16 @@ VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
+ECS_TASK_SECURITY_GROUP = os.environ["ECS_TASK_SECURITY_GROUP"]
+CLOUDWATCH_LOG_GROUP = os.environ["CLOUDWATCH_LOG_GROUP"]
+
 
 def pprint(string):
     print("")
     pp = pretty_printer.PrettyPrinter(indent=2)
     pp.pprint(string)
     print("")
+
 
 @task
 def create_ecs_cluster(basename):
@@ -67,6 +71,7 @@ def create_load_balancer(basename):
 
     return create_elb_result
 
+
 @task
 def remove_target_group(basename, load_balancer, no_listener_token):
     logger.info("Removing target group")
@@ -76,18 +81,18 @@ def remove_target_group(basename, load_balancer, no_listener_token):
     target_groups = elb.describe_target_groups(
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
     )
-    
-    #print('Target groups:')
-    #pprint(target_groups)
-    
+
+    # print('Target groups:')
+    # pprint(target_groups)
+
     for target_group in target_groups["TargetGroups"]:
 
         delete_target_group_result = elb.delete_target_group(
             TargetGroupArn=target_group["TargetGroupArn"]
         )
-    
+
     return True
-    
+
     target_group_arn = target_groups["TargetGroups"][0]["TargetGroupArn"]
 
     print("Target Group ARN: " + target_group_arn)
@@ -108,8 +113,12 @@ def create_target_group(basename, no_target_group_token, no_listener_token):
     # TODO create a health check for the target group
 
     target_group = elb.create_target_group(
-        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
-        #Name=basename, Protocol="HTTP", Port=80, VpcId=VPC_ID, TargetType="ip"
+        # Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
+        Name=basename,
+        Protocol="HTTP",
+        Port=80,
+        VpcId=VPC_ID,
+        TargetType="ip",
     )
 
     return target_group
@@ -256,17 +265,18 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
     raise Exception("Unexpected TLS Certificate status: " + status)
 
+
 @task
 def remove_route53_cname(validation_record, issued_certificate):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
 
-    host = issued_certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Name"
-    ]
-    target = issued_certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Value"
-    ]
+    host = issued_certificate["Certificate"]["DomainValidationOptions"][0][
+        "ResourceRecord"
+    ]["Name"]
+    target = issued_certificate["Certificate"]["DomainValidationOptions"][0][
+        "ResourceRecord"
+    ]["Value"]
 
     route53 = boto3.client("route53")
 
@@ -287,6 +297,7 @@ def remove_route53_cname(validation_record, issued_certificate):
         },
     )
 
+
 @task
 def remove_all_listeners(load_balancer):
     logger.info("Removing all listeners from load balancer")
@@ -298,14 +309,15 @@ def remove_all_listeners(load_balancer):
     )
 
     for listener in listeners["Listeners"]:
-        elb.delete_listener(
-            ListenerArn=listener["ListenerArn"],
-        )
+        elb.delete_listener(ListenerArn=listener["ListenerArn"])
 
     return True
 
+
 @task
-def create_load_balancer_listener(load_balancer, target_group, certificate, empty_listener_token):
+def create_load_balancer_listener(
+    load_balancer, target_group, certificate, empty_listener_token
+):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
@@ -331,18 +343,14 @@ def create_load_balancer_listener(load_balancer, target_group, certificate, empt
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"],
         Protocol="HTTPS",
         Port=443,
-        SslPolicy="ELBSecurityPolicy-2016-08", # interestingly, not a managed policy.
+        SslPolicy="ELBSecurityPolicy-2016-08",  # interestingly, not a managed policy.
         DefaultActions=[
             {
-            "Type": "forward",
-            "TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
-            },
-        ],
-        Certificates=[
-            {
-                "CertificateArn": certificate["Certificate"]["CertificateArn"],
+                "Type": "forward",
+                "TargetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
             }
         ],
+        Certificates=[{"CertificateArn": certificate["Certificate"]["CertificateArn"]}],
     )
 
     return listeners
@@ -375,27 +383,27 @@ def create_task_definition(basename):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                "image": "hasura/graphql-engine:v2.9.0-beta2",
-                #"image": "nginxdemos/hello:0.3",
+                # "image": "hasura/graphql-engine:v2.9.0-beta2",
+                "image": "nginxdemos/hello:0.3",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
-                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
-                    #{"containerPort": 80, "hostPort": 80, "protocol": "tcp"}
+                    # {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
+                    {"containerPort": 80, "hostPort": 80, "protocol": "tcp"}
                 ],
                 "essential": True,
                 "environment": [
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
                     {"name": "HASURA_GRAPHQL_ENABLE_TELEMETRY", "value": "false"},
                 ],
-                #"logConfiguration": {
-                    #"logDriver": "awslogs",
-                    #"options": {
-                        #"awslogs-group": "moped-test",
-                        #"awslogs-region": "us-east-1",
-                        #"awslogs-stream-prefix": basename,
-                    #},
-                #},
+                "logConfiguration": {
+                    "logDriver": "awslogs",
+                    "options": {
+                        "awslogs-group": CLOUDWATCH_LOG_GROUP,
+                        "awslogs-region": "us-east-1",
+                        "awslogs-stream-prefix": basename,
+                    },
+                },
             }
         ],
     )
@@ -414,28 +422,25 @@ def remove_task_definition(task_definition):
 
     return response
 
+
 @task
 def set_desired_count_for_service(basename, count):
     logger.info("Setting desired count for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
-    
-    services = ecs.describe_services(
-        cluster=basename,
-        services=[basename],
-    )
 
-    #pprint(services)
+    services = ecs.describe_services(cluster=basename, services=[basename])
+
+    # pprint(services)
 
     if services["services"][0]["status"] == "ACTIVE":
         response = ecs.update_service(
-            cluster=basename,
-            service=basename,
-            desiredCount=count,
+            cluster=basename, service=basename, desiredCount=count
         )
         return response
 
     return True
+
 
 @task(max_retries=12, retry_delay=timedelta(seconds=10))
 def wait_for_service_to_be_drained(basename, count_token):
@@ -443,10 +448,7 @@ def wait_for_service_to_be_drained(basename, count_token):
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
-    services = ecs.describe_services(
-        cluster=basename,
-        services=[basename],
-    )
+    services = ecs.describe_services(cluster=basename, services=[basename])
 
     if services["services"][0]["desiredCount"] > 0:
         raise Exception("Unexpected DNS status: " + status)
@@ -459,15 +461,20 @@ def delete_service(basename, drained_token):
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
-    response = ecs.delete_service(
-        cluster=basename, service=basename
-    )
+    response = ecs.delete_service(cluster=basename, service=basename)
 
     return response
 
 
 @task
-def create_service(basename, load_balancer, task_definition, target_group, listeners_token, no_service_token):
+def create_service(
+    basename,
+    load_balancer,
+    task_definition,
+    target_group,
+    listeners_token,
+    no_service_token,
+):
 
     logger.info("Creating ECS service")
 
@@ -480,23 +487,23 @@ def create_service(basename, load_balancer, task_definition, target_group, liste
     create_service_result = ecs.create_service(
         cluster=basename,
         serviceName=basename,
-        launchType='FARGATE',
+        launchType="FARGATE",
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
         loadBalancers=[
             {
                 "targetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
                 "containerName": "graphql-engine",
-                "containerPort": 8080,
-                #"containerPort": 80,
+                # "containerPort": 8080,
+                "containerPort": 80,
             }
         ],
         networkConfiguration={
             "awsvpcConfiguration": {
                 "subnets": [VPC_SUBNET_A, VPC_SUBNET_B],
-                "securityGroups": [ELB_SECURITY_GROUP],
-                "assignPublicIp": "DISABLED",
-            },
+                "securityGroups": [ECS_TASK_SECURITY_GROUP],
+                "assignPublicIp": "ENABLED",
+            }
         },
         tags=[{"key": "name", "value": basename}],
     )
