@@ -66,8 +66,6 @@ def create_target_group(basename):
 
     elb = boto3.client("elbv2")
 
-    # TODO create a health check for the target group
-
     target_group = elb.create_target_group(
         Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
     )
@@ -251,7 +249,6 @@ def remove_route53_cname(validation_record, issued_certificate):
 
 @task
 def create_load_balancer_listener(load_balancer, target_group, certificate):
-    # load_balancer, target_group, certificate, empty_listener_token):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
@@ -340,14 +337,9 @@ def create_service(
     task_definition,
     target_group,
     listeners_token,
-    # no_service_token,
 ):
 
     logger.info("Creating ECS service")
-
-    if False:
-        pprint(load_balancer)
-        pprint(target_group)
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
@@ -383,7 +375,6 @@ def create_service(
 
 @task
 def remove_ecs_cluster(basename, no_service_token):
-    # Remove ECS cluster
     logger.info("removing ECS cluster")
 
     ecs = boto3.client("ecs", region_name="us-east-1")

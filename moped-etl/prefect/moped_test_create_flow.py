@@ -240,7 +240,7 @@ with Flow("Create Moped Environment") as flow:
 
         remove_load_balancer(basename=basename, no_cluster_token=no_cluster)
 
-        logger.info("Done")
+
     if args.frank and args.provision:
 
         cluster = create_ecs_cluster(basename=basename)
@@ -249,8 +249,6 @@ with Flow("Create Moped Environment") as flow:
 
         target_group = create_target_group(
             basename=basename,
-            # no_target_group_token=no_target_groups,
-            # no_listener_token=no_listeners,
         )
 
         dns_request = create_route53_cname(
@@ -279,7 +277,6 @@ with Flow("Create Moped Environment") as flow:
             load_balancer=load_balancer,
             target_group=target_group,
             certificate=issued_certificate,
-            # empty_listener_token=no_listeners,
         )
 
         task_definition = create_task_definition(basename=basename)
@@ -290,8 +287,8 @@ with Flow("Create Moped Environment") as flow:
             task_definition=task_definition,
             target_group=target_group,
             listeners_token=listeners,
-            # no_service_token=no_service,
         )
+
 
 
 if __name__ == "__main__":
