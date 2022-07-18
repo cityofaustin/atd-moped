@@ -151,9 +151,6 @@ def get_certificate_validation_parameters(tls_certificate):
     ]:
         raise Exception("No Domain Validation Resource Record Options")
 
-    if False:
-        pprint(certificate)
-
     return certificate
 
 
@@ -481,7 +478,6 @@ def stop_tasks_for_service(basename, tasks, zero_count_token):
     responses = []
 
     for task in tasks["taskArns"]:
-        pprint(task)
         response = ecs.stop_task(
             cluster=basename,
             task=task,
@@ -525,6 +521,5 @@ def delete_service(basename, drained_token, no_target_group_token):
     ecs = boto3.client("ecs", region_name="us-east-1")
     response = ecs.delete_service(cluster=basename, service=basename)
 
-    pprint(response)
 
     return response
