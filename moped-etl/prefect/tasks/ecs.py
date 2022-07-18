@@ -29,7 +29,6 @@ def pprint(string):
 
 @task
 def create_ecs_cluster(basename):
-    # Deploy ECS cluster
     logger.info("Creating ECS cluster")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -60,7 +59,6 @@ def create_load_balancer(basename):
 
 
 @task
-# def create_target_group(basename, no_target_group_token, no_listener_token):
 def create_target_group(basename):
     logger.info("Creating Target Group")
 
