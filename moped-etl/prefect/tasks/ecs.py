@@ -1,5 +1,6 @@
 import os
 
+import time
 from datetime import timedelta
 from re import I
 import boto3
@@ -572,13 +573,14 @@ def remove_route53_cname(basename, removed_load_balancer_token):
 def remove_certificate(basename, removed_hostname_token):
     logger.info("Removing certificate")
 
+    logger.info("Sleeping for 10 seconds to allow for certificate to be removed")
+    time.sleep(15)
+
     acm = boto3.client("acm")
 
-    host = basename + "-graphql.moped-test.austinmobility.io."
+    host = basename + "-graphql.moped-test.austinmobility.io"
 
     certificates = acm.list_certificates()
-
-    pprint(certificates)
 
     certificate = next(
         (
@@ -590,8 +592,6 @@ def remove_certificate(basename, removed_hostname_token):
 
     pprint(certificate)
 
-    return True
-
-    # response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
-
-    # return response
+    # return certificate
+    response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
+    return response
