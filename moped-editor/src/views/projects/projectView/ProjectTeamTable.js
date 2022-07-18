@@ -184,7 +184,6 @@ const ProjectTeamTable = ({ projectId }) => {
       field: "user_id",
       render: personnel => {
         const { is_deleted } = personnel;
-        console.log(personnel)
 
         return is_deleted ? (
           <Typography className={classes.inactiveUserText}>{`${getPersonnelName(
