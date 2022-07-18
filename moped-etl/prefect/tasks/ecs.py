@@ -527,8 +527,7 @@ def remove_task_definition(task_definition):
 
 
 @task
-# def delete_service(basename, drained_token):
-def delete_service(basename):
+def delete_service(basename, drained_token, no_target_group_token):
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")

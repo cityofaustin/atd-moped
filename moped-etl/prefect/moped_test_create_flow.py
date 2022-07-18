@@ -230,7 +230,11 @@ with Flow("Create Moped Environment") as flow:
             basename=basename, no_listener_token=no_listeners
         )
 
-        # no_service = delete_service(basename=basename)#, drained_token=drained_service)
+        no_service = delete_service(
+            basename=basename,
+            drained_token=drained_service,
+            no_target_group_token=no_target_group,
+        )
 
     if args.frank and args.provision:
 
