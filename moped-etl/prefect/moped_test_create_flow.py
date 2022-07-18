@@ -224,13 +224,11 @@ with Flow("Create Moped Environment") as flow:
             basename=basename, stop_token=stop_token
         )
 
-        #no_listeners = remove_all_listeners(load_balancer)
+        no_listeners = remove_all_listeners(basename=basename)
 
-        # no_target_groups = remove_target_group(
-        # basename=basename,
-        # load_balancer=load_balancer,
-        # no_listener_token=no_listeners,
-        # )
+        no_target_group = remove_target_group(
+            basename=basename, no_listener_token=no_listeners
+        )
 
         # no_service = delete_service(basename=basename)#, drained_token=drained_service)
 

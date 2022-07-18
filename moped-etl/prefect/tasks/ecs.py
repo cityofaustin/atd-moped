@@ -395,42 +395,27 @@ def remove_ecs_cluster(cluster):
 
 
 @task
-def remove_target_group(basename, load_balancer, no_listener_token):
+def remove_target_group(basename, no_listener_token):
     logger.info("Removing target group")
 
     elb = boto3.client("elbv2")
 
-    target_groups = elb.describe_target_groups(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
-    )
+    target_group = elb.describe_target_groups(Names=[basename])
 
-    # print('Target groups:')
-    # pprint(target_groups)
-
-    for target_group in target_groups["TargetGroups"]:
-
-        delete_target_group_result = elb.delete_target_group(
-            TargetGroupArn=target_group["TargetGroupArn"]
-        )
-
-    return True
-
-    target_group_arn = target_groups["TargetGroups"][0]["TargetGroupArn"]
-
-    print("Target Group ARN: " + target_group_arn)
-    delete_target_group_result = True
     delete_target_group_result = elb.delete_target_group(
-        TargetGroupArn=target_group_arn
+        TargetGroupArn=target_group["TargetGroups"][0]["TargetGroupArn"]
     )
 
     return delete_target_group_result
 
 
 @task
-def remove_all_listeners(load_balancer):
+def remove_all_listeners(basename):
     logger.info("Removing all listeners from load balancer")
 
     elb = boto3.client("elbv2")
+
+    load_balancer = elb.describe_load_balancers(Names=[basename])
 
     listeners = elb.describe_listeners(
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
@@ -439,7 +424,7 @@ def remove_all_listeners(load_balancer):
     for listener in listeners["Listeners"]:
         elb.delete_listener(ListenerArn=listener["ListenerArn"])
 
-    return True
+    return load_balancer
 
 
 @task
