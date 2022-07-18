@@ -212,23 +212,27 @@ with Flow("Create Moped Environment") as flow:
     basename = "flh-test-ecs-cluster"
 
     if args.frank and args.decomission:
-        print("do something")
-        no_listeners = remove_all_listeners(load_balancer)
-
-        no_target_groups = remove_target_group(
-            basename=basename,
-            load_balancer=load_balancer,
-            no_listener_token=no_listeners,
-        )
-
         set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
-        drained_service = wait_for_service_to_be_drained(
-            basename=basename, count_token=set_count_at_zero
+        tasks = list_tasks_for_service(basename=basename)
+
+        stop_token = stop_tasks_for_service(
+            basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
         )
 
-        no_service = delete_service(basename=basename, drained_token=drained_service)
+        drained_service = wait_for_service_to_be_drained(
+            basename=basename, stop_token=stop_token
+        )
 
+        #no_listeners = remove_all_listeners(load_balancer)
+
+        # no_target_groups = remove_target_group(
+        # basename=basename,
+        # load_balancer=load_balancer,
+        # no_listener_token=no_listeners,
+        # )
+
+        # no_service = delete_service(basename=basename)#, drained_token=drained_service)
 
     if args.frank and args.provision:
 

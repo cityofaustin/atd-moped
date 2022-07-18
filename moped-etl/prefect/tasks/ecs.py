@@ -455,14 +455,25 @@ def remove_load_balancer(load_balancer):
 
 
 @task
+def stop_all_tasks(basename):
+    logger.info("Stopping all tasks")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    response = ecs.stop_task(
+        cluster=basename, task=basename + "*", reason="Stopping all tasks"
+    )
+
+    return response
+
+
+@task
 def set_desired_count_for_service(basename, count):
     logger.info("Setting desired count for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
     services = ecs.describe_services(cluster=basename, services=[basename])
-
-    # pprint(services)
 
     if services["services"][0]["status"] == "ACTIVE":
         response = ecs.update_service(
@@ -473,16 +484,47 @@ def set_desired_count_for_service(basename, count):
     return True
 
 
+@task
+def list_tasks_for_service(basename):
+    logger.info("Listing tasks for service")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    response = ecs.list_tasks(cluster=basename, serviceName=basename)
+
+    return response
+
+
+@task
+def stop_tasks_for_service(basename, tasks, zero_count_token):
+    logger.info("Stopping tasks for service")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    responses = []
+
+    for task in tasks["taskArns"]:
+        pprint(task)
+        response = ecs.stop_task(
+            cluster=basename,
+            task=task,
+            reason="Stopping tasks to decommission this deployment",
+        )
+        responses.append(response)
+
+    return responses
+
+
 @task(max_retries=12, retry_delay=timedelta(seconds=10))
-def wait_for_service_to_be_drained(basename, count_token):
+def wait_for_service_to_be_drained(basename, stop_token):
     logger.info("Waiting for service to be drained")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
 
-    services = ecs.describe_services(cluster=basename, services=[basename])
+    tasks = ecs.list_tasks(cluster=basename, serviceName=basename)
 
-    if services["services"][0]["desiredCount"] > 0:
-        raise Exception("Unexpected DNS status: " + status)
+    if len(tasks["taskArns"]) == 0:
+        return Exception("Still have tasks hanging around!")
 
     return True
 
@@ -500,10 +542,13 @@ def remove_task_definition(task_definition):
 
 
 @task
-def delete_service(basename, drained_token):
+# def delete_service(basename, drained_token):
+def delete_service(basename):
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
     response = ecs.delete_service(cluster=basename, service=basename)
+
+    pprint(response)
 
     return response
