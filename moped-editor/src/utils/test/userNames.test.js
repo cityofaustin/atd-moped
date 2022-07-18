@@ -40,6 +40,12 @@ describe("getFullUserName()", () => {
     expect(fullNameFromInvalidUserObject).toBe(unknownUserNameValue);
   });
 
+  it("returns a fallback string from an object without name keys", () => {
+    const fullNameFromEmptyObject = getUserFullName({});
+
+    expect(fullNameFromEmptyObject).toBe(unknownUserNameValue);
+  });
+
   it("returns a fallback string from null", () => {
     const fullNameFromNull = getUserFullName(null);
 
@@ -54,19 +60,25 @@ describe("getInitials()", () => {
     expect(initialsFromHasura).toBe("FB");
   });
 
-  it("returns initials from a user object", () => {
+  it("returns initials from a Local Storage object", () => {
     const initialsFromLocalStorage = getInitials(atdMopedUserDbData);
 
     expect(initialsFromLocalStorage).toBe("BH");
   });
 
-  it("returns initials from a user object", () => {
+  it("returns null from an invalid object", () => {
     const initialsFromInvalidUserObject = getInitials(invalidUserObject);
 
     expect(initialsFromInvalidUserObject).toBe(null);
   });
 
-  it("returns initials from a user object", () => {
+  it("returns null from an object without name keys", () => {
+    const initialsFromEmptyObject = getInitials({});
+
+    expect(initialsFromEmptyObject).toBe(null);
+  });
+
+  it("returns null from null", () => {
     const initialsFromNull = getInitials(null);
 
     expect(initialsFromNull).toBe(null);
