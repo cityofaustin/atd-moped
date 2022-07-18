@@ -1,6 +1,7 @@
 import os
 
 from datetime import timedelta
+from re import I
 import boto3
 import prefect
 from prefect import Flow, task
@@ -327,7 +328,7 @@ def create_task_definition(basename):
 
 @task
 def create_service(
-    basename, load_balancer, task_definition, target_group, listeners_token
+    basename, load_balancer, task_definition, target_group, listeners_token, cluster_token
 ):
 
     logger.info("Creating ECS service")
@@ -560,3 +561,32 @@ def remove_route53_cname(basename, removed_load_balancer_token):
     )
 
     return response
+
+
+@task
+def remove_certificate(basename, removed_hostname_token):
+    logger.info("Removing certificate")
+
+    acm = boto3.client("acm")
+
+    host = basename + "-graphql.moped-test.austinmobility.io."
+
+    certificates = acm.list_certificates()
+
+    pprint(certificates)
+
+    certificate = next(
+        (
+            cert
+            for cert in certificates["CertificateSummaryList"]
+            if cert["DomainName"] == host
+        )
+    )
+
+    pprint(certificate)
+
+    return True
+
+    # response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
+
+    # return response
