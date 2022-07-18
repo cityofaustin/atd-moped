@@ -113,12 +113,7 @@ def create_target_group(basename, no_target_group_token, no_listener_token):
     # TODO create a health check for the target group
 
     target_group = elb.create_target_group(
-        # Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
-        Name=basename,
-        Protocol="HTTP",
-        Port=80,
-        VpcId=VPC_ID,
-        TargetType="ip",
+        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
     )
 
     return target_group
@@ -384,15 +379,15 @@ def create_task_definition(basename):
             {
                 "name": "graphql-engine",
                 # "image": "hasura/graphql-engine:v2.9.0-beta2",
-                "image": "nginxdemos/hello:0.3",
+                "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
-                    # {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
-                    {"containerPort": 80, "hostPort": 80, "protocol": "tcp"}
+                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
                 ],
                 "essential": True,
                 "environment": [
+                    {"name": "HTTP_PORT", "value": "8080"},
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
                     {"name": "HASURA_GRAPHQL_ENABLE_TELEMETRY", "value": "false"},
                 ],
@@ -494,8 +489,7 @@ def create_service(
             {
                 "targetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
                 "containerName": "graphql-engine",
-                # "containerPort": 8080,
-                "containerPort": 80,
+                "containerPort": 8080,
             }
         ],
         networkConfiguration={
@@ -505,6 +499,7 @@ def create_service(
                 "assignPublicIp": "ENABLED",
             }
         },
+        healthCheckGracePeriodSeconds=60,
         tags=[{"key": "name", "value": basename}],
     )
 
