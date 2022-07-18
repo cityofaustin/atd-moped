@@ -382,14 +382,12 @@ def create_service(
 
 
 @task
-def remove_ecs_cluster(cluster):
+def remove_ecs_cluster(basename, no_service_token):
     # Remove ECS cluster
     logger.info("removing ECS cluster")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
-    delete_cluster_result = ecs.delete_cluster(
-        cluster=cluster["cluster"]["clusterName"]
-    )
+    delete_cluster_result = ecs.delete_cluster(cluster=basename)
 
     return delete_cluster_result
 

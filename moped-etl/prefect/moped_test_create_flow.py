@@ -236,6 +236,11 @@ with Flow("Create Moped Environment") as flow:
             no_target_group_token=no_target_group,
         )
 
+        no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
+
+        #remove_load_balancer(load_balancer)
+
+        logger.info("Done")
     if args.frank and args.provision:
 
         cluster = create_ecs_cluster(basename=basename)
