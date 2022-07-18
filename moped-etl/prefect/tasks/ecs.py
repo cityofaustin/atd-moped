@@ -41,19 +41,6 @@ def create_ecs_cluster(basename):
 
 
 @task
-def remove_ecs_cluster(cluster):
-    # Remove ECS cluster
-    logger.info("removing ECS cluster")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    delete_cluster_result = ecs.delete_cluster(
-        cluster=cluster["cluster"]["clusterName"]
-    )
-
-    return delete_cluster_result
-
-
-@task
 def create_load_balancer(basename):
 
     logger.info("Creating Load Balancer")
@@ -70,38 +57,6 @@ def create_load_balancer(basename):
     )
 
     return create_elb_result
-
-
-@task
-def remove_target_group(basename, load_balancer, no_listener_token):
-    logger.info("Removing target group")
-
-    elb = boto3.client("elbv2")
-
-    target_groups = elb.describe_target_groups(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
-    )
-
-    # print('Target groups:')
-    # pprint(target_groups)
-
-    for target_group in target_groups["TargetGroups"]:
-
-        delete_target_group_result = elb.delete_target_group(
-            TargetGroupArn=target_group["TargetGroupArn"]
-        )
-
-    return True
-
-    target_group_arn = target_groups["TargetGroups"][0]["TargetGroupArn"]
-
-    print("Target Group ARN: " + target_group_arn)
-    delete_target_group_result = True
-    delete_target_group_result = elb.delete_target_group(
-        TargetGroupArn=target_group_arn
-    )
-
-    return delete_target_group_result
 
 
 @task
@@ -294,22 +249,6 @@ def remove_route53_cname(validation_record, issued_certificate):
 
 
 @task
-def remove_all_listeners(load_balancer):
-    logger.info("Removing all listeners from load balancer")
-
-    elb = boto3.client("elbv2")
-
-    listeners = elb.describe_listeners(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
-    )
-
-    for listener in listeners["Listeners"]:
-        elb.delete_listener(ListenerArn=listener["ListenerArn"])
-
-    return True
-
-
-@task
 def create_load_balancer_listener(
     load_balancer, target_group, certificate, empty_listener_token
 ):
@@ -349,18 +288,6 @@ def create_load_balancer_listener(
     )
 
     return listeners
-
-
-@task
-def remove_load_balancer(load_balancer):
-    logger.info("removing Load Balancer")
-
-    elb = boto3.client("elbv2")
-    delete_elb_result = elb.delete_load_balancer(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
-    )
-
-    return delete_elb_result
 
 
 @task
@@ -406,59 +333,6 @@ def create_task_definition(basename):
     return response
 
 
-@task
-def remove_task_definition(task_definition):
-    logger.info("removing task definition")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    response = ecs.deregister_task_definition(
-        taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"]
-    )
-
-    return response
-
-
-@task
-def set_desired_count_for_service(basename, count):
-    logger.info("Setting desired count for service")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-
-    services = ecs.describe_services(cluster=basename, services=[basename])
-
-    # pprint(services)
-
-    if services["services"][0]["status"] == "ACTIVE":
-        response = ecs.update_service(
-            cluster=basename, service=basename, desiredCount=count
-        )
-        return response
-
-    return True
-
-
-@task(max_retries=12, retry_delay=timedelta(seconds=10))
-def wait_for_service_to_be_drained(basename, count_token):
-    logger.info("Waiting for service to be drained")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-
-    services = ecs.describe_services(cluster=basename, services=[basename])
-
-    if services["services"][0]["desiredCount"] > 0:
-        raise Exception("Unexpected DNS status: " + status)
-
-    return True
-
-
-@task
-def delete_service(basename, drained_token):
-    logger.info("Deleting service")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    response = ecs.delete_service(cluster=basename, service=basename)
-
-    return response
 
 
 @task
@@ -504,3 +378,141 @@ def create_service(
     )
 
     return create_service_result
+
+
+
+
+
+# deprovisioning tasks 
+
+
+
+
+
+@task
+def remove_ecs_cluster(cluster):
+    # Remove ECS cluster
+    logger.info("removing ECS cluster")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+    delete_cluster_result = ecs.delete_cluster(
+        cluster=cluster["cluster"]["clusterName"]
+    )
+
+    return delete_cluster_result
+
+@task
+def remove_target_group(basename, load_balancer, no_listener_token):
+    logger.info("Removing target group")
+
+    elb = boto3.client("elbv2")
+
+    target_groups = elb.describe_target_groups(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+    )
+
+    # print('Target groups:')
+    # pprint(target_groups)
+
+    for target_group in target_groups["TargetGroups"]:
+
+        delete_target_group_result = elb.delete_target_group(
+            TargetGroupArn=target_group["TargetGroupArn"]
+        )
+
+    return True
+
+    target_group_arn = target_groups["TargetGroups"][0]["TargetGroupArn"]
+
+    print("Target Group ARN: " + target_group_arn)
+    delete_target_group_result = True
+    delete_target_group_result = elb.delete_target_group(
+        TargetGroupArn=target_group_arn
+    )
+
+    return delete_target_group_result
+
+
+
+
+@task
+def remove_all_listeners(load_balancer):
+    logger.info("Removing all listeners from load balancer")
+
+    elb = boto3.client("elbv2")
+
+    listeners = elb.describe_listeners(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+    )
+
+    for listener in listeners["Listeners"]:
+        elb.delete_listener(ListenerArn=listener["ListenerArn"])
+
+    return True
+
+
+@task
+def remove_load_balancer(load_balancer):
+    logger.info("removing Load Balancer")
+
+    elb = boto3.client("elbv2")
+    delete_elb_result = elb.delete_load_balancer(
+        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+    )
+
+    return delete_elb_result
+
+@task
+def set_desired_count_for_service(basename, count):
+    logger.info("Setting desired count for service")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    services = ecs.describe_services(cluster=basename, services=[basename])
+
+    # pprint(services)
+
+    if services["services"][0]["status"] == "ACTIVE":
+        response = ecs.update_service(
+            cluster=basename, service=basename, desiredCount=count
+        )
+        return response
+
+    return True
+
+
+@task(max_retries=12, retry_delay=timedelta(seconds=10))
+def wait_for_service_to_be_drained(basename, count_token):
+    logger.info("Waiting for service to be drained")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+
+    services = ecs.describe_services(cluster=basename, services=[basename])
+
+    if services["services"][0]["desiredCount"] > 0:
+        raise Exception("Unexpected DNS status: " + status)
+
+    return True
+
+
+@task
+def remove_task_definition(task_definition):
+    logger.info("removing task definition")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+    response = ecs.deregister_task_definition(
+        taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"]
+    )
+
+    return response
+
+
+@task
+def delete_service(basename, drained_token):
+    logger.info("Deleting service")
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+    response = ecs.delete_service(cluster=basename, service=basename)
+
+    return response
+
