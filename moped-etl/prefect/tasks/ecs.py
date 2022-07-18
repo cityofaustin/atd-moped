@@ -60,7 +60,8 @@ def create_load_balancer(basename):
 
 
 @task
-def create_target_group(basename, no_target_group_token, no_listener_token):
+# def create_target_group(basename, no_target_group_token, no_listener_token):
+def create_target_group(basename):
     logger.info("Creating Target Group")
 
     elb = boto3.client("elbv2")
@@ -249,9 +250,8 @@ def remove_route53_cname(validation_record, issued_certificate):
 
 
 @task
-def create_load_balancer_listener(
-    load_balancer, target_group, certificate, empty_listener_token
-):
+def create_load_balancer_listener(load_balancer, target_group, certificate):
+    # load_balancer, target_group, certificate, empty_listener_token):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
@@ -333,8 +333,6 @@ def create_task_definition(basename):
     return response
 
 
-
-
 @task
 def create_service(
     basename,
@@ -342,7 +340,7 @@ def create_service(
     task_definition,
     target_group,
     listeners_token,
-    no_service_token,
+    # no_service_token,
 ):
 
     logger.info("Creating ECS service")
@@ -380,13 +378,7 @@ def create_service(
     return create_service_result
 
 
-
-
-
-# deprovisioning tasks 
-
-
-
+# decommission tasks
 
 
 @task
@@ -400,6 +392,7 @@ def remove_ecs_cluster(cluster):
     )
 
     return delete_cluster_result
+
 
 @task
 def remove_target_group(basename, load_balancer, no_listener_token):
@@ -433,8 +426,6 @@ def remove_target_group(basename, load_balancer, no_listener_token):
     return delete_target_group_result
 
 
-
-
 @task
 def remove_all_listeners(load_balancer):
     logger.info("Removing all listeners from load balancer")
@@ -461,6 +452,7 @@ def remove_load_balancer(load_balancer):
     )
 
     return delete_elb_result
+
 
 @task
 def set_desired_count_for_service(basename, count):
@@ -515,4 +507,3 @@ def delete_service(basename, drained_token):
     response = ecs.delete_service(cluster=basename, service=basename)
 
     return response
-

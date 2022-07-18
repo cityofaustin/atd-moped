@@ -32,7 +32,7 @@ parser = argparse.ArgumentParser(
 parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
 parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
 parser.add_argument("-p", "--provision", help="Provision", action="store_true")
-parser.add_argument("-r", "--reap", help="Reap", action="store_true")
+parser.add_argument("-d", "--decomission", help="Decomission", action="store_true")
 args = parser.parse_args()
 
 
@@ -209,16 +209,10 @@ with Flow("Create Moped Environment") as flow:
         create_database(database_name)
         remove_database(database_name)
 
-    if args.frank and args.provision:
-        basename = "flh-test-ecs-cluster"
+    basename = "flh-test-ecs-cluster"
 
-        # cluster = {'cluster': {'clusterName': basename}}
-        # remove_ecs_cluster(cluster)
-
-        cluster = create_ecs_cluster(basename=basename)
-
-        load_balancer = create_load_balancer(basename=basename)
-
+    if args.frank and args.decomission:
+        print("do something")
         no_listeners = remove_all_listeners(load_balancer)
 
         no_target_groups = remove_target_group(
@@ -227,10 +221,25 @@ with Flow("Create Moped Environment") as flow:
             no_listener_token=no_listeners,
         )
 
+        set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
+
+        drained_service = wait_for_service_to_be_drained(
+            basename=basename, count_token=set_count_at_zero
+        )
+
+        no_service = delete_service(basename=basename, drained_token=drained_service)
+
+
+    if args.frank and args.provision:
+
+        cluster = create_ecs_cluster(basename=basename)
+
+        load_balancer = create_load_balancer(basename=basename)
+
         target_group = create_target_group(
             basename=basename,
-            no_target_group_token=no_target_groups,
-            no_listener_token=no_listeners,
+            # no_target_group_token=no_target_groups,
+            # no_listener_token=no_listeners,
         )
 
         dns_request = create_route53_cname(
@@ -259,18 +268,10 @@ with Flow("Create Moped Environment") as flow:
             load_balancer=load_balancer,
             target_group=target_group,
             certificate=issued_certificate,
-            empty_listener_token=no_listeners,
+            # empty_listener_token=no_listeners,
         )
 
         task_definition = create_task_definition(basename=basename)
-
-        set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
-
-        drained_service = wait_for_service_to_be_drained(
-            basename=basename, count_token=set_count_at_zero
-        )
-
-        no_service = delete_service(basename=basename, drained_token=drained_service)
 
         service = create_service(
             basename=basename,
@@ -278,7 +279,7 @@ with Flow("Create Moped Environment") as flow:
             task_definition=task_definition,
             target_group=target_group,
             listeners_token=listeners,
-            no_service_token=no_service,
+            # no_service_token=no_service,
         )
 
         # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
