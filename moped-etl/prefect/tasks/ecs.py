@@ -211,7 +211,7 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
 
 @task
-def remove_route53_cname(validation_record, issued_certificate):
+def remove_route53_cname_for_validation(validation_record, issued_certificate):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
 
@@ -327,11 +327,7 @@ def create_task_definition(basename):
 
 @task
 def create_service(
-    basename,
-    load_balancer,
-    task_definition,
-    target_group,
-    listeners_token,
+    basename, load_balancer, task_definition, target_group, listeners_token
 ):
 
     logger.info("Creating ECS service")
@@ -519,5 +515,48 @@ def delete_service(basename, drained_token, no_target_group_token):
     ecs = boto3.client("ecs", region_name="us-east-1")
     response = ecs.delete_service(cluster=basename, service=basename)
 
+    return response
+
+
+@task
+def remove_route53_cname(basename, removed_load_balancer_token):
+    logger.info("Removing Route53 CNAME")
+
+    route53 = boto3.client("route53")
+
+    hostname = basename + "-graphql.moped-test.austinmobility.io."
+
+    existing_hostname = route53.list_resource_record_sets(
+        HostedZoneId="ZIY5NA61UOXR9",
+        StartRecordName=hostname,
+        StartRecordType="CNAME",
+        MaxItems="1",
+    )
+
+    if hostname != existing_hostname["ResourceRecordSets"][0]["Name"]:
+        return Exception("Hostname does not exist")
+
+    response = route53.change_resource_record_sets(
+        HostedZoneId=R53_HOSTED_ZONE,
+        ChangeBatch={
+            "Changes": [
+                {
+                    "Action": "DELETE",
+                    "ResourceRecordSet": {
+                        "Name": hostname,
+                        "Type": "CNAME",
+                        "TTL": 300,
+                        "ResourceRecords": [
+                            {
+                                "Value": existing_hostname["ResourceRecordSets"][0][
+                                    "ResourceRecords"
+                                ][0]["Value"]
+                            }
+                        ],
+                    },
+                }
+            ]
+        },
+    )
 
     return response
