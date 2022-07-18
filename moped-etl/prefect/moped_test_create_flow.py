@@ -13,6 +13,9 @@ import os
 
 # import pypi packages
 import prefect
+from prefect.run_configs import UniversalRun
+
+
 import psycopg2
 
 # import package components
@@ -199,7 +202,11 @@ def remove_moped_api():
 # The Flow itself
 
 
-with Flow("Create Moped Environment") as flow:
+with Flow(
+    "Moped Test Teardown and Build",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    #state_handlers=[skip_if_running_handler],
+    ) as flow:
     # Calls tasks
     logger.info("Calling tasks")
 
@@ -209,9 +216,13 @@ with Flow("Create Moped Environment") as flow:
         create_database(database_name)
         remove_database(database_name)
 
+
+    do_teardown = True
+
     basename = "flh-test-ecs-cluster"
 
-    if args.frank and args.decomission:
+    #if args.frank and args.decomission:
+    if do_teardown:
         set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
         tasks = list_tasks_for_service(basename=basename)
@@ -246,54 +257,67 @@ with Flow("Create Moped Environment") as flow:
             basename=basename, removed_load_balancer_token=removed_load_balancer
         )
 
-    if args.frank and args.provision:
-
-        cluster = create_ecs_cluster(basename=basename)
-
-        load_balancer = create_load_balancer(basename=basename)
-
-        target_group = create_target_group(basename=basename)
-
-        dns_request = create_route53_cname(
-            basename=basename, load_balancer=load_balancer
+        removed_certificate = remove_certificate(
+            basename=basename, removed_hostname_token=removed_hostname
         )
 
-        dns_status = check_dns_status(dns_request=dns_request)
 
-        tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
 
-        certificate_validation_parameters = get_certificate_validation_parameters(
-            tls_certificate=tls_certificate
-        )
+    #if args.frank and args.provision:
+    cluster = create_ecs_cluster(basename=basename)
 
-        validation_record = add_cname_for_certificate_validation(
-            parameters=certificate_validation_parameters
-        )
+    load_balancer = create_load_balancer(basename=basename)
 
-        issued_certificate = wait_for_valid_certificate(
-            validation_record=validation_record, tls_certificate=tls_certificate
-        )
+    target_group = create_target_group(basename=basename)
 
-        removed_cname = remove_route53_cname_for_validation(
-            validation_record, issued_certificate
-        )
+    dns_request = create_route53_cname(
+        basename=basename, load_balancer=load_balancer
+    )
 
-        listeners = create_load_balancer_listener(
-            load_balancer=load_balancer,
-            target_group=target_group,
-            certificate=issued_certificate,
-        )
+    dns_status = check_dns_status(dns_request=dns_request)
 
-        task_definition = create_task_definition(basename=basename)
+    tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
 
-        service = create_service(
-            basename=basename,
-            load_balancer=load_balancer,
-            task_definition=task_definition,
-            target_group=target_group,
-            listeners_token=listeners,
-        )
+    certificate_validation_parameters = get_certificate_validation_parameters(
+        tls_certificate=tls_certificate
+    )
 
+    validation_record = add_cname_for_certificate_validation(
+        parameters=certificate_validation_parameters
+    )
+
+    issued_certificate = wait_for_valid_certificate(
+        validation_record=validation_record, tls_certificate=tls_certificate
+    )
+
+    removed_cname = remove_route53_cname_for_validation(
+        validation_record, issued_certificate
+    )
+
+    listeners = create_load_balancer_listener(
+        load_balancer=load_balancer,
+        target_group=target_group,
+        certificate=issued_certificate,
+    )
+
+    task_definition = create_task_definition(basename=basename)
+
+    service = create_service(
+        basename=basename,
+        load_balancer=load_balancer,
+        task_definition=task_definition,
+        target_group=target_group,
+        listeners_token=listeners,
+        cluster_token=cluster,
+    )
+
+    # these dependencies are needed if you tear down and build up immediately
+    if do_teardown:
+        cluster.set_upstream(removed_certificate)
+        load_balancer.set_upstream(removed_certificate)
+        target_group.set_upstream(removed_certificate)
+        task_definition.set_upstream(removed_certificate)
 
 if __name__ == "__main__":
     flow.run()
+    #flow.register(project_name='moped')
