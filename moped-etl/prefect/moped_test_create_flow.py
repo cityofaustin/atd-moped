@@ -202,8 +202,17 @@ with Flow(
     "Moped Test API Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_commission:
-    commission_api_command = create_moped_api_command(basename)
+    create_api_config_secret = create_moped_api_secrets_entry(basename)
+    commission_api_command = create_moped_api_deploy_command(basename)
     deploy_api = create_api_task(command=commission_api_command)
+
+with Flow(
+    "Moped Test API Decommission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as api_decommission:
+    remove_api_config_secret = remove_moped_api_secrets_entry(basename)
+    decommission_api_command = create_moped_api_undeploy_command(basename)
+    undeploy_api = remove_api_task(command=decommission_api_command)
 
 
 if __name__ == "__main__":

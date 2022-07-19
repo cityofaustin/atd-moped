@@ -109,12 +109,12 @@ def create_zappa_config(basename):
     return zappa_config
 
 
-create_api_task = ShellTask(name="Run API deployment bash command")
+create_api_task = ShellTask(name="Run API Zappa deploy bash command")
 
-# Deploy the API with Zappa deploy
-@task(name="Create API deployment bash command")
-def create_moped_api_command(basename):
-    logger.info("Creating API deployment command")
+
+@task(name="Create API Zappa deploy bash command")
+def create_moped_api_deploy_command(basename):
+    logger.info("Creating API Zappa deploy command")
     zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
@@ -134,12 +134,12 @@ def create_moped_api_command(basename):
     """
 
 
-remove_api_task = ShellTask()
+remove_api_task = ShellTask(name="Run API Zappa undeploy bash command")
 
-# Undeploy the API with Zappa undeploy
-@task(name="Create API undeployment bash command")
-def create_remove_moped_api_command(basename):
-    logger.info("Creating API undeployment bash command")
+
+@task(name="Create API Zappa undeploy bash command")
+def create_moped_api_undeploy_command(basename):
+    logger.info("Creating API Zappa undeploy bash command")
     zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
