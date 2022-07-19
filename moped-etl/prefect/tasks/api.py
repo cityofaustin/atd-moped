@@ -21,10 +21,12 @@ VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 
 
+# Make sure that we create a constistent name to add and remove the API config secret
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
 
+# The Flask app retrieves these secrets from Secrets Manager
 @task
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
@@ -69,7 +71,7 @@ def remove_moped_api_secrets_entry(basename):
 # Moped API tasks
 api_task = ShellTask(stream_output=True)
 
-
+# Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename):
     zappa_config = {
         f"{basename}": {
@@ -107,6 +109,7 @@ def create_zappa_config(basename):
     return zappa_config
 
 
+# Deploy the API with Zappa deploy
 def create_moped_api(basename):
     logger.info("Creating API")
     zappa_config = create_zappa_config(basename)
@@ -130,6 +133,7 @@ def create_moped_api(basename):
     )
 
 
+# Undeploy the API with Zappa undeploy
 def remove_moped_api(basename):
     logger.info("Removing API")
     zappa_config = create_zappa_config(basename)
