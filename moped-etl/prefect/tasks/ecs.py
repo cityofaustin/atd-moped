@@ -29,7 +29,7 @@ def pprint(string):
     print("")
 
 
-@task
+@task(name="Create ECS Cluster")
 def create_ecs_cluster(basename):
     logger.info("Creating ECS cluster")
 
@@ -41,7 +41,7 @@ def create_ecs_cluster(basename):
     return create_cluster_result
 
 
-@task
+@task(name="Create EC2 Load Balancer")
 def create_load_balancer(basename):
 
     logger.info("Creating Load Balancer")
@@ -60,7 +60,7 @@ def create_load_balancer(basename):
     return create_elb_result
 
 
-@task
+@task(name="Create EC2 Target Group")
 def create_target_group(basename):
     logger.info("Creating Target Group")
 
@@ -73,7 +73,7 @@ def create_target_group(basename):
     return target_group
 
 
-@task
+@task(name="Create Rout53 CNAME")
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
 
@@ -102,7 +102,7 @@ def create_route53_cname(basename, load_balancer):
     return record
 
 
-@task(max_retries=12, retry_delay=timedelta(seconds=10))
+@task(name="Check DNS status", max_retries=12, retry_delay=timedelta(seconds=10))
 def check_dns_status(dns_request):
     logger.info("Checking DNS status")
 
@@ -111,8 +111,6 @@ def check_dns_status(dns_request):
     dns_status = route53.get_change(Id=dns_request["ChangeInfo"]["Id"])
 
     status = dns_status["ChangeInfo"]["Status"]
-
-    print("DNS status: " + status)
 
     if status == "INSYNC":
         return dns_status
@@ -124,7 +122,7 @@ def check_dns_status(dns_request):
     raise Exception("Unexpected DNS status: " + status)
 
 
-@task
+@task(name="Request ACM TLS Certificate")
 def create_certificate(basename, dns_status):
     logger.info("Creating TLS Certificate")
 
@@ -137,7 +135,7 @@ def create_certificate(basename, dns_status):
     return certificate
 
 
-@task(max_retries=12, retry_delay=timedelta(seconds=10))
+@task(name="Check ACM Certificate Status", max_retries=12, retry_delay=timedelta(seconds=10))
 def get_certificate_validation_parameters(tls_certificate):
     logger.info("Validating TLS Certificate")
 
@@ -154,7 +152,7 @@ def get_certificate_validation_parameters(tls_certificate):
     return certificate
 
 
-@task
+@task(name="Add CNAME for Certificate Validation")
 def add_cname_for_certificate_validation(parameters):
     logger.info("Adding CNAME for TLS Certificate Validation")
 
@@ -187,7 +185,7 @@ def add_cname_for_certificate_validation(parameters):
     return record
 
 
-@task(max_retries=12, retry_delay=timedelta(seconds=10))
+@task(name="Wait for TLS Certificate validation", max_retries=12, retry_delay=timedelta(seconds=10))
 def wait_for_valid_certificate(validation_record, tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
@@ -198,8 +196,6 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
     )
 
     status = certificate["Certificate"]["Status"]
-
-    print("TLS Certificate status: " + status)
 
     if status == "ISSUED":
         return certificate
@@ -212,7 +208,7 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
     raise Exception("Unexpected TLS Certificate status: " + status)
 
 
-@task
+@task(name="Remove Route 53 CNAME from validation")
 def remove_route53_cname_for_validation(validation_record, issued_certificate):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
@@ -244,7 +240,7 @@ def remove_route53_cname_for_validation(validation_record, issued_certificate):
     )
 
 
-@task
+@task(name="Create EC2 ELB Listeners")
 def create_load_balancer_listener(load_balancer, target_group, certificate):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
@@ -284,7 +280,7 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
     return listeners
 
 
-@task
+@task(name="Create ECS Task Definition")
 def create_task_definition(basename):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -327,7 +323,7 @@ def create_task_definition(basename):
     return response
 
 
-@task
+@task(name="Create ECS Service")
 def create_service(
     basename,
     load_balancer,
@@ -371,7 +367,7 @@ def create_service(
 # decommission tasks
 
 
-@task
+@task(name="Remove ECS Cluster")
 def remove_ecs_cluster(basename, no_service_token):
     logger.info("removing ECS cluster")
 
@@ -381,7 +377,7 @@ def remove_ecs_cluster(basename, no_service_token):
     return delete_cluster_result
 
 
-@task
+@task(name="Remove EC2 Target Group")
 def remove_target_group(basename, no_listener_token):
     logger.info("Removing target group")
 
@@ -396,7 +392,7 @@ def remove_target_group(basename, no_listener_token):
     return delete_target_group_result
 
 
-@task
+@task(name="Remove EC2 ELB Listeners")
 def remove_all_listeners(basename):
     logger.info("Removing all listeners from load balancer")
 
@@ -414,7 +410,7 @@ def remove_all_listeners(basename):
     return load_balancer
 
 
-@task
+@task(name="Remove EC2 Elastic Load Balancer")
 def remove_load_balancer(basename, no_cluster_token):
     logger.info("removing Load Balancer")
 
@@ -429,20 +425,7 @@ def remove_load_balancer(basename, no_cluster_token):
     return delete_elb_result
 
 
-@task
-def stop_all_tasks(basename):
-    logger.info("Stopping all tasks")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-
-    response = ecs.stop_task(
-        cluster=basename, task=basename + "*", reason="Stopping all tasks"
-    )
-
-    return response
-
-
-@task
+@task(name="Set ECS Service Task Count")
 def set_desired_count_for_service(basename, count):
     logger.info("Setting desired count for service")
 
@@ -459,7 +442,7 @@ def set_desired_count_for_service(basename, count):
     return True
 
 
-@task
+@task(name="Lists Tasks of Service")
 def list_tasks_for_service(basename):
     logger.info("Listing tasks for service")
 
@@ -470,7 +453,7 @@ def list_tasks_for_service(basename):
     return response
 
 
-@task
+@task(name="Stop Tasks for ECS Service")
 def stop_tasks_for_service(basename, tasks, zero_count_token):
     logger.info("Stopping tasks for service")
 
@@ -489,7 +472,7 @@ def stop_tasks_for_service(basename, tasks, zero_count_token):
     return responses
 
 
-@task(max_retries=12, retry_delay=timedelta(seconds=10))
+@task(name="Wait for ECS Service to Drain", max_retries=12, retry_delay=timedelta(seconds=10))
 def wait_for_service_to_be_drained(basename, stop_token):
     logger.info("Waiting for service to be drained")
 
@@ -503,7 +486,7 @@ def wait_for_service_to_be_drained(basename, stop_token):
     return True
 
 
-@task
+@task(name="Remove ECS Task Definition")
 def remove_task_definition(task_definition):
     logger.info("removing task definition")
 
@@ -515,7 +498,7 @@ def remove_task_definition(task_definition):
     return response
 
 
-@task
+@task(name="Remove ECS Service")
 def delete_service(basename, drained_token, no_target_group_token):
     logger.info("Deleting service")
 
@@ -525,7 +508,7 @@ def delete_service(basename, drained_token, no_target_group_token):
     return response
 
 
-@task
+@task(name="Remove Route53 CNAME")
 def remove_route53_cname(basename, removed_load_balancer_token):
     logger.info("Removing Route53 CNAME")
 
@@ -569,7 +552,7 @@ def remove_route53_cname(basename, removed_load_balancer_token):
     return response
 
 
-@task
+@task(name="Remove ACM Certificate")
 def remove_certificate(basename, removed_hostname_token):
     logger.info("Removing certificate")
 
