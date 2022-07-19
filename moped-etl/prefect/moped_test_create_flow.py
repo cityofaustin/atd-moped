@@ -149,9 +149,6 @@ def populate_database_with_production_data(database_name):
     )
 
 
-# ECS Tasks
-
-
 # Lambda & SQS tasks
 
 
@@ -198,127 +195,111 @@ def remove_moped_api():
     # Remove CloudFormation stack that create_moped_api deployed with boto3
     return True
 
-
-# The Flow itself
-
-
-# the idea! create multiple flows
-
 with Flow(
-    "Moped Test Teardown and Build",
+    "Moped Test ECS Decommission",
+    # Observation! The hex key of the container is from the build context!!
+    # You can use this as a userful key to associate a state of the code and an environmental state!
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-    # state_handlers=[skip_if_running_handler],
-) as flow:
-    # Calls tasks
-    logger.info("Calling tasks")
-
-    if args.mike:
-        # Env var from GitHub action?
-        database_name = os.environ["MOPED_TEST_DATABASE_NAME"]
-        create_database(database_name)
-        remove_database(database_name)
-
-    do_teardown = args.decomission
-    do_buildup = args.provision
+) as ecs_decommission:
 
     basename = "flh-test-ecs-cluster"
 
-    # if args.frank and args.decomission:
-    if do_teardown:
-        set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
+    set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
-        tasks = list_tasks_for_service(basename=basename)
+    tasks = list_tasks_for_service(basename=basename)
 
-        stop_token = stop_tasks_for_service(
-            basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
-        )
+    stop_token = stop_tasks_for_service(
+        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
+    )
 
-        drained_service = wait_for_service_to_be_drained(
-            basename=basename, stop_token=stop_token
-        )
+    drained_service = wait_for_service_to_be_drained(
+        basename=basename, stop_token=stop_token
+    )
 
-        no_listeners = remove_all_listeners(basename=basename)
+    no_listeners = remove_all_listeners(basename=basename)
 
-        no_target_group = remove_target_group(
-            basename=basename, no_listener_token=no_listeners
-        )
+    no_target_group = remove_target_group(
+        basename=basename, no_listener_token=no_listeners
+    )
 
-        no_service = delete_service(
-            basename=basename,
-            drained_token=drained_service,
-            no_target_group_token=no_target_group,
-        )
+    no_service = delete_service(
+        basename=basename,
+        drained_token=drained_service,
+        no_target_group_token=no_target_group,
+    )
 
-        no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
+    no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
 
-        removed_load_balancer = remove_load_balancer(
-            basename=basename, no_cluster_token=no_cluster
-        )
+    removed_load_balancer = remove_load_balancer(
+        basename=basename, no_cluster_token=no_cluster
+    )
 
-        removed_hostname = remove_route53_cname(
-            basename=basename, removed_load_balancer_token=removed_load_balancer
-        )
+    removed_hostname = remove_route53_cname(
+        basename=basename, removed_load_balancer_token=removed_load_balancer
+    )
 
-        removed_certificate = remove_certificate(
-            basename=basename, removed_hostname_token=removed_hostname
-        )
+    removed_certificate = remove_certificate(
+        basename=basename, removed_hostname_token=removed_hostname
+    )
 
-    # if args.frank and args.provision:
-    if do_buildup:
-        cluster = create_ecs_cluster(basename=basename)
 
-        load_balancer = create_load_balancer(basename=basename)
+with Flow(
+    "Moped Test ECS Commission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as ecs_commission:
 
-        target_group = create_target_group(basename=basename)
+    basename = "flh-test-ecs-cluster"
 
-        dns_request = create_route53_cname(
-            basename=basename, load_balancer=load_balancer
-        )
+    cluster = create_ecs_cluster(basename=basename)
 
-        dns_status = check_dns_status(dns_request=dns_request)
+    load_balancer = create_load_balancer(basename=basename)
 
-        tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
+    target_group = create_target_group(basename=basename)
 
-        certificate_validation_parameters = get_certificate_validation_parameters(
-            tls_certificate=tls_certificate
-        )
+    dns_request = create_route53_cname(
+        basename=basename, load_balancer=load_balancer
+    )
 
-        validation_record = add_cname_for_certificate_validation(
-            parameters=certificate_validation_parameters
-        )
+    dns_status = check_dns_status(dns_request=dns_request)
 
-        issued_certificate = wait_for_valid_certificate(
-            validation_record=validation_record, tls_certificate=tls_certificate
-        )
+    tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
 
-        removed_cname = remove_route53_cname_for_validation(
-            validation_record, issued_certificate
-        )
+    certificate_validation_parameters = get_certificate_validation_parameters(
+        tls_certificate=tls_certificate
+    )
 
-        listeners = create_load_balancer_listener(
-            load_balancer=load_balancer,
-            target_group=target_group,
-            certificate=issued_certificate,
-        )
+    validation_record = add_cname_for_certificate_validation(
+        parameters=certificate_validation_parameters
+    )
 
-        task_definition = create_task_definition(basename=basename)
+    issued_certificate = wait_for_valid_certificate(
+        validation_record=validation_record, tls_certificate=tls_certificate
+    )
 
-        service = create_service(
-            basename=basename,
-            load_balancer=load_balancer,
-            task_definition=task_definition,
-            target_group=target_group,
-            listeners_token=listeners,
-            cluster_token=cluster,
-        )
+    removed_cname = remove_route53_cname_for_validation(
+        validation_record, issued_certificate
+    )
 
-    # these dependencies are needed if you tear down and build up immediately
-    if do_teardown and do_buildup:
-        cluster.set_upstream(removed_certificate)
-        load_balancer.set_upstream(removed_certificate)
-        target_group.set_upstream(removed_certificate)
-        task_definition.set_upstream(removed_certificate)
+    listeners = create_load_balancer_listener(
+        load_balancer=load_balancer,
+        target_group=target_group,
+        certificate=issued_certificate,
+    )
+
+    task_definition = create_task_definition(basename=basename)
+
+    service = create_service(
+        basename=basename,
+        load_balancer=load_balancer,
+        task_definition=task_definition,
+        target_group=target_group,
+        listeners_token=listeners,
+        cluster_token=cluster,
+    )
 
 if __name__ == "__main__":
-    flow.run()
-    # flow.register(project_name='moped')
+    #ecs_decommission.run()
+    #ecs_commission.run()
+
+    ecs_decommission.register(project_name='Moped')
+    ecs_commission.register(project_name='Moped')
