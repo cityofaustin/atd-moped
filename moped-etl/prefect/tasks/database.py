@@ -26,11 +26,11 @@ def connect_to_db_server():
 
 # Create a database in the test RDS
 @task
-def create_database(database_name):
-    logger.info(f"Creating database {database_name}")
+def create_database(basename):
+    logger.info(f"Creating database {basename}")
     (pg, cursor) = connect_to_db_server()
 
-    create_database_sql = f"CREATE DATABASE {database_name}".format(database_name)
+    create_database_sql = f"CREATE DATABASE {basename}"
     cursor.execute(create_database_sql)
 
     # Commit changes and close connections
@@ -43,7 +43,7 @@ def create_database(database_name):
         host=DATABASE_HOST,
         user=DATABASE_USER,
         password=DATABASE_PASSWORD,
-        database=database_name,
+        database=basename,
     )
     db_cursor = db_pg.cursor()
 
@@ -60,11 +60,11 @@ def create_database(database_name):
 
 # Remove database when we are done
 @task
-def remove_database(database_name):
-    logger.info(f"Removing database {database_name}".format(database_name))
+def remove_database(basename):
+    logger.info(f"Removing database {basename}")
     (pg, cursor) = connect_to_db_server()
 
-    drop_database_sql = f"DROP DATABASE IF EXISTS {database_name}".format(database_name)
+    drop_database_sql = f"DROP DATABASE IF EXISTS {basename}"
     cursor.execute(drop_database_sql)
 
     # Commit changes and close connections
@@ -77,7 +77,5 @@ def remove_database(database_name):
 # pg_restore command
 # Use Shell task, docker pg image and run psql
 @task
-def populate_database_with_production_data(database_name):
-    logger.info(
-        f"Populating {database_name} with production data".format(database_name)
-    )
+def populate_database_with_production_data(basename):
+    logger.info(f"Populating {basename} with production data")
