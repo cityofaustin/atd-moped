@@ -195,6 +195,7 @@ def remove_moped_api():
     # Remove CloudFormation stack that create_moped_api deployed with boto3
     return True
 
+
 with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
@@ -256,9 +257,7 @@ with Flow(
 
     target_group = create_target_group(basename=basename)
 
-    dns_request = create_route53_cname(
-        basename=basename, load_balancer=load_balancer
-    )
+    dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
 
     dns_status = check_dns_status(dns_request=dns_request)
 
@@ -298,8 +297,8 @@ with Flow(
     )
 
 if __name__ == "__main__":
-    #ecs_decommission.run()
-    #ecs_commission.run()
+    # ecs_decommission.run()
+    # ecs_commission.run()
 
-    ecs_decommission.register(project_name='Moped')
-    ecs_commission.register(project_name='Moped')
+    ecs_decommission.register(project_name="Moped")
+    ecs_commission.register(project_name="Moped")

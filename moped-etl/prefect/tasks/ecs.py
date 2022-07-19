@@ -135,7 +135,11 @@ def create_certificate(basename, dns_status):
     return certificate
 
 
-@task(name="Check ACM Certificate Status", max_retries=12, retry_delay=timedelta(seconds=10))
+@task(
+    name="Check ACM Certificate Status",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
 def get_certificate_validation_parameters(tls_certificate):
     logger.info("Validating TLS Certificate")
 
@@ -185,7 +189,11 @@ def add_cname_for_certificate_validation(parameters):
     return record
 
 
-@task(name="Wait for TLS Certificate validation", max_retries=12, retry_delay=timedelta(seconds=10))
+@task(
+    name="Wait for TLS Certificate validation",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
 def wait_for_valid_certificate(validation_record, tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
@@ -472,7 +480,11 @@ def stop_tasks_for_service(basename, tasks, zero_count_token):
     return responses
 
 
-@task(name="Wait for ECS Service to Drain", max_retries=12, retry_delay=timedelta(seconds=10))
+@task(
+    name="Wait for ECS Service to Drain",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
 def wait_for_service_to_be_drained(basename, stop_token):
     logger.info("Waiting for service to be drained")
 
