@@ -25,12 +25,9 @@ import os
 
 # Prefect
 from prefect import Flow, task
-from prefect.tasks.shell import ShellTask
-
-import psycopg2
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from tasks.api import *
+from tasks.database import *
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
@@ -60,84 +57,6 @@ logger = prefect.context.get("logger")
 # Questions:
 # 1. What S3 bucket does current moped-test use for file uploads?
 #    - Extend directories in S3 bucket to keep files for each preview app
-
-# Connect to database server and return psycopg2 connection and cursor
-def connect_to_db_server():
-    pg = psycopg2.connect(
-        host=DATABASE_HOST, user=DATABASE_USER, password=DATABASE_PASSWORD
-    )
-    # see https://stackoverflow.com/questions/34484066/create-a-postgres-database-using-python
-    pg.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    cursor = pg.cursor()
-
-    return (pg, cursor)
-
-
-# Database and GraphQL engine tasks
-@task
-def create_database(database_name):
-    logger.info(f"Creating database {database_name}".format(database_name))
-    # Stretch goal: replicate staging data
-    # Via Frank:
-    # 1. Populate with seed data
-    # 2. OR populate with staging data
-    (pg, cursor) = connect_to_db_server()
-
-    create_database_sql = f"CREATE DATABASE {database_name}".format(database_name)
-    cursor.execute(create_database_sql)
-
-    # Commit changes and close connections
-    pg.commit()
-    cursor.close()
-    pg.close()
-
-    # Connect to the new DB so we can update it
-    db_pg = psycopg2.connect(
-        host=DATABASE_HOST,
-        user=DATABASE_USER,
-        password=DATABASE_PASSWORD,
-        database=database_name,
-    )
-    db_cursor = db_pg.cursor()
-
-    # Add Postgis extension
-    create_postgis_extension_sql = "CREATE EXTENSION postgis"
-
-    # db_cursor.execute(disable_jit_sql)
-    db_cursor.execute(create_postgis_extension_sql)
-
-    # Commit changes and close connections
-    db_pg.commit()
-    db_cursor.close()
-    db_pg.close()
-
-
-# Need to set when database is removed
-@task
-def remove_database(database_name):
-    logger.info(f"Removing database {database_name}".format(database_name))
-
-    (pg, cursor) = connect_to_db_server()
-
-    create_database_sql = f"DROP DATABASE IF EXISTS {database_name}".format(
-        database_name
-    )
-    cursor.execute(create_database_sql)
-
-    # Commit changes and close connections
-    pg.commit()
-    cursor.close()
-    pg.close()
-
-
-# pg_dump command
-# pg_restore command
-# Use Shell task, docker pg image and run psql
-@task
-def populate_database_with_production_data(database_name):
-    logger.info(
-        f"Populating {database_name} with production data".format(database_name)
-    )
 
 
 @task

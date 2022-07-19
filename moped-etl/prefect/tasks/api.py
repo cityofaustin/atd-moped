@@ -6,6 +6,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
+# set up the prefect logging system
 logger = prefect.context.get("logger")
 
 AWS_DEFAULT_REGION = os.environ["AWS_DEFAULT_REGION"]
