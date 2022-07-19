@@ -15,14 +15,12 @@ import os
 import prefect
 from prefect.run_configs import UniversalRun
 
-
-import psycopg2
-
 # import package components
 from prefect import Flow, task
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from tasks.ecs import *
+from tasks.api import *
 
 
 # Import and setup argparse.
@@ -199,6 +197,14 @@ with Flow(
         listeners_token=listeners,
         cluster_token=cluster,
     )
+
+with Flow(
+    "Moped Test API Commission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as api_commission:
+    commission_api_command = create_moped_api_command(basename)
+    deploy_api = create_api_task(command=commission_api_command)
+
 
 if __name__ == "__main__":
     # ecs_decommission.run()

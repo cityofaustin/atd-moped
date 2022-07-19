@@ -109,11 +109,12 @@ def create_zappa_config(basename):
     return zappa_config
 
 
-create_api_task = ShellTask(stream_output=True)
+create_api_task = ShellTask(name="Run API deployment bash command")
 
 # Deploy the API with Zappa deploy
-def create_moped_api(basename):
-    logger.info("Creating API")
+@task(name="Create API deployment bash command")
+def create_moped_api_command(basename):
+    logger.info("Creating API deployment command")
     zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
@@ -123,23 +124,22 @@ def create_moped_api(basename):
 
     # zappa deploy requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
-    create_api_task(
-        command=f"""python3 -m venv venv;
-        . venv/bin/activate;
-        (cd {api_project_path} &&
-        pip install wheel &&
-        pip install -r ./requirements/moped_test.txt &&
-        zappa deploy {basename})
-        deactivate;
-        """
-    )
+    return f"""python3 -m venv venv;
+    . venv/bin/activate;
+    (cd {api_project_path} &&
+    pip install wheel &&
+    pip install -r ./requirements/moped_test.txt &&
+    zappa deploy {basename})
+    deactivate;
+    """
 
 
-remove_api_task = ShellTask(stream_output=True)
+remove_api_task = ShellTask()
 
 # Undeploy the API with Zappa undeploy
-def remove_moped_api(basename):
-    logger.info("Removing API")
+@task(name="Create API undeployment bash command")
+def create_remove_moped_api_command(basename):
+    logger.info("Creating API undeployment bash command")
     zappa_config = create_zappa_config(basename)
     api_project_path = "./atd-moped/moped-api/"
 
@@ -148,6 +148,4 @@ def remove_moped_api(basename):
         json.dump(zappa_config, f)
 
     # zappa undeploy with auto-confirm delete flag
-    remove_api_task(
-        command=f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
-    )
+    return "(cd {api_project_path} && zappa undeploy {basename} --yes)"
