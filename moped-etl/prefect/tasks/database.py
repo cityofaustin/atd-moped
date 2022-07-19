@@ -24,8 +24,7 @@ def connect_to_db_server():
     return (pg, cursor)
 
 
-# Create a database in the test RDS
-@task
+@task(name="Create database in the test RDS")
 def create_database(basename):
     logger.info(f"Creating database {basename}")
     (pg, cursor) = connect_to_db_server()
@@ -58,8 +57,7 @@ def create_database(basename):
     db_pg.close()
 
 
-# Remove database when we are done
-@task
+@task(name="Remove database from the test RDS")
 def remove_database(basename):
     logger.info(f"Removing database {basename}")
     (pg, cursor) = connect_to_db_server()

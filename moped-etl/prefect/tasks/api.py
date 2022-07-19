@@ -29,7 +29,7 @@ def create_secret_name(basename):
 
 
 # The Flask app retrieves these secrets from Secrets Manager
-@task
+@task(name="Create test API config Secrets Manager entry")
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -57,7 +57,7 @@ def create_moped_api_secrets_entry(basename):
     logger.info(response)
 
 
-@task
+@task(name="Remove test API config Secrets Manager entry")
 def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -69,9 +69,6 @@ def remove_moped_api_secrets_entry(basename):
     )
     logger.info(response)
 
-
-# Moped API tasks
-api_task = ShellTask(stream_output=True)
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename):
@@ -112,6 +109,8 @@ def create_zappa_config(basename):
     return zappa_config
 
 
+create_api_task = ShellTask(stream_output=True)
+
 # Deploy the API with Zappa deploy
 def create_moped_api(basename):
     logger.info("Creating API")
@@ -124,7 +123,7 @@ def create_moped_api(basename):
 
     # zappa deploy requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
-    api_task(
+    create_api_task(
         command=f"""python3 -m venv venv;
         . venv/bin/activate;
         (cd {api_project_path} &&
@@ -135,6 +134,8 @@ def create_moped_api(basename):
         """
     )
 
+
+remove_api_task = ShellTask(stream_output=True)
 
 # Undeploy the API with Zappa undeploy
 def remove_moped_api(basename):
@@ -147,4 +148,6 @@ def remove_moped_api(basename):
         json.dump(zappa_config, f)
 
     # zappa undeploy with auto-confirm delete flag
-    api_task(command=f"(cd {api_project_path} && zappa undeploy {basename} --yes)")
+    remove_api_task(
+        command=f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
+    )
