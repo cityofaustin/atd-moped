@@ -18,12 +18,9 @@ parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_tru
 args = parser.parse_args()
 print(args)
 
-from venv import create
-import json
 import boto3
 import prefect
-import sys, os
-import subprocess
+import os
 
 
 # Prefect
@@ -37,15 +34,6 @@ from tasks.api import *
 
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-AWS_SECRETS_MANAGER_ARN_PREFIX = os.environ["AWS_SECRETS_MANAGER_ARN_PREFIX"]
-AWS_STAGING_DYNAMO_DB_TABLE_NAME = os.environ["AWS_STAGING_DYNAMO_DB_TABLE_NAME"]
-AWS_STAGING_DYNAMO_DB_ARN = os.environ["AWS_STAGING_DYNAMO_DB_ARN"]
-AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME = os.environ[
-    "AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME"
-]
-AWS_STAGING_COGNITO_USER_POOL_ID = os.environ["AWS_STAGING_COGNITO_USER_POOL_ID"]
-AWS_STAGING_COGNITO_APP_ID = os.environ["AWS_STAGING_COGNITO_APP_ID"]
-AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
 VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
 VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
 ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]

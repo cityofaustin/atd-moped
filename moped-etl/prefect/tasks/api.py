@@ -8,6 +8,7 @@ from prefect.tasks.shell import ShellTask
 
 logger = prefect.context.get("logger")
 
+AWS_DEFAULT_REGION = os.environ["AWS_DEFAULT_REGION"]
 AWS_SECRETS_MANAGER_ARN_PREFIX = os.environ["AWS_SECRETS_MANAGER_ARN_PREFIX"]
 AWS_STAGING_DYNAMO_DB_TABLE_NAME = os.environ["AWS_STAGING_DYNAMO_DB_TABLE_NAME"]
 AWS_STAGING_DYNAMO_DB_ARN = os.environ["AWS_STAGING_DYNAMO_DB_ARN"]
@@ -30,11 +31,11 @@ def create_secret_name(basename):
 @task
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
-    client = boto3.client("secretsmanager", region_name="us-east-1")
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
     secret_name = create_secret_name(basename)
     secret = {
-        "COGNITO_REGION": "us-east-1",
+        "COGNITO_REGION": AWS_DEFAULT_REGION,
         "COGNITO_USERPOOL_ID": AWS_STAGING_COGNITO_USER_POOL_ID,
         "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
@@ -58,7 +59,7 @@ def create_moped_api_secrets_entry(basename):
 @task
 def remove_moped_api_secrets_entry(basename):
     logger.info("Removing API secret config")
-    client = boto3.client("secretsmanager", region_name="us-east-1")
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
     secret_name = create_secret_name(basename)
 
     response = client.delete_secret(
@@ -104,6 +105,7 @@ def create_zappa_config(basename):
                     "Resource": f"{AWS_STAGING_COGNITO_USER_POOL_ARN}",
                 },
             ],
+            "vpc_config": {"SubnetIds": [VPC_SUBNET_A, VPC_SUBNET_B]},
         }
     }
     return zappa_config
