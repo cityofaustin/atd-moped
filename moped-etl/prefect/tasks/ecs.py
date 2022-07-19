@@ -590,8 +590,6 @@ def remove_certificate(basename, removed_hostname_token):
         )
     )
 
-    pprint(certificate)
-
-    # return certificate
     response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
+
     return response
