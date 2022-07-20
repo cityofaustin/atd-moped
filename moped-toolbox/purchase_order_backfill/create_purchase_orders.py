@@ -59,7 +59,7 @@ def main(env):
             endpoint=HASURA["hasura_graphql_endpoint"][env],
             admin_secret=HASURA["hasura_graphql_admin_secret"][env]
         )
-        logger.info(f"record added for project id {record[project_id]}")
+        logger.info(f"record added for project id {record['project_id']}")
 
     logger.info(f"{len(records_to_add)} records added")
 
