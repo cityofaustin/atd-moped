@@ -19,9 +19,14 @@ AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME = os.environ[
 AWS_STAGING_COGNITO_USER_POOL_ID = os.environ["AWS_STAGING_COGNITO_USER_POOL_ID"]
 AWS_STAGING_COGNITO_APP_ID = os.environ["AWS_STAGING_COGNITO_APP_ID"]
 AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
-VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
-VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
+AWS_COGNITO_DYNAMO_SECRET_KEY = os.environ["AWS_COGNITO_DYNAMO_SECRET_KEY"]
 
+HASURA_HTTPS_ENDPOINT = os.environ["HASURA_HTTPS_ENDPOINT"]
+HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
+
+MOPED_API_UPLOADS_S3_BUCKET = os.environ["MOPED_API_UPLOADS_S3_BUCKET"]
+MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
+MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
 
 # Make sure that we create a constistent name to add and remove the API config secret
 def create_secret_name(basename):
@@ -41,9 +46,9 @@ def create_moped_api_secrets_entry(basename):
         "COGNITO_USERPOOL_ID": AWS_STAGING_COGNITO_USER_POOL_ID,
         "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
-        "COGNITO_DYNAMO_SECRET_KEY": "",
-        "HASURA_HTTPS_ENDPOINT": "",
-        "HASURA_ADMIN_SECRET": "",
+        "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
+        "HASURA_HTTPS_ENDPOINT": HASURA_HTTPS_ENDPOINT,
+        "HASURA_ADMIN_SECRET": HASURA_ADMIN_SECRET,
     }
 
     response = client.create_secret(
@@ -86,9 +91,10 @@ def create_zappa_config(basename):
                 "MOPED_API_CONFIGURATION_SETTINGS": create_secret_name(basename),
                 "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
-                "MOPED_API_HASURA_APIKEY": "thisisatest",
-                "MOPED_API_HASURA_SQS_URL": "thisisatest",
-                "MOPED_API_UPLOADS_S3_BUCKET": "thisisatest",
+                # Look at Moped API events.py to see how this key is used
+                "MOPED_API_HASURA_APIKEY": MOPED_API_HASURA_APIKEY,
+                "MOPED_API_HASURA_SQS_URL": MOPED_API_HASURA_SQS_URL,
+                "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },
             "extra_permissions": [
                 {
