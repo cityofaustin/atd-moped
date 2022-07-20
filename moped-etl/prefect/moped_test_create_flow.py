@@ -8,41 +8,53 @@ Schedule: TBD
 Labels: TBD
 """
 
-import argparse
-parser = argparse.ArgumentParser(description='Prefect flow for Moped Editor Test Instance Deployment')
-parser.add_argument('-m', '--mike', help='Run Mike\'s tasks', action='store_true')
-parser.add_argument('-f', '--frank', help='Run Frank\'s tasks', action='store_true')
-args = parser.parse_args()
-print(args)
+# import python standard library packages
+import os
 
-from venv import create
-import json
-import boto3
+# import pypi packages
 import prefect
-import sys, os
-import subprocess
+from prefect.run_configs import UniversalRun
 
-
-# Prefect
-from prefect import Flow, task
 
 import psycopg2
+
+# import package components
+from prefect import Flow, task
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
+from tasks.ecs import *
+
+
+# Import and setup argparse.
+# This is intended to aid development and will be removed prior to PRing torward main.
+import argparse
+
+parser = argparse.ArgumentParser(
+    description="Prefect flow for Moped Editor Test Instance Deployment"
+)
+parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
+parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
+parser.add_argument("-p", "--provision", help="Provision", action="store_true")
+parser.add_argument("-d", "--decomission", help="Decomission", action="store_true")
+args = parser.parse_args()
+
+
+# setup some global variables from secrets. presently these are coming out of the environment,
+# but this will be modified to the prefect KV store system when they are set in stone.
+
+# AWS credentials
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
-VPC_SUBNET_A = os.environ["VPC_SUBNET_A"]
-VPC_SUBNET_B = os.environ["VPC_SUBNET_B"]
-ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
-TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 
+# Database connection parameters
 DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
 DATABASE_USER = os.environ["MOPED_TEST_USER"]
 DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 
-
-# Logger instance
+# set up the prefect logging system
 logger = prefect.context.get("logger")
+
+# Database Tasks
 
 # Frontend:
 # 1. When feature PR is opened, a deploy preview spins up and is linked in PR
@@ -137,173 +149,7 @@ def populate_database_with_production_data(database_name):
     )
 
 
-@task
-def create_ecs_cluster(basename):
-    # Deploy ECS cluster
-    logger.info("Creating ECS cluster")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    create_cluster_result = ecs.create_cluster(clusterName=basename)
-
-    logger.info("Cluster ARN: " + create_cluster_result["cluster"]["clusterArn"])
-
-    return create_cluster_result
-
-
-@task
-def remove_ecs_cluster(cluster):
-    # Remove ECS cluster
-    logger.info("removing ECS cluster")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    delete_cluster_result = ecs.delete_cluster(
-        cluster=cluster["cluster"]["clusterName"]
-    )
-
-    return delete_cluster_result
-
-
-@task
-def create_load_balancer(basename):
-
-    logger.info("Creating Load Balancer")
-    elb = boto3.client("elbv2")
-
-    create_elb_result = elb.create_load_balancer(
-        Name=basename,
-        Subnets=[VPC_SUBNET_A, VPC_SUBNET_B],
-        SecurityGroups=[ELB_SECURITY_GROUP],
-        Scheme="internet-facing",
-        Tags=[
-            {
-                "Key": "name",
-                "Value": basename,
-            },
-        ],
-        Type="application",
-        IpAddressType="ipv4",
-    )
-
-    return create_elb_result
-
-
-@task
-def remove_load_balancer(load_balancer):
-    logger.info("removing Load Balancer")
-
-    elb = boto3.client("elbv2")
-    delete_elb_result = elb.delete_load_balancer(
-        LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
-    )
-
-    return delete_elb_result
-
-
-@task
-def create_task_definition(basename):
-    logger.info("Adding task definition")
-    ecs = boto3.client("ecs", region_name="us-east-1")
-
-    response = ecs.register_task_definition(
-        family="moped-graphql-endpoint-" + basename,
-        executionRoleArn=TASK_ROLE_ARN,
-        networkMode="awsvpc",
-        requiresCompatibilities=["FARGATE"],
-        cpu="256",
-        memory="1024",
-        containerDefinitions=[
-            {
-                "name": "graphql-engine",
-                "image": "hasura/graphql-engine:latest",
-                "cpu": 256,
-                "memory": 512,
-                "portMappings": [
-                    {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"},
-                ],
-                "essential": True,
-                "environment": [
-                    {
-                        "name": "HASURA_GRAPHQL_ENABLE_CONSOLE",
-                        "value": "true",
-                    },
-                    {
-                        "name": "HASURA_GRAPHQL_ENABLE_TELEMETRY",
-                        "value": "false",
-                    },
-                ],
-                "logConfiguration": {
-                    "logDriver": "awslogs",
-                    "options": {
-                        "awslogs-group": "moped-test",
-                        "awslogs-region": "us-east-1",
-                        "awslogs-stream-prefix": basename,
-                    },
-                },
-            },
-        ],
-    )
-
-    return response
-
-
-@task
-def remove_task_definition(task_definition):
-    logger.info("removing task definition")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    response = ecs.deregister_task_definition(
-        taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"]
-    )
-
-    return response
-
-
-# Activity log (SQS & Lambda) tasks
-
-
-@task
-def create_service(basename, load_balancer):
-    # Create ECS service
-    logger.info("Creating ECS service")
-
-    ecs = boto3.client("ecs", region_name="us-east-1")
-    create_service_result = ecs.create_service(
-        cluster=basename,
-        serviceName=basename,
-        taskDefinition=basename,
-        desiredCount=1,
-        placementStrategy=[
-            {
-                "type": "spread",
-                "field": "attribute:ecs.availability-zone",
-            },
-        ],
-        loadBalancers=[
-            {
-                "targetGroupArn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/"
-                + basename
-                + "/1a2b3c4d5e6f7g",
-                "containerName": "graphql-engine",
-                "containerPort": 8080,
-            },
-        ],
-        healthCheckGroup={
-            "healthCheckGroupName": basename,
-            "healthCheckType": "ECS",
-            "interval": "30",
-            "timeout": "5",
-            "unhealthyThreshold": "3",
-            "healthyThreshold": "5",
-        },
-        tags=[
-            {
-                "Key": "name",
-                "Value": basename,
-            },
-        ],
-    )
-
-    return create_service_result
+# Lambda & SQS tasks
 
 
 @task
@@ -350,33 +196,109 @@ def remove_moped_api():
     return True
 
 
-# Next, we define the flow (equivalent to a DAG).
-with Flow("Create Moped Environment") as flow:
-    # Calls tasks
-    logger.info("Calling tasks")
+with Flow(
+    "Moped Test ECS Decommission",
+    # Observation! The hex key of the container is from the build context!!
+    # You can use this as a userful key to associate a state of the code and an environmental state!
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as ecs_decommission:
 
-    if args.mike:
-        # Env var from GitHub action?
-        database_name = os.environ["MOPED_TEST_DATABASE_NAME"]
-        create_database(database_name)
-        remove_database(database_name)
+    basename = "flh-test-ecs-cluster"
 
-    if args.frank:
-        basename = "flh-test-ecs-cluster"
+    set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
-        # cluster = {'cluster': {'clusterName': basename}}
-        # remove_ecs_cluster(cluster)
+    tasks = list_tasks_for_service(basename=basename)
 
-        cluster = create_ecs_cluster(basename=basename)
-        load_balancer = create_load_balancer(basename=basename)
-        task_definition = create_task_definition(basename=basename)
-        #service = create_service(basename=basename)
+    stop_token = stop_tasks_for_service(
+        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
+    )
 
-        # TODO: These removal tasks should each be modified to take either the response object or the name of the resource
-        # remove_task_definition = remove_task_definition(task_definition)
-        # remove_load_balancer(load_balancer)
-        # remove_ecs_cluster(cluster)
+    drained_service = wait_for_service_to_be_drained(
+        basename=basename, stop_token=stop_token
+    )
 
+    no_listeners = remove_all_listeners(basename=basename)
+
+    no_target_group = remove_target_group(
+        basename=basename, no_listener_token=no_listeners
+    )
+
+    no_service = delete_service(
+        basename=basename,
+        drained_token=drained_service,
+        no_target_group_token=no_target_group,
+    )
+
+    no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
+
+    removed_load_balancer = remove_load_balancer(
+        basename=basename, no_cluster_token=no_cluster
+    )
+
+    removed_hostname = remove_route53_cname(
+        basename=basename, removed_load_balancer_token=removed_load_balancer
+    )
+
+    removed_certificate = remove_certificate(
+        basename=basename, removed_hostname_token=removed_hostname
+    )
+
+
+with Flow(
+    "Moped Test ECS Commission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as ecs_commission:
+
+    basename = "flh-test-ecs-cluster"
+
+    cluster = create_ecs_cluster(basename=basename)
+
+    load_balancer = create_load_balancer(basename=basename)
+
+    target_group = create_target_group(basename=basename)
+
+    dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
+
+    dns_status = check_dns_status(dns_request=dns_request)
+
+    tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
+
+    certificate_validation_parameters = get_certificate_validation_parameters(
+        tls_certificate=tls_certificate
+    )
+
+    validation_record = add_cname_for_certificate_validation(
+        parameters=certificate_validation_parameters
+    )
+
+    issued_certificate = wait_for_valid_certificate(
+        validation_record=validation_record, tls_certificate=tls_certificate
+    )
+
+    removed_cname = remove_route53_cname_for_validation(
+        validation_record, issued_certificate
+    )
+
+    listeners = create_load_balancer_listener(
+        load_balancer=load_balancer,
+        target_group=target_group,
+        certificate=issued_certificate,
+    )
+
+    task_definition = create_task_definition(basename=basename)
+
+    service = create_service(
+        basename=basename,
+        load_balancer=load_balancer,
+        task_definition=task_definition,
+        target_group=target_group,
+        listeners_token=listeners,
+        cluster_token=cluster,
+    )
 
 if __name__ == "__main__":
-    flow.run()
+    # ecs_decommission.run()
+    # ecs_commission.run()
+
+    ecs_decommission.register(project_name="Moped")
+    ecs_commission.register(project_name="Moped")
