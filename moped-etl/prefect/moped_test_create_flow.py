@@ -202,8 +202,11 @@ with Flow(
     "Moped Test API and Database Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_commission:
+    basename = "miketestdbapi"
+
     create_database = create_database(basename=basename)
     create_api_config_secret = create_moped_api_secrets_entry(basename=basename)
+
     commission_api_command = create_moped_api_deploy_command(basename=basename)
     deploy_api = create_api_task(command=commission_api_command)
 
@@ -211,8 +214,11 @@ with Flow(
     "Moped Test API and Database Decommission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_decommission:
+    basename = "miketestdbapi"
+
     remove_database = remove_database(basename=basename)
     remove_api_config_secret = remove_moped_api_secrets_entry(basename=basename)
+
     decommission_api_command = create_moped_api_undeploy_command(basename=basename)
     undeploy_api = remove_api_task(command=decommission_api_command)
 

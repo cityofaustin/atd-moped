@@ -27,6 +27,7 @@ def connect_to_db_server():
 @task(name="Create database in the test RDS")
 def create_database(basename):
     logger.info(f"Creating database {basename}")
+
     (pg, cursor) = connect_to_db_server()
 
     create_database_sql = f"CREATE DATABASE {basename}"
@@ -60,6 +61,7 @@ def create_database(basename):
 @task(name="Remove database from the test RDS")
 def remove_database(basename):
     logger.info(f"Removing database {basename}")
+
     (pg, cursor) = connect_to_db_server()
 
     drop_database_sql = f"DROP DATABASE IF EXISTS {basename}"
