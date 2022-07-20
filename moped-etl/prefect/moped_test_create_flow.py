@@ -205,10 +205,10 @@ with Flow(
     basename = "miketestdbapi"
 
     create_database = create_database(basename=basename)
-    create_api_config_secret = create_moped_api_secrets_entry(basename=basename)
+    create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
 
     commission_api_command = create_moped_api_deploy_command(
-        basename=basename, config_secret_arn=create_api_config_secret
+        basename=basename, config_secret_arn=create_api_config_secret_arn
     )
     deploy_api = create_api_task(command=commission_api_command)
 
@@ -219,9 +219,11 @@ with Flow(
     basename = "miketestdbapi"
 
     remove_database = remove_database(basename=basename)
-    remove_api_config_secret = remove_moped_api_secrets_entry(basename=basename)
+    remove_api_config_secret_arn = remove_moped_api_secrets_entry(basename=basename)
 
-    decommission_api_command = create_moped_api_undeploy_command(basename=basename)
+    decommission_api_command = create_moped_api_undeploy_command(
+        basename=basename, config_secret_arn=remove_api_config_secret_arn
+    )
     undeploy_api = remove_api_task(command=decommission_api_command)
 
 
