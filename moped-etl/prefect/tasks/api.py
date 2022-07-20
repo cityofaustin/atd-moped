@@ -28,7 +28,7 @@ MOPED_API_UPLOADS_S3_BUCKET = os.environ["MOPED_API_UPLOADS_S3_BUCKET"]
 MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
 
-# Make sure that we create a constistent name to add and remove the API config secret
+# Create a constistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
@@ -60,7 +60,10 @@ def create_moped_api_secrets_entry(basename):
             {"Key": "environment", "Value": f"test-{basename}"},
         ],
     )
-    logger.info(response)
+
+    secret_arn = response["ARN"]
+
+    return secret_arn
 
 
 @task(name="Remove test API config Secrets Manager entry")
@@ -74,11 +77,14 @@ def remove_moped_api_secrets_entry(basename):
         SecretId=secret_name,
         ForceDeleteWithoutRecovery=True,
     )
-    logger.info(response)
+
+    secret_arn = response["ARN"]
+
+    return secret_arn
 
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
-def create_zappa_config(basename):
+def create_zappa_config(basename, config_secret_arn):
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
@@ -102,7 +108,7 @@ def create_zappa_config(basename):
                     "Action": "secretsmanager:GetSecretValue",
                     "Resource": [
                         f"{AWS_STAGING_DYNAMO_DB_ARN}",
-                        f"{AWS_SECRETS_MANAGER_ARN_PREFIX}:{basename}",
+                        config_secret_arn,
                     ],
                 },
                 {
@@ -122,10 +128,10 @@ create_api_task = ShellTask(
 
 
 @task(name="Create API Zappa deploy bash command")
-def create_moped_api_deploy_command(basename):
+def create_moped_api_deploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa deploy command")
 
-    zappa_config = create_zappa_config(basename)
+    zappa_config = create_zappa_config(basename, config_secret_arn)
     api_project_path = "./atd-moped/moped-api/"
 
     # Write Zappa config to moped-api project folder
@@ -152,10 +158,10 @@ remove_api_task = ShellTask(
 
 
 @task(name="Create API Zappa undeploy bash command")
-def create_moped_api_undeploy_command(basename):
+def create_moped_api_undeploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa undeploy bash command")
 
-    zappa_config = create_zappa_config(basename)
+    zappa_config = create_zappa_config(basename, config_secret_arn)
     api_project_path = "./atd-moped/moped-api/"
 
     # Write Zappa config to moped-api project folder

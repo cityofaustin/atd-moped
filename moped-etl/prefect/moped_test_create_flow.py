@@ -207,7 +207,9 @@ with Flow(
     create_database = create_database(basename=basename)
     create_api_config_secret = create_moped_api_secrets_entry(basename=basename)
 
-    commission_api_command = create_moped_api_deploy_command(basename=basename)
+    commission_api_command = create_moped_api_deploy_command(
+        basename=basename, config_secret_arn=create_api_config_secret
+    )
     deploy_api = create_api_task(command=commission_api_command)
 
 with Flow(
