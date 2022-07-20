@@ -17,10 +17,10 @@ from prefect.run_configs import UniversalRun
 
 # import package components
 from prefect import Flow, task
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from tasks.ecs import *
 from tasks.api import *
+from tasks.database import *
 
 
 # Import and setup argparse.
@@ -199,19 +199,21 @@ with Flow(
     )
 
 with Flow(
-    "Moped Test API Commission",
+    "Moped Test API and Database Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_commission:
-    create_api_config_secret = create_moped_api_secrets_entry(basename)
-    commission_api_command = create_moped_api_deploy_command(basename)
+    create_database = create_database(basename=basename)
+    create_api_config_secret = create_moped_api_secrets_entry(basename=basename)
+    commission_api_command = create_moped_api_deploy_command(basename=basename)
     deploy_api = create_api_task(command=commission_api_command)
 
 with Flow(
-    "Moped Test API Decommission",
+    "Moped Test API and Database Decommission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_decommission:
-    remove_api_config_secret = remove_moped_api_secrets_entry(basename)
-    decommission_api_command = create_moped_api_undeploy_command(basename)
+    remove_database = remove_database(basename=basename)
+    remove_api_config_secret = remove_moped_api_secrets_entry(basename=basename)
+    decommission_api_command = create_moped_api_undeploy_command(basename=basename)
     undeploy_api = remove_api_task(command=decommission_api_command)
 
 
