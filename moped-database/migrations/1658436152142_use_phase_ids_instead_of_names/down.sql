@@ -81,7 +81,7 @@ AS WITH project_person_list_lookup AS (
       FROM moped_proj_phases phases
       WHERE true
         AND phases.project_id = mp.project_id 
-        AND phases.phase_id = 9 -- phase_id 9 is construction
+        AND phases.phase_name = 'construction'::text
         AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS construction_start_date,
@@ -90,7 +90,7 @@ AS WITH project_person_list_lookup AS (
       FROM moped_proj_phases phases
       WHERE true 
         AND phases.project_id = mp.project_id 
-        AND phases.phase_id = 11 -- phase_id 11 is complete
+        AND phases.phase_name = 'complete'::text
         AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS completion_end_date,
@@ -148,3 +148,4 @@ AS WITH project_person_list_lookup AS (
     mp.purchase_order_number, 
     ptl.type_name, 
     fsl.funding_source_name;
+   
