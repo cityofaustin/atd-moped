@@ -153,11 +153,13 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     return command
 
 
+# The output list comes from create_api_task's return_all=True
+# See https://docs.prefect.io/api/latest/tasks/shell.html#shelltask
 @task(name="Get endpoint from Zappa deploy shell task output")
-def get_endpoint_from_deploy_output(output):
+def get_endpoint_from_deploy_output(output_list):
     api_endpoint_item = ""
 
-    for item in output:
+    for item in output_list:
         if "https://" in item and "amazonaws" in item:
             api_endpoint_item = item
 
