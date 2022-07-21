@@ -30,27 +30,15 @@ def main(env):
     logger.info(f"{len(projects)} projects to process")
 
     records_to_add = []
-    missing_contractor = []
     for project in projects:
         project_id = project["project_id"]
         contractor = project["contractor"]
         purchase_order_number = project["purchase_order_number"]
         if contractor is None and purchase_order_number is None:
             continue
-        if purchase_order_number is None:
-            # this is fine because we don't require POs
-            records_to_add.append({"project_id": project_id, "vendor": contractor})
-        else:
-            if contractor is None:
-                # this is a problem because contractors are required for a PO
-                missing_contractor.append(
-                    {"project_id": project_id, "purchase_order_number": purchase_order_number}
-                )
-            else:
-                records_to_add.append({"project_id": project_id, "purchase_order_number": purchase_order_number,
-                                      "vendor": contractor})
 
-    logger.info(f"Missing a contractor {len(missing_contractor)}")
+        records_to_add.append({"project_id": project_id, "purchase_order_number": purchase_order_number,
+                               "vendor": contractor})
 
     for record in records_to_add:
         make_hasura_request(
