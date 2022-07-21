@@ -211,6 +211,7 @@ with Flow(
         basename=basename, config_secret_arn=create_api_config_secret_arn
     )
     deploy_api = create_api_task(command=commission_api_command)
+    endpoint = get_endpoint_from_deploy_output(deploy_api)
 
 with Flow(
     "Moped Test API and Database Decommission",
@@ -233,3 +234,10 @@ if __name__ == "__main__":
 
     ecs_decommission.register(project_name="Moped")
     ecs_commission.register(project_name="Moped")
+
+    # api_commission_state = api_commission.run()
+    # api_decommission.run()
+    # print(api_commission_state.result[decommission_api_command].result)
+    # Get the API endpoint string from the endpoint task object
+    # api_endpoint = api_commission_state.result[endpoint].result
+    # print(api_endpoint)

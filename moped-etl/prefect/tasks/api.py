@@ -1,6 +1,7 @@
 import json
 import boto3
 import os
+import re
 
 import prefect
 from prefect import task
@@ -123,7 +124,7 @@ def create_zappa_config(basename, config_secret_arn):
 
 
 create_api_task = ShellTask(
-    name="Run API Zappa deploy bash command", stream_output=True
+    name="Run API Zappa deploy bash command", stream_output=True, return_all=True
 )
 
 
@@ -132,7 +133,7 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "./atd-moped/moped-api/"
+    api_project_path = "../../moped-api/"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}zappa_settings.json", "w") as f:
@@ -152,6 +153,23 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     return command
 
 
+@task(name="Get endpoint from Zappa deploy shell task output")
+def get_endpoint_from_deploy_output(output):
+    api_endpoint_item = ""
+
+    for item in output:
+        if "https://" in item and "amazonaws" in item:
+            api_endpoint_item = item
+
+    match = re.search(r"(https://.*)", api_endpoint_item)
+
+    if match == None:
+        return None
+    else:
+        endpoint = match.groups()[0]
+        return endpoint
+
+
 remove_api_task = ShellTask(
     name="Run API Zappa undeploy bash command", stream_output=True
 )
@@ -162,7 +180,7 @@ def create_moped_api_undeploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa undeploy bash command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "./atd-moped/moped-api/"
+    api_project_path = "../../moped-api/"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}zappa_settings.json", "w") as f:
