@@ -25,7 +25,6 @@ export const ADD_PROJECT = gql`
       }
       moped_project_types {
         project_type_id
-        status_id
       }
     }
   }
