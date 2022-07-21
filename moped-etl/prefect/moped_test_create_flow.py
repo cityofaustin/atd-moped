@@ -15,14 +15,12 @@ import os
 import prefect
 from prefect.run_configs import UniversalRun
 
-
-import psycopg2
-
 # import package components
 from prefect import Flow, task
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 from tasks.ecs import *
+from tasks.api import *
+from tasks.database import *
 
 
 # Import and setup argparse.
@@ -46,11 +44,6 @@ args = parser.parse_args()
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-# Database connection parameters
-DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
-DATABASE_USER = os.environ["MOPED_TEST_USER"]
-DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
-
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
@@ -70,88 +63,8 @@ logger = prefect.context.get("logger")
 # 1. What S3 bucket does current moped-test use for file uploads?
 #    - Extend directories in S3 bucket to keep files for each preview app
 
-# Connect to database server and return psycopg2 connection and cursor
-def connect_to_db_server():
-    pg = psycopg2.connect(
-        host=DATABASE_HOST, user=DATABASE_USER, password=DATABASE_PASSWORD
-    )
-    # see https://stackoverflow.com/questions/34484066/create-a-postgres-database-using-python
-    pg.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-    cursor = pg.cursor()
-
-    return (pg, cursor)
-
-
-# Database and GraphQL engine tasks
-@task
-def create_database(database_name):
-    logger.info(f"Creating database {database_name}".format(database_name))
-    # Stretch goal: replicate staging data
-    # Via Frank:
-    # 1. Populate with seed data
-    # 2. OR populate with staging data
-    (pg, cursor) = connect_to_db_server()
-
-    create_database_sql = f"CREATE DATABASE {database_name}".format(database_name)
-    cursor.execute(create_database_sql)
-
-    # Commit changes and close connections
-    pg.commit()
-    cursor.close()
-    pg.close()
-
-    # Connect to the new DB so we can update it
-    db_pg = psycopg2.connect(
-        host=DATABASE_HOST,
-        user=DATABASE_USER,
-        password=DATABASE_PASSWORD,
-        database=database_name,
-    )
-    db_cursor = db_pg.cursor()
-
-    # Add Postgis extension
-    create_postgis_extension_sql = "CREATE EXTENSION postgis"
-
-    # db_cursor.execute(disable_jit_sql)
-    db_cursor.execute(create_postgis_extension_sql)
-
-    # Commit changes and close connections
-    db_pg.commit()
-    db_cursor.close()
-    db_pg.close()
-
-
-# Need to set when database is removed
-@task
-def remove_database(database_name):
-    logger.info(f"Removing database {database_name}".format(database_name))
-
-    (pg, cursor) = connect_to_db_server()
-
-    create_database_sql = f"DROP DATABASE IF EXISTS {database_name}".format(
-        database_name
-    )
-    cursor.execute(create_database_sql)
-
-    # Commit changes and close connections
-    pg.commit()
-    cursor.close()
-    pg.close()
-
-
-# pg_dump command
-# pg_restore command
-# Use Shell task, docker pg image and run psql
-@task
-def populate_database_with_production_data(database_name):
-    logger.info(
-        f"Populating {database_name} with production data".format(database_name)
-    )
-
 
 # Lambda & SQS tasks
-
-
 @task
 def create_activity_log_sqs():
     # Use boto3 to create SQS
@@ -177,22 +90,6 @@ def remove_activity_log_sqs():
 def remove_activity_log_lambda():
     # Use boto3 to remove activity log event lambda
     logger.info("removing activity log Lambda")
-    return True
-
-
-# Moped API tasks
-
-
-@task
-def create_moped_api():
-    # Deploy moped API using Zappa or the CloudFormation template that it generates
-    logger.info("creating Moped API Lambda")
-    return True
-
-
-@task
-def remove_moped_api():
-    # Remove CloudFormation stack that create_moped_api deployed with boto3
     return True
 
 
@@ -296,9 +193,46 @@ with Flow(
         cluster_token=cluster,
     )
 
+with Flow(
+    "Moped Test API and Database Commission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as api_commission:
+    basename = "miketestdbapi"
+
+    create_database = create_database(basename=basename)
+    create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
+
+    commission_api_command = create_moped_api_deploy_command(
+        basename=basename, config_secret_arn=create_api_config_secret_arn
+    )
+    deploy_api = create_api_task(command=commission_api_command)
+    endpoint = get_endpoint_from_deploy_output(deploy_api)
+
+with Flow(
+    "Moped Test API and Database Decommission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as api_decommission:
+    basename = "miketestdbapi"
+
+    remove_database = remove_database(basename=basename)
+    remove_api_config_secret_arn = remove_moped_api_secrets_entry(basename=basename)
+
+    decommission_api_command = create_moped_api_undeploy_command(
+        basename=basename, config_secret_arn=remove_api_config_secret_arn
+    )
+    undeploy_api = remove_api_task(command=decommission_api_command)
+
+
 if __name__ == "__main__":
     # ecs_decommission.run()
     # ecs_commission.run()
 
     ecs_decommission.register(project_name="Moped")
     ecs_commission.register(project_name="Moped")
+
+    # api_commission_state = api_commission.run()
+    # api_decommission.run()
+    # print(api_commission_state.result[decommission_api_command].result)
+    # Get the API endpoint string from the endpoint task object
+    # api_endpoint = api_commission_state.result[endpoint].result
+    # print(api_endpoint)
