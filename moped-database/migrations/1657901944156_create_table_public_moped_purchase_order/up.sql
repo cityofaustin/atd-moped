@@ -1,6 +1,6 @@
 CREATE TABLE "public"."moped_purchase_order" (
   "id" serial NOT NULL,
-  "vendor" text NOT NULL,
+  "vendor" text,
   "purchase_order_number" text,
   "description" text,
   "project_id" integer NOT NULL,
