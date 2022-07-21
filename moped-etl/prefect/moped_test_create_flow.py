@@ -44,11 +44,6 @@ args = parser.parse_args()
 AWS_ACCESS_KEY_ID = os.environ["AWS_ACCESS_KEY_ID"]
 AWS_SECRET_ACCESS_KEY = os.environ["AWS_SECRET_ACCESS_KEY"]
 
-# Database connection parameters
-DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
-DATABASE_USER = os.environ["MOPED_TEST_USER"]
-DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
-
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
