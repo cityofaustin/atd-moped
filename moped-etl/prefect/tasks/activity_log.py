@@ -6,6 +6,19 @@ from prefect import task
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
+# SQS deployment needs:
+sqs_config = {
+    "Description": "AWS Moped Data Event: %FUNCTION_NAME% - TEST",
+    "Environment": {
+        "Variables": {
+            "HASURA_ENDPOINT": "https://atd-moped-editor-development.herokuapp.com/v1/graphql",
+            "HASURA_ADMIN_SECRET": "n@kUHnB6OG6Nu1469uqob6v45jnVrWP4G9LCflf427y2w4HzLOwoOv7dVybUU6!d",
+            "API_ENVIRONMENT": "TEST",
+            "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
+        }
+    },
+}
+
 
 @task
 def create_activity_log_sqs():
