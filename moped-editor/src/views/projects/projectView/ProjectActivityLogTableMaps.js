@@ -461,10 +461,10 @@ export const ProjectActivityLogTableMaps = {
         label: "order",
         type: "int4",
       },
-      phase_name: {
+      phase_id: {
         icon: "",
-        label: "name",
-        type: "text",
+        label: "phase ID",
+        type: "integer",
       },
       phase_description: {
         icon: "",
@@ -540,11 +540,6 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "is deleted",
         data_type: "boolean",
-      },
-      subphase_name: {
-        icon: "",
-        label: "subphase name",
-        type: "text",
       },
       subphase_id: {
         icon: "",
