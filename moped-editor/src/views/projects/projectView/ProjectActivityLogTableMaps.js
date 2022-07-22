@@ -463,8 +463,13 @@ export const ProjectActivityLogTableMaps = {
       },
       phase_id: {
         icon: "",
-        label: "phase ID",
+        label: "phase",
         type: "integer",
+        lookup: {
+          table: "moped_phases",
+          fieldLabel: "phase_id",
+          fieldValues: ["phase_name"],
+        },
       },
       phase_description: {
         icon: "",
@@ -545,6 +550,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "subphase ID",
         type: "integer",
+        lookup: {
+          table: "moped_subphases",
+          fieldLabel: "subphase_id",
+          fieldValues: ["subphase_name"],
+        },
       },
     },
   },
