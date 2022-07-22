@@ -2,16 +2,16 @@
 This script takes contractors and DO#s from existing moped projects and moves them into
 their own table
 
-Usage:
+Usage: python create_purchase_orders.py -e local
 
 """
 
 import argparse
 
 
-from amd_milestones_backfill.utils import get_logger, make_hasura_request
+from utils import get_logger, make_hasura_request
 from queries import PROJECTS_QUERY, ADD_PURCHASE_ORDER
-from amd_milestones_backfill.secrets import HASURA
+from secrets import HASURA
 
 
 def main(env):
@@ -25,7 +25,6 @@ def main(env):
     )
 
     projects = data["moped_project"]
-    logger.info(projects)
 
     logger.info(f"{len(projects)} projects to process")
 
