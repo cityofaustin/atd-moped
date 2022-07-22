@@ -21,6 +21,7 @@ from prefect import Flow, task
 from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
+from tasks.activity_log import *
 
 
 # Import and setup argparse.
@@ -62,35 +63,6 @@ logger = prefect.context.get("logger")
 # Questions:
 # 1. What S3 bucket does current moped-test use for file uploads?
 #    - Extend directories in S3 bucket to keep files for each preview app
-
-
-# Lambda & SQS tasks
-@task
-def create_activity_log_sqs():
-    # Use boto3 to create SQS
-    logger.info("creating activity log SQS")
-    return True
-
-
-@task
-def create_activity_log_lambda():
-    # Use boto3 to create activity log event lambda
-    logger.info("creating activity log Lambda")
-    return True
-
-
-@task
-def remove_activity_log_sqs():
-    # Use boto3 to remove SQS
-    logger.info("removing activity log SQS")
-    return True
-
-
-@task
-def remove_activity_log_lambda():
-    # Use boto3 to remove activity log event lambda
-    logger.info("removing activity log Lambda")
-    return True
 
 
 with Flow(
