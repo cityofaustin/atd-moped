@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
-
+import {
+  removeDecimalsAndTrailingNumbers,
+  removeNonIntegers,
+} from "src/utils/numberFormatters";
 import {
   PROJECT_UPDATE_INTERIM_ID,
   PROJECT_CLEAR_INTERIM_ID,
@@ -84,7 +87,12 @@ const ProjectSummaryInterimID = ({
    * @param {Object} e - Event object
    */
   const handleProjectInterimIdChange = (e) => {
-    setInterimId(e.target.value);
+    const interimValue = e.target.value;
+    // remove decimals
+    const valueWithoutDecimals = removeDecimalsAndTrailingNumbers(interimValue);
+    // Then, remove all non-integers
+    const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
+    setInterimId(valueWithIntegersOnly);
   };
 
   return (
@@ -105,7 +113,6 @@ const ProjectSummaryInterimID = ({
               label={null}
               onChange={handleProjectInterimIdChange}
               value={interimId ?? ""}
-              inputProps={{ type: "number", inputMode: "numeric" }}
             />
             <Icon
               className={classes.editIconConfirm}
