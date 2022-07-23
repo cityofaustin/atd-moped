@@ -294,7 +294,8 @@ def create_task_definition(basename):
     ecs = boto3.client("ecs", region_name="us-east-1")
 
     response = ecs.register_task_definition(
-        # family="moped-graphql-endpoint-" + basename,
+        # this unified family parameter requires that this flow's 
+        # use be serialized.
         family="moped-test-graphql-endpoint",
         executionRoleArn=TASK_ROLE_ARN,
         networkMode="awsvpc",
