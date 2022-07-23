@@ -8,6 +8,7 @@ Description: Build and deploy the resources needed to test
 
 # import python standard library packages
 import os
+import platform
 
 # import pypi packages
 import prefect
@@ -20,7 +21,7 @@ from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
 
-
+hostname = platform.node()
 
 
 # setup some global variables from secrets. presently these are coming out of the environment,
@@ -80,8 +81,7 @@ def remove_activity_log_lambda():
 
 
 with Flow(
-    "Moped Test ECS Commission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    "Moped Test ECS Commission", run_config=UniversalRun(labels=["moped", hostname])
 ) as ecs_commission:
 
     basename = Parameter("basename")
@@ -136,7 +136,7 @@ with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
     # You can use this as a userful key to associate a state of the code and an environmental state!
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as ecs_decommission:
 
     basename = Parameter("basename")
@@ -182,7 +182,7 @@ with Flow(
 
 with Flow(
     "Moped Test API and Database Commission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as api_commission:
 
     basename = Parameter("basename")
@@ -199,8 +199,9 @@ with Flow(
 
 with Flow(
     "Moped Test API and Database Decommission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as api_decommission:
+
     basename = Parameter("basename")
 
     remove_database = remove_database(basename=basename)
@@ -214,14 +215,15 @@ with Flow(
 
 if __name__ == "__main__":
     print("main()")
-    
-    basename = 'moped-test-dev'
+
+    basename = "flh-parameter-test"
+    print(hostname)
 
     # ecs_decommission.run(parameters=dict(basename=basename))
-    ecs_commission.run(parameters=dict(basename=basename))
+    # ecs_commission.run(parameters=dict(basename=basename))
 
     # ecs_decommission.register(project_name="Moped")
-    # ecs_commission.register(project_name="Moped")
+    ecs_commission.register(project_name="Moped")
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
