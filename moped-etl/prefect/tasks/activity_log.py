@@ -1,4 +1,5 @@
 import os
+import json
 import boto3
 
 import prefect
@@ -31,18 +32,24 @@ HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 
 
 # This is the config and env vars for the Lambda (atd-moped-events-activity_log_test)
-lambda_config = {
-    "Description": "AWS Moped Data Event: atd-moped-events-activity_log_moped-test - TEST",
-    "Environment": {
-        "Variables": {
-            # this comes from another flow or could be generated using the basename?
-            "HASURA_ENDPOINT": "",
-            "HASURA_ADMIN_SECRET": "",
-            "API_ENVIRONMENT": "TEST",
-            "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
-        }
-    },
-}
+
+
+def create_activity_log_lambda_config(
+    basename,
+):
+    return {
+        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
+        "Environment": {
+            "Variables": {
+                # We could probably create a helper so this and the ECS Route53 CNAME always match
+                "HASURA_ENDPOINT": f"https://{basename}-graphql.moped-test.austinmobility.io",
+                "HASURA_ADMIN_SECRET": HASURA_ADMIN_SECRET,
+                "API_ENVIRONMENT": "TEST",
+                "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
+            }
+        },
+    }
+
 
 create_activity_log_task = ShellTask(
     name="Run Activity Log helper bash script", stream_output=True, return_all=True
@@ -53,7 +60,15 @@ create_activity_log_task = ShellTask(
 def create_activity_log_command(basename):
     logger.info("Creating Activity Log deploy helper command")
 
+    function_name = "activity_log"
     helper_script_path = "../../.github/workflows"
+    deployment_path = f"../../moped-data-events/{function_name}"
+
+    lambda_config = create_activity_log_lambda_config(basename)
+
+    # Write Zappa config to moped-api project folder
+    with open(f"{deployment_path}/handler_config.json", "w") as f:
+        json.dump(lambda_config, f)
 
     # This command outputs
     command = f"""python3 -m virtualenv venv;
@@ -61,7 +76,7 @@ def create_activity_log_command(basename):
     (cd {helper_script_path} &&
     pip install awscli &&
     source aws-moped-sqs-helper.sh &&
-    deploy_moped_test_event_function "activity_log" {basename})
+    deploy_moped_test_event_function {function_name} {basename})
     deactivate;
     """
     # deploy_event_function f"{basename}_activity_log"

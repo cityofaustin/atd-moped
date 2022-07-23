@@ -196,8 +196,9 @@ function deploy_moped_test_event_function {
 
   install_requirements;
   bundle_function;
-  # generate_env_vars "${FUNCTION_NAME_MIN}";
-  # deploy_lambda_function "${FUNCTION_NAME_AWS}";
+  echo "Building function '${FUNCTION_NAME_AWS}' @ path: '${FUNCTION_DIR}'";
+  # The Lambda config with env vars is generated in the Prefect task that calls deploy_moped_test_event_function
+  deploy_lambda_function "${FUNCTION_NAME_AWS}";
   # deploy_sqs "${FUNCTION_NAME_AWS}";
   # cd $MAIN_DIR;
   # echo "Exit, current path: ${PWD}";
