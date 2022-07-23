@@ -64,6 +64,17 @@ def remove_database(basename):
 
     (pg, cursor) = connect_to_db_server()
 
+    disconnect_other_users_sql = f"""
+    SELECT
+	    pg_terminate_backend(pg_stat_activity.pid)
+    FROM
+	    pg_stat_activity
+    WHERE
+	    pg_stat_activity.datname = '{basename}'
+	    AND pid <> pg_backend_pid();
+    """
+    cursor.execute(disconnect_other_users_sql)
+
     drop_database_sql = f"DROP DATABASE IF EXISTS {basename}"
     cursor.execute(drop_database_sql)
 
