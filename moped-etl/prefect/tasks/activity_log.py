@@ -8,6 +8,8 @@ from prefect.tasks.shell import ShellTask
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
+HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
+
 # SQS deployment needs:
 # Comes from deploy_event_function
 # FUNCTION_NAME = "atd-moped-events-"
@@ -27,11 +29,13 @@ logger = prefect.context.get("logger")
 
 # Return SQS endpoint
 
+
 # This is the config and env vars for the Lambda (atd-moped-events-activity_log_test)
 lambda_config = {
     "Description": "AWS Moped Data Event: atd-moped-events-activity_log_moped-test - TEST",
     "Environment": {
         "Variables": {
+            # this comes from another flow
             "HASURA_ENDPOINT": "",
             "HASURA_ADMIN_SECRET": "",
             "API_ENVIRONMENT": "TEST",
@@ -47,10 +51,10 @@ create_activity_log_task = ShellTask(
 
 @task
 def create_activity_log_command(basename):
-    helper_script_path = "../../../.github/workflows"
+    helper_script_path = "../../.github/workflows"
 
-    command = f"""python3 -m venv venv;
-    . venv/bin/activate;
+    command = f"""python3 -m virtualenv venv;
+    source venv/bin/activate;
     (cd {helper_script_path} &&
     ls)
     """

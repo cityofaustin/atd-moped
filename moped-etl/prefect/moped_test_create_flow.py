@@ -201,7 +201,9 @@ with Flow(
     basename = "miketestdbapi"
 
     commission_activity_log_command = create_activity_log_command(basename=basename)
-    deploy_activity_log = create_activity_log_task(basename=basename)
+    deploy_activity_log = create_activity_log_task(
+        command=commission_activity_log_command
+    )
 
 
 if __name__ == "__main__":

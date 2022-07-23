@@ -140,8 +140,8 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
 
     # zappa deploy requires an active virtual environment
     # then use a subshell to zappa deploy in moped-api project folder
-    command = f"""python3 -m venv venv;
-    . venv/bin/activate;
+    command = f"""python3 -m virtualenv venv;
+    source venv/bin/activate;
     (cd {api_project_path} &&
     pip install wheel &&
     pip install -r ./requirements/moped_test.txt &&
