@@ -3,6 +3,7 @@ import boto3
 
 import prefect
 from prefect import task
+from prefect.tasks.shell import ShellTask
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -39,22 +40,15 @@ lambda_config = {
     },
 }
 
+create_activity_log_resources_task = ShellTask(
+    name="Run Activity Log helper bash script", stream_output=True, return_all=True
+)
+
 
 @task
-def create_activity_log_sqs():
-    # Use boto3 to create SQS
+def create_activity_log_resources_command():
     logger.info("creating activity log SQS")
     return True
-
-
-@task
-def create_activity_log_lambda():
-    # Use boto3 to create activity log event lambda
-    logger.info("creating activity log Lambda")
-    return True
-
-
-# Remove SQS and Lambda with boto3
 
 
 @task

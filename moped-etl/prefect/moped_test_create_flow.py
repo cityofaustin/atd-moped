@@ -194,6 +194,14 @@ with Flow(
     )
     undeploy_api = remove_api_task(command=decommission_api_command)
 
+with Flow(
+    "Moped Activity Log Commission",
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as api_commission:
+    basename = "miketestdbapi"
+
+    create_activity_log = create_activity_log_resources(basename=basename)
+
 
 if __name__ == "__main__":
     # ecs_decommission.run()
