@@ -92,53 +92,6 @@ def remove_activity_log_lambda():
 
 
 
-with Flow(
-    "Moped Test ECS Decommission",
-    # Observation! The hex key of the container is from the build context!!
-    # You can use this as a userful key to associate a state of the code and an environmental state!
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-) as ecs_decommission:
-
-    basename = Parameter('basename')
-
-    set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
-
-    tasks = list_tasks_for_service(basename=basename)
-
-    stop_token = stop_tasks_for_service(
-        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
-    )
-
-    drained_service = wait_for_service_to_be_drained(
-        basename=basename, stop_token=stop_token
-    )
-
-    no_listeners = remove_all_listeners(basename=basename)
-
-    no_target_group = remove_target_group(
-        basename=basename, no_listener_token=no_listeners
-    )
-
-    no_service = delete_service(
-        basename=basename,
-        drained_token=drained_service,
-        no_target_group_token=no_target_group,
-    )
-
-    no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
-
-    removed_load_balancer = remove_load_balancer(
-        basename=basename, no_cluster_token=no_cluster
-    )
-
-    removed_hostname = remove_route53_cname(
-        basename=basename, removed_load_balancer_token=removed_load_balancer
-    )
-
-    removed_certificate = remove_certificate(
-        basename=basename, removed_hostname_token=removed_hostname
-    )
-
 
 with Flow(
     "Moped Test ECS Commission",
@@ -191,6 +144,56 @@ with Flow(
         listeners_token=listeners,
         cluster_token=cluster,
     )
+
+
+
+with Flow(
+    "Moped Test ECS Decommission",
+    # Observation! The hex key of the container is from the build context!!
+    # You can use this as a userful key to associate a state of the code and an environmental state!
+    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+) as ecs_decommission:
+
+    basename = Parameter('basename')
+
+    set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
+
+    tasks = list_tasks_for_service(basename=basename)
+
+    stop_token = stop_tasks_for_service(
+        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
+    )
+
+    drained_service = wait_for_service_to_be_drained(
+        basename=basename, stop_token=stop_token
+    )
+
+    no_listeners = remove_all_listeners(basename=basename)
+
+    no_target_group = remove_target_group(
+        basename=basename, no_listener_token=no_listeners
+    )
+
+    no_service = delete_service(
+        basename=basename,
+        drained_token=drained_service,
+        no_target_group_token=no_target_group,
+    )
+
+    no_cluster = remove_ecs_cluster(basename=basename, no_service_token=no_service)
+
+    removed_load_balancer = remove_load_balancer(
+        basename=basename, no_cluster_token=no_cluster
+    )
+
+    removed_hostname = remove_route53_cname(
+        basename=basename, removed_load_balancer_token=removed_load_balancer
+    )
+
+    removed_certificate = remove_certificate(
+        basename=basename, removed_hostname_token=removed_hostname
+    )
+
 
 
 with Flow(
