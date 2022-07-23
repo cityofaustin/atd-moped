@@ -21,18 +21,6 @@ from tasks.api import *
 from tasks.database import *
 
 
-# Import and setup argparse.
-# This is intended to aid development and will be removed prior to PRing torward main.
-import argparse
-
-parser = argparse.ArgumentParser(
-    description="Prefect flow for Moped Editor Test Instance Deployment"
-)
-parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
-parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
-parser.add_argument("-p", "--provision", help="Provision", action="store_true")
-parser.add_argument("-d", "--decomission", help="Decomission", action="store_true")
-args = parser.parse_args()
 
 
 # setup some global variables from secrets. presently these are coming out of the environment,
