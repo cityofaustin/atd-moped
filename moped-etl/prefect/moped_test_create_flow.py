@@ -91,6 +91,7 @@ def remove_activity_log_lambda():
     return True
 
 
+
 with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
@@ -98,7 +99,7 @@ with Flow(
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as ecs_decommission:
 
-    basename = "flh-test-ecs-cluster"
+    basename = Parameter('basename')
 
     set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
@@ -144,7 +145,7 @@ with Flow(
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as ecs_commission:
 
-    basename = "flh-test-ecs-cluster"
+    basename = Parameter('basename')
 
     cluster = create_ecs_cluster(basename=basename)
 
@@ -225,8 +226,8 @@ with Flow(
 
 if __name__ == "__main__":
     print("main()")
-    ecs_decommission.run()
-    # ecs_commission.run()
+    #ecs_decommission.run(parameters=dict(basename="flh-parameter"))
+    ecs_commission.run()
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")
