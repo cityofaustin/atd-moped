@@ -91,14 +91,12 @@ def remove_activity_log_lambda():
     return True
 
 
-
-
 with Flow(
     "Moped Test ECS Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as ecs_commission:
 
-    basename = Parameter('basename')
+    basename = Parameter("basename")
 
     cluster = create_ecs_cluster(basename=basename)
 
@@ -146,7 +144,6 @@ with Flow(
     )
 
 
-
 with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
@@ -154,7 +151,7 @@ with Flow(
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as ecs_decommission:
 
-    basename = Parameter('basename')
+    basename = Parameter("basename")
 
     set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
@@ -195,12 +192,12 @@ with Flow(
     )
 
 
-
 with Flow(
     "Moped Test API and Database Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_commission:
-    basename = "miketestdbapi"
+
+    basename = Parameter("basename")
 
     create_database = create_database(basename=basename)
     create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
@@ -216,7 +213,7 @@ with Flow(
     "Moped Test API and Database Decommission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
 ) as api_decommission:
-    basename = "miketestdbapi"
+    basename = Parameter("basename")
 
     remove_database = remove_database(basename=basename)
     remove_api_config_secret_arn = remove_moped_api_secrets_entry(basename=basename)
@@ -229,14 +226,17 @@ with Flow(
 
 if __name__ == "__main__":
     print("main()")
-    #ecs_decommission.run(parameters=dict(basename="flh-parameter"))
-    ecs_commission.run()
+    
+    basename = 'moped-test-dev'
+
+    # ecs_decommission.run(parameters=dict(basename=basename))
+    ecs_commission.run(parameters=dict(basename=basename))
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")
 
-    # api_commission_state = api_commission.run()
-    # api_decommission.run()
+    # api_commission_state = api_commission.run(parameters=dict(basename=basename))
+    # api_decommission.run(parameters=dict(basename=basename))
 
     # print(api_commission_state.result[decommission_api_command].result)
     # Get the API endpoint string from the endpoint task object
