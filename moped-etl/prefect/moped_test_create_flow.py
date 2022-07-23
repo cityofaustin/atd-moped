@@ -4,8 +4,6 @@
 Name: Moped Editor Test Instance Deployment
 Description: Build and deploy the resources needed to test
     a feature branch of the Moped Editor application
-Schedule: TBD
-Labels: TBD
 """
 
 # import python standard library packages
