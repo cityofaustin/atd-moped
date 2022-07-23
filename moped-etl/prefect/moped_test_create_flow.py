@@ -7,6 +7,7 @@ Description: Build and deploy the resources needed to test
 """
 
 # import python standard library packages
+import time
 import os
 import platform
 
@@ -232,15 +233,20 @@ with Flow(
 if __name__ == "__main__":
     print("main()")
 
-    database = basename = "flh-parameter-test"
-    database.replace('-', '_')
+    basename = "flh-parameter-test"
+    database = basename.replace("-", "_")
 
     # flow execution is serialized!
 
-    # database_decommission.run(basename=database)
-    # database_commission.run(basename=database)
+    print("\n🍄 Decomissioning Database\n")
+    database_decommission.run(basename=database)
+    print("\n🍄 Comissioning Database\n")
+    database_commission.run(basename=database)
 
-    # ecs_decommission.run(parameters=dict(basename=basename))
+    print("\n🤖Decomissioning ECS\n")
+    ecs_decommission.run(parameters=dict(basename=basename))
+    time.sleep(5)
+    print("\n🤖Comissioning ECS\n")
     ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     # ecs_decommission.register(project_name="Moped")

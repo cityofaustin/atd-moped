@@ -311,8 +311,8 @@ def create_task_definition(basename, database):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                # "image": "hasura/graphql-engine:v2.9.0-beta2",
-                "image": "mendhak/http-https-echo:latest",
+                "image": "hasura/graphql-engine:latest",
+                # "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
