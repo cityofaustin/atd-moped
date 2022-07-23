@@ -181,7 +181,8 @@ with Flow(
 
 
 with Flow(
-    "Moped Database Commission", run_config=UniversalRun(labels=["moped", hostname])
+    "Moped Test Database Commission",
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as database_commission:
 
     basename = Parameter("basename")
@@ -190,8 +191,7 @@ with Flow(
 
 
 with Flow(
-    "Moped Test API Commission",
-    run_config=UniversalRun(labels=["moped", hostname]),
+    "Moped Test API Commission", run_config=UniversalRun(labels=["moped", hostname])
 ) as api_commission:
 
     basename = Parameter("basename")
@@ -215,8 +215,7 @@ with Flow(
 
 
 with Flow(
-    "Moped Test API Decommission",
-    run_config=UniversalRun(labels=["moped", hostname]),
+    "Moped Test API Decommission", run_config=UniversalRun(labels=["moped", hostname])
 ) as api_decommission:
 
     basename = Parameter("basename")
@@ -233,17 +232,14 @@ if __name__ == "__main__":
     print("main()")
 
     basename = "flh-parameter-test"
-    print(hostname)
+
+    database_commission.run(basename=basename)
 
     # ecs_decommission.run(parameters=dict(basename=basename))
     # ecs_commission.run(parameters=dict(basename=basename))
 
     # ecs_decommission.register(project_name="Moped")
-    ecs_commission.register(project_name="Moped")
-
-    
-
-
+    # ecs_commission.register(project_name="Moped")
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
