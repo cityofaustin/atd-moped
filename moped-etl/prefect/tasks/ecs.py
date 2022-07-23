@@ -20,6 +20,10 @@ ELB_SECURITY_GROUP = os.environ["ELB_SECURITY_GROUP"]
 TASK_ROLE_ARN = os.environ["TASK_ROLE_ARN"]
 ECS_TASK_SECURITY_GROUP = os.environ["ECS_TASK_SECURITY_GROUP"]
 CLOUDWATCH_LOG_GROUP = os.environ["CLOUDWATCH_LOG_GROUP"]
+MOPED_TEST_HOSTNAME = os.environ["MOPED_TEST_HOSTNAME"]
+MOPED_TEST_USER = os.environ["MOPED_TEST_USER"]
+MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
+HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 
 
 def pprint(string):
@@ -289,12 +293,16 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
 
 
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename):
+def create_task_definition(basename, database):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
+    HASURA_GRAPHQL_DATABASE_URL = f"postgres://{MOPED_TEST_USER}:{MOPED_TEST_PASSWORD}@{MOPED_TEST_HOSTNAME}:5432/{database}"
+
     response = ecs.register_task_definition(
-        family="moped-graphql-endpoint-" + basename,
+        # this unified family parameter requires that this flow's
+        # use be serialized.
+        family="moped-test-graphql-endpoint",
         executionRoleArn=TASK_ROLE_ARN,
         networkMode="awsvpc",
         requiresCompatibilities=["FARGATE"],
@@ -303,8 +311,8 @@ def create_task_definition(basename):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                # "image": "hasura/graphql-engine:v2.9.0-beta2",
-                "image": "mendhak/http-https-echo:latest",
+                "image": "hasura/graphql-engine:latest",
+                # "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
@@ -315,6 +323,11 @@ def create_task_definition(basename):
                     {"name": "HTTP_PORT", "value": "8080"},
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
                     {"name": "HASURA_GRAPHQL_ENABLE_TELEMETRY", "value": "false"},
+                    {
+                        "name": "HASURA_GRAPHQL_DATABASE_URL",
+                        "value": HASURA_GRAPHQL_DATABASE_URL,
+                    },
+                    {"name": "HASURA_ADMIN_SECRET", "value": HASURA_ADMIN_SECRET},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",

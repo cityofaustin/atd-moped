@@ -4,38 +4,26 @@
 Name: Moped Editor Test Instance Deployment
 Description: Build and deploy the resources needed to test
     a feature branch of the Moped Editor application
-Schedule: TBD
-Labels: TBD
 """
 
 # import python standard library packages
+import time
 import os
+import platform
 
 # import pypi packages
 import prefect
 from prefect.run_configs import UniversalRun
 
-# import package components
-from prefect import Flow, task
+# import prefect components
+from prefect import Flow, task, Parameter
 
 from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
 from tasks.activity_log import *
 
-
-# Import and setup argparse.
-# This is intended to aid development and will be removed prior to PRing torward main.
-import argparse
-
-parser = argparse.ArgumentParser(
-    description="Prefect flow for Moped Editor Test Instance Deployment"
-)
-parser.add_argument("-m", "--mike", help="Run Mike's tasks", action="store_true")
-parser.add_argument("-f", "--frank", help="Run Frank's tasks", action="store_true")
-parser.add_argument("-p", "--provision", help="Provision", action="store_true")
-parser.add_argument("-d", "--decomission", help="Decomission", action="store_true")
-args = parser.parse_args()
+hostname = platform.node()
 
 
 # setup some global variables from secrets. presently these are coming out of the environment,
@@ -66,13 +54,66 @@ logger = prefect.context.get("logger")
 
 
 with Flow(
+    "Moped Test ECS Commission", run_config=UniversalRun(labels=["moped", hostname])
+) as ecs_commission:
+
+    basename = Parameter("basename")
+    database = Parameter("database")
+
+    cluster = create_ecs_cluster(basename=basename)
+
+    load_balancer = create_load_balancer(basename=basename)
+
+    target_group = create_target_group(basename=basename)
+
+    dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
+
+    dns_status = check_dns_status(dns_request=dns_request)
+
+    tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
+
+    certificate_validation_parameters = get_certificate_validation_parameters(
+        tls_certificate=tls_certificate
+    )
+
+    validation_record = add_cname_for_certificate_validation(
+        parameters=certificate_validation_parameters
+    )
+
+    issued_certificate = wait_for_valid_certificate(
+        validation_record=validation_record, tls_certificate=tls_certificate
+    )
+
+    removed_cname = remove_route53_cname_for_validation(
+        validation_record, issued_certificate
+    )
+
+    listeners = create_load_balancer_listener(
+        load_balancer=load_balancer,
+        target_group=target_group,
+        certificate=issued_certificate,
+    )
+
+    task_definition = create_task_definition(basename=basename, database=database)
+
+    service = create_service(
+        basename=basename,
+        load_balancer=load_balancer,
+        task_definition=task_definition,
+        target_group=target_group,
+        listeners_token=listeners,
+        cluster_token=cluster,
+    )
+
+
+with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
     # You can use this as a userful key to associate a state of the code and an environmental state!
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as ecs_decommission:
 
-    basename = "flh-test-ecs-cluster"
+    basename = Parameter("basename")
 
     set_count_at_zero = set_desired_count_for_service(basename=basename, count=0)
 
@@ -114,64 +155,21 @@ with Flow(
 
 
 with Flow(
-    "Moped Test ECS Commission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-) as ecs_commission:
+    "Moped Test Database Commission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as database_commission:
 
-    basename = "flh-test-ecs-cluster"
-
-    cluster = create_ecs_cluster(basename=basename)
-
-    load_balancer = create_load_balancer(basename=basename)
-
-    target_group = create_target_group(basename=basename)
-
-    dns_request = create_route53_cname(basename=basename, load_balancer=load_balancer)
-
-    dns_status = check_dns_status(dns_request=dns_request)
-
-    tls_certificate = create_certificate(basename=basename, dns_status=dns_status)
-
-    certificate_validation_parameters = get_certificate_validation_parameters(
-        tls_certificate=tls_certificate
-    )
-
-    validation_record = add_cname_for_certificate_validation(
-        parameters=certificate_validation_parameters
-    )
-
-    issued_certificate = wait_for_valid_certificate(
-        validation_record=validation_record, tls_certificate=tls_certificate
-    )
-
-    removed_cname = remove_route53_cname_for_validation(
-        validation_record, issued_certificate
-    )
-
-    listeners = create_load_balancer_listener(
-        load_balancer=load_balancer,
-        target_group=target_group,
-        certificate=issued_certificate,
-    )
-
-    task_definition = create_task_definition(basename=basename)
-
-    service = create_service(
-        basename=basename,
-        load_balancer=load_balancer,
-        task_definition=task_definition,
-        target_group=target_group,
-        listeners_token=listeners,
-        cluster_token=cluster,
-    )
-
-with Flow(
-    "Moped Test API and Database Commission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-) as api_commission:
-    basename = "miketestdbapi"
+    basename = Parameter("basename")
 
     create_database = create_database(basename=basename)
+
+
+with Flow(
+    "Moped Test API Commission", run_config=UniversalRun(labels=["moped", hostname])
+) as api_commission:
+
+    basename = Parameter("basename")
+
     create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
 
     commission_api_command = create_moped_api_deploy_command(
@@ -181,12 +179,21 @@ with Flow(
     endpoint = get_endpoint_from_deploy_output(deploy_api)
 
 with Flow(
-    "Moped Test API and Database Decommission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-) as api_decommission:
-    basename = "miketestdbapi"
+    "Moped Test Database Decommission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as database_decommission:
+
+    basename = Parameter("basename")
 
     remove_database = remove_database(basename=basename)
+
+
+with Flow(
+    "Moped Test API Decommission", run_config=UniversalRun(labels=["moped", hostname])
+) as api_decommission:
+
+    basename = Parameter("basename")
+
     remove_api_config_secret_arn = remove_moped_api_secrets_entry(basename=basename)
 
     decommission_api_command = create_moped_api_undeploy_command(
@@ -207,16 +214,33 @@ with Flow(
 
 
 if __name__ == "__main__":
-    # ecs_decommission.run()
-    # ecs_commission.run()
+    print("main()")
+
+    basename = "flh-parameter-test"
+    database = basename.replace("-", "_")
+
+    # flow execution is serialized!
+
+    print("\n🍄 Decomissioning Database\n")
+    database_decommission.run(basename=database)
+    print("\n🍄 Comissioning Database\n")
+    database_commission.run(basename=database)
+
+    print("\n🤖 Decomissioning ECS\n")
+    ecs_decommission.run(parameters=dict(basename=basename))
+    time.sleep(5)
+    print("\n🤖 Comissioning ECS\n")
+    ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")
 
-    # api_commission_state = api_commission.run()
-    # api_decommission.run()
+    # api_commission_state = api_commission.run(parameters=dict(basename=basename))
+    # api_decommission.run(parameters=dict(basename=basename))
+
     # print(api_commission_state.result[decommission_api_command].result)
     # Get the API endpoint string from the endpoint task object
+
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
     activity_log_commission.run()
