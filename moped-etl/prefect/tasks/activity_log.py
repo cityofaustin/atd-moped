@@ -10,6 +10,8 @@ from prefect.tasks.shell import ShellTask
 logger = prefect.context.get("logger")
 
 HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
+MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN = os.environ["MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN"]
+
 
 # SQS deployment needs:
 # Comes from deploy_event_function
@@ -76,7 +78,7 @@ def create_activity_log_command(basename):
     (cd {helper_script_path} &&
     pip install awscli &&
     source aws-moped-sqs-helper.sh &&
-    deploy_moped_test_event_function {function_name} {basename})
+    deploy_moped_test_event_function {function_name} {basename} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
     deactivate;
     """
     # deploy_event_function f"{basename}_activity_log"

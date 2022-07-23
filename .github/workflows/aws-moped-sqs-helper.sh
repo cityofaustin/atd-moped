@@ -186,6 +186,7 @@ function deploy_moped_test_event_function {
   MAIN_DIR=$PWD
   FUNCTION_NAME_MIN=$1
   FUNCTION_NAME_SUFFIX=$2
+  LAMBDA_ROLE_ARN=$3
   FUNCTION_NAME_AWS="atd-moped-events-${FUNCTION_NAME_MIN}_${FUNCTION_NAME_SUFFIX}";
   FUNCTION_DIR="../../moped-data-events/${FUNCTION_NAME_MIN}";
 
@@ -196,10 +197,43 @@ function deploy_moped_test_event_function {
 
   install_requirements;
   bundle_function;
-  echo "Building function '${FUNCTION_NAME_AWS}' @ path: '${FUNCTION_DIR}'";
-  # The Lambda config with env vars is generated in the Prefect task that calls deploy_moped_test_event_function
-  deploy_lambda_function "${FUNCTION_NAME_AWS}";
+
+  # Export the role ARN passed from the Prefect task
+  # Also, the Lambda config used in the deploy is generated in the Prefect task
+  deploy_moped_test_lambda_function "${FUNCTION_NAME_AWS}" "${LAMBDA_ROLE_ARN}";
   # deploy_sqs "${FUNCTION_NAME_AWS}";
   # cd $MAIN_DIR;
   # echo "Exit, current path: ${PWD}";
+}
+
+#
+# Deploys a single function for Moped Test Instances
+#
+function deploy_moped_test_lambda_function {
+  FUNCTION_NAME=$1
+  ATD_MOPED_EVENTS_ROLE_ARN="arn:aws:iam::295525487728:role/atd-moped-events-role"
+  echo "Deploying function: ${FUNCTION_NAME} @ ${PWD}";
+  
+  # Create function
+  echo "Creating lambda function ${FUNCTION_NAME} @ ${PWD}";
+  aws lambda create-function \
+      --role "${ATD_MOPED_EVENTS_ROLE_ARN}" \
+      --handler "app.handler" \
+      --tags "project=atd-moped,environment=${WORKING_STAGE}" \
+      --runtime python3.8 \
+      --function-name "${FUNCTION_NAME}" \
+      --zip-file fileb://function.zip > /dev/null;
+
+  echo "Current directory: ";
+  # Set concurrency to maximum allowed: 5
+  echo "Setting concurrency for ${FUNCTION_NAME} @ ${PWD}";
+  aws lambda put-function-concurrency \
+        --function-name "${FUNCTION_NAME}" \
+        --reserved-concurrent-executions 5;
+  # Set environment variables for the function
+  echo "Resetting environment variables: ${FUNCTION_NAME} @ ${PWD}";
+  aws lambda update-function-configuration \
+        --function-name "${FUNCTION_NAME}" \
+        --cli-input-json file://handler_config.json | jq -r ".LastModified";
+  echo "Finished Lambda Update/Deployment";
 }
