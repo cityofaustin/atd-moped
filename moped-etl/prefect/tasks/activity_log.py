@@ -40,15 +40,27 @@ lambda_config = {
     },
 }
 
-create_activity_log_resources_task = ShellTask(
+create_activity_log_task = ShellTask(
     name="Run Activity Log helper bash script", stream_output=True, return_all=True
 )
 
 
 @task
-def create_activity_log_resources_command():
-    logger.info("creating activity log SQS")
-    return True
+def create_activity_log_command(basename):
+    helper_script_path = "../../../.github/workflows"
+
+    command = f"""python3 -m venv venv;
+    . venv/bin/activate;
+    (cd {helper_script_path} &&
+    ls)
+    """
+    # pip install wheel &&
+    # pip install -r ./requirements/moped_test.txt &&
+    # zappa deploy {basename})
+    # deactivate;
+    # """
+
+    return command
 
 
 @task

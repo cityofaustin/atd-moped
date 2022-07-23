@@ -197,18 +197,19 @@ with Flow(
 with Flow(
     "Moped Activity Log Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
-) as api_commission:
+) as activity_log_commission:
     basename = "miketestdbapi"
 
-    create_activity_log = create_activity_log_resources(basename=basename)
+    commission_activity_log_command = create_activity_log_command(basename=basename)
+    deploy_activity_log = create_activity_log_task(basename=basename)
 
 
 if __name__ == "__main__":
     # ecs_decommission.run()
     # ecs_commission.run()
 
-    ecs_decommission.register(project_name="Moped")
-    ecs_commission.register(project_name="Moped")
+    # ecs_decommission.register(project_name="Moped")
+    # ecs_commission.register(project_name="Moped")
 
     # api_commission_state = api_commission.run()
     # api_decommission.run()
@@ -216,3 +217,4 @@ if __name__ == "__main__":
     # Get the API endpoint string from the endpoint task object
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
+    activity_log_commission.run()
