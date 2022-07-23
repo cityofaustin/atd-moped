@@ -178,3 +178,27 @@ function deploy_event_function {
   cd $MAIN_DIR;
   echo "Exit, current path: ${PWD}";
 }
+
+#
+# Builds & Deploys Event Function for Moped Test Instances
+#
+function deploy_moped_test_event_function {
+  MAIN_DIR=$PWD
+  FUNCTION_NAME_MIN=$1
+  FUNCTION_NAME_SUFFIX=$2
+  FUNCTION_NAME_AWS="atd-moped-events-${FUNCTION_NAME_MIN}_${FUNCTION_NAME_SUFFIX}";
+  FUNCTION_DIR="../../moped-data-events/${FUNCTION_NAME_MIN}";
+
+  echo "Current directory: ${PWD}";
+  echo "Building function '${FUNCTION_NAME_AWS}' @ path: '${FUNCTION_DIR}'";
+  echo "Entering Directory: ${FUNCTION_DIR}";
+  cd $FUNCTION_DIR;
+
+  install_requirements;
+  bundle_function;
+  # generate_env_vars "${FUNCTION_NAME_MIN}";
+  # deploy_lambda_function "${FUNCTION_NAME_AWS}";
+  # deploy_sqs "${FUNCTION_NAME_AWS}";
+  # cd $MAIN_DIR;
+  # echo "Exit, current path: ${PWD}";
+}

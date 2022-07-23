@@ -49,21 +49,22 @@ create_activity_log_task = ShellTask(
 )
 
 
-@task
+@task(name="Create Activity Log deploy helper command")
 def create_activity_log_command(basename):
+    logger.info("Creating Activity Log deploy helper command")
+
     helper_script_path = "../../.github/workflows"
 
+    # This command outputs
     command = f"""python3 -m virtualenv venv;
     source venv/bin/activate;
     (cd {helper_script_path} &&
-    ls)
+    pip install awscli &&
+    source aws-moped-sqs-helper.sh &&
+    deploy_moped_test_event_function "activity_log" {basename})
     deactivate;
     """
-    # pip install wheel &&
-    # pip install -r ./requirements/moped_test.txt &&
-    # zappa deploy {basename})
-    # deactivate;
-    # """
+    # deploy_event_function f"{basename}_activity_log"
 
     return command
 

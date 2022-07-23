@@ -202,10 +202,11 @@ with Flow(
     undeploy_api = remove_api_task(command=decommission_api_command)
 
 with Flow(
-    "Moped Activity Log Commission",
-    run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
+    "Moped Test Activity Log Commission",
+    run_config=UniversalRun(labels=["moped", hostname]),
 ) as activity_log_commission:
-    basename = "miketestdbapi"
+
+    basename = Parameter("basename")
 
     commission_activity_log_command = create_activity_log_command(basename=basename)
     deploy_activity_log = create_activity_log_task(
@@ -216,7 +217,7 @@ with Flow(
 if __name__ == "__main__":
     print("main()")
 
-    basename = "flh-parameter-test"
+    basename = "md-test"
     database = basename.replace("-", "_")
 
     # flow execution is serialized!
@@ -245,4 +246,4 @@ if __name__ == "__main__":
 
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
-    # activity_log_commission.run()
+    activity_log_commission.run(parameters=dict(basename=basename))
