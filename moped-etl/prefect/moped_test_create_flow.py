@@ -13,8 +13,8 @@ import os
 import prefect
 from prefect.run_configs import UniversalRun
 
-# import package components
-from prefect import Flow, task
+# import prefect components
+from prefect import Flow, task, Parameter
 
 from tasks.ecs import *
 from tasks.api import *
@@ -191,6 +191,7 @@ with Flow(
         cluster_token=cluster,
     )
 
+
 with Flow(
     "Moped Test API and Database Commission",
     run_config=UniversalRun(labels=["moped", "86abb570f4c3"]),
@@ -205,6 +206,7 @@ with Flow(
     )
     deploy_api = create_api_task(command=commission_api_command)
     endpoint = get_endpoint_from_deploy_output(deploy_api)
+
 
 with Flow(
     "Moped Test API and Database Decommission",
@@ -222,15 +224,18 @@ with Flow(
 
 
 if __name__ == "__main__":
-    # ecs_decommission.run()
+    print("main()")
+    ecs_decommission.run()
     # ecs_commission.run()
 
-    ecs_decommission.register(project_name="Moped")
-    ecs_commission.register(project_name="Moped")
+    # ecs_decommission.register(project_name="Moped")
+    # ecs_commission.register(project_name="Moped")
 
     # api_commission_state = api_commission.run()
     # api_decommission.run()
+
     # print(api_commission_state.result[decommission_api_command].result)
     # Get the API endpoint string from the endpoint task object
+
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
