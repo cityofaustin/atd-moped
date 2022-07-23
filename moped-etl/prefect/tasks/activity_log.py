@@ -35,7 +35,7 @@ lambda_config = {
     "Description": "AWS Moped Data Event: atd-moped-events-activity_log_moped-test - TEST",
     "Environment": {
         "Variables": {
-            # this comes from another flow
+            # this comes from another flow or could be generated using the basename?
             "HASURA_ENDPOINT": "",
             "HASURA_ADMIN_SECRET": "",
             "API_ENVIRONMENT": "TEST",
@@ -57,6 +57,7 @@ def create_activity_log_command(basename):
     source venv/bin/activate;
     (cd {helper_script_path} &&
     ls)
+    deactivate;
     """
     # pip install wheel &&
     # pip install -r ./requirements/moped_test.txt &&
@@ -69,13 +70,13 @@ def create_activity_log_command(basename):
 
 @task
 def remove_activity_log_sqs():
-    # Use boto3 to remove SQS
+    # Use boto3 to find and remove SQS
     logger.info("removing activity log SQS")
     return True
 
 
 @task
 def remove_activity_log_lambda():
-    # Use boto3 to remove activity log event lambda
+    # Use boto3 to find and remove activity log event lambda
     logger.info("removing activity log Lambda")
     return True
