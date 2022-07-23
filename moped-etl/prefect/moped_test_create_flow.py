@@ -181,13 +181,21 @@ with Flow(
 
 
 with Flow(
-    "Moped Test API and Database Commission",
+    "Moped Database Commission", run_config=UniversalRun(labels=["moped", hostname])
+) as database_commission:
+
+    basename = Parameter("basename")
+
+    create_database = create_database(basename=basename)
+
+
+with Flow(
+    "Moped Test API Commission",
     run_config=UniversalRun(labels=["moped", hostname]),
 ) as api_commission:
 
     basename = Parameter("basename")
 
-    create_database = create_database(basename=basename)
     create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
 
     commission_api_command = create_moped_api_deploy_command(
@@ -196,15 +204,23 @@ with Flow(
     deploy_api = create_api_task(command=commission_api_command)
     endpoint = get_endpoint_from_deploy_output(deploy_api)
 
+with Flow(
+    "Moped Test Database Decommission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as database_decommission:
+
+    basename = Parameter("basename")
+
+    remove_database = remove_database(basename=basename)
+
 
 with Flow(
-    "Moped Test API and Database Decommission",
+    "Moped Test API Decommission",
     run_config=UniversalRun(labels=["moped", hostname]),
 ) as api_decommission:
 
     basename = Parameter("basename")
 
-    remove_database = remove_database(basename=basename)
     remove_api_config_secret_arn = remove_moped_api_secrets_entry(basename=basename)
 
     decommission_api_command = create_moped_api_undeploy_command(
@@ -224,6 +240,10 @@ if __name__ == "__main__":
 
     # ecs_decommission.register(project_name="Moped")
     ecs_commission.register(project_name="Moped")
+
+    
+
+
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
