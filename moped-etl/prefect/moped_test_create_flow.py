@@ -85,6 +85,7 @@ with Flow(
 ) as ecs_commission:
 
     basename = Parameter("basename")
+    database = Parameter("database")
 
     cluster = create_ecs_cluster(basename=basename)
 
@@ -120,7 +121,7 @@ with Flow(
         certificate=issued_certificate,
     )
 
-    task_definition = create_task_definition(basename=basename)
+    task_definition = create_task_definition(basename=basename, database=database)
 
     service = create_service(
         basename=basename,
@@ -231,12 +232,16 @@ with Flow(
 if __name__ == "__main__":
     print("main()")
 
-    basename = "flh-parameter-test"
+    database = basename = "flh-parameter-test"
+    database.replace('-', '_')
 
-    database_commission.run(basename=basename)
+    # flow execution is serialized!
+
+    # database_decommission.run(basename=database)
+    # database_commission.run(basename=database)
 
     # ecs_decommission.run(parameters=dict(basename=basename))
-    # ecs_commission.run(parameters=dict(basename=basename))
+    ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")
