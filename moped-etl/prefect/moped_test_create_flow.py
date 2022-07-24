@@ -229,21 +229,21 @@ with Flow(
 if __name__ == "__main__":
     print("main()")
 
-    basename = "md-activity-log-test"
+    basename = "flh-parameter-test"
     database = basename.replace("-", "_")
 
     # flow execution is serialized!
 
-    # print("\n🍄 Decomissioning Database\n")
-    # database_decommission.run(basename=database)
-    # print("\n🍄 Comissioning Database\n")
-    # database_commission.run(basename=database)
+    print("\n🍄 Decomissioning Database\n")
+    database_decommission.run(basename=database)
+    print("\n🍄 Comissioning Database\n")
+    database_commission.run(basename=database)
 
-    # print("\n🤖 Decomissioning ECS\n")
-    # ecs_decommission.run(parameters=dict(basename=basename))
-    # time.sleep(5)
-    # print("\n🤖 Comissioning ECS\n")
-    # ecs_commission.run(parameters=dict(basename=basename, database=database))
+    print("\n🤖 Decomissioning ECS\n")
+    ecs_decommission.run(parameters=dict(basename=basename))
+    time.sleep(5)
+    print("\n🤖 Comissioning ECS\n")
+    ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")
@@ -251,12 +251,11 @@ if __name__ == "__main__":
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
 
-    # api_commission_state = api_commission.run()
-    # api_decommission.run()
     # print(api_commission_state.result[decommission_api_command].result)
     # Get the API endpoint string from the endpoint task object
 
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
+
     # activity_log_commission.run(parameters=dict(basename=basename))
-    activity_log_decommission.run(parameters=dict(basename=basename))
+    # activity_log_decommission.run(parameters=dict(basename=basename))
