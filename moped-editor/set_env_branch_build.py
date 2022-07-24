@@ -3,10 +3,10 @@
 import json
 import os
 
-os.environ["INCOMING_HOOK_BODY"] = json.dumps({
-        "FOO": "bar",
-        "FIZZ": "buzz",
-})
+#os.environ["INCOMING_HOOK_BODY"] = json.dumps({
+        #"FOO": "bar",
+        #"FIZZ": "buzz",
+#})
 
 payload = os.environ.get('INCOMING_HOOK_BODY')
 decoded_vars = json.loads(payload)
