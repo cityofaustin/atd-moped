@@ -12,28 +12,12 @@ logger = prefect.context.get("logger")
 HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN = os.environ["MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN"]
 
-
-# SQS deployment needs:
-# Comes from deploy_event_function
-# FUNCTION_NAME = "atd-moped-events-"
-# Comes from
-# activity_log
-
-# ShellScript command
-# Use helper functions individually for tasks
-# source $(pwd)/.github/workflows/aws-moped-sqs-helper.sh
-
-# Call:
-# 1. install_requirements
-# 2. bundle_function
-# 3. generate_env_vars - rework this?
-# 4. deploy_lambda_function
-# 5. deploy_sqs which calls deploy_event_source_mapping
-
-# Return SQS endpoint
+# The folder name of the event function and used in naming the AWS function
+function_name = "activity_log"
 
 
-# This is the config and env vars for the Lambda (atd-moped-events-activity_log_test)
+def create_activity_log_lambda_name(basename):
+    return f"atd-moped-events-{function_name}_{basename}"
 
 
 def create_activity_log_lambda_config(
@@ -62,7 +46,8 @@ create_activity_log_task = ShellTask(
 def create_activity_log_command(basename):
     logger.info("Creating Activity Log deploy helper command")
 
-    function_name = "activity_log"
+    aws_function_name = create_activity_log_lambda_name(basename)
+
     helper_script_path = "../../.github/workflows"
     deployment_path = f"../../moped-data-events/{function_name}"
 
@@ -78,10 +63,9 @@ def create_activity_log_command(basename):
     (cd {helper_script_path} &&
     pip install awscli &&
     source aws-moped-sqs-helper.sh &&
-    deploy_moped_test_event_function {function_name} {basename} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
+    deploy_moped_test_event_function {function_name} {aws_function_name} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
     deactivate;
     """
-    # deploy_event_function f"{basename}_activity_log"
 
     return command
 
@@ -94,7 +78,14 @@ def remove_activity_log_sqs():
 
 
 @task
-def remove_activity_log_lambda():
-    # Use boto3 to find and remove activity log event lambda
+def remove_activity_log_lambda(basename):
+    logger.info("Removing Activity Log Lambda function")
+
+    lambda_client = boto3.client("lambda")
+
+    function_name = create_activity_log_lambda_name(basename)
+    response = lambda_client.delete_function(FunctionName=function_name)
+
+    print(response)
     logger.info("removing activity log Lambda")
     return True

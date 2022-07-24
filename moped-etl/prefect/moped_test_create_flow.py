@@ -213,6 +213,15 @@ with Flow(
         command=commission_activity_log_command
     )
 
+with Flow(
+    "Moped Test Activity Log Decommission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as activity_log_decommission:
+
+    basename = Parameter("basename")
+
+    remove_activity_log_lambda = remove_activity_log_lambda(basename=basename)
+
 
 if __name__ == "__main__":
     print("main()")
@@ -246,4 +255,5 @@ if __name__ == "__main__":
 
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
-    activity_log_commission.run(parameters=dict(basename=basename))
+    # activity_log_commission.run(parameters=dict(basename=basename))
+    activity_log_decommission.run(parameters=dict(basename=basename))

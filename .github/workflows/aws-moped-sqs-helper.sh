@@ -185,9 +185,8 @@ function deploy_event_function {
 function deploy_moped_test_event_function {
   MAIN_DIR=$PWD
   FUNCTION_NAME_MIN=$1
-  FUNCTION_NAME_SUFFIX=$2
+  FUNCTION_NAME_AWS=$2
   LAMBDA_ROLE_ARN=$3
-  FUNCTION_NAME_AWS="atd-moped-events-${FUNCTION_NAME_MIN}_${FUNCTION_NAME_SUFFIX}";
   FUNCTION_DIR="../../moped-data-events/${FUNCTION_NAME_MIN}";
 
   echo "Current directory: ${PWD}";
