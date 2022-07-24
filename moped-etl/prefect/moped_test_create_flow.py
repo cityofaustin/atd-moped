@@ -220,7 +220,10 @@ with Flow(
 
     basename = Parameter("basename")
 
-    remove_activity_log_lambda = remove_activity_log_lambda(basename=basename)
+    remove_activity_log_sqs = remove_activity_log_sqs(basename=basename)
+    remove_activity_log_lambda = remove_activity_log_lambda(
+        basename=basename, upstream_tasks=[remove_activity_log_sqs]
+    )
 
 
 if __name__ == "__main__":

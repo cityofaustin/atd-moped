@@ -200,9 +200,7 @@ function deploy_moped_test_event_function {
   # Export the role ARN passed from the Prefect task
   # Also, the Lambda config used in the deploy is generated in the Prefect task
   deploy_moped_test_lambda_function "${FUNCTION_NAME_AWS}" "${LAMBDA_ROLE_ARN}";
-  # deploy_sqs "${FUNCTION_NAME_AWS}";
-  # cd $MAIN_DIR;
-  # echo "Exit, current path: ${PWD}";
+  deploy_sqs "${FUNCTION_NAME_AWS}";
 }
 
 #
