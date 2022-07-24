@@ -5,7 +5,7 @@ from datetime import timedelta
 from re import I
 import boto3
 import prefect
-from prefect import Flow, task
+from prefect import task
 import pprint as pretty_printer
 
 # set up the prefect logging system
