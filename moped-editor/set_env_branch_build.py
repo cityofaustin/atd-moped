@@ -4,7 +4,8 @@ import json
 import os
 
 cmd = ""
-if os.environ.has_key("INCOMING_HOOK_BODY"):
+
+if os.environ.get("INCOMING_HOOK_BODY"):
     print("Using payload defined environment variables")
     payload = os.environ.get("INCOMING_HOOK_BODY")
     decoded_vars = json.loads(payload)
