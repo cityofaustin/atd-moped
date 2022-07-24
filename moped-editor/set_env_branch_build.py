@@ -5,7 +5,7 @@ import os
 
 cmd = ""
 
-print("Using payload defined environment variables to overload 'netlifypr' from .env_cmdrc")
+print("Using payload defined environment variables, if any, to overload 'netlifypr' from .env_cmdrc")
 payload = os.environ.get("INCOMING_HOOK_BODY", {})
 decoded_vars = json.loads(payload)
 environment = " ".join(
