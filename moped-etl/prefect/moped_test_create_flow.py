@@ -239,19 +239,18 @@ if __name__ == "__main__":
 
     # flow execution is serialized!
 
-    #print("\n🍄 Decomissioning Database\n")
-    #database_decommission.run(basename=database)
-    #print("\n🍄 Comissioning Database\n")
-    #database_commission.run(basename=database)
+    # print("\n🍄 Decomissioning Database\n")
+    # database_decommission.run(basename=database)
+    # print("\n🍄 Comissioning Database\n")
+    # database_commission.run(basename=database)
 
-    #print("\n🤖 Decomissioning ECS\n")
-    #ecs_decommission.run(parameters=dict(basename=basename))
-    #time.sleep(5) # this isn't needed, just for debugging
-    #print("\n🤖 Comissioning ECS\n")
-    #ecs_commission.run(parameters=dict(basename=basename, database=database))
+    # print("\n🤖 Decomissioning ECS\n")
+    # ecs_decommission.run(parameters=dict(basename=basename))
+    # time.sleep(5) # this isn't needed, just for debugging
+    # print("\n🤖 Comissioning ECS\n")
+    # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
-    # ecs_decommission.register(project_name="Moped")
-    # ecs_commission.register(project_name="Moped")
+    print("💡 Comissioning Netlify Build & Deploy\n")
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
@@ -261,3 +260,8 @@ if __name__ == "__main__":
 
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
+
+    # database_decommission.register(project_name="Moped")
+    # database_commission.register(project_name="Moped")
+    # ecs_decommission.register(project_name="Moped")
+    # ecs_commission.register(project_name="Moped")
