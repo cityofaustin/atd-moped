@@ -11,6 +11,7 @@ logger = prefect.context.get("logger")
 
 HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN = os.environ["MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN"]
+MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX = os.environ["MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX"]
 
 # The folder name of the event function and used in naming the AWS function
 function_name = "activity_log"
@@ -22,7 +23,7 @@ def create_activity_log_aws_name(basename):
 
 def create_activity_log_queue_url(basename):
     aws_queue_name = create_activity_log_aws_name(basename)
-    return f"https://queue.amazonaws.com/295525487728/{aws_queue_name}"
+    return f"${MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
 
 
 def create_activity_log_lambda_config(
@@ -58,7 +59,7 @@ def create_activity_log_command(basename):
 
     lambda_config = create_activity_log_lambda_config(basename)
 
-    # Write Zappa config to moped-api project folder
+    # Write Lambda config to activity_log project folder
     with open(f"{deployment_path}/handler_config.json", "w") as f:
         json.dump(lambda_config, f)
 

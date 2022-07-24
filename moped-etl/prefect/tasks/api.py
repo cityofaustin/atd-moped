@@ -7,6 +7,8 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
+from activity_log import create_activity_log_queue_url
+
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
@@ -99,7 +101,7 @@ def create_zappa_config(basename, config_secret_arn):
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 # Look at Moped API events.py to see how this key is used
                 "MOPED_API_HASURA_APIKEY": MOPED_API_HASURA_APIKEY,
-                "MOPED_API_HASURA_SQS_URL": MOPED_API_HASURA_SQS_URL,
+                "MOPED_API_HASURA_SQS_URL": create_activity_log_queue_url(basename),
                 "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },
             "extra_permissions": [
