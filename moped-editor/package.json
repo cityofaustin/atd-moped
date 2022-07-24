@@ -21,7 +21,7 @@
     "build:development": "env-cmd -e development npm run build:local",
     "build:production": "env-cmd -e production npm run build:local",
     "build:netlifypr": "env-cmd -e netlifypr npm run build:local",
-    "build:netlifybranch": "echo $INCOMING_HOOK_BODY; env-cmd --no-override -e netlifypr npm run build:local",
+    "build:netlifybranch": "./env_test.py; env-cmd --no-override -e netlifypr npm run build:local",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
