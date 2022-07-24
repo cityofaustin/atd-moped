@@ -29,6 +29,6 @@ def trigger_netlify_build(branch):
 
     request = requests.request("POST", NETLIFY_BUILD_HOOK, params=HTTP_parameters)
 
-    pprint(request.status_code)
-    pprint(request.headers)
-    pprint(request.text)
+    #pprint(request.status_code)
+
+    return request
