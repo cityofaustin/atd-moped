@@ -23,7 +23,7 @@ def create_activity_log_aws_name(basename):
 
 def create_activity_log_queue_url(basename):
     aws_queue_name = create_activity_log_aws_name(basename)
-    return f"${MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
+    return f"{MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
 
 
 def create_activity_log_lambda_config(

@@ -7,7 +7,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-from activity_log import create_activity_log_queue_url
+from tasks.activity_log import create_activity_log_queue_url
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
