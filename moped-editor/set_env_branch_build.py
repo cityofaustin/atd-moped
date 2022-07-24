@@ -18,4 +18,5 @@ else:
     cmd = "env-cmd -e netlifypr npm run build:local"
 
 result = os.system(cmd)
+# TODO, this is returning the return code, not STDOUT -- hiding build logs in netlify
 print(result)
