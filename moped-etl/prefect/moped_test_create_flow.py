@@ -21,6 +21,7 @@ from prefect import Flow, task, Parameter
 from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
+from tasks.netlify import *
 
 hostname = platform.node()
 
