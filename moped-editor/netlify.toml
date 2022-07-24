@@ -5,7 +5,7 @@
 #   From: https://docs.netlify.com/site-deploys/overview/#deploy-contexts
 #   Also: https://docs.netlify.com/configure-builds/environment-variables/
 [context.branch-deploy]
-    command = "echo 'Build Context Mode: Branch-Deploy' && npm run build:branch"
+    command = "echo 'Build Context Mode: Branch-Deploy' && npm run build:netlifybranch"
     [context.branch-deploy.environment]
       ATD_MOPED_BUILD_CONTEXT = "Netlify PR -- branch-deploy"
 
