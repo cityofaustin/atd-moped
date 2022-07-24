@@ -15,4 +15,5 @@ cmd = environment + " env-cmd --no-override -e netlifypr npm run build:local"
 
 result = os.popen(cmd)
 
+# i'm still not convinced this is giving us a build log, or is there none in a CI environment?
 print(result.read())
