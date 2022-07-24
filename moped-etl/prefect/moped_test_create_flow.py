@@ -236,7 +236,8 @@ with Flow(
 
     basename = Parameter("basename")
 
-    result = trigger_netlify_build(branch=basename)
+    build = trigger_netlify_build(branch=basename)
+    is_ready = netlify_check_build(branch=basename, build_token=build)
 
 if __name__ == "__main__":
     print("main()")
