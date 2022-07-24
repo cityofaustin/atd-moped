@@ -230,6 +230,13 @@ with Flow(
     )
     undeploy_api = remove_api_task(command=decommission_api_command)
 
+with Flow(
+    "Moped Netlify Commission", run_config=UniversalRun(labels=["moped", hostname])
+) as netlify_commission:
+
+    # basename = Parameter("basename")
+
+    result = trigger_netlify_build()
 
 if __name__ == "__main__":
     print("main()")
@@ -251,6 +258,7 @@ if __name__ == "__main__":
     # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     print("💡 Comissioning Netlify Build & Deploy\n")
+    netlify_commission.run()
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
