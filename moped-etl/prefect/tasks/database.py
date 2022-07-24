@@ -1,13 +1,20 @@
 import os
-import prefect
 
+import prefect
 from prefect import task
+from prefect.tasks.shell import ShellTask
+
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
 DATABASE_USER = os.environ["MOPED_TEST_USER"]
 DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
+MOPED_READ_REPLICA_HOST = os.environ["MOPED_READ_REPLICA_HOST"]
+MOPED_READ_REPLICA_USER = os.environ["MOPED_READ_REPLICA_USER"]
+MOPED_READ_REPLICA_PASSWORD = os.environ["MOPED_READ_REPLICA_PASSWORD"]
+
+MOPED_READ_REPLICA_HOST
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -84,9 +91,32 @@ def remove_database(basename):
     pg.close()
 
 
+populate_database_with_data_task = ShellTask(
+    name="Run populate DB with data bash command", stream_output=True, return_all=True
+)
+
 # pg_dump command
 # pg_restore command
 # Use Shell task, docker pg image and run psql
 @task
-def populate_database_with_production_data(basename):
-    logger.info(f"Populating {basename} with production data")
+def populate_database_with_data_command(basename, stage="staging"):
+    logger.info(f"Creating populate with {stage} data command for database {basename}")
+
+    database_name = "atd_moped" if stage == "production" else "atd_moped_staging"
+    user = MOPED_READ_REPLICA_USER
+    password = MOPED_READ_REPLICA_PASSWORD
+    host = MOPED_READ_REPLICA_HOST
+    version = "12-alpine"
+
+    dump_command = f"pg_dump -d postgres://{user}:{password}@{host}:5432/{database_name} \
+    --no-owner --no-privileges --verbose > moped_{stage}.sql"
+
+    command = f"""
+        docker pull postgres:{version} &&
+        docker run postgres {dump_command} &&
+        ls
+    """
+
+    # pg_dump -h moped-read-replica.austinmobility.io --no-owner --no-privileges --verbose -U dilleym -d atd_moped_staging -f moped_test_staging.sql
+
+    return command
