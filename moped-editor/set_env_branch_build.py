@@ -12,7 +12,7 @@ if os.environ.get("INCOMING_HOOK_BODY"):
     environment = " ".join(
         ["{}={}".format(key, value) for key, value in decoded_vars.items()]
     )
-    cmd = environment + "env-cmd --no-override -e netlifypr npm run build:local"
+    cmd = environment + "env-cmd -e netlifypr --no-override npm run build:local"
 else:
     print("Using env-cmd defined environment variables")
     cmd = "env-cmd -e netlifypr npm run build:local"
