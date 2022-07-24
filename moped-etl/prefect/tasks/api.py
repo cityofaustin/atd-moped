@@ -74,8 +74,7 @@ def remove_moped_api_secrets_entry(basename):
     secret_name = create_secret_name(basename)
 
     response = client.delete_secret(
-        SecretId=secret_name,
-        ForceDeleteWithoutRecovery=True,
+        SecretId=secret_name, ForceDeleteWithoutRecovery=True
     )
 
     secret_arn = response["ARN"]
@@ -106,10 +105,7 @@ def create_zappa_config(basename, config_secret_arn):
                 {
                     "Effect": "Allow",
                     "Action": "secretsmanager:GetSecretValue",
-                    "Resource": [
-                        f"{AWS_STAGING_DYNAMO_DB_ARN}",
-                        config_secret_arn,
-                    ],
+                    "Resource": [f"{AWS_STAGING_DYNAMO_DB_ARN}", config_secret_arn],
                 },
                 {
                     "Effect": "Allow",
