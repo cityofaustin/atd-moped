@@ -44,15 +44,10 @@ def netlify_check_build(branch, build_token):
 
     for deployment in response:
         if deployment["branch"] == branch:
-            # pprint("ID: " + str(deployment["id"]))
-            # pprint("State: " + str(deployment["state"]))
             id = deployment["id"]
             state = deployment["state"]
             # pprint(deployment)
             break
-
-    #print("ID: " + str(id))
-    #print("State: " + str(state))
 
     if state != "ready":
         raise Exception("Build is not ready")
