@@ -1,7 +1,9 @@
 import os
+import requests
+
 import prefect
 from prefect import Flow, task
-import requests
+import pprint as pretty_printer
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -17,18 +19,16 @@ def pprint(string):
 
 
 @task
-def trigger_netlify_build():
+def trigger_netlify_build(branch):
     logger.info("Triggering netlify build")
 
     HTTP_parameters = {
-        "trigger_branch": "netlify-test-deployment",
-        "trigger_title": "Dev Test Build",
+        "trigger_branch": branch,
+        "trigger_title": "Test Build of " + branch,
     }
 
     request = requests.request("POST", NETLIFY_BUILD_HOOK, params=HTTP_parameters)
 
-    pprint(request)
-
-    # r = requests.post(NETLIFY_BUILD_HOOK)
-    # logger.info("netlify build triggered")
-    # return r.status_code
+    pprint(request.status_code)
+    pprint(request.headers)
+    pprint(request.text)

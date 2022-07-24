@@ -234,14 +234,14 @@ with Flow(
     "Moped Netlify Commission", run_config=UniversalRun(labels=["moped", hostname])
 ) as netlify_commission:
 
-    # basename = Parameter("basename")
+    basename = Parameter("basename")
 
-    result = trigger_netlify_build()
+    result = trigger_netlify_build(branch=basename)
 
 if __name__ == "__main__":
     print("main()")
 
-    basename = "flh-parameter-test"
+    basename = "netlify-test-deployment"
     database = basename.replace("-", "_")
 
     # flow execution is serialized!
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     print("💡 Comissioning Netlify Build & Deploy\n")
-    netlify_commission.run()
+    netlify_commission.run(parameters=dict(basename=basename))
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
