@@ -190,8 +190,10 @@ with Flow(
     basename = Parameter("basename")
     stage = Parameter("stage")
 
-    # create_database = create_database(basename=basename)
-    populate_database_command = populate_database_with_data_command(basename, stage)
+    create_database = create_database(basename=basename)
+    populate_database_command = populate_database_with_data_command(
+        basename, stage, upstream_tasks=[create_database]
+    )
     populate_database = populate_database_with_data_task(
         command=populate_database_command
     )
@@ -238,7 +240,7 @@ with Flow(
 if __name__ == "__main__":
     print("main()")
 
-    basename = "md-test"
+    basename = "flh-parameter-test"
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
@@ -246,14 +248,14 @@ if __name__ == "__main__":
 
     print("\n🍄 Decomissioning Database\n")
     database_decommission.run(basename=database)
-    # print("\n🍄 Comissioning Database\n")
-    # database_commission.run(basename=database, stage=database_data_stage)
+    print("\n🍄 Comissioning Database\n")
+    database_commission.run(basename=database, stage=database_data_stage)
 
-    # print("\n🤖 Decomissioning ECS\n")
-    # ecs_decommission.run(parameters=dict(basename=basename))
-    # time.sleep(5)
-    # print("\n🤖 Comissioning ECS\n")
-    # ecs_commission.run(parameters=dict(basename=basename, database=database))
+    print("\n🤖 Decomissioning ECS\n")
+    ecs_decommission.run(parameters=dict(basename=basename))
+    time.sleep(5)
+    print("\n🤖 Comissioning ECS\n")
+    ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     # ecs_decommission.register(project_name="Moped")
     # ecs_commission.register(project_name="Moped")

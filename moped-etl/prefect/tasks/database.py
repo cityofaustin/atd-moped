@@ -92,11 +92,11 @@ def remove_database(basename):
 
 
 populate_database_with_data_task = ShellTask(
-    name="Run populate DB with data bash command", stream_output=True, return_all=True
+    name="Run populate DB with data bash command", stream_output=True
 )
 
 
-@task
+@task(name="Create populate database with data bash command")
 def populate_database_with_data_command(basename, stage="staging"):
     logger.info(f"Creating populate with {stage} data command for database {basename}")
 
@@ -116,9 +116,8 @@ def populate_database_with_data_command(basename, stage="staging"):
     )
 
     # Set up for the commands
-    version = "12-alpine"
+    postgres_version = "12-alpine"
     dump_filename = f"moped_{stage}.sql"
-    print(dump_filename)
 
     dump_command = f"pg_dump -d {dump_conn_string} \
     --no-owner --no-privileges --verbose > {dump_filename}"
@@ -127,7 +126,7 @@ def populate_database_with_data_command(basename, stage="staging"):
     -f /tmp/{dump_filename}"
 
     command = f"""
-        docker pull postgres:{version} &&
+        docker pull postgres:{postgres_version} &&
         cd ~/ &&
         cd ../tmp &&
         docker run --rm postgres {dump_command} &&
