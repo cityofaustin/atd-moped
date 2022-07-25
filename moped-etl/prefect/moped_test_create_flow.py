@@ -188,8 +188,15 @@ with Flow(
 ) as database_commission:
 
     basename = Parameter("basename")
+    stage = Parameter("stage")
 
     create_database = create_database(basename=basename)
+    populate_database_command = populate_database_with_data_command(
+        basename=basename, stage=stage, upstream_tasks=[create_database]
+    )
+    populate_database = populate_database_with_data_task(
+        command=populate_database_command
+    )
 
 
 with Flow(
@@ -235,13 +242,14 @@ if __name__ == "__main__":
 
     basename = "flh-parameter-test"
     database = basename.replace("-", "_")
+    database_data_stage = "staging"
 
     # flow execution is serialized!
 
     print("\n🍄 Decomissioning Database\n")
     database_decommission.run(basename=database)
     print("\n🍄 Comissioning Database\n")
-    database_commission.run(basename=database)
+    database_commission.run(basename=database, stage=database_data_stage)
 
     print("\n🤖 Decomissioning ECS\n")
     ecs_decommission.run(parameters=dict(basename=basename))

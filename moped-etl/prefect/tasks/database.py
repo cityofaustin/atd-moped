@@ -1,13 +1,18 @@
 import os
-import prefect
 
+import prefect
 from prefect import task
+from prefect.tasks.shell import ShellTask
+
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 DATABASE_HOST = os.environ["MOPED_TEST_HOSTNAME"]
 DATABASE_USER = os.environ["MOPED_TEST_USER"]
 DATABASE_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
+MOPED_READ_REPLICA_HOST = os.environ["MOPED_READ_REPLICA_HOST"]
+MOPED_READ_REPLICA_USER = os.environ["MOPED_READ_REPLICA_USER"]
+MOPED_READ_REPLICA_PASSWORD = os.environ["MOPED_READ_REPLICA_PASSWORD"]
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -84,9 +89,41 @@ def remove_database(basename):
     pg.close()
 
 
-# pg_dump command
-# pg_restore command
-# Use Shell task, docker pg image and run psql
-@task
-def populate_database_with_production_data(basename):
-    logger.info(f"Populating {basename} with production data")
+populate_database_with_data_task = ShellTask(
+    name="Run populate DB with data bash command", stream_output=True
+)
+
+
+@task(name="Create populate database with data bash command")
+def populate_database_with_data_command(basename, stage="staging"):
+    logger.info(f"Creating populate with {stage} data command for database {basename}")
+
+    # Get Moped read replica details together
+    replica_db_name = "atd_moped" if stage == "production" else "atd_moped_staging"
+    replica_user = MOPED_READ_REPLICA_USER
+    replica_password = MOPED_READ_REPLICA_PASSWORD
+    replica_host = MOPED_READ_REPLICA_HOST
+    dump_conn_string = f"postgres://{replica_user}:{replica_password}@{replica_host}:5432/{replica_db_name}"
+
+    # Get the Moped test database details together
+    test_user = DATABASE_USER
+    test_password = DATABASE_PASSWORD
+    test_host = DATABASE_HOST
+    psql_conn_string = (
+        f"postgres://{test_user}:{test_password}@{test_host}:5432/{basename}"
+    )
+
+    # Set up for the commands
+    postgres_version = "12-alpine"
+
+    dump_command = f"pg_dump -d {dump_conn_string} \
+    --no-owner --no-privileges --verbose"
+
+    psql_command = f"psql -d {psql_conn_string}"
+
+    command = f"""
+        docker pull postgres:{postgres_version}  &&
+        docker run --rm postgres {dump_command} | docker run --rm -i postgres {psql_command}
+    """
+
+    return command
