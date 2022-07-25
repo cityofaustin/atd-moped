@@ -14,8 +14,6 @@ MOPED_READ_REPLICA_HOST = os.environ["MOPED_READ_REPLICA_HOST"]
 MOPED_READ_REPLICA_USER = os.environ["MOPED_READ_REPLICA_USER"]
 MOPED_READ_REPLICA_PASSWORD = os.environ["MOPED_READ_REPLICA_PASSWORD"]
 
-MOPED_READ_REPLICA_HOST
-
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
@@ -117,20 +115,16 @@ def populate_database_with_data_command(basename, stage="staging"):
 
     # Set up for the commands
     postgres_version = "12-alpine"
-    dump_filename = f"moped_{stage}.sql"
+    # dump_filename = f"moped_{stage}.sql"
 
     dump_command = f"pg_dump -d {dump_conn_string} \
-    --no-owner --no-privileges --verbose > {dump_filename}"
+    --no-owner --no-privileges --verbose"
 
-    psql_command = f"psql {psql_conn_string} \
-    -f /tmp/{dump_filename}"
+    psql_command = f"psql -d {psql_conn_string}"
 
     command = f"""
-        docker pull postgres:{postgres_version} &&
-        cd ~/ &&
-        cd ../tmp &&
-        docker run --rm postgres {dump_command} &&
-        docker run --rm -v /tmp:/tmp postgres {psql_command}
+        docker pull postgres:{postgres_version}  &&
+        docker run --rm postgres {dump_command} | docker run --rm -i postgres {psql_command}
     """
 
     return command
