@@ -21,7 +21,9 @@ from prefect import Flow, task, Parameter
 from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
+from tasks.netlify import *
 from tasks.activity_log import *
+
 
 hostname = platform.node()
 
@@ -209,6 +211,16 @@ with Flow(
     undeploy_api = remove_api_task(command=decommission_api_command)
 
 with Flow(
+    "Moped Netlify Commission", run_config=UniversalRun(labels=["moped", hostname])
+) as netlify_commission:
+
+    basename = Parameter("basename")
+
+    build = trigger_netlify_build(branch=basename)
+    is_ready = netlify_check_build(branch=basename, build_token=build)
+
+
+with Flow(
     "Moped Test Activity Log Commission",
     run_config=UniversalRun(labels=["moped", hostname]),
 ) as activity_log_commission:
@@ -233,28 +245,40 @@ with Flow(
     )
 
 
+
 if __name__ == "__main__":
     print("main()")
 
-    basename = "flh-parameter-test"
+    basename = "netlify-test-deployment"
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
     # flow execution is serialized!
 
-    print("\n🍄 Decomissioning Database\n")
-    database_decommission.run(basename=database)
-    print("\n🍄 Comissioning Database\n")
-    database_commission.run(basename=database, stage=database_data_stage)
 
-    print("\n🤖 Decomissioning ECS\n")
-    ecs_decommission.run(parameters=dict(basename=basename))
-    time.sleep(5)
-    print("\n🤖 Comissioning ECS\n")
-    ecs_commission.run(parameters=dict(basename=basename, database=database))
+    # print("\n🍄 Decomissioning Database\n")
+    # database_decommission.run(basename=database)
+    # print("\n🍄 Comissioning Database\n")
+    # database_commission.run(basename=database)
 
-    # ecs_decommission.register(project_name="Moped")
-    # ecs_commission.register(project_name="Moped")
+    # print("\n🚀 Decomissioning API\n")
+    # api_decommission.run(parameters=dict(basename=basename))
+    # print("\n️🚀 Comissioning API\n")
+    # api_commission.run(parameters=dict(basename=basename, database=database))
+
+    # print("\n🍄 Decomissioning Database\n")
+    # database_decommission.run(basename=database)
+    # print("\n🍄 Comissioning Database\n")
+    # database_commission.run(basename=database, stage=database_data_stage)
+
+
+    # print("\n🤖 Decomissioning ECS\n")
+    # ecs_decommission.run(parameters=dict(basename=basename))
+    # print("\n🤖 Comissioning ECS\n")
+    # ecs_commission.run(parameters=dict(basename=basename, database=database))
+
+    # print("💡 Comissioning Netlify Build & Deploy\n")
+    # netlify_commission.run(parameters=dict(basename=basename))
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
