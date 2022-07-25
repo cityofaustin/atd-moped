@@ -115,7 +115,6 @@ def populate_database_with_data_command(basename, stage="staging"):
 
     # Set up for the commands
     postgres_version = "12-alpine"
-    # dump_filename = f"moped_{stage}.sql"
 
     dump_command = f"pg_dump -d {dump_conn_string} \
     --no-owner --no-privileges --verbose"
