@@ -95,28 +95,43 @@ populate_database_with_data_task = ShellTask(
     name="Run populate DB with data bash command", stream_output=True, return_all=True
 )
 
-# pg_dump command
-# pg_restore command
-# Use Shell task, docker pg image and run psql
+
 @task
 def populate_database_with_data_command(basename, stage="staging"):
     logger.info(f"Creating populate with {stage} data command for database {basename}")
 
-    database_name = "atd_moped" if stage == "production" else "atd_moped_staging"
-    user = MOPED_READ_REPLICA_USER
-    password = MOPED_READ_REPLICA_PASSWORD
-    host = MOPED_READ_REPLICA_HOST
-    version = "12-alpine"
+    # Get Moped read replica details together
+    replica_db_name = "atd_moped" if stage == "production" else "atd_moped_staging"
+    replica_user = MOPED_READ_REPLICA_USER
+    replica_password = MOPED_READ_REPLICA_PASSWORD
+    replica_host = MOPED_READ_REPLICA_HOST
+    dump_conn_string = f"postgres://{replica_user}:{replica_password}@{replica_host}:5432/{replica_db_name}"
 
-    dump_command = f"pg_dump -d postgres://{user}:{password}@{host}:5432/{database_name} \
-    --no-owner --no-privileges --verbose > moped_{stage}.sql"
+    # Get the Moped test database details together
+    test_user = DATABASE_USER
+    test_password = DATABASE_PASSWORD
+    test_host = DATABASE_HOST
+    psql_conn_string = (
+        f"postgres://{test_user}:{test_password}@{test_host}:5432/{basename}"
+    )
+
+    # Set up for the commands
+    version = "12-alpine"
+    dump_filename = f"moped_{stage}.sql"
+    print(dump_filename)
+
+    dump_command = f"pg_dump -d {dump_conn_string} \
+    --no-owner --no-privileges --verbose > {dump_filename}"
+
+    psql_command = f"psql {psql_conn_string} \
+    -f /tmp/{dump_filename}"
 
     command = f"""
         docker pull postgres:{version} &&
-        docker run postgres {dump_command} &&
-        ls
+        cd ~/ &&
+        cd ../tmp &&
+        docker run --rm postgres {dump_command} &&
+        docker run --rm -v /tmp:/tmp postgres {psql_command}
     """
-
-    # pg_dump -h moped-read-replica.austinmobility.io --no-owner --no-privileges --verbose -U dilleym -d atd_moped_staging -f moped_test_staging.sql
 
     return command

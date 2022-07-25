@@ -244,10 +244,10 @@ if __name__ == "__main__":
 
     # flow execution is serialized!
 
-    # print("\n🍄 Decomissioning Database\n")
-    # database_decommission.run(basename=database)
-    print("\n🍄 Comissioning Database\n")
-    database_commission.run(basename=database, stage=database_data_stage)
+    print("\n🍄 Decomissioning Database\n")
+    database_decommission.run(basename=database)
+    # print("\n🍄 Comissioning Database\n")
+    # database_commission.run(basename=database, stage=database_data_stage)
 
     # print("\n🤖 Decomissioning ECS\n")
     # ecs_decommission.run(parameters=dict(basename=basename))
