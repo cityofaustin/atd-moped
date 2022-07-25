@@ -51,6 +51,7 @@ export const SUMMARY_QUERY = gql`
       purchase_order_number
       work_assignment_id
       parent_project_id
+      interim_project_id
       moped_project {
         project_name
       }
@@ -874,6 +875,28 @@ export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
       affected_rows
     }
   }
+`;
+
+export const PROJECT_UPDATE_INTERIM_ID = gql`
+mutation UpdateProjectInterimId($projectId: Int!, $interimProjectId: Int) {
+  update_moped_project_by_pk(
+    pk_columns: {project_id: $projectId},
+    _set: {interim_project_id: $interimProjectId}
+  ) {
+    interim_project_id
+  }
+}
+`;
+
+export const PROJECT_CLEAR_INTERIM_ID = gql`
+mutation UpdateProjectInterimId($projectId: Int!) {
+  update_moped_project_by_pk(
+    pk_columns: {project_id: $projectId},
+    _set: {interim_project_id: null}
+  ) {
+    interim_project_id
+  }
+}
 `;
 
 /**
