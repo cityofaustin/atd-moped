@@ -254,8 +254,8 @@ if __name__ == "__main__":
 
     # print("\n🚀 Decomissioning API\n")
     # api_decommission.run(parameters=dict(basename=basename))
-    print("\n️🚀 Comissioning API\n")
-    api_commission.run(parameters=dict(basename=basename, database=database))
+    #print("\n️🚀 Comissioning API\n")
+    #api_commission.run(parameters=dict(basename=basename, database=database))
 
     # print("\n🤖 Decomissioning ECS\n")
     # ecs_decommission.run(parameters=dict(basename=basename))
