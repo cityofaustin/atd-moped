@@ -21,6 +21,7 @@ from prefect import Flow, task, Parameter
 from tasks.ecs import *
 from tasks.api import *
 from tasks.database import *
+from tasks.activity_log import *
 
 hostname = platform.node()
 
@@ -50,35 +51,6 @@ logger = prefect.context.get("logger")
 # Questions:
 # 1. What S3 bucket does current moped-test use for file uploads?
 #    - Extend directories in S3 bucket to keep files for each preview app
-
-
-# Lambda & SQS tasks
-@task
-def create_activity_log_sqs():
-    # Use boto3 to create SQS
-    logger.info("creating activity log SQS")
-    return True
-
-
-@task
-def create_activity_log_lambda():
-    # Use boto3 to create activity log event lambda
-    logger.info("creating activity log Lambda")
-    return True
-
-
-@task
-def remove_activity_log_sqs():
-    # Use boto3 to remove SQS
-    logger.info("removing activity log SQS")
-    return True
-
-
-@task
-def remove_activity_log_lambda():
-    # Use boto3 to remove activity log event lambda
-    logger.info("removing activity log Lambda")
-    return True
 
 
 with Flow(
@@ -236,6 +208,30 @@ with Flow(
     )
     undeploy_api = remove_api_task(command=decommission_api_command)
 
+with Flow(
+    "Moped Test Activity Log Commission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as activity_log_commission:
+
+    basename = Parameter("basename")
+
+    commission_activity_log_command = create_activity_log_command(basename=basename)
+    deploy_activity_log = create_activity_log_task(
+        command=commission_activity_log_command
+    )
+
+with Flow(
+    "Moped Test Activity Log Decommission",
+    run_config=UniversalRun(labels=["moped", hostname]),
+) as activity_log_decommission:
+
+    basename = Parameter("basename")
+
+    remove_activity_log_sqs = remove_activity_log_sqs(basename=basename)
+    remove_activity_log_lambda = remove_activity_log_lambda(
+        basename=basename, upstream_tasks=[remove_activity_log_sqs]
+    )
+
 
 if __name__ == "__main__":
     print("main()")
@@ -268,3 +264,6 @@ if __name__ == "__main__":
 
     # api_endpoint = api_commission_state.result[endpoint].result
     # print(api_endpoint)
+
+    # activity_log_commission.run(parameters=dict(basename=basename))
+    # activity_log_decommission.run(parameters=dict(basename=basename))
