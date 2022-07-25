@@ -246,9 +246,12 @@ const ProjectComponentsMapEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
-    !!selectedType
-      ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
-      : setDrawLines(null);
+    const lineKey = selectedType.toLowerCase().replaceAll(" ", '')
+    setDrawLines(lineRepresentable[lineKey])
+
+    // !!selectedType
+    //   ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
+    //   : setDrawLines(null);
   };
 
   /**
@@ -257,6 +260,11 @@ const ProjectComponentsMapEdit = ({
    * @param {String} newValue - The new value from the autocomplete selector
    */
   const handleComponentSubtypeSelect = (e, newValue) => {
+    const lineKey =
+      selectedComponentType.toLowerCase().replaceAll(" ", "") +
+      newValue.toLowerCase().replaceAll(" ", "");
+    setDrawLines(lineRepresentable[lineKey])
+    // if newValue was ever null, this would error because e.target.value of a li is a number
     setSelectedComponentSubtype(
       (newValue ?? e.target.value ?? "").toLowerCase()
     );
