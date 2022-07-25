@@ -250,21 +250,20 @@ if __name__ == "__main__":
     # print("\n🍄 Decomissioning Database\n")
     # database_decommission.run(basename=database)
     print("\n🍄 Comissioning Database\n")
-    database_commission.run(basename=database)
+    # database_commission.run(basename=database)
 
     # print("\n🚀 Decomissioning API\n")
     # api_decommission.run(parameters=dict(basename=basename))
-    #print("\n️🚀 Comissioning API\n")
-    #api_commission.run(parameters=dict(basename=basename, database=database))
+    # print("\n️🚀 Comissioning API\n")
+    # api_commission.run(parameters=dict(basename=basename, database=database))
 
     # print("\n🤖 Decomissioning ECS\n")
     # ecs_decommission.run(parameters=dict(basename=basename))
     print("\n🤖 Comissioning ECS\n")
-    ecs_commission.run(parameters=dict(basename=basename, database=database))
+    # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
     print("💡 Comissioning Netlify Build & Deploy\n")
     netlify_commission.run(parameters=dict(basename=basename))
-
 
     # api_commission_state = api_commission.run(parameters=dict(basename=basename))
     # api_decommission.run(parameters=dict(basename=basename))
