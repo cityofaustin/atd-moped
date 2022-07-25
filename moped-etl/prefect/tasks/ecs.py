@@ -24,6 +24,8 @@ MOPED_TEST_HOSTNAME = os.environ["MOPED_TEST_HOSTNAME"]
 MOPED_TEST_USER = os.environ["MOPED_TEST_USER"]
 MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
+HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
+MOPED_API_APIKEY = os.environ["MOPED_API_APIKEY"]
 
 
 def pprint(string):
@@ -328,6 +330,9 @@ def create_task_definition(basename, database):
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
                     {"name": "HASURA_ADMIN_SECRET", "value": HASURA_ADMIN_SECRET},
+                    #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
+                    # {"name": "MOPED_API_EVENTS_URL", "value": MOPED_API_EVENTS_URL},
+                    {"name": "MOPED_API_APIKEY", "value": MOPED_API_APIKEY},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
