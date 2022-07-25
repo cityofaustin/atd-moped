@@ -75,7 +75,7 @@ def trigger_netlify_build(branch):
 
     environment = json.dumps(ENV)
 
-    response = requests.request("POST", NETLIFY_BUILD_HOOK, params=environment)
+    response = requests.request("POST", NETLIFY_BUILD_HOOK, params=HTTP_parameters, data=environment)
 
     # pprint(response.status_code)
     # pprint(response.headers)
