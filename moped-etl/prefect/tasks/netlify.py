@@ -48,6 +48,8 @@ def netlify_check_build(branch, build_token):
             # pprint(deployment)
             break
 
+    print ("State: " + str(state))
+
     if state != "ready":
         raise Exception("Build is not ready")
 
