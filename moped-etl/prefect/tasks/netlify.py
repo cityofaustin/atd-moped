@@ -13,7 +13,9 @@ NETLIFY_BUILD_HOOK = os.environ["NETLIFY_BUILD_HOOK"]
 NETLIFY_ACCESS_TOKEN = os.environ["NETLIFY_ACCESS_TOKEN"]
 NETLIFY_SITE_ID = os.environ["NETLIFY_SITE_ID"]
 NETLIFY_API_URL = os.environ["NETLIFY_API_URL"]
-NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS = os.environ["NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS"]
+NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS = os.environ[
+    "NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS"
+]
 
 
 def pprint(string):
@@ -31,10 +33,7 @@ def netlify_check_build(branch, build_token):
 
     URL = NETLIFY_API_URL + "sites/" + NETLIFY_SITE_ID + "/deploys"
     headers = {"Authorization": "Bearer " + NETLIFY_ACCESS_TOKEN}
-    parameters = {
-        "page": 1,
-        "per_page": NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS,
-    }
+    parameters = {"page": 1, "per_page": NETLIFY_SEARCH_BACK_DISTANCE_FIND_BUILDS}
 
     request = requests.request("GET", URL, headers=headers, params=parameters)
     response = json.loads(request.text)
@@ -64,15 +63,14 @@ def trigger_netlify_build(branch):
         "trigger_title": "Test Build of " + branch,
     }
 
-
     # See https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/.env-cmdrc#L52-L76
     # These values can be overloaded for a frontend deployment.
     # This is how we would set a graphql-endpoint URL, for example.
     # ↓↓↓↓
 
     ENV = {
-        #"REACT_APP_HASURA_ENDPOINT": graphql_endpoint_url,
-        #"REACT_APP_API_ENDPOINT": api_endpoint_url,
+        # "REACT_APP_HASURA_ENDPOINT": graphql_endpoint_url,
+        # "REACT_APP_API_ENDPOINT": api_endpoint_url,
     }
 
     environment = json.dumps(ENV)
