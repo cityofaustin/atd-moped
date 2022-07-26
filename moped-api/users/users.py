@@ -375,6 +375,7 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
         request.json.pop("date_added", None)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
+        roles = json_data.get("roles", None)
 
         cognito_payload = {
             email: email,
@@ -393,16 +394,11 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
-        # We don't want to activate a user that is already active
-        # if is_deleted == False:
-        #     return jsonify({"error": {"message": "User is already active"}}), 400
-
         if password is None or password == "":
             return jsonify({"error": {"message": "No password provided."}}), 400
 
-        # If we have all we need, create a new Cognito user
-        # By:
-        # 1. Creating Cognito entry
+        # Now that we have the data needed:
+        # 1. Create Cognito user
         try:
             cognito_response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
@@ -425,14 +421,15 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
             return jsonify(e.response), 400  # Bad request
 
         # Retrieve current profile (to fetch old email)
-        user_info = cognito_client.admin_get_user(
-            UserPoolId=USER_POOL, Username=cognito_username_uuid
-        )
-        user_email_before_update = get_user_email_from_attr(user_attr=user_info)
+        # user_info = cognito_client.admin_get_user(
+        #     UserPoolId=USER_POOL, Username=cognito_username_uuid
+        # )
+        # user_email_before_update = get_user_email_from_attr(user_attr=user_info)
 
-        json_data = request.json
-        roles = json_data.get("roles", None)
+        # json_data = request.json
+        # roles = json_data.get("roles", None)
 
+        # 2. Update database user table row with any changes from the form
         user_profile = generate_user_profile(
             cognito_id=cognito_username_uuid, json_data=request.json
         )
@@ -468,27 +465,27 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
             UserAttributes=updated_attributes,
         )
 
-        # Delete the email if it is different
-        if user_email_before_update != json_data["email"]:
-            delete_claims(user_email=user_email_before_update)
+        # # Delete the email if it is different
+        # if user_email_before_update != json_data["email"]:
+        #     delete_claims(user_email=user_email_before_update)
 
-        # 2. Create the DynamoDB claims entry
-        if roles:
-            user_claims = format_claims(
-                user_id=cognito_username_uuid,
-                roles=roles,
-                database_id=database_id,
-                workgroup_id=workgroup_id,
-            )
+        # 3. Create DynamoDB claims entry
+        user_claims = format_claims(
+            user_id=cognito_username_uuid,
+            roles=roles,
+            database_id=database_id,
+            workgroup_id=workgroup_id,
+        )
 
-            put_claims(
-                user_email=user_profile["email"],
-                user_claims=user_claims,
-                cognito_uuid=cognito_username_uuid,
-                database_id=database_id,
-                workgroup_id=workgroup_id,
-            )
+        put_claims(
+            user_email=user_profile["email"],
+            user_claims=user_claims,
+            cognito_uuid=cognito_username_uuid,
+            database_id=database_id,
+            workgroup_id=workgroup_id,
+        )
 
+        # Return success details
         response = {
             "success": {
                 "message": f"User updated: {cognito_username_uuid}",
