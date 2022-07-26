@@ -102,18 +102,6 @@ def is_users_password(user_profile: dict, request_cognito_id: str) -> bool:
     return is_users_password
 
 
-def is_valid_uuid(cognito_id: str) -> bool:
-    """
-    Returns true if the cognito_id string is a valid UUID format.
-    :param str cognito_id: The string to be evaluated
-    :return bool:
-    """
-    pattern = re.compile(
-        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    )
-    return True if pattern.search(cognito_id) else False
-
-
 """
 User profile dictionary example:
     user_profile = {
@@ -176,44 +164,6 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
         variables={"userBoolExp": {"cognito_user_id": {"_eq": user_cognito_id}}},
     )
     return response.json()
-
-
-def db_user_exists(user_email: str) -> tuple:
-    """
-    Runs a search in the database for any users with the email
-    or user_cognito_uuid provided.
-    :param str user_email: The email to search
-    :return tuple:
-    """
-    # Find the user
-    try:
-        response = run_query(
-            query=GRAPHQL_USER_EXISTS, variables={"userEmail": user_email}
-        ).json()
-    except:
-        return False, None
-
-    # Check if response is not a valid response
-    if not isinstance(response, dict):
-        return False, None
-
-    # If we have a response but it is not data, then it's an error. Return false.
-    if "data" not in response or "moped_users" not in response["data"]:
-        return False, None
-
-    # If the list is empty, then the user does not exist
-    if len(response["data"]["moped_users"]) == 0:
-        return False, None
-
-    # Select the first element (it should be the only element)
-    moped_user = response["data"]["moped_users"][0]
-
-    # Check if the user is in fact what we are looking for
-    if moped_user["email"] == user_email:
-        return True, moped_user["cognito_user_id"]
-
-    # It's not
-    return False, None
 
 
 def get_user_email_from_attr(user_attr: object) -> str:

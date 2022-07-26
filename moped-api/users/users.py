@@ -16,11 +16,9 @@ from users.helpers import (
     is_valid_user_password,
     is_users_password,
     is_valid_user_profile,
-    is_valid_uuid,
     db_create_user,
     db_update_user,
     db_deactivate_user,
-    db_user_exists,
     cognito_user_exists,
 )
 
@@ -224,7 +222,6 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         is_deleted = request.json.get("is_deleted", False)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
-        reactivate_account = False
 
         # Check if there is email provided
         if email is None:
@@ -356,10 +353,6 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 # 2. They are deleted from the Cognito user pool
 # 3. Their SSO entry is deleted from the Cognito user pool
 # 4. Their claims are deleted from DynamoDB
-
-# Data we need to reactivate:
-# - email
-# - password
 @users_blueprint.route("/activate/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
@@ -375,12 +368,7 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
         request.json.pop("date_added", None)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
-        roles = json_data.get("roles", None)
-
-        cognito_payload = {
-            email: email,
-            password: password,
-        }
+        roles = request.json.get("roles", None)
 
         # Check if there is email provided
         if email is None:
@@ -403,13 +391,13 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
             cognito_response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
                 Username=email,
-                TemporaryPassword=cognito_payload["password"],
+                TemporaryPassword=password,
                 UserAttributes=[
-                    {"Name": "email", "Value": cognito_payload["email"]},
+                    {"Name": "email", "Value": email},
                     {"Name": "email_verified", "Value": "true"},
                 ],
             )
-            # Then  we must set the user password
+            # Make the temporary password permanent
             cognito_username_uuid = cognito_response["User"]["Username"]
             cognito_client.admin_set_user_password(
                 UserPoolId=USER_POOL,
@@ -418,16 +406,7 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
                 Permanent=True,
             )
         except ClientError as e:
-            return jsonify(e.response), 400  # Bad request
-
-        # Retrieve current profile (to fetch old email)
-        # user_info = cognito_client.admin_get_user(
-        #     UserPoolId=USER_POOL, Username=cognito_username_uuid
-        # )
-        # user_email_before_update = get_user_email_from_attr(user_attr=user_info)
-
-        # json_data = request.json
-        # roles = json_data.get("roles", None)
+            return jsonify(e.response), 400
 
         # 2. Update database user table row with any changes from the form
         user_profile = generate_user_profile(
@@ -464,10 +443,6 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
             Username=cognito_username_uuid,
             UserAttributes=updated_attributes,
         )
-
-        # # Delete the email if it is different
-        # if user_email_before_update != json_data["email"]:
-        #     delete_claims(user_email=user_email_before_update)
 
         # 3. Create DynamoDB claims entry
         user_claims = format_claims(
