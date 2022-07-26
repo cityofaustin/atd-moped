@@ -351,6 +351,143 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         abort(403)
 
 
+@users_blueprint.route("/activate/<id>", methods=["PUT"])
+@cognito_auth_required
+@normalize_claims
+def user_activate_user(id: str, claims: list) -> (Response, int):
+    """
+    Returns activated user details
+    :return Response, int:
+    """
+    if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
+        cognito_client = boto3.client("cognito-idp")
+
+        # Remove date_added, if provided, so we don't reset this field
+        request.json.pop("date_added", None)
+        is_deleted = request.json.get("is_deleted", False)
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        reactivate_account = False
+
+        # Check if there is email provided
+        if email is None:
+            return jsonify({"error": {"message": "No email provided"}}), 400
+
+        profile_valid, profile_error_feedback = is_valid_user_profile(
+            user_profile=request.json, ignore_fields=["password"]
+        )
+
+        if not profile_valid:
+            return jsonify({"error": profile_error_feedback}), 400
+
+        # We don't want to activate a user that is already active
+        # if is_deleted == False:
+        #     return jsonify({"error": {"message": "User is already active"}}), 400
+
+        if password is None or password == "":
+            return jsonify({"error": {"message": "No password provided."}}), 400
+
+        # If we have all we need, then we proceed
+        try:
+            cognito_response = cognito_client.admin_create_user(
+                UserPoolId=USER_POOL,
+                Username=email,
+                TemporaryPassword=password,
+                UserAttributes=[
+                    {"Name": "email", "Value": email},
+                    {"Name": "email_verified", "Value": "true"},
+                ],
+            )
+            # Then  we must set the user password
+            cognito_username = cognito_response["User"]["Username"]
+            cognito_client.admin_set_user_password(
+                UserPoolId=USER_POOL,
+                Username=cognito_username,
+                Password=password,
+                Permanent=True,
+            )
+            # Copy the username to the UUID variable
+            user_cognito_uuid = cognito_username
+            id = cognito_username
+            reactivate_account = True
+        except ClientError as e:
+            return jsonify(e.response), 400  # Bad request
+
+        # Retrieve current profile (to fetch old email)
+        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        user_email_before_update = get_user_email_from_attr(user_attr=user_info)
+
+        json_data = request.json
+        roles = json_data.get("roles", None)
+
+        user_profile = generate_user_profile(cognito_id=id, json_data=request.json)
+
+        db_response = db_update_user(
+            user_profile=user_profile, search_by_email=reactivate_account
+        )
+
+        if "errors" in db_response:
+            response = {
+                "error": {
+                    "message": f"Cannot update user {id}",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 400
+
+        # Check we received a database_id and workgroup_id from database
+        database_id, workgroup_id = get_user_database_ids(response=db_response)
+
+        if database_id == "0" or workgroup_id == "0":
+            response = {
+                "error": {
+                    "message": f"Cannot update user, invalid database id or workgroup id.",
+                    "database": db_response,
+                }
+            }
+            return jsonify(response), 400
+
+        updated_attributes = generate_cognito_attributes(user_profile=json_data)
+
+        cognito_response = cognito_client.admin_update_user_attributes(
+            UserPoolId=USER_POOL,
+            Username=id,
+            UserAttributes=updated_attributes,
+        )
+
+        # Delete the email if it is different
+        if user_email_before_update != json_data["email"]:
+            delete_claims(user_email=user_email_before_update)
+
+        if roles:
+            user_claims = format_claims(
+                user_id=id,
+                roles=roles,
+                database_id=database_id,
+                workgroup_id=workgroup_id,
+            )
+
+            put_claims(
+                user_email=user_profile["email"],
+                user_claims=user_claims,
+                cognito_uuid=id,
+                database_id=database_id,
+                workgroup_id=workgroup_id,
+            )
+
+        response = {
+            "success": {
+                "message": f"User updated: {id}",
+                "cognito": cognito_response,
+                "database": db_response,
+            }
+        }
+
+        return jsonify(response)
+    else:
+        abort(403)
+
+
 @users_blueprint.route("/<id>", methods=["DELETE"])
 @cognito_auth_required
 @normalize_claims
