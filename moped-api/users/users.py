@@ -351,6 +351,11 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         abort(403)
 
 
+# When a user is deactivated:
+# 1. They are marked in the database as is_deleted = true and cognito_user_id = null
+# 2. They are deleted from the Cognito user pool
+# 3. Their SSO entry is deleted from the Cognito user pool
+# 4. Their claims are deleted from DynamoDB
 @users_blueprint.route("/activate/<id>", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
@@ -367,12 +372,12 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
         is_deleted = request.json.get("is_deleted", False)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
-        reactivate_account = False
 
         # Check if there is email provided
         if email is None:
             return jsonify({"error": {"message": "No email provided"}}), 400
 
+        # Need to figure out if we should ignore password here or not, it is validated on the front end
         profile_valid, profile_error_feedback = is_valid_user_profile(
             user_profile=request.json, ignore_fields=["password"]
         )
@@ -387,7 +392,7 @@ def user_activate_user(id: str, claims: list) -> (Response, int):
         if password is None or password == "":
             return jsonify({"error": {"message": "No password provided."}}), 400
 
-        # If we have all we need, then we proceed
+        # If we have all we need, create a new Coginito user
         try:
             cognito_response = cognito_client.admin_create_user(
                 UserPoolId=USER_POOL,
