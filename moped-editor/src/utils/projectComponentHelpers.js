@@ -48,23 +48,12 @@ export const useLineRepresentable = mopedComponents => {
   const [lineRepresentable, setLineRepresentable] = useState([]);
   useEffect(() => {
     if (!mopedComponents) return;
-    // let lineRepresentableNew = [
-    //   ...new Set(
-    //     mopedComponents.map(moped_component => {
-    //       console.log(moped_component)
-    //       return (moped_component?.line_representation
-    //         ? moped_component.component_name.toLowerCase()
-    //         : null)
-    //     }
-    //     )
-    //   ),
-    // ].filter(item => item);
-    let lineRepresentableNew = {}
+    const lineRepresentableNew = {}
     mopedComponents.forEach(moped_component => {
-      const lineKey =
+      const componentNameKey =
         moped_component.component_name.toLowerCase().replaceAll(" ", "") +
         (moped_component.component_subtype ?? "").toLowerCase().replaceAll(" ", "");
-      lineRepresentableNew[lineKey] = moped_component?.line_representation ?? false;
+      lineRepresentableNew[componentNameKey] = moped_component?.line_representation ?? false;
     })
     setLineRepresentable(lineRepresentableNew);
   }, [mopedComponents]);
