@@ -200,7 +200,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       roles: rolesArray,
     };
 
-    // Navigate to user table on successful add/edit
+    // Navigate to user table on success
     const callback = () => navigate("/moped/staff");
 
     requestApi({

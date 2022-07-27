@@ -42,9 +42,10 @@ GRAPHQL_UPDATE_USER = """
     }
 """
 
-GRAPHQL_ACTIVATE_USER = """
-    mutation update_moped_user($userEmail: citext!, $cognitoUserId: citext!) {
-      update_moped_users(where: { email: { _eq: $userEmail } }, _set: { is_deleted: false, cognito_user_id: $cognitoUserId}){
+
+GRAPHQL_DEACTIVATE_USER = """
+    mutation update_moped_user($userBoolExp: moped_users_bool_exp!) {
+      update_moped_users(where: $userBoolExp, _set: { is_deleted: true, cognito_user_id: null }) {
         affected_rows
         returning {
           user_id
@@ -55,9 +56,9 @@ GRAPHQL_ACTIVATE_USER = """
 """
 
 
-GRAPHQL_DEACTIVATE_USER = """
-    mutation update_moped_user($userBoolExp: moped_users_bool_exp!) {
-      update_moped_users(where: $userBoolExp, _set: { is_deleted: true, cognito_user_id: null }) {
+GRAPHQL_ACTIVATE_USER = """
+    mutation update_moped_user($userEmail: citext!, $cognitoUserId: citext!) {
+      update_moped_users(where: { email: { _eq: $userEmail } }, _set: { is_deleted: false, cognito_user_id: $cognitoUserId}){
         affected_rows
         returning {
           user_id
