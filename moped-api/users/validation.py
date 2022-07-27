@@ -78,7 +78,7 @@ USER_VALIDATION_SCHEMA = {
         "required": True,
         "minlength": 8,
         "maxlength": 32,
-        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$",
+        "regex": "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
     },
     "roles": {
         "type": ["list"],
@@ -97,6 +97,6 @@ PASSWORD_VALIDATION_SCHEMA = {
         "required": True,
         "minlength": 8,
         "maxlength": 32,
-        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$]*$",
+        "regex": "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$",
     },
 }
