@@ -297,7 +297,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         hideCloseButton: true,
       });
     } else {
-      handleActivateUser();
+      handleUserActivation();
       setModalState({
         open: true,
         title: "Activating",
