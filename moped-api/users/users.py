@@ -217,38 +217,49 @@ def user_update_user(id: str, claims: list) -> (Response, int):
     """
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
+        cognito_user_id = id
 
-        # Remove date_added, if provided, so we don't reset this field
-        request.json.pop("date_added", None)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
+        roles = request.get("roles", None)
 
         # Check if there is email provided
         if email is None:
             return jsonify({"error": {"message": "No email provided"}}), 400
 
+        # Validate user details and password
         profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json, ignore_fields=["password"]
+            user_profile=request.json
         )
 
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
-        # Retrieve current profile (to fetch old email)
-        user_info = cognito_client.admin_get_user(UserPoolId=USER_POOL, Username=id)
+        # If a password was included, let's reset it
+        if password is not None:
+            cognito_client.admin_set_user_password(
+                UserPoolId=USER_POOL,
+                Username=cognito_user_id,
+                Password=password,
+                Permanent=True,
+            )
+
+        # Retrieve current profile to fetch old email in case a new one was in the payload
+        user_info = cognito_client.admin_get_user(
+            UserPoolId=USER_POOL, Username=cognito_user_id
+        )
         user_email_before_update = get_user_email_from_attr(user_attr=user_info)
 
-        json_data = request.json
-        roles = json_data.get("roles", None)
-
-        user_profile = generate_user_profile(cognito_id=id, json_data=request.json)
+        user_profile = generate_user_profile(
+            cognito_id=cognito_user_id, json_data=request.json
+        )
 
         db_response = db_update_user(user_profile=user_profile)
 
         if "errors" in db_response:
             response = {
                 "error": {
-                    "message": f"Cannot update user {id}",
+                    "message": f"Cannot update user {cognito_user_id}",
                     "database": db_response,
                 }
             }
@@ -266,16 +277,16 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             }
             return jsonify(response), 400
 
-        updated_attributes = generate_cognito_attributes(user_profile=json_data)
+        updated_attributes = generate_cognito_attributes(user_profile=request.json)
 
         cognito_response = cognito_client.admin_update_user_attributes(
             UserPoolId=USER_POOL,
-            Username=id,
+            Username=cognito_user_id,
             UserAttributes=updated_attributes,
         )
 
         # Delete the email if it is different
-        if user_email_before_update != json_data["email"]:
+        if user_email_before_update != email:
             delete_claims(user_email=user_email_before_update)
 
         if roles:
@@ -296,7 +307,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         response = {
             "success": {
-                "message": f"User updated: {id}",
+                "message": f"User updated: {cognito_user_id}",
                 "cognito": cognito_response,
                 "database": db_response,
             }
