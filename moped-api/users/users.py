@@ -18,6 +18,7 @@ from users.helpers import (
     is_valid_user_profile,
     db_create_user,
     db_update_user,
+    db_activate_user,
     db_deactivate_user,
     cognito_user_exists,
 )
@@ -366,8 +367,9 @@ def user_activate_user(claims: list) -> (Response, int):
             cognito_id=cognito_username_uuid, json_data=request.json
         )
 
-        # Find database entry for the previously inactivated user by email
-        db_response = db_update_user(user_profile=user_profile, search_by_email=True)
+        db_response = db_activate_user(
+            user_email=email, user_cognito_id=cognito_username_uuid
+        )
 
         if "errors" in db_response:
             response = {

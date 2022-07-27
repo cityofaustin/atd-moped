@@ -14,7 +14,7 @@ from users.queries import (
     GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER,
-    GRAPHQL_USER_EXISTS,
+    GRAPHQL_ACTIVATE_USER,
 )
 from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
@@ -149,6 +149,19 @@ def db_update_user(user_profile: dict, search_by_email: bool = False) -> dict:
             "userBoolExp": {**search_logic},
             "user": user_profile,
         },
+    )
+    return response.json()
+
+
+def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
+    """
+    Activates a user in the database via GraphQL
+    :param str user_cognito_id: The cognito id of the user
+    :return dict: The response from the GraphQL server
+    """
+    response = run_query(
+        query=GRAPHQL_ACTIVATE_USER,
+        variables={"userEmail": user_email, "cognitoUserId": user_cognito_id},
     )
     return response.json()
 
