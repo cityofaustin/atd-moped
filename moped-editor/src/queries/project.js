@@ -155,7 +155,7 @@ export const TYPES_QUERY = gql`
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      where: { project_id: { _eq: $projectId } }
     ) {
       user_id
       role_id
@@ -164,11 +164,13 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      is_deleted
       moped_user {
         first_name
         last_name
         workgroup_id
         user_id
+        is_deleted
       }
     }
     moped_workgroup {
@@ -183,14 +185,12 @@ export const TEAM_QUERY = gql`
       project_role_name
       project_role_description
     }
-    moped_users(
-      order_by: { last_name: asc }
-      where: { is_deleted: { _eq: false } }
-    ) {
+    moped_users( order_by: { last_name: asc } ) {
       first_name
       last_name
       workgroup_id
       user_id
+      is_deleted
     }
   }
 `;
@@ -437,7 +437,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where: { is_deleted: { _eq: false } }) {
+    moped_users {
       first_name
       last_name
       user_id
