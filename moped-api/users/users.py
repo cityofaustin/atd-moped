@@ -319,7 +319,6 @@ def user_activate_user(claims: list) -> (Response, int):
         cognito_client = boto3.client("cognito-idp")
 
         # Remove date_added, if provided, so we don't reset this field
-        request.json.pop("date_added", None)
         email = request.json.get("email", None)
         password = request.json.get("password", None)
         roles = request.json.get("roles", None)
@@ -327,14 +326,6 @@ def user_activate_user(claims: list) -> (Response, int):
         # Check if there is email provided
         if email is None:
             return jsonify({"error": {"message": "No email provided"}}), 400
-
-        # Need to figure out if we should ignore password here or not, it is validated on the front end
-        profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json, ignore_fields=["password"]
-        )
-
-        if not profile_valid:
-            return jsonify({"error": profile_error_feedback}), 400
 
         if password is None or password == "":
             return jsonify({"error": {"message": "No password provided."}}), 400
@@ -363,10 +354,6 @@ def user_activate_user(claims: list) -> (Response, int):
             return jsonify(e.response), 400
 
         # 2. Update database user table row with any changes from the form
-        user_profile = generate_user_profile(
-            cognito_id=cognito_username_uuid, json_data=request.json
-        )
-
         db_response = db_activate_user(
             user_email=email, user_cognito_id=cognito_username_uuid
         )
@@ -401,7 +388,7 @@ def user_activate_user(claims: list) -> (Response, int):
         )
 
         put_claims(
-            user_email=user_profile["email"],
+            user_email=email,
             user_claims=user_claims,
             cognito_uuid=cognito_username_uuid,
             database_id=database_id,
