@@ -32,7 +32,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   formSelect: {
     minWidth: 195,
   },
@@ -69,18 +69,14 @@ const roles = [
 ];
 
 // Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = isNewUser =>
+const staffValidationSchema = (isNewUser) =>
   yup.object().shape({
     first_name: yup.string().required(),
     last_name: yup.string().required(),
     title: yup.string().required(),
     workgroup: yup.string().required(),
     workgroup_id: yup.string().required(),
-    email: yup
-      .string()
-      .required()
-      .email()
-      .lowercase(),
+    email: yup.string().required().email().lowercase(),
     password: yup.mixed().when({
       // If we are editing a user, password is optional
       is: () => isNewUser,
@@ -91,8 +87,8 @@ const staffValidationSchema = isNewUser =>
   });
 
 const fieldParsers = {
-  workgroup_id: id => parseInt(id),
-  roles: role => [role],
+  workgroup_id: (id) => parseInt(id),
+  roles: (role) => [role],
 };
 
 /**
@@ -154,7 +150,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    * Controls the onSubmit data event
    * @param {Object} data - The data being submitted
    */
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     // Parse values with fns from config
     Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
       const originalValue = data[fieldName];
@@ -186,6 +182,35 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     });
   };
 
+  /**
+   * Send a request to the user activation route of the Moped API
+   */
+  const handleUserActivation = () => {
+    // Parse values with fns from config
+    const email = getValues("email");
+    const password = getValues("password");
+    const roles = getValues("roles");
+    const rolesParser = fieldParsers["roles"];
+    // The backend uses an array for roles
+    const rolesArray = rolesParser(roles);
+
+    const data = {
+      email,
+      password,
+      roles: rolesArray,
+    };
+
+    // Navigate to user table on successful add/edit
+    const callback = () => navigate("/moped/staff");
+
+    requestApi({
+      method: "put",
+      path: "/users/activate/",
+      payload: data,
+      callback,
+    });
+  };
+
   const {
     loading: workgroupLoading,
     error: workgroupError,
@@ -197,7 +222,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    * @param {Object} e - Event
    * @returns {string} - The workgroup name
    */
-  const updateWorkgroupFields = e => {
+  const updateWorkgroupFields = (e) => {
     const workgroupId = e.nativeEvent.target.dataset.id;
     const workgroupName = e.target.value;
 
@@ -272,9 +297,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
         hideCloseButton: true,
       });
     } else {
-      // Activate the user by clicking the Save button to submit the form
-      // is_deleted = false is passed in the triggered onSubmit handler
-      submitButtonEl.current.click();
+      handleActivateUser();
       setModalState({
         open: true,
         title: "Activating",
@@ -436,11 +459,11 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
-                    onChange={e => onChange(updateWorkgroupFields(e))}
+                    onChange={(e) => onChange(updateWorkgroupFields(e))}
                     inputRef={ref}
                     value={value}
                   >
-                    {workgroups.moped_workgroup.map(workgroup => (
+                    {workgroups.moped_workgroup.map((workgroup) => (
                       <MenuItem
                         key={workgroup.workgroup_id}
                         value={workgroup.workgroup_name}
@@ -478,7 +501,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
-                  {roles.map(role => (
+                  {roles.map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}
