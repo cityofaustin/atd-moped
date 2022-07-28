@@ -221,7 +221,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         email = request.json.get("email", None)
         password = request.json.get("password", None)
-        roles = request.get("roles", None)
+        roles = request.json.get("roles", None)
 
         # Check if there is email provided
         if email is None:
