@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { formatApiErrors, useUserApi } from "./helpers";
+import {
+  formatApiErrors,
+  useUserApi,
+  roleLooksGood,
+  passwordLooksGood,
+} from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -98,7 +103,14 @@ const fieldParsers = {
  * @returns {JSX.Element}
  * @constructor
  */
-const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
+const StaffForm = ({
+  editFormData = null,
+  userCognitoId,
+  onFormSubmit,
+  apiErrors,
+  setApiError,
+  isRequesting,
+}) => {
   const classes = useStyles();
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
@@ -109,10 +121,10 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
    * api request loading state and errors from the api.
    */
   const {
-    loading: userApiLoading,
+    // loading: userApiLoading,
     requestApi,
-    error: apiErrors,
-    setError,
+    // error: apiErrors,
+    // setError,
     setLoading,
   } = useUserApi();
 
@@ -158,25 +170,13 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
       data[fieldName] = parsedValue;
     });
 
-    // POST or PUT request to User Management API
-    // const method = isNewUser ? "post" : "put";
-    // const path = isNewUser ? "/users/" : "/users/" + userCognitoId;
+    // Remove unedited values from the payload
+    Object.keys(data).forEach((field) => {
+      if (!dirtyFields.hasOwnProperty(field)) {
+        delete data[field];
+      }
+    });
 
-    // If editing and password is not updated, remove it
-    // TODO: Don't pass any fields that are not dirty
-    if (!dirtyFields?.password) {
-      delete data.password;
-    }
-
-    // Navigate to user table on successful add/edit
-    // const callback = () => navigate("/moped/staff");
-
-    // requestApi({
-    //   method,
-    //   path,
-    //   payload: data,
-    //   callback,
-    // });
     onFormSubmit(data);
   };
 
@@ -248,28 +248,10 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
   };
 
   /**
-   * Makes sure the password looks ok
-   * @returns {boolean}
-   */
-  const passwordLooksGood = () =>
-    new RegExp(
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
-    ).test(getValues("password"));
-
-  /**
-   * Makes sure a role has been selected
-   * @returns {boolean}
-   */
-  const roleLooksGood = () =>
-    ["moped-viewer", "moped-editor", "moped-admin"].includes(
-      getValues("roles")
-    );
-
-  /**
    * Handle Activate User Confirm
    */
   const handleActivateConfirm = () => {
-    if (!passwordLooksGood()) {
+    if (!passwordLooksGood(getValues("password"))) {
       setModalState({
         open: true,
         title: "Error",
@@ -284,7 +266,7 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
         actionButtonLabel: "Ok",
         hideCloseButton: true,
       });
-    } else if (!roleLooksGood()) {
+    } else if (!roleLooksGood(getValues("roles"))) {
       setModalState({
         open: true,
         title: "Error",
@@ -347,7 +329,7 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
    */
   const clearApiErrors = () => {
     setIsApiErrorOpen(false);
-    setError(null);
+    setApiError(null);
     setLoading(false);
   };
 
@@ -523,7 +505,7 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
           &nbsp;
         </Grid>
         <Grid item xs={12} md={6}>
-          {!apiErrors && (userApiLoading || isSubmitting) ? (
+          {!apiErrors && (isRequesting || isSubmitting) ? (
             <CircularProgress />
           ) : (
             <>
@@ -588,7 +570,7 @@ const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
                   No
                 </Button>
               )}
-              {userApiLoading ? (
+              {isRequesting ? (
                 <CircularProgress />
               ) : (
                 !modalState?.hideActionButton && (

@@ -108,6 +108,7 @@ const EditStaffView = () => {
                       editFormData={formatUserFormData(data.moped_users[0])}
                       userCognitoId={userCognitoId}
                       onFormSubmit={onFormSubmit}
+                      apiErrors={apiErrors}
                     />
                   )}
                 </CardContent>

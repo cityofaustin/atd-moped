@@ -29,13 +29,13 @@ export function useUserApi() {
     setLoading(true);
 
     axios(config)
-      .then(res => {
+      .then((res) => {
         setResult(res.data);
         setError(null); // Clear errors from previous attempts
         setLoading(false);
         !!callback && callback();
       })
-      .catch(err => {
+      .catch((err) => {
         const otherError = err?.response?.data?.message
           ? {
               error: {
@@ -57,7 +57,23 @@ const errorsToTranslate = {
     "password must only contain: a-z, A-Z, 0-9, and any of these special characters: _-!@%^~?.:&()[]$",
 };
 
-export const formatApiErrors = errorsArray =>
+export const formatApiErrors = (errorsArray) =>
   errorsArray
-    ? errorsArray.map(error => errorsToTranslate[error] || error).join(", ")
+    ? errorsArray.map((error) => errorsToTranslate[error] || error).join(", ")
     : null;
+
+/**
+ * Makes sure the password looks ok
+ * @returns {boolean}
+ */
+export const passwordLooksGood = (password) =>
+  new RegExp(
+    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+  ).test(password);
+
+/**
+ * Makes sure a role has been selected
+ * @returns {boolean}
+ */
+export const roleLooksGood = (roles) =>
+  ["moped-viewer", "moped-editor", "moped-admin"].includes(roles);

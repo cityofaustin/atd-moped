@@ -30,7 +30,7 @@ const NewStaffView = () => {
     loading: userApiLoading,
     requestApi,
     error: apiErrors,
-    setError,
+    setError: setApiError,
     setLoading,
   } = useUserApi();
 
@@ -58,7 +58,12 @@ const NewStaffView = () => {
             <CardHeader title="Add User" />
             <Divider />
             <CardContent>
-              <StaffForm onFormSubmit={onFormSubmit} />
+              <StaffForm
+                onFormSubmit={onFormSubmit}
+                apiErrors={apiErrors}
+                isRequesting={userApiLoading}
+                setApiError={setApiError}
+              />
             </CardContent>
           </Card>
         </Box>
