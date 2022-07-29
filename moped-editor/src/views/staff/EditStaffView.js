@@ -42,8 +42,8 @@ const GET_USER = gql`
 `;
 
 const fieldFormatters = {
-  workgroup_id: id => id.toString(),
-  roles: roles => findHighestRole(roles),
+  workgroup_id: (id) => id.toString(),
+  roles: (roles) => findHighestRole(roles),
 };
 
 const EditStaffView = () => {
@@ -57,7 +57,7 @@ const EditStaffView = () => {
     console.log(error);
   }
 
-  const formatUserFormData = data => {
+  const formatUserFormData = (data) => {
     // Format to types required by MUI form components
     Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
       const originalValue = data[fieldName];
@@ -78,6 +78,22 @@ const EditStaffView = () => {
     return data;
   };
 
+  /**
+   * Controls the onSubmit data event
+   * @param {Object} data - The data being submitted
+   */
+  const onFormSubmit = (data) => {
+    // Navigate to user table on successful add/edit
+    const callback = () => navigate("/moped/staff");
+
+    requestApi({
+      method: "put",
+      path: "/users/" + userCognitoId,
+      payload: data,
+      callback,
+    });
+  };
+
   return (
     <>
       {data && !data?.moped_users?.length && <NotFoundView />}
@@ -95,6 +111,7 @@ const EditStaffView = () => {
                     <StaffForm
                       editFormData={formatUserFormData(data.moped_users[0])}
                       userCognitoId={data.moped_users[0].cognito_user_id}
+                      onFormSubmit={onFormSubmit}
                     />
                   )}
                 </CardContent>

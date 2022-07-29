@@ -98,11 +98,10 @@ const fieldParsers = {
  * @returns {JSX.Element}
  * @constructor
  */
-const StaffForm = ({ editFormData = null, userCognitoId }) => {
+const StaffForm = ({ editFormData = null, userCognitoId, onFormSubmit }) => {
   const classes = useStyles();
   let navigate = useNavigate();
   const isNewUser = editFormData === null;
-  const submitButtonEl = useRef();
   const is_deleted = editFormData?.is_deleted;
 
   /**
@@ -160,23 +159,25 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
     });
 
     // POST or PUT request to User Management API
-    const method = isNewUser ? "post" : "put";
-    const path = isNewUser ? "/users/" : "/users/" + userCognitoId;
+    // const method = isNewUser ? "post" : "put";
+    // const path = isNewUser ? "/users/" : "/users/" + userCognitoId;
 
     // If editing and password is not updated, remove it
+    // TODO: Don't pass any fields that are not dirty
     if (!dirtyFields?.password) {
       delete data.password;
     }
 
     // Navigate to user table on successful add/edit
-    const callback = () => navigate("/moped/staff");
+    // const callback = () => navigate("/moped/staff");
 
-    requestApi({
-      method,
-      path,
-      payload: data,
-      callback,
-    });
+    // requestApi({
+    //   method,
+    //   path,
+    //   payload: data,
+    //   callback,
+    // });
+    onFormSubmit(data);
   };
 
   /**
@@ -533,7 +534,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                 type="submit"
                 color="primary"
                 variant="contained"
-                ref={submitButtonEl}
               >
                 Save
               </Button>
