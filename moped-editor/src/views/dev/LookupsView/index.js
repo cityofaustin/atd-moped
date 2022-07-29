@@ -97,7 +97,6 @@ const LookupsView = () => {
               <Typography variant="h1">Moped lookup values</Typography>
             </Grid>
           </Grid>
-          <Grid container spacing={3} className={classes.topMargin}></Grid>
           {SETTINGS.map((recordType) => (
             <Grid
               container
