@@ -329,7 +329,6 @@ def user_activate_user(claims: list) -> (Response, int):
     if is_valid_user(current_cognito_jwt) and has_user_role("moped-admin", claims):
         cognito_client = boto3.client("cognito-idp")
 
-        # Remove date_added, if provided, so we don't reset this field
         email = request.json.get("email", None)
         password = request.json.get("password", None)
         roles = request.json.get("roles", None)
@@ -364,7 +363,7 @@ def user_activate_user(claims: list) -> (Response, int):
         except ClientError as e:
             return jsonify(e.response), 400
 
-        # 2. Update database user table row with any changes from the form
+        # 2. Update database user table row
         db_response = db_activate_user(
             user_email=email, user_cognito_id=cognito_username_uuid
         )

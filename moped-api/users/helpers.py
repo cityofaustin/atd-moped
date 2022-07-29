@@ -169,6 +169,7 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
 def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
     """
     Activates a user in the database via GraphQL
+    :param str user_email: The email of the user
     :param str user_cognito_id: The cognito id of the user
     :return dict: The response from the GraphQL server
     """

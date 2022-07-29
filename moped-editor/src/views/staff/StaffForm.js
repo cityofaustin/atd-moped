@@ -186,7 +186,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
    * Send a request to the user activation route of the Moped API
    */
   const handleUserActivation = () => {
-    // Parse values with fns from config
     const email = getValues("email");
     const password = getValues("password");
     const roles = getValues("roles");
