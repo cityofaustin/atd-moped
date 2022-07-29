@@ -365,6 +365,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             name="first_name"
             id="first-name"
             label="First Name"
+            disabled={is_deleted === true}
             InputLabelProps={{
               shrink: true,
             }}
@@ -383,6 +384,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             name="last_name"
             id="last-name"
             label="Last Name"
+            disabled={is_deleted === true}
             InputLabelProps={{
               shrink: true,
             }}
@@ -400,6 +402,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             name="title"
             id="title"
             label="Title"
+            disabled={is_deleted === true}
             InputLabelProps={{
               shrink: true,
             }}
@@ -417,6 +420,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             name="email"
             id="email"
             label="Email"
+            disabled={is_deleted === true}
             InputLabelProps={{
               shrink: true,
             }}
@@ -458,6 +462,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
+                    disabled={is_deleted === true}
                     onChange={(e) => onChange(updateWorkgroupFields(e))}
                     inputRef={ref}
                     value={value}
@@ -499,13 +504,14 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
               as={
-                <RadioGroup aria-label="roles" name="roles">
+                <RadioGroup aria-label="roles" name="roles" d>
                   {roles.map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}
                       control={<Radio />}
                       label={role.name}
+                      disabled={is_deleted === true}
                     />
                   ))}
                 </RadioGroup>
