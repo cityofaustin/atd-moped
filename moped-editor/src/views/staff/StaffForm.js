@@ -504,7 +504,7 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
               as={
-                <RadioGroup aria-label="roles" name="roles" d>
+                <RadioGroup aria-label="roles" name="roles">
                   {roles.map((role) => (
                     <FormControlLabel
                       key={role.value}
