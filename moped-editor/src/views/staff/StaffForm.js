@@ -168,9 +168,6 @@ const StaffForm = ({ editFormData = null, userCognitoId }) => {
       delete data.password;
     }
 
-    // Reactivation needs this value to pass with programmatic submission in handleActivateConfirm
-    data.is_deleted = false;
-
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
