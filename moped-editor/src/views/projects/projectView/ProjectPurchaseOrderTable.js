@@ -34,7 +34,13 @@ import {
   DELETE_PURCHASE_ORDER,
 } from "../../../queries/funding";
 
-const useStyles = makeStyles(theme => ({
+const DEFAULT_SNACKBAR_STATE = {
+  open: false,
+  message: null,
+  severity: "success",
+};
+
+const useStyles = makeStyles((theme) => ({
   addRecordButton: {
     position: "absolute",
     top: "1rem",
@@ -43,8 +49,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const ProjectPurchaseOrderTable = () => {
-  // addAction Ref - mutable ref object used to access add action button imperatively.
-  const addActionRef = React.useRef();
   const classes = useStyles();
   const { projectId } = useParams();
 
@@ -59,11 +63,6 @@ const ProjectPurchaseOrderTable = () => {
   const [updatePurchaseOrder] = useMutation(UPDATE_PURCHASE_ORDER);
   const [deletePurchaseOrder] = useMutation(DELETE_PURCHASE_ORDER);
 
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: null,
-    severity: "success",
-  };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   if (loading || !data) return <CircularProgress />;
@@ -85,7 +84,7 @@ const ProjectPurchaseOrderTable = () => {
     },
     {
       title: "DO #",
-      field: "purchase_order_number"
+      field: "purchase_order_number",
     },
     {
       title: "Description",
@@ -98,10 +97,10 @@ const ProjectPurchaseOrderTable = () => {
       <MaterialTable
         columns={columns}
         components={{
-          EditRow: props => (
+          EditRow: (props) => (
             <MTableEditRow
               {...props}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                   // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -109,7 +108,7 @@ const ProjectPurchaseOrderTable = () => {
               }}
             />
           ),
-          Action: props => {
+          Action: (props) => {
             // Add action icons when for NOT "add"
             if (
               typeof props.action === typeof Function ||
@@ -125,7 +124,6 @@ const ProjectPurchaseOrderTable = () => {
                   color="primary"
                   size="large"
                   startIcon={<AddCircleIcon />}
-                  ref={addActionRef}
                   onClick={props.action.onClick}
                 >
                   Add Purchase order
@@ -173,7 +171,7 @@ const ProjectPurchaseOrderTable = () => {
           Edit: EditOutlinedIcon,
         }}
         editable={{
-          onRowAdd: newData =>
+          onRowAdd: (newData) =>
             addPurchaseOrder({
               variables: {
                 objects: {
@@ -183,7 +181,7 @@ const ProjectPurchaseOrderTable = () => {
               },
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -202,10 +200,10 @@ const ProjectPurchaseOrderTable = () => {
             delete updatePurchaseOrderData.__typename;
 
             return updatePurchaseOrder({
-              variables: updatePurchaseOrderData
+              variables: updatePurchaseOrderData,
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -218,14 +216,14 @@ const ProjectPurchaseOrderTable = () => {
                 });
               });
           },
-          onRowDelete: oldData =>
-           deletePurchaseOrder({
+          onRowDelete: (oldData) =>
+            deletePurchaseOrder({
               variables: {
-               id: oldData.id,
+                id: oldData.id,
               },
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -236,7 +234,7 @@ const ProjectPurchaseOrderTable = () => {
                   ),
                   severity: "error",
                 });
-              })
+              }),
         }}
       />
       <Snackbar
