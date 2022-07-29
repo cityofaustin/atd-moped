@@ -1,7 +1,9 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import { useParams, useNavigate } from "react-router-dom";
 import StaffForm, { initialFormValues } from "./StaffForm";
+import { useUserApi } from "./helpers";
+import { GET_USER } from "src/queries/staff";
 
 import {
   Box,
@@ -21,26 +23,6 @@ const useStyles = makeStyles(() => ({
   root: {},
 }));
 
-const GET_USER = gql`
-  query GetUser($userId: Int) {
-    moped_users(where: { user_id: { _eq: $userId } }) {
-      date_added
-      first_name
-      is_coa_staff
-      last_name
-      staff_uuid
-      title
-      user_id
-      workgroup
-      workgroup_id
-      cognito_user_id
-      email
-      roles
-      is_deleted
-    }
-  }
-`;
-
 const fieldFormatters = {
   workgroup_id: (id) => id.toString(),
   roles: (roles) => findHighestRole(roles),
@@ -49,6 +31,19 @@ const fieldFormatters = {
 const EditStaffView = () => {
   const classes = useStyles();
   const { userId } = useParams();
+  let navigate = useNavigate();
+
+  /**
+   * Make use of the useUserApi to retrieve the requestApi function and
+   * api request loading state and errors from the api.
+   */
+  const {
+    loading: userApiLoading,
+    requestApi,
+    error: apiErrors,
+    setError,
+    setLoading,
+  } = useUserApi();
 
   const { data, loading, error } = useQuery(GET_USER, {
     variables: { userId },
@@ -56,6 +51,7 @@ const EditStaffView = () => {
   if (error) {
     console.log(error);
   }
+  const userCognitoId = data?.moped_users[0]?.cognito_user_id;
 
   const formatUserFormData = (data) => {
     // Format to types required by MUI form components
@@ -110,7 +106,7 @@ const EditStaffView = () => {
                   ) : (
                     <StaffForm
                       editFormData={formatUserFormData(data.moped_users[0])}
-                      userCognitoId={data.moped_users[0].cognito_user_id}
+                      userCognitoId={userCognitoId}
                       onFormSubmit={onFormSubmit}
                     />
                   )}

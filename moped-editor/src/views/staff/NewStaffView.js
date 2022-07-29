@@ -1,5 +1,7 @@
 import React from "react";
 import StaffForm from "./StaffForm";
+import { useNavigate } from "react-router-dom";
+import { useUserApi } from "./helpers";
 
 import {
   Box,
@@ -18,6 +20,35 @@ const useStyles = makeStyles(() => ({
 
 const NewStaffView = () => {
   const classes = useStyles();
+  let navigate = useNavigate();
+
+  /**
+   * Make use of the useUserApi to retrieve the requestApi function and
+   * api request loading state and errors from the api.
+   */
+  const {
+    loading: userApiLoading,
+    requestApi,
+    error: apiErrors,
+    setError,
+    setLoading,
+  } = useUserApi();
+
+  /**
+   * Controls the onSubmit data event
+   * @param {Object} data - The data being submitted
+   */
+  const onFormSubmit = (data) => {
+    // Navigate to user table on successful add/edit
+    const callback = () => navigate("/moped/staff");
+
+    requestApi({
+      method: "post",
+      path: "/users/",
+      payload: data,
+      callback,
+    });
+  };
 
   return (
     <Page className={classes.root} title="Staff">
@@ -27,7 +58,7 @@ const NewStaffView = () => {
             <CardHeader title="Add User" />
             <Divider />
             <CardContent>
-              <StaffForm />
+              <StaffForm onFormSubmit={onFormSubmit} />
             </CardContent>
           </Card>
         </Box>
