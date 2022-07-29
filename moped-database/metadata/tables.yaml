@@ -3156,6 +3156,92 @@
       name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_purchase_order
+  object_relationships:
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
+  insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  select_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-viewer
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  update_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+  - role: moped-editor
+    permission:
+      check: {}
+      filter: {}
+      columns:
+      - id
+      - vendor
+      - purchase_order_number
+      - description
+      - project_id
+      - is_deleted
+- table:
+    schema: public
     name: moped_status
   insert_permissions:
   - role: moped-admin
