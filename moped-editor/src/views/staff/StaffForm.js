@@ -36,6 +36,7 @@ import {
   Box,
 } from "@material-ui/core";
 import clsx from "clsx";
+import StaffFormErrorModal from "./StaffFormErrorModal";
 
 const useStyles = makeStyles((theme) => ({
   formSelect: {
@@ -139,7 +140,6 @@ const StaffForm = ({
   };
 
   const [modalState, setModalState] = useState(initialModalState);
-  const [isApiErrorOpen, setIsApiErrorOpen] = useState(false);
 
   const {
     register,
@@ -328,13 +328,9 @@ const StaffForm = ({
    * Clears the API errors window and closes it
    */
   const clearApiErrors = () => {
-    setIsApiErrorOpen(false);
     setApiError(null);
     setLoading(false);
   };
-
-  // If there are any api errors, and the modal is closed, open it
-  if (apiErrors && !isApiErrorOpen) setIsApiErrorOpen(true);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -581,26 +577,7 @@ const StaffForm = ({
               )}
             </DialogActions>
           </Dialog>
-          <Dialog
-            open={!!apiErrors}
-            onClose={clearApiErrors}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {"Error While Creating User"}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {(apiErrors?.error?.other ?? []).join(", ")}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={clearApiErrors} color="primary" autoFocus>
-                Close
-              </Button>
-            </DialogActions>
-          </Dialog>
+          <StaffFormErrorModal isOpen={!!apiErrors} onClose={clearApiErrors} />
         </Grid>
       </Grid>
     </form>
