@@ -40,7 +40,7 @@ import {
   useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
-import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
+// import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
@@ -267,15 +267,15 @@ const ProjectComponentsMap = ({
    * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
    * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  const { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints } =
-    useMapDrawTools(
-      featureCollection,
-      setFeatureCollection,
-      projectId,
-      refetchProjectDetails,
-      viewport.zoom,
-      saveActionDispatch
-    );
+  // const { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints } =
+  //   useMapDrawTools(
+  //     featureCollection,
+  //     setFeatureCollection,
+  //     projectId,
+  //     refetchProjectDetails,
+  //     viewport.zoom,
+  //     saveActionDispatch
+  //   );
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -285,9 +285,9 @@ const ProjectComponentsMap = ({
     const layerName = getLayerSource(e);
 
     // If a user clicks a drawn point in the map, open draw UI
-    if (drawnLayerNames.includes(layerName)) {
-      setIsDrawing(true);
-    }
+    // if (drawnLayerNames.includes(layerName)) {
+    //   setIsDrawing(true);
+    // }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
@@ -346,31 +346,32 @@ const ProjectComponentsMap = ({
   const getCursor = ({ isHovering, isDragging }) => {
     return isDragging
       ? "grabbing"
-      : isHovering || isDrawing // Show pointer when user is drawing as well
-      ? "pointer"
+      : isHovering // Show pointer when user is drawing as well
+      ? // : isHovering || isDrawing // Show pointer when user is drawing as well
+        "pointer"
       : "default";
   };
 
   /**
    * Whenever a Save Action is initiated, save all drawn features
    * */
-  useEffect(() => {
-    // Ignore empty states
-    if (!saveActionState) return;
-    // If the process has been already initiated, we don't need to go any further
-    if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
-    // It looks like this is the first step
-    if (
-      saveActionState?.initiateFeatureSave &&
-      saveActionState?.featuresSaved === false
-    ) {
-      saveDrawnPoints();
-    }
-  }, [saveActionState, saveDrawnPoints]);
+  // useEffect(() => {
+  //   // Ignore empty states
+  //   if (!saveActionState) return;
+  //   // If the process has been already initiated, we don't need to go any further
+  //   if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
+  //   // It looks like this is the first step
+  //   if (
+  //     saveActionState?.initiateFeatureSave &&
+  //     saveActionState?.featuresSaved === false
+  //   ) {
+  //     saveDrawnPoints();
+  //   }
+  // }, [saveActionState, saveDrawnPoints]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
-  const renderDrawLayers =
-    !isDrawing && !isSignalComponent && drawLines !== null;
+  // const renderDrawLayers =
+  //   !isDrawing && !isSignalComponent && drawLines !== null;
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -411,13 +412,15 @@ const ProjectComponentsMap = ({
         {...viewport}
         ref={mapRef}
         maxZoom={20}
-        width="100%"
-        height="60vh"
-        interactiveLayerIds={
-          renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
-        }
-        onHover={renderDrawLayers ? handleLayerHover : null}
-        onClick={renderDrawLayers ? handleLayerClick : null}
+        style={{ width: "100%", height: "60vh" }}
+        // interactiveLayerIds={
+        //   renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
+        // }
+        // onHover={renderDrawLayers ? handleLayerHover : null}
+        // onClick={renderDrawLayers ? handleLayerClick : null}
+        interactiveLayerIds={[]}
+        onHover={null}
+        onClick={null}
         getCursor={getCursor}
         mapboxAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}

@@ -74,8 +74,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         /* Object reference to this object */
         ref={mapRef}
         maxZoom={20}
-        width="100%"
-        height="60vh"
+        style={{ width: "100%", height: "60vh" }}
         /* Access Key */
         mapboxAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
