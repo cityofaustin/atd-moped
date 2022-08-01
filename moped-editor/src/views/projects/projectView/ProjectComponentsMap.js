@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
-import Geocoder from "react-map-gl-geocoder";
+// import Geocoder from "react-map-gl-geocoder";
 import { Box, makeStyles } from "@material-ui/core";
 import bboxPolygon from "@turf/bbox-polygon";
 import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./ProjectComponentsMap.css";
 
 import {
@@ -44,7 +44,7 @@ import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
     position: "absolute",
@@ -78,7 +78,7 @@ const removeFeatureFromCollection = (selectedFeature, featureCollection) => {
   return {
     ...featureCollection,
     features: featureCollection.features.filter(
-      feature =>
+      (feature) =>
         getFeatureId(feature, selectedFeature.properties.sourceLayer) !==
         getFeatureId(selectedFeature, selectedFeature.properties.sourceLayer)
     ),
@@ -147,7 +147,7 @@ const handleSelectedFeatureUpdate = (
 
     // Identify feature fragements by filtering for their common ID
     const splitFeatures = renderedFeatures.filter(
-      feature =>
+      (feature) =>
         getFeatureId(feature, selectedFeature.properties.sourceLayer) ===
         selectedFeatureId
     );
@@ -157,10 +157,7 @@ const handleSelectedFeatureUpdate = (
       selectedFeature.geometry = combineLineGeometries(splitFeatures);
     }
 
-    const bbox = map
-      .getBounds()
-      .toArray()
-      .flat();
+    const bbox = map.getBounds().toArray().flat();
     const bboxLine = polygonToLine(bboxPolygon(bbox));
     const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
 
@@ -169,7 +166,7 @@ const handleSelectedFeatureUpdate = (
       // we cannnot know with certainty, so we fetch it's complete geometry from AGOL to be
       // safe. also considered turf.booleanWithin() and turf.booleanContains - not reliable.
       queryCtnFeatureService(selectedFeatureId).then(
-        queriedFeatureCollection => {
+        (queriedFeatureCollection) => {
           // Update the selectedFeature geometry if a feature has been found. To potential
           // error cases are handled here:
           //    1. fetch error: queriedFeatureCollection is null
@@ -223,11 +220,10 @@ const ProjectComponentsMap = ({
   drawLines = null,
 }) => {
   const classes = useStyles();
-  const selectedLayerIds = createSelectedIdsObjectFromFeatureCollection(
-    featureCollection
-  );
+  const selectedLayerIds =
+    createSelectedIdsObjectFromFeatureCollection(featureCollection);
   const mapRef = useRef();
-  const mapGeocoderContainerRef = useRef();
+  // const mapGeocoderContainerRef = useRef();
   const mapEditToolsContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
   /**
@@ -240,12 +236,8 @@ const ProjectComponentsMap = ({
     isSignalComponent
   );
 
-  const {
-    handleLayerHover,
-    featureText,
-    featureId,
-    hoveredCoords,
-  } = useHoverLayer();
+  const { handleLayerHover, featureText, featureId, hoveredCoords } =
+    useHoverLayer();
 
   const {
     visibleLayerIds,
@@ -275,25 +267,21 @@ const ProjectComponentsMap = ({
    * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
    * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  const {
-    isDrawing,
-    setIsDrawing,
-    renderMapDrawTools,
-    saveDrawnPoints,
-  } = useMapDrawTools(
-    featureCollection,
-    setFeatureCollection,
-    projectId,
-    refetchProjectDetails,
-    viewport.zoom,
-    saveActionDispatch
-  );
+  const { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints } =
+    useMapDrawTools(
+      featureCollection,
+      setFeatureCollection,
+      projectId,
+      refetchProjectDetails,
+      viewport.zoom,
+      saveActionDispatch
+    );
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
    * @param {Object} e - Event object for click
    */
-  const handleLayerClick = e => {
+  const handleLayerClick = (e) => {
     const layerName = getLayerSource(e);
 
     // If a user clicks a drawn point in the map, open draw UI
@@ -328,7 +316,8 @@ const ProjectComponentsMap = ({
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
   const handleViewportChange = useCallback(
-    viewport => setViewport(prevViewport => ({ ...prevViewport, ...viewport })),
+    (viewport) =>
+      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
     [setViewport]
   );
 
@@ -336,17 +325,17 @@ const ProjectComponentsMap = ({
    * Updates viewport on select of location from geocoder form
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
-  const handleGeocoderViewportChange = useCallback(
-    newViewport => {
-      const geocoderDefaultOverrides = { transitionDuration: 1000 };
+  // const handleGeocoderViewportChange = useCallback(
+  //   newViewport => {
+  //     const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
-      return handleViewportChange({
-        ...newViewport,
-        ...geocoderDefaultOverrides,
-      });
-    },
-    [handleViewportChange]
-  );
+  //     return handleViewportChange({
+  //       ...newViewport,
+  //       ...geocoderDefaultOverrides,
+  //     });
+  //   },
+  //   [handleViewportChange]
+  // );
 
   /**
    * Customize cursor depending on user actions
@@ -394,10 +383,10 @@ const ProjectComponentsMap = ({
       )}
 
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      <div
+      {/* <div
         ref={mapGeocoderContainerRef}
         className={classes.geocoderContainer}
-      />
+      /> */}
       <div
         ref={mapEditToolsContainerRef}
         className={classes.mapBoxEditButtonGroup}
@@ -447,7 +436,7 @@ const ProjectComponentsMap = ({
         />
 
         {/* GEOCODER */}
-        <Geocoder
+        {/* <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -455,7 +444,7 @@ const ProjectComponentsMap = ({
           containerRef={mapGeocoderContainerRef}
           marker={false}
           position="top-right"
-        />
+        /> */}
 
         {/* RENDER LAYERS */}
         {drawLines !== null &&
@@ -502,7 +491,7 @@ const ProjectComponentsMap = ({
                     ...featureCollection.features,
                     ...(otherProjectFeaturesCollection?.features ?? []),
                   ].filter(
-                    feature => feature.properties.sourceLayer === sourceName
+                    (feature) => feature.properties.sourceLayer === sourceName
                   ),
                 }}
               >

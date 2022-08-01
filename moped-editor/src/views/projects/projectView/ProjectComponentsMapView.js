@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createSummaryMapLayers,
@@ -25,10 +25,10 @@ import {
   makeCommonComponentsMapStyles,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
-import Geocoder from "react-map-gl-geocoder";
+// import Geocoder from "react-map-gl-geocoder";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
   locationCountText: {
     fontSize: "0.875rem",
@@ -115,7 +115,7 @@ const ProjectComponentsMapView = ({
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
   const mapRef = useRef();
-  const mapGeocoderContainerRef = useRef();
+  // const mapGeocoderContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
 
   const {
@@ -146,7 +146,8 @@ const ProjectComponentsMapView = ({
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
   const handleViewportChange = useCallback(
-    viewport => setViewport(prevViewport => ({ ...prevViewport, ...viewport })),
+    (viewport) =>
+      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
     [setViewport]
   );
 
@@ -155,7 +156,7 @@ const ProjectComponentsMapView = ({
    * @param {Object} newViewport - Mapbox object that stores updated location for viewport
    */
   const handleGeocoderViewportChange = useCallback(
-    newViewport => {
+    (newViewport) => {
       const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
       return handleViewportChange({
@@ -172,10 +173,10 @@ const ProjectComponentsMapView = ({
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      <div
+      {/* <div
         ref={mapGeocoderContainerRef}
         className={classes.geocoderContainer}
-      />
+      /> */}
       <div ref={mapBasemapContainerRef} className={classes.speedDial} />
       <Collapse
         in={editPanelCollapsedShow}
@@ -245,7 +246,7 @@ const ProjectComponentsMapView = ({
         </span>
 
         {/* GEOCODER */}
-        <Geocoder
+        {/* <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
           mapboxApiAccessToken={MAPBOX_TOKEN}
@@ -253,7 +254,7 @@ const ProjectComponentsMapView = ({
           containerRef={mapGeocoderContainerRef}
           marker={false}
           position="top-right"
-        />
+        /> */}
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
@@ -261,7 +262,7 @@ const ProjectComponentsMapView = ({
         {projectFeatureCollection &&
           createSummaryMapLayers({
             type: "FeatureCollection",
-            features: projectFeatureCollection.features.filter(feature =>
+            features: projectFeatureCollection.features.filter((feature) =>
               visibleLayerIds.includes(feature?.properties?.sourceLayer)
             ),
           })}

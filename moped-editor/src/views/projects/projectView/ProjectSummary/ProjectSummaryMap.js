@@ -2,7 +2,6 @@ import React, { useRef } from "react";
 import ReactMapGL, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createSummaryMapLayers,
@@ -53,7 +52,8 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = updatedViewPort => setViewport(updatedViewPort);
+  const handleViewportChange = (updatedViewPort) =>
+    setViewport(updatedViewPort);
 
   /**
    * Let's throw an error intentionally if there are no features for a project.
