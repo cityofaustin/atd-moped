@@ -78,7 +78,7 @@
     "react-filepond": "^7.1.1",
     "react-helmet": "^6.1.0",
     "react-hook-form": "^6.11.1",
-    "react-map-gl": "^5.2.10",
+    "react-map-gl": "^7.0.18",
     "react-map-gl-draw": "^0.22.3",
     "react-map-gl-geocoder": "^2.1.6",
     "react-quill": "^2.0.0-beta.4",
