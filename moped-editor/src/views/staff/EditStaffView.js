@@ -1,9 +1,11 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
-import StaffForm, { initialFormValues } from "./StaffForm";
+import StaffForm from "./StaffForm";
+import { initialFormValues } from "./NewStaffView";
 import { useUserApi } from "./helpers";
 import { GET_USER } from "src/queries/staff";
+import * as yup from "yup";
 
 import {
   Box,
@@ -27,6 +29,18 @@ const fieldFormatters = {
   workgroup_id: (id) => id.toString(),
   roles: (roles) => findHighestRole(roles),
 };
+
+const validationSchema = () =>
+  yup.object().shape({
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
+    title: yup.string().required(),
+    workgroup: yup.string().required(),
+    workgroup_id: yup.string().required(),
+    email: yup.string().required().email().lowercase(),
+    password: yup.string.required(),
+    roles: yup.string().required(),
+  });
 
 const EditStaffView = () => {
   const classes = useStyles();
@@ -109,6 +123,9 @@ const EditStaffView = () => {
                       userCognitoId={userCognitoId}
                       onFormSubmit={onFormSubmit}
                       apiErrors={apiErrors}
+                      showUpdateUserStatusButtons={true}
+                      showFormResetButton={true}
+                      validationSchema={validationSchema}
                     />
                   )}
                 </CardContent>

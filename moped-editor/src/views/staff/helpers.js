@@ -77,3 +77,8 @@ export const passwordLooksGood = (password) =>
  */
 export const roleLooksGood = (roles) =>
   ["moped-viewer", "moped-editor", "moped-admin"].includes(roles);
+
+export const fieldParsers = {
+  workgroup_id: (id) => parseInt(id),
+  roles: (role) => [role],
+};

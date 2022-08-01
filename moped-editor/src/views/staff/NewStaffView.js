@@ -2,6 +2,7 @@ import React from "react";
 import StaffForm from "./StaffForm";
 import { useNavigate } from "react-router-dom";
 import { useUserApi } from "./helpers";
+import * as yup from "yup";
 
 import {
   Box,
@@ -17,6 +18,29 @@ import Page from "src/components/Page";
 const useStyles = makeStyles(() => ({
   root: {},
 }));
+
+export const initialFormValues = {
+  first_name: "",
+  last_name: "",
+  title: "",
+  email: "",
+  password: "",
+  workgroup: "",
+  workgroup_id: "",
+  roles: "moped-viewer",
+};
+
+const validationSchema = () =>
+  yup.object().shape({
+    first_name: yup.string().required(),
+    last_name: yup.string().required(),
+    title: yup.string().required(),
+    workgroup: yup.string().required(),
+    workgroup_id: yup.string().required(),
+    email: yup.string().required().email().lowercase(),
+    password: yup.string.required(),
+    roles: yup.string().required(),
+  });
 
 const NewStaffView = () => {
   const classes = useStyles();
@@ -63,6 +87,9 @@ const NewStaffView = () => {
                 apiErrors={apiErrors}
                 isRequesting={userApiLoading}
                 setApiError={setApiError}
+                initialFormValues={initialFormValues}
+                showUpdateUserStatusButtons={false}
+                validationSchema={validationSchema}
               />
             </CardContent>
           </Card>

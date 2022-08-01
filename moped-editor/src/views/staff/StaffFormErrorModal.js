@@ -10,8 +10,8 @@ import {
 
 /**
  * Generates a StaffForm Component
- * @param {Object} editFormData - The form data
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
+ * @param {Object} apiErrors - Error object
+ * @param {string} clearApiErrors - Function to clear errors returned from the API
  * @returns {JSX.Element}
  * @constructor
  */

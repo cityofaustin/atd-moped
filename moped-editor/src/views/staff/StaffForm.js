@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import {
-  formatApiErrors,
-  useUserApi,
-  roleLooksGood,
-  passwordLooksGood,
-} from "./helpers";
+import { formatApiErrors, fieldParsers } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
 import { WORKGROUPS_QUERY } from "../../queries/workgroups";
 
 import { useQuery } from "@apollo/client";
@@ -27,71 +20,25 @@ import {
   Radio,
   RadioGroup,
   Select,
-  Typography,
-  Box,
 } from "@material-ui/core";
-import clsx from "clsx";
 import StaffFormErrorModal from "./StaffFormErrorModal";
 import StaffFormConfirmModal from "./StaffFormConfirmModal";
+import StaffUpdateUserStatusButtons from "./StaffUpdateUserStatusButtons";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   formSelect: {
     minWidth: 195,
-  },
-  formButton: {
-    margin: theme.spacing(1),
-    color: "white",
-  },
-  formButtonGreen: {
-    backgroundColor: theme.palette.success.main,
-    "&:hover": {
-      backgroundColor: theme.palette.success.dark,
-    },
   },
   hiddenTextField: {
     display: "none",
   },
 }));
 
-export const initialFormValues = {
-  first_name: "",
-  last_name: "",
-  title: "",
-  email: "",
-  password: "",
-  workgroup: "",
-  workgroup_id: "",
-  roles: "moped-viewer",
-};
-
 const roles = [
   { value: "moped-viewer", name: "Viewer" },
   { value: "moped-editor", name: "Editor" },
   { value: "moped-admin", name: "Admin" },
 ];
-
-// Pass editFormData to conditionally validate if adding or editing
-const staffValidationSchema = (isNewUser) =>
-  yup.object().shape({
-    first_name: yup.string().required(),
-    last_name: yup.string().required(),
-    title: yup.string().required(),
-    workgroup: yup.string().required(),
-    workgroup_id: yup.string().required(),
-    email: yup.string().required().email().lowercase(),
-    password: yup.mixed().when({
-      // If we are editing a user, password is optional
-      is: () => isNewUser,
-      then: yup.string().required(),
-      otherwise: yup.string(),
-    }),
-    roles: yup.string().required(),
-  });
-
-const fieldParsers = {
-  workgroup_id: (id) => parseInt(id),
-  roles: (role) => [role],
-};
 
 /**
  * Generates a StaffForm Component
@@ -107,23 +54,15 @@ const StaffForm = ({
   apiErrors,
   setApiError,
   isRequesting,
+  initialFormValues,
+  showUpdateUserStatusButtons,
+  isUserActive,
+  showFormResetButton,
+  validationSchema,
+  setLoading,
 }) => {
   const classes = useStyles();
-  let navigate = useNavigate();
-  const isNewUser = editFormData === null;
   const is_deleted = editFormData?.is_deleted;
-
-  /**
-   * Make use of the useUserApi to retrieve the requestApi function and
-   * api request loading state and errors from the api.
-   */
-  const {
-    // loading: userApiLoading,
-    requestApi,
-    // error: apiErrors,
-    // setError,
-    setLoading,
-  } = useUserApi();
 
   const initialModalState = {
     open: false,
@@ -147,8 +86,8 @@ const StaffForm = ({
     formState,
     reset,
   } = useForm({
-    defaultValues: editFormData || initialFormValues,
-    resolver: yupResolver(staffValidationSchema(isNewUser)),
+    defaultValues: initialFormValues,
+    resolver: yupResolver(validationSchema),
   });
 
   const { isSubmitting, dirtyFields } = formState;
@@ -176,34 +115,6 @@ const StaffForm = ({
     onFormSubmit(data);
   };
 
-  /**
-   * Send a request to the user activation route of the Moped API
-   */
-  const handleUserActivation = () => {
-    const email = getValues("email");
-    const password = getValues("password");
-    const roles = getValues("roles");
-    const rolesParser = fieldParsers["roles"];
-    // The backend uses an array for roles
-    const rolesArray = rolesParser(roles);
-
-    const data = {
-      email,
-      password,
-      roles: rolesArray,
-    };
-
-    // Navigate to user table on success
-    const callback = () => navigate("/moped/staff");
-
-    requestApi({
-      method: "put",
-      path: "/users/activate/",
-      payload: data,
-      callback,
-    });
-  };
-
   const {
     loading: workgroupLoading,
     error: workgroupError,
@@ -224,93 +135,6 @@ const StaffForm = ({
 
     // React Hook Form expects the custom onChange action to return workgroup field value
     return workgroupName;
-  };
-
-  /**
-   * Handler for Delete Confirm button
-   */
-  const handleDeleteConfirm = () => {
-    const requestPath = "/users/" + userCognitoId;
-    const deleteCallback = () => {
-      handleCloseModal();
-      navigate("/moped/staff/");
-    };
-
-    requestApi({
-      method: "delete",
-      path: requestPath,
-      callback: deleteCallback,
-    });
-  };
-
-  /**
-   * Handle Activate User Confirm
-   */
-  const handleActivateConfirm = () => {
-    if (!passwordLooksGood(getValues("password"))) {
-      setModalState({
-        open: true,
-        title: "Error",
-        message: (
-          <Typography>
-            The password is required when activating a user. It needs to be 8
-            characters long, it must include at least one lower-case,
-            upper-case, one number, and one symbol characters.
-          </Typography>
-        ),
-        action: handleCloseModal,
-        actionButtonLabel: "Ok",
-        hideCloseButton: true,
-      });
-    } else if (!roleLooksGood(getValues("roles"))) {
-      setModalState({
-        open: true,
-        title: "Error",
-        message: "The role is required when activating a user.",
-        action: handleCloseModal,
-        actionButtonLabel: "Ok",
-        hideCloseButton: true,
-      });
-    } else {
-      handleUserActivation();
-      setModalState({
-        open: true,
-        title: "Activating",
-        message: (
-          <Box display="flex" justifyContent="flex-start">
-            <Typography>Please Wait...</Typography>
-          </Box>
-        ),
-        action: handleCloseModal,
-        actionButtonLabel: null,
-        hideActionButton: true,
-        hideCloseButton: true,
-      });
-    }
-  };
-
-  /**
-   * Activate User
-   */
-  const handleActivateUser = () => {
-    setModalState({
-      open: true,
-      title: "Activate user?",
-      message: "Do you want to activate this user?",
-      action: handleActivateConfirm,
-    });
-  };
-
-  /**
-   * Handles the deactivation of user
-   */
-  const handleDeactivateUser = () => {
-    setModalState({
-      open: true,
-      title: "Inactivate this user?",
-      message: "Are you sure that you want to inactivate this user?",
-      action: handleDeleteConfirm,
-    });
   };
 
   /**
@@ -511,7 +335,7 @@ const StaffForm = ({
               >
                 Save
               </Button>
-              {!editFormData && (
+              {showFormResetButton && (
                 <Button
                   className={classes.formButton}
                   color="secondary"
@@ -521,58 +345,17 @@ const StaffForm = ({
                   Reset
                 </Button>
               )}
-              {editFormData && is_deleted === false && (
-                <Button
-                  className={classes.formButton}
-                  color="secondary"
-                  variant="contained"
-                  onClick={handleDeactivateUser}
-                >
-                  Inactivate User
-                </Button>
-              )}
-              {editFormData && is_deleted === true && (
-                <Button
-                  className={clsx(classes.formButton, classes.formButtonGreen)}
-                  variant="contained"
-                  onClick={handleActivateUser}
-                >
-                  Activate User
-                </Button>
+              {showUpdateUserStatusButtons && (
+                <StaffUpdateUserStatusButtons
+                  isUserActive={isUserActive}
+                  handleCloseModal={handleCloseModal}
+                  email={getValues("email")}
+                  password={getValues("password")}
+                  roles={getValues("roles")}
+                />
               )}
             </>
           )}
-          {/* <Dialog
-            open={modalState?.open}
-            onClose={handleCloseModal}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">
-              {modalState.title}
-            </DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {modalState.message}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              {!modalState?.hideCloseButton && (
-                <Button onClick={handleCloseModal} color="primary" autoFocus>
-                  No
-                </Button>
-              )}
-              {isRequesting ? (
-                <CircularProgress />
-              ) : (
-                !modalState?.hideActionButton && (
-                  <Button onClick={modalState?.action} color="primary">
-                    {modalState.actionButtonLabel || "Yes"}
-                  </Button>
-                )
-              )}
-            </DialogActions>
-          </Dialog> */}
           <StaffFormConfirmModal
             isLoading={isRequesting}
             title={modalState.title}
