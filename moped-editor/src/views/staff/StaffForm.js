@@ -352,6 +352,8 @@ const StaffForm = ({
                   email={getValues("email")}
                   password={getValues("password")}
                   roles={getValues("roles")}
+                  userCognitoId={userCognitoId}
+                  setModalState={setModalState}
                 />
               )}
             </>

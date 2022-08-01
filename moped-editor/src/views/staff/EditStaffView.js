@@ -38,7 +38,7 @@ const validationSchema = () =>
     workgroup: yup.string().required(),
     workgroup_id: yup.string().required(),
     email: yup.string().required().email().lowercase(),
-    password: yup.string.required(),
+    password: yup.string(),
     roles: yup.string().required(),
   });
 
