@@ -15,11 +15,6 @@ import { useQuery } from "@apollo/client";
 import {
   Button,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -37,6 +32,7 @@ import {
 } from "@material-ui/core";
 import clsx from "clsx";
 import StaffFormErrorModal from "./StaffFormErrorModal";
+import StaffFormConfirmModal from "./StaffFormConfirmModal";
 
 const useStyles = makeStyles((theme) => ({
   formSelect: {
@@ -546,7 +542,7 @@ const StaffForm = ({
               )}
             </>
           )}
-          <Dialog
+          {/* <Dialog
             open={modalState?.open}
             onClose={handleCloseModal}
             aria-labelledby="alert-dialog-title"
@@ -576,7 +572,18 @@ const StaffForm = ({
                 )
               )}
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
+          <StaffFormConfirmModal
+            isLoading={isRequesting}
+            title={modalState.title}
+            message={modalState.message}
+            open={modalState.open}
+            onClose={handleCloseModal}
+            action={modalState.action}
+            actionButtonLabel={modalState.actionButtonLabel}
+            hideCloseButton={modalState.hideActionButton}
+            hideActionButton={modalState.hideActionButton}
+          />
           <StaffFormErrorModal isOpen={!!apiErrors} onClose={clearApiErrors} />
         </Grid>
       </Grid>
