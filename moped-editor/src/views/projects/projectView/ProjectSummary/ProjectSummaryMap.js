@@ -77,7 +77,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         width="100%"
         height="60vh"
         /* Access Key */
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
               The getCursor callback will receive isHovering: true when hover over features of these layers */

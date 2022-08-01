@@ -419,7 +419,7 @@ const ProjectComponentsMap = ({
         onHover={renderDrawLayers ? handleLayerHover : null}
         onClick={renderDrawLayers ? handleLayerClick : null}
         getCursor={getCursor}
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxAccessToken={MAPBOX_TOKEN}
         onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
       >
@@ -439,7 +439,7 @@ const ProjectComponentsMap = ({
         {/* <Geocoder
           mapRef={mapRef}
           onViewportChange={handleGeocoderViewportChange}
-          mapboxApiAccessToken={MAPBOX_TOKEN}
+          mapboxAccessToken={MAPBOX_TOKEN}
           bbox={mapConfig.geocoderBbox}
           containerRef={mapGeocoderContainerRef}
           marker={false}
@@ -510,9 +510,9 @@ const ProjectComponentsMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent &&
+        {/* {!isSignalComponent &&
           drawLines !== null &&
-          renderMapDrawTools(mapEditToolsContainerRef, drawLines)}
+          renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
       </ReactMapGL>
     </Box>
   );
