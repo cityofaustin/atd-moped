@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Layer, Source, WebMercatorViewport } from "react-map-gl";
+import { Layer, Source } from "react-map-gl";
+import { WebMercatorViewport } from "viewport-mercator-project";
 import bbox from "@turf/bbox";
 import combine from "@turf/combine";
 import theme from "../theme/index";
@@ -114,7 +115,7 @@ export const mapStyles = {
 /**
  * Common styles of map components in ProjectComponentsMap and ProjectComponentsMapView
  */
-export const makeCommonComponentsMapStyles = theme => ({
+export const makeCommonComponentsMapStyles = (theme) => ({
   speedDial: {
     right: "3.5rem !important",
     bottom: "1.7rem !important",
@@ -187,7 +188,7 @@ export const mapConfig = {
       layerMaxLOD: 14,
       isClickEditable: true,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
+        return function (hoveredId, layerIds) {
           const isEditing = !!layerIds;
 
           const editMapPaintStyles = {
@@ -233,7 +234,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: true,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
+        return function (hoveredId, layerIds) {
           const isEditing = !!layerIds;
 
           const editMapPaintStyles = {
@@ -269,7 +270,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "circle",
@@ -291,7 +292,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "line",
@@ -317,7 +318,7 @@ export const mapConfig = {
       isClickEditable: false,
       isInitiallyVisible: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "line",
@@ -349,7 +350,7 @@ export const mapConfig = {
       isClickEditable: false,
       isInitiallyVisible: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "circle",
@@ -374,7 +375,7 @@ export const mapErrors = {
  * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Array} A nested array that fits the LngLatBounds Mapbox object format
  */
-export const createZoomBbox = featureCollection => {
+export const createZoomBbox = (featureCollection) => {
   const [minLng, minLat, maxLng, maxLat] = bbox(featureCollection);
 
   return [
@@ -399,15 +400,17 @@ export const getClickEditableLayerNames = () =>
  * Edit map needs all layers to be interactive to let users select features
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getEditMapInteractiveIds = drawLines => {
+export const getEditMapInteractiveIds = (drawLines) => {
   const interactiveIds = Object.values(mapConfig.layerConfigs).map(
-    config => config.layerIdName
+    (config) => config.layerIdName
   );
   if (drawLines === true) {
-    return interactiveIds.filter(layer => layer !== "project-component-points");
+    return interactiveIds.filter(
+      (layer) => layer !== "project-component-points"
+    );
   }
   if (drawLines === false) {
-    return interactiveIds.filter(layer => layer !== "ctn-lines");
+    return interactiveIds.filter((layer) => layer !== "ctn-lines");
   }
   return interactiveIds;
 };
@@ -417,10 +420,10 @@ export const getEditMapInteractiveIds = drawLines => {
  * Summary map only needs layers in the project extent to be interactive
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getSummaryMapInteractiveIds = featureCollection => [
+export const getSummaryMapInteractiveIds = (featureCollection) => [
   ...new Set(
     featureCollection.features.map(
-      feature =>
+      (feature) =>
         mapConfig.layerConfigs[feature.properties.sourceLayer].layerIdName
     )
   ),
@@ -455,7 +458,7 @@ export const getFeatureHoverText = (feature, layerName) =>
  * @param {Object} e - Event object for click or hover on map
  * @return {String} The name of the source layer
  */
-export const getLayerSource = e =>
+export const getLayerSource = (e) =>
   e.features &&
   e.features.length > 0 &&
   (e.features[0].layer["source-layer"] ||
@@ -466,9 +469,11 @@ export const getLayerSource = e =>
  * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
  * @return {object} A GeoJSON feature collection to display project features on a map
  */
-export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures => {
+export const createFeatureCollectionFromProjectFeatures = (
+  mopedProjectFeatures
+) => {
   let featureCollection = { type: "FeatureCollection", features: [] };
-  mopedProjectFeatures.forEach(projectFeature => {
+  mopedProjectFeatures.forEach((projectFeature) => {
     // add proj feature metadata to the feature itself
     // these are stored outside of the feature.properties and serve
     // as metadata that will be useful when handling map edits
@@ -485,7 +490,9 @@ export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures =
  * @param {object} featureCollection - A GeoJSON feature collection
  * @return {object} Object with layer name keys and values that are a array of feature ID strings
  */
-export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
+export const createSelectedIdsObjectFromFeatureCollection = (
+  featureCollection
+) => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
       const sourceLayer = feature.properties.sourceLayer;
@@ -511,7 +518,7 @@ export const createSelectedIdsObjectFromFeatureCollection = featureCollection =>
  * @param {Object} e - Event object for click or hover on map
  * @return {Object} The GeoJSON object that describes the clicked or hovered feature geometry
  */
-export const getGeoJSON = e =>
+export const getGeoJSON = (e) =>
   e.features &&
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
@@ -534,7 +541,7 @@ export const isFeaturePresent = (selectedFeature, features, layerName) => {
   const featureIdProperty = mapConfig.layerConfigs[layerName].featureIdProperty;
 
   return features.some(
-    feature =>
+    (feature) =>
       selectedFeature.properties[featureIdProperty] ===
       feature.properties[featureIdProperty]
   );
@@ -581,7 +588,7 @@ export const createProjectSelectLayerConfig = (
  * @param {object} geoJSON - A GeoJSON feature collection with project features
  * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
  */
-export const createSummaryMapLayers = geoJSON => {
+export const createSummaryMapLayers = (geoJSON) => {
   /**
    * Aggregate all features in geoJSON and group by layer
    */
@@ -696,7 +703,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
  * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Number} Total number of string IDs
  */
-export const countFeatures = featureCollection =>
+export const countFeatures = (featureCollection) =>
   featureCollection.features.length;
 
 /**
@@ -725,7 +732,7 @@ export function useHoverLayer() {
    * Gets and sets data from a map feature used to populate and place a tooltip
    * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates
    */
-  const handleLayerHover = e => {
+  const handleLayerHover = (e) => {
     const layerSource = getLayerSource(e);
 
     // If a layer isn't hovered, reset state and don't proceed
@@ -782,7 +789,7 @@ export function useFeatureCollectionToFitBounds(
      * @param {Object} viewport - Describes the map view
      * @return {Object} Viewport object with updated attributes based on project's features
      */
-    const fitViewportToBounds = viewport => {
+    const fitViewportToBounds = (viewport) => {
       // Let's check if we have any features are all, otherwise return the state of viewport...
       if ((featureCollection?.features?.length ?? 0) === 0) return viewport;
       const featureViewport = new WebMercatorViewport({
@@ -806,7 +813,7 @@ export function useFeatureCollectionToFitBounds(
       };
     };
 
-    setViewport(prevViewport => fitViewportToBounds(prevViewport));
+    setViewport((prevViewport) => fitViewportToBounds(prevViewport));
     setHasFitInitialized(true);
   }, [hasFitInitialized, shouldFitOnFeatureUpdate, featureCollection, mapRef]);
 
@@ -831,7 +838,8 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    */
   const [visibleLayerIds, setVisibleLayerIds] = useState(
     initialSelectedLayerNames.filter(
-      layerName => mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
+      (layerName) =>
+        mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
     )
   );
   const [mapStyle, setMapStyle] = useState("streets");
@@ -842,7 +850,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    * Handles the click event on a menu item
    * @param {Object} event - The click event
    */
-  const handleMenuItemClick = event => {
+  const handleMenuItemClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -857,10 +865,10 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    * Takes a click event and adds/removes a layer name from the visible layers array
    * @param {string} layerName - The name of the layer to enable
    */
-  const handleLayerCheckboxClick = layerName => {
-    setVisibleLayerIds(prevLayers => {
+  const handleLayerCheckboxClick = (layerName) => {
+    setVisibleLayerIds((prevLayers) => {
       return prevLayers.includes(layerName)
-        ? [...prevLayers.filter(name => name !== layerName)]
+        ? [...prevLayers.filter((name) => name !== layerName)]
         : [...prevLayers, layerName];
     });
   };
@@ -869,7 +877,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
    * @param {string} basemapKey - The name of the base map: streets or aerial
    */
-  const handleBasemapChange = basemapKey => {
+  const handleBasemapChange = (basemapKey) => {
     setMapStyle(basemapKey);
   };
 
@@ -877,7 +885,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     paper: {
       border: "1px solid #d3d4d5",
     },
-  })(props => (
+  })((props) => (
     <Menu
       elevation={0}
       getContentAnchorEl={null}
@@ -893,7 +901,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     />
   ));
 
-  const StyledMenuItem = withStyles(theme => ({
+  const StyledMenuItem = withStyles((theme) => ({
     root: {
       "&:focus": {
         backgroundColor: theme.palette.grey["100"],
@@ -934,7 +942,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         onClose={handleMenuClose}
         transitionDuration={0}
       >
-        {getLayerNames().map(name => {
+        {getLayerNames().map((name) => {
           if (!showProjectFeatures && projectFeatureLayerNames.includes(name))
             return null;
 
@@ -1010,7 +1018,7 @@ export const useTransformProjectFeatures = (
   // First, enter the type (which never changes)
   type: "FeatureCollection",
   // Then, create the features attribute with the output of a map
-  features: (projectOtherFeaturesCollection?.features ?? []).map(feature => ({
+  features: (projectOtherFeaturesCollection?.features ?? []).map((feature) => ({
     // For every feature, first copy the element
     ...feature,
     // Then, overwrite the feature's 'properties' attribute
@@ -1048,7 +1056,7 @@ export const useSaveActionReducer = () => {
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
  * @return {Object} The combined GeoJSON geometry object
  */
-export const combineLineGeometries = features => {
+export const combineLineGeometries = (features) => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1073,7 +1081,7 @@ export const combineLineGeometries = features => {
  * @param {Object} jsonResponse - The response JSON from AGOL
  * @return {Object} the response JSON, after logging an error if error
  **/
-const handleAgolResponse = jsonResponse => {
+const handleAgolResponse = (jsonResponse) => {
   if (jsonResponse?.error) {
     console.error(`Error fetching geometry: ${JSON.stringify(jsonResponse)}`);
   }
@@ -1086,7 +1094,7 @@ const handleAgolResponse = jsonResponse => {
  * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
  * @return {Object} Geojson featureCollection of the queried feature - or null if fetch error
  */
-export const queryCtnFeatureService = async function(projectExtentId) {
+export const queryCtnFeatureService = async function (projectExtentId) {
   const params = {
     where: `CTN_SEGMENT_ID=${projectExtentId}`,
     outFields: "CTN_SEGMENT_ID",
@@ -1095,16 +1103,16 @@ export const queryCtnFeatureService = async function(projectExtentId) {
   };
 
   const paramString = Object.entries(params)
-    .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
+    .map((param) => `${param[0]}=${encodeURIComponent(param[1])}`)
     .join("&");
   const url = `${ctnAGOLEndpoint}/query?${paramString}`;
 
   return await fetch(url)
-    .then(response => response.json())
-    .then(jsonResponse => {
+    .then((response) => response.json())
+    .then((jsonResponse) => {
       return handleAgolResponse(jsonResponse);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("Error fetching geometry: " + JSON.stringify(err));
       return null;
     });
