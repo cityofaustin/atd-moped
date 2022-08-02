@@ -66,6 +66,7 @@ const EditStaffView = () => {
     console.log(error);
   }
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
+  const isUserActive = data?.moped_users[0].is_deleted;
 
   const formatUserFormData = (data) => {
     // Format to types required by MUI form components
@@ -121,10 +122,11 @@ const EditStaffView = () => {
                     <StaffForm
                       editFormData={formatUserFormData(data.moped_users[0])}
                       userCognitoId={userCognitoId}
+                      isUserActive={isUserActive}
                       onFormSubmit={onFormSubmit}
                       apiErrors={apiErrors}
                       showUpdateUserStatusButtons={true}
-                      showFormResetButton={true}
+                      showFormResetButton={false}
                       validationSchema={validationSchema}
                     />
                   )}

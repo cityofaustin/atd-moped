@@ -25,9 +25,13 @@ import StaffFormErrorModal from "./StaffFormErrorModal";
 import StaffFormConfirmModal from "./StaffFormConfirmModal";
 import StaffUpdateUserStatusButtons from "./StaffUpdateUserStatusButtons";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   formSelect: {
     minWidth: 195,
+  },
+  formButton: {
+    margin: theme.spacing(1),
+    color: "white",
   },
   hiddenTextField: {
     display: "none",

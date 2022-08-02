@@ -89,6 +89,7 @@ const NewStaffView = () => {
                 setApiError={setApiError}
                 initialFormValues={initialFormValues}
                 showUpdateUserStatusButtons={false}
+                showFormResetButton={true}
                 validationSchema={validationSchema}
               />
             </CardContent>
