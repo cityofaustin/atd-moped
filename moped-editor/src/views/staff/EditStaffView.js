@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
 import { initialFormValues } from "./NewStaffView";
-import { useUserApi } from "./helpers";
+import { useUserApi, fieldFormatters } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -15,20 +15,9 @@ import {
   CardContent,
   CircularProgress,
   Divider,
-  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-import { findHighestRole } from "../../auth/user";
 import NotFoundView from "../errors/NotFoundView";
-
-const useStyles = makeStyles(() => ({
-  root: {},
-}));
-
-const fieldFormatters = {
-  workgroup_id: (id) => id.toString(),
-  roles: (roles) => findHighestRole(roles),
-};
 
 const validationSchema = () =>
   yup.object().shape({
@@ -43,7 +32,6 @@ const validationSchema = () =>
   });
 
 const EditStaffView = () => {
-  const classes = useStyles();
   const { userId } = useParams();
   let navigate = useNavigate();
 
@@ -51,22 +39,22 @@ const EditStaffView = () => {
    * Make use of the useUserApi to retrieve the requestApi function and
    * api request loading state and errors from the api.
    */
-  const {
-    loading: isUserApiLoading,
-    requestApi,
-    error: userApiErrors,
-    setError: setUserApiError,
-    setLoading: setIsUserApiLoading,
-  } = useUserApi();
+  const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
-  const { data, loading, error } = useQuery(GET_USER, {
+  const {
+    data,
+    loading: isUserQueryLoading,
+    error: userQueryError,
+  } = useQuery(GET_USER, {
     variables: { userId },
   });
-  if (error) {
+
+  if (userQueryError) {
     console.log(error);
   }
+  const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
-  const isUserActive = data?.moped_users[0].is_deleted;
+  const isUserActive = data?.moped_users[0]?.is_deleted;
 
   const formatUserFormData = (data) => {
     // If Hasura doesn't return a field, set to default
@@ -85,12 +73,12 @@ const EditStaffView = () => {
         data = { ...data, [fieldName]: formattedValue };
       }
     });
-    console.log(data);
+
     return data;
   };
 
   /**
-   * Controls the onSubmit data event
+   * Submit edit user request
    * @param {Object} data - The data being submitted
    */
   const onFormSubmit = (data) => {
@@ -107,32 +95,31 @@ const EditStaffView = () => {
 
   return (
     <>
-      {data && !data?.moped_users?.length && <NotFoundView />}
-      {data && !!data?.moped_users?.length && (
-        <Page className={classes.root} title="Staff">
+      {userData === null ? (
+        <NotFoundView />
+      ) : (
+        <Page title="Staff">
           <Container maxWidth={false}>
             <Box mt={3}>
-              <Card className={classes.root}>
+              <Card>
                 <CardHeader title="Edit User" />
                 <Divider />
                 <CardContent>
-                  {loading ? (
+                  {isUserQueryLoading ? (
                     <CircularProgress />
                   ) : (
                     <StaffForm
-                      initialFormValues={formatUserFormData(
-                        data.moped_users[0]
-                      )}
-                      userCognitoId={userCognitoId}
-                      isUserActive={isUserActive}
+                      initialFormValues={formatUserFormData(userData)}
                       onFormSubmit={onFormSubmit}
-                      userApiErrors={userApiErrors}
-                      setUserApiError={setUserApiError}
-                      setIsUserApiLoading={setIsUserApiLoading}
-                      isUserApiLoading={isUserApiLoading}
+                      userApiErrors={error}
+                      setUserApiError={setError}
+                      isUserApiLoading={loading}
+                      setIsUserApiLoading={setLoading}
                       showUpdateUserStatusButtons={true}
                       showFormResetButton={false}
                       validationSchema={validationSchema}
+                      userCognitoId={userCognitoId}
+                      isUserActive={isUserActive}
                     />
                   )}
                 </CardContent>

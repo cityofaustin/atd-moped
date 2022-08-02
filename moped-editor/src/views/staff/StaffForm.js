@@ -85,14 +85,12 @@ const StaffForm = ({
     control,
     setValue,
     getValues,
-    formState,
+    formState: { isSubmitting, dirtyFields },
     reset,
   } = useForm({
     defaultValues: initialFormValues,
     resolver: yupResolver(validationSchema),
   });
-
-  const { isSubmitting, dirtyFields } = formState;
 
   /**
    * Controls the onSubmit data event

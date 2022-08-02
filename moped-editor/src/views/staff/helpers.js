@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, getJwt } from "../../auth/user";
+import { useUser, getJwt, findHighestRole } from "../../auth/user";
 import axios from "axios";
 
 // Custom Hook for API calls
@@ -77,6 +77,12 @@ export const passwordLooksGood = (password) =>
  */
 export const roleLooksGood = (roles) =>
   ["moped-viewer", "moped-editor", "moped-admin"].includes(roles);
+
+// TODO: These should be used by React Hook Form to transform and parse values in and out of form
+export const fieldFormatters = {
+  workgroup_id: (id) => id.toString(),
+  roles: (roles) => findHighestRole(roles),
+};
 
 export const fieldParsers = {
   workgroup_id: (id) => parseInt(id),

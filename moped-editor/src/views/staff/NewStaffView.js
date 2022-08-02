@@ -11,13 +11,8 @@ import {
   CardHeader,
   CardContent,
   Divider,
-  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-
-const useStyles = makeStyles(() => ({
-  root: {},
-}));
 
 export const initialFormValues = {
   first_name: "",
@@ -43,23 +38,16 @@ const validationSchema = () =>
   });
 
 const NewStaffView = () => {
-  const classes = useStyles();
   let navigate = useNavigate();
 
   /**
    * Make use of the useUserApi to retrieve the requestApi function and
    * api request loading state and errors from the api.
    */
-  const {
-    loading: userApiLoading,
-    requestApi,
-    error: apiErrors,
-    setError: setApiError,
-    setLoading,
-  } = useUserApi();
+  const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
   /**
-   * Controls the onSubmit data event
+   * Submit create user request
    * @param {Object} data - The data being submitted
    */
   const onFormSubmit = (data) => {
@@ -75,18 +63,19 @@ const NewStaffView = () => {
   };
 
   return (
-    <Page className={classes.root} title="Staff">
+    <Page title="Staff">
       <Container maxWidth={false}>
         <Box mt={3}>
-          <Card className={classes.root}>
+          <Card>
             <CardHeader title="Add User" />
             <Divider />
             <CardContent>
               <StaffForm
                 onFormSubmit={onFormSubmit}
-                apiErrors={apiErrors}
-                isRequesting={userApiLoading}
-                setApiError={setApiError}
+                userApiErrors={error}
+                isUserApiLoading={loading}
+                setIsUserApiLoading={setLoading}
+                setUserApiError={setError}
                 initialFormValues={initialFormValues}
                 showUpdateUserStatusButtons={false}
                 showFormResetButton={true}
