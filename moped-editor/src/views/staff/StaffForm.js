@@ -52,21 +52,19 @@ const roles = [
  * @constructor
  */
 const StaffForm = ({
-  editFormData = null,
   userCognitoId,
   onFormSubmit,
-  apiErrors,
-  setApiError,
-  isRequesting,
+  userApiErrors,
+  setUserApiError,
+  isUserApiLoading,
   initialFormValues,
   showUpdateUserStatusButtons,
   isUserActive,
   showFormResetButton,
   validationSchema,
-  setLoading,
+  setIsUserApiLoading,
 }) => {
   const classes = useStyles();
-  const is_deleted = editFormData?.is_deleted;
 
   const initialModalState = {
     open: false,
@@ -152,8 +150,8 @@ const StaffForm = ({
    * Clears the API errors window and closes it
    */
   const clearApiErrors = () => {
-    setApiError(null);
-    setLoading(false);
+    setUserApiError(null);
+    setIsUserApiLoading(false);
   };
 
   return (
@@ -165,16 +163,16 @@ const StaffForm = ({
             name="first_name"
             id="first-name"
             label="First Name"
-            disabled={is_deleted === true}
+            disabled={isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.first_name || !!apiErrors?.first_name}
+            error={!!errors.first_name || !!userApiErrors?.first_name}
             helperText={
               errors.first_name?.message ||
-              formatApiErrors(apiErrors?.first_name)
+              formatApiErrors(userApiErrors?.first_name)
             }
           />
         </Grid>
@@ -184,15 +182,16 @@ const StaffForm = ({
             name="last_name"
             id="last-name"
             label="Last Name"
-            disabled={is_deleted === true}
+            disabled={isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.last_name || !!apiErrors?.last_name}
+            error={!!errors.last_name || !!userApiErrors?.last_name}
             helperText={
-              errors.last_name?.message || formatApiErrors(apiErrors?.last_name)
+              errors.last_name?.message ||
+              formatApiErrors(userApiErrors?.last_name)
             }
           />
         </Grid>
@@ -202,15 +201,15 @@ const StaffForm = ({
             name="title"
             id="title"
             label="Title"
-            disabled={is_deleted === true}
+            disabled={isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.title || !!apiErrors?.title}
+            error={!!errors.title || !!userApiErrors?.title}
             helperText={
-              errors.title?.message || formatApiErrors(apiErrors?.title)
+              errors.title?.message || formatApiErrors(userApiErrors?.title)
             }
           />
         </Grid>
@@ -220,15 +219,15 @@ const StaffForm = ({
             name="email"
             id="email"
             label="Email"
-            disabled={is_deleted === true}
+            disabled={isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.email || !!apiErrors?.email}
+            error={!!errors.email || !!userApiErrors?.email}
             helperText={
-              errors.email?.message || formatApiErrors(apiErrors?.email)
+              errors.email?.message || formatApiErrors(userApiErrors?.email)
             }
           />
         </Grid>
@@ -244,9 +243,10 @@ const StaffForm = ({
             }}
             variant="outlined"
             inputRef={register}
-            error={!!errors.password || !!apiErrors?.password}
+            error={!!errors.password || !!userApiErrors?.password}
             helperText={
-              errors.password?.message || formatApiErrors(apiErrors?.password)
+              errors.password?.message ||
+              formatApiErrors(userApiErrors?.password)
             }
           />
         </Grid>
@@ -262,7 +262,7 @@ const StaffForm = ({
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
-                    disabled={is_deleted === true}
+                    disabled={isUserActive}
                     onChange={(e) => onChange(updateWorkgroupFields(e))}
                     inputRef={ref}
                     value={value}
@@ -311,7 +311,7 @@ const StaffForm = ({
                       value={role.value}
                       control={<Radio />}
                       label={role.name}
-                      disabled={is_deleted === true}
+                      disabled={isUserActive}
                     />
                   ))}
                 </RadioGroup>
@@ -325,13 +325,13 @@ const StaffForm = ({
           &nbsp;
         </Grid>
         <Grid item xs={12} md={6}>
-          {!apiErrors && (isRequesting || isSubmitting) ? (
+          {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (
             <>
               <Button
                 className={classes.formButton}
-                style={is_deleted === true ? { display: "none" } : {}}
+                style={isUserActive ? { display: "none" } : {}}
                 disabled={isSubmitting}
                 type="submit"
                 color="primary"
@@ -363,7 +363,7 @@ const StaffForm = ({
             </>
           )}
           <StaffFormConfirmModal
-            isLoading={isRequesting}
+            isLoading={isUserApiLoading}
             title={modalState.title}
             message={modalState.message}
             open={modalState.open}
@@ -373,7 +373,10 @@ const StaffForm = ({
             hideCloseButton={modalState.hideActionButton}
             hideActionButton={modalState.hideActionButton}
           />
-          <StaffFormErrorModal isOpen={!!apiErrors} onClose={clearApiErrors} />
+          <StaffFormErrorModal
+            isOpen={!!userApiErrors}
+            onClose={clearApiErrors}
+          />
         </Grid>
       </Grid>
     </form>

@@ -52,11 +52,11 @@ const EditStaffView = () => {
    * api request loading state and errors from the api.
    */
   const {
-    loading: userApiLoading,
+    loading: isUserApiLoading,
     requestApi,
-    error: apiErrors,
-    setError,
-    setLoading,
+    error: userApiErrors,
+    setError: setUserApiError,
+    setLoading: setIsUserApiLoading,
   } = useUserApi();
 
   const { data, loading, error } = useQuery(GET_USER, {
@@ -69,6 +69,13 @@ const EditStaffView = () => {
   const isUserActive = data?.moped_users[0].is_deleted;
 
   const formatUserFormData = (data) => {
+    // If Hasura doesn't return a field, set to default
+    Object.entries(initialFormValues).forEach(([field, value]) => {
+      if (data[field] === null) {
+        data = { ...data, [field]: value };
+      }
+    });
+
     // Format to types required by MUI form components
     Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
       const originalValue = data[fieldName];
@@ -78,14 +85,7 @@ const EditStaffView = () => {
         data = { ...data, [fieldName]: formattedValue };
       }
     });
-
-    // If Hasura doesn't return a field, set to default
-    Object.entries(initialFormValues).forEach(([field, value]) => {
-      if (data[field] === undefined) {
-        data = { ...data, [field]: value };
-      }
-    });
-
+    console.log(data);
     return data;
   };
 
@@ -120,11 +120,16 @@ const EditStaffView = () => {
                     <CircularProgress />
                   ) : (
                     <StaffForm
-                      editFormData={formatUserFormData(data.moped_users[0])}
+                      initialFormValues={formatUserFormData(
+                        data.moped_users[0]
+                      )}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
                       onFormSubmit={onFormSubmit}
-                      apiErrors={apiErrors}
+                      userApiErrors={userApiErrors}
+                      setUserApiError={setUserApiError}
+                      setIsUserApiLoading={setIsUserApiLoading}
+                      isUserApiLoading={isUserApiLoading}
                       showUpdateUserStatusButtons={true}
                       showFormResetButton={false}
                       validationSchema={validationSchema}
