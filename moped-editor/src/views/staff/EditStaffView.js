@@ -19,17 +19,16 @@ import {
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
 
-const validationSchema = () =>
-  yup.object().shape({
-    first_name: yup.string().required(),
-    last_name: yup.string().required(),
-    title: yup.string().required(),
-    workgroup: yup.string().required(),
-    workgroup_id: yup.string().required(),
-    email: yup.string().required().email().lowercase(),
-    password: yup.string(),
-    roles: yup.string().required(),
-  });
+const validationSchema = yup.object().shape({
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  title: yup.string().required(),
+  workgroup: yup.string().required(),
+  workgroup_id: yup.string().required(),
+  email: yup.string().required().email().lowercase(),
+  password: yup.string(),
+  roles: yup.string().required(),
+});
 
 const EditStaffView = () => {
   const { userId } = useParams();
@@ -55,27 +54,6 @@ const EditStaffView = () => {
   const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
   const isUserActive = data?.moped_users[0]?.is_deleted;
-
-  const formatUserFormData = (data) => {
-    // If Hasura doesn't return a field, set to default
-    Object.entries(initialFormValues).forEach(([field, value]) => {
-      if (data[field] === null) {
-        data = { ...data, [field]: value };
-      }
-    });
-
-    // Format to types required by MUI form components
-    Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
-      const originalValue = data[fieldName];
-
-      if (originalValue !== undefined) {
-        const formattedValue = formatter(originalValue);
-        data = { ...data, [fieldName]: formattedValue };
-      }
-    });
-
-    return data;
-  };
 
   /**
    * Submit edit user request
@@ -109,7 +87,7 @@ const EditStaffView = () => {
                     <CircularProgress />
                   ) : (
                     <StaffForm
-                      initialFormValues={formatUserFormData(userData)}
+                      initialFormValues={userData}
                       onFormSubmit={onFormSubmit}
                       userApiErrors={error}
                       setUserApiError={setError}

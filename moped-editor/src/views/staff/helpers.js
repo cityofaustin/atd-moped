@@ -80,7 +80,6 @@ export const roleLooksGood = (roles) =>
 
 // TODO: These should be used by React Hook Form to transform and parse values in and out of form
 export const fieldFormatters = {
-  workgroup_id: (id) => id.toString(),
   roles: (roles) => findHighestRole(roles),
 };
 

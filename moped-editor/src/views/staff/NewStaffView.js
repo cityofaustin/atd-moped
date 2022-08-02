@@ -22,20 +22,19 @@ export const initialFormValues = {
   password: "",
   workgroup: "",
   workgroup_id: "",
-  roles: "moped-viewer",
+  roles: ["moped-viewer"],
 };
 
-const validationSchema = () =>
-  yup.object().shape({
-    first_name: yup.string().required(),
-    last_name: yup.string().required(),
-    title: yup.string().required(),
-    workgroup: yup.string().required(),
-    workgroup_id: yup.string().required(),
-    email: yup.string().required().email().lowercase(),
-    password: yup.string.required(),
-    roles: yup.string().required(),
-  });
+const validationSchema = yup.object().shape({
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  title: yup.string().required(),
+  workgroup: yup.string().required(),
+  workgroup_id: yup.string().required(),
+  email: yup.string().required().email().lowercase(),
+  password: yup.string().required(),
+  roles: yup.string().required(),
+});
 
 const NewStaffView = () => {
   let navigate = useNavigate();
@@ -71,12 +70,12 @@ const NewStaffView = () => {
             <Divider />
             <CardContent>
               <StaffForm
+                initialFormValues={initialFormValues}
                 onFormSubmit={onFormSubmit}
                 userApiErrors={error}
+                setUserApiError={setError}
                 isUserApiLoading={loading}
                 setIsUserApiLoading={setLoading}
-                setUserApiError={setError}
-                initialFormValues={initialFormValues}
                 showUpdateUserStatusButtons={false}
                 showFormResetButton={true}
                 validationSchema={validationSchema}

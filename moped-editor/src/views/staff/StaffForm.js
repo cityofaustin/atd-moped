@@ -3,6 +3,7 @@ import { formatApiErrors, fieldParsers } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "../../queries/workgroups";
+import { findHighestRole } from "../../auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -88,7 +89,10 @@ const StaffForm = ({
     formState: { isSubmitting, dirtyFields },
     reset,
   } = useForm({
-    defaultValues: initialFormValues,
+    defaultValues: {
+      ...initialFormValues,
+      roles: findHighestRole(initialFormValues.roles),
+    },
     resolver: yupResolver(validationSchema),
   });
 
@@ -97,7 +101,7 @@ const StaffForm = ({
    * @param {Object} data - The data being submitted
    */
   const onSubmit = (data) => {
-    // Parse values with fns from config
+    // Parse values so the user API gets the format it expects
     Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
       const originalValue = data[fieldName];
       const parsedValue = parser(originalValue);
