@@ -37,6 +37,7 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
 import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles({
   tableTypography: {
@@ -174,12 +175,12 @@ const SignalProjectTable = () => {
       project.moped_proj_personnel.forEach(personnel => {
         if (isDesigner(personnel)) {
           designers.push(
-            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+            getUserFullName(personnel)
           );
         }
         if (isInspector(personnel)) {
           inspectors.push(
-            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+            getUserFullName(personnel)
           );
         }
       });
