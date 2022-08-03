@@ -1,7 +1,7 @@
 import React from "react";
-import StaffForm from "./StaffForm";
+import StaffForm from "../components/StaffForm";
 import { useNavigate } from "react-router-dom";
-import { useUserApi } from "./helpers";
+import { useUserApi } from "../helpers";
 import * as yup from "yup";
 
 import {

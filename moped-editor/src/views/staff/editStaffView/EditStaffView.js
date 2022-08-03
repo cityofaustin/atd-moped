@@ -1,9 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
-import StaffForm from "./StaffForm";
-import { initialFormValues } from "./NewStaffView";
-import { useUserApi, fieldFormatters } from "./helpers";
+import StaffForm from "../components/StaffForm";
+import { useUserApi } from "../helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -17,7 +16,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-import NotFoundView from "../errors/NotFoundView";
+import NotFoundView from "../../errors/NotFoundView";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -98,6 +97,7 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
+                      submitOnlyChangedValues={true}
                     />
                   )}
                 </CardContent>

@@ -5,7 +5,7 @@ import {
   roleLooksGood,
   passwordLooksGood,
   fieldParsers,
-} from "./helpers";
+} from "../helpers";
 
 import { Button, Typography, Box, makeStyles } from "@material-ui/core";
 import clsx from "clsx";

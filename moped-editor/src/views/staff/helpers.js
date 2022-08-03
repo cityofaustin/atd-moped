@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useUser, getJwt, findHighestRole } from "../../auth/user";
+import { useUser, getJwt } from "../../auth/user";
 import axios from "axios";
 
 // Custom Hook for API calls
@@ -78,12 +78,50 @@ export const passwordLooksGood = (password) =>
 export const roleLooksGood = (roles) =>
   ["moped-viewer", "moped-editor", "moped-admin"].includes(roles);
 
-// TODO: These should be used by React Hook Form to transform and parse values in and out of form
-export const fieldFormatters = {
-  roles: (roles) => findHighestRole(roles),
-};
-
+/**
+ * Functions to transform form outputs into the type the DB expects
+ */
 export const fieldParsers = {
   workgroup_id: (id) => parseInt(id),
   roles: (role) => [role],
+};
+
+/**
+ * Transforms form data output into types expected by the database
+ * @param {Object} formData - The form data output
+ * @returns {Object} The formatted form data
+ */
+export const transformFormDataIntoDatabaseTypes = (formData) => {
+  const databaseData = { ...formData };
+
+  Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
+    const originalValue = databaseData[fieldName];
+    const parsedValue = parser(originalValue);
+
+    databaseData[fieldName] = parsedValue;
+  });
+
+  return databaseData;
+};
+
+/**
+ * Removes unchanged data using the dirtyFields object returned from React Hook Form
+ * @param {Object} databaseData - The form data output
+ * @param {Object} dirtyFields - The form data output
+ * @returns {Object} The formatted form data
+ */
+export const removeUnchangedFieldsFromDatabaseData = (
+  databaseData,
+  dirtyFields
+) => {
+  console.log(dirtyFields, databaseData);
+  const onlyChangedData = { ...databaseData };
+
+  Object.keys(onlyChangedData).forEach((field) => {
+    if (!dirtyFields.hasOwnProperty(field)) {
+      delete onlyChangedData[field];
+    }
+  });
+
+  return onlyChangedData;
 };

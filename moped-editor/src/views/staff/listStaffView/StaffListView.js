@@ -9,10 +9,10 @@ import {
 import Page from "src/components/Page";
 
 import { StaffListViewQueryConf } from "./StaffListViewQueryConf";
-import GQLAbstract from "../../libs/GQLAbstract";
-import GridTable from "../../components/GridTable/GridTable";
+import GQLAbstract from "../../../libs/GQLAbstract";
+import GridTable from "../../../components/GridTable/GridTable";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: "100%",
     paddingBottom: theme.spacing(3),

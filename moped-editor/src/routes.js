@@ -4,9 +4,9 @@ import Can from "src/auth/Can";
 import DashboardLayout from "src/layouts/DashboardLayout/DashboardLayout";
 import MainLayout from "src/layouts/MainLayout/MainLayout";
 import AccountView from "src/views/account/AccountView/AccountView";
-import StaffListView from "src/views/staff/StaffListView";
-import NewStaffView from "src/views/staff/NewStaffView";
-import EditStaffView from "src/views/staff/EditStaffView";
+import StaffListView from "src/views/staff/listStaffView/StaffListView";
+import NewStaffView from "src/views/staff/newStaffView/NewStaffView";
+import EditStaffView from "src/views/staff/editStaffView/EditStaffView";
 import LoginView from "src/views/auth/LoginView";
 import Logout from "src/views/auth/Logout";
 import NotFoundView from "src/views/errors/NotFoundView";
@@ -100,8 +100,8 @@ const unprotectedRoutePaths = ["/", "/moped/session"];
  * @param {Array} routes - Routes composed to pass as arg to React Router useRoutes hook
  * @return {Array} Routes array with protected route's element wrapped with Can component
  */
-export const restrictRoutes = routes =>
-  routes.map(route => {
+export const restrictRoutes = (routes) =>
+  routes.map((route) => {
     if (unprotectedRoutePaths.includes(route.path)) {
       return route;
     } else if (route.children) {

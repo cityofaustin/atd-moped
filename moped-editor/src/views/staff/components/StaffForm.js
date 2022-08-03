@@ -1,9 +1,13 @@
 import React, { useState } from "react";
-import { formatApiErrors, fieldParsers } from "./helpers";
+import {
+  formatApiErrors,
+  transformFormDataIntoDatabaseTypes,
+  removeUnchangedFieldsFromDatabaseData,
+} from "../helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { WORKGROUPS_QUERY } from "../../queries/workgroups";
-import { findHighestRole } from "../../auth/user";
+import { WORKGROUPS_QUERY } from "../../../queries/workgroups";
+import { findHighestRole } from "../../../auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -39,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const roles = [
+const roleOptions = [
   { value: "moped-viewer", name: "Viewer" },
   { value: "moped-editor", name: "Editor" },
   { value: "moped-admin", name: "Admin" },
@@ -53,17 +57,18 @@ const roles = [
  * @constructor
  */
 const StaffForm = ({
-  userCognitoId,
+  initialFormValues,
   onFormSubmit,
   userApiErrors,
   setUserApiError,
   isUserApiLoading,
-  initialFormValues,
+  setIsUserApiLoading,
   showUpdateUserStatusButtons,
-  isUserActive,
   showFormResetButton,
   validationSchema,
-  setIsUserApiLoading,
+  userCognitoId,
+  isUserActive,
+  submitOnlyChangedValues = false,
 }) => {
   const classes = useStyles();
 
@@ -91,6 +96,7 @@ const StaffForm = ({
   } = useForm({
     defaultValues: {
       ...initialFormValues,
+      // Roles are stored as an array in the DB but we need to feed the form a string
       roles: findHighestRole(initialFormValues.roles),
     },
     resolver: yupResolver(validationSchema),
@@ -101,22 +107,19 @@ const StaffForm = ({
    * @param {Object} data - The data being submitted
    */
   const onSubmit = (data) => {
-    // Parse values so the user API gets the format it expects
-    Object.entries(fieldParsers).forEach(([fieldName, parser]) => {
-      const originalValue = data[fieldName];
-      const parsedValue = parser(originalValue);
+    // Parse data and remove unchanged values
+    const databaseData = transformFormDataIntoDatabaseTypes(data);
 
-      data[fieldName] = parsedValue;
-    });
+    if (submitOnlyChangedValues) {
+      const onlyChangedData = removeUnchangedFieldsFromDatabaseData(
+        databaseData,
+        dirtyFields
+      );
 
-    // Remove unedited values from the payload
-    Object.keys(data).forEach((field) => {
-      if (!dirtyFields.hasOwnProperty(field)) {
-        delete data[field];
-      }
-    });
-
-    onFormSubmit(data);
+      onFormSubmit(onlyChangedData);
+    } else {
+      onFormSubmit(databaseData);
+    }
   };
 
   const {
@@ -307,7 +310,7 @@ const StaffForm = ({
             <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
-                  {roles.map((role) => (
+                  {roleOptions.map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}

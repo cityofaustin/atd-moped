@@ -1,4 +1,4 @@
-import { GridTableFiltersCommonOperators } from "../../components/GridTable/GridTableFiltersCommonOperators";
+import { GridTableFiltersCommonOperators } from "../../../components/GridTable/GridTableFiltersCommonOperators";
 
 /**
  * Filter Configuration
