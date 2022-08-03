@@ -39,15 +39,11 @@ const validationSchema = yup.object().shape({
 const NewStaffView = () => {
   let navigate = useNavigate();
 
-  /**
-   * Make use of the useUserApi to retrieve the requestApi function and
-   * api request loading state and errors from the api.
-   */
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
   /**
    * Submit create user request
-   * @param {Object} data - The data being submitted
+   * @param {Object} data - The data returned from user form to submit to the Moped API
    */
   const onFormSubmit = (data) => {
     // Navigate to user table on successful add/edit

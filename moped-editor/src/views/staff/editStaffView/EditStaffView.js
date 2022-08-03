@@ -33,12 +33,9 @@ const EditStaffView = () => {
   const { userId } = useParams();
   let navigate = useNavigate();
 
-  /**
-   * Make use of the useUserApi to retrieve the requestApi function and
-   * api request loading state and errors from the api.
-   */
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
+  // Get the user data so we can populate the form with existing user details
   const {
     data,
     loading: isUserQueryLoading,
@@ -56,7 +53,7 @@ const EditStaffView = () => {
 
   /**
    * Submit edit user request
-   * @param {Object} data - The data being submitted
+   * @param {Object} data - The data returned from user form to submit to the Moped API
    */
   const onFormSubmit = (data) => {
     // Navigate to user table on successful add/edit
@@ -72,9 +69,8 @@ const EditStaffView = () => {
 
   return (
     <>
-      {userData === null ? (
-        <NotFoundView />
-      ) : (
+      {data && !data?.moped_users?.length && <NotFoundView />}
+      {data && !!data?.moped_users?.length && (
         <Page title="Staff">
           <Container maxWidth={false}>
             <Box mt={3}>

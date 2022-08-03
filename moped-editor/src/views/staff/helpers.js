@@ -2,13 +2,28 @@ import { useState } from "react";
 import { useUser, getJwt } from "../../auth/user";
 import axios from "axios";
 
-// Custom Hook for API calls
+/**
+ * Custom hook to handle requests to routes of the Moped API
+ * @returns {Function} requestApi - Function to call the API
+ * @returns {Object} result - The result object of the request
+ * @returns {Object} error - Error object containing errors returned from the API
+ * @returns {Function} setError - Set error state
+ * @returns {Boolean} loading - Loading state
+ * @returns {Function} setLoading - Set loading state
+ */
 export function useUserApi() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const { user } = useUser();
 
+  /**
+   * Call the User route of the Moped API
+   * @param {String} method - HTTP methods supported by Axios
+   * @param {String} path - Path of the route in the Moped API
+   * @param {Object} payload - Data sent to Moped API
+   * @param {Function} callback - Callback that fires on request success
+   */
   const requestApi = ({ method, path, payload, callback }) => {
     const url = process.env.REACT_APP_API_ENDPOINT + path;
 
@@ -107,14 +122,13 @@ export const transformFormDataIntoDatabaseTypes = (formData) => {
 /**
  * Removes unchanged data using the dirtyFields object returned from React Hook Form
  * @param {Object} databaseData - The form data output
- * @param {Object} dirtyFields - The form data output
- * @returns {Object} The formatted form data
+ * @param {Object} dirtyFields - Dirty fields returned from React Hook Form
+ * @returns {Object} Data containing only values changed in the form
  */
 export const removeUnchangedFieldsFromDatabaseData = (
   databaseData,
   dirtyFields
 ) => {
-  console.log(dirtyFields, databaseData);
   const onlyChangedData = { ...databaseData };
 
   Object.keys(onlyChangedData).forEach((field) => {
