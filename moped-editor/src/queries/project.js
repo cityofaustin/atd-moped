@@ -25,7 +25,6 @@ export const ADD_PROJECT = gql`
       }
       moped_project_types {
         project_type_id
-        status_id
       }
     }
   }
@@ -51,6 +50,7 @@ export const SUMMARY_QUERY = gql`
       purchase_order_number
       work_assignment_id
       parent_project_id
+      interim_project_id
       moped_project {
         project_name
       }
@@ -154,7 +154,7 @@ export const TYPES_QUERY = gql`
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      where: { project_id: { _eq: $projectId } }
     ) {
       user_id
       role_id
@@ -163,11 +163,13 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      is_deleted
       moped_user {
         first_name
         last_name
         workgroup_id
         user_id
+        is_deleted
       }
     }
     moped_workgroup {
@@ -182,14 +184,12 @@ export const TEAM_QUERY = gql`
       project_role_name
       project_role_description
     }
-    moped_users(
-      order_by: { last_name: asc }
-      where: { is_deleted: { _eq: false } }
-    ) {
+    moped_users( order_by: { last_name: asc } ) {
       first_name
       last_name
       workgroup_id
       user_id
+      is_deleted
     }
   }
 `;
@@ -436,7 +436,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where: { is_deleted: { _eq: false } }) {
+    moped_users {
       first_name
       last_name
       user_id
@@ -874,6 +874,28 @@ export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
       affected_rows
     }
   }
+`;
+
+export const PROJECT_UPDATE_INTERIM_ID = gql`
+mutation UpdateProjectInterimId($projectId: Int!, $interimProjectId: Int) {
+  update_moped_project_by_pk(
+    pk_columns: {project_id: $projectId},
+    _set: {interim_project_id: $interimProjectId}
+  ) {
+    interim_project_id
+  }
+}
+`;
+
+export const PROJECT_CLEAR_INTERIM_ID = gql`
+mutation UpdateProjectInterimId($projectId: Int!) {
+  update_moped_project_by_pk(
+    pk_columns: {project_id: $projectId},
+    _set: {interim_project_id: null}
+  ) {
+    interim_project_id
+  }
+}
 `;
 
 /**
