@@ -115,7 +115,7 @@ function hasura_server_ready() {
 }
 
 function wait_server_ready() {
-  INITIALIZATION_TIMEOUT_LIMIT=60
+  INITIALIZATION_TIMEOUT_LIMIT=120
   INITIALIZATION_COUNT=1
 
   while [ "$(hasura_server_ready)" = "FALSE" ]; do
