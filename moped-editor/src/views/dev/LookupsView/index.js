@@ -3,7 +3,6 @@ import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
@@ -62,16 +61,17 @@ const LookupsView = () => {
   );
 
   /**
-   * Use the record hash from the URL, if present. This only happens on page load.
+   * Use the record hash from the URL, if present. This only happens once after
+   * data fetch.
    * */
   const { hash: recordKeyHash } = useLocation();
   useEffect(() => {
-    if (!recordKeyHash) {
+    if (!recordKeyHash || loading) {
       return;
     }
     const recordKey = recordKeyHash.replace("#", "").replace("-", "_");
     setSelectedRecordKey(recordKey);
-  }, [recordKeyHash]);
+  }, [recordKeyHash, loading]);
 
   /**
    * Listens for changes to the selected record key and scrolls to its table
@@ -85,8 +85,6 @@ const LookupsView = () => {
       ref.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [selectedRecordKey, refs]);
-
-  if (loading) return <CircularProgress />;
 
   return (
     <ApolloErrorHandler error={error}>
@@ -126,8 +124,9 @@ const LookupsView = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <RecordTable
-                      rows={data[recordType.key]}
+                      rows={data?.[recordType.key]}
                       columns={recordType.columns}
+                      loading={loading}
                     />
                   </Grid>
                 </Grid>
