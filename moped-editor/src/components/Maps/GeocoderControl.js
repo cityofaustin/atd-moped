@@ -5,7 +5,6 @@ import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
 /* eslint-disable complexity,max-statements */
 export default function GeocoderControl(props) {
-  console.log(props);
   const [marker, setMarker] = useState(null);
 
   const geocoder = useControl(

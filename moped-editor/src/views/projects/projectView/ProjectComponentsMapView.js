@@ -19,7 +19,6 @@ import {
   renderTooltip,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
-  mapConfig,
   useLayerSelect,
   getLayerNames,
   makeCommonComponentsMapStyles,
@@ -120,7 +119,6 @@ const ProjectComponentsMapView = ({
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
   const mapRef = useRef();
-  // const mapGeocoderContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
 
   const {
@@ -157,31 +155,10 @@ const ProjectComponentsMapView = ({
   );
 
   /**
-   * Updates viewport on select of location from geocoder form
-   * @param {Object} newViewport - Mapbox object that stores updated location for viewport
-   */
-  const handleGeocoderViewportChange = useCallback(
-    (newViewport) => {
-      const geocoderDefaultOverrides = { transitionDuration: 1000 };
-
-      return handleViewportChange({
-        ...newViewport,
-        ...geocoderDefaultOverrides,
-      });
-    },
-    [handleViewportChange]
-  );
-
-  /**
    * If we do have features, proceed to render map.
    */
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      {/* <div
-        ref={mapGeocoderContainerRef}
-        className={classes.geocoderContainer}
-      /> */}
       <div ref={mapBasemapContainerRef} className={classes.speedDial} />
       <Collapse
         in={editPanelCollapsedShow}
@@ -225,11 +202,11 @@ const ProjectComponentsMapView = ({
 
       <Map
         /* Current state of viewport */
-        // {...viewport}
+        {...viewport}
+        onMove={(e) => handleViewportChange(e.viewState)}
         /* Object reference to this object */
         ref={mapRef}
         maxZoom={20}
-        initialViewState={mapConfig.mapInit}
         /* Access Key */
         mapboxAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
@@ -241,7 +218,6 @@ const ProjectComponentsMapView = ({
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         // onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
-        // onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}
       >
