@@ -288,13 +288,13 @@ if __name__ == "__main__":
 
     else:
         print("\n🎯 Decomissioning Activity Log\n")
-        # activity_log_decommission.run(parameters=dict(basename=basename))
+        activity_log_decommission.run(parameters=dict(basename=basename))
 
         print("\n🤖 Decomissioning ECS\n")
-        # ecs_decommission.run(parameters=dict(basename=basename))
+        ecs_decommission.run(parameters=dict(basename=basename))
 
         print("\n🚀 Decomissioning API\n")
-        # api_decommission.run(parameters=dict(basename=basename))
+        api_decommission.run(parameters=dict(basename=basename))
 
         print("\n🍄 Decomissioning Database\n")
-        # database_decommission.run(basename=database)
+        database_decommission.run(basename=database)
