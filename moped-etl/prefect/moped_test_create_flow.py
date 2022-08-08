@@ -62,6 +62,8 @@ with Flow(
     basename = Parameter("basename")
     database = Parameter("database")
 
+    graphql_access_key = generate_access_key(basename=basename)
+
     cluster = create_ecs_cluster(basename=basename)
 
     load_balancer = create_load_balancer(basename=basename)
@@ -96,7 +98,9 @@ with Flow(
         certificate=issued_certificate,
     )
 
-    task_definition = create_task_definition(basename=basename, database=database)
+    task_definition = create_task_definition(
+        basename=basename, database=database, graphql_access_key=graphql_access_key
+    )
 
     service = create_service(
         basename=basename,
@@ -179,7 +183,11 @@ with Flow(
 
     basename = Parameter("basename")
 
-    create_api_config_secret_arn = create_moped_api_secrets_entry(basename=basename)
+    graphql_engine_api_key = generate_access_key(basename=basename)
+
+    create_api_config_secret_arn = create_moped_api_secrets_entry(
+        basename=basename, graphql_engine_api_key=graphql_engine_api_key
+    )
 
     commission_api_command = create_moped_api_deploy_command(
         basename=basename, config_secret_arn=create_api_config_secret_arn
@@ -226,8 +234,11 @@ with Flow(
 ) as activity_log_commission:
 
     basename = Parameter("basename")
+    graphql_engine_api_key = generate_access_key(basename=basename)
 
-    commission_activity_log_command = create_activity_log_command(basename=basename)
+    commission_activity_log_command = create_activity_log_command(
+        basename=basename, graphql_engine_api_key=graphql_engine_api_key
+    )
     deploy_activity_log = create_activity_log_task(
         command=commission_activity_log_command
     )
@@ -245,49 +256,38 @@ with Flow(
     )
 
 
-
 if __name__ == "__main__":
-    print("main()")
-
-    basename = "netlify-test-deployment"
+    basename = "integration-test"
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
-    # flow execution is serialized!
+    if False:
+        print("\n️🚀 Comissioning API\n")
+        # api_commission_state = api_commission.run(parameters=dict(basename=basename))
+        # api_endpoint = api_commission_state.result[endpoint].result
+        # print("🚀 API Endpoint: " + api_endpoint)
 
+        print("\n🤖 Comissioning ECS\n")
+        # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
-    # print("\n🍄 Decomissioning Database\n")
-    # database_decommission.run(basename=database)
-    # print("\n🍄 Comissioning Database\n")
-    # database_commission.run(basename=database)
+        print("\n🍄 Comissioning Database\n")
+        # database_commission.run(basename=database, stage=database_data_stage)
 
-    # print("\n🚀 Decomissioning API\n")
-    # api_decommission.run(parameters=dict(basename=basename))
-    # print("\n️🚀 Comissioning API\n")
-    # api_commission.run(parameters=dict(basename=basename, database=database))
+        print("💡 Comissioning Netlify Build & Deploy\n")
+        # netlify_commission.run(parameters=dict(basename=basename))
 
-    # print("\n🍄 Decomissioning Database\n")
-    # database_decommission.run(basename=database)
-    # print("\n🍄 Comissioning Database\n")
-    # database_commission.run(basename=database, stage=database_data_stage)
+        print("\n🎯 Decomissioning Activity Log\n")
+        # activity_log_commission.run(parameters=dict(basename=basename))
 
+    else:
+        print("\n🚀 Decomissioning API\n")
+        api_decommission.run(parameters=dict(basename=basename))
 
-    # print("\n🤖 Decomissioning ECS\n")
-    # ecs_decommission.run(parameters=dict(basename=basename))
-    # print("\n🤖 Comissioning ECS\n")
-    # ecs_commission.run(parameters=dict(basename=basename, database=database))
+        print("\n🍄 Decomissioning Database\n")
+        database_decommission.run(basename=database)
 
-    # print("💡 Comissioning Netlify Build & Deploy\n")
-    # netlify_commission.run(parameters=dict(basename=basename))
+        print("\n🤖 Decomissioning ECS\n")
+        ecs_decommission.run(parameters=dict(basename=basename))
 
-    # api_commission_state = api_commission.run(parameters=dict(basename=basename))
-    # api_decommission.run(parameters=dict(basename=basename))
-
-    # print(api_commission_state.result[decommission_api_command].result)
-    # Get the API endpoint string from the endpoint task object
-
-    # api_endpoint = api_commission_state.result[endpoint].result
-    # print(api_endpoint)
-
-    # activity_log_commission.run(parameters=dict(basename=basename))
-    # activity_log_decommission.run(parameters=dict(basename=basename))
+        print("\n🎯 Decomissioning Activity Log\n")
+        activity_log_decommission.run(parameters=dict(basename=basename))

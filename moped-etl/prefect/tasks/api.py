@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 import re
+import hashlib
 
 import prefect
 from prefect import task
@@ -23,12 +24,22 @@ AWS_STAGING_COGNITO_APP_ID = os.environ["AWS_STAGING_COGNITO_APP_ID"]
 AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
 AWS_COGNITO_DYNAMO_SECRET_KEY = os.environ["AWS_COGNITO_DYNAMO_SECRET_KEY"]
 
-HASURA_HTTPS_ENDPOINT = os.environ["HASURA_HTTPS_ENDPOINT"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 
 MOPED_API_UPLOADS_S3_BUCKET = os.environ["MOPED_API_UPLOADS_S3_BUCKET"]
 MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
+
+SHA_SALT = os.environ["SHA_SALT"]
+
+HASURA_HTTPS_ENDPOINT = "getting this passed in"
 MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
+
+
+@task(name="Generate key for graphql api")
+def generate_access_key(basename):
+    sha_input = basename + SHA_SALT
+    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
+    return graphql_engine_api_key
+
 
 # Create a constistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
@@ -37,7 +48,7 @@ def create_secret_name(basename):
 
 # The Flask app retrieves these secrets from Secrets Manager
 @task(name="Create test API config Secrets Manager entry")
-def create_moped_api_secrets_entry(basename):
+def create_moped_api_secrets_entry(basename, graphql_engine_api_key):
     logger.info("Creating API secret config")
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -50,7 +61,7 @@ def create_moped_api_secrets_entry(basename):
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
         "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
         "HASURA_HTTPS_ENDPOINT": HASURA_HTTPS_ENDPOINT,
-        "HASURA_ADMIN_SECRET": HASURA_ADMIN_SECRET,
+        "HASURA_ADMIN_SECRET": graphql_engine_api_key,
     }
 
     response = client.create_secret(
@@ -64,6 +75,8 @@ def create_moped_api_secrets_entry(basename):
     )
 
     secret_arn = response["ARN"]
+
+    # print("Response ARN: " + secret_arn)
 
     return secret_arn
 
@@ -147,6 +160,8 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     deactivate;
     """
 
+    # print("API Deployment command:\n" + command + "\n")
+
     return command
 
 
@@ -166,6 +181,7 @@ def get_endpoint_from_deploy_output(output_list):
         return None
     else:
         endpoint = match.groups()[0]
+        # print("Got an API endpoint: " + endpoint)
         return endpoint
 
 

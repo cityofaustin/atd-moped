@@ -7,6 +7,7 @@ import boto3
 import prefect
 from prefect import task
 import pprint as pretty_printer
+import hashlib
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -23,9 +24,9 @@ CLOUDWATCH_LOG_GROUP = os.environ["CLOUDWATCH_LOG_GROUP"]
 MOPED_TEST_HOSTNAME = os.environ["MOPED_TEST_HOSTNAME"]
 MOPED_TEST_USER = os.environ["MOPED_TEST_USER"]
 MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
-MOPED_API_APIKEY = os.environ["MOPED_API_APIKEY"]
+SHA_SALT = os.environ["SHA_SALT"]
+
+# MOPED_API_KEY = "Figure out how to pass this in as a parameter"
 
 
 def pprint(string):
@@ -294,8 +295,15 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
     return listeners
 
 
+@task(name="Generate key for graphql api")
+def generate_access_key(basename):
+    sha_input = basename + SHA_SALT
+    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
+    return graphql_engine_api_key
+
+
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename, database):
+def create_task_definition(basename, database, graphql_access_key):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
@@ -329,10 +337,10 @@ def create_task_definition(basename, database):
                         "name": "HASURA_GRAPHQL_DATABASE_URL",
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
-                    {"name": "HASURA_ADMIN_SECRET", "value": HASURA_ADMIN_SECRET},
+                    {"name": "HASURA_ADMIN_SECRET", "value": graphql_access_key},
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     # {"name": "MOPED_API_EVENTS_URL", "value": MOPED_API_EVENTS_URL},
-                    {"name": "MOPED_API_APIKEY", "value": MOPED_API_APIKEY},
+                    {"name": "MOPED_API_KEY", "value": "moped api key"},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
