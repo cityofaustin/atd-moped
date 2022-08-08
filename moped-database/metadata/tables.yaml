@@ -641,6 +641,14 @@
 - table:
     schema: public
     name: moped_phases
+  array_relationships:
+    - name: moped_subphases
+      using:
+        foreign_key_constraint_on:
+          column: related_phase_id
+          table:
+            schema: public
+            name: moped_subphases
   insert_permissions:
   - role: moped-admin
     permission:
@@ -652,7 +660,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       backend_only: false
   - role: moped-editor
     permission:
@@ -664,7 +671,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       backend_only: false
   select_permissions:
   - role: moped-admin
@@ -676,7 +682,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       filter: {}
   - role: moped-editor
     permission:
@@ -687,7 +692,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       filter: {}
   - role: moped-viewer
     permission:
@@ -698,7 +702,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       filter: {}
   update_permissions:
   - role: moped-admin
@@ -710,7 +713,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       filter: {}
       check: {}
   - role: moped-editor
@@ -722,7 +724,6 @@
       - phase_name
       - phase_order
       - required_phase
-      - subphases
       filter: {}
       check: {}
 - table:
@@ -3281,6 +3282,10 @@
 - table:
     schema: public
     name: moped_subphases
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: related_phase_id
   insert_permissions:
   - role: moped-admin
     permission:
