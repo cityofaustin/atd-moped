@@ -352,7 +352,8 @@ def create_task_definition(basename, database):
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     {
                         "name": "MOPED_API_EVENTS_URL",
-                        "value": activity_log.create_activity_log_queue_url(basename) + "/events/",
+                        "value": activity_log.create_activity_log_queue_url(basename)
+                        + "/events/",
                     },
                     {"name": "MOPED_API_KEY", "value": api.generate_api_key(basename)},
                 ],
