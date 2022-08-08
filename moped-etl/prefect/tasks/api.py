@@ -130,10 +130,10 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "../../moped-api/"
+    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
-    with open(f"{api_project_path}zappa_settings.json", "w") as f:
+    with open(f"{api_project_path}/zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
 
     # zappa deploy requires an active virtual environment
