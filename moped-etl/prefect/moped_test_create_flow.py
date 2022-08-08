@@ -261,7 +261,10 @@ if __name__ == "__main__":
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
-    if False:
+    if True:
+        print("\n🍄 Comissioning Database\n")
+        database_commission.run(basename=database, stage=database_data_stage)
+
         print("\n️🚀 Comissioning API\n")
         # api_commission_state = api_commission.run(parameters=dict(basename=basename))
         # api_endpoint = api_commission_state.result[endpoint].result
@@ -269,9 +272,6 @@ if __name__ == "__main__":
 
         print("\n🤖 Comissioning ECS\n")
         # ecs_commission.run(parameters=dict(basename=basename, database=database))
-
-        print("\n🍄 Comissioning Database\n")
-        # database_commission.run(basename=database, stage=database_data_stage)
 
         print("💡 Comissioning Netlify Build & Deploy\n")
         # netlify_commission.run(parameters=dict(basename=basename))
