@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   layerSelectButton: {
     position: "absolute",
     top: "10px",
-    right: "49px",
+    right: "10px",
     zIndex: 1,
     height: "3rem",
     width: "184px",
@@ -246,20 +246,9 @@ const ProjectComponentsMapView = ({
         style={{ width: "100%", height: "60vh" }}
       >
         {/* Draw Navigation controls with specific styles */}
-        <span className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
-        </span>
+        <NavigationControl showCompass={false} position="bottom-right" />
 
         {/* GEOCODER */}
-        {/* <Geocoder
-          mapRef={mapRef}
-          onViewportChange={handleGeocoderViewportChange}
-          mapboxAccessToken={MAPBOX_TOKEN}
-          bbox={mapConfig.geocoderBbox}
-          containerRef={mapGeocoderContainerRef}
-          marker={false}
-          position="top-right"
-        /> */}
         <GeocoderControl
           marker={false}
           mapboxAccessToken={MAPBOX_TOKEN}

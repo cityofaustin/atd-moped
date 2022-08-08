@@ -117,7 +117,7 @@ export const mapStyles = {
  */
 export const makeCommonComponentsMapStyles = (theme) => ({
   speedDial: {
-    right: "10px !important",
+    right: "49px !important",
     bottom: "20px !important",
     position: "absolute",
     zIndex: 1,
@@ -129,11 +129,6 @@ export const makeCommonComponentsMapStyles = (theme) => ({
       top: theme.spacing(2),
       left: theme.spacing(2),
     },
-  },
-  navStyle: {
-    position: "absolute",
-    bottom: "6rem",
-    right: "3rem",
   },
   mapBox: {
     padding: 25,

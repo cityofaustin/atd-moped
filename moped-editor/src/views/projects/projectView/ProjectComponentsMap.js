@@ -426,9 +426,11 @@ const ProjectComponentsMap = ({
         onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
       >
-        <div className={classes.navStyle}>
-          <NavigationControl showCompass={false} captureClick={false} />
-        </div>
+        <NavigationControl
+          showCompass={false}
+          position="bottom-right"
+          captureClick={false}
+        />
         {/***************************************************************************
          BaseMap Speed Dial
          ***************************************************************************/}

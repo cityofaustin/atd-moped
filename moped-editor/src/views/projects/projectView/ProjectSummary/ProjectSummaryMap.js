@@ -20,12 +20,6 @@ const useStyles = makeStyles({
     fontWeight: 500,
   },
   toolTip: mapStyles.toolTipStyles,
-  navStyle: {
-    right: "2rem",
-    bottom: "5.5rem",
-    padding: "10px",
-    position: "absolute",
-  },
 });
 
 const ProjectSummaryMap = ({ projectFeatureCollection }) => {
@@ -89,9 +83,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         onViewportChange={handleViewportChange}
       >
         {/* Draw Navigation controls with specific styles */}
-        <div className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
-        </div>
+        <NavigationControl showCompass={false} />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
