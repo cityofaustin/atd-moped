@@ -2,7 +2,6 @@ import json
 import boto3
 import os
 import re
-import hashlib
 
 import tasks.ecs as ecs
 
@@ -49,10 +48,11 @@ def create_secret_name(basename):
 
 # The Flask app retrieves these secrets from Secrets Manager
 @task(name="Create test API config Secrets Manager entry")
-def create_moped_api_secrets_entry(basename, graphql_engine_api_key):
+def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
 
     graphql_endpoint = ecs.form_hostname(basename)
+    graphql_engine_api_key = ecs.generate_access_key(basename)
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 

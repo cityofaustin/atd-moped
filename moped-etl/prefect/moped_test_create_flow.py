@@ -60,8 +60,6 @@ with Flow(
     basename = Parameter("basename")
     database = Parameter("database")
 
-    graphql_access_key = ecs.generate_access_key(basename=basename)
-
     cluster = ecs.create_ecs_cluster(basename=basename)
 
     load_balancer = ecs.create_load_balancer(basename=basename)
@@ -98,9 +96,7 @@ with Flow(
         certificate=issued_certificate,
     )
 
-    task_definition = ecs.create_task_definition(
-        basename=basename, database=database, graphql_access_key=graphql_access_key
-    )
+    task_definition = ecs.create_task_definition(basename=basename, database=database)
 
     service = ecs.create_service(
         basename=basename,
@@ -185,9 +181,7 @@ with Flow(
 
     graphql_engine_api_key = api.generate_access_key(basename=basename)
 
-    create_api_config_secret_arn = api.create_moped_api_secrets_entry(
-        basename=basename, graphql_engine_api_key=graphql_engine_api_key
-    )
+    create_api_config_secret_arn = api.create_moped_api_secrets_entry(basename=basename)
 
     commission_api_command = api.create_moped_api_deploy_command(
         basename=basename, config_secret_arn=create_api_config_secret_arn
@@ -234,10 +228,9 @@ with Flow(
 ) as activity_log_commission:
 
     basename = Parameter("basename")
-    graphql_engine_api_key = activity_log.generate_access_key(basename=basename)
 
     commission_activity_log_command = activity_log.create_activity_log_command(
-        basename=basename, graphql_engine_api_key=graphql_engine_api_key
+        basename=basename
     )
     deploy_activity_log = activity_log.create_activity_log_task(
         command=commission_activity_log_command
@@ -266,9 +259,9 @@ if __name__ == "__main__":
         # database_commission.run(basename=database, stage=database_data_stage)
 
         print("\n️🚀 Comissioning API\n")
-        #api_commission_state = api_commission.run(parameters=dict(basename=basename))
-        #api_endpoint = api_commission_state.result[endpoint].result
-        print("🚀 API Endpoint: " + api_endpoint)
+        # api_commission_state = api_commission.run(parameters=dict(basename=basename))
+        # api_endpoint = api_commission_state.result[endpoint].result
+        # print("🚀 API Endpoint: " + api_endpoint)
 
         print("\n🤖 Comissioning ECS\n")
         # ecs_commission.run(parameters=dict(basename=basename, database=database))

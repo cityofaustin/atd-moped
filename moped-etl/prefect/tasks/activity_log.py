@@ -1,7 +1,6 @@
 import os
 import json
 import boto3
-import hashlib
 
 import prefect
 from prefect import task
@@ -19,12 +18,6 @@ SHA_SALT = os.environ["SHA_SALT"]
 # The folder name of the event function and used in naming the AWS function
 function_name = "activity_log"
 
-
-@task(name="Generate key for graphql api")
-def generate_access_key(basename):
-    sha_input = basename + SHA_SALT
-    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
-    return graphql_engine_api_key
 
 def create_activity_log_aws_name(basename):
     return f"atd-moped-events-{function_name}_{basename}"
@@ -60,13 +53,15 @@ create_activity_log_task = ShellTask(
 
 
 @task(name="Create Activity Log deploy helper command")
-def create_activity_log_command(basename, graphql_engine_api_key):
+def create_activity_log_command(basename):
     logger.info("Creating Activity Log deploy helper command")
 
     aws_function_name = create_activity_log_aws_name(basename)
 
     helper_script_path = "../../.github/workflows"
     deployment_path = f"../../moped-data-events/{function_name}"
+
+    graphql_engine_api_key = ecs.generate_access_key(basename)
 
     lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
 

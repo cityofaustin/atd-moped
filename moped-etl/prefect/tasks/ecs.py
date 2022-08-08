@@ -301,7 +301,6 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
     return listeners
 
 
-@task(name="Generate key for graphql api")
 def generate_access_key(basename):
     sha_input = basename + SHA_SALT
     graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
@@ -309,11 +308,13 @@ def generate_access_key(basename):
 
 
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename, database, graphql_access_key):
+def create_task_definition(basename, database):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
     HASURA_GRAPHQL_DATABASE_URL = f"postgres://{MOPED_TEST_USER}:{MOPED_TEST_PASSWORD}@{MOPED_TEST_HOSTNAME}:5432/{database}"
+
+    graphql_access_key = generate_access_key(basename)
 
     response = ecs.register_task_definition(
         # this unified family parameter requires that this flow's
