@@ -4,6 +4,7 @@ import { useControl, Marker } from "react-map-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
 /* eslint-disable complexity,max-statements */
+// See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
 export default function GeocoderControl(props) {
   const [marker, setMarker] = useState(null);
 

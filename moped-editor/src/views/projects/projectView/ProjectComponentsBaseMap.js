@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
 import { Icon, makeStyles, Typography } from "@material-ui/core";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 
-export const useStyles = makeStyles(theme => ({
+export const useStyles = makeStyles((theme) => ({
   speedDialStreets: {
     color: "black",
     backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg) !important`,
@@ -47,21 +46,44 @@ export const useStyles = makeStyles(theme => ({
     width: "100%",
     top: "0",
   },
+  speedDialWithLayerCopyrightText: {
+    right: "49px !important",
+    bottom: "20px !important",
+    position: "absolute",
+    zIndex: 1,
+    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
+  },
+  speedDial: {
+    right: "49px !important",
+    bottom: "0px !important",
+    position: "absolute",
+    zIndex: 1,
+    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
+      bottom: theme.spacing(2),
+      right: theme.spacing(2),
+    },
+    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
+      top: theme.spacing(2),
+      left: theme.spacing(2),
+    },
+  },
 }));
 
 /**
  * Generates the basemap selector using the SpeedDial component
- * @param {Object} containerRef - The reference to the container where this component will be rendered
  * @param {function} handleBasemapChange - The function we will call with to change the basemap
  * @param {string} mapStyle - The name of the current basemap
  * @return {React.ReactPortal|null}
  * @constructor
  */
-const ProjectComponentsBaseMap = ({
-  containerRef,
-  handleBasemapChange,
-  mapStyle,
-}) => {
+const ProjectComponentsBaseMap = ({ handleBasemapChange, mapStyle }) => {
   const classes = useStyles();
 
   /**
@@ -73,7 +95,7 @@ const ProjectComponentsBaseMap = ({
    * Changes the current basemap and closes the speed dial menu
    * @param basemapName
    */
-  const handleBasemapSpeedDialClose = basemapName => {
+  const handleBasemapSpeedDialClose = (basemapName) => {
     setBasemapSpeedDialOpen(false);
     if (basemapName) handleBasemapChange(basemapName);
   };
@@ -85,62 +107,67 @@ const ProjectComponentsBaseMap = ({
     setBasemapSpeedDialOpen(true);
   };
 
-  return containerRef && containerRef.current
-    ? ReactDOM.createPortal(
-        <SpeedDial
-          ariaLabel="Basemap Select"
-          hidden={false}
+  return (
+    <div
+      className={
+        mapStyle === "streets"
+          ? classes.speedDialWithLayerCopyrightText
+          : classes.speedDial
+      }
+    >
+      <SpeedDial
+        ariaLabel="Basemap Select"
+        hidden={false}
+        icon={
+          <Typography
+            className={
+              mapBasemapSpeedDialOpen
+                ? classes.mapStyleToggleTypographyOpen
+                : classes.mapStyleToggleTypography
+            }
+          >
+            <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
+            <span className={classes.mapStyleToggleLabel}>Map</span>
+          </Typography>
+        }
+        onClose={() => handleBasemapSpeedDialClose(null)}
+        onOpen={handleBasemapSpeedDialOpen}
+        open={mapBasemapSpeedDialOpen}
+        direction={"left"}
+        FabProps={{
+          className:
+            mapStyle !== "streets"
+              ? classes.speedDialStreets
+              : classes.speedDialAerial,
+        }}
+      >
+        <SpeedDialAction
+          key={"streets"}
           icon={
-            <Typography
-              className={
-                mapBasemapSpeedDialOpen
-                  ? classes.mapStyleToggleTypographyOpen
-                  : classes.mapStyleToggleTypography
-              }
-            >
-              <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
-              <span className={classes.mapStyleToggleLabel}>Map</span>
+            <Typography>
+              <span className={classes.mapStyleToggleLabel}>Streets</span>
             </Typography>
           }
-          onClose={() => handleBasemapSpeedDialClose(null)}
-          onOpen={handleBasemapSpeedDialOpen}
-          open={mapBasemapSpeedDialOpen}
-          direction={"left"}
-          FabProps={{
-            className:
-              mapStyle !== "streets"
-                ? classes.speedDialStreets
-                : classes.speedDialAerial,
-          }}
-        >
-          <SpeedDialAction
-            key={"streets"}
-            icon={
-              <Typography>
-                <span className={classes.mapStyleToggleLabel}>Streets</span>
-              </Typography>
-            }
-            tooltipTitle={"Streets Base Map"}
-            tooltipPlacement={"top"}
-            onClick={() => handleBasemapSpeedDialClose("streets")}
-            className={classes.speedDialStreets}
-          />
-          <SpeedDialAction
-            key={"aerial"}
-            icon={
-              <Typography>
-                <span className={classes.mapStyleToggleLabel}>Aerial</span>
-              </Typography>
-            }
-            tooltipTitle={"Aerial Base Map"}
-            tooltipPlacement={"top"}
-            className={classes.speedDialAerial}
-            onClick={() => handleBasemapSpeedDialClose("aerial")}
-          />
-        </SpeedDial>,
-        containerRef.current
-      )
-    : null;
+          tooltipTitle={"Streets Base Map"}
+          tooltipPlacement={"top"}
+          onClick={() => handleBasemapSpeedDialClose("streets")}
+          className={classes.speedDialStreets}
+        />
+        <SpeedDialAction
+          key={"aerial"}
+          icon={
+            <Typography>
+              <span className={classes.mapStyleToggleLabel}>Aerial</span>
+            </Typography>
+          }
+          tooltipTitle={"Aerial Base Map"}
+          tooltipPlacement={"top"}
+          className={classes.speedDialAerial}
+          onClick={() => handleBasemapSpeedDialClose("aerial")}
+        />
+      </SpeedDial>
+    </div>
+  );
 };
 
 export default ProjectComponentsBaseMap;

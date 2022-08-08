@@ -119,7 +119,6 @@ const ProjectComponentsMapView = ({
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
   const mapRef = useRef();
-  const mapBasemapContainerRef = useRef();
 
   const {
     visibleLayerIds,
@@ -159,7 +158,6 @@ const ProjectComponentsMapView = ({
    */
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      <div ref={mapBasemapContainerRef} className={classes.speedDial} />
       <Collapse
         in={editPanelCollapsedShow}
         onExit={() => setEditPanelCollapsed(true)}
@@ -246,7 +244,6 @@ const ProjectComponentsMapView = ({
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         <ProjectComponentsBaseMap
-          containerRef={mapBasemapContainerRef}
           handleBasemapChange={handleBasemapChange}
           mapStyle={mapStyle}
         />
