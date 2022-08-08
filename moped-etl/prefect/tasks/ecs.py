@@ -354,7 +354,10 @@ def create_task_definition(basename, database, api_endpoint):
                         "name": "MOPED_API_EVENTS_URL",
                         "value": api_endpoint + "/events/",
                     },
-                    {"name": "MOPED_API_KEY", "value": api.generate_api_key(basename)},
+                    {
+                        "name": "MOPED_API_APIKEY",
+                        "value": api.generate_api_key(basename),
+                    },
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
