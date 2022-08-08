@@ -59,7 +59,7 @@ def netlify_check_build(branch, build_token):
 
 
 @task
-def trigger_netlify_build(branch):
+def trigger_netlify_build(branch, api_endpoint_url):
     logger.info("Triggering netlify build")
 
     HTTP_parameters = {
@@ -76,7 +76,7 @@ def trigger_netlify_build(branch):
 
     ENV = {
         "REACT_APP_HASURA_ENDPOINT": graphql_endpoint,
-        # "REACT_APP_API_ENDPOINT": api_endpoint_url,
+        "REACT_APP_API_ENDPOINT": api_endpoint_url,
     }
 
     environment = json.dumps(ENV)
