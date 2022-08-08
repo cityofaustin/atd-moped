@@ -9,6 +9,8 @@ from prefect import task
 import pprint as pretty_printer
 import hashlib
 
+import tasks.api as api
+
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
@@ -302,7 +304,7 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
 
 
 def generate_access_key(basename):
-    sha_input = basename + SHA_SALT
+    sha_input = basename + SHA_SALT + "ecs"
     graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
     return graphql_engine_api_key
 
@@ -313,8 +315,6 @@ def create_task_definition(basename, database):
     ecs = boto3.client("ecs", region_name="us-east-1")
 
     HASURA_GRAPHQL_DATABASE_URL = f"postgres://{MOPED_TEST_USER}:{MOPED_TEST_PASSWORD}@{MOPED_TEST_HOSTNAME}:5432/{database}"
-
-    graphql_access_key = generate_access_key(basename)
 
     response = ecs.register_task_definition(
         # this unified family parameter requires that this flow's
@@ -344,10 +344,13 @@ def create_task_definition(basename, database):
                         "name": "HASURA_GRAPHQL_DATABASE_URL",
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
-                    {"name": "HASURA_ADMIN_SECRET", "value": graphql_access_key},
+                    {
+                        "name": "HASURA_ADMIN_SECRET",
+                        "value": generate_access_key(basename),
+                    },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     # {"name": "MOPED_API_EVENTS_URL", "value": MOPED_API_EVENTS_URL},
-                    {"name": "MOPED_API_KEY", "value": "moped api key"},
+                    {"name": "MOPED_API_KEY", "value": api.generate_api_key(basename)},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
