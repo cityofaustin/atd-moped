@@ -117,8 +117,8 @@ export const mapStyles = {
  */
 export const makeCommonComponentsMapStyles = (theme) => ({
   speedDial: {
-    right: "3.5rem !important",
-    bottom: "1.7rem !important",
+    right: "10px !important",
+    bottom: "20px !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {

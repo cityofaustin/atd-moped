@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import ReactMapGL, { NavigationControl } from "react-map-gl";
+import Map, { NavigationControl } from "react-map-gl";
 import {
   Box,
   Button,
@@ -46,8 +46,8 @@ const useStyles = makeStyles((theme) => ({
   },
   layerSelectButton: {
     position: "absolute",
-    top: ".5rem",
-    right: "1rem",
+    top: "10px",
+    right: "49px",
     zIndex: 1,
     height: "3rem",
     width: "184px",
@@ -67,8 +67,8 @@ const useStyles = makeStyles((theme) => ({
   },
   mapTools: {
     position: "absolute",
-    top: "4rem",
-    left: "1rem",
+    top: "10px",
+    left: "10px",
     zIndex: "1",
     width: "21rem",
     background: theme.palette.common.white,
@@ -78,8 +78,8 @@ const useStyles = makeStyles((theme) => ({
   },
   mapToolsShowHidden: {
     position: "absolute",
-    top: "4rem",
-    left: "1rem",
+    top: "10px",
+    left: "10px",
     zIndex: "1",
     width: "21rem",
     background: theme.palette.common.white,
@@ -218,7 +218,7 @@ const ProjectComponentsMapView = ({
 
       {renderLayerSelect(false)}
 
-      <ReactMapGL
+      <Map
         /* Current state of viewport */
         {...viewport}
         /* Object reference to this object */
@@ -273,7 +273,7 @@ const ProjectComponentsMapView = ({
           handleBasemapChange={handleBasemapChange}
           mapStyle={mapStyle}
         />
-      </ReactMapGL>
+      </Map>
     </Box>
   );
 };
