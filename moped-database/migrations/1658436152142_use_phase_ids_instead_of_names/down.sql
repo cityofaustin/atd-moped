@@ -148,4 +148,3 @@ AS WITH project_person_list_lookup AS (
     mp.purchase_order_number, 
     ptl.type_name, 
     fsl.funding_source_name;
-   
