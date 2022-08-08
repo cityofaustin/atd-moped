@@ -179,8 +179,6 @@ with Flow(
 
     basename = Parameter("basename")
 
-    graphql_engine_api_key = api.generate_access_key(basename=basename)
-
     create_api_config_secret_arn = api.create_moped_api_secrets_entry(basename=basename)
 
     commission_api_command = api.create_moped_api_deploy_command(

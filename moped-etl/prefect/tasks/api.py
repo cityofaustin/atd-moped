@@ -34,13 +34,6 @@ SHA_SALT = os.environ["SHA_SALT"]
 MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
 
 
-@task(name="Generate key for graphql api")
-def generate_access_key(basename):
-    sha_input = basename + SHA_SALT
-    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
-    return graphql_engine_api_key
-
-
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
