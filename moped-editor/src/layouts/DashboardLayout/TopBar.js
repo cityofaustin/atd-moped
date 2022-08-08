@@ -24,6 +24,7 @@ import { getSessionDatabaseData, useUser } from "../../auth/user";
 import emailToInitials from "../../utils/emailToInitials";
 import CDNAvatar from "../../components/CDN/Avatar";
 import NavLink from "src/components/NavLink";
+import { getInitials } from "src/utils/userNames";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -97,7 +98,7 @@ const TopBar = ({ className, ...rest }) => {
 
   const userDbData = getSessionDatabaseData();
   const userInitials = userDbData
-    ? userDbData.first_name[0] + userDbData.last_name[0]
+    ? getInitials(userDbData)
     : emailToInitials(user?.idToken?.payload?.email);
 
   return (

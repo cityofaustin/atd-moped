@@ -26,6 +26,7 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
+import ProjectSummaryInterimID from "./ProjectSummaryInterimID"
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import ProjectSummaryContractor from "./ProjectSummaryContractor";
@@ -268,6 +269,17 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={6}>
                 <ProjectSummaryProjectECapris
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryInterimID
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
