@@ -407,6 +407,7 @@ export const getEditMapInteractiveIds = (drawLines) => {
   if (drawLines === false) {
     return interactiveIds.filter((layer) => layer !== "ctn-lines");
   }
+  console.log(interactiveIds);
   return interactiveIds;
 };
 
@@ -737,10 +738,9 @@ export function useHoverLayer() {
       setFeatureId(null);
       return;
     }
-
     // Otherwise, get details for tooltip
     const {
-      srcEvent: { offsetX, offsetY },
+      originalEvent: { offsetX, offsetY },
     } = e;
     const featureId = getFeatureId(e.features[0], layerSource);
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);

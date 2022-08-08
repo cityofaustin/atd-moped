@@ -222,7 +222,7 @@ const ProjectComponentsMap = ({
   saveActionDispatch = null,
   componentEditorPanel = null,
   isSignalComponent = false,
-  drawLines = null,
+  drawLines = false,
 }) => {
   const classes = useStyles();
   const selectedLayerIds =
@@ -287,7 +287,6 @@ const ProjectComponentsMap = ({
    */
   const handleLayerClick = (e) => {
     const layerName = getLayerSource(e);
-
     // If a user clicks a drawn point in the map, open draw UI
     // if (drawnLayerNames.includes(layerName)) {
     //   setIsDrawing(true);
@@ -343,6 +342,19 @@ const ProjectComponentsMap = ({
   /**
    * Whenever a Save Action is initiated, save all drawn features
    * */
+  useEffect(() => {
+    // Ignore empty states
+    if (!saveActionState) return;
+    // If the process has been already initiated, we don't need to go any further
+    if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
+    // It looks like this is the first step
+    // if (
+    //   saveActionState?.initiateFeatureSave &&
+    //   saveActionState?.featuresSaved === false
+    // ) {
+    //   saveDrawnPoints();
+    // }
+  }, [saveActionState]);
   // useEffect(() => {
   //   // Ignore empty states
   //   if (!saveActionState) return;
@@ -399,14 +411,11 @@ const ProjectComponentsMap = ({
         // interactiveLayerIds={
         //   renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         // }
-        interactiveLayerIds={[]}
+        interactiveLayerIds={getEditMapInteractiveIds(drawLines)}
         // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
         // onClick={renderDrawLayers ? handleLayerClick : null}
-        onMouseEnter={handleLayerHover}
+        onMouseMove={handleLayerHover}
         onClick={handleLayerClick}
-        // interactiveLayerIds={[]}
-        // onHover={null}
-        // onClick={null}
         // getCursor={getCursor}
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}

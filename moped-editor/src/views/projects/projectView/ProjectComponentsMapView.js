@@ -214,7 +214,7 @@ const ProjectComponentsMapView = ({
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onMouseEnter={handleLayerHover}
+        onMouseMove={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}

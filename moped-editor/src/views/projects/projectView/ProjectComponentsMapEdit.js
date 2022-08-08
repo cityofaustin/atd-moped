@@ -525,6 +525,7 @@ const ProjectComponentsMapEdit = ({
    * the features it contains
    * */
   useEffect(() => {
+    console.log(saveActionState?.currentStep)
     if (
       saveActionState?.currentStep === 2 && // Features are saved
       saveActionState?.featuresSaved
@@ -742,10 +743,10 @@ const ProjectComponentsMapEdit = ({
                         className={classes.formButton}
                         variant="contained"
                         color="primary"
-                        onClick={() =>
-                          saveActionDispatch({ type: "initiateFeatureSave" })
-                        }
-                        // onClick={handleSaveButtonClick}
+                        // onClick={() =>
+                        //   saveActionDispatch({ type: "initiateFeatureSave" })
+                        // }
+                        onClick={handleSaveButtonClick}
                         disabled={
                           !areMinimumFeaturesSet || selectedComponentId === null
                         }
