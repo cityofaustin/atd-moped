@@ -2165,7 +2165,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2190,7 +2189,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2215,7 +2213,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2240,7 +2237,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2265,7 +2261,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2291,7 +2286,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2317,7 +2311,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2358,7 +2351,6 @@
             - status_id
             - subphase_id
             - phase_description
-            - phase_name
             - phase_status
             - subphase_name
             - date_added
