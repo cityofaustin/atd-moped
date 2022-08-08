@@ -2148,6 +2148,10 @@
 - table:
     schema: public
     name: moped_proj_phases
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: phase_id
   insert_permissions:
     - role: moped-admin
       permission:
