@@ -10,6 +10,7 @@ import pprint as pretty_printer
 import hashlib
 
 import tasks.api as api
+import tasks.activity_log as activity_log
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -349,7 +350,10 @@ def create_task_definition(basename, database):
                         "value": generate_access_key(basename),
                     },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
-                    # {"name": "MOPED_API_EVENTS_URL", "value": MOPED_API_EVENTS_URL},
+                    {
+                        "name": "MOPED_API_EVENTS_URL",
+                        "value": activity_log.create_activity_log_queue_url(basename) + "/events/",
+                    },
                     {"name": "MOPED_API_KEY", "value": api.generate_api_key(basename)},
                 ],
                 "logConfiguration": {
