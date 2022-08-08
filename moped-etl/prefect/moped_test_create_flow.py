@@ -271,14 +271,14 @@ if __name__ == "__main__":
         # activity_log_commission.run(parameters=dict(basename=basename))
 
     else:
+        print("\n🎯 Decomissioning Activity Log\n")
+        # activity_log_decommission.run(parameters=dict(basename=basename))
+
+        print("\n🤖 Decomissioning ECS\n")
+        # ecs_decommission.run(parameters=dict(basename=basename))
+
         print("\n🚀 Decomissioning API\n")
         # api_decommission.run(parameters=dict(basename=basename))
 
         print("\n🍄 Decomissioning Database\n")
         # database_decommission.run(basename=database)
-
-        print("\n🤖 Decomissioning ECS\n")
-        # ecs_decommission.run(parameters=dict(basename=basename))
-
-        print("\n🎯 Decomissioning Activity Log\n")
-        # activity_log_decommission.run(parameters=dict(basename=basename))
