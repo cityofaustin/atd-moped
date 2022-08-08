@@ -59,6 +59,7 @@ with Flow(
 
     basename = Parameter("basename")
     database = Parameter("database")
+    api_endpoint = Parameter("api_endpoint")
 
     cluster = ecs.create_ecs_cluster(basename=basename)
 
@@ -96,7 +97,9 @@ with Flow(
         certificate=issued_certificate,
     )
 
-    task_definition = ecs.create_task_definition(basename=basename, database=database)
+    task_definition = ecs.create_task_definition(
+        basename=basename, database=database, api_endpoint=api_endpoint
+    )
 
     service = ecs.create_service(
         basename=basename,
@@ -251,11 +254,11 @@ with Flow(
 
 
 if __name__ == "__main__":
-    basename = "integration-test"
+    basename = "integrate-flows"
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
-    if False:
+    if True:
         print("\n🍄 Comissioning Database\n")
         # database_commission.run(basename=database, stage=database_data_stage)
 
@@ -264,14 +267,24 @@ if __name__ == "__main__":
         # api_endpoint = api_commission_state.result[endpoint].result
         # print("🚀 API Endpoint: " + api_endpoint)
 
+        #api_endpoint = (
+            #"https://5t8qcf0ll2.execute-api.us-east-1.amazonaws.com/integrate-flows"
+        #)
+
         print("\n🤖 Comissioning ECS\n")
-        # ecs_commission.run(parameters=dict(basename=basename, database=database))
+        # ecs_commission.run(
+        # parameters=dict(
+        # basename=basename, database=database, api_endpoint=api_endpoint
+        # )
+        # )
 
         print("\n💡 Comissioning Netlify Build & Deploy\n")
-        # netlify_commission.run(parameters=dict(basename=basename, api_endpoint_url=api_endpoint))
+        # netlify_commission.run(
+        # parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
+        # )
 
         print("\n🎯 Comissioning Activity Log\n")
-        # activity_log_commission.run(parameters=dict(basename=basename))
+        #activity_log_commission.run(parameters=dict(basename=basename))
 
     else:
         print("\n🎯 Decomissioning Activity Log\n")
@@ -284,4 +297,4 @@ if __name__ == "__main__":
         # api_decommission.run(parameters=dict(basename=basename))
 
         print("\n🍄 Decomissioning Database\n")
-        #database_decommission.run(basename=database)
+        # database_decommission.run(basename=database)

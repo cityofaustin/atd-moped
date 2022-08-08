@@ -311,7 +311,7 @@ def generate_access_key(basename):
 
 
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename, database):
+def create_task_definition(basename, database, api_endpoint):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
@@ -352,8 +352,7 @@ def create_task_definition(basename, database):
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     {
                         "name": "MOPED_API_EVENTS_URL",
-                        "value": activity_log.create_activity_log_queue_url(basename)
-                        + "/events/",
+                        "value": api_endpoint + "/events/",
                     },
                     {"name": "MOPED_API_KEY", "value": api.generate_api_key(basename)},
                 ],
