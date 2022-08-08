@@ -4,6 +4,8 @@ import os
 import re
 import hashlib
 
+import tasks.ecs as ecs
+
 import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
@@ -30,7 +32,6 @@ MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 
 SHA_SALT = os.environ["SHA_SALT"]
 
-HASURA_HTTPS_ENDPOINT = "getting this passed in"
 MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
 
 
@@ -41,7 +42,7 @@ def generate_access_key(basename):
     return graphql_engine_api_key
 
 
-# Create a constistent name for the API config secret for deploy, deploy config, and undeploy
+# Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
@@ -50,6 +51,8 @@ def create_secret_name(basename):
 @task(name="Create test API config Secrets Manager entry")
 def create_moped_api_secrets_entry(basename, graphql_engine_api_key):
     logger.info("Creating API secret config")
+
+    graphql_endpoint = ecs.form_hostname(basename)
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
@@ -60,7 +63,7 @@ def create_moped_api_secrets_entry(basename, graphql_engine_api_key):
         "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
         "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
-        "HASURA_HTTPS_ENDPOINT": HASURA_HTTPS_ENDPOINT,
+        "HASURA_HTTPS_ENDPOINT": graphql_endpoint,
         "HASURA_ADMIN_SECRET": graphql_engine_api_key,
     }
 

@@ -80,11 +80,17 @@ def create_target_group(basename):
     return target_group
 
 
+def form_hostname(basename):
+    host = basename + "-graphql.moped-test.austinmobility.io"
+    return host
+
+
 @task(name="Create Rout53 CNAME")
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
+    host = form_hostname(basename)
+
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
     route53 = boto3.client("route53")

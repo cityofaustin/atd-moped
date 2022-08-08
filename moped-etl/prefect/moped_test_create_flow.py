@@ -263,20 +263,20 @@ if __name__ == "__main__":
 
     if True:
         print("\n🍄 Comissioning Database\n")
-        database_commission.run(basename=database, stage=database_data_stage)
+        # database_commission.run(basename=database, stage=database_data_stage)
 
         print("\n️🚀 Comissioning API\n")
-        # api_commission_state = api_commission.run(parameters=dict(basename=basename))
-        # api_endpoint = api_commission_state.result[endpoint].result
-        # print("🚀 API Endpoint: " + api_endpoint)
+        #api_commission_state = api_commission.run(parameters=dict(basename=basename))
+        #api_endpoint = api_commission_state.result[endpoint].result
+        print("🚀 API Endpoint: " + api_endpoint)
 
         print("\n🤖 Comissioning ECS\n")
         # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
-        print("💡 Comissioning Netlify Build & Deploy\n")
+        print("\n💡 Comissioning Netlify Build & Deploy\n")
         # netlify_commission.run(parameters=dict(basename=basename))
 
-        print("\n🎯 Decomissioning Activity Log\n")
+        print("\n🎯 Comissioning Activity Log\n")
         # activity_log_commission.run(parameters=dict(basename=basename))
 
     else:

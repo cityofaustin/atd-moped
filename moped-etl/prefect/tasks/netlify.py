@@ -2,6 +2,8 @@ import os
 import json
 import requests
 
+import tasks.ecs as ecs
+
 import prefect
 from prefect import task
 import pprint as pretty_printer
@@ -65,13 +67,15 @@ def trigger_netlify_build(branch):
         "trigger_title": "Test Build of " + branch,
     }
 
+    graphql_endpoint = ecs.form_hostname(branch)
+
     # See https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/.env-cmdrc#L52-L76
     # These values can be overloaded for a frontend deployment.
     # This is how we would set a graphql-endpoint URL, for example.
     # ↓↓↓↓
 
     ENV = {
-        # "REACT_APP_HASURA_ENDPOINT": graphql_endpoint_url,
+        "REACT_APP_HASURA_ENDPOINT": graphql_endpoint,
         # "REACT_APP_API_ENDPOINT": api_endpoint_url,
     }
 

@@ -7,6 +7,8 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
+import tasks.ecs as ecs
+
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
@@ -37,12 +39,13 @@ def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
 ):
+    graphql_endpoint = ecs.form_hostname(basename)
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
             "Variables": {
                 # We could probably create a helper so this and the ECS Route53 CNAME always match
-                "HASURA_ENDPOINT": f"https://{basename}-graphql.moped-test.austinmobility.io",
+                "HASURA_ENDPOINT": graphql_endpoint,
                 "HASURA_ADMIN_SECRET": graphql_engine_api_key,
                 "API_ENVIRONMENT": "TEST",
                 "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
