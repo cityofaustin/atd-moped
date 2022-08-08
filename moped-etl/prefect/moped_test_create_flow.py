@@ -215,8 +215,11 @@ with Flow(
 ) as netlify_commission:
 
     basename = Parameter("basename")
+    api_endpoint_url = Parameter("api_endpoint_url")
 
-    build = netlify.trigger_netlify_build(branch=basename)
+    build = netlify.trigger_netlify_build(
+        branch=basename, api_endpoint_url=api_endpoint_url
+    )
     is_ready = netlify.netlify_check_build(branch=basename, build_token=build)
 
 
@@ -252,7 +255,7 @@ if __name__ == "__main__":
     database = basename.replace("-", "_")
     database_data_stage = "staging"
 
-    if True:
+    if False:
         print("\n🍄 Comissioning Database\n")
         # database_commission.run(basename=database, stage=database_data_stage)
 
@@ -265,7 +268,7 @@ if __name__ == "__main__":
         # ecs_commission.run(parameters=dict(basename=basename, database=database))
 
         print("\n💡 Comissioning Netlify Build & Deploy\n")
-        # netlify_commission.run(parameters=dict(basename=basename))
+        # netlify_commission.run(parameters=dict(basename=basename, api_endpoint_url=api_endpoint))
 
         print("\n🎯 Comissioning Activity Log\n")
         # activity_log_commission.run(parameters=dict(basename=basename))
@@ -281,4 +284,4 @@ if __name__ == "__main__":
         # api_decommission.run(parameters=dict(basename=basename))
 
         print("\n🍄 Decomissioning Database\n")
-        # database_decommission.run(basename=database)
+        #database_decommission.run(basename=database)
