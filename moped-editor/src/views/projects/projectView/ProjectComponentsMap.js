@@ -48,11 +48,11 @@ export const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
     position: "absolute",
-    top: ".5rem",
-    right: "1rem",
+    top: "10px",
+    right: "49px",
     zIndex: 1,
     height: "3rem",
-    width: "206px",
+    width: "184px",
     backgroundColor: "white",
     "&:hover": {
       backgroundColor: "white",

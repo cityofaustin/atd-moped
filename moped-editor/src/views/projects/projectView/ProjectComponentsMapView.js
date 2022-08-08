@@ -9,7 +9,7 @@ import {
   makeStyles,
 } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import GeocoderControl from "src/components/Maps/GeocoderControl";
 
 import {
   createSummaryMapLayers,
@@ -25,8 +25,13 @@ import {
   makeCommonComponentsMapStyles,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
-// import Geocoder from "react-map-gl-geocoder";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
+
+// See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
+import mapboxgl from "mapbox-gl";
+mapboxgl.workerClass =
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
@@ -67,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mapTools: {
     position: "absolute",
-    top: "10px",
+    top: "66px",
     left: "10px",
     zIndex: "1",
     width: "21rem",
@@ -78,7 +83,7 @@ const useStyles = makeStyles((theme) => ({
   },
   mapToolsShowHidden: {
     position: "absolute",
-    top: "10px",
+    top: "66px",
     left: "10px",
     zIndex: "1",
     width: "21rem",
@@ -254,6 +259,7 @@ const ProjectComponentsMapView = ({
           marker={false}
           position="top-right"
         /> */}
+        <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
