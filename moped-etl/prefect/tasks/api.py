@@ -2,6 +2,7 @@ import json
 import boto3
 import os
 import re
+import hashlib
 
 import tasks.ecs as ecs
 
