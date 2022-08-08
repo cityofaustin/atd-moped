@@ -92,8 +92,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
 
-  console.log(data)
-
   /**
    * Direct access to the moped_status array
    */
