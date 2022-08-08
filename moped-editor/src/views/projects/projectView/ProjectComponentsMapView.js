@@ -225,10 +225,11 @@ const ProjectComponentsMapView = ({
 
       <Map
         /* Current state of viewport */
-        {...viewport}
+        // {...viewport}
         /* Object reference to this object */
         ref={mapRef}
         maxZoom={20}
+        initialViewState={mapConfig.mapInit}
         /* Access Key */
         mapboxAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
@@ -238,9 +239,9 @@ const ProjectComponentsMapView = ({
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onHover={handleLayerHover}
+        // onHover={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
-        onViewportChange={handleViewportChange}
+        // onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}
       >
@@ -259,7 +260,12 @@ const ProjectComponentsMapView = ({
           marker={false}
           position="top-right"
         /> */}
-        <GeocoderControl mapboxAccessToken={MAPBOX_TOKEN} position="top-left" />
+        <GeocoderControl
+          marker={false}
+          mapboxAccessToken={MAPBOX_TOKEN}
+          position="top-left"
+          flyTo={true}
+        />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
