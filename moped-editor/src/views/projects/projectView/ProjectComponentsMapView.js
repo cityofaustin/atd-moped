@@ -214,12 +214,12 @@ const ProjectComponentsMapView = ({
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        // onHover={handleLayerHover}
+        onMouseEnter={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}
       >
-        {/* Draw Navigation controls with specific styles */}
+        {/* Draw Navigation controls */}
         <NavigationControl showCompass={false} position="bottom-right" />
 
         {/* GEOCODER */}

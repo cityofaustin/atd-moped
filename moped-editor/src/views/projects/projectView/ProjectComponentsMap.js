@@ -1,12 +1,11 @@
 import React, { useCallback, useEffect, useRef } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
-// import Geocoder from "react-map-gl-geocoder";
+import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
 import bboxPolygon from "@turf/bbox-polygon";
 import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
-// import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import "./ProjectComponentsMap.css";
 
 import {
@@ -44,12 +43,18 @@ import {
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
+// See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
+import mapboxgl from "mapbox-gl";
+mapboxgl.workerClass =
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
 export const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
   layerSelectButton: {
     position: "absolute",
     top: "10px",
-    right: "49px",
+    right: "10px",
     zIndex: 1,
     height: "3rem",
     width: "184px",
@@ -223,7 +228,6 @@ const ProjectComponentsMap = ({
   const selectedLayerIds =
     createSelectedIdsObjectFromFeatureCollection(featureCollection);
   const mapRef = useRef();
-  // const mapGeocoderContainerRef = useRef();
   const mapEditToolsContainerRef = useRef();
   const mapBasemapContainerRef = useRef();
   /**
@@ -322,22 +326,6 @@ const ProjectComponentsMap = ({
   );
 
   /**
-   * Updates viewport on select of location from geocoder form
-   * @param {Object} newViewport - Mapbox object that stores updated location for viewport
-   */
-  // const handleGeocoderViewportChange = useCallback(
-  //   newViewport => {
-  //     const geocoderDefaultOverrides = { transitionDuration: 1000 };
-
-  //     return handleViewportChange({
-  //       ...newViewport,
-  //       ...geocoderDefaultOverrides,
-  //     });
-  //   },
-  //   [handleViewportChange]
-  // );
-
-  /**
    * Customize cursor depending on user actions
    * @param {object} pointerStates - Object containing pointer state keys and boolean values
    * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
@@ -383,11 +371,6 @@ const ProjectComponentsMap = ({
         <NewProjectDrawnLinesInvisibleStyle />
       )}
 
-      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      {/* <div
-        ref={mapGeocoderContainerRef}
-        className={classes.geocoderContainer}
-      /> */}
       <div
         ref={mapEditToolsContainerRef}
         className={classes.mapBoxEditButtonGroup}
@@ -416,14 +399,17 @@ const ProjectComponentsMap = ({
         // interactiveLayerIds={
         //   renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         // }
-        // onHover={renderDrawLayers ? handleLayerHover : null}
-        // onClick={renderDrawLayers ? handleLayerClick : null}
         interactiveLayerIds={[]}
-        onHover={null}
-        onClick={null}
-        getCursor={getCursor}
+        // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
+        // onClick={renderDrawLayers ? handleLayerClick : null}
+        onMouseEnter={handleLayerHover}
+        onClick={handleLayerClick}
+        // interactiveLayerIds={[]}
+        // onHover={null}
+        // onClick={null}
+        // getCursor={getCursor}
         mapboxAccessToken={MAPBOX_TOKEN}
-        onViewportChange={handleViewportChange}
+        onMove={(e) => handleViewportChange(e.viewState)}
         mapStyle={mapStyleConfig}
       >
         <NavigationControl
@@ -441,15 +427,12 @@ const ProjectComponentsMap = ({
         />
 
         {/* GEOCODER */}
-        {/* <Geocoder
-          mapRef={mapRef}
-          onViewportChange={handleGeocoderViewportChange}
-          mapboxAccessToken={MAPBOX_TOKEN}
-          bbox={mapConfig.geocoderBbox}
-          containerRef={mapGeocoderContainerRef}
+        <GeocoderControl
           marker={false}
-          position="top-right"
-        /> */}
+          mapboxAccessToken={MAPBOX_TOKEN}
+          position="top-left"
+          flyTo={true}
+        />
 
         {/* RENDER LAYERS */}
         {drawLines !== null &&
