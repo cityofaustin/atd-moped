@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
@@ -240,6 +240,10 @@ const ProjectComponentsMap = ({
     isSignalComponent
   );
 
+  const [cursor, setCursor] = useState("auto");
+  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
+  const onMouseLeave = useCallback(() => setCursor("auto"), []);
+
   const { handleLayerHover, featureText, featureId, hoveredCoords } =
     useHoverLayer();
 
@@ -408,15 +412,18 @@ const ProjectComponentsMap = ({
         ref={mapRef}
         maxZoom={20}
         style={{ width: "100%", height: "60vh" }}
+        interactiveLayerIds={getEditMapInteractiveIds(drawLines)}
+        onMouseMove={handleLayerHover}
+        onClick={handleLayerClick}
+        // TODO: Reintroduce when drawing is restored
         // interactiveLayerIds={
         //   renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         // }
-        interactiveLayerIds={getEditMapInteractiveIds(drawLines)}
         // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
         // onClick={renderDrawLayers ? handleLayerClick : null}
-        onMouseMove={handleLayerHover}
-        onClick={handleLayerClick}
-        // getCursor={getCursor}
+        cursor={cursor}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}
         mapStyle={mapStyleConfig}

@@ -118,6 +118,10 @@ const ProjectComponentsMapView = ({
   const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
+  const [cursor, setCursor] = useState("grab");
+  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
+  const onMouseLeave = useCallback(() => setCursor("grab"), []);
+
   const mapRef = useRef();
 
   const {
@@ -215,6 +219,9 @@ const ProjectComponentsMapView = ({
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         onMouseMove={handleLayerHover}
+        cursor={cursor}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         /* Updates state of viewport on zoom, scroll, and other events */
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}
