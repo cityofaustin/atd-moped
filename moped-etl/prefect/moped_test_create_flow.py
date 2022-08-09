@@ -306,6 +306,9 @@ if __name__ == "__main__":
         print("\n🎯 Comissioning Activity Log\n")
         activity_log_commission.run(parameters=dict(basename=basename))
 
+        # print("\n🌱 Applying database migrations\n")
+        # apply_database_migrations.run(parameters=dict(basename=basename))
+
     else:
         print("\n🎯 Decomissioning Activity Log\n")
         activity_log_decommission.run(parameters=dict(basename=basename))
