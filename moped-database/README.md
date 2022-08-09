@@ -2,6 +2,18 @@
 
 You will want to check the documentation in the [MOPED Technical Docs](https://app.gitbook.com/@atd-dts/s/moped-technical-docs/dev-guides/hasura-migrations)
 
+## Architecture Description
+
+Broadly, the Moped application uses a backend [PostgreSQL](https://www.postgresql.org/) database server which is protected from the larger internet on a private subnet. An instance of [Hasura](https://hasura.io/)'s [graphql-engine](https://github.com/hasura/graphql-engine) is used as middleware exposing a graphql endpoint for use by the application running on a client's computer. The `graphql-engine` instance is provided by [the official docker images](https://hub.docker.com/r/hasura/graphql-engine) provided by hasura on DockerHub. 
+
+### `graphql-engine` update plan
+
+The update schedule for Moped's `graphql-engine` deployment is as follows:
+
+* The deployment's ECS service should be updated to the latest, odd minor release available.
+
+The intent is to stay generally up-to-date, but avoid `.0` releases and to maintain a sustainable update cadence. 
+
 ## Getting Started
 
 #### 1. Install Docker & Docker Compose

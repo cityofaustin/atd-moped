@@ -122,7 +122,7 @@ export const SUMMARY_QUERY = gql`
       status_name
     }
     moped_user_followed_projects(
-      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId} } 
+      where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }
     ) {
       project_id
       user_id
@@ -219,14 +219,17 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
       phase_order
-      subphases
+      moped_subphases(order_by: { subphase_order: asc }) {
+        subphase_name
+        subphase_id
+      }
     }
     moped_subphases(
       where: { subphase_id: { _gt: 0 } }
       order_by: { subphase_order: asc }
     ) {
-      subphase_id
       subphase_name
+      subphase_id
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -249,10 +252,7 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: [
-        { milestone_order: asc },
-        { milestone_end: desc }
-      ]
+      order_by: [{ milestone_order: asc }, { milestone_end: desc }]
     ) {
       milestone_id
       milestone_description
@@ -555,8 +555,8 @@ export const PROJECT_ARCHIVE = gql`
     clear_parent_project: update_moped_project(
       where: { parent_project_id: { _eq: $projectId } }
       _set: { parent_project_id: null }
-      ) {
-        affected_rows
+    ) {
+      affected_rows
     }
   }
 `;
@@ -577,7 +577,9 @@ export const COMPONENTS_QUERY = gql`
         component_subtype
         line_representation
       }
-      moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
+      moped_proj_components_subcomponents(
+        where: { is_deleted: { _eq: false } }
+      ) {
         component_subcomponent_id
         project_component_id
         subcomponent_id
@@ -936,6 +938,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
         task_order
         project_id
       }
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_NAME_QUERY = gql`
+  mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { project_name: $projectName }
+    ) {
+      project_name
     }
   }
 `;
