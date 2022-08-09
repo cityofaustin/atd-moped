@@ -254,6 +254,26 @@ with Flow(
         basename=basename, upstream_tasks=[remove_activity_log_sqs]
     )
 
+with Flow("Apply Database Migrations") as apply_database_migrations:
+
+    basename = Parameter("basename")
+
+    endpoint = "https://" + ecs.get_graphql_engine_hostname(basename=basename)
+    access_key = ecs.get_graphql_engine_access_key(basename=basename)
+
+    rm_clone = "rm -fr /tmp/atd-moped"
+    cleaned = ecs.shell_task(command=rm_clone)
+    git_clone = "git clone " + GIT_REPOSITORY + " /tmp/atd-moped"
+    cloned = ecs.shell_task(command=git_clone, upstream_tasks=[cleaned])
+    checkout_branch = "git -C /tmp/atd-moped/ checkout " + basename
+    checked_out = ecs.shell_task(command=checkout_branch, upstream_tasks=[cloned])
+
+    metadata = "metadata"
+
+    config = ecs.create_graphql_engine_config_contents(
+        endpoint=endpoint, access_key=access_key, metadata=metadata
+    )
+
 
 if __name__ == "__main__":
     basename = "integrate-flows"
