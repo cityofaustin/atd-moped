@@ -643,3 +643,23 @@ def remove_certificate(basename, removed_hostname_token):
     response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
 
     return response
+
+
+@task(name="Create graphql-engine config contents")
+def create_graphql_engine_config_contents(endpoint, access_key, metadata):
+    config = f"""version: 2
+endpoint: {endpoint}
+metadata_directory: {metadata}
+admin_secret: {access_key}
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: {endpoint}
+"""
+
+    config_file = open("/tmp/atd-moped/moped-database/config.yaml", "w")
+    config_file.write(config)
+    config_file.close()
+
+    return config
+
+
