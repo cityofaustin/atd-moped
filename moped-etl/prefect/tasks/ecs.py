@@ -90,6 +90,11 @@ def form_hostname(basename):
     return host
 
 
+@task(name="Get graphql-engine hostname")
+def get_graphql_engine_hostname(basename):
+    return form_hostname(basename)
+
+
 @task(name="Create Rout53 CNAME")
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
@@ -310,6 +315,11 @@ def generate_access_key(basename):
     sha_input = basename + SHA_SALT + "ecs"
     graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
     return graphql_engine_api_key
+
+
+@task(name="Get graphql-engine access key")
+def get_graphql_engine_access_key(basename):
+    return generate_access_key(basename)
 
 
 @task(name="Create ECS Task Definition")
