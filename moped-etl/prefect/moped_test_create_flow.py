@@ -288,7 +288,7 @@ if __name__ == "__main__":
 
         print("\n🚀 Comissioning API\n")
         api_commission_state = api_commission.run(parameters=dict(basename=basename))
-        api_endpoint = api_commission_state.result[endpoint].result
+        api_endpoint = api_commission_state.result[ecs.endpoint].result
         print("🚀 API Endpoint: " + api_endpoint)
 
         print("\n🤖 Comissioning ECS\n")
