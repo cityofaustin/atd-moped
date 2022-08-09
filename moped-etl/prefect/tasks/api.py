@@ -32,8 +32,6 @@ MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 
 SHA_SALT = os.environ["SHA_SALT"]
 
-MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
-
 
 def generate_api_key(basename):
     sha_input = basename + SHA_SALT + "api"
