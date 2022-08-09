@@ -279,17 +279,21 @@ if __name__ == "__main__":
     basename = "9676-add-fund-sources"
     # basename = "integrate-flows"
     underscore_basename = basename.replace("-", "_")
-    number_free_underscore_basename = re.search("^[\d_]*(.*)", underscore_basename).group(1)  # remove leading numbers
+    number_free_underscore_basename = re.search(
+        "^[\d_]*(.*)", underscore_basename
+    ).group(
+        1
+    )  # remove leading numbers
 
     database_data_stage = "staging"
 
     if True:
-        if True:
+        if False:
             print("\n🍄 Comissioning Database\n")
             # database_commission.run(basename=number_free_underscore_basename, stage=database_data_stage)
 
             print("\n🚀 Comissioning API\n")
-            #api_decommission.run(parameters=dict(basename=number_free_underscore_basename))  # 🛑
+            # api_decommission.run(parameters=dict(basename=number_free_underscore_basename))  # 🛑
 
             api_commission_state = api_commission.run(
                 parameters=dict(basename=number_free_underscore_basename)
@@ -300,7 +304,9 @@ if __name__ == "__main__":
             print("\n🤖 Comissioning ECS\n")
             ecs_commission.run(
                 parameters=dict(
-                    basename=basename, database=number_free_underscore_basename, api_endpoint=api_endpoint
+                    basename=basename,
+                    database=number_free_underscore_basename,
+                    api_endpoint=api_endpoint,
                 )
             )
 
