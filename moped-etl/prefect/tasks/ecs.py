@@ -663,3 +663,5 @@ actions:
     return config
 
 
+shell_task = ShellTask(name="Shell Task", stream_output=True)
+
