@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useCallback } from "react";
 import Map, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -47,8 +47,11 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = (updatedViewPort) =>
-    setViewport(updatedViewPort);
+  const handleViewportChange = useCallback(
+    (viewport) =>
+      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
+    [setViewport]
+  );
 
   /**
    * Let's throw an error intentionally if there are no features for a project.
