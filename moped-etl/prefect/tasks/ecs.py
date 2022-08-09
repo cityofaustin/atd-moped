@@ -8,6 +8,7 @@ import prefect
 from prefect import task
 import pprint as pretty_printer
 import hashlib
+from prefect.tasks.shell import ShellTask
 
 import tasks.api as api
 import tasks.activity_log as activity_log
