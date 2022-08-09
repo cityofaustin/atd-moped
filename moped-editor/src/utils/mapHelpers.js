@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from "react";
+import React, { useState, useEffect, useReducer, useCallback } from "react";
 import { Layer, Source } from "react-map-gl";
 import { WebMercatorViewport } from "viewport-mercator-project";
 import bbox from "@turf/bbox";
@@ -757,62 +757,26 @@ export function useHoverLayer() {
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {object} mapRef - Ref object whose current property exposes the map instance
  * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
- * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
- * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
+ * @return {function} Function to use as a Mapbox GL JS onRender callback
  */
-/**
- * @typedef {array} ViewportStateArray
- * @property {object} StateArray[0] - A Mapbox viewport object
- * @property {function} StateArray[1] - Setter for viewport state
- */
-export function useFeatureCollectionToFitBounds(
-  mapRef,
-  featureCollection,
-  shouldFitOnFeatureUpdate = true
-) {
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
+export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
+  const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
-  useEffect(() => {
-    if (!mapRef?.current) return;
-    if (!shouldFitOnFeatureUpdate && hasFitInitialized) return;
+  const fitMapToFeatureCollectionOnRender = () => {
+    if (!thereAreFeatures || hasFitInitialized) return;
 
     const mapBounds = createZoomBbox(featureCollection);
-    const currentMap = mapRef.current;
-    /**
-     * Takes the existing viewport and transforms it to fit the project's features
-     * @param {Object} viewport - Describes the map view
-     * @return {Object} Viewport object with updated attributes based on project's features
-     */
-    const fitViewportToBounds = (viewport) => {
-      // Let's check if we have any features are all, otherwise return the state of viewport...
-      if ((featureCollection?.features?.length ?? 0) === 0) return viewport;
-      const featureViewport = new WebMercatorViewport({
-        viewport,
-        width: currentMap?._width ?? window.innerWidth * 0.45,
-        height: currentMap?._height ?? window.innerHeight * 0.6,
-      });
-
-      const newViewport = featureViewport.fitBounds(mapBounds, {
+    mapRef.current &&
+      mapRef.current.fitBounds(mapBounds, {
         padding: 100,
         maxZoom: 16,
+        duration: 0,
       });
-
-      const { longitude, latitude, zoom } = newViewport;
-
-      return {
-        ...viewport,
-        longitude,
-        latitude,
-        zoom,
-      };
-    };
-
-    setViewport((prevViewport) => fitViewportToBounds(prevViewport));
     setHasFitInitialized(true);
-  }, [hasFitInitialized, shouldFitOnFeatureUpdate, featureCollection, mapRef]);
+  };
 
-  return [viewport, setViewport];
+  return { fitMapToFeatureCollectionOnRender };
 }
 
 /**

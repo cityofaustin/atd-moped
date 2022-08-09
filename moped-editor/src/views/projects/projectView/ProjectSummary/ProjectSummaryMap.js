@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from "react";
+import React, { useRef, useCallback, useState } from "react";
 import Map, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -13,6 +13,7 @@ import {
   useHoverLayer,
   useFeatureCollectionToFitBounds,
   basemaps,
+  mapConfig,
 } from "../../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -34,11 +35,12 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    */
   const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
 
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
    * Make use of a custom hook that initializes a map viewport
    * and fits it to a provided feature collection.
    */
-  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
     projectFeatureCollection
   );
@@ -75,6 +77,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         style={{ width: "100%", height: "60vh" }}
         /* Access Key */
         mapboxAccessToken={MAPBOX_TOKEN}
+        onRender={fitMapToFeatureCollectionOnRender}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
               The getCursor callback will receive isHovering: true when hover over features of these layers */
