@@ -271,7 +271,10 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
     metadata = "metadata"
 
     config = ecs.create_graphql_engine_config_contents(
-        graphql_endpoint=graphql_endpoint, access_key=access_key, metadata=metadata
+        graphql_endpoint=graphql_endpoint,
+        access_key=access_key,
+        metadata=metadata,
+        checked_out_token=checked_out,
     )
 
     migrate_cmd = (
@@ -301,11 +304,9 @@ if __name__ == "__main__":
         0:16
     ]  # this is getting very short because of the other things which are padded onto the 64 char max lambda names
 
-    print(short_internal_number_free_underscore_basename)
-
     database_data_stage = "staging"
 
-    if True:
+    if False:
         print("\n🍄 Comissioning Database\n")
         database_commission.run(
             basename=number_free_underscore_basename, stage=database_data_stage
@@ -338,10 +339,11 @@ if __name__ == "__main__":
         print("\n🎯 Comissioning Activity Log\n")
         activity_log_commission.run(parameters=dict(basename=basename))
 
+    if False:
         print("\n🌱 Applying database migrations\n")
         apply_database_migrations.run(parameters=dict(basename=basename))
 
-    else:
+    if True:
         print("\n🎯 Decomissioning Activity Log\n")
         activity_log_decommission.run(parameters=dict(basename=basename))
 

@@ -646,7 +646,9 @@ def remove_certificate(basename, removed_hostname_token):
 
 
 @task(name="Create graphql-engine config contents")
-def create_graphql_engine_config_contents(graphql_endpoint, access_key, metadata):
+def create_graphql_engine_config_contents(
+    graphql_endpoint, access_key, metadata, checked_out_token
+):
     config = f"""version: 2
 endpoint: {graphql_endpoint}
 metadata_directory: {metadata}
