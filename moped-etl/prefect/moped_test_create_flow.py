@@ -294,6 +294,14 @@ if __name__ == "__main__":
     ).group(
         1
     )  # remove leading numbers
+    internal_number_free_underscore_basename = "".join(
+        [i for i in number_free_underscore_basename if not i.isdigit()]
+    )
+    short_internal_number_free_underscore_basename = internal_number_free_underscore_basename[
+        0:16
+    ]  # this is getting very short because of the other things which are padded onto the 64 char max lambda names
+
+    print(short_internal_number_free_underscore_basename)
 
     database_data_stage = "staging"
 
