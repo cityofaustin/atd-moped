@@ -258,7 +258,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 
     basename = Parameter("basename")
 
-    endpoint = "https://" + ecs.get_graphql_engine_hostname(basename=basename)
+    graphql_endpoint = "https://" + ecs.get_graphql_engine_hostname(basename=basename)
     access_key = ecs.get_graphql_engine_access_key(basename=basename)
 
     rm_clone = "rm -fr /tmp/atd-moped"
@@ -271,7 +271,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
     metadata = "metadata"
 
     config = ecs.create_graphql_engine_config_contents(
-        endpoint=endpoint, access_key=access_key, metadata=metadata
+        graphql_endpoint=graphql_endpoint, access_key=access_key, metadata=metadata
     )
 
 
