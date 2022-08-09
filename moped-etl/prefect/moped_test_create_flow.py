@@ -289,8 +289,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 
 
 if __name__ == "__main__":
-    basename = "md-9731-update-email-name-api-validation"
-    # basename = "integrate-flows"
+    basename = "main"
     underscore_basename = basename.replace("-", "_")
     number_free_underscore_basename = re.search(
         "^[\d_]*(.*)", underscore_basename
@@ -313,10 +312,6 @@ if __name__ == "__main__":
         )
 
         print("\n🚀 Comissioning API\n")
-        # api_decommission.run(
-        # parameters=dict(basename=short_internal_number_free_underscore_basename)
-        # )  # 🛑
-
         api_commission_state = api_commission.run(
             parameters=dict(basename=short_internal_number_free_underscore_basename)
         )
@@ -339,11 +334,10 @@ if __name__ == "__main__":
         print("\n🎯 Comissioning Activity Log\n")
         activity_log_commission.run(parameters=dict(basename=basename))
 
-    if False:
         print("\n🌱 Applying database migrations\n")
         apply_database_migrations.run(parameters=dict(basename=basename))
 
-    if True:
+    if False:
         print("\n🎯 Decomissioning Activity Log\n")
         activity_log_decommission.run(parameters=dict(basename=basename))
 
