@@ -267,10 +267,6 @@ if __name__ == "__main__":
         api_endpoint = api_commission_state.result[endpoint].result
         print("🚀 API Endpoint: " + api_endpoint)
 
-        # api_endpoint = (
-        # "https://fpoc3s4v0l.execute-api.us-east-1.amazonaws.com/integrate-flows"
-        # )
-
         print("\n🤖 Comissioning ECS\n")
         ecs_commission.run(
             parameters=dict(
