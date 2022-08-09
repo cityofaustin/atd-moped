@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import ReactMapGL, { Layer, NavigationControl, Source } from "react-map-gl";
+import Map, { Layer, NavigationControl, Source } from "react-map-gl";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
 import bboxPolygon from "@turf/bbox-polygon";
@@ -407,7 +407,7 @@ const ProjectComponentsMap = ({
       {/***************************************************************************
                                        ReactMapGL
        ***************************************************************************/}
-      <ReactMapGL
+      <Map
         {...viewport}
         ref={mapRef}
         maxZoom={20}
@@ -517,7 +517,7 @@ const ProjectComponentsMap = ({
         {/* {!isSignalComponent &&
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
-      </ReactMapGL>
+      </Map>
     </Box>
   );
 };

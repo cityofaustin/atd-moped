@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import ReactMapGL, { NavigationControl } from "react-map-gl";
+import Map, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -12,6 +12,7 @@ import {
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
+  basemaps,
 } from "../../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -62,7 +63,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    */
   return (
     <Box>
-      <ReactMapGL
+      <Map
         /* Current state of viewport */
         {...viewport}
         /* Object reference to this object */
@@ -78,12 +79,13 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onHover={handleLayerHover}
+        onMouseMove={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
-        onViewportChange={handleViewportChange}
+        onMove={handleViewportChange}
+        mapStyle={basemaps.streets}
       >
         {/* Draw Navigation controls with specific styles */}
-        <NavigationControl showCompass={false} />
+        <NavigationControl showCompass={false} position="bottom-right" />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
@@ -92,7 +94,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           createSummaryMapLayers(projectFeatureCollection)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-      </ReactMapGL>
+      </Map>
     </Box>
   );
 };
