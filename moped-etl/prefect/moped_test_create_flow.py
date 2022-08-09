@@ -286,7 +286,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 
 
 if __name__ == "__main__":
-    basename = "9676-add-fund-sources"
+    basename = "md-9731-update-email-name-api-validation"
     # basename = "integrate-flows"
     underscore_basename = basename.replace("-", "_")
     number_free_underscore_basename = re.search(
@@ -312,12 +312,12 @@ if __name__ == "__main__":
         )
 
         print("\n🚀 Comissioning API\n")
-        api_decommission.run(
-            parameters=dict(basename=number_free_underscore_basename)
-        )  # 🛑
+        # api_decommission.run(
+        # parameters=dict(basename=short_internal_number_free_underscore_basename)
+        # )  # 🛑
 
         api_commission_state = api_commission.run(
-            parameters=dict(basename=number_free_underscore_basename)
+            parameters=dict(basename=short_internal_number_free_underscore_basename)
         )
         api_endpoint = api_commission_state.result[endpoint].result
         print("🚀 API Endpoint: " + api_endpoint)
@@ -349,7 +349,9 @@ if __name__ == "__main__":
         ecs_decommission.run(parameters=dict(basename=basename))
 
         print("\n🚀 Decomissioning API\n")
-        api_decommission.run(parameters=dict(basename=number_free_underscore_basename))
+        api_decommission.run(
+            parameters=dict(basename=short_internal_number_free_underscore_basename)
+        )
 
         print("\n🍄 Decomissioning Database\n")
         database_decommission.run(basename=number_free_underscore_basename)
