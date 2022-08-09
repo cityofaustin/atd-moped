@@ -276,38 +276,43 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 
 
 if __name__ == "__main__":
-    basename = "integrate-flows"
-    database = basename.replace("-", "_")
-    database = re.search("^[\d_]*(.*)", database).group(1)  # remove leading numbers
+    basename = "9676-add-fund-sources"
+    # basename = "integrate-flows"
+    underscore_basename = basename.replace("-", "_")
+    number_free_underscore_basename = re.search("^[\d_]*(.*)", underscore_basename).group(1)  # remove leading numbers
 
     database_data_stage = "staging"
 
     if True:
-        print("\n🍄 Comissioning Database\n")
-        database_commission.run(basename=database, stage=database_data_stage)
+        if True:
+            print("\n🍄 Comissioning Database\n")
+            # database_commission.run(basename=number_free_underscore_basename, stage=database_data_stage)
 
-        print("\n🚀 Comissioning API\n")
-        api_commission_state = api_commission.run(parameters=dict(basename=basename))
-        api_endpoint = api_commission_state.result[ecs.endpoint].result
-        print("🚀 API Endpoint: " + api_endpoint)
+            print("\n🚀 Comissioning API\n")
+            #api_decommission.run(parameters=dict(basename=number_free_underscore_basename))  # 🛑
 
-        print("\n🤖 Comissioning ECS\n")
-        ecs_commission.run(
-            parameters=dict(
-                basename=basename, database=database, api_endpoint=api_endpoint
+            api_commission_state = api_commission.run(
+                parameters=dict(basename=number_free_underscore_basename)
             )
-        )
+            api_endpoint = api_commission_state.result[endpoint].result
+            print("🚀 API Endpoint: " + api_endpoint)
 
-        print("\n💡 Comissioning Netlify Build & Deploy\n")
-        netlify_commission.run(
-            parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
-        )
+            print("\n🤖 Comissioning ECS\n")
+            ecs_commission.run(
+                parameters=dict(
+                    basename=basename, database=number_free_underscore_basename, api_endpoint=api_endpoint
+                )
+            )
 
-        print("\n🎯 Comissioning Activity Log\n")
-        activity_log_commission.run(parameters=dict(basename=basename))
-
-        # print("\n🌱 Applying database migrations\n")
-        # apply_database_migrations.run(parameters=dict(basename=basename))
+            print("\n💡 Comissioning Netlify Build & Deploy\n")
+            netlify_commission.run(
+                parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
+            )
+            print("\n🎯 Comissioning Activity Log\n")
+            activity_log_commission.run(parameters=dict(basename=basename))
+        else:
+            print("\n🌱 Applying database migrations\n")
+            apply_database_migrations.run(parameters=dict(basename=basename))
 
     else:
         print("\n🎯 Decomissioning Activity Log\n")
@@ -317,7 +322,7 @@ if __name__ == "__main__":
         ecs_decommission.run(parameters=dict(basename=basename))
 
         print("\n🚀 Decomissioning API\n")
-        api_decommission.run(parameters=dict(basename=basename))
+        api_decommission.run(parameters=dict(basename=number_free_underscore_basename))
 
         print("\n🍄 Decomissioning Database\n")
-        database_decommission.run(basename=database)
+        database_decommission.run(basename=number_free_underscore_basename)
