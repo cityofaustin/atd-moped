@@ -260,31 +260,31 @@ if __name__ == "__main__":
 
     if True:
         print("\n🍄 Comissioning Database\n")
-        # database_commission.run(basename=database, stage=database_data_stage)
+        database_commission.run(basename=database, stage=database_data_stage)
 
-        print("\n️🚀 Comissioning API\n")
-        # api_commission_state = api_commission.run(parameters=dict(basename=basename))
-        # api_endpoint = api_commission_state.result[endpoint].result
-        # print("🚀 API Endpoint: " + api_endpoint)
+        print("\n🚀 Comissioning API\n")
+        api_commission_state = api_commission.run(parameters=dict(basename=basename))
+        api_endpoint = api_commission_state.result[endpoint].result
+        print("🚀 API Endpoint: " + api_endpoint)
 
-        #api_endpoint = (
-            #"https://5t8qcf0ll2.execute-api.us-east-1.amazonaws.com/integrate-flows"
-        #)
+        # api_endpoint = (
+        # "https://fpoc3s4v0l.execute-api.us-east-1.amazonaws.com/integrate-flows"
+        # )
 
         print("\n🤖 Comissioning ECS\n")
-        # ecs_commission.run(
-        # parameters=dict(
-        # basename=basename, database=database, api_endpoint=api_endpoint
-        # )
-        # )
+        ecs_commission.run(
+            parameters=dict(
+                basename=basename, database=database, api_endpoint=api_endpoint
+            )
+        )
 
         print("\n💡 Comissioning Netlify Build & Deploy\n")
-        # netlify_commission.run(
-        # parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
-        # )
+        netlify_commission.run(
+            parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
+        )
 
         print("\n🎯 Comissioning Activity Log\n")
-        #activity_log_commission.run(parameters=dict(basename=basename))
+        activity_log_commission.run(parameters=dict(basename=basename))
 
     else:
         print("\n🎯 Decomissioning Activity Log\n")
