@@ -278,6 +278,8 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 if __name__ == "__main__":
     basename = "integrate-flows"
     database = basename.replace("-", "_")
+    database = re.search("^[\d_]*(.*)", database).group(1)  # remove leading numbers
+
     database_data_stage = "staging"
 
     if True:
