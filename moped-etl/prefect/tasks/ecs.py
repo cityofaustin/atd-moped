@@ -665,3 +665,8 @@ actions:
 
 shell_task = ShellTask(name="Shell Task", stream_output=True)
 
+
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)
