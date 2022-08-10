@@ -232,7 +232,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
     <Grid component="label" container alignItems="center" spacing={1}>
       <Grid item>
         <Switch
-          checked={props.value}
+          checked={props.value ?? false}
           onChange={(e) => props.onChange(!props.value)}
           color="primary"
           name={props.name}
@@ -610,6 +610,8 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         updatedPhaseObject?.phase_id
                       );
 
+                    // what if the current phase is turned off? we need it to go back to active.
+
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
@@ -628,6 +630,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                       // current_phase if the phase name is changed and its not a
                                       // current_phase
                                       {
+                                        status_id: 1,
                                         current_status: "active",
                                         current_phase: "active",
                                         // we don't have a phase id for active, since it is not an official phase
