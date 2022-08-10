@@ -7,6 +7,11 @@ import boto3
 import prefect
 from prefect import task
 import pprint as pretty_printer
+import hashlib
+from prefect.tasks.shell import ShellTask
+
+import tasks.api as api
+import tasks.activity_log as activity_log
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -23,9 +28,10 @@ CLOUDWATCH_LOG_GROUP = os.environ["CLOUDWATCH_LOG_GROUP"]
 MOPED_TEST_HOSTNAME = os.environ["MOPED_TEST_HOSTNAME"]
 MOPED_TEST_USER = os.environ["MOPED_TEST_USER"]
 MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
-MOPED_API_APIKEY = os.environ["MOPED_API_APIKEY"]
+SHA_SALT = os.environ["SHA_SALT"]
+GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
+
+# MOPED_API_KEY = "Figure out how to pass this in as a parameter"
 
 
 def pprint(string):
@@ -79,11 +85,22 @@ def create_target_group(basename):
     return target_group
 
 
+def form_hostname(basename):
+    host = basename + "-graphql.moped-test.austinmobility.io"
+    return host
+
+
+@task(name="Get graphql-engine hostname")
+def get_graphql_engine_hostname(basename):
+    return form_hostname(basename)
+
+
 @task(name="Create Rout53 CNAME")
 def create_route53_cname(basename, load_balancer):
     logger.info("Creating Route53 CNAME")
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
+    host = form_hostname(basename)
+
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
     route53 = boto3.client("route53")
@@ -294,8 +311,19 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
     return listeners
 
 
+def generate_access_key(basename):
+    sha_input = basename + SHA_SALT + "ecs"
+    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
+    return graphql_engine_api_key
+
+
+@task(name="Get graphql-engine access key")
+def get_graphql_engine_access_key(basename):
+    return generate_access_key(basename)
+
+
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename, database):
+def create_task_definition(basename, database, api_endpoint):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
@@ -329,10 +357,19 @@ def create_task_definition(basename, database):
                         "name": "HASURA_GRAPHQL_DATABASE_URL",
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
-                    {"name": "HASURA_ADMIN_SECRET", "value": HASURA_ADMIN_SECRET},
+                    {
+                        "name": "HASURA_ADMIN_SECRET",
+                        "value": generate_access_key(basename),
+                    },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
-                    # {"name": "MOPED_API_EVENTS_URL", "value": MOPED_API_EVENTS_URL},
-                    {"name": "MOPED_API_APIKEY", "value": MOPED_API_APIKEY},
+                    {
+                        "name": "MOPED_API_EVENTS_URL",
+                        "value": api_endpoint + "/events/",
+                    },
+                    {
+                        "name": "MOPED_API_APIKEY",
+                        "value": api.generate_api_key(basename),
+                    },
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",
@@ -606,3 +643,32 @@ def remove_certificate(basename, removed_hostname_token):
     response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
 
     return response
+
+
+@task(name="Create graphql-engine config contents")
+def create_graphql_engine_config_contents(
+    graphql_endpoint, access_key, metadata, checked_out_token
+):
+    config = f"""version: 2
+endpoint: {graphql_endpoint}
+metadata_directory: {metadata}
+admin_secret: {access_key}
+actions:
+  kind: synchronous
+  handler_webhook_baseurl: {graphql_endpoint}
+"""
+
+    config_file = open("/tmp/atd-moped/moped-database/config.yaml", "w")
+    config_file.write(config)
+    config_file.close()
+
+    return config
+
+
+shell_task = ShellTask(name="Shell Task", stream_output=True)
+
+
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)

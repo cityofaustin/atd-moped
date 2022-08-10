@@ -6,12 +6,14 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
+import tasks.ecs as ecs
+
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN = os.environ["MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN"]
 MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX = os.environ["MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX"]
+SHA_SALT = os.environ["SHA_SALT"]
 
 # The folder name of the event function and used in naming the AWS function
 function_name = "activity_log"
@@ -28,14 +30,16 @@ def create_activity_log_queue_url(basename):
 
 def create_activity_log_lambda_config(
     basename,
+    graphql_engine_api_key,
 ):
+    graphql_endpoint = ecs.form_hostname(basename)
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
             "Variables": {
                 # We could probably create a helper so this and the ECS Route53 CNAME always match
-                "HASURA_ENDPOINT": f"https://{basename}-graphql.moped-test.austinmobility.io",
-                "HASURA_ADMIN_SECRET": HASURA_ADMIN_SECRET,
+                "HASURA_ENDPOINT": graphql_endpoint,
+                "HASURA_ADMIN_SECRET": graphql_engine_api_key,
                 "API_ENVIRONMENT": "TEST",
                 "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
             }
@@ -54,10 +58,12 @@ def create_activity_log_command(basename):
 
     aws_function_name = create_activity_log_aws_name(basename)
 
-    helper_script_path = "../../.github/workflows"
-    deployment_path = f"../../moped-data-events/{function_name}"
+    helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
+    deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
 
-    lambda_config = create_activity_log_lambda_config(basename)
+    graphql_engine_api_key = ecs.generate_access_key(basename)
+
+    lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
 
     # Write Lambda config to activity_log project folder
     with open(f"{deployment_path}/handler_config.json", "w") as f:

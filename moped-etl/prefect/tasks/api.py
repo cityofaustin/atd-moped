@@ -2,6 +2,9 @@ import json
 import boto3
 import os
 import re
+import hashlib
+
+import tasks.ecs as ecs
 
 import prefect
 from prefect import task
@@ -23,14 +26,20 @@ AWS_STAGING_COGNITO_APP_ID = os.environ["AWS_STAGING_COGNITO_APP_ID"]
 AWS_STAGING_COGNITO_USER_POOL_ARN = os.environ["AWS_STAGING_COGNITO_USER_POOL_ARN"]
 AWS_COGNITO_DYNAMO_SECRET_KEY = os.environ["AWS_COGNITO_DYNAMO_SECRET_KEY"]
 
-HASURA_HTTPS_ENDPOINT = os.environ["HASURA_HTTPS_ENDPOINT"]
-HASURA_ADMIN_SECRET = os.environ["HASURA_ADMIN_SECRET"]
 
 MOPED_API_UPLOADS_S3_BUCKET = os.environ["MOPED_API_UPLOADS_S3_BUCKET"]
 MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
-MOPED_API_HASURA_APIKEY = os.environ["MOPED_API_HASURA_APIKEY"]
 
-# Create a constistent name for the API config secret for deploy, deploy config, and undeploy
+SHA_SALT = os.environ["SHA_SALT"]
+
+
+def generate_api_key(basename):
+    sha_input = basename + SHA_SALT + "api"
+    api_key = hashlib.sha256(sha_input.encode()).hexdigest()
+    return api_key
+
+
+# Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
@@ -39,6 +48,9 @@ def create_secret_name(basename):
 @task(name="Create test API config Secrets Manager entry")
 def create_moped_api_secrets_entry(basename):
     logger.info("Creating API secret config")
+
+    graphql_endpoint = ecs.form_hostname(basename)
+    graphql_engine_api_key = ecs.generate_access_key(basename)
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
@@ -49,8 +61,8 @@ def create_moped_api_secrets_entry(basename):
         "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
         "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
-        "HASURA_HTTPS_ENDPOINT": HASURA_HTTPS_ENDPOINT,
-        "HASURA_ADMIN_SECRET": HASURA_ADMIN_SECRET,
+        "HASURA_HTTPS_ENDPOINT": graphql_endpoint,
+        "HASURA_ADMIN_SECRET": graphql_engine_api_key,
     }
 
     response = client.create_secret(
@@ -64,6 +76,8 @@ def create_moped_api_secrets_entry(basename):
     )
 
     secret_arn = response["ARN"]
+
+    # print("Response ARN: " + secret_arn)
 
     return secret_arn
 
@@ -99,7 +113,7 @@ def create_zappa_config(basename, config_secret_arn):
                 "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 # Look at Moped API events.py to see how this key is used
-                "MOPED_API_HASURA_APIKEY": MOPED_API_HASURA_APIKEY,
+                "MOPED_API_HASURA_APIKEY": generate_api_key(basename),
                 "MOPED_API_HASURA_SQS_URL": create_activity_log_queue_url(basename),
                 "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },
@@ -130,10 +144,10 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "../../moped-api/"
+    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
-    with open(f"{api_project_path}zappa_settings.json", "w") as f:
+    with open(f"{api_project_path}/zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
 
     # zappa deploy requires an active virtual environment
@@ -146,6 +160,8 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
     zappa deploy {basename})
     deactivate;
     """
+
+    # print("API Deployment command:\n" + command + "\n")
 
     return command
 
@@ -166,6 +182,7 @@ def get_endpoint_from_deploy_output(output_list):
         return None
     else:
         endpoint = match.groups()[0]
+        # print("Got an API endpoint: " + endpoint)
         return endpoint
 
 
@@ -179,10 +196,11 @@ def create_moped_api_undeploy_command(basename, config_secret_arn):
     logger.info("Creating API Zappa undeploy bash command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "../../moped-api/"
+
+    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
-    with open(f"{api_project_path}zappa_settings.json", "w") as f:
+    with open(f"{api_project_path}/zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
 
     # zappa undeploy with auto-confirm delete flag
