@@ -22,6 +22,7 @@ import {
   useLayerSelect,
   getLayerNames,
   makeCommonComponentsMapStyles,
+  mapConfig,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
@@ -138,11 +139,12 @@ const ProjectComponentsMapView = ({
    */
   const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
 
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
    * Make use of a custom hook that initializes a map viewport
    * and fits it to a provided feature collection.
    */
-  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
     projectFeatureCollection
   );
@@ -225,6 +227,7 @@ const ProjectComponentsMapView = ({
         /* Updates state of viewport on zoom, scroll, and other events */
         mapStyle={mapStyleConfig}
         style={{ width: "100%", height: "60vh" }}
+        onRender={fitMapToFeatureCollectionOnRender}
       >
         {/* Draw Navigation controls */}
         <NavigationControl showCompass={false} position="bottom-right" />

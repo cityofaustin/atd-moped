@@ -233,7 +233,13 @@ const ProjectComponentsMap = ({
   /**
    * Generate a viewport configuration object
    */
-  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
+  /**
+   * Make use of a custom hook that initializes a map viewport
+   * and fits it to a provided feature collection.
+   */
+  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
     // If this is a new feature, use the project feature collection to retrieve the area
     newFeature ? projectFeatureCollection : featureCollection,
@@ -427,6 +433,7 @@ const ProjectComponentsMap = ({
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}
         mapStyle={mapStyleConfig}
+        onRender={fitMapToFeatureCollectionOnRender}
       >
         <NavigationControl
           showCompass={false}

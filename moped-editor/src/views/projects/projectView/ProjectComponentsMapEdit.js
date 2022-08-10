@@ -525,7 +525,6 @@ const ProjectComponentsMapEdit = ({
    * the features it contains
    * */
   useEffect(() => {
-    console.log(saveActionState?.currentStep)
     if (
       saveActionState?.currentStep === 2 && // Features are saved
       saveActionState?.featuresSaved

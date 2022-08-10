@@ -407,7 +407,7 @@ export const getEditMapInteractiveIds = (drawLines) => {
   if (drawLines === false) {
     return interactiveIds.filter((layer) => layer !== "ctn-lines");
   }
-  console.log(interactiveIds);
+
   return interactiveIds;
 };
 
@@ -757,14 +757,20 @@ export function useHoverLayer() {
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {object} mapRef - Ref object whose current property exposes the map instance
  * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
+ * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
  * @return {function} Function to use as a Mapbox GL JS onRender callback
  */
-export function useFeatureCollectionToFitBounds(mapRef, featureCollection) {
+export function useFeatureCollectionToFitBounds(
+  mapRef,
+  featureCollection,
+  shouldFitOnFeatureUpdate = true
+) {
   const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
   const fitMapToFeatureCollectionOnRender = () => {
-    if (!thereAreFeatures || hasFitInitialized) return;
+    if (!thereAreFeatures || !shouldFitOnFeatureUpdate || hasFitInitialized)
+      return;
 
     const mapBounds = createZoomBbox(featureCollection);
     mapRef.current &&
