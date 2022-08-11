@@ -24,7 +24,7 @@ import tasks.api as api
 import tasks.database as db
 import tasks.netlify as netlify
 import tasks.activity_log as activity_log
-from subsystem_flows import *
+from subsystem_flows import * # this import will be deprecated at some point
 
 hostname = platform.node()
 
