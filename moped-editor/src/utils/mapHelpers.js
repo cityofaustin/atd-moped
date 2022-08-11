@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useReducer, useCallback } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Layer, Source } from "react-map-gl";
-import { WebMercatorViewport } from "viewport-mercator-project";
 import bbox from "@turf/bbox";
 import combine from "@turf/combine";
 import theme from "../theme/index";
@@ -785,6 +784,7 @@ export function useFeatureCollectionToFitBounds(
     setHasFitInitialized(true);
   };
 
+  // Watch for changes to the project components and zoom to them if shouldFitOnFeatureUpdate = true
   useEffect(() => {
     if (!shouldFitOnFeatureUpdate && thereAreFeatures) return;
 
