@@ -130,7 +130,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
       }),
     {}
   );
-  
+
   /**
    * Subphase table lookup object formatted into the shape that <MaterialTable>
    * expects.
@@ -536,6 +536,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       newData
                     );
 
+                    // if necessary, updates existing phases in table to ensure only one is marked "current"
                     updateExistingPhases(newPhaseObject);
 
                     const projectUpdateInput = getProjectStatusUpdateObject(
@@ -589,20 +590,13 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     });
 
                     // Check if differences include phase_id or is_current_phase
-                    const currentPhaseChanged =
-                      differences.filter((value) =>
-                        [/*"phase_id", */"is_current_phase"].includes(value)
-                      ).length > 0;
-
-                    const currentPhaseNameChanged =
-                      differences.filter((value) =>
-                        ["phase_id"].includes(value)
+                    const existingCurrentPhaseChanged =
+                      differences.filter(
+                        (value) => "is_current_phase" === value
                       ).length > 0;
 
                     // We need to know if the updated phase is set as is_current_phase
-                    const isNewCurrentPhase = !!newData?.is_current_phase;
-
-                    console.log(currentPhaseChanged)
+                    const isCurrentPhase = !!newData?.is_current_phase;
 
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
@@ -610,6 +604,7 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     delete updatedPhaseObject.project_id;
                     delete updatedPhaseObject.__typename;
 
+                    // if necessary, updates existing phases in table to ensure only one is marked "current"
                     updateExistingPhases(updatedPhaseObject);
 
                     const mappedProjectUpdateInput =
@@ -617,56 +612,37 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         updatedPhaseObject?.phase_id
                       );
 
-                    // what if the current phase is turned off? we need it to go back to active.
-
                     // Execute update mutation, returns promise
                     return updateProjectPhase({
                       variables: updatedPhaseObject,
                     })
-                      .then(
-                        () =>
-                          // If update to the phase object is setting a new current phase
-                          isNewCurrentPhase
-                            ? updateProjectStatus({
-                                variables: {
-                                  projectId: projectId,
-                                  projectUpdateInput: currentPhaseNameChanged
-                                    ? mappedProjectUpdateInput
-                                    : // Note: Below will overwrite a project's current_status and
-                                      // current_phase if the phase name is changed and its not a
-                                      // current_phase
-                                      {
-                                        status_id: 1,
-                                        current_status: "active",
-                                        current_phase: "active",
-                                        // we don't have a phase id for active, since it is not an official phase
-                                        current_phase_id: 0,
-                                      },
-                                },
-                              })
-                            : true // No change in project, safely ignore
-                          // // If update to the phase object was to phase_name or current_phase
-                          // // update the project's current_phase and current_status.
-                          // currentPhaseChanged
-                          //   ? updateProjectStatus({
-                          //       variables: {
-                          //         projectId: projectId,
-                          //         projectUpdateInput: isNewCurrentPhase
-                          //           ? mappedProjectUpdateInput
-                          //           : // Note: Below will overwrite a project's current_status and
-                          //             // current_phase if the phase name is changed and its not a
-                          //             // current_phase
-                          //             {
-                          //               status_id: 1,
-                          //               current_status: "active",
-                          //               current_phase: "active",
-                          //               // we don't have a phase id for active, since it is not an official phase
-                          //               current_phase_id: 0,
-                          //             },
-                          //       },
-                          //     })
-                          //   : true // No change in project, safely ignore
-                      )
+                      .then(() => {
+                        // if the phase being updated is toggled as the current phase
+                        // update moped_project with new current_phase, updating the status badge
+                        if (isCurrentPhase) {
+                          return updateProjectStatus({
+                            variables: {
+                              projectId: projectId,
+                              projectUpdateInput: mappedProjectUpdateInput,
+                            },
+                          });
+                        } else if (existingCurrentPhaseChanged) {
+                          // if updated phase is not toggled as current phase, but was previously current phase
+                          // update moped_project with generic current status and current phase
+                          return updateProjectStatus({
+                            variables: {
+                              projectId: projectId,
+                              projectUpdateInput: {
+                                status_id: 1,
+                                current_status: "active",
+                                current_phase: "active",
+                                // we don't have a phase id for active, since it is not an official phase
+                                current_phase_id: 0,
+                              },
+                            },
+                          });
+                        }
+                      })
                       .then(() => {
                         // Refetch data
                         refetch();
