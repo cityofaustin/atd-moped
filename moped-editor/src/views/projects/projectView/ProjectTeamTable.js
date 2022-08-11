@@ -33,6 +33,7 @@ import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -42,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       color: theme.palette.primary.main,
     },
+  },
+  inactiveUserText: {
+    fontStyle: "italic",
   },
 }));
 
@@ -73,34 +77,51 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const availableUsers = data.moped_users;
 
-  // Get data from the team query payload
-  let personnel = {};
+  const makeListOfActivePersonnel = (personnelArray) => {
+    // 1. Multiple roles per user comes from multiple rows in the proj_personnel table
+    // so we have to dedupe project personnel and aggregate the roles to appear
+    // as multiple roles per personnel row in the UI
+    // 2. Similarly, personnel notes are concatenated into one string to show in the UI
+    // 3. Soft deleted personnel are filtered
+    let personnel = {};
 
-  // For each personnel entry...
-  data.moped_proj_personnel.map((item) => {
-    // If the item does not exist in the aggregated object
-    if (!personnel.hasOwnProperty(item.user_id)) {
-      // instantiate a new object & populate
-      personnel[`${item.user_id}`] = {
-        user_id: item.user_id,
-        role_id: [item.role_id],
-        notes: item.notes,
-        project_personnel_id: item.project_personnel_id,
-      };
-    } else {
-      // Aggregate role_ids, and notes.
-      personnel[`${item.user_id}`].role_id.push(item.role_id);
-      personnel[`${item.user_id}`].notes = (
-        (personnel[`${item.user_id}`].notes ?? "") +
-        " " +
-        item.notes
-      ).trim();
-      personnel[`${item.user_id}`].project_personnel_id =
-        item.project_personnel_id;
-    }
+    // For each personnel entry...
+    personnelArray.forEach((item) => {
+      // If the item does not exist in the aggregated object
+      if (!personnel.hasOwnProperty(item.user_id)) {
+        // instantiate a new object & populate
+        personnel[`${item.user_id}`] = {
+          user_id: item.user_id,
+          role_id: [item.role_id],
+          notes: item.notes,
+          project_personnel_id: item.project_personnel_id,
+          is_moped_user_deleted: item.moped_user.is_deleted,
+          is_deleted: item.is_deleted,
+        };
+      } else {
+        // Aggregate role_ids, and notes.
+        personnel[`${item.user_id}`].role_id.push(item.role_id);
+        personnel[`${item.user_id}`].notes = (
+          (personnel[`${item.user_id}`].notes ?? "") +
+          " " +
+          item.notes
+        ).trim();
+        personnel[`${item.user_id}`].project_personnel_id =
+          item.project_personnel_id;
+      }
+    });
 
-    return null; // No need to return anything...
-  });
+    const personnelTableList = Object.keys(personnel).map(
+      (item) => personnel[item]
+    );
+
+    // Filter soft deleted project personnel
+    const activePersonnelList = personnelTableList.filter(
+      (personnel) => personnel.is_deleted === false
+    );
+
+    return activePersonnelList;
+  };
 
   // Create some objects for lookups
   const workgroups = data.moped_workgroup.reduce(
@@ -126,8 +147,10 @@ const ProjectTeamTable = ({ projectId }) => {
     {}
   );
 
-  // Options for Autocomplete form elements
-  const userIds = availableUsers.map((user) => user.user_id);
+  // Options for Autocomplete form elements filtered to active users
+  const userIds = availableUsers
+    .filter((user) => user.is_deleted === false)
+    .map((user) => user.user_id);
 
   /**
    * Get a user object from the users array
@@ -144,7 +167,7 @@ const ProjectTeamTable = ({ projectId }) => {
    */
   const getPersonnelName = (id) => {
     const user = getUserById(id);
-    return `${user?.first_name ?? "Unknown"} ${user?.last_name ?? "User"}`;
+    return getUserFullName(user);
   };
 
   /**
@@ -174,7 +197,17 @@ const ProjectTeamTable = ({ projectId }) => {
     {
       title: "Name",
       field: "user_id",
-      render: (personnel) => getPersonnelName(personnel.user_id),
+      render: (personnel) => {
+        const { is_moped_user_deleted } = personnel;
+
+        return is_moped_user_deleted ? (
+          <Typography className={classes.inactiveUserText}>{`${getPersonnelName(
+            personnel.user_id
+          )} - Inactive`}</Typography>
+        ) : (
+          <Typography>{getPersonnelName(personnel.user_id)}</Typography>
+        );
+      },
       validate: (rowData) => !!rowData.user_id,
       editComponent: (props) => (
         <FormControl style={{ width: "100%" }}>
@@ -288,7 +321,7 @@ const ProjectTeamTable = ({ projectId }) => {
             }
           },
         }}
-        data={Object.keys(personnel).map((item) => personnel[item])}
+        data={makeListOfActivePersonnel(data.moped_proj_personnel)}
         title={
           <Typography variant="h2" color="primary">
             Project team
