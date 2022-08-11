@@ -768,10 +768,7 @@ export function useFeatureCollectionToFitBounds(
   const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
-  const fitMapToFeatureCollectionOnRender = () => {
-    if (!thereAreFeatures || !shouldFitOnFeatureUpdate || hasFitInitialized)
-      return;
-
+  const zoomMapToFeatureCollection = () => {
     const mapBounds = createZoomBbox(featureCollection);
     mapRef.current &&
       mapRef.current.fitBounds(mapBounds, {
@@ -779,8 +776,20 @@ export function useFeatureCollectionToFitBounds(
         maxZoom: 16,
         duration: 0,
       });
+  };
+
+  const fitMapToFeatureCollectionOnRender = () => {
+    if (!thereAreFeatures || hasFitInitialized) return;
+
+    zoomMapToFeatureCollection();
     setHasFitInitialized(true);
   };
+
+  useEffect(() => {
+    if (!shouldFitOnFeatureUpdate && thereAreFeatures) return;
+
+    zoomMapToFeatureCollection();
+  }, [featureCollection, shouldFitOnFeatureUpdate]);
 
   return { fitMapToFeatureCollectionOnRender };
 }
