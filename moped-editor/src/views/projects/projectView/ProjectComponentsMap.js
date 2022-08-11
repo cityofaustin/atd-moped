@@ -222,7 +222,7 @@ const ProjectComponentsMap = ({
   saveActionDispatch = null,
   componentEditorPanel = null,
   isSignalComponent = false,
-  drawLines = false,
+  drawLines = null,
 }) => {
   const classes = useStyles();
   const selectedLayerIds =
@@ -379,9 +379,11 @@ const ProjectComponentsMap = ({
   //   }
   // }, [saveActionState, saveDrawnPoints]);
 
+  // TODO: Reintroduce when drawing is restored
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
-  // const renderDrawLayers =
-  //   !isDrawing && !isSignalComponent && drawLines !== null;
+  const renderDrawLayers =
+    // !isDrawing && !isSignalComponent && drawLines !== null;
+    !isSignalComponent && drawLines !== null;
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -418,13 +420,12 @@ const ProjectComponentsMap = ({
         ref={mapRef}
         maxZoom={20}
         style={{ width: "100%", height: "60vh" }}
-        interactiveLayerIds={getEditMapInteractiveIds(drawLines)}
+        interactiveLayerIds={
+          renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
+        }
         onMouseMove={handleLayerHover}
         onClick={handleLayerClick}
         // TODO: Reintroduce when drawing is restored
-        // interactiveLayerIds={
-        //   renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
-        // }
         // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
         // onClick={renderDrawLayers ? handleLayerClick : null}
         cursor={cursor}
