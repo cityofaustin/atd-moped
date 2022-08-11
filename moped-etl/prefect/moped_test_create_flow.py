@@ -302,8 +302,12 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
     )
     metadata = ecs.shell_task(command=metadata_cmd, upstream_tasks=[config])
 
-
 if __name__ == "__main__":
+    branch = "main"
+    test_commission.run(branch=branch)
+
+
+if __name__ == "__placeholder__":
     basename = "main"
     underscore_basename = basename.replace("-", "_")
     number_free_underscore_basename = re.search(
