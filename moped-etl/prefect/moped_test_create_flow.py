@@ -24,7 +24,7 @@ import tasks.api as api
 import tasks.database as db
 import tasks.netlify as netlify
 import tasks.activity_log as activity_log
-from subsystem_flows import * # this import will be deprecated at some point
+from subsystem_flows import *  # this import will be deprecated at some point
 
 hostname = platform.node()
 
@@ -39,35 +39,37 @@ GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
-@task(Name="Slug branch name")
+
+@task(name="Slug branch name")
 def slug_branch_name(basename):
     underscore_basename = basename.replace("-", "_")
-    database = re.search(
-        "^[\d_]*(.*)", underscore_basename
-    ).group(
+    database = re.search("^[\d_]*(.*)", underscore_basename).group(
         1
     )  # remove leading numbers
     internal_number_free_underscore_basename = "".join(
         [i for i in database if not i.isdigit()]
     )
-    awslambda = internal_number_free_underscore_basename[
-        0:16
-    ]  
-    return basename, database, awslambda
+    awslambda = internal_number_free_underscore_basename[0:16]
 
+    slug = {"basename": basename, "database": database, "awslambda": awslambda}
+    return slug
 
 
 with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch")
     database_seed_source = Parameter("database_seed_source")
 
-    basename, database, awslambda = slug_branch_name(branch)
+    slug = slug_branch_name(branch)
 
-    print("Base name: " + basename)
-    print("Database: " + database)
-    print("AWS Lambda: " + awslambda)
-
-
+    create_database = db.create_database(basename=slug["basename"])
+    populate_database_command = db.populate_database_with_data_command(
+        basename=slug["basename"],
+        stage=database_seed_source,
+        upstream_tasks=[create_database],
+    )
+    populate_database = db.populate_database_with_data_task(
+        command=populate_database_command
+    )
 
 
 with Flow(
@@ -128,10 +130,6 @@ with Flow(
     )
 
 
-
-
-
-
 with Flow(
     "Moped Test ECS Decommission",
     # Observation! The hex key of the container is from the build context!!
@@ -177,23 +175,6 @@ with Flow(
 
     removed_certificate = ecs.remove_certificate(
         basename=basename, removed_hostname_token=removed_hostname
-    )
-
-
-with Flow(
-    "Moped Test Database Commission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as database_commission:
-
-    basename = Parameter("basename")
-    stage = Parameter("stage")
-
-    create_database = db.create_database(basename=basename)
-    populate_database_command = db.populate_database_with_data_command(
-        basename=basename, stage=stage, upstream_tasks=[create_database]
-    )
-    populate_database = db.populate_database_with_data_task(
-        command=populate_database_command
     )
 
 
@@ -309,17 +290,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 if __name__ == "__main__":
     branch = "unify-flows"
 
-    test_commission.run(branch=branch, database_seed_source='production')
-
-
-
-
-
-
-
-
-
-
+    test_commission.run(branch=branch, database_seed_source="production")
 
 
 if False:
