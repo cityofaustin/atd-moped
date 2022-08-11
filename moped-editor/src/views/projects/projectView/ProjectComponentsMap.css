@@ -2,16 +2,18 @@
   background: lightgray !important;
   border-radius: 4px !important;
   background-size: 100% 100% !important;
-  width: 4rem !important;
-  height: 4rem !important;
+  /* Height and width are set to match Mapbox zoom controls height */
+  width: 58px !important;
+  height: 58px !important;
 }
 
 .MuiFab-sizeSmall {
   background: lightgray !important;
   border-radius: 4px !important;
   background-size: 100% 100% !important;
-  width: 4rem !important;
-  height: 4rem !important;
+  /* Height and width are set to match Mapbox zoom controls height */
+  width: 58px !important;
+  height: 58px !important;
 }
 
 .MuiFab-label {
@@ -23,6 +25,8 @@
 .mapboxgl-ctrl-geocoder {
   width: 21rem;
   height: 48px;
+  /* Match up the styling with the rest of components maps styles */
+  border: lightgray 1px solid; 
 }
 
 @media screen and (min-width: 640px) {

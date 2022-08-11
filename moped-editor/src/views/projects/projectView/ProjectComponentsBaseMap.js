@@ -48,7 +48,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   speedDialWithLayerCopyrightText: {
     right: "49px !important",
-    bottom: "20px !important",
+    bottom: "22px !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
@@ -62,7 +62,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   speedDial: {
     right: "49px !important",
-    bottom: "0px !important",
+    bottom: "2px !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {

@@ -60,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       backgroundColor: "white",
     },
+    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
   editButton: {
     position: "absolute",
@@ -78,8 +79,9 @@ const useStyles = makeStyles((theme) => ({
     width: "21rem",
     background: theme.palette.common.white,
     border: "lightgray 1px solid",
-    borderRadius: ".5rem",
+    borderRadius: "4px",
     padding: ".5rem",
+    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
   mapToolsShowHidden: {
     position: "absolute",
@@ -89,7 +91,8 @@ const useStyles = makeStyles((theme) => ({
     width: "21rem",
     background: theme.palette.common.white,
     border: "lightgray 1px solid",
-    borderRadius: ".5rem",
+    borderRadius: "4px",
+    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
     padding: ".5rem",
     "&:hover": {
       background: theme.palette.common.white,
