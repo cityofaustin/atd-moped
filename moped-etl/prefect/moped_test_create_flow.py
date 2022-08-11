@@ -17,14 +17,14 @@ import prefect
 from prefect.run_configs import UniversalRun
 
 # import prefect components
-from prefect import Flow, task, Parameter
+from prefect import Flow, task, Parameter, case
+from prefect.tasks.control_flow import merge
 
 import tasks.ecs as ecs
 import tasks.api as api
 import tasks.database as db
 import tasks.netlify as netlify
 import tasks.activity_log as activity_log
-from subsystem_flows import *  # this import will be deprecated at some point
 
 hostname = platform.node()
 
@@ -61,15 +61,29 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     slug = slug_branch_name(branch)
 
-    create_database = db.create_database(basename=slug["basename"])
+    database_exists = db.database_exists(slug["database"])
+
+    with case(database_exists, True):
+        remove_database = db.remove_database(basename=slug["database"])
+
+    ready_to_commission = merge(remove_database)
+
+    create_database = db.create_database(
+        basename=slug["database"], upstream_tasks=[ready_to_commission]
+    )
     populate_database_command = db.populate_database_with_data_command(
-        basename=slug["basename"],
+        basename=slug["database"],
         stage=database_seed_source,
         upstream_tasks=[create_database],
     )
     populate_database = db.populate_database_with_data_task(
         command=populate_database_command
     )
+
+
+
+
+
 
 
 with Flow(
@@ -191,15 +205,6 @@ with Flow(
     )
     deploy_api = api.create_api_task(command=commission_api_command)
     endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-
-with Flow(
-    "Moped Test Database Decommission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as database_decommission:
-
-    basename = Parameter("basename")
-
-    remove_database = db.remove_database(basename=basename)
 
 
 with Flow(

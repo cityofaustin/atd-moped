@@ -127,3 +127,23 @@ def populate_database_with_data_command(basename, stage="staging"):
     """
 
     return command
+
+
+@task(name="Check if database exists")
+def database_exists(basename):
+    logger.info(f"Checking if database {basename} exists")
+
+    (pg, cursor) = connect_to_db_server()
+
+    database_exists_sql = (
+        f"SELECT EXISTS (SELECT FROM pg_database WHERE datname = '{basename}')"
+    )
+    cursor.execute(database_exists_sql)
+    exists = cursor.fetchone()[0]
+
+    # Commit changes and close connections
+    pg.commit()
+    cursor.close()
+    pg.close()
+
+    return exists
