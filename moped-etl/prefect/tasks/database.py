@@ -142,7 +142,6 @@ def database_exists(basename):
     exists = cursor.fetchone()[0]
 
     # Commit changes and close connections
-    pg.commit()
     cursor.close()
     pg.close()
 

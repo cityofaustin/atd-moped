@@ -55,6 +55,7 @@ def slug_branch_name(basename):
     return slug
 
 
+
 with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch")
     database_seed_source = Parameter("database_seed_source")
@@ -79,6 +80,17 @@ with Flow("Moped Test Instance Commission") as test_commission:
     populate_database = db.populate_database_with_data_task(
         command=populate_database_command
     )
+
+
+with Flow("Moped Test Instance Decommission") as test_decommission:
+    branch = Parameter("branch")
+    slug = slug_branch_name(branch)
+    
+    database_exists = db.database_exists(slug["database"])
+
+    # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
+    with case(database_exists, True):
+        remove_database = db.remove_database(basename=slug["database"])
 
 
 
