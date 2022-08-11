@@ -7,3 +7,4 @@ INSERT INTO public.moped_milestones (
         ('Draft Study Submitted', 'Draft report submitted to ATD and being reviewed', 4),
         ('Draft Preliminary Schematic Submitted', 'Concept schematic submitted to ATD and being reviewed', 4),
         ('Need to Assign Study', 'Identified priority location is ready for scoping study and preliminary schematic assignment', 4);
+        
