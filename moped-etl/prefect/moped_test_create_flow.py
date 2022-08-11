@@ -39,6 +39,23 @@ GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
+@task(Name="Slug branch name")
+def slug_branch_name(basename):
+    underscore_basename = basename.replace("-", "_")
+    database = re.search(
+        "^[\d_]*(.*)", underscore_basename
+    ).group(
+        1
+    )  # remove leading numbers
+    internal_number_free_underscore_basename = "".join(
+        [i for i in database if not i.isdigit()]
+    )
+    awslambda = internal_number_free_underscore_basename[
+        0:16
+    ]  
+    return basename, database, awslambda
+
+
 
 
 with Flow(
