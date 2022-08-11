@@ -39,23 +39,6 @@ GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
-# Database Tasks
-
-# Frontend:
-# 1. When feature PR is opened, a deploy preview spins up and is linked in PR
-# 2. Env vars are available to introspect PR # and context (CONTEXT = deploy-preview)
-#    https://docs.netlify.com/configure-builds/environment-variables/?utm_campaign=devex-tzm&utm_source=blog&utm_medium=blog&utm_content=env-vars&_gl=1%2agvssna%2a_gcl_aw%2aR0NMLjE2NTQ1NDAxNzcuQ2p3S0NBand5X2FVQmhBQ0Vpd0EySUhIUUFud3NXc1ltbXJybGs5SnVfWTJlazlkUF9hVmM4WVZuTjR5Zk5QR0Y2U2ZOLTMycl93ekFCb0M2Y0lRQXZEX0J3RQ..&_ga=2.210432213.1131530997.1654540177-2032963523.1654540177&_gac=1.123937528.1654540177.CjwKCAjwy_aUBhACEiwA2IHHQAnwsWsYmmrrlk9Ju_Y2ek9dP_aVc8YVnN4yfNPGF6SfN-32r_wzABoC6cIQAvD_BwE#read-only-variables
-
-# Considerations:
-# 1. Auth (use staging user pool) needs a callback URL set in the user pool. How does this work
-#    for the deploy previews? (I know that we can't use SSO)
-#    - Just do whatever deploy previews do for auth
-
-# Questions:
-# 1. What S3 bucket does current moped-test use for file uploads?
-#    - Extend directories in S3 bucket to keep files for each preview app
-
-
 
 
 with Flow(
