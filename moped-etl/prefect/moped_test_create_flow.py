@@ -55,20 +55,18 @@ def slug_branch_name(basename):
     return slug
 
 
-
 with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch")
     database_seed_source = Parameter("database_seed_source")
 
     slug = slug_branch_name(branch)
 
-    database_exists = db.database_exists(slug["database"])
+    ## Commission the database
 
+    database_exists = db.database_exists(slug["database"])
     with case(database_exists, True):
         remove_database = db.remove_database(basename=slug["database"])
-
     ready_to_commission = merge(remove_database)
-
     create_database = db.create_database(
         basename=slug["database"], upstream_tasks=[ready_to_commission]
     )
@@ -81,20 +79,39 @@ with Flow("Moped Test Instance Commission") as test_commission:
         command=populate_database_command
     )
 
+    ## Commission the API
+
+    create_api_config_secret_arn = api.create_moped_api_secrets_entry(
+        basename=slug["awslambda"]
+    )
+
+    commission_api_command = api.create_moped_api_deploy_command(
+        basename=slug["awslambda"], config_secret_arn=create_api_config_secret_arn
+    )
+    deploy_api = api.create_api_task(command=commission_api_command)
+    endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
-    
+
+    # API
+
+    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(basename=slug["awslambda"])
+
+    decommission_api_command = api.create_moped_api_undeploy_command(
+        basename=slug["awslambda"], config_secret_arn=remove_api_config_secret_arn
+    )
+    undeploy_api = api.remove_api_task(command=decommission_api_command)
+
+    # Database
+
     database_exists = db.database_exists(slug["database"])
 
     # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
     with case(database_exists, True):
         remove_database = db.remove_database(basename=slug["database"])
-
-
-
-
 
 
 
