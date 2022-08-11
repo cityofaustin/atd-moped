@@ -137,20 +137,6 @@ export const makeCommonComponentsMapStyles = (theme) => ({
     padding: 0,
     position: "relative",
   },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    width: "21rem",
-    left: "1rem",
-    top: ".5rem",
-    zIndex: 2,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
-  },
 });
 
 /**
