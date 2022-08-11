@@ -57,6 +57,13 @@ def slug_branch_name(basename):
 
 
 
+with Flow("Moped Test Instance Commission") as test_commission:
+    branch = Parameter("branch")
+    source_database = 'production'
+
+    basename, database, awslambda = slug_branch_name(branch)
+
+
 
 with Flow(
     "Moped Test ECS Decommission",
