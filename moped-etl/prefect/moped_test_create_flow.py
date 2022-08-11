@@ -89,54 +89,25 @@ with Flow("Moped Test Instance Commission") as test_commission:
         basename=slug["awslambda"], config_secret_arn=create_api_config_secret_arn
     )
     deploy_api = api.create_api_task(command=commission_api_command)
-    endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
 
+    ## Commission the ECS cluster
 
-with Flow("Moped Test Instance Decommission") as test_decommission:
-    branch = Parameter("branch")
-    slug = slug_branch_name(branch)
+    cluster = ecs.create_ecs_cluster(basename=slug["basename"])
 
-    # Reap API
+    load_balancer = ecs.create_load_balancer(basename=slug["basename"])
 
-    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(
-        basename=slug["awslambda"]
-    )
-
-    decommission_api_command = api.create_moped_api_undeploy_command(
-        basename=slug["awslambda"], config_secret_arn=remove_api_config_secret_arn
-    )
-    undeploy_api = api.remove_api_task(command=decommission_api_command)
-
-    # Reap Database
-
-    database_exists = db.database_exists(slug["database"])
-
-    # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
-    with case(database_exists, True):
-        remove_database = db.remove_database(basename=slug["database"])
-
-
-with Flow(
-    "Moped Test ECS Commission", run_config=UniversalRun(labels=["moped", hostname])
-) as ecs_commission:
-
-    basename = Parameter("basename")
-    database = Parameter("database")
-    api_endpoint = Parameter("api_endpoint")
-
-    cluster = ecs.create_ecs_cluster(basename=basename)
-
-    load_balancer = ecs.create_load_balancer(basename=basename)
-
-    target_group = ecs.create_target_group(basename=basename)
+    target_group = ecs.create_target_group(basename=slug["basename"])
 
     dns_request = ecs.create_route53_cname(
-        basename=basename, load_balancer=load_balancer
+        basename=slug["basename"], load_balancer=load_balancer
     )
 
     dns_status = ecs.check_dns_status(dns_request=dns_request)
 
-    tls_certificate = ecs.create_certificate(basename=basename, dns_status=dns_status)
+    tls_certificate = ecs.create_certificate(
+        basename=slug["basename"], dns_status=dns_status
+    )
 
     certificate_validation_parameters = ecs.get_certificate_validation_parameters(
         tls_certificate=tls_certificate
@@ -161,11 +132,11 @@ with Flow(
     )
 
     task_definition = ecs.create_task_definition(
-        basename=basename, database=database, api_endpoint=api_endpoint
+        basename=slug["basename"], database=slug["database"], api_endpoint=api_endpoint
     )
 
     service = ecs.create_service(
-        basename=basename,
+        basename=slug["basename"],
         load_balancer=load_balancer,
         task_definition=task_definition,
         target_group=target_group,
@@ -174,52 +145,72 @@ with Flow(
     )
 
 
-with Flow(
-    "Moped Test ECS Decommission",
-    # Observation! The hex key of the container is from the build context!!
-    # You can use this as a userful key to associate a state of the code and an environmental state!
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as ecs_decommission:
+with Flow("Moped Test Instance Decommission") as test_decommission:
+    branch = Parameter("branch")
+    slug = slug_branch_name(branch)
 
-    basename = Parameter("basename")
+    # Reap ECS
 
-    set_count_at_zero = ecs.set_desired_count_for_service(basename=basename, count=0)
+    set_count_at_zero = ecs.set_desired_count_for_service(
+        basename=slug["basename"], count=0
+    )
 
-    tasks = ecs.list_tasks_for_service(basename=basename)
+    tasks = ecs.list_tasks_for_service(basename=slug["basename"])
 
     stop_token = ecs.stop_tasks_for_service(
-        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
+        basename=slug["basename"], tasks=tasks, zero_count_token=set_count_at_zero
     )
 
     drained_service = ecs.wait_for_service_to_be_drained(
-        basename=basename, stop_token=stop_token
+        basename=slug["basename"], stop_token=stop_token
     )
 
-    no_listeners = ecs.remove_all_listeners(basename=basename)
+    no_listeners = ecs.remove_all_listeners(basename=slug["basename"])
 
     no_target_group = ecs.remove_target_group(
-        basename=basename, no_listener_token=no_listeners
+        basename=slug["basename"], no_listener_token=no_listeners
     )
 
     no_service = ecs.delete_service(
-        basename=basename,
+        basename=slug["basename"],
         drained_token=drained_service,
         no_target_group_token=no_target_group,
     )
 
-    no_cluster = ecs.remove_ecs_cluster(basename=basename, no_service_token=no_service)
+    no_cluster = ecs.remove_ecs_cluster(
+        basename=slug["basename"], no_service_token=no_service
+    )
 
     removed_load_balancer = ecs.remove_load_balancer(
-        basename=basename, no_cluster_token=no_cluster
+        basename=slug["basename"], no_cluster_token=no_cluster
     )
 
     removed_hostname = ecs.remove_route53_cname(
-        basename=basename, removed_load_balancer_token=removed_load_balancer
+        basename=slug["basename"], removed_load_balancer_token=removed_load_balancer
     )
 
     removed_certificate = ecs.remove_certificate(
-        basename=basename, removed_hostname_token=removed_hostname
+        basename=slug["basename"], removed_hostname_token=removed_hostname
     )
+
+    # Reap API
+
+    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(
+        basename=slug["awslambda"]
+    )
+
+    decommission_api_command = api.create_moped_api_undeploy_command(
+        basename=slug["awslambda"], config_secret_arn=remove_api_config_secret_arn
+    )
+    undeploy_api = api.remove_api_task(command=decommission_api_command)
+
+    # Reap Database
+
+    database_exists = db.database_exists(slug["database"])
+
+    # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
+    with case(database_exists, True):
+        remove_database = db.remove_database(basename=slug["database"])
 
 
 with Flow(
