@@ -96,23 +96,24 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
 
-    # API
+    # Reap API
 
-    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(basename=slug["awslambda"])
+    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(
+        basename=slug["awslambda"]
+    )
 
     decommission_api_command = api.create_moped_api_undeploy_command(
         basename=slug["awslambda"], config_secret_arn=remove_api_config_secret_arn
     )
     undeploy_api = api.remove_api_task(command=decommission_api_command)
 
-    # Database
+    # Reap Database
 
     database_exists = db.database_exists(slug["database"])
 
     # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
     with case(database_exists, True):
         remove_database = db.remove_database(basename=slug["database"])
-
 
 
 with Flow(
@@ -324,7 +325,8 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 if __name__ == "__main__":
     branch = "unify-flows"
 
-    test_commission.run(branch=branch, database_seed_source="production")
+    # test_commission.run(branch=branch, database_seed_source="production")
+    test_decommission.run(branch=branch)
 
 
 if False:
