@@ -591,11 +591,18 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     // Check if differences include phase_id or is_current_phase
                     const currentPhaseChanged =
                       differences.filter((value) =>
-                        ["phase_id", "is_current_phase"].includes(value)
+                        [/*"phase_id", */"is_current_phase"].includes(value)
+                      ).length > 0;
+
+                    const currentPhaseNameChanged =
+                      differences.filter((value) =>
+                        ["phase_id"].includes(value)
                       ).length > 0;
 
                     // We need to know if the updated phase is set as is_current_phase
-                    const isCurrentPhase = !!newData?.is_current_phase;
+                    const isNewCurrentPhase = !!newData?.is_current_phase;
+
+                    console.log(currentPhaseChanged)
 
                     // Remove extraneous fields given by MaterialTable that
                     // Hasura doesn't need
@@ -618,13 +625,12 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                     })
                       .then(
                         () =>
-                          // If update to the phase object was to phase_name or current_phase
-                          // update the project's current_phase and current_status.
-                          currentPhaseChanged
+                          // If update to the phase object is setting a new current phase
+                          isNewCurrentPhase
                             ? updateProjectStatus({
                                 variables: {
                                   projectId: projectId,
-                                  projectUpdateInput: isCurrentPhase
+                                  projectUpdateInput: currentPhaseNameChanged
                                     ? mappedProjectUpdateInput
                                     : // Note: Below will overwrite a project's current_status and
                                       // current_phase if the phase name is changed and its not a
@@ -639,6 +645,27 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                                 },
                               })
                             : true // No change in project, safely ignore
+                          // // If update to the phase object was to phase_name or current_phase
+                          // // update the project's current_phase and current_status.
+                          // currentPhaseChanged
+                          //   ? updateProjectStatus({
+                          //       variables: {
+                          //         projectId: projectId,
+                          //         projectUpdateInput: isNewCurrentPhase
+                          //           ? mappedProjectUpdateInput
+                          //           : // Note: Below will overwrite a project's current_status and
+                          //             // current_phase if the phase name is changed and its not a
+                          //             // current_phase
+                          //             {
+                          //               status_id: 1,
+                          //               current_status: "active",
+                          //               current_phase: "active",
+                          //               // we don't have a phase id for active, since it is not an official phase
+                          //               current_phase_id: 0,
+                          //             },
+                          //       },
+                          //     })
+                          //   : true // No change in project, safely ignore
                       )
                       .then(() => {
                         // Refetch data
