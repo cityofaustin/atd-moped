@@ -144,6 +144,12 @@ with Flow("Moped Test Instance Commission") as test_commission:
         cluster_token=cluster,
     )
 
+    ## Commission the Netlify site
+
+    build = netlify.trigger_netlify_build(
+        branch=slug["basename"], api_endpoint_url=api_endpoint
+    )
+    netlify_is_ready = netlify.netlify_check_build(branch=slug["basename"], build_token=build)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
@@ -316,8 +322,8 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 if __name__ == "__main__":
     branch = "unify-flows"
 
-    # test_commission.run(branch=branch, database_seed_source="production")
-    test_decommission.run(branch=branch)
+    test_commission.run(branch=branch, database_seed_source="production")
+    # test_decommission.run(branch=branch)
 
 
 if False:
