@@ -1,6 +1,6 @@
 import React from "react";
 import ProjectFundingTable from "./ProjectFundingTable";
-import ProjectPurchaseOrderTable from "./ProjectPurchaseOrderTable";
+import ProjectContractsTable from "./ProjectContractsTable";
 import { useParams } from "react-router-dom";
 
 import { CardContent, Grid } from "@material-ui/core";
@@ -15,7 +15,7 @@ const ProjectFunding = () => {
           <ProjectFundingTable projectId={projectId} />
         </Grid>
         <Grid item xs={12}>
-          <ProjectPurchaseOrderTable projectId={projectId} />
+          <ProjectContractsTable projectId={projectId} />
         </Grid>
       </Grid>
     </CardContent>

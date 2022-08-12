@@ -104,23 +104,23 @@ export const UPDATE_FUNDING_TASK_ORDERS = gql`
   }
 `;
 
-export const PURCHASE_ORDER_QUERY = gql`
+export const CONTRACT_QUERY = gql`
   query ProjectPurchaseOrder($projectId: Int) {
-    moped_purchase_order(
+    moped_proj_contract(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: {id: asc}
     ) {
-      vendor
+      contractor
       id
-      purchase_order_number
+      contract_number
       description
     }
   }
 `;
 
-export const ADD_PURCHASE_ORDER = gql`
-  mutation AddPurchaseOrder($objects: [moped_purchase_order_insert_input!]!) {
-    insert_moped_purchase_order(objects: $objects) {
+export const ADD_CONTRACT = gql`
+  mutation AddPurchaseOrder($objects: [moped_proj_contract_insert_input!]!) {
+    insert_moped_proj_contract(objects: $objects) {
       returning {
         id
       }
@@ -128,18 +128,18 @@ export const ADD_PURCHASE_ORDER = gql`
   }
 `;
 
-export const UPDATE_PURCHASE_ORDER = gql`
+export const UPDATE_CONTRACT = gql`
   mutation UpdatePurchaseOrder(
     $id: Int!
-    $vendor: String!
-    $purchase_order_number: String!
+    $contractor: String!
+    $contract_number: String!
     $description: String!
   ) {
-    update_moped_purchase_order_by_pk(
+    update_moped_proj_contract_by_pk(
       pk_columns: { id: $id }
       _set: {
-        vendor: $vendor
-        purchase_order_number: $purchase_order_number
+        contractor: $contractor
+        contract_number: $contract_number
         description: $description
       }
     ) {
@@ -148,11 +148,11 @@ export const UPDATE_PURCHASE_ORDER = gql`
   }
 `;
 
-export const DELETE_PURCHASE_ORDER = gql`
+export const DELETE_CONTRACT = gql`
   mutation DeletePurchaseOrder(
     $id: Int!
   ) {
-    update_moped_purchase_order_by_pk(
+    update_moped_proj_contract_by_pk(
       pk_columns: { id: $id }
       _set: {
         is_deleted: true
