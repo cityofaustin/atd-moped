@@ -3,6 +3,19 @@ import { useState } from "react";
 import { useControl, Marker } from "react-map-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 
+// See MOPED Technical Docs > Dev Guides > Maps and geospatial data  > Libraries
+const austinFullPurposeJurisdictionFeatureCollection = {
+  type: "FeatureCollection",
+  crs: {
+    type: "name",
+    properties: {
+      name: "EPSG:4326",
+    },
+  },
+  bbox: [-97.940377, 30.133717, -97.578205, 30.464826],
+  features: [],
+};
+
 /* eslint-disable complexity,max-statements */
 // See https://github.com/visgl/react-map-gl/tree/7.0-release/examples/geocoder
 export default function GeocoderControl(props) {
@@ -14,6 +27,7 @@ export default function GeocoderControl(props) {
         ...props,
         marker: false,
         accessToken: props.mapboxAccessToken,
+        bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
       });
       ctrl.on("loading", props.onLoading);
       ctrl.on("results", props.onResults);

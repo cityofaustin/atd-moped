@@ -23,19 +23,6 @@ export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 
 const TRAIL_LINE_TYPE = "Off-Street";
 
-// See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
-const austinFullPurposeJurisdictionFeatureCollection = {
-  type: "FeatureCollection",
-  crs: {
-    type: "name",
-    properties: {
-      name: "EPSG:4326",
-    },
-  },
-  bbox: [-97.940377, 30.133717, -97.578205, 30.464826],
-  features: [],
-};
-
 export const basemaps = {
   streets: "mapbox://styles/mapbox/light-v8",
   // Provide style parameters to render Nearmap tiles in react-map-gl
@@ -141,7 +128,7 @@ export const makeCommonComponentsMapStyles = (theme) => ({
 
 /**
  * Map Config
- * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, geocoderBbox: number[], mapboxDefaultMaxZoom: number, layerConfigs: Object}}
+ * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, mapboxDefaultMaxZoom: number, layerConfigs: Object}}
  */
 export const mapConfig = {
   // The initial map position and zoom level
@@ -152,8 +139,6 @@ export const mapConfig = {
   },
   mapboxDefaultMaxZoom: 18, // Max zoom level
   minimumFeaturesInProject: 1, // Determines minimum number of features in project
-  // Geocoder Bounding Box
-  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   // List of layer configurations
   layerConfigs: {
     "ATD_ADMIN.CTN": {
