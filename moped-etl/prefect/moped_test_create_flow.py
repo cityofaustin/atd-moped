@@ -60,6 +60,7 @@ with Flow(
 ) as ecs_commission:
 
     basename = Parameter("basename")
+    short_tls_basename = Parameter("short_tls_basename")
     database = Parameter("database")
     api_endpoint = Parameter("api_endpoint")
 
@@ -75,7 +76,9 @@ with Flow(
 
     dns_status = ecs.check_dns_status(dns_request=dns_request)
 
-    tls_certificate = ecs.create_certificate(basename=basename, dns_status=dns_status)
+    tls_certificate = ecs.create_certificate(
+        basename=basename, short_tls_basename=short_tls_basename, dns_status=dns_status
+    )
 
     certificate_validation_parameters = ecs.get_certificate_validation_parameters(
         tls_certificate=tls_certificate
@@ -259,6 +262,7 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
     basename = Parameter("basename")
 
     graphql_endpoint = "https://" + ecs.get_graphql_engine_hostname(basename=basename)
+    print(graphql_endpoint)
     access_key = ecs.get_graphql_engine_access_key(basename=basename)
 
     rm_clone = "rm -fr /tmp/atd-moped"
@@ -277,19 +281,20 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
         checked_out_token=checked_out,
     )
 
-    migrate_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
-    )
-    migrate = ecs.shell_task(command=migrate_cmd, upstream_tasks=[config])
+    # migrate_cmd = (
+    # "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
+    # )
+    # migrate = ecs.shell_task(command=migrate_cmd, upstream_tasks=[config])
 
-    metadata_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
-    )
-    metadata = ecs.shell_task(command=metadata_cmd, upstream_tasks=[config])
+    # metadata_cmd = (
+    # "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
+    # )
+    # metadata = ecs.shell_task(command=metadata_cmd, upstream_tasks=[config])
 
 
 if __name__ == "__main__":
-    basename = "main"
+    basename = "md-9697-refactor-user-activation"
+    short_tls_basename = basename[0:27]
     underscore_basename = basename.replace("-", "_")
     number_free_underscore_basename = re.search(
         "^[\d_]*(.*)", underscore_basename
@@ -303,9 +308,21 @@ if __name__ == "__main__":
         0:16
     ]  # this is getting very short because of the other things which are padded onto the 64 char max lambda names
 
-    database_data_stage = "staging"
+    database_data_stage = "production"
+
+    if True:
+        api_endpoint = (
+            "https://8zquwj88ag.execute-api.us-east-1.amazonaws.com/md__refactor_use"
+        )
+        print("\n💡 Comissioning Netlify Build & Deploy\n")
+        netlify_commission.run(
+            parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
+        )
+        print("\n🎯 Comissioning Activity Log\n")
+        activity_log_commission.run(parameters=dict(basename=basename))
 
     if False:
+
         print("\n🍄 Comissioning Database\n")
         database_commission.run(
             basename=number_free_underscore_basename, stage=database_data_stage
@@ -318,10 +335,15 @@ if __name__ == "__main__":
         api_endpoint = api_commission_state.result[endpoint].result
         print("🚀 API Endpoint: " + api_endpoint)
 
+        # api_endpoint = (
+        # ""
+        # )
+
         print("\n🤖 Comissioning ECS\n")
         ecs_commission.run(
             parameters=dict(
                 basename=basename,
+                short_tls_basename=short_tls_basename,
                 database=number_free_underscore_basename,
                 api_endpoint=api_endpoint,
             )
@@ -336,6 +358,7 @@ if __name__ == "__main__":
 
         print("\n🌱 Applying database migrations\n")
         apply_database_migrations.run(parameters=dict(basename=basename))
+        pass
 
     if False:
         print("\n🎯 Decomissioning Activity Log\n")
@@ -351,3 +374,4 @@ if __name__ == "__main__":
 
         print("\n🍄 Decomissioning Database\n")
         database_decommission.run(basename=number_free_underscore_basename)
+        pass

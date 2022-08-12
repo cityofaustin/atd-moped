@@ -152,14 +152,19 @@ def check_dns_status(dns_request):
 
 
 @task(name="Request ACM TLS Certificate")
-def create_certificate(basename, dns_status):
+def create_certificate(basename, short_tls_basename, dns_status):
     logger.info("Creating TLS Certificate")
 
     acm = boto3.client("acm")
 
     host = basename + "-graphql.moped-test.austinmobility.io"
+    short_host = short_tls_basename + "-graphql.moped-test.austinmobility.io"
 
-    certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
+    certificate = acm.request_certificate(
+        DomainName=short_host, ValidationMethod="DNS", SubjectAlternativeNames=[host]
+    )
+
+    # certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
 
     return certificate
 
@@ -177,6 +182,10 @@ def get_certificate_validation_parameters(tls_certificate):
     certificate = acm.describe_certificate(
         CertificateArn=tls_certificate["CertificateArn"]
     )
+
+    # print(certificate)
+    # time.sleep(60)
+
     if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
         "Name"
     ]:
@@ -188,39 +197,38 @@ def get_certificate_validation_parameters(tls_certificate):
 @task(name="Add CNAME for Certificate Validation")
 def add_cname_for_certificate_validation(parameters):
     logger.info("Adding CNAME for TLS Certificate Validation")
-
-    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Name"
-    ]
-    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Value"
-    ]
-
     route53 = boto3.client("route53")
 
-    record = route53.change_resource_record_sets(
-        HostedZoneId=R53_HOSTED_ZONE,
-        ChangeBatch={
-            "Changes": [
-                {
-                    "Action": "UPSERT",
-                    "ResourceRecordSet": {
-                        "Name": host,
-                        "Type": "CNAME",
-                        "TTL": 300,
-                        "ResourceRecords": [{"Value": target}],
-                    },
-                }
-            ]
-        },
-    )
+    records = []
 
-    return record
+    for hostname in parameters["Certificate"]["DomainValidationOptions"]:
+        host = hostname["ResourceRecord"]["Name"]
+        target = hostname["ResourceRecord"]["Value"]
+
+        record = route53.change_resource_record_sets(
+            HostedZoneId=R53_HOSTED_ZONE,
+            ChangeBatch={
+                "Changes": [
+                    {
+                        "Action": "UPSERT",
+                        "ResourceRecordSet": {
+                            "Name": host,
+                            "Type": "CNAME",
+                            "TTL": 300,
+                            "ResourceRecords": [{"Value": target}],
+                        },
+                    }
+                ]
+            },
+        )
+        records.append(record)
+
+    return records
 
 
 @task(
     name="Wait for TLS Certificate validation",
-    max_retries=12,
+    max_retries=24,
     retry_delay=timedelta(seconds=10),
 )
 def wait_for_valid_certificate(validation_record, tls_certificate):
@@ -249,32 +257,32 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 def remove_route53_cname_for_validation(validation_record, issued_certificate):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
-
-    host = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Name"]
-    target = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Value"]
-
     route53 = boto3.client("route53")
 
-    record = route53.change_resource_record_sets(
-        HostedZoneId=R53_HOSTED_ZONE,
-        ChangeBatch={
-            "Changes": [
-                {
-                    "Action": "DELETE",
-                    "ResourceRecordSet": {
-                        "Name": host,
-                        "Type": "CNAME",
-                        "TTL": 300,
-                        "ResourceRecords": [{"Value": target}],
-                    },
-                }
-            ]
-        },
-    )
+    print(validation_record)
+    # time.sleep(60)
+    return True
+
+    for hostname in validation_record["Certificate"]["DomainValidationOptions"]:
+        host = hostname["ResourceRecord"]["Name"]
+        target = hostname["ResourceRecord"]["Value"]
+
+        record = route53.change_resource_record_sets(
+            HostedZoneId=R53_HOSTED_ZONE,
+            ChangeBatch={
+                "Changes": [
+                    {
+                        "Action": "DELETE",
+                        "ResourceRecordSet": {
+                            "Name": host,
+                            "Type": "CNAME",
+                            "TTL": 300,
+                            "ResourceRecords": [{"Value": target}],
+                        },
+                    }
+                ]
+            },
+        )
 
 
 @task(name="Create EC2 ELB Listeners")
@@ -388,6 +396,9 @@ def create_task_definition(basename, database, api_endpoint):
             }
         ],
     )
+
+    print(response)
+    # time.sleep(10)
 
     return response
 
@@ -629,7 +640,7 @@ def remove_route53_cname(basename, removed_load_balancer_token):
 def remove_certificate(basename, removed_hostname_token):
     logger.info("Removing certificate")
 
-    logger.info("Sleeping for 10 seconds to allow for certificate to be removed")
+    logger.info("Sleeping for 15 seconds to allow for certificate to be removed")
     time.sleep(15)
 
     acm = boto3.client("acm")
