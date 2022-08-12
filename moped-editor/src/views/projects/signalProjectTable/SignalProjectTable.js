@@ -151,8 +151,8 @@ const SignalProjectTable = () => {
       );
       if (currentPhase) {
         project["current_phase"] =
-          currentPhase.phase_name.charAt(0).toUpperCase() +
-          currentPhase.phase_name.slice(1);
+          currentPhase.moped_phase.phase_name.charAt(0).toUpperCase() +
+          currentPhase.moped_phase.phase_name.slice(1);
       }
     }
 

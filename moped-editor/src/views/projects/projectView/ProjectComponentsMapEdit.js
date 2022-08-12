@@ -246,9 +246,8 @@ const ProjectComponentsMapEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
-    !!selectedType
-      ? setDrawLines(lineRepresentable.indexOf(selectedType) > -1)
-      : setDrawLines(null);
+    const componentName = selectedType.toLowerCase().replaceAll(" ", '')
+    setDrawLines(lineRepresentable[componentName])
   };
 
   /**
@@ -257,9 +256,11 @@ const ProjectComponentsMapEdit = ({
    * @param {String} newValue - The new value from the autocomplete selector
    */
   const handleComponentSubtypeSelect = (e, newValue) => {
-    setSelectedComponentSubtype(
-      (newValue ?? e.target.value ?? "").toLowerCase()
-    );
+    const componentName =
+      selectedComponentType.toLowerCase().replaceAll(" ", "") +
+      newValue.toLowerCase().replaceAll(" ", "");
+    setDrawLines(lineRepresentable[componentName]);
+    setSelectedComponentSubtype((newValue ?? "").toLowerCase());
   };
 
   /**
@@ -722,7 +723,7 @@ const ProjectComponentsMapEdit = ({
                         id="moped-component-description"
                         label="Description"
                         multiline
-                        rows={4}
+                        minRows={4}
                         variant="filled"
                         value={componentDescription ?? ""}
                         onChange={e => handleDescriptionKeyDown(e)}

@@ -543,6 +543,18 @@
 - table:
     schema: public
     name: moped_milestones
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: related_phase_id
+  array_relationships:
+    - name: moped_proj_milestones
+      using:
+        foreign_key_constraint_on:
+          column: milestone_id
+          table:
+            schema: public
+            name: moped_proj_milestones
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2136,6 +2148,10 @@
 - table:
     schema: public
     name: moped_proj_phases
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: phase_id
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2149,7 +2165,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2174,7 +2189,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2199,7 +2213,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2224,7 +2237,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2249,7 +2261,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2275,7 +2286,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2301,7 +2311,6 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_name
           - phase_order
           - phase_priority
           - phase_privacy
@@ -2342,7 +2351,6 @@
             - status_id
             - subphase_id
             - phase_description
-            - phase_name
             - phase_status
             - subphase_name
             - date_added

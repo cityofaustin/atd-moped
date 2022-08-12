@@ -13,7 +13,7 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       moped_proj_phases {
-        phase_name
+        phase_id
         is_current_phase
         completion_percentage
         completed
@@ -25,7 +25,6 @@ export const ADD_PROJECT = gql`
       }
       moped_project_types {
         project_type_id
-        status_id
       }
     }
   }
@@ -100,7 +99,6 @@ export const SUMMARY_QUERY = gql`
         is_current_phase: { _eq: true }
       }
     ) {
-      phase_name
       project_phase_id
       is_current_phase
       project_id
@@ -236,14 +234,12 @@ export const TIMELINE_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { phase_start: desc }
     ) {
-      phase_name
       phase_id
       project_phase_id
       is_current_phase
       project_id
       phase_start
       phase_end
-      subphase_name
       subphase_id
       phase_description
     }
@@ -283,7 +279,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $project_phase_id: Int!
     $phase_id: Int
     $subphase_id: Int = 0
-    $subphase_name: String = null
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -294,7 +289,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         phase_end: $phase_end
         phase_id: $phase_id
         subphase_id: $subphase_id
-        subphase_name: $subphase_name
       }
     ) {
       project_id
@@ -303,7 +297,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       phase_start
       phase_end
       subphase_id
-      subphase_name
       is_current_phase
       phase_description
     }
@@ -365,7 +358,7 @@ export const ADD_PROJECT_PHASE = gql`
   mutation AddProjectPhase($objects: [moped_proj_phases_insert_input!]!) {
     insert_moped_proj_phases(objects: $objects) {
       returning {
-        phase_name
+        phase_id
         phase_description
         phase_start
         phase_end
