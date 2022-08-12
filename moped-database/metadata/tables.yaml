@@ -941,6 +941,88 @@
         check: {}
 - table:
     schema: public
+    name: moped_proj_contract
+  object_relationships:
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - contractor
+          - contract_number
+          - description
+          - project_id
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    schema: public
     name: moped_proj_entities
   insert_permissions:
     - role: moped-admin
@@ -3119,88 +3201,6 @@
           value_from_env: MOPED_API_APIKEY
         - value: activity_log
           name: MOPED_API_EVENT_NAME
-- table:
-    schema: public
-    name: moped_purchase_order
-  object_relationships:
-    - name: moped_project
-      using:
-        foreign_key_constraint_on: project_id
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-        filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-        filter: {}
-        check: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - id
-          - vendor
-          - purchase_order_number
-          - description
-          - project_id
-          - is_deleted
-        filter: {}
-        check: {}
 - table:
     schema: public
     name: moped_status
