@@ -21,7 +21,7 @@
   font-weight: bold !important;
 }
 
-/* Override Mapbox Geocoder styles so controls and icons stay in place */
+/* Override Mapbox Geocoder styles so controls and icons stay in place in Components UI */
 .mapboxgl-ctrl-geocoder {
   width: 21rem;
   height: 48px;
