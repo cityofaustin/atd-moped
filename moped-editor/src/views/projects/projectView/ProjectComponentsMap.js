@@ -18,7 +18,7 @@ import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
-  drawnLayerNames,
+  // drawnLayerNames,
   getClickEditableLayerNames,
   getGeoJSON,
   getEditMapInteractiveIds,
@@ -340,14 +340,14 @@ const ProjectComponentsMap = ({
    * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
    * @param {boolean} pointerStates.isDragging - Is user dragging map
    */
-  const getCursor = ({ isHovering, isDragging }) => {
-    return isDragging
-      ? "grabbing"
-      : isHovering // Show pointer when user is drawing as well
-      ? // : isHovering || isDrawing // Show pointer when user is drawing as well
-        "pointer"
-      : "default";
-  };
+  // const getCursor = ({ isHovering, isDragging }) => {
+  //   return isDragging
+  //     ? "grabbing"
+  //     : isHovering // Show pointer when user is drawing as well
+  //     ? // : isHovering || isDrawing // Show pointer when user is drawing as well
+  //       "pointer"
+  //     : "default";
+  // };
 
   /**
    * Whenever a Save Action is initiated, save all drawn features

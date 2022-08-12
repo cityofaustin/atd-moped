@@ -760,6 +760,7 @@ export function useFeatureCollectionToFitBounds(
     if (!shouldFitOnFeatureUpdate && thereAreFeatures) return;
 
     zoomMapToFeatureCollection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureCollection, shouldFitOnFeatureUpdate]);
 
   return { fitMapToFeatureCollectionOnRender };
