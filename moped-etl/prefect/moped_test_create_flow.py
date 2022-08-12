@@ -60,6 +60,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     database_seed_source = Parameter("database_seed_source")
 
     slug = slug_branch_name(branch)
+    # TODO need to pass in the whole slug object, not pull KV pairs out of it
 
     ## Commission the database
 
@@ -81,6 +82,8 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     ## Commission the API
 
+    # TODO: This needs to check to see if the api is deployed, and if so, reap it and redeploy
+
     create_api_config_secret_arn = api.create_moped_api_secrets_entry(
         basename=slug["awslambda"]
     )
@@ -92,6 +95,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
 
     ## Commission the ECS cluster
+    # TODO: This needs to check, reap if needed, redeploy
 
     cluster = ecs.create_ecs_cluster(basename=slug["basename"])
 
@@ -149,11 +153,64 @@ with Flow("Moped Test Instance Commission") as test_commission:
     build = netlify.trigger_netlify_build(
         branch=slug["basename"], api_endpoint_url=api_endpoint
     )
-    netlify_is_ready = netlify.netlify_check_build(branch=slug["basename"], build_token=build)
+    netlify_is_ready = netlify.netlify_check_build(
+        branch=slug["basename"], build_token=build
+    )
+
+    ## Commission the Activity Log
+
+    commission_activity_log_command = activity_log.create_activity_log_command(
+        basename=slug["basename"]
+    )
+    deploy_activity_log = activity_log.create_activity_log_task(
+        command=commission_activity_log_command
+    )
+
+    ## Apply migrations
+
+    graphql_endpoint = "https://" + ecs.get_graphql_engine_hostname(
+        basename=slug["basename"]
+    )
+    access_key = ecs.get_graphql_engine_access_key(basename=slug["basename"])
+
+    rm_clone = "rm -fr /tmp/atd-moped"
+    cleaned = ecs.shell_task(command=rm_clone)
+    git_clone = "git clone " + GIT_REPOSITORY + " /tmp/atd-moped"
+    cloned = ecs.shell_task(command=git_clone, upstream_tasks=[cleaned])
+    checkout_branch = "git -C /tmp/atd-moped/ checkout " + slug["basename"]
+    checked_out = ecs.shell_task(command=checkout_branch, upstream_tasks=[cloned])
+
+    metadata = "metadata"
+
+    config = ecs.create_graphql_engine_config_contents(
+        graphql_endpoint=graphql_endpoint,
+        access_key=access_key,
+        metadata=metadata,
+        checked_out_token=checked_out,
+    )
+
+    migrate_cmd = (
+        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
+    )
+    migrate = ecs.shell_task(command=migrate_cmd, upstream_tasks=[config])
+
+    metadata_cmd = (
+        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
+    )
+    metadata = ecs.shell_task(command=metadata_cmd, upstream_tasks=[config])
+
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
+
+    # Reap Activity Log
+
+    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(basename=slug["basename"])
+    remove_activity_log_lambda = activity_log.remove_activity_log_lambda(
+        basename=slug["basename"], upstream_tasks=[remove_activity_log_sqs]
+    )
+
 
     # Reap ECS
 
@@ -322,7 +379,8 @@ with Flow("Apply Database Migrations") as apply_database_migrations:
 if __name__ == "__main__":
     branch = "unify-flows"
 
-    test_commission.run(branch=branch, database_seed_source="production")
+    test_commission.register(project_name="Moped")
+    # test_commission.run(branch=branch, database_seed_source="production")
     # test_decommission.run(branch=branch)
 
 
