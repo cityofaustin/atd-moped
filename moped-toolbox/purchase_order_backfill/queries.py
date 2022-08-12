@@ -15,10 +15,10 @@ PROJECTS_QUERY = """query PurchaseOrders {
 }
 """
 
-ADD_PURCHASE_ORDER = """
-    mutation AddPurchaseOrder($objects: [moped_purchase_order_insert_input!]!) 
+ADD_CONTRACT = """
+    mutation AddPurchaseOrder($objects: [moped_proj_contract_insert_input!]!) 
     {
-        insert_moped_purchase_order(objects: $objects) {
+        insert_moped_proj_contract(objects: $objects) {
             returning
             {
                 id
