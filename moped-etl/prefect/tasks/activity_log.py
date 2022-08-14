@@ -19,9 +19,6 @@ SHA_SALT = os.environ["SHA_SALT"]
 function_name = "activity_log"
 
 
-
-
-
 def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
