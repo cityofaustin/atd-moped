@@ -34,6 +34,7 @@ SHA_SALT = os.environ["SHA_SALT"]
 
 ACTIVITY_LOG_FUNCTION_NAME = os.environ["ACTIVITY_LOG_FUNCTION_NAME"]
 
+ZAPPA_PROJECT_NAME = os.environ["ZAPPA_PROJECT_NAME"]
 
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
@@ -123,7 +124,7 @@ def create_zappa_config(basename, config_secret_arn):
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
-            "project_name": "atd-moped-test-prefect",
+            "project_name": ZAPPA_PROJECT_NAME,
             "runtime": "python3.8",
             "s3_bucket": "atd-apigateway",
             "cors": True,
@@ -233,3 +234,4 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
     command = f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
 
     return command
+
