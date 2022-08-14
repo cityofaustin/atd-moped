@@ -6,7 +6,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-from tasks.ecs import form_hostname, generate_access_key
+import tasks.shared as shared
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -23,16 +23,13 @@ def create_activity_log_aws_name(basename):
     return f"atd-moped-events-{function_name}_{basename}"
 
 
-def create_activity_log_queue_url(basename):
-    aws_queue_name = create_activity_log_aws_name(basename)
-    return f"{MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
 
 
 def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
 ):
-    graphql_endpoint = form_hostname(basename)
+    graphql_endpoint = shared.form_hostname(basename)
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
@@ -62,7 +59,7 @@ def create_activity_log_command(slug):
     helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
     deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
 
-    graphql_engine_api_key = generate_access_key(basename)
+    graphql_engine_api_key = shared.generate_access_key(basename)
 
     lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
 
@@ -90,7 +87,7 @@ def remove_activity_log_sqs(slug):
 
     sqs_client = boto3.client("sqs")
 
-    queue_url = create_activity_log_queue_url(basename)
+    queue_url = shared.create_activity_log_queue_url(basename)
     response = sqs_client.delete_queue(QueueUrl=queue_url)
     print(response)
     return response

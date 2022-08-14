@@ -7,11 +7,8 @@ import boto3
 import prefect
 from prefect import task
 import pprint as pretty_printer
-import hashlib
 
-
-import tasks.api as api
-import tasks.activity_log as activity_log
+import tasks.shared as shared
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -88,17 +85,12 @@ def create_target_group(slug):
     return target_group
 
 
-def form_hostname(basename):
-    host = basename + "-graphql.moped-test.austinmobility.io"
-    return host
-
-
 @task(name="Create Rout53 CNAME")
 def create_route53_cname(slug, load_balancer):
     basename = slug["basename"]
     logger.info("Creating Route53 CNAME")
 
-    host = form_hostname(basename)
+    host = shared.form_graphql_endpoint_hostname(basename)
 
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
@@ -311,12 +303,6 @@ def create_load_balancer_listener(load_balancer, target_group, certificate):
     return listeners
 
 
-def generate_access_key(basename):
-    sha_input = basename + SHA_SALT + "ecs"
-    graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
-    return graphql_engine_api_key
-
-
 @task(name="Create ECS Task Definition")
 def create_task_definition(slug, api_endpoint):
     basename = slug["basename"]
@@ -356,17 +342,14 @@ def create_task_definition(slug, api_endpoint):
                     },
                     {
                         "name": "HASURA_ADMIN_SECRET",
-                        "value": generate_access_key(basename),
+                        "value": shared.generate_access_key(basename),
                     },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     {
                         "name": "MOPED_API_EVENTS_URL",
                         "value": api_endpoint + "/events/",
                     },
-                    {
-                        "name": "MOPED_API_APIKEY",
-                        "value": api.generate_api_key(basename),
-                    },
+                    {"name": "MOPED_API_APIKEY", "value": generate_api_key(basename)},
                 ],
                 "logConfiguration": {
                     "logDriver": "awslogs",

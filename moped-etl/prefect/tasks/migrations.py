@@ -1,15 +1,16 @@
 import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
-from tasks.ecs import form_hostname, generate_access_key
+
+import tasks.shared as shared
 
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(basename):
-    return form_hostname(basename)
+    return shared.form_hostname(basename)
 
 @task(name="Get graphql-engine access key")
 def get_graphql_engine_access_key(basename):
-    return generate_access_key(basename)
+    return shared.generate_access_key(basename)
 
 @task(name="Create graphql-engine config contents")
 def create_graphql_engine_config_contents(

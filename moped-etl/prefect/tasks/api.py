@@ -10,7 +10,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-from tasks.activity_log import create_activity_log_queue_url
+import tasks.shared as shared
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -31,12 +31,6 @@ MOPED_API_UPLOADS_S3_BUCKET = os.environ["MOPED_API_UPLOADS_S3_BUCKET"]
 MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 
 SHA_SALT = os.environ["SHA_SALT"]
-
-
-def generate_api_key(basename):
-    sha_input = basename + SHA_SALT + "api"
-    api_key = hashlib.sha256(sha_input.encode()).hexdigest()
-    return api_key
 
 
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
@@ -116,7 +110,7 @@ def create_zappa_config(basename, config_secret_arn):
                 "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 # Look at Moped API events.py to see how this key is used
-                "MOPED_API_HASURA_APIKEY": generate_api_key(basename),
+                "MOPED_API_HASURA_APIKEY": shared.generate_api_key(basename),
                 "MOPED_API_HASURA_SQS_URL": create_activity_log_queue_url(basename),
                 "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },
