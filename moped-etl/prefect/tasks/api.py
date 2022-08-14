@@ -163,7 +163,7 @@ create_api_task = ShellTask(
 
 
 @task(name="Create API Zappa deploy bash command")
-def create_moped_api_deploy_command(slug, config_secret_arn):
+def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deployment):
     basename = slug["awslambda"]
 
     logger.info("Creating API Zappa deploy command")
@@ -195,6 +195,8 @@ def create_moped_api_deploy_command(slug, config_secret_arn):
 # See https://docs.prefect.io/api/latest/tasks/shell.html#shelltask
 @task(name="Get endpoint from Zappa deploy shell task output")
 def get_endpoint_from_deploy_output(output_list):
+
+    logger.info("Output List:" + str(output_list))
 
     api_endpoint_item = ""
 
@@ -234,3 +236,28 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
     command = f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
 
     return command
+
+
+@task(name="Check if API is deployed")
+def check_if_api_is_deployed(slug):
+    basename = slug["awslambda"]
+    dashed_lambda_name = basename.replace("_", "-")
+
+    logger.info("Checking if lambda function exists")
+
+    function_name = shared.generate_api_lambda_function_name(dashed_lambda_name)
+
+    # this is what you get for using lambda as a keyword python...
+    λ = boto3.client("lambda")
+
+    try:
+        response = λ.get_function(FunctionName=function_name)
+        logger.info("Lambda function exists")
+        logger.info(response)
+        return True
+    except Exception:
+        logger.info("Lambda function does not exist")
+        logger.info(Exception)
+        return False
+
+    # TODO FIXME

@@ -120,9 +120,21 @@ with Flow("Moped Test Instance Commission") as test_commission:
         slug=slug, ready_for_secret=ready_for_secret
     )
 
+    # test if api is deployed, remove if so
+    is_deployed = api.check_if_api_is_deployed(slug=slug)
+    with case(is_deployed, True):
+        decommission_api_command = api.create_moped_api_undeploy_command(
+            slug=slug, config_secret_arn=remove_api_config_secret_arn
+        )
+        undeploy_api = api.remove_api_task(command=decommission_api_command)
+    ready_for_api_deployment = merge(is_deployed, undeploy_api)
+
     commission_api_command = api.create_moped_api_deploy_command(
-        slug=slug, config_secret_arn=create_api_config_secret_arn
+        slug=slug,
+        config_secret_arn=create_api_config_secret_arn,
+        ready_for_api_deployment=ready_for_api_deployment,
     )
+
     deploy_api = api.create_api_task(command=commission_api_command)
 
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)

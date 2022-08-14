@@ -312,6 +312,9 @@ def create_task_definition(slug, api_endpoint):
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
+    logger.info("API Endpoint: ")
+    logger.info(api_endpoint)
+
     HASURA_GRAPHQL_DATABASE_URL = f"postgres://{MOPED_TEST_USER}:{MOPED_TEST_PASSWORD}@{MOPED_TEST_HOSTNAME}:5432/{database}"
 
     response = ecs.register_task_definition(
