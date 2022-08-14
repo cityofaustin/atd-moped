@@ -206,11 +206,12 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
     # Reap Activity Log
 
-    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(basename=slug["basename"])
+    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(
+        basename=slug["basename"]
+    )
     remove_activity_log_lambda = activity_log.remove_activity_log_lambda(
         basename=slug["basename"], upstream_tasks=[remove_activity_log_sqs]
     )
-
 
     # Reap ECS
 
@@ -280,5 +281,6 @@ if __name__ == "__main__":
     branch = "unify-flows"
 
     test_commission.register(project_name="Moped")
+    test_decommission.register(project_name="Moped")
     # test_commission.run(branch=branch, database_seed_source="production")
     # test_decommission.run(branch=branch)
