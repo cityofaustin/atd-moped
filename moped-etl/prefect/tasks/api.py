@@ -234,4 +234,3 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
     command = f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
 
     return command
-
