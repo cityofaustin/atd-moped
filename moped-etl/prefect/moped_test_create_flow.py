@@ -14,7 +14,6 @@ import re
 
 # import pypi packages
 import prefect
-from prefect.run_configs import UniversalRun
 
 # import prefect components
 from prefect import Flow, task, Parameter, case
