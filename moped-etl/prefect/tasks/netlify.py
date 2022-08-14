@@ -30,7 +30,8 @@ def pprint(string):
 @task(
     name="Check if build is complete", max_retries=24, retry_delay=timedelta(seconds=10)
 )
-def netlify_check_build(branch, build_token):
+def netlify_check_build(slug, build_token):
+    branch = slug["basename"]
     logger.info("Checking netlify build")
 
     URL = NETLIFY_API_URL + "sites/" + NETLIFY_SITE_ID + "/deploys"
@@ -59,7 +60,8 @@ def netlify_check_build(branch, build_token):
 
 
 @task
-def trigger_netlify_build(branch, api_endpoint_url):
+def trigger_netlify_build(slug, api_endpoint_url):
+    branch = slug["basename"]
     logger.info("Triggering netlify build")
 
     HTTP_parameters = {

@@ -30,7 +30,8 @@ def connect_to_db_server():
 
 
 @task(name="Create database in the test RDS")
-def create_database(basename):
+def create_database(slug):
+    basename = slug["database"]
     logger.info(f"Creating database {basename}")
 
     (pg, cursor) = connect_to_db_server()
@@ -64,7 +65,8 @@ def create_database(basename):
 
 
 @task(name="Remove database from the test RDS")
-def remove_database(basename):
+def remove_database(slug):
+    basename = slug["database"]
     logger.info(f"Removing database {basename}")
 
     (pg, cursor) = connect_to_db_server()
@@ -95,7 +97,8 @@ populate_database_with_data_task = ShellTask(
 
 
 @task(name="Create populate database with data bash command")
-def populate_database_with_data_command(basename, stage="staging"):
+def populate_database_with_data_command(slug, stage="staging"):
+    basename = slug["database"]
     logger.info(f"Creating populate with {stage} data command for database {basename}")
 
     # Get Moped read replica details together
@@ -130,7 +133,9 @@ def populate_database_with_data_command(basename, stage="staging"):
 
 
 @task(name="Check if database exists")
-def database_exists(basename):
+def database_exists(slug):
+    basename = slug["database"]
+
     logger.info(f"Checking if database {basename} exists")
 
     (pg, cursor) = connect_to_db_server()

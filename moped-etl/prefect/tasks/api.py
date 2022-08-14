@@ -46,7 +46,9 @@ def create_secret_name(basename):
 
 # The Flask app retrieves these secrets from Secrets Manager
 @task(name="Create test API config Secrets Manager entry")
-def create_moped_api_secrets_entry(basename):
+def create_moped_api_secrets_entry(slug):
+    basename = slug["awslambda"]
+
     logger.info("Creating API secret config")
 
     graphql_endpoint = ecs.form_hostname(basename)
@@ -83,7 +85,8 @@ def create_moped_api_secrets_entry(basename):
 
 
 @task(name="Remove test API config Secrets Manager entry")
-def remove_moped_api_secrets_entry(basename):
+def remove_moped_api_secrets_entry(slug):
+    basename = slug["awslambda"]
     logger.info("Removing API secret config")
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -140,7 +143,9 @@ create_api_task = ShellTask(
 
 
 @task(name="Create API Zappa deploy bash command")
-def create_moped_api_deploy_command(basename, config_secret_arn):
+def create_moped_api_deploy_command(slug, config_secret_arn):
+    basename = slug["awslambda"]
+
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
@@ -192,7 +197,8 @@ remove_api_task = ShellTask(
 
 
 @task(name="Create API Zappa undeploy bash command")
-def create_moped_api_undeploy_command(basename, config_secret_arn):
+def create_moped_api_undeploy_command(slug, config_secret_arn):
+    basename = slug["awslambda"]
     logger.info("Creating API Zappa undeploy bash command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)

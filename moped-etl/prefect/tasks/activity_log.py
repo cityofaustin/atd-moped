@@ -53,7 +53,8 @@ create_activity_log_task = ShellTask(
 
 
 @task(name="Create Activity Log deploy helper command")
-def create_activity_log_command(basename):
+def create_activity_log_command(slug):
+    basename = slug["basename"]
     logger.info("Creating Activity Log deploy helper command")
 
     aws_function_name = create_activity_log_aws_name(basename)
@@ -83,7 +84,8 @@ def create_activity_log_command(basename):
 
 
 @task
-def remove_activity_log_sqs(basename):
+def remove_activity_log_sqs(slug):
+    basename = slug["basename"]
     logger.info("Removing Activity Log SQS")
 
     sqs_client = boto3.client("sqs")
@@ -95,7 +97,8 @@ def remove_activity_log_sqs(basename):
 
 
 @task
-def remove_activity_log_lambda(basename):
+def remove_activity_log_lambda(slug):
+    basename = slug["basename"]
     logger.info("Removing Activity Log Lambda function")
 
     lambda_client = boto3.client("lambda")

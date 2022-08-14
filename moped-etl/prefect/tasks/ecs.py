@@ -8,7 +8,7 @@ import prefect
 from prefect import task
 import pprint as pretty_printer
 import hashlib
-from prefect.tasks.shell import ShellTask
+
 
 import tasks.api as api
 import tasks.activity_log as activity_log
@@ -42,7 +42,8 @@ def pprint(string):
 
 
 @task(name="Create ECS Cluster")
-def create_ecs_cluster(basename):
+def create_ecs_cluster(slug):
+    basename = slug["basename"]
     logger.info("Creating ECS cluster")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -54,7 +55,8 @@ def create_ecs_cluster(basename):
 
 
 @task(name="Create EC2 Load Balancer")
-def create_load_balancer(basename):
+def create_load_balancer(slug):
+    basename = slug["basename"]
 
     logger.info("Creating Load Balancer")
     elb = boto3.client("elbv2")
@@ -73,7 +75,8 @@ def create_load_balancer(basename):
 
 
 @task(name="Create EC2 Target Group")
-def create_target_group(basename):
+def create_target_group(slug):
+    basename = slug["basename"]
     logger.info("Creating Target Group")
 
     elb = boto3.client("elbv2")
@@ -90,13 +93,9 @@ def form_hostname(basename):
     return host
 
 
-@task(name="Get graphql-engine hostname")
-def get_graphql_engine_hostname(basename):
-    return form_hostname(basename)
-
-
 @task(name="Create Rout53 CNAME")
-def create_route53_cname(basename, load_balancer):
+def create_route53_cname(slug, load_balancer):
+    basename = slug["basename"]
     logger.info("Creating Route53 CNAME")
 
     host = form_hostname(basename)
@@ -146,7 +145,8 @@ def check_dns_status(dns_request):
 
 
 @task(name="Request ACM TLS Certificate")
-def create_certificate(basename, dns_status):
+def create_certificate(slug, dns_status):
+    basename = slug["basename"]
     logger.info("Creating TLS Certificate")
 
     acm = boto3.client("acm")
@@ -317,13 +317,10 @@ def generate_access_key(basename):
     return graphql_engine_api_key
 
 
-@task(name="Get graphql-engine access key")
-def get_graphql_engine_access_key(basename):
-    return generate_access_key(basename)
-
-
 @task(name="Create ECS Task Definition")
-def create_task_definition(basename, database, api_endpoint):
+def create_task_definition(slug, api_endpoint):
+    basename = slug["basename"]
+    database = slug["database"]
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name="us-east-1")
 
@@ -388,14 +385,9 @@ def create_task_definition(basename, database, api_endpoint):
 
 @task(name="Create ECS Service")
 def create_service(
-    basename,
-    load_balancer,
-    task_definition,
-    target_group,
-    listeners_token,
-    cluster_token,
+    slug, load_balancer, task_definition, target_group, listeners_token, cluster_token
 ):
-
+    basename = slug["basename"]
     logger.info("Creating ECS service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -431,7 +423,8 @@ def create_service(
 
 
 @task(name="Remove ECS Cluster")
-def remove_ecs_cluster(basename, no_service_token):
+def remove_ecs_cluster(slug, no_service_token):
+    basename = slug["basename"]
     logger.info("removing ECS cluster")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -441,7 +434,8 @@ def remove_ecs_cluster(basename, no_service_token):
 
 
 @task(name="Remove EC2 Target Group")
-def remove_target_group(basename, no_listener_token):
+def remove_target_group(slug, no_listener_token):
+    basename = slug["basename"]
     logger.info("Removing target group")
 
     elb = boto3.client("elbv2")
@@ -456,7 +450,8 @@ def remove_target_group(basename, no_listener_token):
 
 
 @task(name="Remove EC2 ELB Listeners")
-def remove_all_listeners(basename):
+def remove_all_listeners(slug):
+    basename = slug["basename"]
     logger.info("Removing all listeners from load balancer")
 
     elb = boto3.client("elbv2")
@@ -474,7 +469,8 @@ def remove_all_listeners(basename):
 
 
 @task(name="Remove EC2 Elastic Load Balancer")
-def remove_load_balancer(basename, no_cluster_token):
+def remove_load_balancer(slug, no_cluster_token):
+    basename = slug["basename"]
     logger.info("removing Load Balancer")
 
     elb = boto3.client("elbv2")
@@ -489,7 +485,8 @@ def remove_load_balancer(basename, no_cluster_token):
 
 
 @task(name="Set ECS Service Task Count")
-def set_desired_count_for_service(basename, count):
+def set_desired_count_for_service(slug, count):
+    basename = slug["basename"]
     logger.info("Setting desired count for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -506,7 +503,8 @@ def set_desired_count_for_service(basename, count):
 
 
 @task(name="Lists Tasks of Service")
-def list_tasks_for_service(basename):
+def list_tasks_for_service(slug):
+    basename = slug["basename"]
     logger.info("Listing tasks for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -517,7 +515,8 @@ def list_tasks_for_service(basename):
 
 
 @task(name="Stop Tasks for ECS Service")
-def stop_tasks_for_service(basename, tasks, zero_count_token):
+def stop_tasks_for_service(slug, tasks, zero_count_token):
+    basename = slug["basename"]
     logger.info("Stopping tasks for service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -540,7 +539,8 @@ def stop_tasks_for_service(basename, tasks, zero_count_token):
     max_retries=12,
     retry_delay=timedelta(seconds=10),
 )
-def wait_for_service_to_be_drained(basename, stop_token):
+def wait_for_service_to_be_drained(slug, stop_token):
+    basename = slug["basename"]
     logger.info("Waiting for service to be drained")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -566,7 +566,8 @@ def remove_task_definition(task_definition):
 
 
 @task(name="Remove ECS Service")
-def delete_service(basename, drained_token, no_target_group_token):
+def delete_service(slug, drained_token, no_target_group_token):
+    basename = slug["basename"]
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name="us-east-1")
@@ -576,7 +577,8 @@ def delete_service(basename, drained_token, no_target_group_token):
 
 
 @task(name="Remove Route53 CNAME")
-def remove_route53_cname(basename, removed_load_balancer_token):
+def remove_route53_cname(slug, removed_load_balancer_token):
+    basename = slug["basename"]
     logger.info("Removing Route53 CNAME")
 
     route53 = boto3.client("route53")
@@ -620,7 +622,8 @@ def remove_route53_cname(basename, removed_load_balancer_token):
 
 
 @task(name="Remove ACM Certificate")
-def remove_certificate(basename, removed_hostname_token):
+def remove_certificate(slug, removed_hostname_token):
+    basename = slug["basename"]
     logger.info("Removing certificate")
 
     logger.info("Sleeping for 10 seconds to allow for certificate to be removed")
@@ -643,29 +646,6 @@ def remove_certificate(basename, removed_hostname_token):
     response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
 
     return response
-
-
-@task(name="Create graphql-engine config contents")
-def create_graphql_engine_config_contents(
-    graphql_endpoint, access_key, metadata, checked_out_token
-):
-    config = f"""version: 2
-endpoint: {graphql_endpoint}
-metadata_directory: {metadata}
-admin_secret: {access_key}
-actions:
-  kind: synchronous
-  handler_webhook_baseurl: {graphql_endpoint}
-"""
-
-    config_file = open("/tmp/atd-moped/moped-database/config.yaml", "w")
-    config_file.write(config)
-    config_file.close()
-
-    return config
-
-
-shell_task = ShellTask(name="Shell Task", stream_output=True)
 
 
 # (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
