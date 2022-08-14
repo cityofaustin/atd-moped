@@ -133,13 +133,16 @@ with Flow("Moped Test Instance Commission") as test_commission:
         validation_record, issued_certificate
     )
 
-    #no_listeners = ecs.remove_all_listeners(slug=slug)
-
+    has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
+    with case(has_listeners, False):
+        no_listeners = ecs.remove_all_listeners(slug=slug)
+    ready_for_listeners = merge(no_listeners)
 
     listeners = ecs.create_load_balancer_listener(
         load_balancer=load_balancer,
         target_group=target_group,
         certificate=issued_certificate,
+        ready_for_listeners=ready_for_listeners,
     )
 
     task_definition = ecs.create_task_definition(slug=slug, api_endpoint=api_endpoint)

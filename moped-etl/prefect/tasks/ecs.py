@@ -263,7 +263,9 @@ def remove_route53_cname_for_validation(validation_record, issued_certificate):
 
 
 @task(name="Create EC2 ELB Listeners")
-def create_load_balancer_listener(load_balancer, target_group, certificate):
+def create_load_balancer_listener(
+    load_balancer, target_group, certificate, ready_for_listeners
+):
     logger.info("Creating Load Balancer Listener")
     elb = boto3.client("elbv2")
 
@@ -652,5 +654,21 @@ def check_graphql_endpoint_status(slug, graphql_engine_service):
         return False
 
 
+@task(name="Count existing listeners for ELB")
+def count_existing_listeners(slug, load_balancer):
+    # creating a new ELB is idempotent, so we have to count listeners before we add them
+    basename = slug["basename"]
 
+    logger.info("Counting listeners")
+    elb = boto3.client("elbv2")
 
+    arn = load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
+
+    response = elb.describe_listeners(LoadBalancerArn=arn)
+
+    logger.info(response["Listeners"])
+
+    if len(response["Listeners"]) == 0:
+        return True
+    else:
+        return False
