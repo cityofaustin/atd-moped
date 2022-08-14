@@ -87,7 +87,13 @@ with Flow("Moped Test Instance Commission") as test_commission:
     # TODO: This needs to check to see if the api is deployed, and if so, reap it and redeploy
     secret_exists = api.check_secret_exists(slug=slug)
 
-    create_api_config_secret_arn = api.create_moped_api_secrets_entry(slug=slug)
+    with case(secret_exists, True):
+        remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
+    ready_for_secret = merge(remove_api_config_secret_arn)
+
+    create_api_config_secret_arn = api.create_moped_api_secrets_entry(
+        slug=slug, ready_for_secret=ready_for_secret
+    )
 
     commission_api_command = api.create_moped_api_deploy_command(
         slug=slug, config_secret_arn=create_api_config_secret_arn

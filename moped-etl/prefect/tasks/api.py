@@ -56,7 +56,7 @@ def check_secret_exists(slug):
 
 # The Flask app retrieves these secrets from Secrets Manager
 @task(name="Create test API config Secrets Manager entry")
-def create_moped_api_secrets_entry(slug):
+def create_moped_api_secrets_entry(slug, ready_for_secret):
     basename = slug["awslambda"]
 
     logger.info("Creating API secret config")
