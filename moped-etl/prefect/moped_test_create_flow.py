@@ -55,6 +55,22 @@ def slug_branch_name(basename):
     return slug
 
 
+def drain_service(slug):
+    set_count_at_zero = ecs.set_desired_count_for_service(slug=slug, count=0)
+
+    tasks = ecs.list_tasks_for_service(slug=slug)
+
+    stop_token = ecs.stop_tasks_for_service(
+        slug=slug, tasks=tasks, zero_count_token=set_count_at_zero
+    )
+
+    drained_service = ecs.wait_for_service_to_be_drained(
+        slug=slug, stop_token=stop_token
+    )
+
+    return drained_service
+
+
 with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch")
     database_seed_source = Parameter("database_seed_source")
@@ -66,7 +82,15 @@ with Flow("Moped Test Instance Commission") as test_commission:
     database_exists = db.database_exists(slug)
 
     with case(database_exists, True):
-        remove_database = db.remove_database(slug=slug)
+
+        running_tasks = ecs.check_count_running_ecs_tasks(slug=slug)
+        with case(running_tasks, True):
+            drained_service = drain_service(slug)
+        ready_to_drop_db = merge(drained_service, running_tasks)
+
+        remove_database = db.remove_database(
+            slug=slug, ready_to_drop_db=ready_to_drop_db
+        )
 
     ready_to_commission = merge(remove_database, database_exists)
 
@@ -89,6 +113,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     with case(secret_exists, True):
         remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
+
     ready_for_secret = merge(remove_api_config_secret_arn, secret_exists)
 
     create_api_config_secret_arn = api.create_moped_api_secrets_entry(
@@ -229,17 +254,7 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
     # Reap ECS
 
-    set_count_at_zero = ecs.set_desired_count_for_service(slug=slug, count=0)
-
-    tasks = ecs.list_tasks_for_service(slug=slug)
-
-    stop_token = ecs.stop_tasks_for_service(
-        slug=slug, tasks=tasks, zero_count_token=set_count_at_zero
-    )
-
-    drained_service = ecs.wait_for_service_to_be_drained(
-        slug=slug, stop_token=stop_token
-    )
+    drained_service = drain_service(slug=slug)
 
     no_listeners = ecs.remove_all_listeners(slug=slug)
 
@@ -278,7 +293,7 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
     # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
     with case(database_exists, True):
-        remove_database = db.remove_database(slug)
+        remove_database = db.remove_database(slug, ready_to_drop_db=drained_service)
 
 
 if __name__ == "__main__":

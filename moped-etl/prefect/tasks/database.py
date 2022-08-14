@@ -65,7 +65,7 @@ def create_database(slug):
 
 
 @task(name="Remove database from the test RDS")
-def remove_database(slug):
+def remove_database(slug, ready_to_drop_db):
     basename = slug["database"]
     logger.info(f"Removing database {basename}")
 

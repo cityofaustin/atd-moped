@@ -672,3 +672,18 @@ def count_existing_listeners(slug, load_balancer):
         return True
     else:
         return False
+
+
+@task(name="Check for running (ECS) tasks for service")
+def check_count_running_ecs_tasks(slug):
+    logger.info("Are there running tasks")
+
+    basename = slug["basename"]
+
+    ecs = boto3.client("ecs", region_name="us-east-1")
+    response = ecs.describe_cluster(clusters=[basename])
+
+    if response["Clusters"]["runningTasksCount"] > 0:
+        return True
+    else:
+        return False
