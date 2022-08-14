@@ -173,7 +173,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     rm_clone = "rm -fr /tmp/atd-moped"
     cleaned = migrations.remove_moped_checkout(command=rm_clone)
 
-    git_clone = "git clone " + GIT_REPOSITORY + " /tmp/atd-moped"
+    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
     cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
 
     checkout_branch = migrations.get_git_checkout_command(slug=slug)
