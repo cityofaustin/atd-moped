@@ -32,6 +32,8 @@ MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 
 SHA_SALT = os.environ["SHA_SALT"]
 
+ACTIVITY_LOG_FUNCTION_NAME = os.environ["ACTIVITY_LOG_FUNCTION_NAME"]
+
 
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
@@ -133,7 +135,7 @@ def create_zappa_config(basename, config_secret_arn):
                 # Look at Moped API events.py to see how this key is used
                 "MOPED_API_HASURA_APIKEY": shared.generate_api_key(basename),
                 "MOPED_API_HASURA_SQS_URL": shared.create_activity_log_queue_url(
-                    basename
+                    basename, ACTIVITY_LOG_FUNCTION_NAME
                 ),
                 "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },

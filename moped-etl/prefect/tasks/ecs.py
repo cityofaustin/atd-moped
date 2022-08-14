@@ -30,6 +30,7 @@ SHA_SALT = os.environ["SHA_SALT"]
 GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 AWS_DEFAULT_REGION = os.environ["AWS_DEFAULT_REGION"]
 
+
 def pprint(string):
     print("")
     pp = pretty_printer.PrettyPrinter(indent=2)
@@ -681,7 +682,7 @@ def check_count_running_ecs_tasks(slug):
     basename = slug["basename"]
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
-    response = ecs.describe_cluster(clusters=[basename])
+    response = ecs.describe_clusters(clusters=[basename])
 
     if response["Clusters"]["runningTasksCount"] > 0:
         return True

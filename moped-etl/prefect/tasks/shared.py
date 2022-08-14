@@ -18,8 +18,8 @@ def generate_api_key(basename):
 def create_activity_log_aws_name(basename, function_name):
     return f"atd-moped-events-{function_name}_{basename}"
 
-def create_activity_log_queue_url(basename):
-    aws_queue_name = create_activity_log_aws_name(basename)
+def create_activity_log_queue_url(basename, function_name):
+    aws_queue_name = create_activity_log_aws_name(basename, function_name)
     return f"{MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
 
 def generate_access_key(basename):
