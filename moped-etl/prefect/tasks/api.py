@@ -38,6 +38,22 @@ def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
 
+@task(name="Check if secret exists")
+def check_secret_exists(slug):
+    basename = slug["awslambda"]
+
+    secret_name = create_secret_name(basename)
+
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    try:
+        client.get_secret_value(SecretId=secret_name)
+        logger.info(f"Secret {secret_name} already exists")
+        return True
+    except client.exceptions.ResourceNotFoundException:
+        logger.info(f"Secret {secret_name} does not exist")
+        return False
+
+
 # The Flask app retrieves these secrets from Secrets Manager
 @task(name="Create test API config Secrets Manager entry")
 def create_moped_api_secrets_entry(slug):

@@ -85,6 +85,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     ## Commission the API
 
     # TODO: This needs to check to see if the api is deployed, and if so, reap it and redeploy
+    secret_exists = api.check_secret_exists(slug=slug)
 
     create_api_config_secret_arn = api.create_moped_api_secrets_entry(slug=slug)
 
