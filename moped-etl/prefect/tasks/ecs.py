@@ -28,8 +28,6 @@ MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 SHA_SALT = os.environ["SHA_SALT"]
 GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 
-# MOPED_API_KEY = "Figure out how to pass this in as a parameter"
-
 
 def pprint(string):
     print("")
