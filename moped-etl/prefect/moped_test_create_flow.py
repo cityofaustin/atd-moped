@@ -11,7 +11,6 @@ import time
 import os
 import platform
 import re
-from tkinter import W
 
 # import pypi packages
 import prefect
