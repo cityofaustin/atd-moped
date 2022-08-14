@@ -60,7 +60,6 @@ with Flow("Moped Test Instance Commission") as test_commission:
     database_seed_source = Parameter("database_seed_source")
 
     slug = slug_branch_name(branch)
-    # TODO need to pass in the whole slug object, not pull KV pairs out of it
 
     ## Commission the database
 
