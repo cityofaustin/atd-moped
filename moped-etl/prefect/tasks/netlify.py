@@ -69,7 +69,9 @@ def trigger_netlify_build(slug, api_endpoint_url):
         "trigger_title": "Test Build of " + branch,
     }
 
-    graphql_endpoint = "https://" + shared.form_graphql_endpoint_hostname(branch) + "/v1/graphql"
+    graphql_endpoint = (
+        "https://" + shared.form_graphql_endpoint_hostname(branch) + "/v1/graphql"
+    )
 
     # See https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/.env-cmdrc#L52-L76
     # These values can be overloaded for a frontend deployment.
