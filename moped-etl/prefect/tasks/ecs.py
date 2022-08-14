@@ -686,7 +686,7 @@ def check_count_running_ecs_tasks(slug):
 
     logger.info(response)
 
-    if response["cluster"]["runningTasksCount"] > 0:
+    if response["clusters"][0]["runningTasksCount"] > 0:
         return True
     else:
         return False
