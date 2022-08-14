@@ -7,6 +7,7 @@ import boto3
 import prefect
 from prefect import task
 import pprint as pretty_printer
+import requests
 
 import tasks.shared as shared
 
@@ -627,6 +628,28 @@ def remove_certificate(slug, removed_hostname_token):
     response = acm.delete_certificate(CertificateArn=certificate["CertificateArn"])
 
     return response
+
+
+@task(
+    name="Check HTTP status code for graphql endpoint",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
+def check_graphql_endpoint_status(slug, graphql_engine_service):
+    basename = slug["basename"]
+    endpoint = shared.form_graphql_endpoint_hostname(basename)
+
+    print(endpoint)
+
+    response = requests.get(endpoint)
+    status = response.status_code
+
+    if status in {200}:
+        logger.info("HTTP status code for graphql endpoint is {}".format(status))
+        return True
+    else:
+        logger.info("HTTP status code for graphql endpoint is {}".format(status))
+        return False
 
 
 # (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)

@@ -141,13 +141,17 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     task_definition = ecs.create_task_definition(slug=slug, api_endpoint=api_endpoint)
 
-    service = ecs.create_service(
+    graphql_engine_service = ecs.create_service(
         slug=slug,
         load_balancer=load_balancer,
         task_definition=task_definition,
         target_group=target_group,
         listeners_token=listeners,
         cluster_token=cluster,
+    )
+
+    graphql_endpoint_ready = ecs.check_graphql_endpoint_status(
+        slug=slug, graphql_engine_service=graphql_engine_service
     )
 
     ## Commission the Netlify site
@@ -193,12 +197,16 @@ with Flow("Moped Test Instance Commission") as test_commission:
     migrate_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
     )
-    migrate = migrations.migrate_db(command=migrate_cmd, upstream_tasks=[config])
+    migrate = migrations.migrate_db(
+        command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
+    )
 
     metadata_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
     )
-    metadata = migrations.apply_metadata(command=metadata_cmd, upstream_tasks=[migrate])
+    metadata = migrations.apply_metadata(
+        command=metadata_cmd, upstream_tasks=[migrate, graphql_endpoint_ready]
+    )
 
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
