@@ -652,7 +652,5 @@ def check_graphql_endpoint_status(slug, graphql_engine_service):
         return False
 
 
-# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
-# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)
-# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)
-# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)
+
+
