@@ -11,6 +11,7 @@ import time
 import os
 import platform
 import re
+from tkinter import W
 
 # import pypi packages
 import prefect
@@ -166,10 +167,9 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     ## Apply migrations
 
-    graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(
-        basename=slug["basename"]
-    )
-    access_key = migrations.get_graphql_engine_access_key(basename=slug["basename"])
+    graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
+
+    access_key = migrations.get_graphql_engine_access_key(slug=slug)
 
     rm_clone = "rm -fr /tmp/atd-moped"
     cleaned = migrations.remove_moped_checkout(command=rm_clone)
@@ -177,7 +177,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     git_clone = "git clone " + GIT_REPOSITORY + " /tmp/atd-moped"
     cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
 
-    checkout_branch = "git -C /tmp/atd-moped/ checkout " + slug["basename"]
+    checkout_branch = migrations.get_git_checkout_command(slug=slug)
     checked_out = migrations.checkout_target_branch(
         command=checkout_branch, upstream_tasks=[cloned]
     )

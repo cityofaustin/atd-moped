@@ -5,11 +5,13 @@ from prefect.tasks.shell import ShellTask
 import tasks.shared as shared
 
 @task(name="Get graphql-engine hostname")
-def get_graphql_engine_hostname(basename):
+def get_graphql_engine_hostname(slug):
+    basename = slug["basename"]
     return shared.form_graphql_endpoint_hostname(basename)
 
 @task(name="Get graphql-engine access key")
-def get_graphql_engine_access_key(basename):
+def get_graphql_engine_access_key(slug):
+    basename = slug["basename"]
     return shared.generate_access_key(basename)
 
 @task(name="Create graphql-engine config contents")
@@ -31,6 +33,10 @@ actions:
 
     return config
 
+@task(name="Get git checkout command")
+def get_git_checkout_command(slug):
+    basename = slug["basename"]
+    return f"git -C /tmp/atd-moped/ checkout {basename}"
 
 remove_moped_checkout = ShellTask(name="Remove Moped checkout", stream_output=True)
 clone_moped_repo = ShellTask(name="Clone Moped Repo", stream_output=True)
