@@ -68,7 +68,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     with case(database_exists, True):
         remove_database = db.remove_database(slug=slug)
 
-    ready_to_commission = merge(remove_database)
+    ready_to_commission = merge(remove_database, database_exists)
 
     create_database = db.create_database(
         slug=slug, upstream_tasks=[ready_to_commission]
@@ -89,7 +89,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     with case(secret_exists, True):
         remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
-    ready_for_secret = merge(remove_api_config_secret_arn)
+    ready_for_secret = merge(remove_api_config_secret_arn, secret_exists)
 
     create_api_config_secret_arn = api.create_moped_api_secrets_entry(
         slug=slug, ready_for_secret=ready_for_secret
@@ -136,7 +136,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
     with case(has_listeners, False):
         no_listeners = ecs.remove_all_listeners(slug=slug)
-    ready_for_listeners = merge(no_listeners)
+    ready_for_listeners = merge(no_listeners, has_listeners)
 
     listeners = ecs.create_load_balancer_listener(
         load_balancer=load_balancer,
