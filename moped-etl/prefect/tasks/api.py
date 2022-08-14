@@ -61,7 +61,7 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
 
     logger.info("Creating API secret config")
 
-    graphql_endpoint = ecs.form_hostname(basename)
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
     graphql_engine_api_key = ecs.generate_access_key(basename)
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)

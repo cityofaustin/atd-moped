@@ -6,7 +6,7 @@ import tasks.shared as shared
 
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(basename):
-    return shared.form_hostname(basename)
+    return shared.form_graphql_endpoint_hostname(basename)
 
 @task(name="Get graphql-engine access key")
 def get_graphql_engine_access_key(basename):
