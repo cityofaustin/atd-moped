@@ -28,7 +28,7 @@ MOPED_TEST_USER = os.environ["MOPED_TEST_USER"]
 MOPED_TEST_PASSWORD = os.environ["MOPED_TEST_PASSWORD"]
 SHA_SALT = os.environ["SHA_SALT"]
 GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
-
+AWS_DEFAULT_REGION = os.environ["AWS_DEFAULT_REGION"]
 
 def pprint(string):
     print("")
@@ -42,7 +42,7 @@ def create_ecs_cluster(slug):
     basename = slug["basename"]
     logger.info("Creating ECS cluster")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     create_cluster_result = ecs.create_cluster(clusterName=basename)
 
     logger.info("Cluster ARN: " + create_cluster_result["cluster"]["clusterArn"])
@@ -309,7 +309,7 @@ def create_task_definition(slug, api_endpoint):
     basename = slug["basename"]
     database = slug["database"]
     logger.info("Adding task definition")
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     HASURA_GRAPHQL_DATABASE_URL = f"postgres://{MOPED_TEST_USER}:{MOPED_TEST_PASSWORD}@{MOPED_TEST_HOSTNAME}:5432/{database}"
 
@@ -356,7 +356,7 @@ def create_task_definition(slug, api_endpoint):
                     "logDriver": "awslogs",
                     "options": {
                         "awslogs-group": CLOUDWATCH_LOG_GROUP,
-                        "awslogs-region": "us-east-1",
+                        "awslogs-region": AWS_DEFAULT_REGION,
                         "awslogs-stream-prefix": basename,
                     },
                 },
@@ -374,7 +374,7 @@ def create_service(
     basename = slug["basename"]
     logger.info("Creating ECS service")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     create_service_result = ecs.create_service(
         cluster=basename,
@@ -411,7 +411,7 @@ def remove_ecs_cluster(slug, no_service_token):
     basename = slug["basename"]
     logger.info("removing ECS cluster")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     delete_cluster_result = ecs.delete_cluster(cluster=basename)
 
     return delete_cluster_result
@@ -473,7 +473,7 @@ def set_desired_count_for_service(slug, count):
     basename = slug["basename"]
     logger.info("Setting desired count for service")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     services = ecs.describe_services(cluster=basename, services=[basename])
 
@@ -491,7 +491,7 @@ def list_tasks_for_service(slug):
     basename = slug["basename"]
     logger.info("Listing tasks for service")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     response = ecs.list_tasks(cluster=basename, serviceName=basename)
 
@@ -503,7 +503,7 @@ def stop_tasks_for_service(slug, tasks, zero_count_token):
     basename = slug["basename"]
     logger.info("Stopping tasks for service")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     responses = []
 
@@ -527,7 +527,7 @@ def wait_for_service_to_be_drained(slug, stop_token):
     basename = slug["basename"]
     logger.info("Waiting for service to be drained")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     tasks = ecs.list_tasks(cluster=basename, serviceName=basename)
 
@@ -541,7 +541,7 @@ def wait_for_service_to_be_drained(slug, stop_token):
 def remove_task_definition(task_definition):
     logger.info("removing task definition")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.deregister_task_definition(
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"]
     )
@@ -554,7 +554,7 @@ def delete_service(slug, drained_token, no_target_group_token):
     basename = slug["basename"]
     logger.info("Deleting service")
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.delete_service(cluster=basename, service=basename)
 
     return response
@@ -680,7 +680,7 @@ def check_count_running_ecs_tasks(slug):
 
     basename = slug["basename"]
 
-    ecs = boto3.client("ecs", region_name="us-east-1")
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.describe_cluster(clusters=[basename])
 
     if response["Clusters"]["runningTasksCount"] > 0:
