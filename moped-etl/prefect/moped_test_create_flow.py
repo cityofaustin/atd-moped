@@ -133,6 +133,9 @@ with Flow("Moped Test Instance Commission") as test_commission:
         validation_record, issued_certificate
     )
 
+    #no_listeners = ecs.remove_all_listeners(slug=slug)
+
+
     listeners = ecs.create_load_balancer_listener(
         load_balancer=load_balancer,
         target_group=target_group,

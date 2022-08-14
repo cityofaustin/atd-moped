@@ -43,3 +43,9 @@ clone_moped_repo = ShellTask(name="Clone Moped Repo", stream_output=True)
 checkout_target_branch = ShellTask(name="Checkout target branch", stream_output=True)
 migrate_db = ShellTask(name="Migrate DB", stream_output=True)
 apply_metadata = ShellTask(name="Apply Metadata", stream_output=True)
+
+
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)
+# (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)
