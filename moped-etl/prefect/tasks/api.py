@@ -2,7 +2,7 @@ import json
 import boto3
 import os
 import re
-import hashlib
+from datetime import timedelta
 
 import tasks.ecs as ecs
 
@@ -55,7 +55,11 @@ def check_secret_exists(slug):
 
 
 # The Flask app retrieves these secrets from Secrets Manager
-@task(name="Create test API config Secrets Manager entry")
+@task(
+    name="Create test API config Secrets Manager entry",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
 def create_moped_api_secrets_entry(slug, ready_for_secret):
     basename = slug["awslambda"]
 
@@ -113,6 +117,7 @@ def remove_moped_api_secrets_entry(slug):
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename, config_secret_arn):
+
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
