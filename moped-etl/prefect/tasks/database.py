@@ -146,6 +146,8 @@ def database_exists(slug):
     cursor.execute(database_exists_sql)
     exists = cursor.fetchone()[0]
 
+    logger.info(f"Database {basename} exists: {exists}")
+
     # Commit changes and close connections
     cursor.close()
     pg.close()
