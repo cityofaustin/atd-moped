@@ -6,7 +6,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-import tasks.ecs as ecs
+from tasks.ecs import form_hostname, generate_access_key
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -32,7 +32,7 @@ def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
 ):
-    graphql_endpoint = ecs.form_hostname(basename)
+    graphql_endpoint = form_hostname(basename)
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
@@ -62,7 +62,7 @@ def create_activity_log_command(slug):
     helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
     deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
 
-    graphql_engine_api_key = ecs.generate_access_key(basename)
+    graphql_engine_api_key = generate_access_key(basename)
 
     lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
 
