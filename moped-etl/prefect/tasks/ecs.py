@@ -684,7 +684,9 @@ def check_count_running_ecs_tasks(slug):
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.describe_clusters(clusters=[basename])
 
-    if response["Clusters"]["runningTasksCount"] > 0:
+    logger.info(response)
+
+    if response["cluster"]["runningTasksCount"] > 0:
         return True
     else:
         return False
