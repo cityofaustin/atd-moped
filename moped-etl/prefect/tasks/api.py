@@ -194,6 +194,7 @@ def create_moped_api_deploy_command(slug, config_secret_arn):
 # See https://docs.prefect.io/api/latest/tasks/shell.html#shelltask
 @task(name="Get endpoint from Zappa deploy shell task output")
 def get_endpoint_from_deploy_output(output_list):
+
     api_endpoint_item = ""
 
     for item in output_list:
@@ -203,10 +204,10 @@ def get_endpoint_from_deploy_output(output_list):
     match = re.search(r"(https://.*)", api_endpoint_item)
 
     if match == None:
-        return None
+        return False
     else:
         endpoint = match.groups()[0]
-        # print("Got an API endpoint: " + endpoint)
+        logger.info("Got an API endpoint: " + endpoint)
         return endpoint
 
 
