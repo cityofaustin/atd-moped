@@ -198,7 +198,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
     metadata_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
     )
-    metadata = migrations.apply_metadata(command=metadata_cmd, upstream_tasks=[config])
+    metadata = migrations.apply_metadata(command=metadata_cmd, upstream_tasks=[migrate])
 
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
