@@ -144,14 +144,21 @@ def check_dns_status(dns_request):
 
 @task(name="Request ACM TLS Certificate")
 def create_certificate(slug, dns_status):
-    basename = slug["basename"]
     logger.info("Creating TLS Certificate")
+
+    basename = slug["basename"]
+    short_tls_basename = slug["short_tls_basename"]
 
     acm = boto3.client("acm")
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
+    # TODO create these host names via shared helper function or push the hardcoded values into the environment variables
 
-    certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
+    host = basename + "-graphql.moped-test.austinmobility.io"
+    short_host = short_tls_basename + "-graphql.moped-test.austinmobility.io"
+
+    certificate = acm.request_certificate(
+        DomainName=short_host, ValidationMethod="DNS", SubjectAlternativeNames=[host]
+    )
 
     return certificate
 
