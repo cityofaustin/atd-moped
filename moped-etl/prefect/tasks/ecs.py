@@ -156,9 +156,15 @@ def create_certificate(slug, dns_status):
     host = basename + "-graphql.moped-test.austinmobility.io"
     short_host = short_tls_basename + "-graphql.moped-test.austinmobility.io"
 
-    certificate = acm.request_certificate(
-        DomainName=short_host, ValidationMethod="DNS", SubjectAlternativeNames=[host]
-    )
+    certificate = None
+    if short_host != host:
+        logger.info("Short hostname is different from long hostname")
+        certificate = acm.request_certificate(
+            DomainName=short_host, ValidationMethod="DNS", SubjectAlternativeNames=[host]
+        )
+    else:
+        logger.info("Short hostname is the same as long hostname")
+        certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
 
     return certificate
 
