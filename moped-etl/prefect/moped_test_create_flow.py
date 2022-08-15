@@ -56,8 +56,13 @@ def slug_branch_name(basename):
         [i for i in database if not i.isdigit()]
     )
     awslambda = internal_number_free_underscore_basename[0:16]
-    
-    slug = {"basename": basename, "database": database, "awslambda": awslambda, "short_tls_basename": short_tls_basename}
+
+    slug = {
+        "basename": basename,
+        "database": database,
+        "awslambda": awslambda,
+        "short_tls_basename": short_tls_basename,
+    }
     return slug
 
 
