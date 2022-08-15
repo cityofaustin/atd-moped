@@ -383,10 +383,48 @@ def create_service(
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
-    create_service_result = ecs.create_service(
+    try:
+        create_service_result = ecs.create_service(
+            cluster=basename,
+            serviceName=basename,
+            launchType="FARGATE",
+            taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
+            desiredCount=1,
+            loadBalancers=[
+                {
+                    "targetGroupArn": target_group["TargetGroups"][0]["TargetGroupArn"],
+                    "containerName": "graphql-engine",
+                    "containerPort": 8080,
+                }
+            ],
+            networkConfiguration={
+                "awsvpcConfiguration": {
+                    "subnets": [VPC_SUBNET_A, VPC_SUBNET_B],
+                    "securityGroups": [ECS_TASK_SECURITY_GROUP],
+                    "assignPublicIp": "ENABLED",
+                }
+            },
+            healthCheckGracePeriodSeconds=60,
+            tags=[{"key": "name", "value": basename}],
+        )
+    except Exception:
+        return False
+
+    return create_service_result
+
+
+@task(name="Update ECS Service")
+def update_service(
+    slug, load_balancer, task_definition, target_group, listeners_token, cluster_token
+):
+    basename = slug["basename"]
+    logger.info("Creating ECS service")
+
+    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+
+    update_service_result = ecs.update_service(
         cluster=basename,
-        serviceName=basename,
-        launchType="FARGATE",
+        service=basename,
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
         loadBalancers=[
@@ -396,18 +434,9 @@ def create_service(
                 "containerPort": 8080,
             }
         ],
-        networkConfiguration={
-            "awsvpcConfiguration": {
-                "subnets": [VPC_SUBNET_A, VPC_SUBNET_B],
-                "securityGroups": [ECS_TASK_SECURITY_GROUP],
-                "assignPublicIp": "ENABLED",
-            }
-        },
-        healthCheckGracePeriodSeconds=60,
-        tags=[{"key": "name", "value": basename}],
     )
 
-    return create_service_result
+    return update_service_result
 
 
 @task(name="Remove ECS Cluster")
@@ -643,9 +672,9 @@ def remove_certificate(slug, removed_hostname_token):
 )
 def check_graphql_endpoint_status(slug, graphql_engine_service):
     basename = slug["basename"]
-    endpoint = shared.form_graphql_endpoint_hostname(basename)
+    endpoint = "https://" + shared.form_graphql_endpoint_hostname(basename)
 
-    print(endpoint)
+    logger.info("Endpoint: " + endpoint)
 
     response = requests.get(endpoint)
     status = response.status_code

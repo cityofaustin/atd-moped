@@ -184,7 +184,7 @@ with Flow("Moped Test Instance Commission") as test_commission:
 
     task_definition = ecs.create_task_definition(slug=slug, api_endpoint=api_endpoint)
 
-    graphql_engine_service = ecs.create_service(
+    graphql_engine_service_created = ecs.create_service(
         slug=slug,
         load_balancer=load_balancer,
         task_definition=task_definition,
@@ -193,8 +193,22 @@ with Flow("Moped Test Instance Commission") as test_commission:
         cluster_token=cluster,
     )
 
+    with case(graphql_engine_service_created, False):
+        graphql_engine_service_updated = ecs.update_service(
+            slug=slug,
+            load_balancer=load_balancer,
+            task_definition=task_definition,
+            target_group=target_group,
+            listeners_token=listeners,
+            cluster_token=cluster,
+        )
+
+    graphql_engine_service_deployed = merge(
+        graphql_engine_service_updated, graphql_engine_service_created
+    )
+
     graphql_endpoint_ready = ecs.check_graphql_endpoint_status(
-        slug=slug, graphql_engine_service=graphql_engine_service
+        slug=slug, graphql_engine_service=graphql_engine_service_deployed
     )
 
     ## Commission the Netlify site
