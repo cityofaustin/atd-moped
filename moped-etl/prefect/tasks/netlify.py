@@ -59,7 +59,7 @@ def netlify_check_build(slug, build_token):
     return True
 
 
-@task
+@task(name="Trigger Netlify Build")
 def trigger_netlify_build(slug, api_endpoint_url):
     branch = slug["basename"]
     logger.info("Triggering netlify build")
