@@ -672,7 +672,7 @@ def remove_certificate(slug, removed_hostname_token):
 )
 def check_graphql_endpoint_status(slug, graphql_engine_service):
     basename = slug["basename"]
-    endpoint = "https://" + shared.form_graphql_endpoint_hostname(basename)
+    endpoint = "https://" + shared.form_graphql_endpoint_hostname(basename) + "/healthz"
 
     logger.info("Endpoint: " + endpoint)
 
