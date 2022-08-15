@@ -40,6 +40,7 @@ import {
 } from "../../../utils/mapHelpers";
 
 // import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
+import DrawControl from "src/components/Maps/DrawControl";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
@@ -197,9 +198,7 @@ const handleSelectedFeatureUpdate = (
  * This the new project map editor component
  * @param {Object} featureCollection - A feature collection GeoJSON object (state)
  * @param {function} setFeatureCollection - The function to change the feature collection state
- * @param {Number} projectId - The current project id (optional)
  * @param {Object} projectFeatureCollection - A helper state containing a secondary feature collection (optional)
- * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
  * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
  * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
  * @param {Object} saveActionState - The current state of save action
@@ -213,7 +212,6 @@ const handleSelectedFeatureUpdate = (
 const ProjectComponentsMap = ({
   featureCollection,
   setFeatureCollection,
-  projectId = null,
   projectFeatureCollection = null,
   refetchProjectDetails = null,
   noPadding = false,
@@ -285,8 +283,6 @@ const ProjectComponentsMap = ({
   //   useMapDrawTools(
   //     featureCollection,
   //     setFeatureCollection,
-  //     projectId,
-  //     refetchProjectDetails,
   //     viewport.zoom,
   //     saveActionDispatch
   //   );
@@ -384,6 +380,10 @@ const ProjectComponentsMap = ({
   const renderDrawLayers =
     // !isDrawing && !isSignalComponent && drawLines !== null;
     !isSignalComponent && drawLines !== null;
+
+  const onUpdate = () => {
+    console.log("this worked!");
+  };
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -525,6 +525,34 @@ const ProjectComponentsMap = ({
         {/* {!isSignalComponent &&
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
+        {/* {!isSignalComponent && drawLines !== null && (
+          <DrawControl
+            position="top-right"
+            displayControlsDefault={false}
+            controls={{
+              polygon: true,
+              trash: true,
+            }}
+            defaultMode="draw_polygon"
+            onCreate={onUpdate}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+          />
+        )} */}
+        <DrawControl
+          position="top-right"
+          displayControlsDefault={false}
+          controls={{
+            point: true,
+            line_string: true,
+            trash: true,
+          }}
+          clickBuffer={12}
+          defaultMode="draw_polygon"
+          onCreate={onUpdate}
+          onUpdate={onUpdate}
+          onDelete={onUpdate}
+        />
       </Map>
     </Box>
   );
