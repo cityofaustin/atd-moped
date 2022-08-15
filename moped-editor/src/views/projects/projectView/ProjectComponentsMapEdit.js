@@ -33,7 +33,7 @@ import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     marginLeft: theme.spacing(1),
     flex: 1,
@@ -60,14 +60,15 @@ const useStyles = makeStyles(theme => ({
   },
   mapTools: {
     position: "absolute",
-    top: "4rem",
-    left: "1rem",
+    top: "66px",
+    left: "10px",
     zIndex: "1",
     width: "21rem",
     background: theme.palette.common.white,
     border: "lightgray 1px solid",
-    borderRadius: ".5rem",
+    borderRadius: "4px",
     padding: ".5rem",
+    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
   mapToolsShowHidden: {
     position: "absolute",
@@ -147,9 +148,8 @@ const ProjectComponentsMapEdit = ({
    */
   const [selectedComponentId, setSelectedComponentId] = useState(null);
   const [selectedComponentType, setSelectedComponentType] = useState(null);
-  const [selectedComponentSubtype, setSelectedComponentSubtype] = useState(
-    null
-  );
+  const [selectedComponentSubtype, setSelectedComponentSubtype] =
+    useState(null);
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
   const [editFeatureCollection, setEditFeatureCollection] = useState(null);
@@ -189,7 +189,7 @@ const ProjectComponentsMapEdit = ({
     selectedProjectComponent
       ? // Yes, we have project a component, now gather a list of subcomponents for that component
         selectedProjectComponent.moped_proj_components_subcomponents.map(
-          subcomponent => ({
+          (subcomponent) => ({
             ...subcomponent.moped_subcomponent,
             component_subcomponent_id: subcomponent.component_subcomponent_id,
           })
@@ -202,12 +202,12 @@ const ProjectComponentsMapEdit = ({
    * @param {String} type - The type name
    * @return {String[]} - A string array with the available subtypes
    */
-  const getAvailableSubtypes = type =>
+  const getAvailableSubtypes = (type) =>
     // For every subtype found in initialTypeCounts[type]
     Object.entries(initialTypeCounts[type]?.subtypes ?? {})
       // Destructure the key and value (_ & component, respectively) and gather the name
       .map(([_, component]) => (component?.component_subtype ?? "").trim())
-      .filter(item => item.length > 0); // Keep only if the name is not empty
+      .filter((item) => item.length > 0); // Keep only if the name is not empty
 
   /**
    * Returns any available subcomponent objects for a specific type
@@ -246,8 +246,8 @@ const ProjectComponentsMapEdit = ({
     setAvailableSubtypes(newAvailableSubTypes);
     setSelectedComponentSubtype(null);
     // check if the selected type is in the array of lineRepresentable types, set drawLines as true or false
-    const componentName = selectedType.toLowerCase().replaceAll(" ", '')
-    setDrawLines(lineRepresentable[componentName])
+    const componentName = selectedType.toLowerCase().replaceAll(" ", "");
+    setDrawLines(lineRepresentable[componentName]);
   };
 
   /**
@@ -280,7 +280,7 @@ const ProjectComponentsMapEdit = ({
    * @param {string} type
    * @return {boolean}
    */
-  const isSubtypeOptional = type =>
+  const isSubtypeOptional = (type) =>
     (initialTypeCounts[type]?.count ?? 0) === 1 ||
     Object.keys(initialTypeCounts[type]?.subtypes ?? {}).includes("");
 
@@ -290,7 +290,7 @@ const ProjectComponentsMapEdit = ({
   const generateFeatureUpserts = () => {
     // generate a list of moped_proj_features to be upserted
     const projectFeaturesToCreateOrUpdate = editFeatureCollection.features.map(
-      feature => {
+      (feature) => {
         let projectFeature = {};
         if (feature.feature_id) {
           projectFeature.feature_id = feature.feature_id;
@@ -302,8 +302,8 @@ const ProjectComponentsMapEdit = ({
 
     // identifiy IDs of existing project features
     const projectFeatureIds = projectFeaturesToCreateOrUpdate
-      .map(projectFeature => projectFeature.feature_id)
-      .filter(featureId => featureId);
+      .map((projectFeature) => projectFeature.feature_id)
+      .filter((featureId) => featureId);
 
     let projectFeaturesToDelete = [];
 
@@ -311,11 +311,11 @@ const ProjectComponentsMapEdit = ({
     // to be deleted
     if (selectedProjectComponent) {
       selectedProjectComponent.moped_proj_features
-        .filter(projectFeature => {
+        .filter((projectFeature) => {
           const featureId = projectFeature.feature_id;
           return projectFeatureIds.indexOf(featureId) < 0;
         })
-        .forEach(projectFeature => {
+        .forEach((projectFeature) => {
           // create a mutable copy of the feature
           let featureToDelete = { ...projectFeature };
           // set status to deleted
@@ -341,31 +341,31 @@ const ProjectComponentsMapEdit = ({
     const removalList = subcomponentsDB
       .filter(
         // Check every old subcomponent
-        oldSubcomponent =>
+        (oldSubcomponent) =>
           // If not found, mark it as true so it's part of the selectedSubcomponents list
           removeAllSubcomponents ||
           !selectedSubcomponents.find(
-            newSubcomponent =>
+            (newSubcomponent) =>
               // Return true if we have found the old subcomponent in this list
               oldSubcomponent.subcomponent_id ===
               newSubcomponent.subcomponent_id
           )
       )
       // Mark remove list for deletion
-      .map(subcomponent => ({ ...subcomponent, is_deleted: true }));
+      .map((subcomponent) => ({ ...subcomponent, is_deleted: true }));
 
     // Remove existing subcomponents, keep only those that need inserting
     const insertionList = selectedSubcomponents.filter(
       // If the subcomponent does not have component_subcomponent_id, then keep
       // Otherwise, it means it already exists in the database
-      subcomponent => isNaN(subcomponent?.component_subcomponent_id)
+      (subcomponent) => isNaN(subcomponent?.component_subcomponent_id)
     );
 
     // Generate output, clean up & return
     return (
       [...insertionList, ...removalList] // Mix both insertion and removal list
         // Then remove certain objects by their key names from the output
-        .map(record =>
+        .map((record) =>
           filterObjectByKeys(record, [
             "__typename",
             "component_id",
@@ -379,7 +379,7 @@ const ProjectComponentsMapEdit = ({
    * Handles the key down events for the description field
    * @param {Object} e - The event object
    */
-  const handleDescriptionKeyDown = e => {
+  const handleDescriptionKeyDown = (e) => {
     setComponentDescription(e.target.value);
   };
 
@@ -561,7 +561,7 @@ const ProjectComponentsMapEdit = ({
     const databaseComponent =
       projComponentId > 0
         ? mopedComponents.filter(
-            componentItem =>
+            (componentItem) =>
               componentItem.component_id ===
               selectedProjectComponent.component_id
           )[0]
@@ -659,12 +659,13 @@ const ProjectComponentsMapEdit = ({
                         className={classes.formSelect}
                         value={
                           availableTypes.find(
-                            type => type.toLowerCase() === selectedComponentType
+                            (type) =>
+                              type.toLowerCase() === selectedComponentType
                           ) || ""
                         }
                         options={[...availableTypes, ""]}
-                        getOptionLabel={component => component}
-                        renderInput={params => (
+                        getOptionLabel={(component) => component}
+                        renderInput={(params) => (
                           <TextField
                             {...params}
                             label="Type"
@@ -682,14 +683,14 @@ const ProjectComponentsMapEdit = ({
                             className={classes.formSelect}
                             value={
                               availableSubtypes.find(
-                                subtype =>
+                                (subtype) =>
                                   subtype.toLowerCase() ===
                                   selectedComponentSubtype
                               ) ?? null
                             }
                             options={[...new Set(availableSubtypes)].sort()}
-                            getOptionLabel={component => component}
-                            renderInput={params => (
+                            getOptionLabel={(component) => component}
+                            renderInput={(params) => (
                               <TextField
                                 {...params}
                                 label="Subtype"
@@ -726,7 +727,7 @@ const ProjectComponentsMapEdit = ({
                         minRows={4}
                         variant="filled"
                         value={componentDescription ?? ""}
-                        onChange={e => handleDescriptionKeyDown(e)}
+                        onChange={(e) => handleDescriptionKeyDown(e)}
                         fullWidth
                       />
                     </Grid>
