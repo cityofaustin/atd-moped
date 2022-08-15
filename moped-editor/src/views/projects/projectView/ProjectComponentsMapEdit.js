@@ -3,7 +3,6 @@ import { useMutation } from "@apollo/client";
 import {
   Button,
   CircularProgress,
-  Collapse,
   Dialog,
   DialogActions,
   DialogContent,
@@ -32,7 +31,7 @@ import {
 import { useInitialTypeCounts } from "src/utils/projectComponentHelpers";
 import { filterObjectByKeys } from "../../../utils/materialTableHelpers";
 import { useParams } from "react-router-dom";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import { KeyboardArrowUp } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -58,20 +57,6 @@ const useStyles = makeStyles((theme) => ({
   mapStyle: {
     position: "relative",
     padding: 0,
-  },
-  mapToolsShowHidden: {
-    position: "absolute",
-    top: "4rem",
-    left: "1rem",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: ".5rem",
-    padding: ".5rem",
-    "&:hover": {
-      background: theme.palette.common.white,
-    },
   },
   mapToolsDivider: {
     marginTop: ".5rem",
@@ -621,22 +606,12 @@ const ProjectComponentsMapEdit = ({
         drawLines={drawLines}
         componentEditorPanel={
           <>
-            <Collapse
-              in={editPanelCollapsedShow}
-              onExit={() => setEditPanelCollapsed(true)}
-            >
-              <Button
-                className={classes.mapToolsShowHidden}
-                size={"small"}
-                onClick={() => setEditPanelCollapsedShow(false)}
-                startIcon={<KeyboardArrowDown />}
-              >
-                Show Component Details
-              </Button>
-            </Collapse>
             <MapToolsCollapse
-              transitionIn={editPanelCollapsed}
-              onExited={() => setEditPanelCollapsedShow(true)}
+              transitionInEditTools={editPanelCollapsed}
+              onExitedEditTools={() => setEditPanelCollapsedShow(true)}
+              transitionInShowTools={editPanelCollapsedShow}
+              onShowToolsClick={() => setEditPanelCollapsedShow(false)}
+              onExitShowTools={() => setEditPanelCollapsed(true)}
             >
               <Grid container spacing={2}>
                 <Grid item xs className={classes.layerSelectBox}>
