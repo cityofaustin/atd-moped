@@ -1,8 +1,14 @@
+import os
+import time
 import prefect
+from datetime import timedelta
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
 import tasks.shared as shared
+
+# set up the prefect logging system
+logger = prefect.context.get("logger")
 
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(slug):
@@ -44,6 +50,20 @@ checkout_target_branch = ShellTask(name="Checkout target branch", stream_output=
 migrate_db = ShellTask(name="Migrate DB", stream_output=True)
 apply_metadata = ShellTask(name="Apply Metadata", stream_output=True)
 
+check_for_consistent_metadata = ShellTask(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
+
+# this does not work
+#@task(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
+#def check_for_consistent_metadata(migrate_token):
+    #output_stream = os.popen("(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)")
+    #output = output_stream.read()
+    #logger.info(output)
+    #return True
+
+@task(name="sleep for 15 seconds")
+def sleep_fifteen_seconds(consistent_metadata):
+    time.sleep(15)
+    return True
 
 # (cd /tmp/atd-moped/moped-database; hasura --skip-update-check version;)
 # (cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)
