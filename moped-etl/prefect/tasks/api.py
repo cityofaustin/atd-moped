@@ -97,7 +97,7 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
 
     secret_arn = response["ARN"]
 
-    # print("Response ARN: " + secret_arn)
+    logger.info("Response ARN: " + secret_arn)
 
     return secret_arn
 
