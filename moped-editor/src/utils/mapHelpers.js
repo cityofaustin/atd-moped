@@ -738,8 +738,12 @@ export function useFeatureCollectionToFitBounds(
   const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
+  /* Fit map bounds to feature collection if there are features to zoom to */
   const zoomMapToFeatureCollection = () => {
+    if (!thereAreFeatures) return;
+
     const mapBounds = createZoomBbox(featureCollection);
+
     mapRef.current &&
       mapRef.current.fitBounds(mapBounds, {
         padding: 100,
@@ -749,7 +753,7 @@ export function useFeatureCollectionToFitBounds(
   };
 
   const fitMapToFeatureCollectionOnRender = () => {
-    if (!thereAreFeatures || hasFitInitialized) return;
+    if (hasFitInitialized) return;
 
     zoomMapToFeatureCollection();
     setHasFitInitialized(true);
@@ -757,7 +761,7 @@ export function useFeatureCollectionToFitBounds(
 
   // Watch for changes to the project components and zoom to them if shouldFitOnFeatureUpdate = true
   useEffect(() => {
-    if (!shouldFitOnFeatureUpdate && thereAreFeatures) return;
+    if (!shouldFitOnFeatureUpdate) return;
 
     zoomMapToFeatureCollection();
     // eslint-disable-next-line react-hooks/exhaustive-deps
