@@ -242,8 +242,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
- * @param {string} projectId - ID of the project associated with the extent being edited
- * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
  * @param {number} currentZoom - Current zoom level of the map
  * @property {function} saveActionDispatch - Function that helps us send signals to other components
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
@@ -258,8 +256,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
 export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
-  projectId,
-  refetchProjectDetails,
   currentZoom,
   saveActionDispatch
 ) {
