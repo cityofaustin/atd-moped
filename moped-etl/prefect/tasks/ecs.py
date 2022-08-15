@@ -59,7 +59,7 @@ def create_load_balancer(slug):
     elb = boto3.client("elbv2")
 
     create_elb_result = elb.create_load_balancer(
-        Name=basename,
+        Name=slug["elb_basename"],
         Subnets=[VPC_SUBNET_A, VPC_SUBNET_B],
         SecurityGroups=[ELB_SECURITY_GROUP],
         Scheme="internet-facing",
@@ -79,7 +79,7 @@ def create_target_group(slug):
     elb = boto3.client("elbv2")
 
     target_group = elb.create_target_group(
-        Name=basename,
+        Name=slug["elb_basename"],
         Protocol="HTTP",
         Port=8080,
         VpcId=VPC_ID,
