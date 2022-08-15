@@ -61,7 +61,7 @@ def create_moped_api_secrets_entry(basename):
         "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
         "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
         "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
-        "HASURA_HTTPS_ENDPOINT": graphql_endpoint,
+        "HASURA_HTTPS_ENDPOINT": "https://" + graphql_endpoint,
         "HASURA_ADMIN_SECRET": graphql_engine_api_key,
     }
 
