@@ -140,9 +140,9 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         ready_for_api_deployment=ready_for_api_deployment,
     )
 
-    deploy_api = api.create_api_task(command=commission_api_command)
-
-    api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    # deploy_api = api.create_api_task(command=commission_api_command)
+    # api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
 
     ## Commission the ECS cluster
 
@@ -255,6 +255,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         checked_out_token=checked_out,
     )
 
+    # what are these parentheses doing?
     migrate_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
     )
@@ -262,10 +263,21 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
     )
 
+    consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
+    consistent_metadata = migrations.check_for_consistent_metadata(
+        command=consistency_cmd, upstream_tasks=[migrate]
+    )
+
+    settled_metadata = migrations.sleep_fifteen_seconds(
+        consistent_metadata=consistent_metadata
+    )
+
     metadata_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
     )
-    metadata = migrations.apply_metadata(command=metadata_cmd, upstream_tasks=[migrate])
+    metadata = migrations.apply_metadata(
+        command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
+    )
 
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
