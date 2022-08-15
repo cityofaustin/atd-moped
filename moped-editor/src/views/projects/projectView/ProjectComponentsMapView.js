@@ -1,13 +1,6 @@
 import React, { useCallback, useRef, useState } from "react";
 import Map, { NavigationControl } from "react-map-gl";
-import {
-  Box,
-  Button,
-  Collapse,
-  Divider,
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, Button, Divider, Grid, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 
@@ -24,8 +17,9 @@ import {
   makeCommonComponentsMapStyles,
   mapConfig,
 } from "../../../utils/mapHelpers";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
+import { KeyboardArrowUp } from "@material-ui/icons";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
+import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -70,33 +64,6 @@ const useStyles = makeStyles((theme) => ({
   mapStyle: {
     position: "relative",
     padding: 0,
-  },
-  mapTools: {
-    position: "absolute",
-    top: "66px",
-    left: "10px",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: "4px",
-    padding: ".5rem",
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
-  },
-  mapToolsShowHidden: {
-    position: "absolute",
-    top: "66px",
-    left: "10px",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: "4px",
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
-    padding: ".5rem",
-    "&:hover": {
-      background: theme.palette.common.white,
-    },
   },
   mapToolsDivider: {
     marginTop: ".5rem",
@@ -167,23 +134,12 @@ const ProjectComponentsMapView = ({
    */
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      <Collapse
-        in={editPanelCollapsedShow}
-        onExit={() => setEditPanelCollapsed(true)}
-      >
-        <Button
-          className={classes.mapToolsShowHidden}
-          size={"small"}
-          onClick={() => setEditPanelCollapsedShow(false)}
-          startIcon={<KeyboardArrowDown />}
-        >
-          Show Components
-        </Button>
-      </Collapse>
-      <Collapse
-        className={classes.mapTools}
-        in={editPanelCollapsed}
-        onExited={() => setEditPanelCollapsedShow(true)}
+      <MapToolsCollapse
+        transitionInEditTools={editPanelCollapsed}
+        onExitedEditTools={() => setEditPanelCollapsedShow(true)}
+        transitionInShowTools={editPanelCollapsedShow}
+        onShowToolsClick={() => setEditPanelCollapsedShow(false)}
+        onExitShowTools={() => setEditPanelCollapsed(true)}
       >
         <Grid>
           <Grid
@@ -203,7 +159,7 @@ const ProjectComponentsMapView = ({
             </Button>
           </Grid>
         </Grid>
-      </Collapse>
+      </MapToolsCollapse>
 
       {renderLayerSelect(false)}
 
