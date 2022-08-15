@@ -493,7 +493,7 @@ def remove_all_listeners(slug):
 
     elb = boto3.client("elbv2")
 
-    load_balancer = elb.describe_load_balancers(Names=[basename])
+    load_balancer = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
     listeners = elb.describe_listeners(
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
@@ -512,7 +512,7 @@ def remove_load_balancer(slug, no_cluster_token):
 
     elb = boto3.client("elbv2")
 
-    load_balancers = elb.describe_load_balancers(Names=[basename])
+    load_balancers = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
     delete_elb_result = elb.delete_load_balancer(
         LoadBalancerArn=load_balancers["LoadBalancers"][0]["LoadBalancerArn"]
