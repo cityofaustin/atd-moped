@@ -410,9 +410,6 @@ def create_service(
     return create_service_result
 
 
-# decommission tasks
-
-
 @task(name="Remove ECS Cluster")
 def remove_ecs_cluster(slug, no_service_token):
     basename = slug["basename"]
