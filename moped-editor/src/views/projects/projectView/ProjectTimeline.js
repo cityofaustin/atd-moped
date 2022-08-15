@@ -532,9 +532,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                         project_id: projectId,
                         completion_percentage: 0,
                         completed: false,
-                        // temporary until project phase normalization is complete
-                        phase_name:
-                          phaseNameLookup[newData?.phase_id].toLowerCase(),
                       },
                       newData
                     );
@@ -596,12 +593,6 @@ const ProjectTimeline = ({ refetch: refetchSummary }) => {
                       differences.filter((value) =>
                         ["phase_id", "is_current_phase"].includes(value)
                       ).length > 0;
-
-                    // temporary workaround until phase normalization is complete
-                    if (currentPhaseChanged) {
-                      updatedPhaseObject["phase_name"] =
-                        phaseNameLookup[newData.phase_id].toLowerCase();
-                    }
 
                     // We need to know if the updated phase is set as is_current_phase
                     const isCurrentPhase = !!newData?.is_current_phase;
