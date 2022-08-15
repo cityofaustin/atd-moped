@@ -26,6 +26,11 @@ import tasks.netlify as netlify
 import tasks.activity_log as activity_log
 import tasks.migrations as migrations
 
+from prefect.executors import DaskExecutor
+
+executor = DaskExecutor(address="tcp://172.25.0.2:8786")
+
+
 hostname = platform.node()
 
 # setup some global variables from secrets. presently these are coming out of the environment,
@@ -71,7 +76,8 @@ def drain_service(slug):
     return drained_service
 
 
-with Flow("Moped Test Instance Commission") as test_commission:
+# with Flow("Moped Test Instance Commission") as test_commission:
+with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
     branch = Parameter("branch")
     database_seed_source = Parameter("database_seed_source")
 
@@ -327,5 +333,6 @@ if __name__ == "__main__":
 
     test_commission.register(project_name="Moped")
     test_decommission.register(project_name="Moped")
+
     # test_commission.run(branch=branch, database_seed_source="production")
     # test_decommission.run(branch=branch)
