@@ -79,7 +79,13 @@ def create_target_group(slug):
     elb = boto3.client("elbv2")
 
     target_group = elb.create_target_group(
-        Name=basename, Protocol="HTTP", Port=8080, VpcId=VPC_ID, TargetType="ip"
+        Name=basename,
+        Protocol="HTTP",
+        Port=8080,
+        VpcId=VPC_ID,
+        TargetType="ip",
+        HealthCheckPath="/healthz",
+        Matcher={"HttpCode": "200,302"},
     )
 
     return target_group
