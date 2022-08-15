@@ -20,6 +20,7 @@ import {
 
 import { getSessionDatabaseData } from "../../../../auth/user";
 import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAndTime";
+import { getUserFullName } from "src/utils/userNames";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -33,7 +34,7 @@ import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAnd
 const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData.user_id
-  const addedBy = `${userSessionData.first_name} ${userSessionData.last_name}`;
+  const addedBy = getUserFullName(userSessionData);
 
   const [updateProjectStatusUpdateInsert] = useMutation(
     PROJECT_SUMMARY_STATUS_UPDATE_INSERT
