@@ -28,6 +28,7 @@ to backfill project milestones after implementing the milestone template feature
 
 *Be aware that this script depends on database schema values which are in flux at the time of writing. In particular, the use of `status_id` to identify deleted records may be changd in a future release. Make sure this script aligns with your current database schema*
 
+
 ### Usage instructions
 
 1. Create a python 3.x environment with `requests` installed.
@@ -36,4 +37,18 @@ to backfill project milestones after implementing the milestone template feature
 
 ```shell
 $ python create_milestones.py -e local -d '2022-06-17 00:00:00'
+```
+
+## purchase_order_backfill
+
+This tool populates the `moped_purchase_order table` [see issue #8259](https://github.com/cityofaustin/atd-data-tech/issues/8259) with existing contractor and purchase order information from the `moped_projects` columns purchase_order_number and contractor. This script is intended only to be used once, to move the data from the moped_projects table before we remove the purchase_order_number and contractor columns. 
+
+### Usage instructions
+
+1. Create a python 3.x environment with `requests` installed.
+2. Configure authentication details in `secrets.py`
+3. Run `create_purchase_orders.py`, and set the `--env (-e)` arg to your desired environment.
+
+```shell
+$ python create_purchase_orders.py -e local
 ```

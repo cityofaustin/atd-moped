@@ -14,16 +14,22 @@ import re
 
 # import pypi packages
 import prefect
-from prefect.run_configs import UniversalRun
 
 # import prefect components
-from prefect import Flow, task, Parameter
+from prefect import Flow, task, Parameter, case
+from prefect.tasks.control_flow import merge
 
 import tasks.ecs as ecs
 import tasks.api as api
 import tasks.database as db
 import tasks.netlify as netlify
 import tasks.activity_log as activity_log
+import tasks.migrations as migrations
+
+from prefect.executors import DaskExecutor
+
+executor = DaskExecutor(address="tcp://172.25.0.2:8786")
+
 
 hostname = platform.node()
 
@@ -38,44 +44,120 @@ GIT_REPOSITORY = os.environ["GIT_REPOSITORY"]
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
-# Database Tasks
 
-# Frontend:
-# 1. When feature PR is opened, a deploy preview spins up and is linked in PR
-# 2. Env vars are available to introspect PR # and context (CONTEXT = deploy-preview)
-#    https://docs.netlify.com/configure-builds/environment-variables/?utm_campaign=devex-tzm&utm_source=blog&utm_medium=blog&utm_content=env-vars&_gl=1%2agvssna%2a_gcl_aw%2aR0NMLjE2NTQ1NDAxNzcuQ2p3S0NBand5X2FVQmhBQ0Vpd0EySUhIUUFud3NXc1ltbXJybGs5SnVfWTJlazlkUF9hVmM4WVZuTjR5Zk5QR0Y2U2ZOLTMycl93ekFCb0M2Y0lRQXZEX0J3RQ..&_ga=2.210432213.1131530997.1654540177-2032963523.1654540177&_gac=1.123937528.1654540177.CjwKCAjwy_aUBhACEiwA2IHHQAnwsWsYmmrrlk9Ju_Y2ek9dP_aVc8YVnN4yfNPGF6SfN-32r_wzABoC6cIQAvD_BwE#read-only-variables
-
-# Considerations:
-# 1. Auth (use staging user pool) needs a callback URL set in the user pool. How does this work
-#    for the deploy previews? (I know that we can't use SSO)
-#    - Just do whatever deploy previews do for auth
-
-# Questions:
-# 1. What S3 bucket does current moped-test use for file uploads?
-#    - Extend directories in S3 bucket to keep files for each preview app
-
-
-with Flow(
-    "Moped Test ECS Commission", run_config=UniversalRun(labels=["moped", hostname])
-) as ecs_commission:
-
-    basename = Parameter("basename")
-    database = Parameter("database")
-    api_endpoint = Parameter("api_endpoint")
-
-    cluster = ecs.create_ecs_cluster(basename=basename)
-
-    load_balancer = ecs.create_load_balancer(basename=basename)
-
-    target_group = ecs.create_target_group(basename=basename)
-
-    dns_request = ecs.create_route53_cname(
-        basename=basename, load_balancer=load_balancer
+@task(name="Slug branch name")
+def slug_branch_name(basename):
+    underscore_basename = basename.replace("-", "_")
+    database = re.search("^[\d_]*(.*)", underscore_basename).group(
+        1
+    )  # remove leading numbers
+    internal_number_free_underscore_basename = "".join(
+        [i for i in database if not i.isdigit()]
     )
+    awslambda = internal_number_free_underscore_basename[0:16]
+
+    slug = {"basename": basename, "database": database, "awslambda": awslambda}
+    return slug
+
+
+def drain_service(slug):
+    set_count_at_zero = ecs.set_desired_count_for_service(slug=slug, count=0)
+
+    tasks = ecs.list_tasks_for_service(slug=slug)
+
+    stop_token = ecs.stop_tasks_for_service(
+        slug=slug, tasks=tasks, zero_count_token=set_count_at_zero
+    )
+
+    drained_service = ecs.wait_for_service_to_be_drained(
+        slug=slug, stop_token=stop_token
+    )
+
+    return drained_service
+
+
+# with Flow("Moped Test Instance Commission") as test_commission:
+with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
+    branch = Parameter("branch")
+    database_seed_source = Parameter("database_seed_source")
+
+    slug = slug_branch_name(branch)
+
+    ## Commission the database
+
+    database_exists = db.database_exists(slug)
+
+    with case(database_exists, True):
+
+        running_tasks = ecs.check_count_running_ecs_tasks(slug=slug)
+        with case(running_tasks, True):
+            drained_service = drain_service(slug)
+        ready_to_drop_db = merge(drained_service, running_tasks)
+
+        remove_database = db.remove_database(
+            slug=slug, ready_to_drop_db=ready_to_drop_db
+        )
+
+    ready_to_commission = merge(remove_database, database_exists)
+
+    create_database = db.create_database(
+        slug=slug, upstream_tasks=[ready_to_commission]
+    )
+
+    populate_database_command = db.populate_database_with_data_command(
+        slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
+    )
+
+    populate_database = db.populate_database_with_data_task(
+        command=populate_database_command
+    )
+
+    ## Commission the API
+
+    secret_exists = api.check_secret_exists(slug=slug)
+
+    with case(secret_exists, True):
+        remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
+
+    ready_for_secret = merge(remove_api_config_secret_arn, secret_exists)
+
+    create_api_config_secret_arn = api.create_moped_api_secrets_entry(
+        slug=slug, ready_for_secret=ready_for_secret
+    )
+
+    # test if api is deployed, remove if so
+    is_deployed = api.check_if_api_is_deployed(slug=slug)
+    with case(is_deployed, True):
+        decommission_api_command = api.create_moped_api_undeploy_command(
+            slug=slug, config_secret_arn=remove_api_config_secret_arn
+        )
+        undeploy_api = api.remove_api_task(command=decommission_api_command)
+    ready_for_api_deployment = merge(is_deployed, undeploy_api)
+
+    commission_api_command = api.create_moped_api_deploy_command(
+        slug=slug,
+        config_secret_arn=create_api_config_secret_arn,
+        ready_for_api_deployment=ready_for_api_deployment,
+    )
+
+    deploy_api = api.create_api_task(command=commission_api_command)
+    api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    # comment out the two lines above if you put the right endpoint here
+    # api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
+
+    ## Commission the ECS cluster
+
+    cluster = ecs.create_ecs_cluster(slug=slug)
+
+    load_balancer = ecs.create_load_balancer(slug)
+
+    target_group = ecs.create_target_group(slug)
+
+    dns_request = ecs.create_route53_cname(slug=slug, load_balancer=load_balancer)
 
     dns_status = ecs.check_dns_status(dns_request=dns_request)
 
-    tls_certificate = ecs.create_certificate(basename=basename, dns_status=dns_status)
+    tls_certificate = ecs.create_certificate(slug=slug, dns_status=dns_status)
 
     certificate_validation_parameters = ecs.get_certificate_validation_parameters(
         tls_certificate=tls_certificate
@@ -93,18 +175,22 @@ with Flow(
         validation_record, issued_certificate
     )
 
+    has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
+    with case(has_listeners, False):
+        no_listeners = ecs.remove_all_listeners(slug=slug)
+    ready_for_listeners = merge(no_listeners, has_listeners)
+
     listeners = ecs.create_load_balancer_listener(
         load_balancer=load_balancer,
         target_group=target_group,
         certificate=issued_certificate,
+        ready_for_listeners=ready_for_listeners,
     )
 
-    task_definition = ecs.create_task_definition(
-        basename=basename, database=database, api_endpoint=api_endpoint
-    )
+    task_definition = ecs.create_task_definition(slug=slug, api_endpoint=api_endpoint)
 
-    service = ecs.create_service(
-        basename=basename,
+    graphql_engine_service_created = ecs.create_service(
+        slug=slug,
         load_balancer=load_balancer,
         task_definition=task_definition,
         target_group=target_group,
@@ -112,242 +198,150 @@ with Flow(
         cluster_token=cluster,
     )
 
+    with case(graphql_engine_service_created, False):
+        graphql_engine_service_updated = ecs.update_service(
+            slug=slug,
+            load_balancer=load_balancer,
+            task_definition=task_definition,
+            target_group=target_group,
+            listeners_token=listeners,
+            cluster_token=cluster,
+        )
 
-with Flow(
-    "Moped Test ECS Decommission",
-    # Observation! The hex key of the container is from the build context!!
-    # You can use this as a userful key to associate a state of the code and an environmental state!
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as ecs_decommission:
-
-    basename = Parameter("basename")
-
-    set_count_at_zero = ecs.set_desired_count_for_service(basename=basename, count=0)
-
-    tasks = ecs.list_tasks_for_service(basename=basename)
-
-    stop_token = ecs.stop_tasks_for_service(
-        basename=basename, tasks=tasks, zero_count_token=set_count_at_zero
+    graphql_engine_service_deployed = merge(
+        graphql_engine_service_updated, graphql_engine_service_created
     )
 
-    drained_service = ecs.wait_for_service_to_be_drained(
-        basename=basename, stop_token=stop_token
+    graphql_endpoint_ready = ecs.check_graphql_endpoint_status(
+        slug=slug, graphql_engine_service=graphql_engine_service_deployed
     )
 
-    no_listeners = ecs.remove_all_listeners(basename=basename)
+    ## Commission the Netlify site
 
-    no_target_group = ecs.remove_target_group(
-        basename=basename, no_listener_token=no_listeners
-    )
+    build = netlify.trigger_netlify_build(slug=slug, api_endpoint_url=api_endpoint)
+    netlify_is_ready = netlify.netlify_check_build(slug=slug, build_token=build)
 
-    no_service = ecs.delete_service(
-        basename=basename,
-        drained_token=drained_service,
-        no_target_group_token=no_target_group,
-    )
-
-    no_cluster = ecs.remove_ecs_cluster(basename=basename, no_service_token=no_service)
-
-    removed_load_balancer = ecs.remove_load_balancer(
-        basename=basename, no_cluster_token=no_cluster
-    )
-
-    removed_hostname = ecs.remove_route53_cname(
-        basename=basename, removed_load_balancer_token=removed_load_balancer
-    )
-
-    removed_certificate = ecs.remove_certificate(
-        basename=basename, removed_hostname_token=removed_hostname
-    )
-
-
-with Flow(
-    "Moped Test Database Commission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as database_commission:
-
-    basename = Parameter("basename")
-    stage = Parameter("stage")
-
-    create_database = db.create_database(basename=basename)
-    populate_database_command = db.populate_database_with_data_command(
-        basename=basename, stage=stage, upstream_tasks=[create_database]
-    )
-    populate_database = db.populate_database_with_data_task(
-        command=populate_database_command
-    )
-
-
-with Flow(
-    "Moped Test API Commission", run_config=UniversalRun(labels=["moped", hostname])
-) as api_commission:
-
-    basename = Parameter("basename")
-
-    create_api_config_secret_arn = api.create_moped_api_secrets_entry(basename=basename)
-
-    commission_api_command = api.create_moped_api_deploy_command(
-        basename=basename, config_secret_arn=create_api_config_secret_arn
-    )
-    deploy_api = api.create_api_task(command=commission_api_command)
-    endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-
-with Flow(
-    "Moped Test Database Decommission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as database_decommission:
-
-    basename = Parameter("basename")
-
-    remove_database = db.remove_database(basename=basename)
-
-
-with Flow(
-    "Moped Test API Decommission", run_config=UniversalRun(labels=["moped", hostname])
-) as api_decommission:
-
-    basename = Parameter("basename")
-
-    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(basename=basename)
-
-    decommission_api_command = api.create_moped_api_undeploy_command(
-        basename=basename, config_secret_arn=remove_api_config_secret_arn
-    )
-    undeploy_api = api.remove_api_task(command=decommission_api_command)
-
-with Flow(
-    "Moped Netlify Commission", run_config=UniversalRun(labels=["moped", hostname])
-) as netlify_commission:
-
-    basename = Parameter("basename")
-    api_endpoint_url = Parameter("api_endpoint_url")
-
-    build = netlify.trigger_netlify_build(
-        branch=basename, api_endpoint_url=api_endpoint_url
-    )
-    is_ready = netlify.netlify_check_build(branch=basename, build_token=build)
-
-
-with Flow(
-    "Moped Test Activity Log Commission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as activity_log_commission:
-
-    basename = Parameter("basename")
+    ## Commission the Activity Log
 
     commission_activity_log_command = activity_log.create_activity_log_command(
-        basename=basename
+        slug=slug
     )
     deploy_activity_log = activity_log.create_activity_log_task(
         command=commission_activity_log_command
     )
 
-with Flow(
-    "Moped Test Activity Log Decommission",
-    run_config=UniversalRun(labels=["moped", hostname]),
-) as activity_log_decommission:
+    ## Apply migrations
 
-    basename = Parameter("basename")
+    graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
 
-    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(basename=basename)
-    remove_activity_log_lambda = activity_log.remove_activity_log_lambda(
-        basename=basename, upstream_tasks=[remove_activity_log_sqs]
-    )
-
-with Flow("Apply Database Migrations") as apply_database_migrations:
-
-    basename = Parameter("basename")
-
-    graphql_endpoint = "https://" + ecs.get_graphql_engine_hostname(basename=basename)
-    access_key = ecs.get_graphql_engine_access_key(basename=basename)
+    access_key = migrations.get_graphql_engine_access_key(slug=slug)
 
     rm_clone = "rm -fr /tmp/atd-moped"
-    cleaned = ecs.shell_task(command=rm_clone)
-    git_clone = "git clone " + GIT_REPOSITORY + " /tmp/atd-moped"
-    cloned = ecs.shell_task(command=git_clone, upstream_tasks=[cleaned])
-    checkout_branch = "git -C /tmp/atd-moped/ checkout " + basename
-    checked_out = ecs.shell_task(command=checkout_branch, upstream_tasks=[cloned])
+    cleaned = migrations.remove_moped_checkout(command=rm_clone)
+
+    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
+    cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
+
+    checkout_branch = migrations.get_git_checkout_command(slug=slug)
+    checked_out = migrations.checkout_target_branch(
+        command=checkout_branch, upstream_tasks=[cloned]
+    )
 
     metadata = "metadata"
 
-    config = ecs.create_graphql_engine_config_contents(
+    config = migrations.create_graphql_engine_config_contents(
         graphql_endpoint=graphql_endpoint,
         access_key=access_key,
         metadata=metadata,
         checked_out_token=checked_out,
     )
 
+    # what are these parentheses doing?
     migrate_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
     )
-    migrate = ecs.shell_task(command=migrate_cmd, upstream_tasks=[config])
+    migrate = migrations.migrate_db(
+        command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
+    )
+
+    consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
+    consistent_metadata = migrations.check_for_consistent_metadata(
+        command=consistency_cmd, upstream_tasks=[migrate]
+    )
+
+    settled_metadata = migrations.sleep_fifteen_seconds(
+        consistent_metadata=consistent_metadata
+    )
 
     metadata_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
     )
-    metadata = ecs.shell_task(command=metadata_cmd, upstream_tasks=[config])
+    metadata = migrations.apply_metadata(
+        command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
+    )
+
+
+with Flow("Moped Test Instance Decommission") as test_decommission:
+    branch = Parameter("branch")
+    slug = slug_branch_name(branch)
+
+    # Reap Activity Log
+
+    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(slug=slug)
+
+    remove_activity_log_lambda = activity_log.remove_activity_log_lambda(
+        slug=slug, upstream_tasks=[remove_activity_log_sqs]
+    )
+
+    # Reap ECS
+
+    drained_service = drain_service(slug=slug)
+
+    no_listeners = ecs.remove_all_listeners(slug=slug)
+
+    no_target_group = ecs.remove_target_group(slug=slug, no_listener_token=no_listeners)
+
+    no_service = ecs.delete_service(
+        slug=slug, drained_token=drained_service, no_target_group_token=no_target_group
+    )
+
+    no_cluster = ecs.remove_ecs_cluster(slug=slug, no_service_token=no_service)
+
+    removed_load_balancer = ecs.remove_load_balancer(
+        slug=slug, no_cluster_token=no_cluster
+    )
+
+    removed_hostname = ecs.remove_route53_cname(
+        slug=slug, removed_load_balancer_token=removed_load_balancer
+    )
+
+    removed_certificate = ecs.remove_certificate(
+        slug=slug, removed_hostname_token=removed_hostname
+    )
+
+    # Reap API
+
+    remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
+
+    decommission_api_command = api.create_moped_api_undeploy_command(
+        slug=slug, config_secret_arn=remove_api_config_secret_arn
+    )
+    undeploy_api = api.remove_api_task(command=decommission_api_command)
+
+    # Reap Database
+
+    database_exists = db.database_exists(slug)
+
+    # be sure that the graphql-engine instance is shut down so it can't hold this resource open via a connection
+    with case(database_exists, True):
+        remove_database = db.remove_database(slug, ready_to_drop_db=drained_service)
 
 
 if __name__ == "__main__":
-    basename = "main"
-    underscore_basename = basename.replace("-", "_")
-    number_free_underscore_basename = re.search(
-        "^[\d_]*(.*)", underscore_basename
-    ).group(
-        1
-    )  # remove leading numbers
-    internal_number_free_underscore_basename = "".join(
-        [i for i in number_free_underscore_basename if not i.isdigit()]
-    )
-    short_internal_number_free_underscore_basename = internal_number_free_underscore_basename[
-        0:16
-    ]  # this is getting very short because of the other things which are padded onto the 64 char max lambda names
+    branch = "unify-flows"
 
-    database_data_stage = "staging"
+    test_commission.register(project_name="Moped")
+    test_decommission.register(project_name="Moped")
 
-    if False:
-        print("\n🍄 Comissioning Database\n")
-        database_commission.run(
-            basename=number_free_underscore_basename, stage=database_data_stage
-        )
-
-        print("\n🚀 Comissioning API\n")
-        api_commission_state = api_commission.run(
-            parameters=dict(basename=short_internal_number_free_underscore_basename)
-        )
-        api_endpoint = api_commission_state.result[endpoint].result
-        print("🚀 API Endpoint: " + api_endpoint)
-
-        print("\n🤖 Comissioning ECS\n")
-        ecs_commission.run(
-            parameters=dict(
-                basename=basename,
-                database=number_free_underscore_basename,
-                api_endpoint=api_endpoint,
-            )
-        )
-
-        print("\n💡 Comissioning Netlify Build & Deploy\n")
-        netlify_commission.run(
-            parameters=dict(basename=basename, api_endpoint_url=api_endpoint)
-        )
-        print("\n🎯 Comissioning Activity Log\n")
-        activity_log_commission.run(parameters=dict(basename=basename))
-
-        print("\n🌱 Applying database migrations\n")
-        apply_database_migrations.run(parameters=dict(basename=basename))
-
-    if False:
-        print("\n🎯 Decomissioning Activity Log\n")
-        activity_log_decommission.run(parameters=dict(basename=basename))
-
-        print("\n🤖 Decomissioning ECS\n")
-        ecs_decommission.run(parameters=dict(basename=basename))
-
-        print("\n🚀 Decomissioning API\n")
-        api_decommission.run(
-            parameters=dict(basename=short_internal_number_free_underscore_basename)
-        )
-
-        print("\n🍄 Decomissioning Database\n")
-        database_decommission.run(basename=number_free_underscore_basename)
+    # test_commission.run(branch=branch, database_seed_source="production")
+    # test_decommission.run(branch=branch)

@@ -2,7 +2,7 @@ import json
 import boto3
 import os
 import re
-import hashlib
+from datetime import timedelta
 
 import tasks.ecs as ecs
 
@@ -10,7 +10,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-from tasks.activity_log import create_activity_log_queue_url
+import tasks.shared as shared
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -32,25 +32,44 @@ MOPED_API_HASURA_SQS_URL = os.environ["MOPED_API_HASURA_SQS_URL"]
 
 SHA_SALT = os.environ["SHA_SALT"]
 
+ACTIVITY_LOG_FUNCTION_NAME = os.environ["ACTIVITY_LOG_FUNCTION_NAME"]
 
-def generate_api_key(basename):
-    sha_input = basename + SHA_SALT + "api"
-    api_key = hashlib.sha256(sha_input.encode()).hexdigest()
-    return api_key
-
+ZAPPA_PROJECT_NAME = os.environ["ZAPPA_PROJECT_NAME"]
 
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
 
 
+@task(name="Check if secret exists")
+def check_secret_exists(slug):
+    basename = slug["awslambda"]
+
+    secret_name = create_secret_name(basename)
+
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    try:
+        client.get_secret_value(SecretId=secret_name)
+        logger.info(f"Secret {secret_name} already exists")
+        return True
+    except client.exceptions.ResourceNotFoundException:
+        logger.info(f"Secret {secret_name} does not exist")
+        return False
+
+
 # The Flask app retrieves these secrets from Secrets Manager
-@task(name="Create test API config Secrets Manager entry")
-def create_moped_api_secrets_entry(basename):
+@task(
+    name="Create test API config Secrets Manager entry",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
+def create_moped_api_secrets_entry(slug, ready_for_secret):
+    basename = slug["awslambda"]
+
     logger.info("Creating API secret config")
 
-    graphql_endpoint = ecs.form_hostname(basename)
-    graphql_engine_api_key = ecs.generate_access_key(basename)
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
+    graphql_engine_api_key = shared.generate_access_key(basename)
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
@@ -83,7 +102,8 @@ def create_moped_api_secrets_entry(basename):
 
 
 @task(name="Remove test API config Secrets Manager entry")
-def remove_moped_api_secrets_entry(basename):
+def remove_moped_api_secrets_entry(slug):
+    basename = slug["awslambda"]
     logger.info("Removing API secret config")
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -100,10 +120,11 @@ def remove_moped_api_secrets_entry(basename):
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename, config_secret_arn):
+
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
-            "project_name": "atd-moped-test-prefect",
+            "project_name": ZAPPA_PROJECT_NAME,
             "runtime": "python3.8",
             "s3_bucket": "atd-apigateway",
             "cors": True,
@@ -113,8 +134,10 @@ def create_zappa_config(basename, config_secret_arn):
                 "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 # Look at Moped API events.py to see how this key is used
-                "MOPED_API_HASURA_APIKEY": generate_api_key(basename),
-                "MOPED_API_HASURA_SQS_URL": create_activity_log_queue_url(basename),
+                "MOPED_API_HASURA_APIKEY": shared.generate_api_key(basename),
+                "MOPED_API_HASURA_SQS_URL": shared.create_activity_log_queue_url(
+                    basename, ACTIVITY_LOG_FUNCTION_NAME
+                ),
                 "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
             },
             "extra_permissions": [
@@ -140,7 +163,9 @@ create_api_task = ShellTask(
 
 
 @task(name="Create API Zappa deploy bash command")
-def create_moped_api_deploy_command(basename, config_secret_arn):
+def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deployment):
+    basename = slug["awslambda"]
+
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
@@ -170,6 +195,9 @@ def create_moped_api_deploy_command(basename, config_secret_arn):
 # See https://docs.prefect.io/api/latest/tasks/shell.html#shelltask
 @task(name="Get endpoint from Zappa deploy shell task output")
 def get_endpoint_from_deploy_output(output_list):
+
+    logger.info("Output List:" + str(output_list))
+
     api_endpoint_item = ""
 
     for item in output_list:
@@ -179,10 +207,10 @@ def get_endpoint_from_deploy_output(output_list):
     match = re.search(r"(https://.*)", api_endpoint_item)
 
     if match == None:
-        return None
+        return False
     else:
         endpoint = match.groups()[0]
-        # print("Got an API endpoint: " + endpoint)
+        logger.info("Got an API endpoint: " + endpoint)
         return endpoint
 
 
@@ -192,7 +220,8 @@ remove_api_task = ShellTask(
 
 
 @task(name="Create API Zappa undeploy bash command")
-def create_moped_api_undeploy_command(basename, config_secret_arn):
+def create_moped_api_undeploy_command(slug, config_secret_arn):
+    basename = slug["awslambda"]
     logger.info("Creating API Zappa undeploy bash command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
@@ -207,3 +236,28 @@ def create_moped_api_undeploy_command(basename, config_secret_arn):
     command = f"(cd {api_project_path} && zappa undeploy {basename} --yes)"
 
     return command
+
+
+@task(name="Check if API is deployed")
+def check_if_api_is_deployed(slug):
+    basename = slug["awslambda"]
+    dashed_lambda_name = basename.replace("_", "-")
+
+    logger.info("Checking if lambda function exists")
+
+    function_name = shared.generate_api_lambda_function_name(dashed_lambda_name)
+
+    # this is what you get for using lambda as a keyword python...
+    λ = boto3.client("lambda")
+
+    try:
+        response = λ.get_function(FunctionName=function_name)
+        logger.info("Lambda function exists")
+        logger.info(response)
+        return True
+    except Exception:
+        logger.info("Lambda function does not exist")
+        logger.info(Exception)
+        return False
+
+    # TODO FIXME

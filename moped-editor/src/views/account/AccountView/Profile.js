@@ -21,6 +21,7 @@ import {
   useUser,
 } from "../../../auth/user";
 import emailToInitials from "../../../utils/emailToInitials";
+import { getInitials } from "src/utils/userNames";
 import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
 import FileUploadDialogSimple from "../../../components/FileUpload/FileUploadDialogSimple";
 
@@ -212,9 +213,7 @@ const Profile = ({ className, ...rest }) => {
               <Box>
                 <CDNAvatar
                   src={userProfile?.picture ?? null}
-                  initials={
-                    userProfile["first_name"][0] + userProfile["last_name"][0]
-                  }
+                  initials={getInitials(userProfile)}
                   largeInitials={true}
                 />
               </Box>

@@ -2,7 +2,7 @@ import os
 import json
 import requests
 
-import tasks.ecs as ecs
+import tasks.shared as shared
 
 import prefect
 from prefect import task
@@ -30,7 +30,8 @@ def pprint(string):
 @task(
     name="Check if build is complete", max_retries=24, retry_delay=timedelta(seconds=10)
 )
-def netlify_check_build(branch, build_token):
+def netlify_check_build(slug, build_token):
+    branch = slug["basename"]
     logger.info("Checking netlify build")
 
     URL = NETLIFY_API_URL + "sites/" + NETLIFY_SITE_ID + "/deploys"
@@ -58,8 +59,9 @@ def netlify_check_build(branch, build_token):
     return True
 
 
-@task
-def trigger_netlify_build(branch, api_endpoint_url):
+@task(name="Trigger Netlify Build")
+def trigger_netlify_build(slug, api_endpoint_url):
+    branch = slug["basename"]
     logger.info("Triggering netlify build")
 
     HTTP_parameters = {
@@ -67,7 +69,9 @@ def trigger_netlify_build(branch, api_endpoint_url):
         "trigger_title": "Test Build of " + branch,
     }
 
-    graphql_endpoint = "https://" + ecs.form_hostname(branch) + "/v1/graphql"
+    graphql_endpoint = (
+        "https://" + shared.form_graphql_endpoint_hostname(branch) + "/v1/graphql"
+    )
 
     # See https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/.env-cmdrc#L52-L76
     # These values can be overloaded for a frontend deployment.

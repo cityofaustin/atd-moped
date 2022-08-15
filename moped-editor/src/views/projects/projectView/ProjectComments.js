@@ -40,6 +40,7 @@ import {
   makeHourAndMinutesFromTimeStampTZ,
   makeUSExpandedFormDateFromTimeStampTZ,
 } from "src/utils/dateAndTime";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -167,7 +168,7 @@ const ProjectComments = props => {
       variables: {
         objects: [
           {
-            added_by: `${userSessionData.first_name} ${userSessionData.last_name}`,
+            added_by: getUserFullName(userSessionData),
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),

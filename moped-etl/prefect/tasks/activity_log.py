@@ -6,7 +6,7 @@ import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
 
-import tasks.ecs as ecs
+import tasks.shared as shared
 
 # set up the prefect logging system
 logger = prefect.context.get("logger")
@@ -19,20 +19,11 @@ SHA_SALT = os.environ["SHA_SALT"]
 function_name = "activity_log"
 
 
-def create_activity_log_aws_name(basename):
-    return f"atd-moped-events-{function_name}_{basename}"
-
-
-def create_activity_log_queue_url(basename):
-    aws_queue_name = create_activity_log_aws_name(basename)
-    return f"{MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX}/{aws_queue_name}"
-
-
 def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
 ):
-    graphql_endpoint = ecs.form_hostname(basename)
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
@@ -53,15 +44,16 @@ create_activity_log_task = ShellTask(
 
 
 @task(name="Create Activity Log deploy helper command")
-def create_activity_log_command(basename):
+def create_activity_log_command(slug):
+    basename = slug["basename"]
     logger.info("Creating Activity Log deploy helper command")
 
-    aws_function_name = create_activity_log_aws_name(basename)
+    aws_function_name = shared.create_activity_log_aws_name(basename, function_name)
 
     helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
     deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
 
-    graphql_engine_api_key = ecs.generate_access_key(basename)
+    graphql_engine_api_key = shared.generate_access_key(basename)
 
     lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
 
@@ -83,24 +75,26 @@ def create_activity_log_command(basename):
 
 
 @task
-def remove_activity_log_sqs(basename):
+def remove_activity_log_sqs(slug):
+    basename = slug["basename"]
     logger.info("Removing Activity Log SQS")
 
     sqs_client = boto3.client("sqs")
 
-    queue_url = create_activity_log_queue_url(basename)
+    queue_url = shared.create_activity_log_queue_url(basename)
     response = sqs_client.delete_queue(QueueUrl=queue_url)
     print(response)
     return response
 
 
 @task
-def remove_activity_log_lambda(basename):
+def remove_activity_log_lambda(slug):
+    basename = slug["basename"]
     logger.info("Removing Activity Log Lambda function")
 
     lambda_client = boto3.client("lambda")
 
-    function_name = create_activity_log_aws_name(basename)
+    function_name = shared.create_activity_log_aws_name(basename, function_name)
     response = lambda_client.delete_function(FunctionName=function_name)
 
     return response
