@@ -361,19 +361,6 @@ const ProjectComponentsMap = ({
     //   saveDrawnPoints();
     // }
   }, [saveActionState]);
-  // useEffect(() => {
-  //   // Ignore empty states
-  //   if (!saveActionState) return;
-  //   // If the process has been already initiated, we don't need to go any further
-  //   if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
-  //   // It looks like this is the first step
-  //   if (
-  //     saveActionState?.initiateFeatureSave &&
-  //     saveActionState?.featuresSaved === false
-  //   ) {
-  //     saveDrawnPoints();
-  //   }
-  // }, [saveActionState, saveDrawnPoints]);
 
   // TODO: Reintroduce when drawing is restored
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
