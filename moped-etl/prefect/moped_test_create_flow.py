@@ -181,9 +181,10 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     )
 
     # this should map into two tasks, and run after the certificate is issued
-    removed_cname = ecs.remove_route53_cname_for_validation.map(
-        certificate_validation_parameters, upstream_tasks=[issued_certificate]
-    )
+    # FIXME this has some key error in it
+    # removed_cname = ecs.remove_route53_cname_for_validation.map(
+    # certificate_validation_parameters, upstream_tasks=[issued_certificate]
+    # )
 
     has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
     with case(has_listeners, False):
@@ -348,10 +349,10 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
 
 if __name__ == "__main__":
-    branch = "unify-flows"
+    branch = "refactor-user-activation-and-main"
 
     test_commission.register(project_name="Moped")
-    test_decommission.register(project_name="Moped")
+    # test_decommission.register(project_name="Moped")
 
-    # test_commission.run(branch=branch, database_seed_source="production")
+    # test_commission.run(branch=branch, database_seed_source="staging")
     # test_decommission.run(branch=branch)
