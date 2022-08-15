@@ -679,12 +679,14 @@ def check_graphql_endpoint_status(slug, graphql_engine_service):
     response = requests.get(endpoint)
     status = response.status_code
 
-    if status in {200}:
-        logger.info("HTTP status code for graphql endpoint is {}".format(status))
+    if status == 200:
+        logger.info("OK: HTTP status code for graphql endpoint is {}".format(status))
         return True
     else:
-        logger.info("HTTP status code for graphql endpoint is {}".format(status))
-        return False
+        logger.info(
+            "Not OK: HTTP status code for graphql endpoint is {}".format(status)
+        )
+        raise
 
 
 @task(name="Count existing listeners for ELB")
