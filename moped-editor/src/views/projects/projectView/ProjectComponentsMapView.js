@@ -26,6 +26,7 @@ import {
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
+import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -70,18 +71,6 @@ const useStyles = makeStyles((theme) => ({
   mapStyle: {
     position: "relative",
     padding: 0,
-  },
-  mapTools: {
-    position: "absolute",
-    top: "66px",
-    left: "10px",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: "4px",
-    padding: ".5rem",
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
   mapToolsShowHidden: {
     position: "absolute",
@@ -180,9 +169,8 @@ const ProjectComponentsMapView = ({
           Show Components
         </Button>
       </Collapse>
-      <Collapse
-        className={classes.mapTools}
-        in={editPanelCollapsed}
+      <MapToolsCollapse
+        transitionIn={editPanelCollapsed}
         onExited={() => setEditPanelCollapsedShow(true)}
       >
         <Grid>
@@ -203,7 +191,7 @@ const ProjectComponentsMapView = ({
             </Button>
           </Grid>
         </Grid>
-      </Collapse>
+      </MapToolsCollapse>
 
       {renderLayerSelect(false)}
 

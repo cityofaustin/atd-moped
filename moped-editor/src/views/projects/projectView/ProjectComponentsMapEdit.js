@@ -22,6 +22,7 @@ import {
 import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import ProjectComponentsMap from "./ProjectComponentsMap";
+import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   countFeatures,
@@ -57,18 +58,6 @@ const useStyles = makeStyles((theme) => ({
   mapStyle: {
     position: "relative",
     padding: 0,
-  },
-  mapTools: {
-    position: "absolute",
-    top: "66px",
-    left: "10px",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: "4px",
-    padding: ".5rem",
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
   },
   mapToolsShowHidden: {
     position: "absolute",
@@ -645,9 +634,8 @@ const ProjectComponentsMapEdit = ({
                 Show Component Details
               </Button>
             </Collapse>
-            <Collapse
-              className={classes.mapTools}
-              in={editPanelCollapsed}
+            <MapToolsCollapse
+              transitionIn={editPanelCollapsed}
               onExited={() => setEditPanelCollapsedShow(true)}
             >
               <Grid container spacing={2}>
@@ -829,7 +817,7 @@ const ProjectComponentsMapEdit = ({
                   </Button>
                 </DialogActions>
               </Dialog>
-            </Collapse>
+            </MapToolsCollapse>
           </>
         }
       />
