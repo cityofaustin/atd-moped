@@ -160,7 +160,9 @@ def create_certificate(slug, dns_status):
     if short_host != host:
         logger.info("Short hostname is different from long hostname")
         certificate = acm.request_certificate(
-            DomainName=short_host, ValidationMethod="DNS", SubjectAlternativeNames=[host]
+            DomainName=short_host,
+            ValidationMethod="DNS",
+            SubjectAlternativeNames=[host],
         )
     else:
         logger.info("Short hostname is the same as long hostname")
@@ -170,7 +172,7 @@ def create_certificate(slug, dns_status):
 
 
 @task(
-    name="Check ACM Certificate Status",
+    name="Get Certificate validation options",
     max_retries=12,
     retry_delay=timedelta(seconds=10),
 )
@@ -182,24 +184,25 @@ def get_certificate_validation_parameters(tls_certificate):
     certificate = acm.describe_certificate(
         CertificateArn=tls_certificate["CertificateArn"]
     )
+
+    logger.info(certificate)
+
     if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
         "Name"
     ]:
         raise Exception("No Domain Validation Resource Record Options")
 
-    return certificate
+    validations = certificate["Certificate"]["DomainValidationOptions"]
+
+    return validations
 
 
 @task(name="Add CNAME for Certificate Validation")
 def add_cname_for_certificate_validation(parameters):
     logger.info("Adding CNAME for TLS Certificate Validation")
 
-    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Name"
-    ]
-    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Value"
-    ]
+    host = parameters["ResourceRecord"]["Name"]
+    target = parameters["ResourceRecord"]["Value"]
 
     route53 = boto3.client("route53")
 
@@ -220,15 +223,13 @@ def add_cname_for_certificate_validation(parameters):
         },
     )
 
-    return record
-
 
 @task(
     name="Wait for TLS Certificate validation",
     max_retries=12,
     retry_delay=timedelta(seconds=10),
 )
-def wait_for_valid_certificate(validation_record, tls_certificate):
+def wait_for_valid_certificate(tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
     acm = boto3.client("acm")
@@ -251,18 +252,18 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
 
 @task(name="Remove Route 53 CNAME from validation")
-def remove_route53_cname_for_validation(validation_record, issued_certificate):
+def remove_route53_cname_for_validation(parameters):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
 
-    host = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Name"]
-    target = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Value"]
+    logger.info(parameters)
+
+    host = parameters["ResourceRecord"]["Name"]
+    target = parameters["ResourceRecord"]["Value"]
 
     route53 = boto3.client("route53")
+
+    logger.info(parameters)
 
     record = route53.change_resource_record_sets(
         HostedZoneId=R53_HOSTED_ZONE,

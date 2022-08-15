@@ -169,16 +169,18 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         tls_certificate=tls_certificate
     )
 
-    validation_record = ecs.add_cname_for_certificate_validation(
-        parameters=certificate_validation_parameters
+    # this is now returning an iterable of the results of adding the cnames
+    validation_record = ecs.add_cname_for_certificate_validation.map(
+        certificate_validation_parameters
     )
 
     issued_certificate = ecs.wait_for_valid_certificate(
-        validation_record=validation_record, tls_certificate=tls_certificate
+        tls_certificate=tls_certificate, upstream_tasks=[validation_record]
     )
 
-    removed_cname = ecs.remove_route53_cname_for_validation(
-        validation_record, issued_certificate
+    # this should map into two tasks, and run after the certificate is issued
+    removed_cname = ecs.remove_route53_cname_for_validation.map(
+        certificate_validation_parameters, upstream_tasks=[issued_certificate]
     )
 
     has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
