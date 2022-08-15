@@ -140,9 +140,10 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         ready_for_api_deployment=ready_for_api_deployment,
     )
 
-    # deploy_api = api.create_api_task(command=commission_api_command)
-    # api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-    api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
+    deploy_api = api.create_api_task(command=commission_api_command)
+    api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    # comment out the two lines above if you put the right endpoint here
+    # api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
 
     ## Commission the ECS cluster
 
