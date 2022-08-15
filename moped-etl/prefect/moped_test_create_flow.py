@@ -114,7 +114,6 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     ## Commission the API
 
-    # TODO: This needs to check to see if the api is deployed, and if so, reap it and redeploy
     secret_exists = api.check_secret_exists(slug=slug)
 
     with case(secret_exists, True):
@@ -146,7 +145,6 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
 
     ## Commission the ECS cluster
-    # TODO: This needs to check, reap if needed, redeploy
 
     cluster = ecs.create_ecs_cluster(slug=slug)
 
@@ -267,9 +265,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     metadata_cmd = (
         "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
     )
-    metadata = migrations.apply_metadata(
-        command=metadata_cmd, upstream_tasks=[migrate, graphql_endpoint_ready]
-    )
+    metadata = migrations.apply_metadata(command=metadata_cmd, upstream_tasks=[migrate])
 
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
