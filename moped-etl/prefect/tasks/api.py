@@ -1,4 +1,5 @@
 import json
+import time
 import boto3
 import os
 import re
@@ -112,6 +113,10 @@ def remove_moped_api_secrets_entry(slug):
     response = client.delete_secret(
         SecretId=secret_name, ForceDeleteWithoutRecovery=True
     )
+
+    sleep = 30
+    logger.info(f"Sleeping {sleep} seconds to allow secret to be deleted")
+    time.sleep(sleep)
 
     secret_arn = response["ARN"]
 
