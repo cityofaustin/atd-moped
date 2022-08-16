@@ -83,7 +83,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     slug = slug_branch_name(branch)
 
-    ## Get github checkout 
+    ## Get github checkout
 
     rm_clone = "rm -fr /tmp/atd-moped"
     cleaned = migrations.remove_moped_checkout(command=rm_clone)
@@ -94,7 +94,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     checkout_branch = migrations.get_git_checkout_command(slug=slug)
     git_repo_checked_out = migrations.checkout_target_branch(
         command=checkout_branch, upstream_tasks=[cloned]
-    ) 
+    )
 
     ## Commission the database
 
@@ -243,13 +243,10 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=commission_activity_log_command
     )
 
-
-
     ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
 
     access_key = migrations.get_graphql_engine_access_key(slug=slug)
-
 
     metadata = "metadata"
 
