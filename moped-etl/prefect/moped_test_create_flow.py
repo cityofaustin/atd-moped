@@ -237,7 +237,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     ## Commission the Activity Log
 
     commission_activity_log_command = activity_log.create_activity_log_command(
-        slug=slug
+        slug=slug, upstream_tasks=[git_repo_checked_out]
     )
     deploy_activity_log = activity_log.create_activity_log_task(
         command=commission_activity_log_command
