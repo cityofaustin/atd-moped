@@ -86,14 +86,18 @@ def drain_service(slug):
 
 # with Flow("Moped Test Instance Commission") as test_commission:
 with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
-    branch = Parameter("branch")
-    database_seed_source = Parameter("database_seed_source")
+    branch = Parameter("branch", default="feature-branch-name", required=True)
+    database_seed_source = Parameter(
+        "database_seed_source", default="seed", required=True
+    )
 
     slug = slug_branch_name(branch)
 
     ## Commission the database
 
     database_exists = db.database_exists(slug)
+
+    use_seed_data = migrations.use_seed_data(database_seed_source)
 
     with case(database_exists, True):
 
@@ -112,13 +116,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug, upstream_tasks=[ready_to_commission]
     )
 
-    populate_database_command = db.populate_database_with_data_command(
-        slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
-    )
+    with case(use_seed_data, False):
+        replicate_database_command = db.populate_database_with_data_command(
+            slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
+        )
+        replicate_database = db.populate_database_with_data_task(
+            command=replicate_database_command
+        )
 
-    populate_database = db.populate_database_with_data_task(
-        command=populate_database_command
-    )
+    populate_database = merge(create_database, replicate_database)
 
     ## Commission the API
 
@@ -151,7 +157,9 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
     # comment out the two lines above if you put the right endpoint here
-    # api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
+    #api_endpoint = (
+        #"https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
+    #)
 
     ## Commission the ECS cluster
 
@@ -207,6 +215,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         target_group=target_group,
         listeners_token=listeners,
         cluster_token=cluster,
+        upstream_tasks=[populate_database],
     )
 
     with case(graphql_engine_service_created, False):
@@ -291,6 +300,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
     )
 
+    with case(use_seed_data, True):
+        apply_seed_cmd = (
+            "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
+        )
+        seed_data = migrations.insert_seed_data(
+            command=apply_seed_cmd, upstream_tasks=[metadata]
+        )
+
+    ready_database = merge(metadata, seed_data)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")

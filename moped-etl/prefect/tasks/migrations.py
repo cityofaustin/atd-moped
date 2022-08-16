@@ -10,6 +10,16 @@ import tasks.shared as shared
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
+@task(name="Check if database is to be built from seed data")
+def use_seed_data(database_seed_source):
+    logger.info("Seed directive: " + database_seed_source)
+    if database_seed_source == 'seed':
+        logger.info("Using seed data")
+        return True
+    else:
+        logger.info("Not using seed data")
+        return False
+
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(slug):
     basename = slug["basename"]
@@ -49,6 +59,7 @@ clone_moped_repo = ShellTask(name="Clone Moped Repo", stream_output=True)
 checkout_target_branch = ShellTask(name="Checkout target branch", stream_output=True)
 migrate_db = ShellTask(name="Migrate DB", stream_output=True)
 apply_metadata = ShellTask(name="Apply Metadata", stream_output=True)
+insert_seed_data = ShellTask(name="Insert Seed Data", stream_output=True)
 
 check_for_consistent_metadata = ShellTask(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
 
