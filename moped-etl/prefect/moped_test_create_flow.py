@@ -89,6 +89,8 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     database_exists = db.database_exists(slug)
 
+    use_seed_data = migrations.use_seed_data(database_seed_source)
+
     with case(database_exists, True):
 
         running_tasks = ecs.check_count_running_ecs_tasks(slug=slug)
@@ -106,7 +108,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug, upstream_tasks=[ready_to_commission]
     )
 
-    with case(database_seed_source == "seed", False):
+    with case(use_seed_data, False):
         replicate_database_command = db.populate_database_with_data_command(
             slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
         )
@@ -144,10 +146,12 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         ready_for_api_deployment=ready_for_api_deployment,
     )
 
-    deploy_api = api.create_api_task(command=commission_api_command)
-    api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
+    # deploy_api = api.create_api_task(command=commission_api_command)
+    # api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
     # comment out the two lines above if you put the right endpoint here
-    # api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
+    api_endpoint = (
+        "https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
+    )
 
     ## Commission the ECS cluster
 
@@ -285,7 +289,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
     )
 
-    with case(database_seed_source == "seed", True):
+    with case(use_seed_data, True):
         apply_seed_cmd = (
             "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
         )

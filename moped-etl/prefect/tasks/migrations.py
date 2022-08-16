@@ -10,6 +10,16 @@ import tasks.shared as shared
 # set up the prefect logging system
 logger = prefect.context.get("logger")
 
+@task(name="Check if database is to be built from seed data")
+def use_seed_data(database_seed_source):
+    logger.info("Seed directive: " + database_seed_source)
+    if database_seed_source == 'seed':
+        logger.info("Using seed data")
+        return True
+    else:
+        logger.info("Not using seed data")
+        return False
+
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(slug):
     basename = slug["basename"]
