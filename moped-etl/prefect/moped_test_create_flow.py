@@ -83,6 +83,19 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     slug = slug_branch_name(branch)
 
+    ## Get github checkout 
+
+    rm_clone = "rm -fr /tmp/atd-moped"
+    cleaned = migrations.remove_moped_checkout(command=rm_clone)
+
+    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
+    cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
+
+    checkout_branch = migrations.get_git_checkout_command(slug=slug)
+    git_repo_checked_out = migrations.checkout_target_branch(
+        command=checkout_branch, upstream_tasks=[cloned]
+    ) 
+
     ## Commission the database
 
     database_exists = db.database_exists(slug)
@@ -230,22 +243,13 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=commission_activity_log_command
     )
 
-    ## Apply migrations
 
+
+    ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
 
     access_key = migrations.get_graphql_engine_access_key(slug=slug)
 
-    rm_clone = "rm -fr /tmp/atd-moped"
-    cleaned = migrations.remove_moped_checkout(command=rm_clone)
-
-    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
-    cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
-
-    checkout_branch = migrations.get_git_checkout_command(slug=slug)
-    checked_out = migrations.checkout_target_branch(
-        command=checkout_branch, upstream_tasks=[cloned]
-    )
 
     metadata = "metadata"
 
@@ -253,7 +257,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         graphql_endpoint=graphql_endpoint,
         access_key=access_key,
         metadata=metadata,
-        checked_out_token=checked_out,
+        checked_out_token=git_repo_checked_out,
     )
 
     # what are these parentheses doing?
