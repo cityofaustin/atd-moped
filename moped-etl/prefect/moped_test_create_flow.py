@@ -287,36 +287,22 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     )
 
     # what are these parentheses doing?
-    migrate_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
-    )
-    migrate = migrations.migrate_db(
-        command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
-    )
+        migrate_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply; sleep 15;)"
 
-    consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
+        consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
     consistent_metadata = migrations.check_for_consistent_metadata(
         command=consistency_cmd, upstream_tasks=[migrate]
     )
 
+        # Should this sleep come out or should the bash sleeps be done like this?
     settled_metadata = migrations.sleep_fifteen_seconds(
         consistent_metadata=consistent_metadata
     )
 
-    metadata_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
-    )
-    metadata = migrations.apply_metadata(
-        command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
-    )
+        metadata_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply; sleep 15;)"
 
     with case(use_seed_data, True):
-        apply_seed_cmd = (
-            "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
-        )
-        seed_data = migrations.insert_seed_data(
-            command=apply_seed_cmd, upstream_tasks=[metadata]
-        )
+            apply_seed_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply; sleep 15;)"
 
     ready_database = merge(metadata, seed_data)
 
