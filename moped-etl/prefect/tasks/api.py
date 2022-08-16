@@ -169,7 +169,7 @@ def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deplo
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
+    api_project_path = "/tmp/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}/zappa_settings.json", "w") as f:
@@ -226,7 +226,7 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
 
-    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
+    api_project_path = "/tmp/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}/zappa_settings.json", "w") as f:
