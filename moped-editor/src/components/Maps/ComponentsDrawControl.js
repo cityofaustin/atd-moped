@@ -1,6 +1,6 @@
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { useCallback, useRef } from "react";
 import { useControl } from "react-map-gl";
+import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 export function DrawControl(props) {
@@ -9,6 +9,7 @@ export function DrawControl(props) {
       map.on("draw.create", props.onCreate);
       map.on("draw.update", props.onUpdate);
       map.on("draw.delete", props.onDelete);
+
       return new MapboxDraw(props);
     },
     ({ map }) => {
@@ -34,6 +35,7 @@ DrawControl.defaultProps = {
  * This library doesn't support showing draw tool icons dynamically based on the control configuration
  * So, we need to create separate components per case of shown controls and render those dynamically
  * based on the drawLines boolean
+ * @see https://github.com/mapbox/mapbox-gl-draw/issues/286
  */
 const DrawPointsControl = (props) => {
   return (
@@ -71,6 +73,7 @@ const ComponentsDrawControl = ({ drawLines, onCreate, onUpdate, onDelete }) => {
     onCreate,
     onUpdate,
     onDelete,
+    styles: mapboxDrawStylesOverrides,
   };
 
   if (shouldDrawPoints) return <DrawPointsControl {...sharedProps} />;

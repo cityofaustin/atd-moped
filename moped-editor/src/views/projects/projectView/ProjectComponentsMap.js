@@ -40,13 +40,12 @@ import {
 } from "../../../utils/mapHelpers";
 
 // import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
-import DrawControl from "src/components/Maps/DrawControl";
+import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
-import ComponentsDrawControl from "src/components/Maps/DrawControl";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -276,10 +275,9 @@ const ProjectComponentsMap = ({
   /*
    * {boolean} isDrawing - Are draw tools enabled or disabled
    * {function} setIsDrawing - Toggle isdrawing
-   * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
    * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  // const { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints } =
+  // const { isDrawing, setIsDrawing, saveDrawnPoints } =
   //   useMapDrawTools(
   //     featureCollection,
   //     setFeatureCollection,
@@ -509,9 +507,6 @@ const ProjectComponentsMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {/* {!isSignalComponent &&
-          drawLines !== null &&
-          renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
         {!isSignalComponent && drawLines !== null && (
           <ComponentsDrawControl
             onCreate={onUpdate}
@@ -520,20 +515,6 @@ const ProjectComponentsMap = ({
             drawLines={drawLines}
           />
         )}
-        {/* <DrawControl
-          position="top-right"
-          displayControlsDefault={false}
-          controls={{
-            point: true,
-            line_string: true,
-            trash: true,
-          }}
-          clickBuffer={12}
-          defaultMode="draw_polygon"
-          onCreate={onUpdate}
-          onUpdate={onUpdate}
-          onDelete={onUpdate}
-        /> */}
       </Map>
     </Box>
   );
