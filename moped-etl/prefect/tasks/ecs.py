@@ -59,7 +59,7 @@ def create_load_balancer(slug):
     elb = boto3.client("elbv2")
 
     create_elb_result = elb.create_load_balancer(
-        Name=basename,
+        Name=slug["elb_basename"],
         Subnets=[VPC_SUBNET_A, VPC_SUBNET_B],
         SecurityGroups=[ELB_SECURITY_GROUP],
         Scheme="internet-facing",
@@ -79,7 +79,7 @@ def create_target_group(slug):
     elb = boto3.client("elbv2")
 
     target_group = elb.create_target_group(
-        Name=basename,
+        Name=slug["elb_basename"],
         Protocol="HTTP",
         Port=8080,
         VpcId=VPC_ID,
@@ -144,20 +144,35 @@ def check_dns_status(dns_request):
 
 @task(name="Request ACM TLS Certificate")
 def create_certificate(slug, dns_status):
-    basename = slug["basename"]
     logger.info("Creating TLS Certificate")
+
+    basename = slug["basename"]
+    short_tls_basename = slug["short_tls_basename"]
 
     acm = boto3.client("acm")
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
+    # TODO create these host names via shared helper function or push the hardcoded values into the environment variables
 
-    certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
+    host = basename + "-graphql.moped-test.austinmobility.io"
+    short_host = short_tls_basename + "-graphql.moped-test.austinmobility.io"
+
+    certificate = None
+    if short_host != host:
+        logger.info("Short hostname is different from long hostname")
+        certificate = acm.request_certificate(
+            DomainName=short_host,
+            ValidationMethod="DNS",
+            SubjectAlternativeNames=[host],
+        )
+    else:
+        logger.info("Short hostname is the same as long hostname")
+        certificate = acm.request_certificate(DomainName=host, ValidationMethod="DNS")
 
     return certificate
 
 
 @task(
-    name="Check ACM Certificate Status",
+    name="Get Certificate validation options",
     max_retries=12,
     retry_delay=timedelta(seconds=10),
 )
@@ -169,24 +184,25 @@ def get_certificate_validation_parameters(tls_certificate):
     certificate = acm.describe_certificate(
         CertificateArn=tls_certificate["CertificateArn"]
     )
+
+    logger.info(certificate)
+
     if not certificate["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
         "Name"
     ]:
         raise Exception("No Domain Validation Resource Record Options")
 
-    return certificate
+    validations = certificate["Certificate"]["DomainValidationOptions"]
+
+    return validations
 
 
 @task(name="Add CNAME for Certificate Validation")
 def add_cname_for_certificate_validation(parameters):
     logger.info("Adding CNAME for TLS Certificate Validation")
 
-    host = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Name"
-    ]
-    target = parameters["Certificate"]["DomainValidationOptions"][0]["ResourceRecord"][
-        "Value"
-    ]
+    host = parameters["ResourceRecord"]["Name"]
+    target = parameters["ResourceRecord"]["Value"]
 
     route53 = boto3.client("route53")
 
@@ -207,15 +223,13 @@ def add_cname_for_certificate_validation(parameters):
         },
     )
 
-    return record
-
 
 @task(
     name="Wait for TLS Certificate validation",
     max_retries=12,
     retry_delay=timedelta(seconds=10),
 )
-def wait_for_valid_certificate(validation_record, tls_certificate):
+def wait_for_valid_certificate(tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
     acm = boto3.client("acm")
@@ -238,18 +252,18 @@ def wait_for_valid_certificate(validation_record, tls_certificate):
 
 
 @task(name="Remove Route 53 CNAME from validation")
-def remove_route53_cname_for_validation(validation_record, issued_certificate):
+def remove_route53_cname_for_validation(parameters):
 
     logger.info("Removing CNAME TLS from Certificate Validation")
 
-    host = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Name"]
-    target = issued_certificate["Certificate"]["DomainValidationOptions"][0][
-        "ResourceRecord"
-    ]["Value"]
+    logger.info(parameters)
+
+    host = parameters["ResourceRecord"]["Name"]
+    target = parameters["ResourceRecord"]["Value"]
 
     route53 = boto3.client("route53")
+
+    logger.info(parameters)
 
     record = route53.change_resource_record_sets(
         HostedZoneId=R53_HOSTED_ZONE,
@@ -479,7 +493,7 @@ def remove_all_listeners(slug):
 
     elb = boto3.client("elbv2")
 
-    load_balancer = elb.describe_load_balancers(Names=[basename])
+    load_balancer = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
     listeners = elb.describe_listeners(
         LoadBalancerArn=load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
@@ -498,7 +512,7 @@ def remove_load_balancer(slug, no_cluster_token):
 
     elb = boto3.client("elbv2")
 
-    load_balancers = elb.describe_load_balancers(Names=[basename])
+    load_balancers = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
     delete_elb_result = elb.delete_load_balancer(
         LoadBalancerArn=load_balancers["LoadBalancers"][0]["LoadBalancerArn"]

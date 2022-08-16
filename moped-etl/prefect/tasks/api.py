@@ -1,4 +1,5 @@
 import json
+import time
 import boto3
 import os
 import re
@@ -68,8 +69,8 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
 
     logger.info("Creating API secret config")
 
-    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
-    graphql_engine_api_key = shared.generate_access_key(basename)
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["basename"])
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
@@ -96,7 +97,7 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
 
     secret_arn = response["ARN"]
 
-    # print("Response ARN: " + secret_arn)
+    logger.info("Response ARN: " + secret_arn)
 
     return secret_arn
 
@@ -112,6 +113,10 @@ def remove_moped_api_secrets_entry(slug):
     response = client.delete_secret(
         SecretId=secret_name, ForceDeleteWithoutRecovery=True
     )
+
+    sleep = 30
+    logger.info(f"Sleeping {sleep} seconds to allow secret to be deleted")
+    time.sleep(sleep)
 
     secret_arn = response["ARN"]
 

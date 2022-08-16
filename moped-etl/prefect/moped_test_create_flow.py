@@ -47,6 +47,8 @@ logger = prefect.context.get("logger")
 
 @task(name="Slug branch name")
 def slug_branch_name(basename):
+    short_tls_basename = basename[0:27]
+    elb_basename = basename[0:32]
     underscore_basename = basename.replace("-", "_")
     database = re.search("^[\d_]*(.*)", underscore_basename).group(
         1
@@ -56,7 +58,13 @@ def slug_branch_name(basename):
     )
     awslambda = internal_number_free_underscore_basename[0:16]
 
-    slug = {"basename": basename, "database": database, "awslambda": awslambda}
+    slug = {
+        "basename": basename,
+        "database": database,
+        "awslambda": awslambda,
+        "short_tls_basename": short_tls_basename,
+        "elb_basename": elb_basename,
+    }
     return slug
 
 
@@ -78,8 +86,10 @@ def drain_service(slug):
 
 # with Flow("Moped Test Instance Commission") as test_commission:
 with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
-    branch = Parameter("branch")
-    database_seed_source = Parameter("database_seed_source")
+    branch = Parameter("branch", default="feature-branch-name", required=True)
+    database_seed_source = Parameter(
+        "database_seed_source", default="seed", required=True
+    )
 
     slug = slug_branch_name(branch)
 
@@ -100,6 +110,8 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     database_exists = db.database_exists(slug)
 
+    use_seed_data = migrations.use_seed_data(database_seed_source)
+
     with case(database_exists, True):
 
         running_tasks = ecs.check_count_running_ecs_tasks(slug=slug)
@@ -117,13 +129,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug, upstream_tasks=[ready_to_commission]
     )
 
-    populate_database_command = db.populate_database_with_data_command(
-        slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
-    )
+    with case(use_seed_data, False):
+        replicate_database_command = db.populate_database_with_data_command(
+            slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
+        )
+        replicate_database = db.populate_database_with_data_task(
+            command=replicate_database_command
+        )
 
-    populate_database = db.populate_database_with_data_task(
-        command=populate_database_command
-    )
+    populate_database = merge(create_database, replicate_database)
 
     ## Commission the API
 
@@ -156,7 +170,9 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
     # comment out the two lines above if you put the right endpoint here
-    # api_endpoint = "https://ylna9ywi0a.execute-api.us-east-1.amazonaws.com/unify_flows"
+    #api_endpoint = (
+        #"https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
+    #)
 
     ## Commission the ECS cluster
 
@@ -176,17 +192,20 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         tls_certificate=tls_certificate
     )
 
-    validation_record = ecs.add_cname_for_certificate_validation(
-        parameters=certificate_validation_parameters
+    # this is now returning an iterable of the results of adding the cnames
+    validation_record = ecs.add_cname_for_certificate_validation.map(
+        certificate_validation_parameters
     )
 
     issued_certificate = ecs.wait_for_valid_certificate(
-        validation_record=validation_record, tls_certificate=tls_certificate
+        tls_certificate=tls_certificate, upstream_tasks=[validation_record]
     )
 
-    removed_cname = ecs.remove_route53_cname_for_validation(
-        validation_record, issued_certificate
-    )
+    # this should map into two tasks, and run after the certificate is issued
+    # FIXME this has some key error in it
+    # removed_cname = ecs.remove_route53_cname_for_validation.map(
+    # certificate_validation_parameters, upstream_tasks=[issued_certificate]
+    # )
 
     has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
     with case(has_listeners, False):
@@ -209,6 +228,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         target_group=target_group,
         listeners_token=listeners,
         cluster_token=cluster,
+        upstream_tasks=[populate_database],
     )
 
     with case(graphql_engine_service_created, False):
@@ -281,6 +301,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
     )
 
+    with case(use_seed_data, True):
+        apply_seed_cmd = (
+            "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
+        )
+        seed_data = migrations.insert_seed_data(
+            command=apply_seed_cmd, upstream_tasks=[metadata]
+        )
+
+    ready_database = merge(metadata, seed_data)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
@@ -339,10 +368,10 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
 
 if __name__ == "__main__":
-    branch = "unify-flows"
+    branch = "refactor-user-activation-and-main"
 
     test_commission.register(project_name="Moped")
-    test_decommission.register(project_name="Moped")
+    # test_decommission.register(project_name="Moped")
 
-    # test_commission.run(branch=branch, database_seed_source="production")
+    # test_commission.run(branch=branch, database_seed_source="staging")
     # test_decommission.run(branch=branch)
