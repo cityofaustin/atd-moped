@@ -370,7 +370,7 @@ const ProjectComponentsMap = ({
   const onUpdate = () => {
     console.log("this worked!");
   };
-
+  console.log(drawLines);
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
@@ -511,21 +511,23 @@ const ProjectComponentsMap = ({
         {/* {!isSignalComponent &&
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
-        {/* {!isSignalComponent && drawLines !== null && (
+        {!isSignalComponent && drawLines !== null && (
           <DrawControl
             position="top-right"
             displayControlsDefault={false}
             controls={{
-              polygon: true,
+              ...(drawLines === false && { point: true }),
+              ...(drawLines === true && { line_string: true }),
               trash: true,
             }}
+            clickBuffer={12}
             defaultMode="draw_polygon"
             onCreate={onUpdate}
             onUpdate={onUpdate}
-            onDelete={onDelete}
+            onDelete={onUpdate}
           />
-        )} */}
-        <DrawControl
+        )}
+        {/* <DrawControl
           position="top-right"
           displayControlsDefault={false}
           controls={{
@@ -538,7 +540,7 @@ const ProjectComponentsMap = ({
           onCreate={onUpdate}
           onUpdate={onUpdate}
           onDelete={onUpdate}
-        />
+        /> */}
       </Map>
     </Box>
   );
