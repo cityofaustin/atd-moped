@@ -78,8 +78,10 @@ def drain_service(slug):
 
 # with Flow("Moped Test Instance Commission") as test_commission:
 with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
-    branch = Parameter("branch")
-    database_seed_source = Parameter("database_seed_source")
+    branch = Parameter("branch", default="feature-branch-name", required=True)
+    database_seed_source = Parameter(
+        "database_seed_source", default="seed", required=True
+    )
 
     slug = slug_branch_name(branch)
 
