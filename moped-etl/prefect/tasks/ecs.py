@@ -346,7 +346,7 @@ def create_task_definition(slug, api_endpoint):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                "image": "hasura/graphql-engine:latest",
+                "image": "hasura/graphql-engine:v2.7.0",
                 # "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
