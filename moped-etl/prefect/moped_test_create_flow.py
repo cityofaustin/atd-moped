@@ -48,7 +48,9 @@ logger = prefect.context.get("logger")
 @task(name="Slug branch name")
 def slug_branch_name(basename):
     short_tls_basename = basename[0:27]
-    elb_basename = basename[0:32]
+
+    elb_basename = basename[0:32].replace("_", "-")
+
     underscore_basename = basename.replace("-", "_")
     database = re.search("^[\d_]*(.*)", underscore_basename).group(
         1
