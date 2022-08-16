@@ -96,6 +96,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     database_seed_source = Parameter(
         "database_seed_source", default="seed", required=True
     )
+    do_migrations = Parameter("do_migrations", default=True, required=True)
 
     slug = slug_branch_name(branch)
 
@@ -286,25 +287,35 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         checked_out_token=git_repo_checked_out,
     )
 
-    # what are these parentheses doing?
+    with case(do_migrations, True):
+        # what are these parentheses doing?
         migrate_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply; sleep 15;)"
+        migrate = migrations.migrate_db(
+            command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
+        )
 
         consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
-    consistent_metadata = migrations.check_for_consistent_metadata(
-        command=consistency_cmd, upstream_tasks=[migrate]
-    )
+        consistent_metadata = migrations.check_for_consistent_metadata(
+            command=consistency_cmd, upstream_tasks=[migrate]
+        )
 
         # Should this sleep come out or should the bash sleeps be done like this?
-    settled_metadata = migrations.sleep_fifteen_seconds(
-        consistent_metadata=consistent_metadata
-    )
+        settled_metadata = migrations.sleep_fifteen_seconds(
+            consistent_metadata=consistent_metadata
+        )
 
         metadata_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply; sleep 15;)"
+        metadata = migrations.apply_metadata(
+            command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
+        )
 
-    with case(use_seed_data, True):
+        with case(use_seed_data, True):
             apply_seed_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply; sleep 15;)"
+            seed_data = migrations.insert_seed_data(
+                command=apply_seed_cmd, upstream_tasks=[metadata]
+            )
 
-    ready_database = merge(metadata, seed_data)
+        ready_database = merge(metadata, seed_data)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
