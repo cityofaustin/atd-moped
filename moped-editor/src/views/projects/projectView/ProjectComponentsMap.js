@@ -234,8 +234,7 @@ const ProjectComponentsMap = ({
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
-   * Make use of a custom hook that initializes a map viewport
-   * and fits it to a provided feature collection.
+   * Make use of a custom hook that fits to a provided feature collection.
    */
   const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,

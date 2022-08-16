@@ -612,6 +612,7 @@ const ProjectComponentsMapEdit = ({
               transitionInShowTools={editPanelCollapsedShow}
               onShowToolsClick={() => setEditPanelCollapsedShow(false)}
               onExitShowTools={() => setEditPanelCollapsed(true)}
+              showButtonText={"Show Component Details"}
             >
               <Grid container spacing={2}>
                 <Grid item xs className={classes.layerSelectBox}>
@@ -766,7 +767,9 @@ const ProjectComponentsMapEdit = ({
                 aria-describedby="alert-dialog-description"
               >
                 <DialogTitle id="alert-dialog-title">
-                  <h2>{"Delete Component?"}</h2>
+                  <div>
+                    <h2>{"Delete Component?"}</h2>
+                  </div>
                 </DialogTitle>
                 <DialogContent>
                   <DialogContentText id="alert-dialog-description">

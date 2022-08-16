@@ -49,6 +49,7 @@ const MapToolsCollapse = ({
   transitionInShowTools,
   onShowToolsClick,
   onExitShowTools,
+  showButtonText,
 }) => {
   const classes = useStyles();
 
@@ -61,7 +62,7 @@ const MapToolsCollapse = ({
           onClick={onShowToolsClick}
           startIcon={<KeyboardArrowDown />}
         >
-          Show Components
+          {showButtonText}
         </Button>
       </Collapse>
       <Collapse
