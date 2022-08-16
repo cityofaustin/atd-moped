@@ -22,8 +22,7 @@ def use_seed_data(database_seed_source):
 
 @task(name="Get graphql-engine hostname")
 def get_graphql_engine_hostname(slug):
-    basename = slug["basename"]
-    return shared.form_graphql_endpoint_hostname(basename)
+    return shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
 
 @task(name="Get graphql-engine access key")
 def get_graphql_engine_access_key(slug):

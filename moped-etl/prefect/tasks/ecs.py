@@ -93,10 +93,10 @@ def create_target_group(slug):
 
 @task(name="Create Rout53 CNAME")
 def create_route53_cname(slug, load_balancer):
-    basename = slug["basename"]
     logger.info("Creating Route53 CNAME")
 
-    host = shared.form_graphql_endpoint_hostname(basename)
+    host = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    logger.info("Graphql Endpoint Hostname: " + host)
 
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
@@ -146,15 +146,12 @@ def check_dns_status(dns_request):
 def create_certificate(slug, dns_status):
     logger.info("Creating TLS Certificate")
 
-    basename = slug["basename"]
-    short_tls_basename = slug["short_tls_basename"]
-
     acm = boto3.client("acm")
 
     # TODO create these host names via shared helper function or push the hardcoded values into the environment variables
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
-    short_host = short_tls_basename + "-graphql.moped-test.austinmobility.io"
+    host = slug["graphql_endpoint"] + "-graphql.moped-test.austinmobility.io"
+    short_host = slug["short_tls_basename"] + "-graphql.moped-test.austinmobility.io"
 
     certificate = None
     if short_host != host:
@@ -615,12 +612,11 @@ def delete_service(slug, drained_token, no_target_group_token):
 
 @task(name="Remove Route53 CNAME")
 def remove_route53_cname(slug, removed_load_balancer_token):
-    basename = slug["basename"]
     logger.info("Removing Route53 CNAME")
 
     route53 = boto3.client("route53")
 
-    hostname = basename + "-graphql.moped-test.austinmobility.io."
+    hostname = slug["graphql_endpoint"] + "-graphql.moped-test.austinmobility.io."
 
     existing_hostname = route53.list_resource_record_sets(
         HostedZoneId="ZIY5NA61UOXR9",
@@ -668,7 +664,7 @@ def remove_certificate(slug, removed_hostname_token):
 
     acm = boto3.client("acm")
 
-    host = basename + "-graphql.moped-test.austinmobility.io"
+    host = slug["graphql_endpoint"] + "-graphql.moped-test.austinmobility.io"
 
     certificates = acm.list_certificates()
 
@@ -692,7 +688,11 @@ def remove_certificate(slug, removed_hostname_token):
 )
 def check_graphql_endpoint_status(slug, graphql_engine_service):
     basename = slug["basename"]
-    endpoint = "https://" + shared.form_graphql_endpoint_hostname(basename) + "/healthz"
+    endpoint = (
+        "https://"
+        + shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+        + "/healthz"
+    )
 
     logger.info("Endpoint: " + endpoint)
 

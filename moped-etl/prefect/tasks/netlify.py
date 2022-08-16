@@ -70,7 +70,9 @@ def trigger_netlify_build(slug, api_endpoint_url):
     }
 
     graphql_endpoint = (
-        "https://" + shared.form_graphql_endpoint_hostname(branch) + "/v1/graphql"
+        "https://"
+        + shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+        + "/v1/graphql"
     )
 
     # See https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/.env-cmdrc#L52-L76

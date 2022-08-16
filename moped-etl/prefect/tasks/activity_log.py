@@ -22,8 +22,9 @@ function_name = "activity_log"
 def create_activity_log_lambda_config(
     basename,
     graphql_engine_api_key,
+    slug,
 ):
-    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
     return {
         "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
         "Environment": {
@@ -55,7 +56,7 @@ def create_activity_log_command(slug):
 
     graphql_engine_api_key = shared.generate_access_key(basename)
 
-    lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
+    lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key, slug=slug)
 
     # Write Lambda config to activity_log project folder
     with open(f"{deployment_path}/handler_config.json", "w") as f:

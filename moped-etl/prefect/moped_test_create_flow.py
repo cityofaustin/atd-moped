@@ -47,9 +47,12 @@ logger = prefect.context.get("logger")
 
 @task(name="Slug branch name")
 def slug_branch_name(basename):
-    short_tls_basename = basename[0:27]
 
     elb_basename = basename[0:32].replace("_", "-")
+
+    graphql_endpoint = re.search("^[\d_]*(.*)", basename).group(1).replace("_", "-")
+
+    short_tls_basename = graphql_endpoint[0:27]
 
     underscore_basename = basename.replace("-", "_")
     database = re.search("^[\d_]*(.*)", underscore_basename).group(
@@ -63,6 +66,7 @@ def slug_branch_name(basename):
     slug = {
         "basename": basename,
         "database": database,
+        "graphql_endpoint": graphql_endpoint,
         "awslambda": awslambda,
         "short_tls_basename": short_tls_basename,
         "elb_basename": elb_basename,
