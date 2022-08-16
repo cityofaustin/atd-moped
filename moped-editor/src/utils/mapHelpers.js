@@ -727,13 +727,15 @@ export function useHoverLayer() {
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {object} mapRef - Ref object whose current property exposes the map instance
  * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
- * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
+ * @param {boolean} shouldFitOnFeatureUpdate - Determines if map fits to featuresCollection if collection updates
+ * @param {number} padding - Padding (in px) to leave around the map components when fitting
  * @return {function} Function to use as a Mapbox GL JS onRender callback
  */
 export function useFeatureCollectionToFitBounds(
   mapRef,
   featureCollection,
-  shouldFitOnFeatureUpdate = true
+  shouldFitOnFeatureUpdate = true,
+  padding = 250
 ) {
   const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
@@ -746,7 +748,7 @@ export function useFeatureCollectionToFitBounds(
 
     mapRef.current &&
       mapRef.current.fitBounds(mapBounds, {
-        padding: 100,
+        padding,
         maxZoom: 16,
         duration: 0,
       });

@@ -37,12 +37,13 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
-   * Make use of a custom hook that initializes a map viewport
-   * and fits it to a provided feature collection.
+   * Make use of a custom hook that fits to a provided feature collection.
    */
   const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
-    projectFeatureCollection
+    projectFeatureCollection,
+    true,
+    100
   );
 
   /**
@@ -87,7 +88,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         /* Gets and sets data from a map feature used to populate and place a tooltip */
         onMouseMove={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
-        onMove={handleViewportChange}
+        onMove={(e) => handleViewportChange(e.viewState)}
         mapStyle={basemaps.streets}
       >
         {/* Draw Navigation controls with specific styles */}
