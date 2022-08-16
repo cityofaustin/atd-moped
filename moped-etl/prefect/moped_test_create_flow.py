@@ -50,7 +50,7 @@ def slug_branch_name(basename):
 
     elb_basename = basename[0:32].replace("_", "-")
 
-    graphql_endpoint = re.search("^[\d_]*(.*)", basename).group(1).replace("_", "-")
+    graphql_endpoint = re.search("^[\d_-]*(.*)", basename).group(1).replace("_", "-")
 
     short_tls_basename = graphql_endpoint[0:27]
 
