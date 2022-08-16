@@ -47,6 +47,8 @@ logger = prefect.context.get("logger")
 
 @task(name="Slug branch name")
 def slug_branch_name(basename):
+    short_tls_basename = basename[0:27]
+    elb_basename = basename[0:32]
     underscore_basename = basename.replace("-", "_")
     database = re.search("^[\d_]*(.*)", underscore_basename).group(
         1
@@ -56,7 +58,13 @@ def slug_branch_name(basename):
     )
     awslambda = internal_number_free_underscore_basename[0:16]
 
-    slug = {"basename": basename, "database": database, "awslambda": awslambda}
+    slug = {
+        "basename": basename,
+        "database": database,
+        "awslambda": awslambda,
+        "short_tls_basename": short_tls_basename,
+        "elb_basename": elb_basename,
+    }
     return slug
 
 
@@ -163,17 +171,20 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         tls_certificate=tls_certificate
     )
 
-    validation_record = ecs.add_cname_for_certificate_validation(
-        parameters=certificate_validation_parameters
+    # this is now returning an iterable of the results of adding the cnames
+    validation_record = ecs.add_cname_for_certificate_validation.map(
+        certificate_validation_parameters
     )
 
     issued_certificate = ecs.wait_for_valid_certificate(
-        validation_record=validation_record, tls_certificate=tls_certificate
+        tls_certificate=tls_certificate, upstream_tasks=[validation_record]
     )
 
-    removed_cname = ecs.remove_route53_cname_for_validation(
-        validation_record, issued_certificate
-    )
+    # this should map into two tasks, and run after the certificate is issued
+    # FIXME this has some key error in it
+    # removed_cname = ecs.remove_route53_cname_for_validation.map(
+    # certificate_validation_parameters, upstream_tasks=[issued_certificate]
+    # )
 
     has_listeners = ecs.count_existing_listeners(slug=slug, load_balancer=load_balancer)
     with case(has_listeners, False):
@@ -338,10 +349,10 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
 
 if __name__ == "__main__":
-    branch = "unify-flows"
+    branch = "refactor-user-activation-and-main"
 
     test_commission.register(project_name="Moped")
-    test_decommission.register(project_name="Moped")
+    # test_decommission.register(project_name="Moped")
 
-    # test_commission.run(branch=branch, database_seed_source="production")
+    # test_commission.run(branch=branch, database_seed_source="staging")
     # test_decommission.run(branch=branch)
