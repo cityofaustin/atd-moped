@@ -156,7 +156,9 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     is_deployed = api.check_if_api_is_deployed(slug=slug)
     with case(is_deployed, True):
         decommission_api_command = api.create_moped_api_undeploy_command(
-            slug=slug, config_secret_arn=remove_api_config_secret_arn
+            slug=slug,
+            config_secret_arn=remove_api_config_secret_arn,
+            upstream_tasks=[git_repo_checked_out],
         )
         undeploy_api = api.remove_api_task(command=decommission_api_command)
     ready_for_api_deployment = merge(is_deployed, undeploy_api)
@@ -165,14 +167,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug,
         config_secret_arn=create_api_config_secret_arn,
         ready_for_api_deployment=ready_for_api_deployment,
+        upstream_tasks=[git_repo_checked_out],
     )
 
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
     # comment out the two lines above if you put the right endpoint here
-    #api_endpoint = (
-        #"https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
-    #)
+    # api_endpoint = (
+    # "https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
+    # )
 
     ## Commission the ECS cluster
 
