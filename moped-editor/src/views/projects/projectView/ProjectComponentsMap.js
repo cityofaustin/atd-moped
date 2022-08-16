@@ -46,6 +46,7 @@ import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
+import ComponentsDrawControl from "src/components/Maps/DrawControl";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -370,7 +371,7 @@ const ProjectComponentsMap = ({
   const onUpdate = () => {
     console.log("this worked!");
   };
-  console.log(drawLines);
+
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
       {/* These two lines act as a conditional global override of MapBox. */}
@@ -512,19 +513,11 @@ const ProjectComponentsMap = ({
           drawLines !== null &&
           renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
         {!isSignalComponent && drawLines !== null && (
-          <DrawControl
-            position="top-right"
-            displayControlsDefault={false}
-            controls={{
-              ...(drawLines === false && { point: true }),
-              ...(drawLines === true && { line_string: true }),
-              trash: true,
-            }}
-            clickBuffer={12}
-            defaultMode="draw_polygon"
+          <ComponentsDrawControl
             onCreate={onUpdate}
             onUpdate={onUpdate}
             onDelete={onUpdate}
+            drawLines={drawLines}
           />
         )}
         {/* <DrawControl
