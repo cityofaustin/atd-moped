@@ -50,8 +50,8 @@ def create_activity_log_command(slug):
 
     aws_function_name = shared.create_activity_log_aws_name(basename, function_name)
 
-    helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
-    deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
+    helper_script_path = "/tmp/atd-moped/.github/workflows"
+    deployment_path = f"/tmp/atd-moped/moped-data-events/{function_name}"
 
     graphql_engine_api_key = shared.generate_access_key(basename)
 
