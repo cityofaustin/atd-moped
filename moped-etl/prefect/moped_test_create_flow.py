@@ -106,13 +106,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug, upstream_tasks=[ready_to_commission]
     )
 
-    populate_database_command = db.populate_database_with_data_command(
-        slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
-    )
+    with case(database_seed_source == "seed", False):
+        replicate_database_command = db.populate_database_with_data_command(
+            slug=slug, stage=database_seed_source, upstream_tasks=[create_database]
+        )
+        replicate_database = db.populate_database_with_data_task(
+            command=replicate_database_command
+        )
 
-    populate_database = db.populate_database_with_data_task(
-        command=populate_database_command
-    )
+    populate_database = merge(create_database, replicate_database)
 
     ## Commission the API
 
@@ -198,6 +200,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         target_group=target_group,
         listeners_token=listeners,
         cluster_token=cluster,
+        upstream_tasks=[populate_database],
     )
 
     with case(graphql_engine_service_created, False):
@@ -282,6 +285,15 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
     )
 
+    with case(database_seed_source == "seed", True):
+        apply_seed_cmd = (
+            "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
+        )
+        seed_data = migrations.insert_seed_data(
+            command=apply_seed_cmd, upstream_tasks=[metadata]
+        )
+
+    ready_database = merge(metadata, seed_data)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")

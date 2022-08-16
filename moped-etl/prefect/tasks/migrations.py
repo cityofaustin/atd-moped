@@ -49,6 +49,7 @@ clone_moped_repo = ShellTask(name="Clone Moped Repo", stream_output=True)
 checkout_target_branch = ShellTask(name="Checkout target branch", stream_output=True)
 migrate_db = ShellTask(name="Migrate DB", stream_output=True)
 apply_metadata = ShellTask(name="Apply Metadata", stream_output=True)
+insert_seed_data = ShellTask(name="Insert Seed Data", stream_output=True)
 
 check_for_consistent_metadata = ShellTask(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
 
