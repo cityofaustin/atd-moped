@@ -32,7 +32,7 @@ DrawControl.defaultProps = {
 };
 
 /*
- * This library doesn't support showing draw tool icons dynamically based on the control configuration
+ * mapbox-gl-draw doesn't support rendering draw tool icons dynamically based on the control configuration
  * So, we need to create separate components per case of shown controls and render those dynamically
  * based on the drawLines boolean
  * @see https://github.com/mapbox/mapbox-gl-draw/issues/286

@@ -242,10 +242,6 @@ const ProjectComponentsMap = ({
     isSignalComponent
   );
 
-  const [cursor, setCursor] = useState("auto");
-  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
-  const onMouseLeave = useCallback(() => setCursor("auto"), []);
-
   const { handleLayerHover, featureText, featureId, hoveredCoords } =
     useHoverLayer();
 
@@ -271,19 +267,28 @@ const ProjectComponentsMap = ({
     }
   );
 
+  const shouldShowDrawTools = !isSignalComponent && drawLines !== null;
   /*
    * {boolean} isDrawing - Are draw tools enabled or disabled
-   * {function} setIsDrawing - Toggle isdrawing
    * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  const { isDrawing, setIsDrawing, saveDrawnPoints, renderMapDrawTools } =
-    useMapDrawTools(
-      featureCollection,
-      setFeatureCollection,
-      viewport.zoom,
-      saveActionDispatch,
-      drawLines
-    );
+  const { isDrawing, saveDrawnPoints, renderMapDrawTools } = useMapDrawTools(
+    featureCollection,
+    setFeatureCollection,
+    viewport.zoom,
+    saveActionDispatch,
+    drawLines,
+    shouldShowDrawTools
+  );
+
+  const [cursor, setCursor] = useState("auto");
+  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
+  const onMouseLeave = useCallback(() => setCursor("auto"), []);
+
+  // Update cursor if we are drawing
+  useEffect(() => {
+    setCursor(() => "pointer");
+  }, [isDrawing]);
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -291,10 +296,6 @@ const ProjectComponentsMap = ({
    */
   const handleLayerClick = (e) => {
     const layerName = getLayerSource(e);
-    // If a user clicks a drawn point in the map, open draw UI
-    // if (drawnLayerNames.includes(layerName)) {
-    //   setIsDrawing(true);
-    // }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
@@ -352,15 +353,14 @@ const ProjectComponentsMap = ({
     // If the process has been already initiated, we don't need to go any further
     if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
     // It looks like this is the first step
-    // if (
-    //   saveActionState?.initiateFeatureSave &&
-    //   saveActionState?.featuresSaved === false
-    // ) {
-    //   saveDrawnPoints();
-    // }
+    if (
+      saveActionState?.initiateFeatureSave &&
+      saveActionState?.featuresSaved === false
+    ) {
+      saveDrawnPoints();
+    }
   }, [saveActionState]);
 
-  // TODO: Reintroduce when drawing is restored
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =
     !isDrawing && !isSignalComponent && drawLines !== null;
@@ -502,7 +502,7 @@ const ProjectComponentsMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent && drawLines !== null && renderMapDrawTools()}
+        {shouldShowDrawTools && renderMapDrawTools()}
       </Map>
     </Box>
   );

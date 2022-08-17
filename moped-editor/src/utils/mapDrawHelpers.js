@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 // import {
 //   DrawLineStringMode,
@@ -244,6 +244,7 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @param {number} currentZoom - Current zoom level of the map
  * @param {function} saveActionDispatch - Function that helps us send signals to other components
  * @param {boolean} drawLines - Should map draw tools create line strings
+ * @param {boolean} shouldShowDrawTools - Should map draw tools display
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -258,12 +259,18 @@ export function useMapDrawTools(
   setFeatureCollection,
   currentZoom,
   saveActionDispatch,
-  drawLines
+  drawLines,
+  shouldShowDrawTools
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
+
+  // Track whether we are drawing using bool that shows/hides draw tools
+  useEffect(() => {
+    setIsDrawing(() => shouldShowDrawTools);
+  }, [shouldShowDrawTools]);
 
   /**
    * Returns true if lineStringA has the same coordinates as lineStringB
@@ -548,7 +555,6 @@ export function useMapDrawTools(
 
   return {
     isDrawing,
-    setIsDrawing,
     saveDrawnPoints,
     renderMapDrawTools,
   };
