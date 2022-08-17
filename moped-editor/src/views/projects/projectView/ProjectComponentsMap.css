@@ -70,7 +70,8 @@
 .mapboxgl-ctrl-top-right .mapbox-gl-draw_trash {
   transform: rotate(90deg);
   width: 48px;
-  height: 48px;
+  /* Bug where 1px is getting shaved from this one icon, pushed 1 pixel to get icons lined up with equal size */
+  height: 49px;
 }
 
 .mapboxgl-ctrl-top-right .mapbox-gl-draw_point {
