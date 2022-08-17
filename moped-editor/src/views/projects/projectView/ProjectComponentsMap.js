@@ -385,12 +385,9 @@ const ProjectComponentsMap = ({
           renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         }
         onMouseMove={handleLayerHover}
-        // onClick={handleLayerClick}
-        // TODO: Reintroduce when drawing is restored
         onMouseEnter={renderDrawLayers ? onMouseEnter : null}
         onClick={renderDrawLayers ? handleLayerClick : null}
         cursor={cursor}
-        // onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}

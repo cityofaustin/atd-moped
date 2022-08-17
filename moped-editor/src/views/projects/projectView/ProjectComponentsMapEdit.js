@@ -707,10 +707,10 @@ const ProjectComponentsMapEdit = ({
                         className={classes.formButton}
                         variant="contained"
                         color="primary"
-                        // onClick={() =>
-                        //   saveActionDispatch({ type: "initiateFeatureSave" })
-                        // }
-                        onClick={handleSaveButtonClick}
+                        onClick={() =>
+                          saveActionDispatch({ type: "initiateFeatureSave" })
+                        }
+                        // onClick={handleSaveButtonClick}
                         disabled={
                           !areMinimumFeaturesSet || selectedComponentId === null
                         }
