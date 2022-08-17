@@ -47,7 +47,7 @@
 /* Rotating these controls made this challenging but width are based on 48px icon widths and 10px Mapbox spacing */
 .mapboxgl-ctrl-top-right {
   transform: rotate(270deg); 
-  right: 228px;
+  right: 248px;
   top: -24px;
 }
 

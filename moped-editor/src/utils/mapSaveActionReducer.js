@@ -52,7 +52,6 @@ export const mapSaveActionReducer = (state, action) => {
       return {
         ...state,
         currentStep: state.currentStep + 1, // 3
-        currentStep: 3,
         componentSaved: true,
       };
     }

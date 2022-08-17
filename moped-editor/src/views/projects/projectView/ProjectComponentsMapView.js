@@ -43,19 +43,6 @@ const useStyles = makeStyles((theme) => ({
     "-ms-overflow-style": "none" /* IE and Edge */,
     "scrollbar-width": "none" /* Firefox */,
   },
-  layerSelectButton: {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    zIndex: 1,
-    height: "3rem",
-    width: "184px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-    boxShadow: "0 0 10px 2px rgb(0 0 0 / 10%)",
-  },
   editButton: {
     position: "absolute",
     top: 8,
@@ -101,7 +88,7 @@ const ProjectComponentsMapView = ({
     mapStyleConfig,
     handleBasemapChange,
     mapStyle,
-  } = useLayerSelect(getLayerNames(), classes);
+  } = useLayerSelect(getLayerNames());
 
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler

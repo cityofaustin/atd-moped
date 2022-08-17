@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   withStyles,
+  makeStyles,
 } from "@material-ui/core";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import {
@@ -772,10 +773,27 @@ export function useFeatureCollectionToFitBounds(
   return { fitMapToFeatureCollectionOnRender };
 }
 
+const useStyles = makeStyles(() => ({
+  layerSelectButton: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    zIndex: 1,
+    height: "3rem",
+    width: "205px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
+  layerSelectDropdown: {
+    width: "205px",
+  },
+}));
+
 /**
  * Custom hook that creates a layer toggle UI
  * @param {array} initialSelectedLayerNames - Array of layer names to show initially
- * @param {object} classes - Holds Material UI classnames
  * @return {UseLayerObject} Object that exposes updated array of visible layers and map UI render function
  */
 /**
@@ -783,7 +801,7 @@ export function useFeatureCollectionToFitBounds(
  * @property {array} visibleLayerIds - Updated list of visible map layers
  * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
  */
-export function useLayerSelect(initialSelectedLayerNames, classes) {
+export function useLayerSelect(initialSelectedLayerNames) {
   /**
    * The initial state of visible ids is retrieved from the initialSelectedLayerNames
    * then we filter out any of them by checking if it has an `isInitiallyVisible` property.
@@ -797,6 +815,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
   const [anchorEl, setAnchorEl] = useState(null);
+  const classes = useStyles();
 
   /**
    * Handles the click event on a menu item
@@ -836,6 +855,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
   const StyledMenu = withStyles({
     paper: {
       border: "1px solid #d3d4d5",
+      width: "205px",
     },
   })((props) => (
     <Menu

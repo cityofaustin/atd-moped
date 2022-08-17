@@ -50,18 +50,6 @@ mapboxgl.workerClass =
 
 export const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
-  layerSelectButton: {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    zIndex: 1,
-    height: "3rem",
-    width: "184px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
@@ -249,7 +237,7 @@ const ProjectComponentsMap = ({
     mapStyleConfig,
     handleBasemapChange,
     mapStyle,
-  } = useLayerSelect(getLayerNames(), classes);
+  } = useLayerSelect(getLayerNames());
 
   /**
    * Creates a geojson layer with all the other features of the project
@@ -341,7 +329,7 @@ const ProjectComponentsMap = ({
       const features = featureCollection.features;
       saveDrawnPoints(true, features);
     }
-  }, [saveActionState, saveDrawnPoints]);
+  }, [saveActionState, saveDrawnPoints, featureCollection]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =
