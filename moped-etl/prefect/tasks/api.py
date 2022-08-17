@@ -7,6 +7,7 @@ from datetime import timedelta
 
 import tasks.ecs as ecs
 
+import pprint
 import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
@@ -125,7 +126,6 @@ def remove_moped_api_secrets_entry(slug):
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename, config_secret_arn):
-
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
@@ -159,10 +159,6 @@ def create_zappa_config(basename, config_secret_arn):
             ],
         }
     }
-
-    logger.info("Zappa config:")
-    logger.info({zappa_config})
-
     return zappa_config
 
 
@@ -175,9 +171,13 @@ create_api_task = ShellTask(
 def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deployment):
     basename = slug["awslambda"]
 
-    logger.info("Creating API Zappa deploy command")
+    logger.info("Creating API Zappa deploy command..")
+
+    logger.info("Calling it up with basename: " + basename)
+    logger.info("Calling it up with basename: " + config_secret_arn)
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
+
     api_project_path = "/tmp/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
