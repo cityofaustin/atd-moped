@@ -184,10 +184,7 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-    # comment out the two lines above if you put the right endpoint here
-    # api_endpoint = (
-    # "https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
-    # )
+
 
     ## Commission the ECS cluster
 
