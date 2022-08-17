@@ -7,9 +7,7 @@ import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 //   RENDER_STATE,
 //   SHAPE,
 // } from "react-map-gl-draw";
-import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
-import theme from "../theme/index";
 import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
 
 // export const MODES = [
@@ -264,8 +262,6 @@ export function useMapDrawTools(
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [modeId, setModeId] = useState(null);
-  const [modeHandler, setModeHandler] = useState(null);
 
   const circleRadius = getCircleRadiusByZoom(currentZoom);
 
@@ -367,11 +363,8 @@ export function useMapDrawTools(
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
-  const saveDrawnPoints = (runActionDispatch = true) => {
-    // If there is a map reference, get it's features or assume empty array
-    const drawnFeatures = mapEditorRef.current
-      ? mapEditorRef.current.getAll()
-      : [];
+  const saveDrawnPoints = (runActionDispatch = true, features) => {
+    const drawnFeatures = features;
 
     // Filter out anything without a source layer
     const newDrawnFeatures = drawnFeatures.filter(
@@ -380,11 +373,8 @@ export function useMapDrawTools(
 
     const drawnFeaturesWithSourceAndId = newDrawnFeatures
       .map((feature) => {
-        // const featureUUID = uuidv4();
-
         return {
           ...feature,
-          //   id: featureUUID,
           properties: {
             ...feature.properties,
             renderType: feature.geometry.type,
@@ -413,8 +403,6 @@ export function useMapDrawTools(
                   !lineStringEqual(drawnFeature, currentFeatureInCollection))
             ) // If so, return false meaning the filter will exclude them
       ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
-
-    // Add a UUID and layer name to the new features for retrieval and styling
 
     /**
      * Generate a new state including the existing data and any
@@ -531,16 +519,13 @@ export function useMapDrawTools(
   };
 
   /**
-   * This function gets called on any update coming from the map.
-   * https://nebula.gl/docs/api-reference/react-map-gl-draw/react-map-gl-draw
-   * @param {String} editType - The name of the event type
+   * This function gets called on any creating a new drawn feature
    */
-  const onUpdate = ({ editType }) => {
+  const onCreate = (e) => {
+    const { features } = e;
     // If the current event is a new feature (point or line)
-    if (editType === "addFeature") {
-      // Save without running dispatch
-      saveDrawnPoints(false); // False = no dispatch
-    }
+    // Save without running dispatch
+    saveDrawnPoints(false, features); // False = no dispatch
   };
 
   /**
@@ -550,9 +535,9 @@ export function useMapDrawTools(
   const renderMapDrawTools = () => (
     <ComponentsDrawControl
       ref={mapEditorRef}
-      onCreate={onUpdate}
-      onUpdate={onUpdate}
-      onDelete={onUpdate}
+      onCreate={onCreate}
+      //   onUpdate={onUpdate}
+      //   onDelete={onUpdate}
       drawLines={drawLines}
       circleRadius={circleRadius}
     />

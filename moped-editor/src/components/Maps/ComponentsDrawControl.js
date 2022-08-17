@@ -68,9 +68,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 // TODO:
 // 1. Save drawn features to feature collection
-// 2. Show previously drawn features in the draw interface when clicked
-// 3. Create - select bike lane, use draw tool to draw line, click save
-// 4. Update - there is no update
+// 2. Show previously drawn features in the draw interface when component is clicked in the add components map tools
 // 5. Delete - click trash can, hover and highlight drawn component, and click to delete
 // 6. Active control background is blue
 /* Ref that is forwarded is defined in useMapDrawTools and pass through
