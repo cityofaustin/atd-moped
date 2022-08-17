@@ -16,7 +16,7 @@ MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX = os.environ["MOPED_ACTIVITY_LOG_QUEUE_URL_P
 SHA_SALT = os.environ["SHA_SALT"]
 
 # The folder name of the event function and used in naming the AWS function
-function_name = "activity_log"
+FUNCTION_NAME = "activity_log"
 
 
 def create_activity_log_lambda_config(graphql_engine_api_key, slug):
@@ -45,10 +45,10 @@ create_activity_log_task = ShellTask(
 def create_activity_log_command(slug):
     logger.info("Creating Activity Log deploy helper command")
 
-    aws_function_name = shared.create_activity_log_aws_name(slug["activity_log_slug"], function_name)
+    aws_function_name = shared.create_activity_log_aws_name(slug["activity_log_slug"], FUNCTION_NAME)
 
     helper_script_path = "/tmp/atd-moped/.github/workflows"
-    deployment_path = f"/tmp/atd-moped/moped-data-events/{function_name}"
+    deployment_path = f"/tmp/atd-moped/moped-data-events/{FUNCTION_NAME}"
 
     graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
@@ -64,7 +64,7 @@ def create_activity_log_command(slug):
     (cd {helper_script_path} &&
     pip install awscli &&
     source aws-moped-sqs-helper.sh &&
-    deploy_moped_test_event_function {function_name} {aws_function_name} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
+    deploy_moped_test_event_function {FUNCTION_NAME} {aws_function_name} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
     deactivate;
     """
 
@@ -91,7 +91,7 @@ def remove_activity_log_lambda(slug):
 
     lambda_client = boto3.client("lambda")
 
-    function_name = shared.create_activity_log_aws_name(basename, function_name)
-    response = lambda_client.delete_function(FunctionName=function_name)
+    activity_log_function_name = shared.create_activity_log_aws_name(basename, FUNCTION_NAME)
+    response = lambda_client.delete_function(FunctionName=activity_log_function_name)
 
     return response
