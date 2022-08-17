@@ -1,0 +1,22 @@
+name: Run prefect flow
+on:
+  workflow_dispatch:
+    inputs:
+      description:
+        default: "Deploy test"
+jobs:
+  run-using-flow-path:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      - name: Perform prefect login
+        uses: sp1thas/prefect-cli-action@main
+        with:
+          command: prefect auth login --key ${{ secrets.PREFECT_API_KEY }}
+      - name: Deploy Test Commission Flow 
+        uses: sp1thas/prefect-cli-action@main
+        with:
+          command: prefect run -n "Moped Test Instance Commission" --param branch=${BRANCH_NAME} --param database_seed_source=seed --param do_migrations=true
