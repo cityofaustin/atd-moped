@@ -285,12 +285,6 @@ const SignalProjectTable = () => {
       },
     },
     {
-      title: "Contractor/Contract",
-      field: "contractor",
-      emptyValue: "-",
-      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
-    },
-    {
       title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
@@ -308,15 +302,6 @@ const SignalProjectTable = () => {
           tab="funding"
         />
       ),
-    },
-    {
-      title: "Project DO#",
-      field: "purchase_order_number",
-      emptyValue: "-",
-      render: entry =>
-        entry.purchase_order_number.trim().length === 0
-          ? "-"
-          : entry.purchase_order_number,
     },
     {
       title: "Project sponsor",
