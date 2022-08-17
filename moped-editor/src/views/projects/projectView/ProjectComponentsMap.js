@@ -39,8 +39,7 @@ import {
   useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
-// import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
-import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
@@ -277,13 +276,14 @@ const ProjectComponentsMap = ({
    * {function} setIsDrawing - Toggle isdrawing
    * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  // const { isDrawing, setIsDrawing, saveDrawnPoints } =
-  //   useMapDrawTools(
-  //     featureCollection,
-  //     setFeatureCollection,
-  //     viewport.zoom,
-  //     saveActionDispatch
-  //   );
+  const { isDrawing, setIsDrawing, saveDrawnPoints, renderMapDrawTools } =
+    useMapDrawTools(
+      featureCollection,
+      setFeatureCollection,
+      viewport.zoom,
+      saveActionDispatch,
+      drawLines
+    );
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -507,14 +507,7 @@ const ProjectComponentsMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {!isSignalComponent && drawLines !== null && (
-          <ComponentsDrawControl
-            onCreate={onUpdate}
-            onUpdate={onUpdate}
-            onDelete={onUpdate}
-            drawLines={drawLines}
-          />
-        )}
+        {!isSignalComponent && drawLines !== null && renderMapDrawTools()}
       </Map>
     </Box>
   );

@@ -1,110 +1,109 @@
 import React, { useState, useRef, useCallback } from "react";
-import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
-import { Editor } from "react-map-gl-draw";
-import {
-  DrawLineStringMode,
-  DrawPointMode,
-  EditingMode,
-  RENDER_STATE,
-  SHAPE,
-} from "react-map-gl-draw";
+import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+// import {
+//   DrawLineStringMode,
+//   DrawPointMode,
+//   EditingMode,
+//   RENDER_STATE,
+//   SHAPE,
+// } from "react-map-gl-draw";
 import { v4 as uuidv4 } from "uuid";
 import { get } from "lodash";
 import theme from "../theme/index";
 import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
 
-export const MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawPoint",
-    text: "Draw Point",
-    handler: DrawPointMode,
-    icon: "icon-draw-marker.svg",
-  },
-  {
-    id: "drawLine",
-    text: "Draw Line",
-    handler: DrawLineStringMode,
-    icon: "icon-draw-lines.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
+// export const MODES = [
+//   {
+//     id: "disableDrawMode",
+//     text: "Select & Move",
+//     handler: null,
+//     icon: "icon-pointer.svg",
+//   },
+//   {
+//     id: "drawPoint",
+//     text: "Draw Point",
+//     handler: DrawPointMode,
+//     icon: "icon-draw-marker.svg",
+//   },
+//   {
+//     id: "drawLine",
+//     text: "Draw Line",
+//     handler: DrawLineStringMode,
+//     icon: "icon-draw-lines.svg",
+//   },
+//   {
+//     id: "edit",
+//     text: "Select Point",
+//     handler: EditingMode,
+//     icon: "icon-delete.svg",
+//   },
+// ];
 
-export const POINT_MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawPoint",
-    text: "Draw Point",
-    handler: DrawPointMode,
-    icon: "icon-draw-marker.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
+// export const POINT_MODES = [
+//   {
+//     id: "disableDrawMode",
+//     text: "Select & Move",
+//     handler: null,
+//     icon: "icon-pointer.svg",
+//   },
+//   {
+//     id: "drawPoint",
+//     text: "Draw Point",
+//     handler: DrawPointMode,
+//     icon: "icon-draw-marker.svg",
+//   },
+//   {
+//     id: "edit",
+//     text: "Select Point",
+//     handler: EditingMode,
+//     icon: "icon-delete.svg",
+//   },
+// ];
 
-export const LINE_MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawLine",
-    text: "Draw Line",
-    handler: DrawLineStringMode,
-    icon: "icon-draw-lines.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
+// export const LINE_MODES = [
+//   {
+//     id: "disableDrawMode",
+//     text: "Select & Move",
+//     handler: null,
+//     icon: "icon-pointer.svg",
+//   },
+//   {
+//     id: "drawLine",
+//     text: "Draw Line",
+//     handler: DrawLineStringMode,
+//     icon: "icon-draw-lines.svg",
+//   },
+//   {
+//     id: "edit",
+//     text: "Select Point",
+//     handler: EditingMode,
+//     icon: "icon-delete.svg",
+//   },
+// ];
 
-const STROKE_COLOR = theme.palette.primary.main;
-const FILL_COLOR = theme.palette.primary.main;
+// const STROKE_COLOR = theme.palette.primary.main;
+// const FILL_COLOR = theme.palette.primary.main;
 
-const SELECTED_STYLE = {
-  stroke: STROKE_COLOR,
-  strokeWidth: 8,
-  fill: FILL_COLOR,
-  fillOpacity: 0,
-};
+// const SELECTED_STYLE = {
+//   stroke: STROKE_COLOR,
+//   strokeWidth: 8,
+//   fill: FILL_COLOR,
+//   fillOpacity: 0,
+// };
 
-const HOVERED_STYLE = {
-  stroke: STROKE_COLOR,
-  strokeWidth: 8,
-  fill: FILL_COLOR,
-  fillOpacity: 0,
-};
+// const HOVERED_STYLE = {
+//   stroke: STROKE_COLOR,
+//   strokeWidth: 8,
+//   fill: FILL_COLOR,
+//   fillOpacity: 0,
+// };
 
-const DEFAULT_STYLE = {
-  stroke: theme.palette.primary.main,
-  strokeWidth: 4,
-  fill: theme.palette.secondary.main,
-  fillOpacity: 1,
-};
+// const DEFAULT_STYLE = {
+//   stroke: theme.palette.primary.main,
+//   strokeWidth: 4,
+//   fill: theme.palette.secondary.main,
+//   fillOpacity: 1,
+// };
 
 /**
  * Interpolate a feature width based on the zoom level of map
@@ -137,7 +136,7 @@ function linearInterpolation(
  * @param {number} currentZoom - Current zoom level from the map
  * @return {number} Circle radius in pixels
  */
-const getCircleRadiusByZoom = currentZoom => {
+const getCircleRadiusByZoom = (currentZoom) => {
   const { stops } = mapStyles.circleRadiusStops;
   const [bottomZoom, bottomPixelWidth] = stops[0];
   const [topZoom, topPixelWidth] = stops[stops.length - 1];
@@ -179,45 +178,45 @@ const getCircleRadiusByZoom = currentZoom => {
  * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
  * @return {object} React style object applied to a feature
  */
-export function getFeatureStyle({ feature, state, currentZoom }) {
-  const type = feature.properties.shape || feature.geometry.type;
-  let style = null;
+// export function getFeatureStyle({ feature, state, currentZoom }) {
+//   const type = feature.properties.shape || feature.geometry.type;
+//   let style = null;
 
-  const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
+//   const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
 
-  switch (state) {
-    case RENDER_STATE.SELECTED:
-      style = { ...SELECTED_STYLE };
-      break;
+//   switch (state) {
+//     case RENDER_STATE.SELECTED:
+//       style = { ...SELECTED_STYLE };
+//       break;
 
-    case RENDER_STATE.HOVERED:
-      style = { ...HOVERED_STYLE };
-      break;
+//     case RENDER_STATE.HOVERED:
+//       style = { ...HOVERED_STYLE };
+//       break;
 
-    default:
-      style = { ...DEFAULT_STYLE };
-  }
+//     default:
+//       style = { ...DEFAULT_STYLE };
+//   }
 
-  switch (type) {
-    case SHAPE.POINT:
-      style.r = CIRCLE_RADIUS;
-      break;
-    case SHAPE.LINE_STRING:
-      style.fillOpacity = 0;
-      break;
-    default:
-  }
+//   switch (type) {
+//     case SHAPE.POINT:
+//       style.r = CIRCLE_RADIUS;
+//       break;
+//     case SHAPE.LINE_STRING:
+//       style.fillOpacity = 0;
+//       break;
+//     default:
+//   }
 
-  return style;
-}
+//   return style;
+// }
 
 /**
  * Retrieve a list of features that were drawn using the UI exposed from useMapDrawTools
  * @param {object} featureCollection - GeoJSON feature collection containing project extent
  * @return {array} List of features that originated from the draw UI
  */
-const getDrawnFeaturesFromFeatureCollection = featureCollection =>
-  featureCollection.features.filter(feature =>
+const getDrawnFeaturesFromFeatureCollection = (featureCollection) =>
+  featureCollection.features.filter((feature) =>
     drawnLayerNames.includes(feature.properties.sourceLayer)
   );
 
@@ -230,9 +229,9 @@ const getDrawnFeaturesFromFeatureCollection = featureCollection =>
  */
 const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   arrayOne.filter(
-    arrayOneFeature =>
+    (arrayOneFeature) =>
       !arrayTwo.some(
-        arrayTwoFeature =>
+        (arrayTwoFeature) =>
           arrayOneFeature.properties[featureProperty] ===
           arrayTwoFeature.properties[featureProperty]
       )
@@ -243,7 +242,8 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
  * @param {number} currentZoom - Current zoom level of the map
- * @property {function} saveActionDispatch - Function that helps us send signals to other components
+ * @param {function} saveActionDispatch - Function that helps us send signals to other components
+ * @param {boolean} drawLines - Should map draw tools create line strings
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -257,7 +257,8 @@ export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
   currentZoom,
-  saveActionDispatch
+  saveActionDispatch,
+  drawLines
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
@@ -330,12 +331,11 @@ export function useMapDrawTools(
    * Add existing user drawn points in the project extent feature collection to the draw UI so they are editable
    */
   const initializeExistingDrawFeatures = useCallback(
-    ref => {
+    (ref) => {
       if (ref) {
         // Only add features that are not already present in the draw UI to avoid duplicates
-        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
-          featureCollection
-        );
+        const drawnFeatures =
+          getDrawnFeaturesFromFeatureCollection(featureCollection);
 
         // Collect all the features in the map
         // getFeatures() is a react-map-gl-draw function
@@ -366,11 +366,11 @@ export function useMapDrawTools(
 
     // Filter out anything without a source layer
     const newDrawnFeatures = drawnFeatures.filter(
-      feature => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
+      (feature) => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
     );
 
     const drawnFeaturesWithSourceAndId = newDrawnFeatures
-      .map(feature => {
+      .map((feature) => {
         const featureUUID = uuidv4();
 
         return {
@@ -390,14 +390,14 @@ export function useMapDrawTools(
       .reverse() // Reverse the order so the new get removed first
       .filter(
         // Filter anything that already exists in the collection by its coordinates
-        drawnFeature =>
+        (drawnFeature) =>
           // For every new drawn feature, check against every feature in featureCollection
           featureCollection.features
             // First remove any features that are not of the current type
-            .filter(fcFeatures => featureTypesEqual(fcFeatures, drawnFeature))
+            .filter((fcFeatures) => featureTypesEqual(fcFeatures, drawnFeature))
             // Then check every element left
             .every(
-              currentFeatureInCollection =>
+              (currentFeatureInCollection) =>
                 // Verify they are the same type and that they are not equal!
                 featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
                 (!pointEqual(drawnFeature, currentFeatureInCollection) ||
@@ -432,19 +432,19 @@ export function useMapDrawTools(
    * Takes the click event and sets the draw mode handler and selected mode ID
    * @param {Object} e - A click event from a draw toolbar button
    */
-  const switchMode = e => {
-    const switchModeId = e.target.id === modeId ? null : e.target.id;
-    const mode = MODES.find(m => m.id === switchModeId);
-    const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
+  //   const switchMode = e => {
+  //     const switchModeId = e.target.id === modeId ? null : e.target.id;
+  //     const mode = MODES.find(m => m.id === switchModeId);
+  //     const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
 
-    // If the button clicked is disableDrawMode, disable drawing...
-    if (mode?.id === "disableDrawMode") setIsDrawing(false);
-    // Else, enable it!
-    else setIsDrawing(true);
+  //     // If the button clicked is disableDrawMode, disable drawing...
+  //     if (mode?.id === "disableDrawMode") setIsDrawing(false);
+  //     // Else, enable it!
+  //     else setIsDrawing(true);
 
-    setModeId(switchModeId);
-    setModeHandler(currentModeHandler);
-  };
+  //     setModeId(switchModeId);
+  //     setModeHandler(currentModeHandler);
+  //   };
 
   /**
    * Deletes whatever object is selected
@@ -452,7 +452,7 @@ export function useMapDrawTools(
    * onSelect is "a callback when clicking a position when selectable set to true"
    * @param {object} selected - Holds data about the selected feature
    */
-  const onSelect = selected => {
+  const onSelect = (selected) => {
     // Retrieve a list of all features in the map
     const currentFeatures = mapEditorRef.current.getFeatures();
     // Remove the feature from the draw UI feature list
@@ -490,7 +490,7 @@ export function useMapDrawTools(
         pointEqual(feature, featureToDelete) ? index : -1
       )
       // Keep positive integers only
-      .filter(i => i >= 0);
+      .filter((i) => i >= 0);
 
     // Delete the selected feature from the map (including duplicates)...
     mapEditorRef.current.deleteFeatures(featuresToDelete);
@@ -502,13 +502,13 @@ export function useMapDrawTools(
         ...featureCollection.features
           .filter(
             // Keep the features that are not equal to featureIdToDelete
-            feature =>
+            (feature) =>
               !featureIdToDelete ||
               get(feature, featureIdGetPath) !== featureIdToDelete
           )
           .filter(
             // Keep the features (points or lines) that are not duplicates
-            featureInCollection =>
+            (featureInCollection) =>
               (isFeatureOfType("Point", featureInCollection) &&
                 !pointEqual(featureToDelete, featureInCollection)) ||
               (isFeatureOfType("LineString", featureInCollection) &&
@@ -533,48 +533,25 @@ export function useMapDrawTools(
     }
   };
 
-//   /**
-//    * Renders the toolbar and buttons that control the map draw UI
-//    * @return {JSX.Element} The toolbar for the map draw UI
-//    */
-//   const renderDrawToolbar = (containerRef, drawLines) => {
-//     return (
-//       <MapDrawToolbar
-//         containerRef={containerRef}
-//         selectedModeId={modeId}
-//         onSwitchMode={switchMode}
-//         drawLines={drawLines}
-//       />
-//     );
-//   };
+  /**
+   * Renders the map editor and its toolbar
+   * @return {JSX.Element} The whole map draw UI
+   */
+  const renderMapDrawTools = () => (
+    <>
+      <ComponentsDrawControl
+        onCreate={onUpdate}
+        onUpdate={onUpdate}
+        onDelete={onUpdate}
+        drawLines={drawLines}
+      />
+    </>
+  );
 
-//   /**
-//    * Renders the map editor and its toolbar
-//    * @return {JSX.Element} The whole map draw UI
-//    */
-//   const renderMapDrawTools = (containerRef, drawLines) => (
-//     <>
-//       <Editor
-//         ref={ref => {
-//           initializeExistingDrawFeatures(ref);
-//           mapEditorRef.current = ref;
-//         }}
-//         featureStyle={featureStyleObj =>
-//           getFeatureStyle({ ...featureStyleObj, currentZoom })
-//         }
-//         onSelect={onSelect}
-//         onUpdate={onUpdate}
-//         clickRadius={12}
-//         mode={modeHandler}
-//       />
-//       {renderDrawToolbar(containerRef, drawLines)}
-//     </>
-//   );
-
-//   return {
-//     isDrawing,
-//     setIsDrawing,
-//     renderMapDrawTools,
-//     saveDrawnPoints,
-//   };
-// }
+  return {
+    isDrawing,
+    setIsDrawing,
+    saveDrawnPoints,
+    renderMapDrawTools,
+  };
+}
