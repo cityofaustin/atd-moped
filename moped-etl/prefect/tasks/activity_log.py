@@ -19,14 +19,11 @@ SHA_SALT = os.environ["SHA_SALT"]
 function_name = "activity_log"
 
 
-def create_activity_log_lambda_config(
-    basename,
-    graphql_engine_api_key,
-    slug,
-):
+def create_activity_log_lambda_config(graphql_engine_api_key, slug):
     graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    activity_log_endpoint = slug["activity_log_slug"]
     return {
-        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
+        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{activity_log_endpoint}",
         "Environment": {
             "Variables": {
                 # We could probably create a helper so this and the ECS Route53 CNAME always match
@@ -46,17 +43,16 @@ create_activity_log_task = ShellTask(
 
 @task(name="Create Activity Log deploy helper command")
 def create_activity_log_command(slug):
-    basename = slug["basename"]
     logger.info("Creating Activity Log deploy helper command")
 
-    aws_function_name = shared.create_activity_log_aws_name(basename, function_name)
+    aws_function_name = shared.create_activity_log_aws_name(slug["activity_log_slug"], function_name)
 
     helper_script_path = "/tmp/atd-moped/.github/workflows"
     deployment_path = f"/tmp/atd-moped/moped-data-events/{function_name}"
 
-    graphql_engine_api_key = shared.generate_access_key(basename)
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
-    lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key, slug=slug)
+    lambda_config = create_activity_log_lambda_config(graphql_engine_api_key=graphql_engine_api_key, slug=slug)
 
     # Write Lambda config to activity_log project folder
     with open(f"{deployment_path}/handler_config.json", "w") as f:
