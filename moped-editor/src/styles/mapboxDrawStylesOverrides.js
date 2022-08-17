@@ -184,10 +184,10 @@ const mapboxDrawStylesOverrides = [
       ["==", "active", "true"],
     ],
     paint: {
-      "circle-radius": 5,
-      "circle-color": theme.palette.secondary.main,
+      "circle-radius": mapStyles.circleRadiusStops,
+      "circle-stroke-width": 8,
       "circle-stroke-color": theme.palette.primary.main,
-      "circle-stroke-width": 2,
+      "circle-color": theme.palette.secondary.main,
     },
   },
   {
