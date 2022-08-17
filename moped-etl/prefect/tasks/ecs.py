@@ -40,11 +40,10 @@ def pprint(string):
 
 @task(name="Create ECS Cluster")
 def create_ecs_cluster(slug):
-    basename = slug["basename"]
     logger.info("Creating ECS cluster")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
-    create_cluster_result = ecs.create_cluster(clusterName=basename)
+    create_cluster_result = ecs.create_cluster(clusterName=slug["ecs_cluster_name"])
 
     logger.info("Cluster ARN: " + create_cluster_result["cluster"]["clusterArn"])
 
@@ -73,7 +72,6 @@ def create_load_balancer(slug):
 
 @task(name="Create EC2 Target Group")
 def create_target_group(slug):
-    basename = slug["basename"]
     logger.info("Creating Target Group")
 
     elb = boto3.client("elbv2")
@@ -91,7 +89,7 @@ def create_target_group(slug):
     return target_group
 
 
-@task(name="Create Rout53 CNAME")
+@task(name="Create Route53 CNAME")
 def create_route53_cname(slug, load_balancer):
     logger.info("Creating Route53 CNAME")
 
@@ -402,8 +400,8 @@ def create_service(
 
     try:
         create_service_result = ecs.create_service(
-            cluster=basename,
-            serviceName=basename,
+            cluster=slug["ecs_cluster_name"],
+            serviceName=slug["ecs_cluster_name"],
             launchType="FARGATE",
             taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
             desiredCount=1,
@@ -434,14 +432,13 @@ def create_service(
 def update_service(
     slug, load_balancer, task_definition, target_group, listeners_token, cluster_token
 ):
-    basename = slug["basename"]
     logger.info("Creating ECS service")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     update_service_result = ecs.update_service(
-        cluster=basename,
-        service=basename,
+        cluster=slug["ecs_cluster_name"],
+        service=slug["ecs_cluster_name"],
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"],
         desiredCount=1,
         loadBalancers=[
@@ -458,11 +455,10 @@ def update_service(
 
 @task(name="Remove ECS Cluster")
 def remove_ecs_cluster(slug, no_service_token):
-    basename = slug["basename"]
     logger.info("removing ECS cluster")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
-    delete_cluster_result = ecs.delete_cluster(cluster=basename)
+    delete_cluster_result = ecs.delete_cluster(cluster=slug["ecs_cluster_name"])
 
     return delete_cluster_result
 
@@ -520,16 +516,19 @@ def remove_load_balancer(slug, no_cluster_token):
 
 @task(name="Set ECS Service Task Count")
 def set_desired_count_for_service(slug, count):
-    basename = slug["basename"]
     logger.info("Setting desired count for service")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
-    services = ecs.describe_services(cluster=basename, services=[basename])
+    services = ecs.describe_services(
+        cluster=slug["ecs_cluster_name"], services=[slug["ecs_cluster_name"]]
+    )
 
     if services["services"][0]["status"] == "ACTIVE":
         response = ecs.update_service(
-            cluster=basename, service=basename, desiredCount=count
+            cluster=slug["ecs_cluster_name"],
+            service=slug["ecs_cluster_name"],
+            desiredCount=count,
         )
         return response
 
@@ -538,19 +537,19 @@ def set_desired_count_for_service(slug, count):
 
 @task(name="Lists Tasks of Service")
 def list_tasks_for_service(slug):
-    basename = slug["basename"]
     logger.info("Listing tasks for service")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
-    response = ecs.list_tasks(cluster=basename, serviceName=basename)
+    response = ecs.list_tasks(
+        cluster=slug["ecs_cluster_name"], serviceName=slug["ecs_cluster_name"]
+    )
 
     return response
 
 
 @task(name="Stop Tasks for ECS Service")
 def stop_tasks_for_service(slug, tasks, zero_count_token):
-    basename = slug["basename"]
     logger.info("Stopping tasks for service")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
@@ -559,7 +558,7 @@ def stop_tasks_for_service(slug, tasks, zero_count_token):
 
     for task in tasks["taskArns"]:
         response = ecs.stop_task(
-            cluster=basename,
+            cluster=slug["ecs_cluster_name"],
             task=task,
             reason="Stopping tasks to decommission this deployment",
         )
@@ -574,12 +573,13 @@ def stop_tasks_for_service(slug, tasks, zero_count_token):
     retry_delay=timedelta(seconds=10),
 )
 def wait_for_service_to_be_drained(slug, stop_token):
-    basename = slug["basename"]
     logger.info("Waiting for service to be drained")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
-    tasks = ecs.list_tasks(cluster=basename, serviceName=basename)
+    tasks = ecs.list_tasks(
+        cluster=slug["ecs_cluster_name"], serviceName=slug["ecs_cluster_name"]
+    )
 
     if len(tasks["taskArns"]) == 0:
         return Exception("Still have tasks hanging around!")
@@ -601,11 +601,12 @@ def remove_task_definition(task_definition):
 
 @task(name="Remove ECS Service")
 def delete_service(slug, drained_token, no_target_group_token):
-    basename = slug["basename"]
     logger.info("Deleting service")
 
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
-    response = ecs.delete_service(cluster=basename, service=basename)
+    response = ecs.delete_service(
+        cluster=slug["ecs_cluster_name"], service=slug["ecs_cluster_name"]
+    )
 
     return response
 
@@ -687,7 +688,6 @@ def remove_certificate(slug, removed_hostname_token):
     retry_delay=timedelta(seconds=10),
 )
 def check_graphql_endpoint_status(slug, graphql_engine_service):
-    basename = slug["basename"]
     endpoint = (
         "https://"
         + shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
@@ -733,10 +733,8 @@ def count_existing_listeners(slug, load_balancer):
 def check_count_running_ecs_tasks(slug):
     logger.info("Are there running tasks")
 
-    basename = slug["basename"]
-
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
-    response = ecs.describe_clusters(clusters=[basename])
+    response = ecs.describe_clusters(clusters=[slug["ecs_cluster_name"]])
 
     logger.info(response)
 
