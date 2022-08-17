@@ -338,7 +338,8 @@ const ProjectComponentsMap = ({
       saveActionState?.initiateFeatureSave &&
       saveActionState?.featuresSaved === false
     ) {
-      saveDrawnPoints();
+      const features = featureCollection.features;
+      saveDrawnPoints(true, features);
     }
   }, [saveActionState, saveDrawnPoints]);
 
