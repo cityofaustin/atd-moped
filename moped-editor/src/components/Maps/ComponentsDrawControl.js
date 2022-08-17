@@ -14,6 +14,8 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.on("draw.delete", props.onDelete);
       map.on("draw.modechange", props.onModeChange);
       map.on("load", props.initializeExistingDrawFeatures);
+      // This override prevents the introduction of line midpoints and vertices into line string geometries
+      map.on("load", props.overrideDirectSelect);
 
       return new MapboxDraw(props);
     },
@@ -22,7 +24,6 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.off("draw.update", props.onUpdate);
       map.off("draw.delete", props.onDelete);
       map.off("draw.modechange", props.onModeChange);
-      map.off("load", props.initializeExistingDrawFeatures);
     },
     {
       position: props.position,
@@ -91,6 +92,7 @@ const ComponentsDrawControl = React.forwardRef(
       onDelete,
       onModeChange,
       initializeExistingDrawFeatures,
+      overrideDirectSelect,
     },
     ref
   ) => {
@@ -108,6 +110,7 @@ const ComponentsDrawControl = React.forwardRef(
       onDelete,
       onModeChange,
       initializeExistingDrawFeatures,
+      overrideDirectSelect,
       styles: mapboxDrawStylesOverrides,
     };
 

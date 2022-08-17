@@ -32,7 +32,7 @@ const mapboxDrawStylesOverrides = [
     type: "circle",
     filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
     paint: {
-      "circle-radius": 3,
+      "circle-radius": 0,
       "circle-color": "#fbb03b",
     },
   },
@@ -82,8 +82,8 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#3bb2d0",
-      "line-width": 2,
+      "line-color": theme.palette.primary.main,
+      "line-width": mapStyles.lineWidthStops,
     },
   },
   {
@@ -95,7 +95,7 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#fbb03b",
+      "line-color": theme.palette.secondary.main,
       "line-dasharray": [0.2, 2],
       "line-width": 2,
     },
@@ -170,8 +170,8 @@ const mapboxDrawStylesOverrides = [
       ["!=", "meta", "midpoint"],
     ],
     paint: {
-      "circle-radius": 7,
-      "circle-color": "#fff",
+      // This object is intentionally empty, stroke handled in
+      // id: "gl-draw-point-active"
     },
   },
   {
@@ -180,7 +180,7 @@ const mapboxDrawStylesOverrides = [
     filter: [
       "all",
       ["==", "$type", "Point"],
-      ["!=", "meta", "midpoint"],
+      // ["!=", "meta", "midpoint"],
       ["==", "active", "true"],
     ],
     paint: {

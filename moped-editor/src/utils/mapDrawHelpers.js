@@ -436,7 +436,7 @@ export function useMapDrawTools(
 
   /**
    * Callback fired after a single feature is deleted
-   * @param {object} selected - Holds data about the selected feature
+   * @param {object} e - Event
    */
   const onDelete = (e) => {
     // Remove the feature from the feature collection of the project extent
@@ -485,6 +485,12 @@ export function useMapDrawTools(
   const onModeChange = (e) => {
     // TODO: create disable draw mode - hand icon
     setIsDrawing(true);
+
+    const { mode } = e;
+  };
+
+  const overrideDirectSelect = () => {
+    mapEditorRef.current.modes.DIRECT_SELECT = "simple_select";
   };
 
   /**
@@ -500,6 +506,7 @@ export function useMapDrawTools(
       circleRadius={circleRadius}
       onModeChange={onModeChange}
       initializeExistingDrawFeatures={initializeExistingDrawFeatures}
+      overrideDirectSelect={overrideDirectSelect}
     />
   );
 
