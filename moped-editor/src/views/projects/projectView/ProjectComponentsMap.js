@@ -212,7 +212,6 @@ const ProjectComponentsMap = ({
   featureCollection,
   setFeatureCollection,
   projectFeatureCollection = null,
-  refetchProjectDetails = null,
   noPadding = false,
   newFeature = false,
   saveActionState = null,
@@ -328,21 +327,6 @@ const ProjectComponentsMap = ({
       setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
     [setViewport]
   );
-
-  /**
-   * Customize cursor depending on user actions
-   * @param {object} pointerStates - Object containing pointer state keys and boolean values
-   * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
-   * @param {boolean} pointerStates.isDragging - Is user dragging map
-   */
-  // const getCursor = ({ isHovering, isDragging }) => {
-  //   return isDragging
-  //     ? "grabbing"
-  //     : isHovering // Show pointer when user is drawing as well
-  //     ? // : isHovering || isDrawing // Show pointer when user is drawing as well
-  //       "pointer"
-  //     : "default";
-  // };
 
   /**
    * Whenever a Save Action is initiated, save all drawn features

@@ -596,7 +596,6 @@ const ProjectComponentsMapEdit = ({
         featureCollection={editFeatureCollection}
         setFeatureCollection={setEditFeatureCollection}
         projectId={null}
-        refetchProjectDetails={null}
         noPadding={true}
         newFeature={!selectedProjectComponent}
         projectFeatureCollection={projectFeatureCollection}
