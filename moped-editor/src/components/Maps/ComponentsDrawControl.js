@@ -86,10 +86,9 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 const ComponentsDrawControl = React.forwardRef(
   (
     {
-      drawLines,
       onCreate,
-      onUpdate,
       onDelete,
+      drawLines,
       onModeChange,
       initializeExistingDrawFeatures,
       overrideDirectSelect,
@@ -106,7 +105,6 @@ const ComponentsDrawControl = React.forwardRef(
       default_mode: "simple_select",
       clickBuffer: 12,
       onCreate,
-      onUpdate,
       onDelete,
       onModeChange,
       initializeExistingDrawFeatures,

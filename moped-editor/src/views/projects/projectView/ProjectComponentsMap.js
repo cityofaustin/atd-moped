@@ -18,7 +18,6 @@ import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
-  // drawnLayerNames,
   getClickEditableLayerNames,
   getGeoJSON,
   getEditMapInteractiveIds,
@@ -274,7 +273,6 @@ const ProjectComponentsMap = ({
   const { isDrawing, saveDrawnPoints, renderMapDrawTools } = useMapDrawTools(
     featureCollection,
     setFeatureCollection,
-    viewport.zoom,
     saveActionDispatch,
     drawLines
   );
@@ -342,7 +340,7 @@ const ProjectComponentsMap = ({
     ) {
       saveDrawnPoints();
     }
-  }, [saveActionState]);
+  }, [saveActionState, saveDrawnPoints]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =

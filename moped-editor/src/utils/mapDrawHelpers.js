@@ -1,212 +1,7 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useState, useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
-// import {
-//   DrawLineStringMode,
-//   DrawPointMode,
-//   EditingMode,
-//   RENDER_STATE,
-//   SHAPE,
-// } from "react-map-gl-draw";
 import { get } from "lodash";
-import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
-
-// export const MODES = [
-//   {
-//     id: "disableDrawMode",
-//     text: "Select & Move",
-//     handler: null,
-//     icon: "icon-pointer.svg",
-//   },
-//   {
-//     id: "drawPoint",
-//     text: "Draw Point",
-//     handler: DrawPointMode,
-//     icon: "icon-draw-marker.svg",
-//   },
-//   {
-//     id: "drawLine",
-//     text: "Draw Line",
-//     handler: DrawLineStringMode,
-//     icon: "icon-draw-lines.svg",
-//   },
-//   {
-//     id: "edit",
-//     text: "Select Point",
-//     handler: EditingMode,
-//     icon: "icon-delete.svg",
-//   },
-// ];
-
-// export const POINT_MODES = [
-//   {
-//     id: "disableDrawMode",
-//     text: "Select & Move",
-//     handler: null,
-//     icon: "icon-pointer.svg",
-//   },
-//   {
-//     id: "drawPoint",
-//     text: "Draw Point",
-//     handler: DrawPointMode,
-//     icon: "icon-draw-marker.svg",
-//   },
-//   {
-//     id: "edit",
-//     text: "Select Point",
-//     handler: EditingMode,
-//     icon: "icon-delete.svg",
-//   },
-// ];
-
-// export const LINE_MODES = [
-//   {
-//     id: "disableDrawMode",
-//     text: "Select & Move",
-//     handler: null,
-//     icon: "icon-pointer.svg",
-//   },
-//   {
-//     id: "drawLine",
-//     text: "Draw Line",
-//     handler: DrawLineStringMode,
-//     icon: "icon-draw-lines.svg",
-//   },
-//   {
-//     id: "edit",
-//     text: "Select Point",
-//     handler: EditingMode,
-//     icon: "icon-delete.svg",
-//   },
-// ];
-
-// const STROKE_COLOR = theme.palette.primary.main;
-// const FILL_COLOR = theme.palette.primary.main;
-
-// const SELECTED_STYLE = {
-//   stroke: STROKE_COLOR,
-//   strokeWidth: 8,
-//   fill: FILL_COLOR,
-//   fillOpacity: 0,
-// };
-
-// const HOVERED_STYLE = {
-//   stroke: STROKE_COLOR,
-//   strokeWidth: 8,
-//   fill: FILL_COLOR,
-//   fillOpacity: 0,
-// };
-
-// const DEFAULT_STYLE = {
-//   stroke: theme.palette.primary.main,
-//   strokeWidth: 4,
-//   fill: theme.palette.secondary.main,
-//   fillOpacity: 1,
-// };
-
-/**
- * Interpolate a feature width based on the zoom level of map
- * Adapted from Mapbox GL JS linear interpolation using a formula linked below
- * https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
- * https://matthew-brett.github.io/teaching/linear_interpolation.html
- * @param {number} currentZoom - Current zoom level from the map
- * @param {number} minZoom - Minimum zoom level from the current bracket
- * @param {number} maxZoom - Maximum zoom level from the current bracket
- * @param {number} minPixelWidth - Minimum pixel width from the current bracket
- * @param {number} maxPixelWidth - Maximum pixel width from the current bracket
- * @return {number} Interpolated pixel width
- */
-function linearInterpolation(
-  currentZoom,
-  minZoom,
-  maxZoom,
-  minPixelWidth,
-  maxPixelWidth
-) {
-  return (
-    ((currentZoom - minZoom) * (maxPixelWidth - minPixelWidth)) /
-      (maxZoom - minZoom) +
-    minPixelWidth
-  );
-}
-
-/**
- * Calculate the circle radius using the circle radius steps in mapStyles and the map zoom level
- * @param {number} currentZoom - Current zoom level from the map
- * @return {number} Circle radius in pixels
- */
-const getCircleRadiusByZoom = (currentZoom) => {
-  const { stops } = mapStyles.circleRadiusStops;
-  const [bottomZoom, bottomPixelWidth] = stops[0];
-  const [topZoom, topPixelWidth] = stops[stops.length - 1];
-
-  // Loop through the [zoom, radius in pixel] nested arrays in mapStyles.circleRadiusStops
-  // to find which two elements the current zoom level falls between
-  for (let i = 0; i < stops.length - 1; i++) {
-    const [minZoom, minPixelWidth] = stops[i];
-    const [maxZoom, maxPixelWidth] = stops[i + 1];
-
-    // If current zoom is less than zoom in the first element
-    if (currentZoom < bottomZoom) {
-      return bottomPixelWidth;
-    }
-
-    // If current zoom is greater than zoom in the last element
-    if (currentZoom >= topZoom) {
-      return topPixelWidth;
-    }
-
-    // If the current zoom falls somewhere between
-    if (currentZoom >= minZoom && currentZoom < maxZoom) {
-      return linearInterpolation(
-        currentZoom,
-        minZoom,
-        maxZoom,
-        minPixelWidth,
-        maxPixelWidth
-      );
-    }
-  }
-};
-
-// https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#styling-related-options
-/**
- * Style a feature based on feature type and draw render state
- * @param {object} featureStyle - Contains data about feature render state and type (shape)
- * @param {object} featureStyle.feature - A GeoJSON feature
- * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
- * @return {object} React style object applied to a feature
- */
-// export function getFeatureStyle({ feature, state, currentZoom }) {
-//   const type = feature.properties.shape || feature.geometry.type;
-//   let style = null;
-
-//   const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
-
-//   switch (state) {
-//     case RENDER_STATE.SELECTED:
-//       style = { ...SELECTED_STYLE };
-//       break;
-
-//     case RENDER_STATE.HOVERED:
-//       style = { ...HOVERED_STYLE };
-//       break;
-
-//     default:
-//       style = { ...DEFAULT_STYLE };
-//   }
-
-//   switch (type) {
-//     case SHAPE.POINT:
-//       style.r = CIRCLE_RADIUS;
-//       break;
-//     case SHAPE.LINE_STRING:
-//       style.fillOpacity = 0;
-//       break;
-//     default:
-//   }
-
-//   return style;
-// }
+import { drawnLayerNames } from "../utils/mapHelpers";
 
 /**
  * Retrieve a list of features that were drawn using the UI exposed from useMapDrawTools
@@ -239,7 +34,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
- * @param {number} currentZoom - Current zoom level of the map
  * @param {function} saveActionDispatch - Function that helps us send signals to other components
  * @param {boolean} drawLines - Should map draw tools create line strings
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
@@ -254,14 +48,11 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
 export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
-  currentZoom,
   saveActionDispatch,
   drawLines
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
-
-  const circleRadius = getCircleRadiusByZoom(currentZoom);
 
   /**
    * Returns true if lineStringA has the same coordinates as lineStringB
@@ -417,24 +208,6 @@ export function useMapDrawTools(
   };
 
   /**
-   * Takes the click event and sets the draw mode handler and selected mode ID
-   * @param {Object} e - A click event from a draw toolbar button
-   */
-  //   const switchMode = e => {
-  //     const switchModeId = e.target.id === modeId ? null : e.target.id;
-  //     const mode = MODES.find(m => m.id === switchModeId);
-  //     const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
-
-  //     // If the button clicked is disableDrawMode, disable drawing...
-  //     if (mode?.id === "disableDrawMode") setIsDrawing(false);
-  //     // Else, enable it!
-  //     else setIsDrawing(true);
-
-  //     setModeId(switchModeId);
-  //     setModeHandler(currentModeHandler);
-  //   };
-
-  /**
    * Callback fired after a single feature is deleted
    * @param {object} e - Event
    */
@@ -506,7 +279,6 @@ export function useMapDrawTools(
       onCreate={onCreate}
       onDelete={onDelete}
       drawLines={drawLines}
-      circleRadius={circleRadius}
       onModeChange={onModeChange}
       initializeExistingDrawFeatures={initializeExistingDrawFeatures}
       overrideDirectSelect={overrideDirectSelect}
