@@ -11,6 +11,7 @@ import time
 import os
 import platform
 import re
+import pprint
 
 # import pypi packages
 import prefect
@@ -48,12 +49,18 @@ logger = prefect.context.get("logger")
 @task(name="Slug branch name")
 def slug_branch_name(basename):
 
-    graphql_endpoint = basename.replace("_", "-").strip("0123456789-_")
+    graphql_endpoint = (
+        basename.replace("_", "-").replace(".", "-").strip("0123456789-_")
+    )
     short_tls_basename = graphql_endpoint[0:27]
-    elb_basename = basename[0:32].replace("_", "-").strip("0123456789-_")
+    elb_basename = basename[0:32].replace("_", "-").strip("0123456789-_.")
     activity_log_slug = basename[0:34].replace("_", "-").strip("0123456789-_")
-    database = basename[0:63].replace("-", "_").strip("0123456789-_")
-    awslambda = basename[0:16].replace("_", "-").strip("0123456789-_")
+    database = basename[0:63].replace("-", "_").strip("0123456789-_.")
+    awslambda = re.sub(
+        r"[^a-zA-Z0-9]", "", basename[0:16].replace("_", "-").strip("0123456789-_")
+    )
+    ecs_cluster_name = basename.strip("0123456789-_.")
+    # zappa_stage_name = re.sub(r"[^a-zA-Z0-9]", "", basename)
 
     slug = {
         "basename": basename,
@@ -63,7 +70,12 @@ def slug_branch_name(basename):
         "awslambda": awslambda,
         "short_tls_basename": short_tls_basename,
         "elb_basename": elb_basename,
+        "ecs_cluster_name": ecs_cluster_name,
+        # "zappa_stage_name": zappa_stage_name,
     }
+
+    pp = pprint.PrettyPrinter(width=41, compact=True)
+    logger.info(pp.pformat(slug))
     return slug
 
 
