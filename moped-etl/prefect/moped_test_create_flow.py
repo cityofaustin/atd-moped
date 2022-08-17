@@ -57,7 +57,7 @@ def slug_branch_name(basename):
     activity_log_slug = basename[0:34].replace("_", "-").strip("0123456789-_")
     database = basename[0:63].replace("-", "_").strip("0123456789-_.")
     awslambda = re.sub(
-        r"[^a-zA-Z0-9]", "", basename[0:16].replace("_", "-").strip("0123456789-_")
+        r"[^a-zA-Z0-9-]", "", basename[0:16].replace("_", "-").strip("0123456789-_")
     )
     ecs_cluster_name = basename.strip("0123456789-_.")
     # zappa_stage_name = re.sub(r"[^a-zA-Z0-9]", "", basename)
@@ -184,7 +184,6 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-
 
     ## Commission the ECS cluster
 
