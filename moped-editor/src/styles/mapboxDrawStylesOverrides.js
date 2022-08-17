@@ -78,12 +78,11 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     layout: {
-      "line-cap": "round",
-      "line-join": "round",
+      "line-cap": "square",
     },
     paint: {
       "line-color": theme.palette.primary.main,
-      "line-width": mapStyles.lineWidthStops,
+      "line-width": 4,
     },
   },
   {
@@ -91,13 +90,11 @@ const mapboxDrawStylesOverrides = [
     type: "line",
     filter: ["all", ["==", "$type", "LineString"], ["==", "active", "true"]],
     layout: {
-      "line-cap": "round",
-      "line-join": "round",
+      "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.secondary.main,
-      "line-dasharray": [0.2, 2],
-      "line-width": 2,
+      "line-color": theme.palette.primary.main,
+      "line-width": 8,
     },
   },
   {
@@ -110,8 +107,10 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "circle-radius": 5,
-      "circle-color": "#fff",
+      "circle-radius": 8,
+      "circle-opacity": 0,
+      "circle-stroke-width": 2,
+      "circle-stroke-color": "#7ac943",
     },
   },
   {
@@ -124,7 +123,7 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "circle-radius": 3,
+      "circle-radius": 0,
       "circle-color": "#fbb03b",
     },
   },
@@ -180,7 +179,7 @@ const mapboxDrawStylesOverrides = [
     filter: [
       "all",
       ["==", "$type", "Point"],
-      // ["!=", "meta", "midpoint"],
+      ["!=", "meta", "midpoint"],
       ["==", "active", "true"],
     ],
     paint: {
