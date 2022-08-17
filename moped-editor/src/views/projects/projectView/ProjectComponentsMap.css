@@ -51,6 +51,11 @@
   top: -24px;
 }
 
+/* Set active draw tool background color, color copied straight from previous tools */
+.mapboxgl-ctrl-top-right .active {
+  background-color: #55ACF8; 
+}
+
 .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group {
   height: 96px;
   width: 48px;
