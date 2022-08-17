@@ -75,6 +75,8 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 // 2. Show previously drawn features in the draw interface when component is clicked in the add components map tools
 // 5. Delete - click trash can, hover and highlight drawn component, and click to delete
 // 6. Active control background is blue
+// 7. Hover point get wider blue ring before click to delete
+// 8. Disable draw button
 /* Ref that is forwarded is defined in useMapDrawTools and pass through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned

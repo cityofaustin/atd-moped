@@ -430,60 +430,20 @@ export function useMapDrawTools(
   //   };
 
   /**
-   * Deletes whatever object is selected
-   * https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#options
-   * onSelect is "a callback when clicking a position when selectable set to true"
+   * Callback fired after a single feature is deleted
    * @param {object} selected - Holds data about the selected feature
    */
-  const onSelect = (selected) => {
-    // Retrieve a list of all features in the map
-    const currentFeatures = mapEditorRef.current.getAll();
-
-    // Remove the feature from the draw UI feature list
-    if (selected.selectedEditHandleIndexes.length) {
-      try {
-        mapEditorRef.current.deleteHandles(
-          selected.selectedFeatureIndex,
-          selected.selectedEditHandleIndexes
-        );
-      } catch (error) {
-        console.log(error.message);
-      }
-      return;
-    }
-
-    if (
-      selected.selectedFeatureIndex === null ||
-      selected.selectedFeatureIndex === undefined
-    ) {
-      return;
-    }
-
-    // Then, remove the feature from the feature collection of the project extent
-    const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
+  const onDelete = (e) => {
+    // Remove the feature from the feature collection of the project extent
+    const featureToDelete = e.features[0];
     const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
     const featureIdToDelete = get(featureToDelete, featureIdGetPath);
 
-    /**
-     * There are duplicates, we need to delete all occurrences of a point.
-     * It's not ideal but the code works. Hopefully in the future we can optimize.
-     */
-    const featuresToDelete = currentFeatures
-      // From the currentFeatures, find any duplicates by their coordinates and return the index
-      .map((feature, index) =>
-        pointEqual(feature, featureToDelete) ? index : -1
-      )
-      // Keep positive integers only
-      .filter((i) => i >= 0);
-
-    // Delete the selected feature from the map (including duplicates)...
-    mapEditorRef.current.deleteFeatures(featuresToDelete);
-
     // Regenerate a new feature collection without the selected feature
-    const updatedFeatureCollection = {
-      ...featureCollection,
+    const updateFeatureCollection = (previousFeatureCollection) => ({
+      ...previousFeatureCollection,
       features: [
-        ...featureCollection.features
+        ...previousFeatureCollection.features
           .filter(
             // Keep the features that are not equal to featureIdToDelete
             (feature) =>
@@ -499,9 +459,12 @@ export function useMapDrawTools(
                 !lineStringEqual(featureToDelete, featureInCollection))
           ),
       ],
-    };
-    // Update our state
-    setFeatureCollection(updatedFeatureCollection);
+    });
+
+    // Update our state with callback to keep draw tool deletions in sync with state deletions
+    setFeatureCollection((prevCollection) =>
+      updateFeatureCollection(prevCollection)
+    );
   };
 
   /**
@@ -528,7 +491,7 @@ export function useMapDrawTools(
       ref={mapEditorRef}
       onCreate={onCreate}
       //   onUpdate={onUpdate}
-      //   onDelete={onUpdate}
+      onDelete={onDelete}
       drawLines={drawLines}
       circleRadius={circleRadius}
       onModeChange={onModeChange}
