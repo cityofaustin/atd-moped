@@ -173,9 +173,6 @@ def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deplo
 
     logger.info("Creating API Zappa deploy command..")
 
-    logger.info("Calling it up with basename: " + basename)
-    logger.info("Calling it up with basename: " + config_secret_arn)
-
     zappa_config = create_zappa_config(basename, config_secret_arn)
 
     api_project_path = "/tmp/atd-moped/moped-api"
