@@ -483,10 +483,13 @@ export function useMapDrawTools(
   };
 
   const onModeChange = (e) => {
-    // TODO: create disable draw mode - hand icon
     setIsDrawing(true);
 
+    // If we are not drawing, set isDrawing to false so we can select layer features as components
     const { mode } = e;
+    if (mode === "simple_select") {
+      setIsDrawing(false);
+    }
   };
 
   const overrideDirectSelect = () => {
