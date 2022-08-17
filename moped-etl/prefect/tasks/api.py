@@ -159,6 +159,10 @@ def create_zappa_config(basename, config_secret_arn):
             ],
         }
     }
+
+    logger.info("Zappa config:")
+    logger.info({zappa_config})
+
     return zappa_config
 
 
