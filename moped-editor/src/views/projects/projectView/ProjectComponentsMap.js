@@ -276,9 +276,7 @@ const ProjectComponentsMap = ({
     setFeatureCollection,
     viewport.zoom,
     saveActionDispatch,
-    drawLines,
-    shouldShowDrawTools,
-    mapRef
+    drawLines
   );
 
   const [cursor, setCursor] = useState("auto");
@@ -389,12 +387,12 @@ const ProjectComponentsMap = ({
           renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         }
         onMouseMove={handleLayerHover}
-        onClick={handleLayerClick}
+        // onClick={handleLayerClick}
         // TODO: Reintroduce when drawing is restored
-        // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
-        // onClick={renderDrawLayers ? handleLayerClick : null}
+        onMouseEnter={renderDrawLayers ? onMouseEnter : null}
+        onClick={renderDrawLayers ? handleLayerClick : null}
         cursor={cursor}
-        onMouseEnter={onMouseEnter}
+        // onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}

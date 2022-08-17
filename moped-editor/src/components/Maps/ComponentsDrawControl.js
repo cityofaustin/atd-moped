@@ -12,6 +12,8 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.on("draw.create", props.onCreate);
       map.on("draw.update", props.onUpdate);
       map.on("draw.delete", props.onDelete);
+      map.on("draw.modechange", props.onModeChange);
+      map.on("load", props.initializeExistingDrawFeatures);
 
       return new MapboxDraw(props);
     },
@@ -19,6 +21,8 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.off("draw.create", props.onCreate);
       map.off("draw.update", props.onUpdate);
       map.off("draw.delete", props.onDelete);
+      map.off("draw.modechange", props.onModeChange);
+      map.off("load", props.initializeExistingDrawFeatures);
     },
     {
       position: props.position,
@@ -76,7 +80,18 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
  * have its current value assigned
  */
 const ComponentsDrawControl = React.forwardRef(
-  ({ drawLines, onCreate, onUpdate, onDelete, circleRadius }, ref) => {
+  (
+    {
+      drawLines,
+      onCreate,
+      onUpdate,
+      onDelete,
+      onModeChange,
+      initializeExistingDrawFeatures,
+      circleRadius,
+    },
+    ref
+  ) => {
     const shouldDrawLines = drawLines === true;
     const shouldDrawPoints = drawLines === false;
 
@@ -88,6 +103,8 @@ const ComponentsDrawControl = React.forwardRef(
       onCreate,
       onUpdate,
       onDelete,
+      onModeChange,
+      initializeExistingDrawFeatures,
       styles: mapboxDrawStylesOverrides,
     };
 

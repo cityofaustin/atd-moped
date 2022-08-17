@@ -242,7 +242,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @param {number} currentZoom - Current zoom level of the map
  * @param {function} saveActionDispatch - Function that helps us send signals to other components
  * @param {boolean} drawLines - Should map draw tools create line strings
- * @param {boolean} shouldShowDrawTools - Should map draw tools display
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -257,18 +256,12 @@ export function useMapDrawTools(
   setFeatureCollection,
   currentZoom,
   saveActionDispatch,
-  drawLines,
-  shouldShowDrawTools
+  drawLines
 ) {
   const mapEditorRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
 
   const circleRadius = getCircleRadiusByZoom(currentZoom);
-
-  // Track whether we are drawing using bool that shows/hides draw tools
-  useEffect(() => {
-    setIsDrawing(() => shouldShowDrawTools);
-  }, [shouldShowDrawTools]);
 
   /**
    * Returns true if lineStringA has the same coordinates as lineStringB
@@ -332,33 +325,26 @@ export function useMapDrawTools(
   const featureTypesEqual = (featureA, featureB) =>
     (featureA?.geometry?.type ?? 1) === (featureB?.geometry?.type ?? 0);
 
-  /**
-   * Add existing user drawn points in the project extent feature collection to the draw UI so they are editable
-   */
-  const initializeExistingDrawFeatures = useCallback(
-    (ref) => {
-      if (ref) {
-        // Only add features that are not already present in the draw UI to avoid duplicates
-        const drawnFeatures =
-          getDrawnFeaturesFromFeatureCollection(featureCollection);
+  const initializeExistingDrawFeatures = () => {
+    // Only add features that are not already present in the draw UI to avoid duplicates
+    const drawnFeatures =
+      getDrawnFeaturesFromFeatureCollection(featureCollection);
 
-        // Collect all the features in the map
-        // getFeatures() is a react-map-gl-draw function
-        const featuresAlreadyInDrawMap = ref.getFeatures();
+    // Collect all the features in the map
+    // getFeatures() is a react-map-gl-draw function
+    const featureCollectionAlreadyInDrawMap = mapEditorRef.current.getAll();
+    const featuresAlreadyInDrawMap = featureCollectionAlreadyInDrawMap.features;
 
-        // Retrieve only the features that are present in state, but not the map
-        const featuresToAdd = findDifferenceByFeatureProperty(
-          "PROJECT_EXTENT_ID",
-          drawnFeatures,
-          featuresAlreadyInDrawMap
-        );
+    // Retrieve only the features that are present in state, but not the map
+    const featuresToAdd = findDifferenceByFeatureProperty(
+      "PROJECT_EXTENT_ID",
+      drawnFeatures,
+      featuresAlreadyInDrawMap
+    );
 
-        // Draw the features
-        ref.addFeatures(featuresToAdd);
-      }
-    },
-    [featureCollection]
-  );
+    // Draw the features
+    featuresToAdd.forEach((feature) => mapEditorRef.current.add(feature));
+  };
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
@@ -528,6 +514,11 @@ export function useMapDrawTools(
     saveDrawnPoints(false, features); // False = no dispatch
   };
 
+  const onModeChange = (e) => {
+    // TODO: create disable draw mode - hand icon
+    setIsDrawing(true);
+  };
+
   /**
    * Renders the map editor and its toolbar
    * @return {JSX.Element} The whole map draw UI
@@ -540,6 +531,8 @@ export function useMapDrawTools(
       //   onDelete={onUpdate}
       drawLines={drawLines}
       circleRadius={circleRadius}
+      onModeChange={onModeChange}
+      initializeExistingDrawFeatures={initializeExistingDrawFeatures}
     />
   );
 
