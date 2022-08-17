@@ -171,7 +171,7 @@ create_api_task = ShellTask(
 def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deployment):
     basename = slug["awslambda"]
 
-    logger.info("Creating API Zappa deploy command..")
+    logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
 
