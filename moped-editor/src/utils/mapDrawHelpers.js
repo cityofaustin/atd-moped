@@ -267,6 +267,8 @@ export function useMapDrawTools(
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
 
+  const circleRadius = getCircleRadiusByZoom(currentZoom);
+
   // Track whether we are drawing using bool that shows/hides draw tools
   useEffect(() => {
     setIsDrawing(() => shouldShowDrawTools);
@@ -368,7 +370,7 @@ export function useMapDrawTools(
   const saveDrawnPoints = (runActionDispatch = true) => {
     // If there is a map reference, get it's features or assume empty array
     const drawnFeatures = mapEditorRef.current
-      ? mapEditorRef.current.getFeatures()
+      ? mapEditorRef.current.getAll()
       : [];
 
     // Filter out anything without a source layer
@@ -378,15 +380,15 @@ export function useMapDrawTools(
 
     const drawnFeaturesWithSourceAndId = newDrawnFeatures
       .map((feature) => {
-        const featureUUID = uuidv4();
+        // const featureUUID = uuidv4();
 
         return {
           ...feature,
-          id: featureUUID,
+          //   id: featureUUID,
           properties: {
             ...feature.properties,
             renderType: feature.geometry.type,
-            PROJECT_EXTENT_ID: featureUUID,
+            PROJECT_EXTENT_ID: feature.id,
             sourceLayer:
               feature.geometry.type === "LineString"
                 ? "drawnByUserLine"
@@ -461,7 +463,8 @@ export function useMapDrawTools(
    */
   const onSelect = (selected) => {
     // Retrieve a list of all features in the map
-    const currentFeatures = mapEditorRef.current.getFeatures();
+    const currentFeatures = mapEditorRef.current.getAll();
+
     // Remove the feature from the draw UI feature list
     if (selected.selectedEditHandleIndexes.length) {
       try {
@@ -546,10 +549,12 @@ export function useMapDrawTools(
    */
   const renderMapDrawTools = () => (
     <ComponentsDrawControl
+      ref={mapEditorRef}
       onCreate={onUpdate}
       onUpdate={onUpdate}
       onDelete={onUpdate}
       drawLines={drawLines}
+      circleRadius={circleRadius}
     />
   );
 

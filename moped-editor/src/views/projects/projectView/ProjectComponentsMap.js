@@ -277,7 +277,8 @@ const ProjectComponentsMap = ({
     viewport.zoom,
     saveActionDispatch,
     drawLines,
-    shouldShowDrawTools
+    shouldShowDrawTools,
+    mapRef
   );
 
   const [cursor, setCursor] = useState("auto");

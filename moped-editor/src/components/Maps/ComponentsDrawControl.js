@@ -1,10 +1,13 @@
+import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
-export function DrawControl(props) {
-  useControl(
+// Ref that is forwarded is defined in useMapDrawTools
+// useControl returns the draw instance that exposes drawn features
+export const DrawControl = React.forwardRef((props, ref) => {
+  ref.current = useControl(
     ({ map }) => {
       map.on("draw.create", props.onCreate);
       map.on("draw.update", props.onUpdate);
@@ -23,7 +26,7 @@ export function DrawControl(props) {
   );
 
   return null;
-}
+});
 
 DrawControl.defaultProps = {
   onCreate: () => {},
@@ -37,9 +40,10 @@ DrawControl.defaultProps = {
  * based on the drawLines boolean
  * @see https://github.com/mapbox/mapbox-gl-draw/issues/286
  */
-const DrawPointsControl = (props) => {
+const DrawPointsControl = React.forwardRef((props, ref) => {
   return (
     <DrawControl
+      ref={ref}
       {...props}
       controls={{
         point: true,
@@ -47,11 +51,12 @@ const DrawPointsControl = (props) => {
       }}
     />
   );
-};
+});
 
-const DrawLinesControl = (props) => {
+const DrawLinesControl = React.forwardRef((props, ref) => {
   return (
     <DrawControl
+      ref={ref}
       {...props}
       controls={{
         line_string: true,
@@ -59,7 +64,7 @@ const DrawLinesControl = (props) => {
       }}
     />
   );
-};
+});
 
 // TODO:
 // 1. Save drawn features to feature collection
@@ -67,23 +72,31 @@ const DrawLinesControl = (props) => {
 // 3. Create - select bike lane, use draw tool to draw line, click save
 // 4. Update - there is no update
 // 5. Delete - click trash can, hover and highlight drawn component, and click to delete
-const ComponentsDrawControl = ({ drawLines, onCreate, onUpdate, onDelete }) => {
-  const shouldDrawLines = drawLines === true;
-  const shouldDrawPoints = drawLines === false;
+// 6. Active control background is blue
+/* Ref that is forwarded is defined in useMapDrawTools and pass through
+ * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
+ * have its current value assigned
+ */
+const ComponentsDrawControl = React.forwardRef(
+  ({ drawLines, onCreate, onUpdate, onDelete, circleRadius }, ref) => {
+    const shouldDrawLines = drawLines === true;
+    const shouldDrawPoints = drawLines === false;
 
-  const sharedProps = {
-    position: "top-right",
-    displayControlsDefault: false,
-    default_mode: "simple_select",
-    clickBuffer: 12,
-    onCreate,
-    onUpdate,
-    onDelete,
-    styles: mapboxDrawStylesOverrides,
-  };
+    const sharedProps = {
+      position: "top-right",
+      displayControlsDefault: false, // Disable to allow us to set which controls to show
+      default_mode: "simple_select",
+      clickBuffer: 12,
+      onCreate,
+      onUpdate,
+      onDelete,
+      styles: mapboxDrawStylesOverrides,
+    };
 
-  if (shouldDrawPoints) return <DrawPointsControl {...sharedProps} />;
-  if (shouldDrawLines) return <DrawLinesControl {...sharedProps} />;
-};
+    if (shouldDrawPoints)
+      return <DrawPointsControl ref={ref} {...sharedProps} />;
+    if (shouldDrawLines) return <DrawLinesControl ref={ref} {...sharedProps} />;
+  }
+);
 
 export default ComponentsDrawControl;
