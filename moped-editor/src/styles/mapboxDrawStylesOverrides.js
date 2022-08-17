@@ -1,4 +1,5 @@
 import theme from "src/theme/index";
+import { mapStyles } from "src/utils/mapHelpers";
 
 const mapboxDrawStylesOverrides = [
   {
@@ -138,9 +139,8 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "circle-radius": 5,
-      "circle-opacity": 1,
-      "circle-color": "#fff",
+      // This object is intentionally empty, stroke handled in
+      // id: "gl-draw-point-inactive"
     },
   },
   {
@@ -154,8 +154,10 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "circle-radius": 3,
-      "circle-color": "#3bb2d0",
+      "circle-radius": mapStyles.circleRadiusStops,
+      "circle-stroke-width": 4,
+      "circle-stroke-color": theme.palette.primary.main,
+      "circle-color": theme.palette.secondary.main,
     },
   },
   {

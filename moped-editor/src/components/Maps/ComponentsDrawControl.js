@@ -5,7 +5,7 @@ import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in useMapDrawTools
-// useControl returns the draw instance that exposes drawn features
+// useControl returns the draw instance that exposes mapbox-gl-draw methods
 export const DrawControl = React.forwardRef((props, ref) => {
   ref.current = useControl(
     ({ map }) => {
@@ -78,7 +78,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 // 7. Hover point get wider blue ring before click to delete
 // 8. Disable draw button
 // 9. Can delete multiple points/lines in one edit of an existing component
-/* Ref that is forwarded is defined in useMapDrawTools and pass through
+/* Ref that is forwarded is defined in useMapDrawTools and passes through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned
  */
@@ -91,7 +91,6 @@ const ComponentsDrawControl = React.forwardRef(
       onDelete,
       onModeChange,
       initializeExistingDrawFeatures,
-      circleRadius,
     },
     ref
   ) => {
@@ -99,6 +98,7 @@ const ComponentsDrawControl = React.forwardRef(
     const shouldDrawPoints = drawLines === false;
 
     const sharedProps = {
+      id: "mapbox-gl-draw-controls",
       position: "top-right",
       displayControlsDefault: false, // Disable to allow us to set which controls to show
       default_mode: "simple_select",
