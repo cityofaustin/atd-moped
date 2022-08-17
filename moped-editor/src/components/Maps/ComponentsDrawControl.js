@@ -77,6 +77,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 // 6. Active control background is blue
 // 7. Hover point get wider blue ring before click to delete
 // 8. Disable draw button
+// 9. Can delete multiple points/lines in one edit of an existing component
 /* Ref that is forwarded is defined in useMapDrawTools and pass through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned

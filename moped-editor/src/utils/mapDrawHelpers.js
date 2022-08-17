@@ -331,7 +331,6 @@ export function useMapDrawTools(
       getDrawnFeaturesFromFeatureCollection(featureCollection);
 
     // Collect all the features in the map
-    // getFeatures() is a react-map-gl-draw function
     const featureCollectionAlreadyInDrawMap = mapEditorRef.current.getAll();
     const featuresAlreadyInDrawMap = featureCollectionAlreadyInDrawMap.features;
 
@@ -357,54 +356,60 @@ export function useMapDrawTools(
       (feature) => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
     );
 
-    const drawnFeaturesWithSourceAndId = newDrawnFeatures
-      .map((feature) => {
-        return {
-          ...feature,
-          properties: {
-            ...feature.properties,
-            renderType: feature.geometry.type,
-            PROJECT_EXTENT_ID: feature.id,
-            sourceLayer:
-              feature.geometry.type === "LineString"
-                ? "drawnByUserLine"
-                : "drawnByUser",
-          },
-        };
-      })
-      .reverse() // Reverse the order so the new get removed first
-      .filter(
-        // Filter anything that already exists in the collection by its coordinates
-        (drawnFeature) =>
-          // For every new drawn feature, check against every feature in featureCollection
-          featureCollection.features
-            // First remove any features that are not of the current type
-            .filter((fcFeatures) => featureTypesEqual(fcFeatures, drawnFeature))
-            // Then check every element left
-            .every(
-              (currentFeatureInCollection) =>
-                // Verify they are the same type and that they are not equal!
-                featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
-                (!pointEqual(drawnFeature, currentFeatureInCollection) ||
-                  !lineStringEqual(drawnFeature, currentFeatureInCollection))
-            ) // If so, return false meaning the filter will exclude them
-      ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
+    const makeDrawnFeaturesWithSourceAndId = (previousFeatureCollection) =>
+      newDrawnFeatures
+        .map((feature) => {
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              renderType: feature.geometry.type,
+              PROJECT_EXTENT_ID: feature.id,
+              sourceLayer:
+                feature.geometry.type === "LineString"
+                  ? "drawnByUserLine"
+                  : "drawnByUser",
+            },
+          };
+        })
+        .reverse() // Reverse the order so the new get removed first
+        .filter(
+          // Filter anything that already exists in the collection by its coordinates
+          (drawnFeature) =>
+            // For every new drawn feature, check against every feature in featureCollection
+            previousFeatureCollection.features
+              // First remove any features that are not of the current type
+              .filter((fcFeatures) =>
+                featureTypesEqual(fcFeatures, drawnFeature)
+              )
+              // Then check every element left
+              .every(
+                (currentFeatureInCollection) =>
+                  // Verify they are the same type and that they are not equal!
+                  featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
+                  (!pointEqual(drawnFeature, currentFeatureInCollection) ||
+                    !lineStringEqual(drawnFeature, currentFeatureInCollection))
+              ) // If so, return false meaning the filter will exclude them
+        ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
 
-    /**
-     * Generate a new state including the existing data and any
-     * new features with source and id.
-     */
-
-    const updatedFeatureCollection = {
-      ...featureCollection,
-      features: [
-        ...featureCollection.features,
-        ...drawnFeaturesWithSourceAndId,
-      ],
-    };
-
-    // Update the new state
-    setFeatureCollection(updatedFeatureCollection);
+    // Update our state with callback to keep draw tool additions in sync with other state updates
+    setFeatureCollection((prevFeatureCollection) => {
+      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithSourceAndId(
+        prevFeatureCollection
+      );
+      /**
+       * Generate a new state including the existing data and any
+       * new features with source and id.
+       */
+      const updatedFeatureCollection = {
+        ...prevFeatureCollection,
+        features: [
+          ...prevFeatureCollection.features,
+          ...drawnFeaturesWithSourceAndId,
+        ],
+      };
+      return updatedFeatureCollection;
+    });
 
     // Dispatch featuresSaved action
     if (saveActionDispatch && runActionDispatch)
@@ -461,7 +466,7 @@ export function useMapDrawTools(
       ],
     });
 
-    // Update our state with callback to keep draw tool deletions in sync with state deletions
+    // Update our state with callback to keep draw tool deletions in sync with other state updates
     setFeatureCollection((prevCollection) =>
       updateFeatureCollection(prevCollection)
     );
@@ -490,7 +495,6 @@ export function useMapDrawTools(
     <ComponentsDrawControl
       ref={mapEditorRef}
       onCreate={onCreate}
-      //   onUpdate={onUpdate}
       onDelete={onDelete}
       drawLines={drawLines}
       circleRadius={circleRadius}

@@ -127,7 +127,6 @@ const ProjectComponentsMapEdit = ({
   const [selectedSubcomponents, setSelectedSubcomponents] = useState([]);
   const [availableSubtypes, setAvailableSubtypes] = useState([]);
   const [editFeatureCollection, setEditFeatureCollection] = useState(null);
-  console.log("edited feature collection", editFeatureCollection);
   const [drawLines, setDrawLines] = useState(null);
 
   const [componentDescription, setComponentDescription] = useState(null);
