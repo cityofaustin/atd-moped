@@ -538,14 +538,12 @@ export function useMapDrawTools(
    * @return {JSX.Element} The whole map draw UI
    */
   const renderMapDrawTools = () => (
-    <>
-      <ComponentsDrawControl
-        onCreate={onUpdate}
-        onUpdate={onUpdate}
-        onDelete={onUpdate}
-        drawLines={drawLines}
-      />
-    </>
+    <ComponentsDrawControl
+      onCreate={onUpdate}
+      onUpdate={onUpdate}
+      onDelete={onUpdate}
+      drawLines={drawLines}
+    />
   );
 
   return {

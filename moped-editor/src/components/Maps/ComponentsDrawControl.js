@@ -61,6 +61,12 @@ const DrawLinesControl = (props) => {
   );
 };
 
+// TODO:
+// 1. Save drawn features to feature collection
+// 2. Show previously drawn features in the draw interface when clicked
+// 3. Create - select bike lane, use draw tool to draw line, click save
+// 4. Update - there is no update
+// 5. Delete - click trash can, hover and highlight drawn component, and click to delete
 const ComponentsDrawControl = ({ drawLines, onCreate, onUpdate, onDelete }) => {
   const shouldDrawLines = drawLines === true;
   const shouldDrawPoints = drawLines === false;

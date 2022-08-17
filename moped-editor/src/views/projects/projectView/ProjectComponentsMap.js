@@ -363,12 +363,7 @@ const ProjectComponentsMap = ({
   // TODO: Reintroduce when drawing is restored
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =
-    // !isDrawing && !isSignalComponent && drawLines !== null;
-    !isSignalComponent && drawLines !== null;
-
-  const onUpdate = () => {
-    console.log("this worked!");
-  };
+    !isDrawing && !isSignalComponent && drawLines !== null;
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
