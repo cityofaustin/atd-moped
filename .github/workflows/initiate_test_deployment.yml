@@ -1,4 +1,4 @@
-name: Run prefect flow
+name: "Deploy Test Instance"
 on:
   workflow_dispatch:
     inputs:
@@ -16,7 +16,7 @@ jobs:
         uses: sp1thas/prefect-cli-action@main
         with:
           command: prefect auth login --key ${{ secrets.PREFECT_API_KEY }}
-      - name: Deploy Test Commission Flow 
+      - name: Deploy Test Commission Flow
         uses: sp1thas/prefect-cli-action@main
         with:
           command: prefect run -n "Moped Test Instance Commission" --param branch=${BRANCH_NAME} --param database_seed_source=seed --param do_migrations=true
