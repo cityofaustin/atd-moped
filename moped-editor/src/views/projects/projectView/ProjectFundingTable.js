@@ -51,6 +51,7 @@ import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProject
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import FundingAmountIntegerField from "./FundingAmountIntegerField";
+import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 
 const useStyles = makeStyles(theme => ({
   fieldGridItem: {
@@ -514,6 +515,9 @@ const ProjectFundingTable = () => {
     },
   ];
 
+
+  const hasEcapris = !!data?.moped_project[0].ecapris_subproject_id
+
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
@@ -540,17 +544,24 @@ const ProjectFundingTable = () => {
             } else {
               // else add "Add ..." button
               return (
-                <Button
-                  className={classes.fundingButton}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<AddCircleIcon />}
-                  ref={addActionRef}
-                  onClick={props.action.onClick}
-                >
-                  Add Funding Source
-                </Button>
+                hasEcapris ? (
+                  <ButtonDropdownMenu
+                    buttonWrapperStyle={classes.fundingButton}
+                    addAction={props.action.onClick}
+                  />
+                ) : (
+                  <Button
+                    className={classes.fundingButton}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    startIcon={<AddCircleIcon />}
+                    ref={addActionRef}
+                    onClick={props.action.onClick}
+                  >
+                    Add Funding Source
+                  </Button>
+                )
               );
             }
           },
