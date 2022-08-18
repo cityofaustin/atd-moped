@@ -155,10 +155,11 @@ const DashboardView = () => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId, projectId) => (
+  const buildStatusBadge = (project, phase, statusId, projectId) => (
     <DashboardPhaseModal
       status={statusId}
       phase={phase}
+      project={project}
       projectStatuses={data?.moped_status ?? []}
       projectId={projectId}
       queryRefetch={refetch}
@@ -201,6 +202,7 @@ const DashboardView = () => {
       editable: "never",
       render: entry =>
         buildStatusBadge(
+          entry.project,
           entry.current_phase,
           entry.status_id,
           entry.project_id

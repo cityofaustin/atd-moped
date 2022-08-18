@@ -29,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 const DashboardPhaseModal = ({
   status,
   phase,
+  project,
   projectStatuses,
   projectId,
   queryRefetch,
@@ -61,7 +62,7 @@ const DashboardPhaseModal = ({
         maxWidth={"xl"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <span></span>
+          <h4>{`Update phase - ${project.project_name}`}</h4>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>
