@@ -16,16 +16,14 @@ MOPED_ACTIVITY_LOG_QUEUE_URL_PREFIX = os.environ["MOPED_ACTIVITY_LOG_QUEUE_URL_P
 SHA_SALT = os.environ["SHA_SALT"]
 
 # The folder name of the event function and used in naming the AWS function
-function_name = "activity_log"
+FUNCTION_NAME = "activity_log"
 
 
-def create_activity_log_lambda_config(
-    basename,
-    graphql_engine_api_key,
-):
-    graphql_endpoint = shared.form_graphql_endpoint_hostname(basename)
+def create_activity_log_lambda_config(graphql_engine_api_key, slug):
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    activity_log_endpoint = slug["activity_log_slug"]
     return {
-        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{basename}",
+        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{activity_log_endpoint}",
         "Environment": {
             "Variables": {
                 # We could probably create a helper so this and the ECS Route53 CNAME always match
@@ -45,17 +43,16 @@ create_activity_log_task = ShellTask(
 
 @task(name="Create Activity Log deploy helper command")
 def create_activity_log_command(slug):
-    basename = slug["basename"]
     logger.info("Creating Activity Log deploy helper command")
 
-    aws_function_name = shared.create_activity_log_aws_name(basename, function_name)
+    aws_function_name = shared.create_activity_log_aws_name(slug["activity_log_slug"], FUNCTION_NAME)
 
-    helper_script_path = "/root/test_instance_deployment/atd-moped/.github/workflows"
-    deployment_path = f"/root/test_instance_deployment/atd-moped/moped-data-events/{function_name}"
+    helper_script_path = "/tmp/atd-moped/.github/workflows"
+    deployment_path = f"/tmp/atd-moped/moped-data-events/{FUNCTION_NAME}"
 
-    graphql_engine_api_key = shared.generate_access_key(basename)
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
-    lambda_config = create_activity_log_lambda_config(basename=basename, graphql_engine_api_key=graphql_engine_api_key)
+    lambda_config = create_activity_log_lambda_config(graphql_engine_api_key=graphql_engine_api_key, slug=slug)
 
     # Write Lambda config to activity_log project folder
     with open(f"{deployment_path}/handler_config.json", "w") as f:
@@ -67,7 +64,7 @@ def create_activity_log_command(slug):
     (cd {helper_script_path} &&
     pip install awscli &&
     source aws-moped-sqs-helper.sh &&
-    deploy_moped_test_event_function {function_name} {aws_function_name} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
+    deploy_moped_test_event_function {FUNCTION_NAME} {aws_function_name} {MOPED_ACTIVITY_LOG_LAMBDA_ROLE_ARN})
     deactivate;
     """
 
@@ -94,7 +91,7 @@ def remove_activity_log_lambda(slug):
 
     lambda_client = boto3.client("lambda")
 
-    function_name = shared.create_activity_log_aws_name(basename, function_name)
-    response = lambda_client.delete_function(FunctionName=function_name)
+    activity_log_function_name = shared.create_activity_log_aws_name(basename, FUNCTION_NAME)
+    response = lambda_client.delete_function(FunctionName=activity_log_function_name)
 
     return response

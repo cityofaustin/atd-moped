@@ -11,6 +11,7 @@ import time
 import os
 import platform
 import re
+import pprint
 
 # import pypi packages
 import prefect
@@ -47,24 +48,34 @@ logger = prefect.context.get("logger")
 
 @task(name="Slug branch name")
 def slug_branch_name(basename):
-    short_tls_basename = basename[0:27]
-    elb_basename = basename[0:32]
-    underscore_basename = basename.replace("-", "_")
-    database = re.search("^[\d_]*(.*)", underscore_basename).group(
-        1
-    )  # remove leading numbers
-    internal_number_free_underscore_basename = "".join(
-        [i for i in database if not i.isdigit()]
+
+    graphql_endpoint = (
+        basename.replace("_", "-").replace(".", "-").strip("0123456789-_")
     )
-    awslambda = internal_number_free_underscore_basename[0:16]
+    short_tls_basename = graphql_endpoint[0:27]
+    elb_basename = basename[0:32].replace("_", "-").strip("0123456789-_.")
+    activity_log_slug = basename[0:34].replace("_", "-").strip("0123456789-_")
+    database = basename[0:63].replace("-", "_").strip("0123456789-_.")
+    awslambda = re.sub(
+        r"[^a-zA-Z0-9-]", "", basename[0:16].replace("_", "-").strip("0123456789-_")
+    )
+    ecs_cluster_name = basename.strip("0123456789-_.")
+    # zappa_stage_name = re.sub(r"[^a-zA-Z0-9]", "", basename)
 
     slug = {
         "basename": basename,
         "database": database,
+        "graphql_endpoint": graphql_endpoint,
+        "activity_log_slug": activity_log_slug,
         "awslambda": awslambda,
         "short_tls_basename": short_tls_basename,
         "elb_basename": elb_basename,
+        "ecs_cluster_name": ecs_cluster_name,
+        # "zappa_stage_name": zappa_stage_name,
     }
+
+    pp = pprint.PrettyPrinter(width=41, compact=True)
+    logger.info(pp.pformat(slug))
     return slug
 
 
@@ -90,8 +101,22 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     database_seed_source = Parameter(
         "database_seed_source", default="seed", required=True
     )
+    do_migrations = Parameter("do_migrations", default=True, required=True)
 
     slug = slug_branch_name(branch)
+
+    ## Get github checkout
+
+    rm_clone = "rm -fr /tmp/atd-moped"
+    cleaned = migrations.remove_moped_checkout(command=rm_clone)
+
+    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
+    cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
+
+    checkout_branch = migrations.get_git_checkout_command(slug=slug)
+    git_repo_checked_out = migrations.checkout_target_branch(
+        command=checkout_branch, upstream_tasks=[cloned]
+    )
 
     ## Commission the database
 
@@ -143,7 +168,9 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     is_deployed = api.check_if_api_is_deployed(slug=slug)
     with case(is_deployed, True):
         decommission_api_command = api.create_moped_api_undeploy_command(
-            slug=slug, config_secret_arn=remove_api_config_secret_arn
+            slug=slug,
+            config_secret_arn=remove_api_config_secret_arn,
+            upstream_tasks=[git_repo_checked_out],
         )
         undeploy_api = api.remove_api_task(command=decommission_api_command)
     ready_for_api_deployment = merge(is_deployed, undeploy_api)
@@ -152,14 +179,11 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         slug=slug,
         config_secret_arn=create_api_config_secret_arn,
         ready_for_api_deployment=ready_for_api_deployment,
+        upstream_tasks=[git_repo_checked_out],
     )
 
     deploy_api = api.create_api_task(command=commission_api_command)
     api_endpoint = api.get_endpoint_from_deploy_output(deploy_api)
-    # comment out the two lines above if you put the right endpoint here
-    #api_endpoint = (
-        #"https://g00gkqigae.execute-api.us-east-1.amazonaws.com/seed_data_source"
-    #)
 
     ## Commission the ECS cluster
 
@@ -244,28 +268,16 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
     ## Commission the Activity Log
 
     commission_activity_log_command = activity_log.create_activity_log_command(
-        slug=slug
+        slug=slug, upstream_tasks=[git_repo_checked_out]
     )
     deploy_activity_log = activity_log.create_activity_log_task(
         command=commission_activity_log_command
     )
 
-    ## Apply migrations
-
+    ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
 
     access_key = migrations.get_graphql_engine_access_key(slug=slug)
-
-    rm_clone = "rm -fr /tmp/atd-moped"
-    cleaned = migrations.remove_moped_checkout(command=rm_clone)
-
-    git_clone = f"git clone {GIT_REPOSITORY} /tmp/atd-moped"
-    cloned = migrations.clone_moped_repo(command=git_clone, upstream_tasks=[cleaned])
-
-    checkout_branch = migrations.get_git_checkout_command(slug=slug)
-    checked_out = migrations.checkout_target_branch(
-        command=checkout_branch, upstream_tasks=[cloned]
-    )
 
     metadata = "metadata"
 
@@ -273,42 +285,38 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
         graphql_endpoint=graphql_endpoint,
         access_key=access_key,
         metadata=metadata,
-        checked_out_token=checked_out,
+        checked_out_token=git_repo_checked_out,
     )
 
-    # what are these parentheses doing?
-    migrate_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply;)"
-    )
-    migrate = migrations.migrate_db(
-        command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
-    )
-
-    consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
-    consistent_metadata = migrations.check_for_consistent_metadata(
-        command=consistency_cmd, upstream_tasks=[migrate]
-    )
-
-    settled_metadata = migrations.sleep_fifteen_seconds(
-        consistent_metadata=consistent_metadata
-    )
-
-    metadata_cmd = (
-        "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply;)"
-    )
-    metadata = migrations.apply_metadata(
-        command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
-    )
-
-    with case(use_seed_data, True):
-        apply_seed_cmd = (
-            "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply;)"
-        )
-        seed_data = migrations.insert_seed_data(
-            command=apply_seed_cmd, upstream_tasks=[metadata]
+    with case(do_migrations, True):
+        # what are these parentheses doing?
+        migrate_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check migrate apply; sleep 15;)"
+        migrate = migrations.migrate_db(
+            command=migrate_cmd, upstream_tasks=[config, graphql_endpoint_ready]
         )
 
-    ready_database = merge(metadata, seed_data)
+        consistency_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)"
+        consistent_metadata = migrations.check_for_consistent_metadata(
+            command=consistency_cmd, upstream_tasks=[migrate]
+        )
+
+        # Should this sleep come out or should the bash sleeps be done like this?
+        settled_metadata = migrations.sleep_fifteen_seconds(
+            consistent_metadata=consistent_metadata
+        )
+
+        metadata_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata apply; sleep 15;)"
+        metadata = migrations.apply_metadata(
+            command=metadata_cmd, upstream_tasks=[migrate, settled_metadata]
+        )
+
+        with case(use_seed_data, True):
+            apply_seed_cmd = "(cd /tmp/atd-moped/moped-database; hasura --skip-update-check seed apply; sleep 15;)"
+            seed_data = migrations.insert_seed_data(
+                command=apply_seed_cmd, upstream_tasks=[metadata]
+            )
+
+        ready_database = merge(metadata, seed_data)
 
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")

@@ -7,6 +7,7 @@ from datetime import timedelta
 
 import tasks.ecs as ecs
 
+import pprint
 import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
@@ -69,7 +70,7 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
 
     logger.info("Creating API secret config")
 
-    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["basename"])
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
     graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
     client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
@@ -125,7 +126,6 @@ def remove_moped_api_secrets_entry(slug):
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename, config_secret_arn):
-
     zappa_config = {
         f"{basename}": {
             "app_function": "app.app",
@@ -174,7 +174,8 @@ def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deplo
     logger.info("Creating API Zappa deploy command")
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
-    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
+
+    api_project_path = "/tmp/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}/zappa_settings.json", "w") as f:
@@ -203,6 +204,15 @@ def get_endpoint_from_deploy_output(output_list):
 
     logger.info("Output List:" + str(output_list))
 
+    failed_signature_match = re.search(
+        r"This application is already deployed", str(output_list)
+    )
+    if not failed_signature_match == None:
+        logger.info("output_list indicates that the application is already deployed.")
+        raise Exception(
+            "output_list indicates that the application is already deployed."
+        )
+
     api_endpoint_item = ""
 
     for item in output_list:
@@ -212,7 +222,8 @@ def get_endpoint_from_deploy_output(output_list):
     match = re.search(r"(https://.*)", api_endpoint_item)
 
     if match == None:
-        return False
+        logger.info("No match found looking for API endpoint URL")
+        raise Exception("No match found looking for API endpoint URL")
     else:
         endpoint = match.groups()[0]
         logger.info("Got an API endpoint: " + endpoint)
@@ -231,7 +242,7 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
 
     zappa_config = create_zappa_config(basename, config_secret_arn)
 
-    api_project_path = "/root/test_instance_deployment/atd-moped/moped-api"
+    api_project_path = "/tmp/atd-moped/moped-api"
 
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}/zappa_settings.json", "w") as f:
@@ -245,24 +256,24 @@ def create_moped_api_undeploy_command(slug, config_secret_arn):
 
 @task(name="Check if API is deployed")
 def check_if_api_is_deployed(slug):
-    basename = slug["awslambda"]
-    dashed_lambda_name = basename.replace("_", "-")
 
     logger.info("Checking if lambda function exists")
 
-    function_name = shared.generate_api_lambda_function_name(dashed_lambda_name)
+    function_name = shared.generate_api_lambda_function_name(slug["awslambda"])
+
+    logger.info("Checking: " + function_name)
 
     # this is what you get for using lambda as a keyword python...
     λ = boto3.client("lambda")
 
     try:
         response = λ.get_function(FunctionName=function_name)
-        logger.info("Lambda function exists")
-        logger.info(response)
-        return True
     except Exception:
-        logger.info("Lambda function does not exist")
-        logger.info(Exception)
+        logger.info(f"Lambda function ({function_name}) does not exist")
         return False
+
+    logger.info("Lambda function exists")
+    logger.info(response)
+    return True
 
     # TODO FIXME
