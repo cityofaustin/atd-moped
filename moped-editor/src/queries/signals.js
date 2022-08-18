@@ -29,8 +29,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_id
       project_name
       updated_at
-      contractor
-      purchase_order_number
       project_sponsor
       task_order
       moped_proj_notes(
@@ -41,11 +39,13 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         project_note
       }
       moped_proj_phases {
-        phase_name
         phase_id
         is_current_phase
         phase_start
         phase_end
+        moped_phase {
+          phase_name
+        }
       }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         moped_proj_features(where: { is_deleted: { _eq: false } }) {

@@ -26,10 +26,9 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
+import ProjectSummaryInterimID from "./ProjectSummaryInterimID"
 
 import { countFeatures } from "../../../../utils/mapHelpers";
-import ProjectSummaryContractor from "./ProjectSummaryContractor";
-import ProjectSummaryProjectDO from "./ProjectSummaryProjectDO";
 import SubprojectsTable from "./SubprojectsTable";
 
 const useStyles = makeStyles((theme) => ({
@@ -220,26 +219,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
-                <ProjectSummaryContractor
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <ProjectSummaryProjectDO
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
-            </Grid>
-            <Grid container spacing={0}>
-              <Grid item xs={6}>
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
                   project={data?.moped_project?.[0]}
@@ -259,10 +238,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
             <Grid container spacing={0}>
               <Grid item xs={6}>
-                <ProjectSummaryWorkOrders
-                  classes={classes}
-                  project={data?.moped_project?.[0]}
+                <ProjectSummaryInterimID
+                  projectId={projectId}
+                  data={data}
                   refetch={refetch}
+                  classes={classes}
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
@@ -272,6 +252,16 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   data={data}
                   refetch={refetch}
                   classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+            </Grid>
+            <Grid container spacing={0}>
+              <Grid item xs={6}>
+                <ProjectSummaryWorkOrders
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>

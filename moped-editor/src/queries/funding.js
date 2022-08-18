@@ -103,3 +103,62 @@ export const UPDATE_FUNDING_TASK_ORDERS = gql`
     }
   }
 `;
+
+export const CONTRACT_QUERY = gql`
+  query ProjectPurchaseOrder($projectId: Int) {
+    moped_proj_contract(
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      order_by: {id: asc}
+    ) {
+      contractor
+      id
+      contract_number
+      description
+    }
+  }
+`;
+
+export const ADD_CONTRACT = gql`
+  mutation AddPurchaseOrder($objects: [moped_proj_contract_insert_input!]!) {
+    insert_moped_proj_contract(objects: $objects) {
+      returning {
+        id
+      }
+    }
+  }
+`;
+
+export const UPDATE_CONTRACT = gql`
+  mutation UpdatePurchaseOrder(
+    $id: Int!
+    $contractor: String!
+    $contract_number: String!
+    $description: String!
+  ) {
+    update_moped_proj_contract_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        contractor: $contractor
+        contract_number: $contract_number
+        description: $description
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const DELETE_CONTRACT = gql`
+  mutation DeletePurchaseOrder(
+    $id: Int!
+  ) {
+    update_moped_proj_contract_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        is_deleted: true
+      }
+    ) {
+      id
+    }
+  }
+`;
