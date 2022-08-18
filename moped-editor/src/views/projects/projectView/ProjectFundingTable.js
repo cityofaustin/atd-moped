@@ -146,7 +146,6 @@ const useStyles = makeStyles(theme => ({
   },
   fundSelectStyle: {
     width: "8em",
-    border: "1px green solid",
   },
 }));
 
@@ -354,7 +353,7 @@ const ProjectFundingTable = () => {
           ? `${props.value.fund_id} | ${props.value.fund_name}`
           : ""
       }
-      classes={classes.fundSelectStyle}
+      className={classes.fundSelectStyle}
     >
       {props.data.map(item => (
         <MenuItem
