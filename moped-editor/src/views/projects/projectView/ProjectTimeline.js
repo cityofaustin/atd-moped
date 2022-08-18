@@ -335,6 +335,7 @@ const ProjectTimeline = ({
       editComponent: (props) => (
         <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
       ),
+      width: "18%",
     },
     {
       title: "Sub-phase name",
@@ -347,10 +348,12 @@ const ProjectTimeline = ({
           data={data}
         />
       ),
+      width: "18%",
     },
     {
       title: "Description",
       field: "phase_description",
+      width: "18%",
     },
     {
       title: "Start date",
@@ -366,6 +369,7 @@ const ProjectTimeline = ({
           label="Start Date"
         />
       ),
+      width: "18%",
     },
     {
       title: "End date",
@@ -377,6 +381,7 @@ const ProjectTimeline = ({
       editComponent: (props) => (
         <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
       ),
+      width: "18%",
     },
     {
       title: "Current",
@@ -385,6 +390,7 @@ const ProjectTimeline = ({
       editComponent: (props) => (
         <ToggleEditComponent {...props} name="is_current_phase" />
       ),
+      width: "10%",
     },
   ];
 
@@ -856,6 +862,7 @@ const ProjectTimeline = ({
                     search: false,
                     rowStyle: { fontFamily: typography.fontFamily },
                     actionsColumnIndex: -1,
+                    tableLayout: "fixed",
                   }}
                   localization={{
                     header: {

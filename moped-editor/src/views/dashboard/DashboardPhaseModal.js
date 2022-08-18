@@ -58,7 +58,7 @@ const DashboardPhaseModal = ({
         open={isDialogOpen}
         onClose={handleDialogClose}
         fullWidth
-        maxWidth={"md"}
+        maxWidth={"xl"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
           <span></span>
