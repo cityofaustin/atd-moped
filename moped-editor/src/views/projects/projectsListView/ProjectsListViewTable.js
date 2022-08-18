@@ -146,8 +146,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     updated_at: false,
     project_feature: false, // signal_ids
     task_order: true,
-    contractor: true,
-    purchase_order_number: true,
     type_name: true,
     funding_source_name: true,
     project_note: true,
@@ -370,23 +368,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
         return <div style={{ maxWidth: "265px" }}>{content}</div>;
       },
-    },
-    {
-      title: "Contractor/Contract",
-      field: "contractor",
-      hidden: hiddenColumns["contractor"],
-      emptyValue: "-",
-      render: (entry) => (entry.contractor === "" ? "-" : entry.contractor),
-    },
-    {
-      title: "Project DO#",
-      field: "purchase_order_number",
-      hidden: hiddenColumns["purchase_order_number"],
-      emptyValue: "-",
-      render: (entry) =>
-        entry.purchase_order_number.trim().length === 0
-          ? "-"
-          : entry.purchase_order_number,
     },
     {
       title: "Project type",

@@ -29,8 +29,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_id
       project_name
       updated_at
-      contractor
-      purchase_order_number
       project_sponsor
       task_order
       moped_proj_notes(
