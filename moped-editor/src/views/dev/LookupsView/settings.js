@@ -10,6 +10,13 @@ const subPhaseHandler = (subphases) =>
   ));
 
 /**
+ * Parses an array of phase-subphases into an array of subphase names
+ * @param {Object[]} subphases - array of moped_subphases objects
+ * @returns { JSX } An array of <div>s with the subphase name
+ */
+const relatedPhaseHandler = (phase) => phase?.phase_name;
+
+/**
  * Definitions for data tables.
  * @type { Object[]}  - An array of settings for data tables. Each object references a typename
  * returned from a Hasura query
@@ -67,6 +74,11 @@ export const SETTINGS = [
       {
         key: "milestone_name",
         label: "Milestone name",
+      },
+      {
+        key: "moped_phase",
+        label: "Related phase",
+        handler: relatedPhaseHandler,
       },
       {
         key: "milestone_order",

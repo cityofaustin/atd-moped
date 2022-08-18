@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "homepage": "/moped",
   "private": false,
   "repository": {
@@ -21,6 +21,7 @@
     "build:development": "env-cmd -e development npm run build:local",
     "build:production": "env-cmd -e production npm run build:local",
     "build:netlifypr": "env-cmd -e netlifypr npm run build:local",
+    "build:netlifybranch": "./set_env_branch_build.py",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
