@@ -186,12 +186,6 @@ export const ProjectsListViewQueryConf = {
     task_order_name: {
       type: "string",
     },
-    contractor: {
-      type: "string",
-    },
-    purchase_order_number: {
-      type: "string",
-    },
     project_feature: {
       type: "array",
     },
