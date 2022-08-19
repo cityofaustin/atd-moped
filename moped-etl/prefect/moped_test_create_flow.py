@@ -378,18 +378,35 @@ with Flow("Dev event data sandbox") as event_data_development:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
 
+    remove_package = activity_log.remove_activity_log_package()
     remove_venv = activity_log.remove_activity_log_venv()
 
-    create_venv_command = (
-        "(cd /tmp/atd-moped/moped-data-events/activity_log; python3 -m venv ./venv;)"
-    )
+    create_venv_command = "(cd /tmp/atd-moped/moped-data-events/activity_log; \
+            python3 -m venv ./venv;)"
     create_venv = activity_log.create_activity_log_venv(
-        command=create_venv_command, upstream_tasks=[remove_venv]
+        command=create_venv_command, upstream_tasks=[remove_venv, remove_package]
     )
 
-    install_python_libraries_command = "(cd /tmp/atd-moped/moped-data-events/activity_log; source ./venv/bin/activate; pip install -r requirements.txt; deactivate;)"
+    install_python_libraries_command = "(cd /tmp/atd-moped/moped-data-events/activity_log; \
+        source ./venv/bin/activate; \
+        pip install --target ./package -r requirements.txt; \
+        deactivate;)"
     pip_install = activity_log.install_python_libraries(
         command=install_python_libraries_command, upstream_tasks=[create_venv]
+    )
+
+    # snuck a little `rm` in here, which could be broken out into a task...
+    zip_python_libraries_command = "(cd /tmp/atd-moped/moped-data-events/activity_log/package; \
+        rm ../activity_log.zip; \
+        zip -qr ../activity_log.zip .;)"
+    zip_libraries = activity_log.create_zip_archive_libraries(
+        command=zip_python_libraries_command, upstream_tasks=[pip_install]
+    )
+
+    add_lambda_function_command = "(cd /tmp/atd-moped/moped-data-events/activity_log; \
+        zip -qg ./activity_log.zip app.py config.py MopedEvent.py;)"
+    lambda_archive = activity_log.add_lambda_function_to_archive(
+        command=add_lambda_function_command, upstream_tasks=[zip_libraries]
     )
 
     extant = activity_log.does_lambda_function_exist(slug=slug)

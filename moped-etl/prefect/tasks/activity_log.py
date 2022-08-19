@@ -92,6 +92,8 @@ def remove_activity_log_sqs(slug):
 
 create_activity_log_venv = ShellTask(name="Create venv", stream_output=True, return_all=True)
 install_python_libraries = ShellTask(name="Install python dependencies", stream_output=True)
+create_zip_archive_libraries = ShellTask(name="Add python libraries to zip archive", stream_output=True)
+add_lambda_function_to_archive = ShellTask(name="Add Lambda custom code to archive", stream_output=True)
 
 @task(name="Remove activity log venv")
 def remove_activity_log_venv():
@@ -99,6 +101,16 @@ def remove_activity_log_venv():
     venv_path = f"/tmp/atd-moped/moped-data-events/activity_log/venv"
     try:
         shutil.rmtree(venv_path)
+    except Exception:
+        return False
+    return True
+
+@task(name="Remove activity log package folder")
+def remove_activity_log_package():
+    logger.info("Removing Activity Log package folder")
+    package_path = f"/tmp/atd-moped/moped-data-events/activity_log/package"
+    try:
+        shutil.rmtree(package_path)
     except Exception:
         return False
     return True
