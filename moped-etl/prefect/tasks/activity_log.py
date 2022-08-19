@@ -96,3 +96,37 @@ def remove_activity_log_lambda(slug):
     response = lambda_client.delete_function(FunctionName=activity_log_function_name)
 
     return response
+
+
+
+
+
+
+
+
+@task(name="Upload lambda code")
+def upload_lambda_code(slug):
+    logger.info("Uploading lambda code")
+    
+    iam_client = boto3.client('iam')
+    role = iam_client.get_role(RoleName=IAM_ROLE_FOR_ACTIVITY_LOG_LAMBDA)
+    logger.info(role)
+    
+    lambda_client = boto3.client('lambda')
+
+    zip_file_path = '/tmp/atd-moped/moped-data-events/activity_log/activity_log.zip'
+
+    with open(zip_file_path, 'rb') as f:
+        zipped_code = f.read()
+
+    response = lambda_client.create_function(
+        FunctionName=shared.generate_activity_log_lambda_function_name(slug),
+        Runtime='python3.8',
+        Handler='app.handler',
+        PackageType="Zip",
+        Code=dict(ZipFile=zipped_code),
+        Role=role['Role']['Arn'],
+    )
+
+    logger.info(response)
+    pass
