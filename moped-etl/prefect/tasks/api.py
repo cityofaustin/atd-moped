@@ -177,6 +177,7 @@ def create_moped_api_deploy_command(slug, config_secret_arn, ready_for_api_deplo
 
     api_project_path = "/tmp/atd-moped/moped-api"
 
+    logger.info(f"Writing Settings in {api_project_path}")
     # Write Zappa config to moped-api project folder
     with open(f"{api_project_path}/zappa_settings.json", "w") as f:
         json.dump(zappa_config, f)
