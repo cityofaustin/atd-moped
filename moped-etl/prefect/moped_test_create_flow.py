@@ -374,7 +374,7 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
         remove_database = db.remove_database(slug, ready_to_drop_db=drained_service)
 
 
-with Flow("Moped Test Instance Decommission") as event_data_development:
+with Flow("Dev event data sandbox") as event_data_development:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
 
@@ -385,6 +385,11 @@ with Flow("Moped Test Instance Decommission") as event_data_development:
     )
     create_venv = activity_log.create_activity_log_venv(
         command=create_venv_command, upstream_tasks=[remove_venv]
+    )
+
+    install_python_libraries_command = "(cd /tmp/atd-moped/moped-data-events/activity_log; source ./venv/bin/activate; pip install -r requirements.txt; deactivate;)"
+    pip_install = activity_log.install_python_libraries(
+        command=install_python_libraries_command, upstream_tasks=[create_venv]
     )
 
     extant = activity_log.does_lambda_function_exist(slug=slug)
