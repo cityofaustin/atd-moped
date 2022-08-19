@@ -271,7 +271,9 @@ const ProjectComponentsMap = ({
 
   // Update cursor if we are drawing
   useEffect(() => {
-    setCursor(() => "pointer");
+    if (isDrawing) {
+      setCursor(() => "crosshair");
+    }
   }, [isDrawing]);
 
   /**

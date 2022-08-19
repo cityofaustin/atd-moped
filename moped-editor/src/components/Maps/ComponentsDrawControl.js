@@ -4,8 +4,9 @@ import { useControl } from "react-map-gl";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
-// Ref that is forwarded is defined in useMapDrawTools
-// useControl returns the draw instance that exposes mapbox-gl-draw methods
+// Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here
+// so that we can assign the draw instance draw instance that exposes mapbox-gl-draw methods
+// that is returned from useControl as its current value
 export const DrawControl = React.forwardRef((props, ref) => {
   ref.current = useControl(
     ({ map }) => {
@@ -71,10 +72,21 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
   );
 });
 
-/* Ref that is forwarded is defined in useMapDrawTools and passes through
+/**
+ * This component defines common DrawControl props and also conditionally renders point or line controls
+ * The ref that is forwarded is defined in useMapDrawTools and passes through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned
+ * @param {function} onCreate - fires after drawing is complete and a feature is created
+ * @param {function} onDelete - fires after a feature is selected and deleted with the trash icon
+ * @param {boolean} drawLines - tells us if we are drawing lines or not
+ * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
+ * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
+ * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads; direct_select allows more complex
+ * interactions like breaking line strings into midpoints but we only want users to select and deselect with simple_select
+ * @return {JSX.Element} The whole map draw UI
  */
+
 const ComponentsDrawControl = React.forwardRef(
   (
     {
