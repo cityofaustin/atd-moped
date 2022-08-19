@@ -6,7 +6,7 @@ python3 -m venv ./activity_log
 source ./activity_log/bin/activate
 pip install -r requirements.txt
 deactivate
-cd activity_log/activity_log/lib/python3.8/site-packages
+cd activity_log/lib/python3.8/site-packages
 zip -qr ../../../../activity_log.zip .
 cd ../../../../
 zip -qg ./activity_log.zip app.py config.py MopedEvent.py
