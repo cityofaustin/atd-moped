@@ -29,3 +29,8 @@ def generate_access_key(basename):
     sha_input = basename + SHA_SALT + "ecs"
     graphql_engine_api_key = hashlib.sha256(sha_input.encode()).hexdigest()
     return graphql_engine_api_key
+
+
+
+def generate_activity_log_lambda_function_name(slug):
+    return slug["awslambda"] + '-FLH-DEV-' + 'activity_log'
