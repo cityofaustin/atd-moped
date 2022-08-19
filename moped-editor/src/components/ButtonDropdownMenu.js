@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openModal }) => {
+const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -67,7 +67,7 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openModal }) => {
         }}
       >
         <MenuItem onClick={addRowToTable}>Generic funding source</MenuItem>
-        <MenuItem onClick={() => console.log("open modal")}>
+        <MenuItem onClick={() => openFundingDialog(true)}>
           From eCapris
         </MenuItem>
       </Menu>
