@@ -1,6 +1,7 @@
 import os
 import json
 import boto3
+import shutil
 
 import prefect
 from prefect import task
@@ -85,39 +86,53 @@ def remove_activity_log_sqs(slug):
     return response
 
 
-@task
+
+
+
+
+create_activity_log_venv = ShellTask(name="Create venv", stream_output=True, return_all=True)
+install_python_libraries = ShellTask(name="Install python dependencies", stream_output=True)
+
+@task(name="Remove activity log venv")
+def remove_activity_log_venv():
+    logger.info("Removing Activity Log venv")
+    venv_path = f"/tmp/atd-moped/moped-data-events/activity_log/venv"
+    try:
+        shutil.rmtree(venv_path)
+    except Exception:
+        return False
+    return True
+
+
+@task(name="Remove activity log lambda function")
 def remove_activity_log_lambda(slug):
-    basename = slug["basename"]
-    logger.info("Removing Activity Log Lambda function")
 
     lambda_client = boto3.client("lambda")
 
-    activity_log_function_name = shared.create_activity_log_aws_name(basename, FUNCTION_NAME)
+    activity_log_function_name = shared.generate_activity_log_lambda_function_name(slug)
+    logger.info(f"Removing Activity Log Lambda function: {activity_log_function_name}")
+
     response = lambda_client.delete_function(FunctionName=activity_log_function_name)
-
+    logger.info(response)
     return response
-
-
-
-
 
 @task(name="Check if lambda function exists")
 def does_lambda_function_exist(slug):
-    logger.info("Checking if lambda function exists")
 
     lambda_client = boto3.client('lambda')
 
     function_name = shared.generate_activity_log_lambda_function_name(slug)
+    logger.info(f"Checking if lambda function {function_name} exists")
     try:
         response = lambda_client.get_function(FunctionName=function_name)
         logger.info(f"Lambda function ({function_name}) does exist")
         return True
     except Exception:
         logger.info(f"Lambda function ({function_name}) does not exist")
-        return False
+    return False
 
-@task(name="Upload lambda code")
-def upload_lambda_code(slug):
+@task(name="Upload lambda code, register lambda")
+def register_lambda_via_upload(slug):
     logger.info("Uploading lambda code")
     
     iam_client = boto3.client('iam')
@@ -141,4 +156,3 @@ def upload_lambda_code(slug):
     )
 
     logger.info(response)
-    pass

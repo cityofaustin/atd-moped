@@ -378,8 +378,25 @@ with Flow("Moped Test Instance Decommission") as event_data_development:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
 
+    remove_venv = activity_log.remove_activity_log_venv()
+
+    create_venv_command = (
+        "(cd /tmp/atd-moped/moped-data-events/activity_log; python3 -m venv ./venv;)"
+    )
+    create_venv = activity_log.create_activity_log_venv(
+        command=create_venv_command, upstream_tasks=[remove_venv]
+    )
+
     extant = activity_log.does_lambda_function_exist(slug=slug)
-    # uploaded = activity_log.upload_lambda_code(slug=slug)
+    with case(extant, True):
+        removed = activity_log.remove_activity_log_lambda(
+            slug=slug, upstream_tasks=[extant]
+        )
+
+    is_empty = merge(extant, removed)
+    uploaded = activity_log.register_lambda_via_upload(
+        slug=slug, upstream_tasks=[is_empty]
+    )
 
 
 if __name__ == "__main__":
