@@ -101,8 +101,20 @@ def remove_activity_log_lambda(slug):
 
 
 
+@task(name="Check if lambda function exists")
+def does_lambda_function_exist(slug):
+    logger.info("Checking if lambda function exists")
 
+    lambda_client = boto3.client('lambda')
 
+    function_name = shared.generate_activity_log_lambda_function_name(slug)
+    try:
+        response = lambda_client.get_function(FunctionName=function_name)
+        logger.info(f"Lambda function ({function_name}) does exist")
+        return True
+    except Exception:
+        logger.info(f"Lambda function ({function_name}) does not exist")
+        return False
 
 @task(name="Upload lambda code")
 def upload_lambda_code(slug):
