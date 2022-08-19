@@ -378,7 +378,8 @@ with Flow("Moped Test Instance Decommission") as event_data_development:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
 
-    uploaded = activity_log.upload_lambda_code(slug)
+    extant = activity_log.does_lambda_function_exist(slug=slug)
+    # uploaded = activity_log.upload_lambda_code(slug=slug)
 
 
 if __name__ == "__main__":
