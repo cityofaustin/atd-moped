@@ -374,10 +374,18 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
         remove_database = db.remove_database(slug, ready_to_drop_db=drained_service)
 
 
+with Flow("Moped Test Instance Decommission") as event_data_development:
+    branch = Parameter("branch")
+    slug = slug_branch_name(branch)
+
+    uploaded = activity_log.upload_lambda_code(slug)
+
+
 if __name__ == "__main__":
     branch = "refactor-user-activation-and-main"
 
-    test_commission.register(project_name="Moped")
+    event_data_development.run(branch=branch)
+    # test_commission.register(project_name="Moped")
     # test_decommission.register(project_name="Moped")
 
     # test_commission.run(branch=branch, database_seed_source="staging")
