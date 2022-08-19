@@ -17,6 +17,7 @@ SHA_SALT = os.environ["SHA_SALT"]
 
 # The folder name of the event function and used in naming the AWS function
 FUNCTION_NAME = "activity_log"
+IAM_ROLE_FOR_ACTIVITY_LOG_LAMBDA = os.environ["IAM_ROLE_FOR_ACTIVITY_LOG_LAMBDA"] 
 
 
 def create_activity_log_lambda_config(graphql_engine_api_key, slug):
