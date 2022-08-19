@@ -181,6 +181,7 @@ const mapboxDrawStylesOverrides = [
       ["==", "$type", "Point"],
       ["!=", "meta", "midpoint"],
       ["==", "active", "true"],
+      ["!=", "meta", "vertex"],
     ],
     paint: {
       "circle-radius": mapStyles.circleRadiusStops,
