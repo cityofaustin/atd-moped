@@ -145,7 +145,8 @@ def does_lambda_function_exist(slug):
 
 @task(name="Upload lambda code, register lambda")
 def register_lambda_via_upload(slug):
-    logger.info("Uploading lambda code")
+    function_name = shared.generate_activity_log_lambda_function_name(slug) 
+    logger.info(f"Uploading lambda code {function_name}")
     
     iam_client = boto3.client('iam')
     role = iam_client.get_role(RoleName=IAM_ROLE_FOR_ACTIVITY_LOG_LAMBDA)
@@ -155,16 +156,30 @@ def register_lambda_via_upload(slug):
 
     zip_file_path = '/tmp/atd-moped/moped-data-events/activity_log/activity_log.zip'
 
+
     with open(zip_file_path, 'rb') as f:
         zipped_code = f.read()
 
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
+
     response = lambda_client.create_function(
-        FunctionName=shared.generate_activity_log_lambda_function_name(slug),
+        FunctionName=function_name,
         Runtime='python3.8',
         Handler='app.handler',
         PackageType="Zip",
         Code=dict(ZipFile=zipped_code),
         Role=role['Role']['Arn'],
+        Description=f"AWS Moped Data Event: {function_name}",
+        Environment={
+            "Variables": {
+                # We could probably create a helper so this and the ECS Route53 CNAME always match
+                "HASURA_ENDPOINT": graphql_endpoint,
+                "HASURA_ADMIN_SECRET": graphql_engine_api_key,
+                "API_ENVIRONMENT": "TEST",
+                "COGNITO_DYNAMO_TABLE_NAME": "atd-moped-users-staging",
+            }
+        }
     )
 
     logger.info(response)
