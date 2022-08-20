@@ -33,4 +33,7 @@ def generate_access_key(basename):
 
 
 def generate_activity_log_lambda_function_name(slug):
-    return slug["awslambda"] + '-FLH-DEV-' + 'activity_log'
+    return slug["awslambda"] +  'activity_log'
+
+def generate_activity_log_api_gateway_name(slug):
+    return slug["awslambda"] + 'activity_log'

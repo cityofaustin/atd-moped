@@ -416,17 +416,30 @@ with Flow("Dev event data sandbox") as event_data_development:
         )
 
     is_empty = merge(extant, removed)
-    uploaded = activity_log.register_lambda_via_upload(
+    lambda_arn = activity_log.register_lambda_via_upload(
         slug=slug, upstream_tasks=[is_empty]
+    )
+
+    api_exists = activity_log.check_gateway_api_exists(slug=slug)
+    with case(api_exists, True):
+        remove_api = activity_log.remove_gateway_api(
+            slug=slug, upstream_tasks=[api_exists]
+        )
+    ready_for_api = merge(remove_api, api_exists)
+
+    api_gateway = activity_log.create_gateway_api(
+        slug=slug, lambda_arn=lambda_arn, upstream_tasks=[ready_for_api]
     )
 
 
 if __name__ == "__main__":
     branch = "refactor-user-activation-and-main"
 
-    event_data_development.run(branch=branch)
     # test_commission.register(project_name="Moped")
     # test_decommission.register(project_name="Moped")
 
     # test_commission.run(branch=branch, database_seed_source="staging")
     # test_decommission.run(branch=branch)
+
+    event_data_development.register(project_name="Moped")
+    # event_data_development.run(branch=branch)

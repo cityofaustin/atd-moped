@@ -89,6 +89,32 @@ def remove_activity_log_sqs(slug):
 
 
 
+@task(name="Check if API exists")
+def remove_gateway_api(slug):
+    pass
+
+
+@task(name="Check if API exists")
+def check_gateway_api_exists(slug):
+    pass
+
+
+@task(name="Create gateway API")
+def create_gateway_api(slug, lambda_arn):
+    api = boto3.client('apigatewayv2')
+
+    logger.info("Creating gateway API")
+    api_name = shared.generate_activity_log_api_gateway_name(slug)
+
+    basename = slug["basename"]
+
+    api.create_api(
+        Name=api_name,
+        ProtocolType='HTTP',
+        Target=lambda_arn,
+        Description=f"Activity Log for test {basename}"
+    )
+    pass
 
 create_activity_log_venv = ShellTask(name="Create venv", stream_output=True, return_all=True)
 install_python_libraries = ShellTask(name="Install python dependencies", stream_output=True)
@@ -183,3 +209,5 @@ def register_lambda_via_upload(slug):
     )
 
     logger.info(response)
+    arn = response["FunctionArn"]
+    return arn
