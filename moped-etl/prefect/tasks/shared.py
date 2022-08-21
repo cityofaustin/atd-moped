@@ -31,6 +31,9 @@ def generate_access_key(basename):
     return graphql_engine_api_key
 
 
+def generate_activity_log_queue_name(slug):
+    return "Moped-Test-Deployment-" + slug["basename"]
+
 
 def generate_activity_log_lambda_function_name(slug):
     return slug["awslambda"] +  'activity_log'
