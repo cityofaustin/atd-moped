@@ -2,6 +2,7 @@ import json
 import time
 import boto3
 import os
+import shutil
 import re
 from datetime import timedelta
 
@@ -278,3 +279,41 @@ def check_if_api_is_deployed(slug):
     return True
 
     # TODO FIXME
+
+
+# (cd /tmp/atd-moped/moped-api; python3 -m venv ./venv;);
+# (cd /tmp/atd-moped/moped-api; source ./venv/bin/activate; pip install --target ./package -r ./requirements/slimmed_down.txt; deactivate;);
+
+
+@task(name="Remove API venv")
+def remove_api_venv():
+    logger.info("Removing API venv")
+    venv_path = f"/tmp/atd-moped/moped-api/venv"
+    try:
+        shutil.rmtree(venv_path)
+    except Exception:
+        return False
+    return True
+
+
+@task(name="Remove API package folder")
+def remove_api_package():
+    logger.info("Removing API package folder")
+    package_path = f"/tmp/atd-moped/moped-api/package"
+    try:
+        shutil.rmtree(package_path)
+    except Exception:
+        return False
+    return True
+
+
+create_api_venv = ShellTask(name="Create API venv", stream_output=True, return_all=True)
+install_api_python_libraries = ShellTask(
+    name="Install API python dependencies", stream_output=True
+)
+create_api_zip_archive_libraries = ShellTask(
+    name="Add API python libraries to zip archive", stream_output=True
+)
+add_api_lambda_function_to_archive = ShellTask(
+    name="Add API Lambda custom code to archive", stream_output=True
+)

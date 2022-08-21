@@ -422,6 +422,7 @@ with Flow("Dev event data sandbox", executor=executor) as event_data_development
     activity_log_lambda_is_empty = merge(
         activity_log_lambda_exists, activity_log_lambda_removed
     )
+
     activity_log_lambda_arn = activity_log.register_lambda_via_upload(
         slug=slug,
         upstream_tasks=[activity_log_lambda_is_empty, activity_log_lambda_archive],
@@ -462,7 +463,43 @@ with Flow("Dev event data sandbox", executor=executor) as event_data_development
     )
 
 
-# with Flow("Dev api sandbox", executor=executor) as api_development:
+with Flow("Dev api sandbox", executor=executor) as api_development:
+    branch = Parameter("branch", default="refactor-user-activation-and-main")
+    slug = slug_branch_name(branch)
+
+    api_remove_package = api.remove_api_package()
+    api_remove_venv = api.remove_api_venv()
+
+    api_create_venv_command = "(cd /tmp/atd-moped/moped-api; \
+            python3 -m venv ./venv;)"
+    api_create_venv = api.create_api_venv(
+        command=api_create_venv_command,
+        upstream_tasks=[api_remove_venv, api_remove_package],
+    )
+
+    api_install_python_libraries_command = "(cd /tmp/atd-moped/moped-api; \
+        source ./venv/bin/activate; \
+        pip install --target ./package -r requirements/production.txt; \
+        deactivate;)"
+    api_pip_install = api.install_api_python_libraries(
+        command=api_install_python_libraries_command, upstream_tasks=[api_create_venv]
+    )
+
+    # snuck a little `rm` in here, which could be broken out into a task...
+    api_zip_python_libraries_command = "(cd /tmp/atd-moped/moped-api/package; \
+        rm ../activity_log.zip; \
+        zip -qr ../activity_log.zip .;)"
+    api_zip_libraries = api.create_api_zip_archive_libraries(
+        command=api_zip_python_libraries_command, upstream_tasks=[api_pip_install]
+    )
+
+    api_add_lambda_function_command = "(cd /tmp/atd-moped/moped-api; \
+        zip -qg ./activity_log.zip app.py claims.py config.py graphql.py;)"
+    api_lambda_archive = api.add_api_lambda_function_to_archive(
+        command=api_add_lambda_function_command, upstream_tasks=[api_zip_libraries]
+    )
+
+
 
 
 if __name__ == "__main__":
@@ -474,5 +511,8 @@ if __name__ == "__main__":
     # test_commission.run(branch=branch, database_seed_source="staging")
     # test_decommission.run(branch=branch)
 
-    event_data_development.register(project_name="Moped")
+    # event_data_development.register(project_name="Moped")
     # event_data_development.run(branch=branch)
+
+    api_development.register(project_name="Moped")
+    # api_development.run(branch=branch)
