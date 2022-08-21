@@ -410,27 +410,25 @@ with Flow("Dev event data sandbox", executor=executor) as event_data_development
             command=add_lambda_function_command, upstream_tasks=[zip_libraries]
         )
 
-    extant = activity_log.does_lambda_function_exist(slug=slug)
-    with case(extant, True):
-        removed = activity_log.remove_activity_log_lambda(
-            slug=slug, upstream_tasks=[extant]
+    lambda_exists = activity_log.does_lambda_function_exist(slug=slug)
+    with case(lambda_exists, True):
+        lambda_removed = activity_log.remove_activity_log_lambda(
+            slug=slug, upstream_tasks=[lambda_exists]
         )
 
-    is_empty = merge(extant, removed)
+    lambda_is_empty = merge(lambda_exists, lambda_removed)
     lambda_arn = activity_log.register_lambda_via_upload(
-        slug=slug, upstream_tasks=[is_empty]
+        slug=slug, upstream_tasks=[lambda_is_empty]
     )
 
-    api_exists = activity_log.check_gateway_api_exists(slug=slug)
-    with case(api_exists, True):
-        remove_api = activity_log.remove_gateway_api(
-            slug=slug, upstream_tasks=[api_exists]
-        )
-    ready_for_api = merge(remove_api, api_exists)
+    sqs_exists = activity_log.check_sqs(slug=slug)
+    with case(sqs_exists, True):
+        sqs_removed = activity_log.remove_sqs(slug=slug)
+        cool_down = activity_log.wait_60_seconds(upstream_tasks=[sqs_removed])
+    sqs_empty = merge(sqs_exists, cool_down)
 
-    api_gateway = activity_log.create_gateway_api(
-        slug=slug, lambda_arn=lambda_arn, upstream_tasks=[ready_for_api]
-    )
+    activity_log = activity_log.create_sqs(slug=slug, upstream_tasks=[sqs_empty])
+
 
 
 if __name__ == "__main__":
