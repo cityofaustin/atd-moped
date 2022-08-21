@@ -3,6 +3,7 @@ import json
 import boto3
 import shutil
 import time
+from datetime import timedelta
 
 import prefect
 from prefect import task
@@ -91,7 +92,78 @@ def remove_activity_log_sqs(slug):
 
 
 
+@task(name="Get Lambda / SQS Mapping UUID")
+def get_lambda_sqs_mapping_uuid(queue_arn, lambda_arn):
+    logger.info("Getting Lambda / SQS Mapping UUID")
+    lambda_client = boto3.client("lambda")
+    response = lambda_client.list_event_source_mappings(
+        EventSourceArn=queue_arn, FunctionName=lambda_arn
+    )
+    logger.info(response)
+    uuid = response["EventSourceMappings"][0]["UUID"]
+    logger.info(f"Found UUID: {uuid}")
+    return uuid
 
+
+@task(name="Remove Lambda / SQS Mapping")
+def remove_lambda_sqs_mappings(mapping_uuid):
+    logger.info(f"Removing Lambda / SQS Mapping: {mapping_uuid}")
+    lambda_client = boto3.client("lambda")
+    response = lambda_client.delete_event_source_mapping(UUID=mapping_uuid)
+    logger.info(response)
+    return response
+
+
+@task(name="Wait until UUID clears", max_retries=12, retry_delay=timedelta(seconds=10))
+def spin_until_lambda_sqs_mappings_empty(mapping_uuid):
+    logger.info(f"Waiting until Lambda / SQS Mapping: {mapping_uuid} is empty")
+    lambda_client = boto3.client("lambda")
+    try:
+        response = lambda_client.get_event_source_mapping(UUID=mapping_uuid)
+        logger.info(response)
+    except lambda_client.exceptions.ResourceNotFoundException:
+        return True
+    raise # i feel like there should be a better way to have a task fail?
+
+
+@task(name="Check if mapping between SQS and Lambda exists")
+def check_existing_lambda_sqs_mappings(queue_arn, lambda_arn):
+    logger.info("Checking if mapping between SQS and Lambda exists")
+    lambda_client = boto3.client("lambda")
+    response = lambda_client.list_event_source_mappings(
+        EventSourceArn=queue_arn, FunctionName=lambda_arn
+    )
+    logger.info(response)
+    if len(response["EventSourceMappings"]) > 0:
+        logger.info("Mapping between SQS and Lambda exists")
+        return True
+    else:
+        logger.info("Mapping between SQS and Lambda does not exist")
+        return False
+
+
+@task(name="Link SQS to Lambda")
+def link_lambda_to_sqs(slug, queue_arn, lambda_arn):
+    logger.info("Linking SQS to Lambda")
+
+    lambda_client = boto3.client("lambda")
+
+    response = lambda_client.create_event_source_mapping(
+        EventSourceArn=queue_arn,
+        FunctionName=lambda_arn,
+    )
+    
+    logger.info(response)
+    return True
+
+
+@task(name="Get SQS ARN")
+def get_sqs_arn(url):
+    logger.info(f"Getting SQS ARN for {url}")
+    sqs = boto3.client("sqs")
+    response = sqs.get_queue_attributes(QueueUrl=url, AttributeNames=["QueueArn"])
+    logger.info(response)
+    return response["Attributes"]["QueueArn"]
 
 @task(name="Check if Activity Log SQS exists")
 def check_sqs(slug):
@@ -128,7 +200,7 @@ def remove_sqs(slug):
     return delete_response
 
 @task(name="Wait 60 seconds after deletion, per docs")
-def wait_60_seconds():
+def wait_60_seconds_for_sqs_to_cool_down():
     logger.info("Waiting 60 seconds")
     time.sleep(60)
     return True
@@ -143,7 +215,7 @@ def create_sqs(slug):
 
     response = sqs.create_queue(QueueName=queue_name)
     logger.info(response)
-    return response
+    return response["QueueUrl"]
 
 create_activity_log_venv = ShellTask(name="Create venv", stream_output=True, return_all=True)
 install_python_libraries = ShellTask(name="Install python dependencies", stream_output=True)

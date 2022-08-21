@@ -423,12 +423,36 @@ with Flow("Dev event data sandbox", executor=executor) as event_data_development
     sqs_exists = activity_log.check_sqs(slug=slug)
     with case(sqs_exists, True):
         sqs_removed = activity_log.remove_sqs(slug=slug)
-        cool_down = activity_log.wait_60_seconds(upstream_tasks=[sqs_removed])
+        cool_down = activity_log.wait_60_seconds_for_sqs_to_cool_down(
+            upstream_tasks=[sqs_removed]
+        )
     sqs_empty = merge(sqs_exists, cool_down)
 
-    activity_log = activity_log.create_sqs(slug=slug, upstream_tasks=[sqs_empty])
+    sqs_url = activity_log.create_sqs(slug=slug, upstream_tasks=[sqs_empty])
+    sqs_arn = activity_log.get_sqs_arn(url=sqs_url)
 
+    mapping_exists = activity_log.check_existing_lambda_sqs_mappings(
+        queue_arn=sqs_arn, lambda_arn=lambda_arn
+    )
+    with case(mapping_exists, True):
+        mapping_uuid = activity_log.get_lambda_sqs_mapping_uuid(
+            queue_arn=sqs_arn, lambda_arn=lambda_arn
+        )
+        mapping_removed = activity_log.remove_lambda_sqs_mappings(
+            mapping_uuid=mapping_uuid
+        )
+        mapping_cool = activity_log.spin_until_lambda_sqs_mappings_empty(
+            mapping_uuid=mapping_uuid, upstream_tasks=[mapping_removed]
+        )
 
+    mapping_empty = merge(mapping_exists, mapping_cool)
+
+    activity_log.link_lambda_to_sqs(
+        slug=slug,
+        queue_arn=sqs_arn,
+        lambda_arn=lambda_arn,
+        upstream_tasks=[mapping_empty],
+    )
 
 if __name__ == "__main__":
     branch = "refactor-user-activation-and-main"
