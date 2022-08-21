@@ -499,8 +499,17 @@ with Flow("Dev api sandbox", executor=executor) as api_development:
         command=api_add_lambda_function_command, upstream_tasks=[api_zip_libraries]
     )
 
+    api_lambda_exists = api.does_api_lambda_function_exist(slug=slug)
+    with case(api_lambda_exists, True):
+        api_lambda_removed = api.remove_api_lambda(
+            slug=slug, upstream_tasks=[api_lambda_exists]
+        )
 
+    api_lambda_is_empty = merge(api_lambda_exists, api_lambda_removed)
 
+    api_lambda_arn = api.register_api_lambda_via_upload(
+        slug=slug, upstream_tasks=[api_lambda_is_empty, api_lambda_archive]
+    )
 
 if __name__ == "__main__":
     branch = "refactor-user-activation-and-main"

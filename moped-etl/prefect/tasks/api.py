@@ -39,6 +39,8 @@ ACTIVITY_LOG_FUNCTION_NAME = os.environ["ACTIVITY_LOG_FUNCTION_NAME"]
 
 ZAPPA_PROJECT_NAME = os.environ["ZAPPA_PROJECT_NAME"]
 
+IAM_ROLE_FOR_API_LAMBDA = os.environ["IAM_ROLE_FOR_API_LAMBDA"]
+
 # Create a consistent name for the API config secret for deploy, deploy config, and undeploy
 def create_secret_name(basename):
     return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
@@ -317,3 +319,68 @@ create_api_zip_archive_libraries = ShellTask(
 add_api_lambda_function_to_archive = ShellTask(
     name="Add API Lambda custom code to archive", stream_output=True
 )
+
+
+@task(name="Check if API lambda function exists")
+def does_api_lambda_function_exist(slug):
+
+    lambda_client = boto3.client("lambda")
+
+    function_name = shared.generate_api_lambda_function_name(slug)
+    logger.info(f"Checking if lambda function {function_name} exists")
+    try:
+        response = lambda_client.get_function(FunctionName=function_name)
+        logger.info(f"Lambda function ({function_name}) does exist")
+        return True
+    except Exception:
+        logger.info(f"Lambda function ({function_name}) does not exist")
+    return False
+
+
+@task(name="Remove API lambda function")
+def remove_api_lambda(slug):
+
+    lambda_client = boto3.client("lambda")
+
+    api_function_name = shared.generate_api_lambda_function_name(slug)
+    logger.info(f"Removing API Lambda function: {api_function_name}")
+
+    response = lambda_client.delete_function(FunctionName=api_function_name)
+    logger.info(response)
+    return response
+
+
+@task(name="Upload lambda code, register lambda")
+def register_api_lambda_via_upload(slug):
+    function_name = shared.generate_api_lambda_function_name(slug)
+    logger.info(f"Uploading lambda code {function_name}")
+
+    iam_client = boto3.client("iam")
+    # TODO
+    role = iam_client.get_role(RoleName=IAM_ROLE_FOR_API_LAMBDA)
+    logger.info(role)
+
+    lambda_client = boto3.client("lambda")
+
+    zip_file_path = "/tmp/atd-moped/moped-api/activity_log.zip"
+
+    with open(zip_file_path, "rb") as f:
+        zipped_code = f.read()
+
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
+
+    response = lambda_client.create_function(
+        FunctionName=function_name,
+        Runtime="python3.8",
+        Handler="app.handler",
+        PackageType="Zip",
+        Code=dict(ZipFile=zipped_code),
+        Role=role["Role"]["Arn"],
+        Description=f"AWS Moped : {function_name}",
+        Environment={"Variables": {}},
+    )
+
+    logger.info(response)
+    arn = response["FunctionArn"]
+    return arn
