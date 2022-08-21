@@ -92,6 +92,10 @@ def remove_activity_log_sqs(slug):
 
 
 
+
+
+
+
 @task(name="Get Lambda / SQS Mapping UUID")
 def get_lambda_sqs_mapping_uuid(queue_arn, lambda_arn):
     logger.info("Getting Lambda / SQS Mapping UUID")
