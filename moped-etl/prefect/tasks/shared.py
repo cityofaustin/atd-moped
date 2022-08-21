@@ -15,8 +15,8 @@ def generate_api_key(basename):
     api_key = hashlib.sha256(sha_input.encode()).hexdigest()
     return api_key
 
-def generate_api_lambda_function_name(basename):
-    return f"{ZAPPA_PROJECT_NAME}-{basename}"
+#def generate_api_lambda_function_name(basename):
+    #return f"{ZAPPA_PROJECT_NAME}-{basename}"
 
 def create_activity_log_aws_name(basename, function_name):
     return f"atd-moped-events-{function_name}_{basename}"
@@ -36,7 +36,10 @@ def generate_activity_log_queue_name(slug):
 
 
 def generate_activity_log_lambda_function_name(slug):
-    return slug["awslambda"] +  'activity_log'
+    return slug["awslambda"] +  '-activity_log'
 
 def generate_activity_log_api_gateway_name(slug):
-    return slug["awslambda"] + 'activity_log'
+    return slug["awslambda"] + '-activity_log'
+
+def generate_api_lambda_function_name(slug):
+    return slug["awslambda"] + '-api'
