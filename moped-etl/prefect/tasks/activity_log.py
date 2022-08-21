@@ -2,6 +2,7 @@ import os
 import json
 import boto3
 import shutil
+import time
 
 import prefect
 from prefect import task
@@ -82,39 +83,67 @@ def remove_activity_log_sqs(slug):
 
     queue_url = shared.create_activity_log_queue_url(basename)
     response = sqs_client.delete_queue(QueueUrl=queue_url)
-    print(response)
+    logger.info(response)
     return response
 
 
 
 
 
-@task(name="Check if API exists")
-def remove_gateway_api(slug):
-    pass
 
 
-@task(name="Check if API exists")
-def check_gateway_api_exists(slug):
-    pass
 
+@task(name="Check if Activity Log SQS exists")
+def check_sqs(slug):
+    logger.info("Checking if Activity Log SQS exists")
 
-@task(name="Create gateway API")
-def create_gateway_api(slug, lambda_arn):
-    api = boto3.client('apigatewayv2')
+    sqs = boto3.client("sqs")
 
-    logger.info("Creating gateway API")
-    api_name = shared.generate_activity_log_api_gateway_name(slug)
+    queue_name = shared.generate_activity_log_queue_name(slug)
 
-    basename = slug["basename"]
+    response = sqs.list_queues(QueueNamePrefix=queue_name)
 
-    api.create_api(
-        Name=api_name,
-        ProtocolType='HTTP',
-        Target=lambda_arn,
-        Description=f"Activity Log for test {basename}"
-    )
-    pass
+    #response = sqs_client.get_queue_attributes(QueueUrl=queue_url, AttributeNames=["QueueArn"])
+    logger.info(response)
+
+    if not "QueueUrls" in response:
+        logger.info("Activity Log SQS does not exist")
+        return False
+    else:
+        logger.info("Activity Log SQS exists")
+        return True
+
+@task(name="Remove Activity Log SQS")
+def remove_sqs(slug):
+    logger.info("Removing Activity Log SQS")
+
+    sqs = boto3.client("sqs")
+
+    queue_name = shared.generate_activity_log_queue_name(slug)
+    list_response = sqs.list_queues(QueueNamePrefix=queue_name)
+
+    delete_response = sqs.delete_queue(QueueUrl=list_response["QueueUrls"][0])
+    logger.info(delete_response)
+
+    return delete_response
+
+@task(name="Wait 60 seconds after deletion, per docs")
+def wait_60_seconds():
+    logger.info("Waiting 60 seconds")
+    time.sleep(60)
+    return True
+
+@task(name="Create Activity Log SQS")
+def create_sqs(slug):
+    logger.info("Creating Activity Log SQS")
+
+    sqs = boto3.client("sqs")
+
+    queue_name = shared.generate_activity_log_queue_name(slug)
+
+    response = sqs.create_queue(QueueName=queue_name)
+    logger.info(response)
+    return response
 
 create_activity_log_venv = ShellTask(name="Create venv", stream_output=True, return_all=True)
 install_python_libraries = ShellTask(name="Install python dependencies", stream_output=True)
