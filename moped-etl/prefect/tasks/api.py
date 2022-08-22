@@ -1,6 +1,7 @@
 import json
 import time
 import boto3
+import boto3.session
 import os
 import shutil
 import re
@@ -180,7 +181,8 @@ def check_if_api_is_deployed(slug):
     logger.info("Checking: " + function_name)
 
     # this is what you get for using lambda as a keyword python...
-    λ = boto3.client("lambda")
+    session = boto3.session.Session()
+    λ = session.client("lambda")
 
     try:
         response = λ.get_function(FunctionName=function_name)
@@ -197,7 +199,8 @@ def check_if_api_is_deployed(slug):
 
 @task(name="Check if secret exists")
 def check_secret_exists(slug):
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    client = session.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
     secret_name = shared.create_secret_name(slug)
     try:
         client.get_secret_value(SecretId=secret_name)
@@ -212,7 +215,8 @@ def check_secret_exists(slug):
 def remove_moped_api_secrets_entry(slug):
     logger.info("Removing API secret config")
 
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    client = session.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
     secret_name = shared.create_secret_name(slug)
 
     response = client.delete_secret(
@@ -242,7 +246,8 @@ def create_moped_api_secrets_entry(slug, ready_for_secret):
     graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
     graphql_engine_api_key = shared.generate_access_key(slug["basename"])
 
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    client = session.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
 
     secret_name = shared.create_secret_name(slug)
     secret = {
@@ -309,7 +314,8 @@ add_api_lambda_function_to_archive = ShellTask(
 @task(name="Check if API lambda function exists")
 def does_api_lambda_function_exist(slug):
 
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
 
     function_name = shared.generate_api_lambda_function_name(slug)
     logger.info(f"Checking if lambda function {function_name} exists")
@@ -325,7 +331,8 @@ def does_api_lambda_function_exist(slug):
 @task(name="Remove API lambda function")
 def remove_api_lambda(slug):
 
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
 
     api_function_name = shared.generate_api_lambda_function_name(slug)
     logger.info(f"Removing API Lambda function: {api_function_name}")
@@ -340,11 +347,13 @@ def register_api_lambda_via_upload(slug):
     function_name = shared.generate_api_lambda_function_name(slug)
     logger.info(f"Uploading lambda code {function_name}")
 
-    iam_client = boto3.client("iam")
+    session = boto3.session.Session()
+    iam_client = session.client("iam")
     role = iam_client.get_role(RoleName=IAM_ROLE_FOR_API_LAMBDA)
     logger.info(role)
 
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
 
     zip_file_path = "/tmp/atd-moped/moped-api/activity_log.zip"
 
@@ -385,7 +394,8 @@ def register_api_lambda_via_upload(slug):
 
 @task(name="Remove Gateway API")
 def remove_gateway_api(slug):
-    api_gateway = boto3.client("apigatewayv2")
+    session = boto3.session.Session()
+    api_gateway = session.client("apigatewayv2")
     logger.info("Searching APIs to see if our API exists")
 
     response = api_gateway.get_apis(MaxResults="1000")
@@ -405,7 +415,8 @@ def remove_gateway_api(slug):
 
 @task(name="Check if API exists")
 def check_gateway_api_exists(slug):
-    api_gateway = boto3.client("apigatewayv2")
+    session = boto3.session.Session()
+    api_gateway = session.client("apigatewayv2")
     logger.info("Searching APIs to see if our API exists")
 
     response = api_gateway.get_apis(MaxResults="1000")
@@ -428,7 +439,8 @@ def check_gateway_api_exists(slug):
 
 @task(name="Create gateway API")
 def create_gateway_api(slug, lambda_arn):
-    api = boto3.client("apigatewayv2")
+    session = boto3.session.Session()
+    api = session.client("apigatewayv2")
 
     logger.info("Creating gateway API")
     api_name = shared.generate_activity_log_api_gateway_name(slug)
