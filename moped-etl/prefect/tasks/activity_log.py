@@ -1,6 +1,7 @@
 import os
 import json
 import boto3
+import boto3.session
 import shutil
 import time
 from datetime import timedelta
@@ -80,7 +81,8 @@ def remove_activity_log_sqs(slug):
     basename = slug["basename"]
     logger.info("Removing Activity Log SQS")
 
-    sqs_client = boto3.client("sqs")
+    session = boto3.session.Session()
+    sqs_client = session.client("sqs")
 
     queue_url = shared.create_activity_log_queue_url(basename)
     response = sqs_client.delete_queue(QueueUrl=queue_url)
@@ -99,7 +101,8 @@ def remove_activity_log_sqs(slug):
 @task(name="Get Lambda / SQS Mapping UUID")
 def get_lambda_sqs_mapping_uuid(queue_arn, lambda_arn):
     logger.info("Getting Lambda / SQS Mapping UUID")
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
     response = lambda_client.list_event_source_mappings(
         EventSourceArn=queue_arn, FunctionName=lambda_arn
     )
@@ -112,7 +115,8 @@ def get_lambda_sqs_mapping_uuid(queue_arn, lambda_arn):
 @task(name="Remove Lambda / SQS Mapping")
 def remove_lambda_sqs_mappings(mapping_uuid):
     logger.info(f"Removing Lambda / SQS Mapping: {mapping_uuid}")
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
     response = lambda_client.delete_event_source_mapping(UUID=mapping_uuid)
     logger.info(response)
     return response
@@ -121,7 +125,8 @@ def remove_lambda_sqs_mappings(mapping_uuid):
 @task(name="Wait until UUID clears", max_retries=12, retry_delay=timedelta(seconds=10))
 def spin_until_lambda_sqs_mappings_empty(mapping_uuid):
     logger.info(f"Waiting until Lambda / SQS Mapping: {mapping_uuid} is empty")
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
     try:
         response = lambda_client.get_event_source_mapping(UUID=mapping_uuid)
         logger.info(response)
@@ -133,7 +138,8 @@ def spin_until_lambda_sqs_mappings_empty(mapping_uuid):
 @task(name="Check if mapping between SQS and Lambda exists")
 def check_existing_lambda_sqs_mappings(queue_arn, lambda_arn):
     logger.info("Checking if mapping between SQS and Lambda exists")
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
     response = lambda_client.list_event_source_mappings(
         EventSourceArn=queue_arn, FunctionName=lambda_arn
     )
@@ -150,7 +156,8 @@ def check_existing_lambda_sqs_mappings(queue_arn, lambda_arn):
 def link_lambda_to_sqs(slug, queue_arn, lambda_arn):
     logger.info("Linking SQS to Lambda")
 
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
 
     response = lambda_client.create_event_source_mapping(
         EventSourceArn=queue_arn,
@@ -164,7 +171,8 @@ def link_lambda_to_sqs(slug, queue_arn, lambda_arn):
 @task(name="Get SQS ARN")
 def get_sqs_arn(url):
     logger.info(f"Getting SQS ARN for {url}")
-    sqs = boto3.client("sqs")
+    session = boto3.session.Session()
+    sqs = session.client("sqs")
     response = sqs.get_queue_attributes(QueueUrl=url, AttributeNames=["QueueArn"])
     logger.info(response)
     return response["Attributes"]["QueueArn"]
@@ -173,7 +181,8 @@ def get_sqs_arn(url):
 def check_sqs(slug):
     logger.info("Checking if Activity Log SQS exists")
 
-    sqs = boto3.client("sqs")
+    session = boto3.session.Session()
+    sqs = session.client("sqs")
 
     queue_name = shared.generate_activity_log_queue_name(slug)
 
@@ -193,7 +202,8 @@ def check_sqs(slug):
 def remove_sqs(slug):
     logger.info("Removing Activity Log SQS")
 
-    sqs = boto3.client("sqs")
+    session = boto3.session.Session()
+    sqs = session.client("sqs")
 
     queue_name = shared.generate_activity_log_queue_name(slug)
     list_response = sqs.list_queues(QueueNamePrefix=queue_name)
@@ -213,7 +223,8 @@ def wait_60_seconds_for_sqs_to_cool_down():
 def create_sqs(slug):
     logger.info("Creating Activity Log SQS")
 
-    sqs = boto3.client("sqs")
+    session = boto3.session.Session()
+    sqs = session.client("sqs")
 
     queue_name = shared.generate_activity_log_queue_name(slug)
 
@@ -250,7 +261,8 @@ def remove_activity_log_package():
 @task(name="Remove activity log lambda function")
 def remove_activity_log_lambda(slug):
 
-    lambda_client = boto3.client("lambda")
+    session = boto3.session.Session()
+    lambda_client = session.client("lambda")
 
     activity_log_function_name = shared.generate_activity_log_lambda_function_name(slug)
     logger.info(f"Removing Activity Log Lambda function: {activity_log_function_name}")
@@ -262,7 +274,8 @@ def remove_activity_log_lambda(slug):
 @task(name="Check if lambda function exists")
 def does_lambda_function_exist(slug):
 
-    lambda_client = boto3.client('lambda')
+    session = boto3.session.Session()
+    lambda_client = session.client('lambda')
 
     function_name = shared.generate_activity_log_lambda_function_name(slug)
     logger.info(f"Checking if lambda function {function_name} exists")
@@ -279,11 +292,13 @@ def register_lambda_via_upload(slug):
     function_name = shared.generate_activity_log_lambda_function_name(slug) 
     logger.info(f"Uploading lambda code {function_name}")
     
-    iam_client = boto3.client('iam')
+    session = boto3.session.Session()
+    iam_client = session.client('iam')
     role = iam_client.get_role(RoleName=IAM_ROLE_FOR_ACTIVITY_LOG_LAMBDA)
     logger.info(role)
     
-    lambda_client = boto3.client('lambda')
+    session = boto3.session.Session()
+    lambda_client = session.client('lambda')
 
     zip_file_path = '/tmp/atd-moped/moped-data-events/activity_log/activity_log.zip'
 
