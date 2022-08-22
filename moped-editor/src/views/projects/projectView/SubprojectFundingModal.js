@@ -42,7 +42,7 @@ const SubprojectFundingModal = ({
   };
 
   const { data } = useSocrataJson(
-    `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sub_project_id=${eCaprisID}&$limit=9999`
+    `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
   );
 
   const [selectedFdus, setSelectedFdus] = useState([])
