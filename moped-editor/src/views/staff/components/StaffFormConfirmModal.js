@@ -10,9 +10,16 @@ import {
 } from "@material-ui/core";
 
 /**
- * Generates a StaffForm Component
- * @param {Object} editFormData - The form data
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
+ * Generates a modal to display a confirm message
+ * @param {boolean} isLoading - loading state
+ * @param {boolean} open - modal open state
+ * @param {function} onClose - callback that fires on modal close
+ * @param {string} title - title shown in modal
+ * @param {string} message - message shown in modal
+ * @param {boolean} hideCloseButton - should the close button appear or not
+ * @param {string} actionButtonLabel - label to apply to the button that fires the action function
+ * @param {boolean} hideActionButton - should we hide the action button or not
+ * @param {function} action - fires on action button click
  * @returns {JSX.Element}
  * @constructor
  */

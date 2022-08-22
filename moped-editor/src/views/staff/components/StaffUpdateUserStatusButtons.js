@@ -24,9 +24,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Generates a StaffForm Component
- * @param {Object} editFormData - The form data
+ * Generates a button to inactivate or activate an existing user
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
+ * @param {function} setModalState - set the modal's details
+ * @param {function} handleCloseModal - callback that fires on modal close
+ * @param {string} email - user's email
+ * @param {string} password - new password required in form for user activate
+ * @param {array} roles - user roles to create DynamoDB claims entry
+ * @param {boolean} isUserActive - tells us if we are activating or deactivating
  * @returns {JSX.Element}
  * @constructor
  */

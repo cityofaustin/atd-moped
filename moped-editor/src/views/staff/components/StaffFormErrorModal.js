@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 
 /**
- * Generates a StaffForm Component
+ * Generates a modal to display form errors
  * @param {Object} apiErrors - Error object
  * @param {string} clearApiErrors - Function to clear errors returned from the API
  * @returns {JSX.Element}
