@@ -385,6 +385,21 @@ def register_api_lambda_via_upload(slug):
 
 @task(name="Remove Gateway API")
 def remove_gateway_api(slug):
+    api_gateway = boto3.client("apigatewayv2")
+    logger.info("Searching APIs to see if our API exists")
+
+    response = api_gateway.get_apis(MaxResults="1000")
+    apis = response["Items"]
+    my_apis = [
+        api
+        for api in apis
+        if api["Name"] == shared.generate_activity_log_api_gateway_name(slug)
+    ]
+    for api in my_apis:
+        api_id = api["ApiId"]
+        logger.info(f"Deleting {api_id}")
+        response = api_gateway.delete_api(ApiId=api["ApiId"])
+    # logger.info(apis)
     return True
 
 
@@ -393,10 +408,22 @@ def check_gateway_api_exists(slug):
     api_gateway = boto3.client("apigatewayv2")
     logger.info("Searching APIs to see if our API exists")
 
-    apis = api_gateway.get_apis(MaxResults="1000")
+    response = api_gateway.get_apis(MaxResults="1000")
+    apis = response["Items"]
+    my_apis = [
+        api
+        for api in apis
+        if api["Name"] == shared.generate_activity_log_api_gateway_name(slug)
+    ]
     logger.info(apis)
 
-    return True
+    if len(my_apis) > 0:
+        logger.info(
+            f"API(s) for {shared.generate_activity_log_api_gateway_name(slug)} exists"
+        )
+        return True
+    else:
+        return False
 
 
 @task(name="Create gateway API")
