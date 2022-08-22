@@ -51,8 +51,18 @@ const roleOptions = [
 
 /**
  * Generates a StaffForm Component
- * @param {Object} editFormData - The form data
+ * @param {Object} initialFormValues - The form data
+ * @param {function} onFormSubmit - callback fired when submit button is clicked
+ * @param {Object} userApiErrors - any errors returned from the Moped API user routes
+ * @param {function} setUserApiError - modify or clear Moped API user routes errors
+ * @param {boolean} isUserApiLoading - Moped API user route API call loading state
+ * @param {function} setIsUserApiLoading - modify Moped API user route API call loading state
+ * @param {boolean} showUpdateUserStatusButtons - show/hide user activate/deactivate button
+ * @param {boolean} showFormResetButton - show/hide form values reset button
+ * @param {Object} validationSchema - Yup formatted form validation schema
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
+ * @param {boolean} isUserActive - is existing user active or inactive
+ * @param {boolean} submitOnlyChangedValues - control whether form submits all or only updated values
  * @returns {JSX.Element}
  * @constructor
  */
