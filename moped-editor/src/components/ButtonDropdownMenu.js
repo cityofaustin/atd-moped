@@ -12,10 +12,21 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: theme.palette.primary.main,
       color: "#fff",
     },
+    "& .MuiList-root": {
+      padding: "0px"
+    },
     "& .MuiListItem-root": {
       textTransform: "uppercase",
       fontSize: "14px",
       fontWeight: 500,
+      paddingTop: "8px",
+      paddingBottom: "8px"
+    },
+    "& .MuiListItem-root:hover": {
+      backgroundColor: theme.palette.primary.dark
+    },
+    "& .MuiListItem-root:first-of-type": {
+      borderBottom: `1px solid ${theme.palette.primary.dark}`
     },
   },
 }));
