@@ -39,7 +39,12 @@ def generate_activity_log_lambda_function_name(slug):
     return slug["awslambda"] +  '-activity_log'
 
 def generate_activity_log_api_gateway_name(slug):
-    return slug["awslambda"] + '-activity_log'
+    return slug["awslambda"] + '-api'
 
 def generate_api_lambda_function_name(slug):
     return slug["awslambda"] + '-api'
+    
+# Create a consistent name for the API config secret for deploy, deploy config, and undeploy
+def create_secret_name(slug):
+    name = slug["awslambda"]
+    return f"MOPED_TEST_API_CONFIG_{name}"
