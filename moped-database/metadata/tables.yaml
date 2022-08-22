@@ -850,7 +850,6 @@
             - component_id
             - project_component_id
             - project_id
-            - status_id
             - description
             - name
             - is_deleted
@@ -1818,7 +1817,6 @@
             - project_id
             - project_milestone_id
             - started_by_user_id
-            - status_id
             - milestone_date_type
             - milestone_description
             - milestone_status
@@ -1951,7 +1949,6 @@
             - project_id
             - project_note_id
             - project_note_type
-            - status_id
             - project_note
             - date_created
             - is_deleted
@@ -2076,7 +2073,6 @@
             - is_deleted
             - project_id
             - proj_partner_id
-            - status_id
             - partner_name
             - date_added
       retry_conf:
@@ -2212,7 +2208,6 @@
             - project_id
             - project_personnel_id
             - role_id
-            - status_id
             - is_deleted
             - user_id
             - notes
@@ -2430,7 +2425,6 @@
             - project_id
             - project_phase_id
             - started_by_user_id
-            - status_id
             - subphase_id
             - phase_description
             - phase_status
@@ -3189,7 +3183,6 @@
             - is_deleted
             - project_id
             - project_type_id
-            - status_id
             - date_added
       retry_conf:
         num_retries: 0
