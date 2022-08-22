@@ -3,11 +3,11 @@ import {
   formatApiErrors,
   transformFormDataIntoDatabaseTypes,
   removeUnchangedFieldsFromDatabaseData,
-} from "../helpers";
+} from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { WORKGROUPS_QUERY } from "../../../queries/workgroups";
-import { findHighestRole } from "../../../auth/user";
+import { WORKGROUPS_QUERY } from "../../queries/workgroups";
+import { findHighestRole } from "../../auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -26,9 +26,9 @@ import {
   RadioGroup,
   Select,
 } from "@material-ui/core";
-import StaffFormErrorModal from "./StaffFormErrorModal";
-import StaffFormConfirmModal from "./StaffFormConfirmModal";
-import StaffUpdateUserStatusButtons from "./StaffUpdateUserStatusButtons";
+import StaffFormErrorModal from "./components/StaffFormErrorModal";
+import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
+import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
 
 const useStyles = makeStyles((theme) => ({
   formSelect: {
