@@ -4,6 +4,7 @@ import time
 from datetime import timedelta
 from re import I
 import boto3
+import boto3.session
 import prefect
 from prefect import task
 import pprint as pretty_printer
@@ -42,7 +43,8 @@ def pprint(string):
 def create_ecs_cluster(slug):
     logger.info("Creating ECS cluster")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
     create_cluster_result = ecs.create_cluster(clusterName=slug["ecs_cluster_name"])
 
     logger.info("Cluster ARN: " + create_cluster_result["cluster"]["clusterArn"])
@@ -55,7 +57,8 @@ def create_load_balancer(slug):
     basename = slug["basename"]
 
     logger.info("Creating Load Balancer")
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     create_elb_result = elb.create_load_balancer(
         Name=slug["elb_basename"],
@@ -74,7 +77,8 @@ def create_load_balancer(slug):
 def create_target_group(slug):
     logger.info("Creating Target Group")
 
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     target_group = elb.create_target_group(
         Name=slug["elb_basename"],
@@ -98,7 +102,8 @@ def create_route53_cname(slug, load_balancer):
 
     target = load_balancer["LoadBalancers"][0]["DNSName"]
 
-    route53 = boto3.client("route53")
+    session = boto3.session.Session()
+    route53 = session.client("route53")
 
     record = route53.change_resource_record_sets(
         HostedZoneId=R53_HOSTED_ZONE,
@@ -124,7 +129,8 @@ def create_route53_cname(slug, load_balancer):
 def check_dns_status(dns_request):
     logger.info("Checking DNS status")
 
-    route53 = boto3.client("route53")
+    session = boto3.session.Session()
+    route53 = session.client("route53")
 
     dns_status = route53.get_change(Id=dns_request["ChangeInfo"]["Id"])
 
@@ -144,7 +150,8 @@ def check_dns_status(dns_request):
 def create_certificate(slug, dns_status):
     logger.info("Creating TLS Certificate")
 
-    acm = boto3.client("acm")
+    session = boto3.session.Session()
+    acm = session.client("acm")
 
     # TODO create these host names via shared helper function or push the hardcoded values into the environment variables
 
@@ -174,7 +181,8 @@ def create_certificate(slug, dns_status):
 def get_certificate_validation_parameters(tls_certificate):
     logger.info("Validating TLS Certificate")
 
-    acm = boto3.client("acm")
+    session = boto3.session.Session()
+    acm = session.client("acm")
 
     certificate = acm.describe_certificate(
         CertificateArn=tls_certificate["CertificateArn"]
@@ -199,7 +207,8 @@ def add_cname_for_certificate_validation(parameters):
     host = parameters["ResourceRecord"]["Name"]
     target = parameters["ResourceRecord"]["Value"]
 
-    route53 = boto3.client("route53")
+    session = boto3.session.Session()
+    route53 = session.client("route53")
 
     record = route53.change_resource_record_sets(
         HostedZoneId=R53_HOSTED_ZONE,
@@ -227,7 +236,8 @@ def add_cname_for_certificate_validation(parameters):
 def wait_for_valid_certificate(tls_certificate):
     logger.info("Waiting for TLS Certificate to be valid")
 
-    acm = boto3.client("acm")
+    session = boto3.session.Session()
+    acm = session.client("acm")
 
     certificate = acm.describe_certificate(
         CertificateArn=tls_certificate["CertificateArn"]
@@ -256,7 +266,8 @@ def remove_route53_cname_for_validation(parameters):
     host = parameters["ResourceRecord"]["Name"]
     target = parameters["ResourceRecord"]["Value"]
 
-    route53 = boto3.client("route53")
+    session = boto3.session.Session()
+    route53 = session.client("route53")
 
     logger.info(parameters)
 
@@ -283,7 +294,8 @@ def create_load_balancer_listener(
     load_balancer, target_group, certificate, ready_for_listeners
 ):
     logger.info("Creating Load Balancer Listener")
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     listeners = {"HTTP": None, "HTTPS": None}
 
@@ -325,7 +337,8 @@ def create_task_definition(slug, api_endpoint):
     basename = slug["basename"]
     database = slug["database"]
     logger.info("Adding task definition")
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     logger.info("API Endpoint: ")
     logger.info(api_endpoint)
@@ -396,7 +409,8 @@ def create_service(
     basename = slug["basename"]
     logger.info("Creating ECS service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     try:
         create_service_result = ecs.create_service(
@@ -434,7 +448,8 @@ def update_service(
 ):
     logger.info("Creating ECS service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     update_service_result = ecs.update_service(
         cluster=slug["ecs_cluster_name"],
@@ -457,7 +472,8 @@ def update_service(
 def remove_ecs_cluster(slug, no_service_token):
     logger.info("removing ECS cluster")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
     delete_cluster_result = ecs.delete_cluster(cluster=slug["ecs_cluster_name"])
 
     return delete_cluster_result
@@ -468,7 +484,8 @@ def remove_target_group(slug, no_listener_token):
     basename = slug["basename"]
     logger.info("Removing target group")
 
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     target_group = elb.describe_target_groups(Names=[basename])
 
@@ -484,7 +501,8 @@ def remove_all_listeners(slug):
     basename = slug["basename"]
     logger.info("Removing all listeners from load balancer")
 
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     load_balancer = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
@@ -503,7 +521,8 @@ def remove_load_balancer(slug, no_cluster_token):
     basename = slug["basename"]
     logger.info("removing Load Balancer")
 
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     load_balancers = elb.describe_load_balancers(Names=[slug["elb_basename"]])
 
@@ -518,7 +537,8 @@ def remove_load_balancer(slug, no_cluster_token):
 def set_desired_count_for_service(slug, count):
     logger.info("Setting desired count for service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     services = ecs.describe_services(
         cluster=slug["ecs_cluster_name"], services=[slug["ecs_cluster_name"]]
@@ -539,7 +559,8 @@ def set_desired_count_for_service(slug, count):
 def list_tasks_for_service(slug):
     logger.info("Listing tasks for service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     response = ecs.list_tasks(
         cluster=slug["ecs_cluster_name"], serviceName=slug["ecs_cluster_name"]
@@ -552,7 +573,8 @@ def list_tasks_for_service(slug):
 def stop_tasks_for_service(slug, tasks, zero_count_token):
     logger.info("Stopping tasks for service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     responses = []
 
@@ -575,7 +597,8 @@ def stop_tasks_for_service(slug, tasks, zero_count_token):
 def wait_for_service_to_be_drained(slug, stop_token):
     logger.info("Waiting for service to be drained")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
 
     tasks = ecs.list_tasks(
         cluster=slug["ecs_cluster_name"], serviceName=slug["ecs_cluster_name"]
@@ -591,7 +614,8 @@ def wait_for_service_to_be_drained(slug, stop_token):
 def remove_task_definition(task_definition):
     logger.info("removing task definition")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.deregister_task_definition(
         taskDefinition=task_definition["taskDefinition"]["taskDefinitionArn"]
     )
@@ -603,7 +627,8 @@ def remove_task_definition(task_definition):
 def delete_service(slug, drained_token, no_target_group_token):
     logger.info("Deleting service")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.delete_service(
         cluster=slug["ecs_cluster_name"], service=slug["ecs_cluster_name"]
     )
@@ -615,7 +640,8 @@ def delete_service(slug, drained_token, no_target_group_token):
 def remove_route53_cname(slug, removed_load_balancer_token):
     logger.info("Removing Route53 CNAME")
 
-    route53 = boto3.client("route53")
+    session = boto3.session.Session()
+    route53 = session.client("route53")
 
     hostname = slug["graphql_endpoint"] + "-graphql.moped-test.austinmobility.io."
 
@@ -663,7 +689,8 @@ def remove_certificate(slug, removed_hostname_token):
     logger.info("Sleeping for 10 seconds to allow for certificate to be removed")
     time.sleep(15)
 
-    acm = boto3.client("acm")
+    session = boto3.session.Session()
+    acm = session.client("acm")
 
     host = slug["graphql_endpoint"] + "-graphql.moped-test.austinmobility.io"
 
@@ -715,7 +742,8 @@ def count_existing_listeners(slug, load_balancer):
     basename = slug["basename"]
 
     logger.info("Counting listeners")
-    elb = boto3.client("elbv2")
+    session = boto3.session.Session()
+    elb = session.client("elbv2")
 
     arn = load_balancer["LoadBalancers"][0]["LoadBalancerArn"]
 
@@ -733,7 +761,8 @@ def count_existing_listeners(slug, load_balancer):
 def check_count_running_ecs_tasks(slug):
     logger.info("Are there running tasks")
 
-    ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
+    session = boto3.session.Session()
+    ecs = session.client("ecs", region_name=AWS_DEFAULT_REGION)
     response = ecs.describe_clusters(clusters=[slug["ecs_cluster_name"]])
 
     logger.info(response)
