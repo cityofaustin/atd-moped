@@ -1,6 +1,9 @@
 import theme from "src/theme/index";
 import { mapStyles } from "src/utils/mapHelpers";
 
+// Default Mapbox GL Draw styles with overrides from MUI theme
+// See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
+// See https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
 const mapboxDrawStylesOverrides = [
   {
     id: "gl-draw-polygon-fill-inactive",

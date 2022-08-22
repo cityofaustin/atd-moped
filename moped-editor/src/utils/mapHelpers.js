@@ -370,7 +370,7 @@ export const getEditMapInteractiveIds = (drawLines) => {
   const interactiveIds = Object.values(mapConfig.layerConfigs).map(
     (config) => config.layerIdName
   );
-  // console.log(interactiveIds);
+
   if (drawLines === true) {
     return interactiveIds.filter(
       (layer) => layer !== "project-component-points"
@@ -379,6 +379,7 @@ export const getEditMapInteractiveIds = (drawLines) => {
   if (drawLines === false) {
     return interactiveIds.filter((layer) => layer !== "ctn-lines");
   }
+
   return interactiveIds;
 };
 

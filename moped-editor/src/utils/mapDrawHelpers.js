@@ -51,7 +51,7 @@ export function useMapDrawTools(
   saveActionDispatch,
   drawLines
 ) {
-  const mapEditorRef = useRef();
+  const drawControlsRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
 
   /**
@@ -121,8 +121,8 @@ export function useMapDrawTools(
     const drawnFeatures =
       getDrawnFeaturesFromFeatureCollection(featureCollection);
 
-    // Collect all the features in the map
-    const featureCollectionAlreadyInDrawMap = mapEditorRef.current.getAll();
+    // Collect all the features that the draw UI is tracking
+    const featureCollectionAlreadyInDrawMap = drawControlsRef.current.getAll();
     const featuresAlreadyInDrawMap = featureCollectionAlreadyInDrawMap.features;
 
     // Retrieve only the features that are present in state, but not the map
@@ -133,7 +133,7 @@ export function useMapDrawTools(
     );
 
     // Draw the features
-    featuresToAdd.forEach((feature) => mapEditorRef.current.add(feature));
+    featuresToAdd.forEach((feature) => drawControlsRef.current.add(feature));
   };
 
   /**
@@ -246,12 +246,12 @@ export function useMapDrawTools(
   };
 
   /**
-   * This function gets called on any creating a new drawn feature
+   * This function gets called after creating a drawn feature
    */
   const onCreate = (e) => {
     const { features } = e;
-    // If the current event is a new feature (point or line)
-    // Save without running dispatch
+
+    // Save without running dispatch since this is a new feature
     saveDrawnPoints(false, features); // False = no dispatch
   };
 
@@ -266,8 +266,14 @@ export function useMapDrawTools(
     }
   };
 
+  /*
+   * direct_select allows more complex interactions like breaking line strings into midpoints
+   * but we only want users to select and deselect with simple_select mode so we override on load
+   * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#simple_select
+   *  @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#direct_select
+   **/
   const overrideDirectSelect = () => {
-    mapEditorRef.current.modes.DIRECT_SELECT = "simple_select";
+    drawControlsRef.current.modes.DIRECT_SELECT = "simple_select";
   };
 
   /**
@@ -276,7 +282,7 @@ export function useMapDrawTools(
    */
   const renderMapDrawTools = () => (
     <ComponentsDrawControl
-      ref={mapEditorRef}
+      ref={drawControlsRef}
       onCreate={onCreate}
       onDelete={onDelete}
       drawLines={drawLines}

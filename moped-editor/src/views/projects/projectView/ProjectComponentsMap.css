@@ -80,6 +80,7 @@
   height: 48px;
 }
 
+/* Since we rotated the buttons, we need to update which corners are rounded */
 .mapboxgl-ctrl-group button:first-child {
   border-radius: 4px 0 0 4px;
 }

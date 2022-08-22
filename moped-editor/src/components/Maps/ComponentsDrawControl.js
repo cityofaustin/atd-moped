@@ -82,8 +82,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
  * @param {boolean} drawLines - tells us if we are drawing lines or not
  * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
  * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
- * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads; direct_select allows more complex
- * interactions like breaking line strings into midpoints but we only want users to select and deselect with simple_select
+ * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads
  * @return {JSX.Element} The whole map draw UI
  */
 
@@ -103,7 +102,6 @@ const ComponentsDrawControl = React.forwardRef(
     const shouldDrawPoints = drawLines === false;
 
     const sharedProps = {
-      id: "mapbox-gl-draw-controls",
       position: "top-right",
       displayControlsDefault: false, // Disable to allow us to set which controls to show
       default_mode: "simple_select",
