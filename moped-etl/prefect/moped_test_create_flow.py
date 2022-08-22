@@ -467,6 +467,17 @@ with Flow("Dev api sandbox", executor=executor) as api_development:
     branch = Parameter("branch", default="refactor-user-activation-and-main")
     slug = slug_branch_name(branch)
 
+    secret_exists = api.check_secret_exists(slug=slug)
+
+    with case(secret_exists, True):
+        remove_api_config_secret_arn = api.remove_moped_api_secrets_entry(slug=slug)
+
+    ready_for_secret = merge(remove_api_config_secret_arn, secret_exists)
+
+    create_api_config_secret_arn = api.create_moped_api_secrets_entry(
+        slug=slug, ready_for_secret=ready_for_secret
+    )
+
     api_remove_package = api.remove_api_package()
     api_remove_venv = api.remove_api_venv()
 
@@ -510,6 +521,18 @@ with Flow("Dev api sandbox", executor=executor) as api_development:
     api_lambda_arn = api.register_api_lambda_via_upload(
         slug=slug, upstream_tasks=[api_lambda_is_empty, api_lambda_archive]
     )
+
+    gateway_api_exists = api.check_gateway_api_exists(slug=slug)
+    with case(gateway_api_exists, True):
+        remove_api = api.remove_gateway_api(
+            slug=slug, upstream_tasks=[gateway_api_exists]
+        )
+    ready_for_api = merge(remove_api, gateway_api_exists)
+
+    api_gateway = api.create_gateway_api(
+        slug=slug, lambda_arn=api_lambda_arn, upstream_tasks=[ready_for_api]
+    )
+
 
 if __name__ == "__main__":
     branch = "refactor-user-activation-and-main"
