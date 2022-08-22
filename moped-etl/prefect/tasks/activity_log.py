@@ -27,7 +27,7 @@ def create_activity_log_lambda_config(graphql_engine_api_key, slug):
     graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
     activity_log_endpoint = slug["activity_log_slug"]
     return {
-        "Description": f"AWS Moped Data Event: atd-moped-events-activity_log_{activity_log_endpoint}",
+        "Description": f"Test Moped Data Event: atd-moped-events-activity_log_{activity_log_endpoint}",
         "Environment": {
             "Variables": {
                 # We could probably create a helper so this and the ECS Route53 CNAME always match
