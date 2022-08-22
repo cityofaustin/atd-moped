@@ -6,9 +6,6 @@ import shutil
 import re
 from datetime import timedelta
 
-import tasks.ecs as ecs
-
-import pprint
 import prefect
 from prefect import task
 from prefect.tasks.shell import ShellTask
@@ -41,91 +38,6 @@ ZAPPA_PROJECT_NAME = os.environ["ZAPPA_PROJECT_NAME"]
 
 IAM_ROLE_FOR_API_LAMBDA = os.environ["IAM_ROLE_FOR_API_LAMBDA"]
 
-# Create a consistent name for the API config secret for deploy, deploy config, and undeploy
-def create_secret_name(basename):
-    return f"MOPED_TEST_SYS_API_CONFIG_{basename}"
-
-
-@task(name="Check if secret exists")
-def check_secret_exists(slug):
-    basename = slug["awslambda"]
-
-    secret_name = create_secret_name(basename)
-
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
-    try:
-        client.get_secret_value(SecretId=secret_name)
-        logger.info(f"Secret {secret_name} already exists")
-        return True
-    except client.exceptions.ResourceNotFoundException:
-        logger.info(f"Secret {secret_name} does not exist")
-        return False
-
-
-# The Flask app retrieves these secrets from Secrets Manager
-@task(
-    name="Create test API config Secrets Manager entry",
-    max_retries=12,
-    retry_delay=timedelta(seconds=10),
-)
-def create_moped_api_secrets_entry(slug, ready_for_secret):
-    basename = slug["awslambda"]
-
-    logger.info("Creating API secret config")
-
-    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
-    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
-
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
-
-    secret_name = create_secret_name(basename)
-    secret = {
-        "COGNITO_REGION": AWS_DEFAULT_REGION,
-        "COGNITO_USERPOOL_ID": AWS_STAGING_COGNITO_USER_POOL_ID,
-        "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
-        "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
-        "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
-        "HASURA_HTTPS_ENDPOINT": "https://" + graphql_endpoint,
-        "HASURA_ADMIN_SECRET": graphql_engine_api_key,
-    }
-
-    response = client.create_secret(
-        Name=secret_name,
-        Description=f"Moped Test API configuration for {basename}",
-        SecretString=json.dumps(secret),
-        Tags=[
-            {"Key": "project", "Value": "atd-moped"},
-            {"Key": "environment", "Value": f"test-{basename}"},
-        ],
-    )
-
-    secret_arn = response["ARN"]
-
-    logger.info("Response ARN: " + secret_arn)
-
-    return secret_arn
-
-
-@task(name="Remove test API config Secrets Manager entry")
-def remove_moped_api_secrets_entry(slug):
-    basename = slug["awslambda"]
-    logger.info("Removing API secret config")
-
-    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
-    secret_name = create_secret_name(basename)
-
-    response = client.delete_secret(
-        SecretId=secret_name, ForceDeleteWithoutRecovery=True
-    )
-
-    sleep = 30
-    logger.info(f"Sleeping {sleep} seconds to allow secret to be deleted")
-    time.sleep(sleep)
-
-    secret_arn = response["ARN"]
-
-    return secret_arn
-
 
 # Create Zappa deployment configuration to deploy and undeploy Lambda + API Gateway
 def create_zappa_config(basename, config_secret_arn):
@@ -138,7 +50,7 @@ def create_zappa_config(basename, config_secret_arn):
             "cors": True,
             "aws_environment_variables": {
                 "MOPED_API_CURRENT_ENVIRONMENT": "TEST",
-                "MOPED_API_CONFIGURATION_SETTINGS": create_secret_name(basename),
+                "MOPED_API_CONFIGURATION_SETTINGS": shared.create_secret_name(basename),
                 "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
                 "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
                 # Look at Moped API events.py to see how this key is used
@@ -283,8 +195,81 @@ def check_if_api_is_deployed(slug):
     # TODO FIXME
 
 
-# (cd /tmp/atd-moped/moped-api; python3 -m venv ./venv;);
-# (cd /tmp/atd-moped/moped-api; source ./venv/bin/activate; pip install --target ./package -r ./requirements/slimmed_down.txt; deactivate;);
+@task(name="Check if secret exists")
+def check_secret_exists(slug):
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    secret_name = shared.create_secret_name(slug)
+    try:
+        client.get_secret_value(SecretId=secret_name)
+        logger.info(f"Secret {secret_name} already exists")
+        return True
+    except client.exceptions.ResourceNotFoundException:
+        logger.info(f"Secret {secret_name} does not exist")
+        return False
+
+
+@task(name="Remove test API config Secrets Manager entry")
+def remove_moped_api_secrets_entry(slug):
+    logger.info("Removing API secret config")
+
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+    secret_name = shared.create_secret_name(slug)
+
+    response = client.delete_secret(
+        SecretId=secret_name, ForceDeleteWithoutRecovery=True
+    )
+
+    sleep = 30
+    logger.info(f"Sleeping {sleep} seconds to allow secret to be deleted")
+    time.sleep(sleep)
+
+    secret_arn = response["ARN"]
+
+    return secret_arn
+
+
+# The Flask app retrieves these secrets from Secrets Manager
+@task(
+    name="Create test API config Secrets Manager entry",
+    max_retries=12,
+    retry_delay=timedelta(seconds=10),
+)
+def create_moped_api_secrets_entry(slug, ready_for_secret):
+    basename = slug["awslambda"]
+
+    logger.info("Creating API secret config")
+
+    graphql_endpoint = shared.form_graphql_endpoint_hostname(slug["graphql_endpoint"])
+    graphql_engine_api_key = shared.generate_access_key(slug["basename"])
+
+    client = boto3.client("secretsmanager", region_name=AWS_DEFAULT_REGION)
+
+    secret_name = shared.create_secret_name(slug)
+    secret = {
+        "COGNITO_REGION": AWS_DEFAULT_REGION,
+        "COGNITO_USERPOOL_ID": AWS_STAGING_COGNITO_USER_POOL_ID,
+        "COGNITO_APP_CLIENT_ID": AWS_STAGING_COGNITO_APP_ID,
+        "COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
+        "COGNITO_DYNAMO_SECRET_KEY": AWS_COGNITO_DYNAMO_SECRET_KEY,
+        "HASURA_HTTPS_ENDPOINT": "https://" + graphql_endpoint,
+        "HASURA_ADMIN_SECRET": graphql_engine_api_key,
+    }
+
+    response = client.create_secret(
+        Name=secret_name,
+        Description=f"Moped Test API configuration for {basename}",
+        SecretString=json.dumps(secret),
+        Tags=[
+            {"Key": "project", "Value": "atd-moped"},
+            {"Key": "environment", "Value": f"test-{basename}"},
+        ],
+    )
+
+    secret_arn = response["ARN"]
+
+    logger.info("Response ARN: " + secret_arn)
+
+    return secret_arn
 
 
 @task(name="Remove API venv")
@@ -334,7 +319,7 @@ def does_api_lambda_function_exist(slug):
         return True
     except Exception:
         logger.info(f"Lambda function ({function_name}) does not exist")
-    return False
+        return False
 
 
 @task(name="Remove API lambda function")
@@ -356,7 +341,6 @@ def register_api_lambda_via_upload(slug):
     logger.info(f"Uploading lambda code {function_name}")
 
     iam_client = boto3.client("iam")
-    # TODO
     role = iam_client.get_role(RoleName=IAM_ROLE_FOR_API_LAMBDA)
     logger.info(role)
 
@@ -377,10 +361,63 @@ def register_api_lambda_via_upload(slug):
         PackageType="Zip",
         Code=dict(ZipFile=zipped_code),
         Role=role["Role"]["Arn"],
-        Description=f"AWS Moped : {function_name}",
-        Environment={"Variables": {}},
+        Description=f"Test Moped : {function_name}",
+        Environment={
+            "Variables": {
+                "MOPED_API_CURRENT_ENVIRONMENT": "TEST",
+                "MOPED_API_CONFIGURATION_SETTINGS": shared.create_secret_name(slug),
+                "AWS_COGNITO_DYNAMO_TABLE_NAME": AWS_STAGING_DYNAMO_DB_TABLE_NAME,
+                "AWS_COGNITO_DYNAMO_SECRET_NAME": AWS_STAGING_DYNAMO_DB_ENCRYPT_KEY_SECRET_NAME,
+                # Look at Moped API events.py to see how this key is used
+                "MOPED_API_HASURA_APIKEY": shared.generate_api_key(slug["basename"]),
+                "MOPED_API_HASURA_SQS_URL": shared.generate_activity_log_queue_name(
+                    slug
+                ),
+                "MOPED_API_UPLOADS_S3_BUCKET": MOPED_API_UPLOADS_S3_BUCKET,
+            }
+        },
     )
 
     logger.info(response)
     arn = response["FunctionArn"]
     return arn
+
+
+@task(name="Remove Gateway API")
+def remove_gateway_api(slug):
+    return True
+
+
+@task(name="Check if API exists")
+def check_gateway_api_exists(slug):
+    api_gateway = boto3.client("apigatewayv2")
+    logger.info("Searching APIs to see if our API exists")
+
+    apis = api_gateway.get_apis(MaxResults="1000")
+    logger.info(apis)
+
+    return True
+
+
+@task(name="Create gateway API")
+def create_gateway_api(slug, lambda_arn):
+    api = boto3.client("apigatewayv2")
+
+    logger.info("Creating gateway API")
+    api_name = shared.generate_activity_log_api_gateway_name(slug)
+
+    basename = slug["basename"]
+
+    response = api.create_api(
+        Name=api_name,
+        ProtocolType="HTTP",
+        Target=lambda_arn,
+        Description=f"Activity Log for test {basename}",
+    )
+
+    logger.info(response)
+    return response["ApiEndpoint"]
+
+
+# (cd /tmp/atd-moped/moped-api; python3 -m venv ./venv;);
+# (cd /tmp/atd-moped/moped-api; source ./venv/bin/activate; pip install --target ./package -r ./requirements/slimmed_down.txt; deactivate;);
