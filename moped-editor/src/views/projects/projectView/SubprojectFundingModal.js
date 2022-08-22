@@ -30,7 +30,10 @@ const SubprojectFundingModal = ({
   isDialogOpen,
   handleDialogClose,
   eCaprisID,
-  fdusArray
+  fdusArray,
+  addProjectFunding,
+  userId,
+  projectId
 }) => {
   const classes = useStyles();
   const typographyStyle = {
@@ -60,8 +63,52 @@ const SubprojectFundingModal = ({
     }
   ];
 
-  console.log(selectedFdus)
+  const handleAddFunding = () => {
+    const newFunds = [];
+    // format record to match generic records added
+    selectedFdus.forEach(fdu => {
+      const fduRecord = {}
+      fduRecord.dept_unit = {
+        dept: fdu.dept,
+        dept_id: fdu.dept_id,
+        dept_unit_id: fdu.dept_unit_id,
+        dept_unit_status: fdu.dept_unit_status,
+        unit: fdu.unit,
+        unit_long_name: fdu.unit_long_name,
+        unit_short_name: fdu.unit_short_name
+      }
+      fduRecord.fund = {
+        fund_id: fdu.fund,
+        fund_name: fdu.fundname
+      }
+      fduRecord.project_id = projectId;
+      fduRecord.added_by = userId
+      fduRecord.funding_status_id= 2;
+      newFunds.push(fduRecord)
+    })
 
+    // include records in mutation
+    addProjectFunding({
+      variables: {
+        objects: newFunds,
+      },
+    })
+      .then(() => handleDialogClose())
+      .catch((error) => {
+        alert(error)
+        // setSnackbarState({
+        //   open: true,
+        //   message: (
+        //     <span>
+        //       There was a problem adding funding. Error message:{" "}
+        //       {error.message}
+        //     </span>
+        //   ),
+        //   severity: "error",
+        // });
+      });
+    setSelectedFdus([]);
+  }
 
   return (
     <Dialog
@@ -100,7 +147,6 @@ const SubprojectFundingModal = ({
             rowStyle: typographyStyle,
             pageSize: 10,
             showSelectAllCheckbox: false,
-            // padding: "dense",
           }}
           onSelectionChange={(rows) =>  setSelectedFdus(rows)}
         />
@@ -111,7 +157,7 @@ const SubprojectFundingModal = ({
             color="primary"
             size="medium"
             startIcon={<AddCircle />}
-            onClick={()=>console.log("add")}
+            onClick={handleAddFunding}
             disabled={!selectedFdus.length}
           >
             Add Funding Source

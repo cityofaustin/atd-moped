@@ -218,17 +218,23 @@ const ProjectFundingTable = () => {
     ];
   };
 
+  const userId = getDatabaseId(user);
+
   /**
    * An array of objects that contain the task order data
    * @type {Array[Object]}
    */
   const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
 
+  /**
+   * concatanates fund dept and unit ids into an fdu string
+   * @type {Array[Strings]}
+   */
   const fdusArray = data?.moped_proj_funding.map(
     (record) =>
       `${record.fund.fund_id} ${record.dept_unit.dept} ${record.dept_unit.unit}`
   );
-  console.log(fdusArray);
+
   /**
    * Deletes a task order from the list
    * @param {Object} task -The task to be deleted
@@ -682,7 +688,7 @@ const ProjectFundingTable = () => {
                 objects: {
                   ...newData,
                   project_id: projectId,
-                  added_by: getDatabaseId(user),
+                  added_by: userId,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
@@ -773,6 +779,9 @@ const ProjectFundingTable = () => {
         handleDialogClose={handleSubprojectDialogClose}
         eCaprisID={eCaprisID}
         fdusArray={fdusArray}
+        addProjectFunding={addProjectFunding}
+        userId={userId}
+        projectId={projectId}
       />
     </ApolloErrorHandler>
   );
