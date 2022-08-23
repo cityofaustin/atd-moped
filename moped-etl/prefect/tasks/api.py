@@ -455,6 +455,7 @@ def create_gateway_api(slug, lambda_arn):
     )
 
     logger.info(response)
+    logger.info(response["ApiEndpoint"])
     return response["ApiEndpoint"]
 
 
