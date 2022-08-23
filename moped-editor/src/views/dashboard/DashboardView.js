@@ -192,7 +192,7 @@ const DashboardView = () => {
           value={entry.project_name}
         />
       ),
-      width: "25%",
+      width: "20%",
     },
     {
       title: "Status",
@@ -200,7 +200,7 @@ const DashboardView = () => {
       editable: "never",
       render: entry =>
         buildStatusBadge(entry.current_phase, entry.status_id),
-      width: "25%",
+      width: "20%",
     },
     {
       title: "Status update",
@@ -213,10 +213,10 @@ const DashboardView = () => {
           queryRefetch={refetch}
         />
       ),
-      width: "25%",
+      width: "50%",
     },
     {
-      title: "Milestones completed",
+      title: "Milestones",
       field: "completed_milestones",
       render: entry => (
         <Box sx={{ position: "relative", display: "inline-flex" }}>
@@ -245,7 +245,7 @@ const DashboardView = () => {
           </Box>
         </Box>
       ),
-      width: "25%",
+      width: "10%",
     },
   ];
 
