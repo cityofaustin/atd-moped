@@ -73,7 +73,7 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }
         onClose={() => setAnchorEl(null)}
         elevation={0}
         anchorOrigin={{
-          vertical: "top",
+          vertical: "bottom",
           horizontal: "right",
         }}
         transformOrigin={{
