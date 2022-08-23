@@ -38,10 +38,7 @@ const DashboardPhaseModal = ({
 
   return (
     <>
-      <div
-        className={classes.statusUpdateText}
-        onClick={() => setIsDialogOpen(true)}
-      >
+      <div onClick={() => setIsDialogOpen(true)}>
         <ProjectStatusBadge
           status={status}
           phase={phase}
