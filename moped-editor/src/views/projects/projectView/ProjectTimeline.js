@@ -715,7 +715,6 @@ const ProjectTimeline = ({
                   search: false,
                   rowStyle: { fontFamily: typography.fontFamily },
                   actionsColumnIndex: -1,
-                  tableLayout: "fixed",
                 }}
                 localization={{
                   header: {
@@ -862,7 +861,6 @@ const ProjectTimeline = ({
                     search: false,
                     rowStyle: { fontFamily: typography.fontFamily },
                     actionsColumnIndex: -1,
-                    tableLayout: "fixed",
                   }}
                   localization={{
                     header: {
