@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Button, Menu, MenuItem } from "@material-ui/core";
+import { Button, ListItemIcon, Menu, MenuItem } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import AddCircle from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  root: {},
   dropDownMenu: {
-    color: "#fff",
+    color: theme.palette.background.paper,
     "& .MuiMenu-paper": {
       backgroundColor: theme.palette.primary.main,
-      color: "#fff",
+      color: theme.palette.background.paper,
     },
     "& .MuiList-root": {
       padding: "0px"
@@ -28,6 +28,10 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiListItem-root:first-of-type": {
       borderBottom: `1px solid ${theme.palette.primary.dark}`
     },
+    "& .MuiListItemIcon-root": {
+      color: theme.palette.background.paper,
+      minWidth: "28px"
+    }
   },
 }));
 
@@ -70,15 +74,23 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }
         elevation={0}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "center",
+          horizontal: "right",
         }}
         transformOrigin={{
           vertical: "top",
-          horizontal: "center",
+          horizontal: "right",
         }}
       >
-        <MenuItem onClick={addRowToTable}>Generic funding source</MenuItem>
+        <MenuItem onClick={addRowToTable}>
+          <ListItemIcon>
+            <AddCircle fontSize="small" />
+          </ListItemIcon>
+          Generic funding source
+        </MenuItem>
         <MenuItem onClick={() => openFundingDialog(true)}>
+          <ListItemIcon>
+            <AddCircle fontSize="small" />
+          </ListItemIcon>
           From eCapris
         </MenuItem>
       </Menu>
