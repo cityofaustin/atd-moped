@@ -232,7 +232,7 @@ const ProjectFundingTable = () => {
    */
   const fdusArray = data?.moped_proj_funding.map(
     (record) =>
-      `${record.fund.fund_id} ${record.dept_unit.dept} ${record.dept_unit.unit}`
+      `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
   );
 
   /**
@@ -664,6 +664,7 @@ const ProjectFundingTable = () => {
             fontFamily: typography.fontFamily,
           },
           actionsColumnIndex: -1,
+          addRowPosition: "first",
         }}
         localization={{
           header: {
