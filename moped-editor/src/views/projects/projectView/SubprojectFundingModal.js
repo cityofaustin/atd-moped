@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -33,7 +33,8 @@ const SubprojectFundingModal = ({
   fdusArray,
   addProjectFunding,
   userId,
-  projectId
+  projectId,
+  setSnackbarState,
 }) => {
   const classes = useStyles();
   const typographyStyle = {
@@ -45,29 +46,29 @@ const SubprojectFundingModal = ({
     `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
   );
 
-  const [selectedFdus, setSelectedFdus] = useState([])
+  const [selectedFdus, setSelectedFdus] = useState([]);
 
   // Filter the list of fdus to remove one(s) already on funding sources table
-  const filteredData = data.filter((fdu)=> !fdusArray.includes(fdu.fdu))
+  const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
   const columns = [
     {
-      field: 'fdu',
-      title: 'FDU',
-      cellStyle: {padding: "12px"}
+      field: "fdu",
+      title: "FDU",
+      cellStyle: { padding: "12px" },
     },
     {
-      field: 'unit_long_name',
-      title: 'Unit name',
-      cellStyle: {padding: "12px"}
-    }
+      field: "unit_long_name",
+      title: "Unit name",
+      cellStyle: { padding: "12px" },
+    },
   ];
 
   const handleAddFunding = () => {
     const newFunds = [];
     // format record to match generic records added
-    selectedFdus.forEach(fdu => {
-      const fduRecord = {}
+    selectedFdus.forEach((fdu) => {
+      const fduRecord = {};
       fduRecord.dept_unit = {
         dept: fdu.dept,
         dept_id: fdu.dept_id,
@@ -75,17 +76,18 @@ const SubprojectFundingModal = ({
         dept_unit_status: fdu.dept_unit_status,
         unit: fdu.unit,
         unit_long_name: fdu.unit_long_name,
-        unit_short_name: fdu.unit_short_name
-      }
+        unit_short_name: fdu.unit_short_name,
+      };
       fduRecord.fund = {
         fund_id: fdu.fund,
-        fund_name: fdu.fundname
-      }
+        fund_name: fdu.fundname,
+      };
       fduRecord.project_id = projectId;
-      fduRecord.added_by = userId
-      fduRecord.funding_status_id= 2;
-      newFunds.push(fduRecord)
-    })
+      fduRecord.added_by = userId;
+      // funding status 2 is "Confirmed"
+      fduRecord.funding_status_id = 2;
+      newFunds.push(fduRecord);
+    });
 
     // include records in mutation
     addProjectFunding({
@@ -95,20 +97,18 @@ const SubprojectFundingModal = ({
     })
       .then(() => handleDialogClose())
       .catch((error) => {
-        alert(error)
-        // setSnackbarState({
-        //   open: true,
-        //   message: (
-        //     <span>
-        //       There was a problem adding funding. Error message:{" "}
-        //       {error.message}
-        //     </span>
-        //   ),
-        //   severity: "error",
-        // });
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              There was a problem adding funding. Error message: {error.message}
+            </span>
+          ),
+          severity: "error",
+        });
       });
     setSelectedFdus([]);
-  }
+  };
 
   return (
     <Dialog
@@ -124,15 +124,13 @@ const SubprojectFundingModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <MaterialTable 
+        <MaterialTable
           columns={columns}
           data={filteredData}
           localization={{
             body: {
               emptyDataSourceMessage: (
-                <Typography>
-                    No FDUs available
-                </Typography>
+                <Typography>No FDUs available</Typography>
               ),
             },
           }}
@@ -148,9 +146,9 @@ const SubprojectFundingModal = ({
             pageSize: 10,
             showSelectAllCheckbox: false,
           }}
-          onSelectionChange={(rows) =>  setSelectedFdus(rows)}
+          onSelectionChange={(rows) => setSelectedFdus(rows)}
         />
-        <Box my={3} sx={{display:"flex", flexDirection:"row-reverse"}}>
+        <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
             className={classes.fundingButton}
             variant="contained"

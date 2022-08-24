@@ -783,6 +783,7 @@ const ProjectFundingTable = () => {
         addProjectFunding={addProjectFunding}
         userId={userId}
         projectId={projectId}
+        setSnackbarState={setSnackbarState}
       />
     </ApolloErrorHandler>
   );
