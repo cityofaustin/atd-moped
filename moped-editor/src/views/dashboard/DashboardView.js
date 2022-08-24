@@ -23,7 +23,7 @@ import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import DashboardEditModal from "./DashboardEditModal";
-import DashboardPhaseModal from "./DashboardPhaseModal";
+import DashboardTimelineModal from "./DashboardTimelineModal";
 
 import typography from "../../theme/typography";
 
@@ -33,7 +33,7 @@ import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
 import { getSessionDatabaseData } from "../../auth/user";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.paper,
@@ -121,7 +121,7 @@ const DashboardView = () => {
     /**
      * Build data needed in Dashboard Material Table
      */
-    selectedData.forEach(project => {
+    selectedData.forEach((project) => {
       project["project_name"] = project.project.project_name;
       project["project_id"] = project.project.project_id;
       project["current_phase"] = project.project.current_phase;
@@ -133,7 +133,7 @@ const DashboardView = () => {
        */
       const milestonesTotal = project.project.moped_proj_milestones.length;
       const milestonesCompleted = project.project.moped_proj_milestones.filter(
-        milestone => milestone.completed === true
+        (milestone) => milestone.completed === true
       ).length;
       project["completed_milestones_percentage"] = !!milestonesTotal
         ? (milestonesCompleted / milestonesTotal) * 100
@@ -149,29 +149,12 @@ const DashboardView = () => {
     });
   }
 
-  /**
-   * Returns a ProjectStatusBadge component based on the status and phase of project
-   * @param {string} phase - A project's current phase
-   * @param {number} statusId - Project's status id
-   * @return {JSX.Element}
-   */
-  const buildStatusBadge = (project, phase, statusId, projectId) => (
-    <DashboardPhaseModal
-      status={statusId}
-      phase={phase}
-      project={project}
-      projectStatuses={data?.moped_status ?? []}
-      projectId={projectId}
-      queryRefetch={refetch}
-    />
-  );
-
   /** Build custom user greeting
    */
   const date = new Date();
   const curHr = format(date, "HH");
   const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-  const getTimeOfDay = curHr => {
+  const getTimeOfDay = (curHr) => {
     switch (true) {
       case curHr < 12:
         return "morning";
@@ -188,7 +171,7 @@ const DashboardView = () => {
       field: "project.project_name",
       editable: "never",
       cellStyle: { ...typographyStyle },
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_name}
@@ -200,20 +183,24 @@ const DashboardView = () => {
       title: "Status",
       field: "current_phase",
       editable: "never",
-      render: entry =>
-        buildStatusBadge(
-          entry.project,
-          entry.current_phase,
-          entry.status_id,
-          entry.project_id
-        ),
+      render: (entry) => (
+        <DashboardTimelineModal
+          table="phases"
+          projectId={entry.project_id}
+          status={entry.status_id}
+          phase={entry.current_phase}
+          project={entry.project}
+          projectStatuses={data?.moped_status ?? []}
+          queryRefetch={refetch}
+        />
+      ),
       width: "25%",
     },
     {
       title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
-      render: entry => (
+      render: (entry) => (
         <DashboardEditModal
           project={entry.project}
           displayText={entry.status_update}
@@ -225,29 +212,17 @@ const DashboardView = () => {
     {
       title: "Milestones completed",
       field: "completed_milestones",
-      render: entry => (
-        <Box sx={{ position: "relative", display: "inline-flex" }}>
-          <CircularProgress
-            variant="determinate"
-            value={entry.completed_milestones_percentage}
-          />
-          <Box
-            sx={{
-              top: 0,
-              left: 0,
-              bottom: 0,
-              right: 0,
-              position: "absolute",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Typography variant="caption" component="div">
-              {`${Math.round(entry.completed_milestones_percentage)}%`}
-            </Typography>
-          </Box>
-        </Box>
+      render: (entry) => (
+        <DashboardTimelineModal
+          table="milestones"
+          projectId={entry.project_id}
+          status={entry.status_id}
+          phase={entry.current_phase}
+          project={entry.project}
+          projectStatuses={data?.moped_status ?? []}
+          completedMilestonesPercentage={entry.completed_milestones_percentage}
+          queryRefetch={refetch}
+        />
       ),
       width: "25%",
     },

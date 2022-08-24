@@ -52,9 +52,9 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
  * @constructor
  */
 const ProjectTimeline = ({
+  table,
+  projectIdFromTimelineModal,
   refetch: refetchSummary,
-  projectIdFromPhaseModal,
-  isPhaseModal,
 }) => {
   /** Params Hook
    * @type {integer} projectId
@@ -63,8 +63,8 @@ const ProjectTimeline = ({
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
-  if (isPhaseModal) {
-    projectId = projectIdFromPhaseModal;
+  if (table) {
+    projectId = projectIdFromTimelineModal;
   }
 
   /** addAction Ref - mutable ref object used to access add action button
@@ -496,242 +496,244 @@ const ProjectTimeline = ({
     <ApolloErrorHandler error={error}>
       <CardContent>
         <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box mb={2} style={{ maxWidth: "100%" }}>
-              <MaterialTable
-                columns={phasesColumns}
-                data={data.moped_proj_phases}
-                // Action component customized as described in this gh-issue:
-                // https://github.com/mbrn/material-table/issues/2133
-                icons={{
-                  Edit: EditOutlinedIcon,
-                }}
-                components={{
-                  EditRow: (props) => (
-                    <MTableEditRow
-                      {...props}
-                      onKeyDown={(e) => {
-                        if (e.keyCode === 13) {
-                          // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                          // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                        }
-                      }}
-                    />
-                  ),
-                  Action: (props) => {
-                    // If isn't the add action
-                    if (
-                      typeof props.action === typeof Function ||
-                      props.action.tooltip !== "Add"
-                    ) {
-                      return <MTableAction {...props} />;
-                    } else {
-                      return (
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          size="large"
-                          startIcon={<AddCircleIcon />}
-                          ref={addActionRefPhases}
-                          onClick={props.action.onClick}
-                        >
-                          Add phase
-                        </Button>
-                      );
-                    }
-                  },
-                }}
-                editable={{
-                  onRowAdd: (newData) => {
-                    const newPhaseObject = Object.assign(
-                      {
-                        project_id: projectId,
-                        completion_percentage: 0,
-                        completed: false,
-                      },
-                      newData
-                    );
-
-                    // if necessary, updates existing phases in table to ensure only one is marked "current"
-                    updateExistingPhases(newPhaseObject);
-
-                    const projectUpdateInput = getProjectStatusUpdateObject(
-                      newPhaseObject?.phase_id
-                    );
-
-                    // Execute insert mutation, returns promise
-                    return addProjectPhase({
-                      variables: {
-                        objects: [newPhaseObject],
-                      },
-                    })
-                      .then(() =>
-                        !!newPhaseObject?.is_current_phase
-                          ? updateProjectStatus({
-                              variables: {
-                                projectId: projectId,
-                                projectUpdateInput: projectUpdateInput,
-                              },
-                            })
-                          : true
-                      )
-                      .then(() => {
-                        // Refetch data
-                        refetch();
-                        refetchSummary();
-                      });
-                  },
-                  onRowUpdate: (newData, oldData) => {
-                    const updatedPhaseObject = {
-                      ...oldData,
-                    };
-                    // Array of differences between new and old data
-                    let differences = Object.keys(oldData).filter(
-                      (key) => oldData[key] !== newData[key]
-                    );
-
-                    // Loop through the differences and assign newData values.
-                    // If one of the Date fields is blanked out, coerce empty
-                    // string to null.
-                    differences.forEach((diff) => {
-                      let shouldCoerceEmptyStringToNull =
-                        newData[diff] === "" &&
-                        (diff === "phase_start" || diff === "phase_end");
-
-                      if (shouldCoerceEmptyStringToNull) {
-                        updatedPhaseObject[diff] = null;
+          {table !== "milestones" && (
+            <Grid item xs={12}>
+              <Box mb={2} style={{ maxWidth: "100%" }}>
+                <MaterialTable
+                  columns={phasesColumns}
+                  data={data.moped_proj_phases}
+                  // Action component customized as described in this gh-issue:
+                  // https://github.com/mbrn/material-table/issues/2133
+                  icons={{
+                    Edit: EditOutlinedIcon,
+                  }}
+                  components={{
+                    EditRow: (props) => (
+                      <MTableEditRow
+                        {...props}
+                        onKeyDown={(e) => {
+                          if (e.keyCode === 13) {
+                            // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                            // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                          }
+                        }}
+                      />
+                    ),
+                    Action: (props) => {
+                      // If isn't the add action
+                      if (
+                        typeof props.action === typeof Function ||
+                        props.action.tooltip !== "Add"
+                      ) {
+                        return <MTableAction {...props} />;
                       } else {
-                        updatedPhaseObject[diff] = newData[diff];
+                        return (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            startIcon={<AddCircleIcon />}
+                            ref={addActionRefPhases}
+                            onClick={props.action.onClick}
+                          >
+                            Add phase
+                          </Button>
+                        );
                       }
-                    });
-
-                    // Check if differences include phase_id or is_current_phase
-                    const existingCurrentPhaseChanged =
-                      differences.filter(
-                        (value) => "is_current_phase" === value
-                      ).length > 0;
-
-                    // We need to know if the updated phase is set as is_current_phase
-                    const isCurrentPhase = !!newData?.is_current_phase;
-
-                    // Remove extraneous fields given by MaterialTable that
-                    // Hasura doesn't need
-                    delete updatedPhaseObject.tableData;
-                    delete updatedPhaseObject.project_id;
-                    delete updatedPhaseObject.__typename;
-
-                    // if necessary, updates existing phases in table to ensure only one is marked "current"
-                    updateExistingPhases(updatedPhaseObject);
-
-                    const mappedProjectUpdateInput =
-                      getProjectStatusUpdateObject(
-                        updatedPhaseObject?.phase_id
+                    },
+                  }}
+                  editable={{
+                    onRowAdd: (newData) => {
+                      const newPhaseObject = Object.assign(
+                        {
+                          project_id: projectId,
+                          completion_percentage: 0,
+                          completed: false,
+                        },
+                        newData
                       );
 
-                    // Execute update mutation, returns promise
-                    return updateProjectPhase({
-                      variables: updatedPhaseObject,
-                    })
-                      .then(() => {
-                        // if the phase being updated is toggled as the current phase
-                        // update moped_project with new current_phase, updating the status badge
-                        if (isCurrentPhase) {
-                          return updateProjectStatus({
-                            variables: {
-                              projectId: projectId,
-                              projectUpdateInput: mappedProjectUpdateInput,
-                            },
-                          });
-                        } else if (existingCurrentPhaseChanged) {
-                          // if updated phase is not toggled as current phase, but was previously current phase
-                          // update moped_project with generic current status and current phase
-                          return updateProjectStatus({
-                            variables: {
-                              projectId: projectId,
-                              projectUpdateInput: {
-                                status_id: 1,
-                                current_status: "active",
-                                current_phase: "active",
-                                // we don't have a phase id for active, since it is not an official phase
-                                current_phase_id: 0,
-                              },
-                            },
-                          });
-                        }
-                      })
-                      .then(() => {
-                        // Refetch data
-                        refetch();
-                        refetchSummary();
-                      });
-                  },
-                  onRowDelete: (oldData) => {
-                    // Execute mutation to set current phase of phase to be deleted to false
-                    // to ensure summary table stays up to date
-                    const was_current_phase = !!oldData?.is_current_phase;
-                    oldData.is_current_phase = false;
-                    return updateProjectPhase({
-                      variables: oldData,
-                    }).then(() => {
-                      // Execute delete mutation, returns promise
-                      return deleteProjectPhase({
+                      // if necessary, updates existing phases in table to ensure only one is marked "current"
+                      updateExistingPhases(newPhaseObject);
+
+                      const projectUpdateInput = getProjectStatusUpdateObject(
+                        newPhaseObject?.phase_id
+                      );
+
+                      // Execute insert mutation, returns promise
+                      return addProjectPhase({
                         variables: {
-                          project_phase_id: oldData.project_phase_id,
+                          objects: [newPhaseObject],
                         },
                       })
                         .then(() =>
-                          // if the deleted phase was the project's current phase,
-                          // we need to reset what phase and status are considered "current"
-                          was_current_phase
+                          !!newPhaseObject?.is_current_phase
                             ? updateProjectStatus({
                                 variables: {
                                   projectId: projectId,
-                                  projectUpdateInput: {
-                                    status_id: 1,
-                                    current_status: "active",
-                                    current_phase: "active",
-                                    // we don't have a phase id for active, since it is not an official phase
-                                    current_phase_id: 0,
-                                  },
+                                  projectUpdateInput: projectUpdateInput,
                                 },
                               })
                             : true
                         )
-                        .then(() => refetch())
-                        .then(() => refetchSummary());
-                    });
-                  },
-                }}
-                title={
-                  <Typography variant="h2" color="primary">
-                    Project phases
-                  </Typography>
-                }
-                options={{
-                  ...(data.moped_proj_phases.length <
-                    PAGING_DEFAULT_COUNT + 1 && {
-                    paging: false,
-                  }),
-                  search: false,
-                  rowStyle: { fontFamily: typography.fontFamily },
-                  actionsColumnIndex: -1,
-                }}
-                localization={{
-                  header: {
-                    actions: "",
-                  },
-                  body: {
-                    emptyDataSourceMessage: (
-                      <Typography variant="body1">
-                        No project phases to display
-                      </Typography>
-                    ),
-                  },
-                }}
-              />
-            </Box>
-          </Grid>
-          {!isPhaseModal && (
+                        .then(() => {
+                          // Refetch data
+                          refetch();
+                          refetchSummary();
+                        });
+                    },
+                    onRowUpdate: (newData, oldData) => {
+                      const updatedPhaseObject = {
+                        ...oldData,
+                      };
+                      // Array of differences between new and old data
+                      let differences = Object.keys(oldData).filter(
+                        (key) => oldData[key] !== newData[key]
+                      );
+
+                      // Loop through the differences and assign newData values.
+                      // If one of the Date fields is blanked out, coerce empty
+                      // string to null.
+                      differences.forEach((diff) => {
+                        let shouldCoerceEmptyStringToNull =
+                          newData[diff] === "" &&
+                          (diff === "phase_start" || diff === "phase_end");
+
+                        if (shouldCoerceEmptyStringToNull) {
+                          updatedPhaseObject[diff] = null;
+                        } else {
+                          updatedPhaseObject[diff] = newData[diff];
+                        }
+                      });
+
+                      // Check if differences include phase_id or is_current_phase
+                      const existingCurrentPhaseChanged =
+                        differences.filter(
+                          (value) => "is_current_phase" === value
+                        ).length > 0;
+
+                      // We need to know if the updated phase is set as is_current_phase
+                      const isCurrentPhase = !!newData?.is_current_phase;
+
+                      // Remove extraneous fields given by MaterialTable that
+                      // Hasura doesn't need
+                      delete updatedPhaseObject.tableData;
+                      delete updatedPhaseObject.project_id;
+                      delete updatedPhaseObject.__typename;
+
+                      // if necessary, updates existing phases in table to ensure only one is marked "current"
+                      updateExistingPhases(updatedPhaseObject);
+
+                      const mappedProjectUpdateInput =
+                        getProjectStatusUpdateObject(
+                          updatedPhaseObject?.phase_id
+                        );
+
+                      // Execute update mutation, returns promise
+                      return updateProjectPhase({
+                        variables: updatedPhaseObject,
+                      })
+                        .then(() => {
+                          // if the phase being updated is toggled as the current phase
+                          // update moped_project with new current_phase, updating the status badge
+                          if (isCurrentPhase) {
+                            return updateProjectStatus({
+                              variables: {
+                                projectId: projectId,
+                                projectUpdateInput: mappedProjectUpdateInput,
+                              },
+                            });
+                          } else if (existingCurrentPhaseChanged) {
+                            // if updated phase is not toggled as current phase, but was previously current phase
+                            // update moped_project with generic current status and current phase
+                            return updateProjectStatus({
+                              variables: {
+                                projectId: projectId,
+                                projectUpdateInput: {
+                                  status_id: 1,
+                                  current_status: "active",
+                                  current_phase: "active",
+                                  // we don't have a phase id for active, since it is not an official phase
+                                  current_phase_id: 0,
+                                },
+                              },
+                            });
+                          }
+                        })
+                        .then(() => {
+                          // Refetch data
+                          refetch();
+                          refetchSummary();
+                        });
+                    },
+                    onRowDelete: (oldData) => {
+                      // Execute mutation to set current phase of phase to be deleted to false
+                      // to ensure summary table stays up to date
+                      const was_current_phase = !!oldData?.is_current_phase;
+                      oldData.is_current_phase = false;
+                      return updateProjectPhase({
+                        variables: oldData,
+                      }).then(() => {
+                        // Execute delete mutation, returns promise
+                        return deleteProjectPhase({
+                          variables: {
+                            project_phase_id: oldData.project_phase_id,
+                          },
+                        })
+                          .then(() =>
+                            // if the deleted phase was the project's current phase,
+                            // we need to reset what phase and status are considered "current"
+                            was_current_phase
+                              ? updateProjectStatus({
+                                  variables: {
+                                    projectId: projectId,
+                                    projectUpdateInput: {
+                                      status_id: 1,
+                                      current_status: "active",
+                                      current_phase: "active",
+                                      // we don't have a phase id for active, since it is not an official phase
+                                      current_phase_id: 0,
+                                    },
+                                  },
+                                })
+                              : true
+                          )
+                          .then(() => refetch())
+                          .then(() => refetchSummary());
+                      });
+                    },
+                  }}
+                  title={
+                    <Typography variant="h2" color="primary">
+                      Project phases
+                    </Typography>
+                  }
+                  options={{
+                    ...(data.moped_proj_phases.length <
+                      PAGING_DEFAULT_COUNT + 1 && {
+                      paging: false,
+                    }),
+                    search: false,
+                    rowStyle: { fontFamily: typography.fontFamily },
+                    actionsColumnIndex: -1,
+                  }}
+                  localization={{
+                    header: {
+                      actions: "",
+                    },
+                    body: {
+                      emptyDataSourceMessage: (
+                        <Typography variant="body1">
+                          No project phases to display
+                        </Typography>
+                      ),
+                    },
+                  }}
+                />
+              </Box>
+            </Grid>
+          )}
+          {table !== "phases" && (
             <Grid item xs={12}>
               <Box style={{ maxWidth: "100%" }}>
                 <MaterialTable
