@@ -145,7 +145,7 @@ const ProjectSummaryProjectECapris = ({
    * @param {Object} e - Event object
    */
   const handleProjectECaprisChange = e => {
-    setECapris(e.target.value);
+    setECapris(e.target.value.trim());
   };
 
   return (
