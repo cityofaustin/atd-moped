@@ -7,9 +7,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import ProjectTimeline from "../projects/projectView/ProjectTimeline";
-import MilestoneProgressMeter from "./MilestoneProgressMeter";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -27,12 +25,9 @@ const useStyles = makeStyles((theme) => ({
 const DashboardTimelineModal = ({
   table,
   projectId,
-  status,
-  phase,
-  project,
-  projectStatuses,
-  completedMilestonesPercentage,
+  projectName,
   queryRefetch,
+  contents,
 }) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -48,28 +43,16 @@ const DashboardTimelineModal = ({
         className={classes.statusUpdateText}
         onClick={() => setIsDialogOpen(true)}
       >
-        {table === "phases" && (
-          <ProjectStatusBadge
-            status={status}
-            phase={phase}
-            projectStatuses={projectStatuses}
-            condensed
-          />
-        )}
-        {table === "milestones" && (
-          <MilestoneProgressMeter
-            completedMilestonesPercentage={completedMilestonesPercentage}
-          />
-        )}
+        {contents}
       </div>
       <Dialog
-        open={!!table && isDialogOpen}
+        open={isDialogOpen}
         onClose={handleDialogClose}
         fullWidth
         maxWidth={"xl"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Update phase - ${project.project_name}`}</h4>
+          <h4>{`Update phase - ${projectName}`}</h4>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>

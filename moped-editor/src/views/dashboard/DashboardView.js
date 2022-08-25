@@ -24,6 +24,8 @@ import Page from "src/components/Page";
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
 import DashboardEditModal from "./DashboardEditModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
+import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
+import MilestoneProgressMeter from "./MilestoneProgressMeter";
 
 import typography from "../../theme/typography";
 
@@ -187,11 +189,17 @@ const DashboardView = () => {
         <DashboardTimelineModal
           table="phases"
           projectId={entry.project_id}
-          status={entry.status_id}
-          phase={entry.current_phase}
-          project={entry.project}
-          projectStatuses={data?.moped_status ?? []}
+          projectName={entry.project.project_name}
           queryRefetch={refetch}
+          contents={
+            <ProjectStatusBadge
+              status={entry.status_id}
+              phase={entry.current_phase}
+              projectStatuses={data?.moped_status ?? []}
+              condensed
+              clickable
+            />
+          }
         />
       ),
       width: "25%",
@@ -216,12 +224,13 @@ const DashboardView = () => {
         <DashboardTimelineModal
           table="milestones"
           projectId={entry.project_id}
-          status={entry.status_id}
-          phase={entry.current_phase}
-          project={entry.project}
-          projectStatuses={data?.moped_status ?? []}
-          completedMilestonesPercentage={entry.completed_milestones_percentage}
+          projectName={entry.project.project_name}
           queryRefetch={refetch}
+          contents={
+            <MilestoneProgressMeter
+              completedMilestonesPercentage={entry.completed_milestones_percentage}
+            />
+          }
         />
       ),
       width: "25%",
