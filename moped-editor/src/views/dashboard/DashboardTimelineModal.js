@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
-  statusUpdateText: {
+  clickableDiv: {
     cursor: "pointer",
   },
 }));
@@ -40,7 +40,7 @@ const DashboardTimelineModal = ({
   return (
     <>
       <div
-        className={classes.statusUpdateText}
+        className={classes.clickableDiv}
         onClick={() => setIsDialogOpen(true)}
       >
         {contents}
