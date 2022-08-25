@@ -228,7 +228,9 @@ const DashboardView = () => {
           queryRefetch={refetch}
           contents={
             <MilestoneProgressMeter
-              completedMilestonesPercentage={entry.completed_milestones_percentage}
+              completedMilestonesPercentage={
+                entry.completed_milestones_percentage
+              }
             />
           }
         />
