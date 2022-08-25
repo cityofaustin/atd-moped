@@ -15,8 +15,8 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "fill-color": "#3bb2d0",
-      "fill-outline-color": "#3bb2d0",
+      "fill-color": theme.palette.map.draw.blue,
+      "fill-outline-color": theme.palette.map.draw.blue,
       "fill-opacity": 0.1,
     },
   },
@@ -25,8 +25,8 @@ const mapboxDrawStylesOverrides = [
     type: "fill",
     filter: ["all", ["==", "active", "true"], ["==", "$type", "Polygon"]],
     paint: {
-      "fill-color": "#fbb03b",
-      "fill-outline-color": "#fbb03b",
+      "fill-color": theme.palette.map.draw.orange,
+      "fill-outline-color": theme.palette.map.draw.orange,
       "fill-opacity": 0.1,
     },
   },
@@ -36,7 +36,7 @@ const mapboxDrawStylesOverrides = [
     filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
     paint: {
       "circle-radius": 0,
-      "circle-color": "#fbb03b",
+      "circle-color": theme.palette.map.draw.orange,
     },
   },
   {
@@ -53,7 +53,7 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#3bb2d0",
+      "line-color": theme.palette.map.draw.blue,
       "line-width": 2,
     },
   },
@@ -66,7 +66,7 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#fbb03b",
+      "line-color": theme.palette.map.draw.orange,
       "line-dasharray": [0.2, 2],
       "line-width": 2,
     },
@@ -113,7 +113,7 @@ const mapboxDrawStylesOverrides = [
       "circle-radius": 8,
       "circle-opacity": 0,
       "circle-stroke-width": 2,
-      "circle-stroke-color": "#7ac943",
+      "circle-stroke-color": theme.palette.map.draw.activeLineVertices,
     },
   },
   {
@@ -127,7 +127,7 @@ const mapboxDrawStylesOverrides = [
     ],
     paint: {
       "circle-radius": 0,
-      "circle-color": "#fbb03b",
+      "circle-color": theme.palette.map.draw.orange,
     },
   },
   {
@@ -198,8 +198,8 @@ const mapboxDrawStylesOverrides = [
     type: "fill",
     filter: ["all", ["==", "mode", "static"], ["==", "$type", "Polygon"]],
     paint: {
-      "fill-color": "#404040",
-      "fill-outline-color": "#404040",
+      "fill-color": theme.palette.map.draw.gray,
+      "fill-outline-color": theme.palette.map.draw.gray,
       "fill-opacity": 0.1,
     },
   },
@@ -212,7 +212,7 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#404040",
+      "line-color": theme.palette.map.draw.gray,
       "line-width": 2,
     },
   },
@@ -225,7 +225,7 @@ const mapboxDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": "#404040",
+      "line-color": theme.palette.map.draw.gray,
       "line-width": 2,
     },
   },
@@ -235,7 +235,7 @@ const mapboxDrawStylesOverrides = [
     filter: ["all", ["==", "mode", "static"], ["==", "$type", "Point"]],
     paint: {
       "circle-radius": 5,
-      "circle-color": "#404040",
+      "circle-color": theme.palette.map.draw.gray,
     },
   },
 ];
