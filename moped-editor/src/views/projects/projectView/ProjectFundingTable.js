@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -201,6 +201,23 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
+  /**
+   * memoized hook to concatanate fund dept and unit ids into an fdu string
+   * @type {Array[Strings]}
+   */
+  const useFdusArray = (projectFunding) =>
+    useMemo(() => {
+      if (!projectFunding) {
+        return [];
+      }
+      return projectFunding.map(
+        (record) =>
+          `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
+      );
+    }, [projectFunding]);
+
+  const fdusArray = useFdusArray(data?.moped_proj_funding);
+
   if (loading || !data) return <CircularProgress />;
 
   /**
@@ -225,15 +242,6 @@ const ProjectFundingTable = () => {
    * @type {Array[Object]}
    */
   const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
-
-  /**
-   * concatanates fund dept and unit ids into an fdu string
-   * @type {Array[Strings]}
-   */
-  const fdusArray = data?.moped_proj_funding.map(
-    (record) =>
-      `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
-  );
 
   /**
    * Deletes a task order from the list

@@ -26,6 +26,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const columns = [
+  {
+    field: "fdu",
+    title: "FDU",
+    cellStyle: { padding: "12px" },
+  },
+  {
+    field: "unit_long_name",
+    title: "Unit name",
+    cellStyle: { padding: "12px" },
+  },
+];
+
 const SubprojectFundingModal = ({
   isDialogOpen,
   handleDialogClose,
@@ -50,19 +63,6 @@ const SubprojectFundingModal = ({
 
   // Filter the list of fdus to remove one(s) already on funding sources table
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
-
-  const columns = [
-    {
-      field: "fdu",
-      title: "FDU",
-      cellStyle: { padding: "12px" },
-    },
-    {
-      field: "unit_long_name",
-      title: "Unit name",
-      cellStyle: { padding: "12px" },
-    },
-  ];
 
   const handleAddFunding = () => {
     const newFunds = [];
