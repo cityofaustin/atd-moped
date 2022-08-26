@@ -151,6 +151,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// memoized hook to concatanate fund dept and unit ids into an fdu string
+const useFdusArray = (projectFunding) =>
+  useMemo(() => {
+    if (!projectFunding) {
+      return [];
+    }
+    return projectFunding.map(
+      (record) =>
+        `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
+    );
+  }, [projectFunding]);
+
+
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
@@ -200,21 +213,6 @@ const ProjectFundingTable = () => {
     setIsDialogOpen(false);
     refetch();
   };
-
-  /**
-   * memoized hook to concatanate fund dept and unit ids into an fdu string
-   * @type {Array[Strings]}
-   */
-  const useFdusArray = (projectFunding) =>
-    useMemo(() => {
-      if (!projectFunding) {
-        return [];
-      }
-      return projectFunding.map(
-        (record) =>
-          `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
-      );
-    }, [projectFunding]);
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
