@@ -22,8 +22,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
-import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import DashboardEditModal from "./DashboardEditModal";
+import DashboardPhaseModal from "./DashboardPhaseModal";
 
 import typography from "../../theme/typography";
 
@@ -144,7 +144,7 @@ const DashboardView = () => {
       project["status_update"] = "";
       if (project?.project?.moped_proj_notes?.length) {
         const note = project.project.moped_proj_notes[0]["project_note"];
-        project["status_update"] = note ? note : ""
+        project["status_update"] = note ? note : "";
       }
     });
   }
@@ -155,12 +155,14 @@ const DashboardView = () => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId) => (
-    <ProjectStatusBadge
+  const buildStatusBadge = (project, phase, statusId, projectId) => (
+    <DashboardPhaseModal
       status={statusId}
       phase={phase}
+      project={project}
       projectStatuses={data?.moped_status ?? []}
-      condensed
+      projectId={projectId}
+      queryRefetch={refetch}
     />
   );
 
@@ -199,7 +201,12 @@ const DashboardView = () => {
       field: "current_phase",
       editable: "never",
       render: entry =>
-        buildStatusBadge(entry.current_phase, entry.status_id),
+        buildStatusBadge(
+          entry.project,
+          entry.current_phase,
+          entry.status_id,
+          entry.project_id
+        ),
       width: "25%",
     },
     {
@@ -236,10 +243,7 @@ const DashboardView = () => {
               justifyContent: "center",
             }}
           >
-            <Typography
-              variant="caption"
-              component="div"
-            >
+            <Typography variant="caption" component="div">
               {`${Math.round(entry.completed_milestones_percentage)}%`}
             </Typography>
           </Box>
