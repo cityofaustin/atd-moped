@@ -13,10 +13,12 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.on("draw.create", props.onCreate);
       map.on("draw.update", props.onUpdate);
       map.on("draw.delete", props.onDelete);
-      map.on("draw.modechange", props.onModeChange);
+      map.on("draw.modechange", () => {
+        props.onModeChange();
+        // This override prevents the introduction of line midpoints and vertices into line string geometries
+        props.overrideDirectSelect();
+      });
       map.on("load", props.initializeExistingDrawFeatures);
-      // This override prevents the introduction of line midpoints and vertices into line string geometries
-      map.on("load", props.overrideDirectSelect);
 
       return new MapboxDraw(props);
     },
