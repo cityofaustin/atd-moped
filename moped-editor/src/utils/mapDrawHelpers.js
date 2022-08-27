@@ -333,7 +333,6 @@ export function useMapDrawTools(
   const onCreate = (e) => {
     const { features } = e;
 
-    // Save without running dispatch since this is a new feature
     saveDrawnPoints(features);
   };
 
