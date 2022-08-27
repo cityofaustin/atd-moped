@@ -238,19 +238,32 @@ export function useMapDrawTools(
         }
       );
 
-      // 4. Get features already in the feature collection that were not dragged
-      const existingDrawnFeaturesThatWereNotDragged =
-        prevFeatureCollection.features.filter((feature) => {
+      // 4. Collect all features that don't fit into #1, #2, or #3 so we retain previously drawn features
+      const allTheOtherFeatures = prevFeatureCollection.features.filter(
+        (feature) => {
           const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
             feature?.properties?.sourceLayer
           );
+          const isNewFeature = newDrawnFeatures.find(
+            (drawnFeature) => feature.id === drawnFeature.id
+          );
+          const isNewFeatureThanHasBeenDragged =
+            newDrawnFeaturesThatHaveBeenDragged.find(
+              (drawnFeature) => feature.id === drawnFeature.id
+            );
           const wasFeatureDragged =
             existingDrawnFeaturesThatHaveBeenDragged.find(
               (drawnFeature) => feature.id === drawnFeature.id
             );
 
-          return doesFeatureHaveDrawnSourceLayer && !wasFeatureDragged;
-        });
+          return (
+            doesFeatureHaveDrawnSourceLayer &&
+            !wasFeatureDragged &&
+            !isNewFeatureThanHasBeenDragged &&
+            !isNewFeature
+          );
+        }
+      );
 
       // Feed newly drawn or newly drawn and dragged before saving features to the function
       // that gives them needed metadata
@@ -268,7 +281,7 @@ export function useMapDrawTools(
         features: [
           ...drawnFeaturesWithSourceAndId,
           ...existingDrawnFeaturesThatHaveBeenDragged,
-          ...existingDrawnFeaturesThatWereNotDragged,
+          ...allTheOtherFeatures,
         ],
       };
 
