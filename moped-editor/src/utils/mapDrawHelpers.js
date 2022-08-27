@@ -142,13 +142,11 @@ export function useMapDrawTools(
   const saveDrawnPoints = (runActionDispatch = true, features) => {
     const drawnFeatures = features;
 
-    // Filter out anything without a source layer
-    const newDrawnFeatures = drawnFeatures.filter(
-      (feature) => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
-    );
-
-    const makeDrawnFeaturesWithSourceAndId = (previousFeatureCollection) =>
-      newDrawnFeatures
+    const makeDrawnFeaturesWithSourceAndId = (
+      previousFeatureCollection,
+      features
+    ) =>
+      features
         .map((feature) => {
           return {
             ...feature,
@@ -185,9 +183,80 @@ export function useMapDrawTools(
 
     // Update our state with callback to keep draw tool additions in sync with other state updates
     setFeatureCollection((prevFeatureCollection) => {
-      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithSourceAndId(
-        prevFeatureCollection
+      // Handle new feature edits through dragging
+
+      // Three cases:
+      // Goes into makeDrawnFeaturesWithSourceAndId
+      // 1. New drawn feature that isn't dragged (no action) ✅
+      // 2. New drawn feature that is dragged (remove existing and replace with new location) ✅
+      // Does not go into makeDrawnFeaturesWithSourceAndId
+      // 3. Existing drawn feature that is dragged (remove existing and replace with )
+      const newDrawnFeatures = drawnFeatures.filter((feature) => {
+        const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+          feature?.properties?.sourceLayer
+        );
+        const hasFeatureAlreadyBeenAddedToFeatureCollection =
+          prevFeatureCollection.features.find(
+            (addedFeature) => feature.id === addedFeature.id
+          )
+            ? true
+            : false;
+
+        return (
+          !doesFeatureHaveDrawnSourceLayer &&
+          !hasFeatureAlreadyBeenAddedToFeatureCollection
+        );
+      });
+
+      const newDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
+        (feature) => {
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const hasFeatureAlreadyBeenAddedToFeatureCollection =
+            prevFeatureCollection.features.find(
+              (addedFeature) => feature.id === addedFeature.id
+            )
+              ? true
+              : false;
+
+          return (
+            !doesFeatureHaveDrawnSourceLayer &&
+            hasFeatureAlreadyBeenAddedToFeatureCollection
+          );
+        }
       );
+
+      const existingDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
+        (feature) => {
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const hasFeatureAlreadyBeenAddedToFeatureCollection =
+            prevFeatureCollection.features.find(
+              (addedFeature) => feature.id === addedFeature.id
+            )
+              ? true
+              : false;
+
+          return (
+            doesFeatureHaveDrawnSourceLayer &&
+            hasFeatureAlreadyBeenAddedToFeatureCollection
+          );
+        }
+      );
+
+      console.log(
+        newDrawnFeatures,
+        newDrawnFeaturesThatHaveBeenDragged,
+        existingDrawnFeaturesThatHaveBeenDragged
+      );
+
+      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithSourceAndId(
+        prevFeatureCollection,
+        newDrawnFeatures
+      );
+
       /**
        * Generate a new state including the existing data and any
        * new features with source and id.
@@ -266,6 +335,15 @@ export function useMapDrawTools(
     }
   };
 
+  const onUpdate = (e) => {
+    const wasFeatureMoved = e.action === "move";
+
+    // if the feature was dragged, we need to update its location
+    if (wasFeatureMoved) {
+      saveDrawnPoints(false, e.features);
+    }
+  };
+
   /*
    * direct_select allows more complex interactions like breaking line strings into midpoints
    * but we only want users to select and deselect with simple_select mode so we override on load
@@ -285,6 +363,7 @@ export function useMapDrawTools(
       ref={drawControlsRef}
       onCreate={onCreate}
       onDelete={onDelete}
+      onUpdate={onUpdate}
       drawLines={drawLines}
       onModeChange={onModeChange}
       initializeExistingDrawFeatures={initializeExistingDrawFeatures}
