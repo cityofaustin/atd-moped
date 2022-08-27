@@ -256,12 +256,10 @@ const ProjectComponentsMap = ({
   const shouldShowDrawTools = !isSignalComponent && drawLines !== null;
   /*
    * {boolean} isDrawing - Are draw tools enabled or disabled
-   * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  const { isDrawing, saveDrawnPoints, renderMapDrawTools } = useMapDrawTools(
+  const { isDrawing, renderMapDrawTools } = useMapDrawTools(
     featureCollection,
     setFeatureCollection,
-    saveActionDispatch,
     drawLines
   );
 
@@ -328,11 +326,9 @@ const ProjectComponentsMap = ({
       saveActionState?.initiateFeatureSave &&
       saveActionState?.featuresSaved === false
     ) {
-      // const features = featureCollection.features;
-      // saveDrawnPoints(true, features);
       saveActionDispatch({ type: "featuresSaved" });
     }
-  }, [saveActionState, saveDrawnPoints, featureCollection, saveActionDispatch]);
+  }, [saveActionState, featureCollection, saveActionDispatch]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =

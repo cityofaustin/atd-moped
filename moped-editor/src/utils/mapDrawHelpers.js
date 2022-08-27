@@ -34,7 +34,6 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
- * @param {function} saveActionDispatch - Function that helps us send signals to other components
  * @param {boolean} drawLines - Should map draw tools create line strings
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
@@ -43,12 +42,10 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {boolean} isDrawing - Are draw tools enabled or disabled
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
- * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
  */
 export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
-  saveActionDispatch,
   drawLines
 ) {
   const drawControlsRef = useRef();
@@ -139,10 +136,10 @@ export function useMapDrawTools(
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
-  const saveDrawnPoints = (runActionDispatch = true, features) => {
+  const saveDrawnPoints = (features) => {
     const drawnFeatures = features;
 
-    const makeDrawnFeaturesWithSourceAndId = (
+    const makeDrawnFeaturesWithMetadata = (
       previousFeatureCollection,
       features
     ) =>
@@ -183,13 +180,7 @@ export function useMapDrawTools(
 
     // Update our state with callback to keep draw tool additions in sync with other state updates
     setFeatureCollection((prevFeatureCollection) => {
-      // Handle new feature edits through dragging
-
-      // Three cases:
-      // Goes into makeDrawnFeaturesWithSourceAndId
-
-      // Does not go into makeDrawnFeaturesWithSourceAndId
-      // 1. New drawn feature that isn't dragged (no action) ✅
+      // 1. New drawn features (onCreate)
       const newDrawnFeatures = drawnFeatures.filter((feature) => {
         const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
           feature?.properties?.sourceLayer
@@ -207,7 +198,7 @@ export function useMapDrawTools(
         );
       });
 
-      // 2. New drawn feature that is dragged (remove existing and replace with new location) ✅
+      // 2. New drawn feature that were dragged (onUpdate)
       const newDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
         (feature) => {
           const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
@@ -227,16 +218,7 @@ export function useMapDrawTools(
         }
       );
 
-      const previousFeatureCollectionWithoutNewDraggedPoint =
-        prevFeatureCollection.features.filter((feature) => {
-          return newDrawnFeaturesThatHaveBeenDragged.find(
-            (newDraggedFeature) => newDraggedFeature.id === feature.id
-          )
-            ? true
-            : false;
-        });
-
-      // 3. Existing drawn feature that is dragged (remove existing and replace with ) ✅
+      // 3. Existing drawn feature that were dragged and already have needed metadata (onUpdate)
       const existingDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
         (feature) => {
           const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
@@ -256,23 +238,23 @@ export function useMapDrawTools(
         }
       );
 
-      const previousFeaturesWithoutExistingDraggedPoint =
+      // 4. Get features already in the feature collection that were not dragged
+      const existingDrawnFeaturesThatWereNotDragged =
         prevFeatureCollection.features.filter((feature) => {
-          return existingDrawnFeaturesThatHaveBeenDragged.find(
-            (newDraggedFeature) => newDraggedFeature.id === feature.id
-          )
-            ? true
-            : false;
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const wasFeatureDragged =
+            existingDrawnFeaturesThatHaveBeenDragged.find(
+              (drawnFeature) => feature.id === drawnFeature.id
+            );
+
+          return doesFeatureHaveDrawnSourceLayer && !wasFeatureDragged;
         });
 
-      console.log({
-        newDrawnFeatures,
-        newDrawnFeaturesThatHaveBeenDragged,
-        existingDrawnFeaturesThatHaveBeenDragged,
-        previousFeatureCollectionWithoutNewDraggedPoint,
-      });
-
-      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithSourceAndId(
+      // Feed newly drawn or newly drawn and dragged before saving features to the function
+      // that gives them needed metadata
+      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithMetadata(
         prevFeatureCollection,
         [...newDrawnFeatures, ...newDrawnFeaturesThatHaveBeenDragged]
       );
@@ -285,17 +267,13 @@ export function useMapDrawTools(
         ...prevFeatureCollection,
         features: [
           ...drawnFeaturesWithSourceAndId,
-          // ...previousFeatureCollectionWithoutNewDraggedPoint,
-          // ...previousFeaturesWithoutExistingDraggedPoint,
+          ...existingDrawnFeaturesThatHaveBeenDragged,
+          ...existingDrawnFeaturesThatWereNotDragged,
         ],
       };
-      console.log("collection", updatedFeatureCollection);
+
       return updatedFeatureCollection;
     });
-
-    // Dispatch featuresSaved action
-    // if (saveActionDispatch && runActionDispatch)
-    // saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**
@@ -343,7 +321,7 @@ export function useMapDrawTools(
     const { features } = e;
 
     // Save without running dispatch since this is a new feature
-    saveDrawnPoints(false, features); // False = no dispatch
+    saveDrawnPoints(features);
   };
 
   const onModeChange = (e) => {
@@ -362,7 +340,7 @@ export function useMapDrawTools(
 
     // if the feature was dragged, we need to update its location
     if (wasFeatureMoved) {
-      saveDrawnPoints(false, e.features);
+      saveDrawnPoints(e.features);
     }
   };
 
@@ -395,7 +373,6 @@ export function useMapDrawTools(
 
   return {
     isDrawing,
-    saveDrawnPoints,
     renderMapDrawTools,
   };
 }
