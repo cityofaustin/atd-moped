@@ -187,10 +187,9 @@ export function useMapDrawTools(
 
       // Three cases:
       // Goes into makeDrawnFeaturesWithSourceAndId
-      // 1. New drawn feature that isn't dragged (no action) ✅
-      // 2. New drawn feature that is dragged (remove existing and replace with new location) ✅
+
       // Does not go into makeDrawnFeaturesWithSourceAndId
-      // 3. Existing drawn feature that is dragged (remove existing and replace with )
+      // 1. New drawn feature that isn't dragged (no action) ✅
       const newDrawnFeatures = drawnFeatures.filter((feature) => {
         const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
           feature?.properties?.sourceLayer
@@ -208,6 +207,7 @@ export function useMapDrawTools(
         );
       });
 
+      // 2. New drawn feature that is dragged (remove existing and replace with new location) ✅
       const newDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
         (feature) => {
           const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
@@ -227,6 +227,16 @@ export function useMapDrawTools(
         }
       );
 
+      const previousFeatureCollectionWithoutNewDraggedPoint =
+        prevFeatureCollection.features.filter((feature) => {
+          return newDrawnFeaturesThatHaveBeenDragged.find(
+            (newDraggedFeature) => newDraggedFeature.id === feature.id
+          )
+            ? true
+            : false;
+        });
+
+      // 3. Existing drawn feature that is dragged (remove existing and replace with ) ✅
       const existingDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
         (feature) => {
           const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
@@ -246,15 +256,25 @@ export function useMapDrawTools(
         }
       );
 
-      console.log(
+      const previousFeaturesWithoutExistingDraggedPoint =
+        prevFeatureCollection.features.filter((feature) => {
+          return existingDrawnFeaturesThatHaveBeenDragged.find(
+            (newDraggedFeature) => newDraggedFeature.id === feature.id
+          )
+            ? true
+            : false;
+        });
+
+      console.log({
         newDrawnFeatures,
         newDrawnFeaturesThatHaveBeenDragged,
-        existingDrawnFeaturesThatHaveBeenDragged
-      );
+        existingDrawnFeaturesThatHaveBeenDragged,
+        previousFeatureCollectionWithoutNewDraggedPoint,
+      });
 
       const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithSourceAndId(
         prevFeatureCollection,
-        newDrawnFeatures
+        [...newDrawnFeatures, ...newDrawnFeaturesThatHaveBeenDragged]
       );
 
       /**
@@ -264,16 +284,18 @@ export function useMapDrawTools(
       const updatedFeatureCollection = {
         ...prevFeatureCollection,
         features: [
-          ...prevFeatureCollection.features,
           ...drawnFeaturesWithSourceAndId,
+          // ...previousFeatureCollectionWithoutNewDraggedPoint,
+          // ...previousFeaturesWithoutExistingDraggedPoint,
         ],
       };
+      console.log("collection", updatedFeatureCollection);
       return updatedFeatureCollection;
     });
 
     // Dispatch featuresSaved action
-    if (saveActionDispatch && runActionDispatch)
-      saveActionDispatch({ type: "featuresSaved" });
+    // if (saveActionDispatch && runActionDispatch)
+    // saveActionDispatch({ type: "featuresSaved" });
   };
 
   /**

@@ -328,10 +328,11 @@ const ProjectComponentsMap = ({
       saveActionState?.initiateFeatureSave &&
       saveActionState?.featuresSaved === false
     ) {
-      const features = featureCollection.features;
-      saveDrawnPoints(true, features);
+      // const features = featureCollection.features;
+      // saveDrawnPoints(true, features);
+      saveActionDispatch({ type: "featuresSaved" });
     }
-  }, [saveActionState, saveDrawnPoints, featureCollection]);
+  }, [saveActionState, saveDrawnPoints, featureCollection, saveActionDispatch]);
 
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =
