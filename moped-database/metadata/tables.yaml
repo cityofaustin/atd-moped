@@ -3835,8 +3835,6 @@
           - status_name
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3875,8 +3873,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3915,8 +3911,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
