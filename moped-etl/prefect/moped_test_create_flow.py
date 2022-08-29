@@ -498,14 +498,14 @@ with Flow("Dev api sandbox", executor=executor) as api_development:
 
     # snuck a little `rm` in here, which could be broken out into a task...
     api_zip_python_libraries_command = "(cd /tmp/atd-moped/moped-api/package; \
-        rm ../activity_log.zip; \
-        zip -qr ../activity_log.zip .;)"
+        rm ../api.zip; \
+        zip -qr ../api.zip .;)"
     api_zip_libraries = api.create_api_zip_archive_libraries(
         command=api_zip_python_libraries_command, upstream_tasks=[api_pip_install]
     )
 
     api_add_lambda_function_command = "(cd /tmp/atd-moped/moped-api; \
-        zip -qg ./activity_log.zip app.py claims.py config.py graphql.py;)"
+        zip -qg ./api.zip app.py claims.py config.py graphql.py;)"
     api_lambda_archive = api.add_api_lambda_function_to_archive(
         command=api_add_lambda_function_command, upstream_tasks=[api_zip_libraries]
     )
