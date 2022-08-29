@@ -141,6 +141,6 @@ AS WITH project_person_list_lookup AS (
     mp.status_id, 
     me.entity_name, 
     mp.updated_at, 
-    mp.task_order, 
+    mp.task_order,
     ptl.type_name, 
     fsl.funding_source_name;
