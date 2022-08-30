@@ -51,9 +51,7 @@ export const mapSaveActionReducer = (state, action) => {
       if (state.componentSaved) return;
       return {
         ...state,
-        // currentStep: state.currentStep + 1, // 3
-        // TODO: Need to change this back to the additive steps once drawing is back in the mix
-        currentStep: 3,
+        currentStep: state.currentStep + 1, // 3
         componentSaved: true,
       };
     }

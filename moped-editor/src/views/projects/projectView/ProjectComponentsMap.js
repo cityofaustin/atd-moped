@@ -18,7 +18,6 @@ import {
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
   createSelectedIdsObjectFromFeatureCollection,
-  // drawnLayerNames,
   getClickEditableLayerNames,
   getGeoJSON,
   getEditMapInteractiveIds,
@@ -39,7 +38,7 @@ import {
   useTransformProjectFeatures,
 } from "../../../utils/mapHelpers";
 
-// import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
+import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 
@@ -51,18 +50,6 @@ mapboxgl.workerClass =
 
 export const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
-  layerSelectButton: {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    zIndex: 1,
-    height: "3rem",
-    width: "184px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
   mapBoxEditButtonGroup: {
     position: "absolute",
     top: ".5rem",
@@ -197,9 +184,7 @@ const handleSelectedFeatureUpdate = (
  * This the new project map editor component
  * @param {Object} featureCollection - A feature collection GeoJSON object (state)
  * @param {function} setFeatureCollection - The function to change the feature collection state
- * @param {Number} projectId - The current project id (optional)
  * @param {Object} projectFeatureCollection - A helper state containing a secondary feature collection (optional)
- * @param {function} refetchProjectDetails - A callback function to re-fetch the project's details  (optional)
  * @param {boolean} noPadding - Set to True if you wish for the map to have no padding (optional)
  * @param {boolean} newFeature - Set to True if this is a new feature for a project (optional
  * @param {Object} saveActionState - The current state of save action
@@ -213,9 +198,7 @@ const handleSelectedFeatureUpdate = (
 const ProjectComponentsMap = ({
   featureCollection,
   setFeatureCollection,
-  projectId = null,
   projectFeatureCollection = null,
-  refetchProjectDetails = null,
   noPadding = false,
   newFeature = false,
   saveActionState = null,
@@ -245,10 +228,6 @@ const ProjectComponentsMap = ({
     isSignalComponent
   );
 
-  const [cursor, setCursor] = useState("auto");
-  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
-  const onMouseLeave = useCallback(() => setCursor("auto"), []);
-
   const { handleLayerHover, featureText, featureId, hoveredCoords } =
     useHoverLayer();
 
@@ -258,7 +237,7 @@ const ProjectComponentsMap = ({
     mapStyleConfig,
     handleBasemapChange,
     mapStyle,
-  } = useLayerSelect(getLayerNames(), classes);
+  } = useLayerSelect(getLayerNames());
 
   /**
    * Creates a geojson layer with all the other features of the project
@@ -274,21 +253,26 @@ const ProjectComponentsMap = ({
     }
   );
 
+  const shouldShowDrawTools = !isSignalComponent && drawLines !== null;
   /*
    * {boolean} isDrawing - Are draw tools enabled or disabled
-   * {function} setIsDrawing - Toggle isdrawing
-   * {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
-   * {function} saveDrawnPoints - Function that saves features drawn in the UI
    */
-  // const { isDrawing, setIsDrawing, renderMapDrawTools, saveDrawnPoints } =
-  //   useMapDrawTools(
-  //     featureCollection,
-  //     setFeatureCollection,
-  //     projectId,
-  //     refetchProjectDetails,
-  //     viewport.zoom,
-  //     saveActionDispatch
-  //   );
+  const { isDrawing, renderMapDrawTools } = useMapDrawTools(
+    featureCollection,
+    setFeatureCollection,
+    drawLines
+  );
+
+  const [cursor, setCursor] = useState("auto");
+  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
+  const onMouseLeave = useCallback(() => setCursor("auto"), []);
+
+  // Update cursor if we are drawing
+  useEffect(() => {
+    if (isDrawing) {
+      setCursor(() => "crosshair");
+    }
+  }, [isDrawing]);
 
   /**
    * Adds or removes an interactive map feature from the project's feature collection and selected IDs array
@@ -296,10 +280,6 @@ const ProjectComponentsMap = ({
    */
   const handleLayerClick = (e) => {
     const layerName = getLayerSource(e);
-    // If a user clicks a drawn point in the map, open draw UI
-    // if (drawnLayerNames.includes(layerName)) {
-    //   setIsDrawing(true);
-    // }
 
     if (!layerName || !getClickEditableLayerNames().includes(layerName)) return;
 
@@ -334,21 +314,6 @@ const ProjectComponentsMap = ({
   );
 
   /**
-   * Customize cursor depending on user actions
-   * @param {object} pointerStates - Object containing pointer state keys and boolean values
-   * @param {boolean} pointerStates.isHovering - Is user hovering an interactive feature
-   * @param {boolean} pointerStates.isDragging - Is user dragging map
-   */
-  // const getCursor = ({ isHovering, isDragging }) => {
-  //   return isDragging
-  //     ? "grabbing"
-  //     : isHovering // Show pointer when user is drawing as well
-  //     ? // : isHovering || isDrawing // Show pointer when user is drawing as well
-  //       "pointer"
-  //     : "default";
-  // };
-
-  /**
    * Whenever a Save Action is initiated, save all drawn features
    * */
   useEffect(() => {
@@ -357,19 +322,17 @@ const ProjectComponentsMap = ({
     // If the process has been already initiated, we don't need to go any further
     if (saveActionState?.currentStep && saveActionState.currentStep > 1) return;
     // It looks like this is the first step
-    // if (
-    //   saveActionState?.initiateFeatureSave &&
-    //   saveActionState?.featuresSaved === false
-    // ) {
-    //   saveDrawnPoints();
-    // }
-  }, [saveActionState]);
+    if (
+      saveActionState?.initiateFeatureSave &&
+      saveActionState?.featuresSaved === false
+    ) {
+      saveActionDispatch({ type: "featuresSaved" });
+    }
+  }, [saveActionState, featureCollection, saveActionDispatch]);
 
-  // TODO: Reintroduce when drawing is restored
   // render the drawable layers if component has been selected (drawLines), not a component and not already drawing
   const renderDrawLayers =
-    // !isDrawing && !isSignalComponent && drawLines !== null;
-    !isSignalComponent && drawLines !== null;
+    !isDrawing && !isSignalComponent && drawLines !== null;
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
@@ -410,12 +373,9 @@ const ProjectComponentsMap = ({
           renderDrawLayers ? getEditMapInteractiveIds(drawLines) : []
         }
         onMouseMove={handleLayerHover}
-        onClick={handleLayerClick}
-        // TODO: Reintroduce when drawing is restored
-        // onMouseEnter={renderDrawLayers ? handleLayerHover : null}
-        // onClick={renderDrawLayers ? handleLayerClick : null}
+        onMouseEnter={renderDrawLayers ? onMouseEnter : null}
+        onClick={renderDrawLayers ? handleLayerClick : null}
         cursor={cursor}
-        onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         mapboxAccessToken={MAPBOX_TOKEN}
         onMove={(e) => handleViewportChange(e.viewState)}
@@ -508,9 +468,7 @@ const ProjectComponentsMap = ({
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
 
         {/* Draw tools */}
-        {/* {!isSignalComponent &&
-          drawLines !== null &&
-          renderMapDrawTools(mapEditToolsContainerRef, drawLines)} */}
+        {shouldShowDrawTools && renderMapDrawTools()}
       </Map>
     </Box>
   );
