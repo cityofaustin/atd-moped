@@ -28,10 +28,10 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import {
-  PURCHASE_ORDER_QUERY,
-  UPDATE_PURCHASE_ORDER,
-  ADD_PURCHASE_ORDER,
-  DELETE_PURCHASE_ORDER,
+  CONTRACT_QUERY,
+  UPDATE_CONTRACT,
+  ADD_CONTRACT,
+  DELETE_CONTRACT,
 } from "../../../queries/funding";
 
 const DEFAULT_SNACKBAR_STATE = {
@@ -48,20 +48,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectPurchaseOrderTable = () => {
+const ProjectContractsTable = () => {
   const classes = useStyles();
   const { projectId } = useParams();
 
-  const { loading, error, data, refetch } = useQuery(PURCHASE_ORDER_QUERY, {
+  const { loading, error, data, refetch } = useQuery(CONTRACT_QUERY, {
     variables: {
       projectId: projectId,
     },
     fetchPolicy: "no-cache",
   });
 
-  const [addPurchaseOrder] = useMutation(ADD_PURCHASE_ORDER);
-  const [updatePurchaseOrder] = useMutation(UPDATE_PURCHASE_ORDER);
-  const [deletePurchaseOrder] = useMutation(DELETE_PURCHASE_ORDER);
+  const [addContract] = useMutation(ADD_CONTRACT);
+  const [updateContract] = useMutation(UPDATE_CONTRACT);
+  const [deleteContract] = useMutation(DELETE_CONTRACT);
 
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
@@ -79,12 +79,12 @@ const ProjectPurchaseOrderTable = () => {
    */
   const columns = [
     {
-      title: "Vendor",
-      field: "vendor",
+      title: "Contractor",
+      field: "contractor",
     },
     {
-      title: "DO #",
-      field: "purchase_order_number",
+      title: "Contract #",
+      field: "contract_number",
     },
     {
       title: "Description",
@@ -126,13 +126,13 @@ const ProjectPurchaseOrderTable = () => {
                   startIcon={<AddCircleIcon />}
                   onClick={props.action.onClick}
                 >
-                  Add Purchase order
+                  Add Contract
                 </Button>
               );
             }
           },
         }}
-        data={data.moped_purchase_order}
+        data={data.moped_proj_contract}
         title={
           <div>
             <Typography
@@ -140,12 +140,12 @@ const ProjectPurchaseOrderTable = () => {
               color="primary"
               style={{ paddingTop: "1em" }}
             >
-              Purchase orders
+              Contracts
             </Typography>
           </div>
         }
         options={{
-          ...(data.moped_purchase_order.length < PAGING_DEFAULT_COUNT + 1 && {
+          ...(data.moped_proj_contract.length < PAGING_DEFAULT_COUNT + 1 && {
             paging: false,
           }),
           search: false,
@@ -161,7 +161,7 @@ const ProjectPurchaseOrderTable = () => {
           body: {
             emptyDataSourceMessage: (
               <Typography variant="body1">
-                No purchase orders to display
+                No contracts to display
               </Typography>
             ),
           },
@@ -172,7 +172,7 @@ const ProjectPurchaseOrderTable = () => {
         }}
         editable={{
           onRowAdd: (newData) =>
-            addPurchaseOrder({
+            addContract({
               variables: {
                 objects: {
                   ...newData,
@@ -194,13 +194,13 @@ const ProjectPurchaseOrderTable = () => {
                 });
               }),
           onRowUpdate: (newData, oldData) => {
-            const updatePurchaseOrderData = newData;
+            const updateContractData = newData;
 
             // Remove unneeded variable
-            delete updatePurchaseOrderData.__typename;
+            delete updateContractData.__typename;
 
-            return updatePurchaseOrder({
-              variables: updatePurchaseOrderData,
+            return updateContract({
+              variables: updateContractData,
             })
               .then(() => refetch())
               .catch((error) => {
@@ -217,7 +217,7 @@ const ProjectPurchaseOrderTable = () => {
               });
           },
           onRowDelete: (oldData) =>
-            deletePurchaseOrder({
+            deleteContract({
               variables: {
                 id: oldData.id,
               },
@@ -251,4 +251,4 @@ const ProjectPurchaseOrderTable = () => {
   );
 };
 
-export default ProjectPurchaseOrderTable;
+export default ProjectContractsTable;

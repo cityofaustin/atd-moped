@@ -29,8 +29,6 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       project_id
       project_name
       updated_at
-      contractor
-      purchase_order_number
       project_sponsor
       task_order
       moped_proj_notes(
@@ -89,15 +87,11 @@ export const SIGNAL_PROJECTS_QUERY = gql`
 export const UPDATE_SIGNAL_PROJECT = gql`
   mutation SignalProjectMutation(
     $project_id: Int!
-    $contractor: String
-    $purchase_order_number: String
     $entity_id: Int
   ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $project_id }
       _set: {
-        contractor: $contractor
-        purchase_order_number: $purchase_order_number
         project_sponsor: $entity_id
       }
     ) {

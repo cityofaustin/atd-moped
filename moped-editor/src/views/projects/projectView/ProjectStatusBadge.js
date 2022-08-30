@@ -130,17 +130,23 @@ const getStyle = (theme, phase) => {
 /**
  * Picks the right color based on the status-phase combination
  */
-const useFontColorStyles = makeStyles(theme => ({
+const useFontColorStyles = makeStyles((theme) => ({
   root: {
     // Find text color
-    color: props => getStyle(theme, (props?.phase ?? "").toLowerCase()).color,
+    color: (props) => getStyle(theme, (props?.phase ?? "").toLowerCase()).color,
+  },
+}));
+
+const useStyles = makeStyles((theme) => ({
+  statusUpdateText: {
+    cursor: "pointer",
   },
 }));
 
 /**
  * Picks the right chip color based on status-phase combination
  */
-const useChipStyles = makeStyles(theme => ({
+const useChipStyles = makeStyles((theme) => ({
   root: {
     marginLeft: "1.5rem",
     fontWeight: "500",
@@ -149,7 +155,7 @@ const useChipStyles = makeStyles(theme => ({
     height: "2.5rem",
     padding: ".5rem",
     // Find background color
-    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
+    backgroundColor: (props) => getStyle(theme, props.phase ?? "").background,
   },
   condensed: {
     fontWeight: "500",
@@ -157,7 +163,7 @@ const useChipStyles = makeStyles(theme => ({
     borderRadius: "2rem",
     height: "1.75rem",
     // Find background color
-    backgroundColor: props => getStyle(theme, props.phase ?? "").background,
+    backgroundColor: (props) => getStyle(theme, props.phase ?? "").background,
   },
 }));
 
@@ -175,6 +181,7 @@ const ProjectStatusBadge = ({
   projectStatuses,
   condensed = false,
 }) => {
+  const classes = useStyles();
   /**
    * Returns the label given a status-phase combination
    * @param {number} status - The status id number
@@ -185,7 +192,7 @@ const ProjectStatusBadge = ({
     status > 1 // is not active?
       ? // Then it can be found as a status
         (
-          projectStatuses.find(s => s.status_id === status)?.status_name ??
+          projectStatuses.find((s) => s.status_id === status)?.status_name ??
           String(phase)
         ) // if not, default to phase
           .toLowerCase()
@@ -217,13 +224,9 @@ const ProjectStatusBadge = ({
    * @param {string} text - The contents of the chip text
    * @returns {string}
    */
-  const capitalCase = text =>
-    String(text)
-      .charAt(0)
-      .toUpperCase() +
-    String(text)
-      .toLowerCase()
-      .substring(1);
+  const capitalCase = (text) =>
+    String(text).charAt(0).toUpperCase() +
+    String(text).toLowerCase().substring(1);
 
   /**
    * Show chip is true if we have a phase or a valid status id
@@ -239,6 +242,7 @@ const ProjectStatusBadge = ({
       <Chip
         className={clsx(
           iconClasses.root,
+          classes.statusUpdateText,
           condensed ? chipClasses.condensed : chipClasses.root
         )}
         icon={<ChipIcon className={iconClasses.root} />}

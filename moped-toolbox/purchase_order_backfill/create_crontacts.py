@@ -2,7 +2,7 @@
 This script takes contractors and DO#s from existing moped projects and moves them into
 their own table
 
-Usage: python create_purchase_orders.py -e local
+Usage: python create_contracts.py -e local
 
 """
 
@@ -10,7 +10,7 @@ import argparse
 
 
 from utils import get_logger, make_hasura_request
-from queries import PROJECTS_QUERY, ADD_PURCHASE_ORDER
+from queries import PROJECTS_QUERY, ADD_CONTRACT
 from secrets import HASURA
 
 
@@ -32,16 +32,16 @@ def main(env):
     for project in projects:
         project_id = project["project_id"]
         contractor = project["contractor"]
-        purchase_order_number = project["purchase_order_number"]
-        if contractor is None and purchase_order_number is None:
+        contract_number = project["purchase_order_number"]
+        if contractor is None and contract_number is None:
             continue
 
-        records_to_add.append({"project_id": project_id, "purchase_order_number": purchase_order_number,
-                               "vendor": contractor})
+        records_to_add.append({"project_id": project_id, "contract_number": contract_number,
+                               "contractor": contractor})
 
     for record in records_to_add:
         make_hasura_request(
-            query=ADD_PURCHASE_ORDER,
+            query=ADD_CONTRACT,
             variables={"objects": record},
             endpoint=HASURA["hasura_graphql_endpoint"][env],
             admin_secret=HASURA["hasura_graphql_admin_secret"][env]
@@ -52,7 +52,7 @@ def main(env):
 
 
 if __name__ == "__main__":
-    logger = get_logger(name="create_purchase_orders")
+    logger = get_logger(name="create_contracts")
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
