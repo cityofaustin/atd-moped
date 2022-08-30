@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -51,8 +51,10 @@ import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProject
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import FundingAmountIntegerField from "./FundingAmountIntegerField";
+import SubprojectFundingModal from "./SubprojectFundingModal";
+import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
   },
@@ -146,9 +148,21 @@ const useStyles = makeStyles(theme => ({
   },
   fundSelectStyle: {
     width: "8em",
-    border: "1px green solid",
   },
 }));
+
+// memoized hook to concatanate fund dept and unit ids into an fdu string
+const useFdusArray = (projectFunding) =>
+  useMemo(() => {
+    if (!projectFunding) {
+      return [];
+    }
+    return projectFunding.map(
+      (record) =>
+        `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
+    );
+  }, [projectFunding]);
+
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -193,6 +207,14 @@ const ProjectFundingTable = () => {
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
   const [newTaskOrderList, setNewTaskOrderList] = useState([]);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleSubprojectDialogClose = () => {
+    setIsDialogOpen(false);
+    refetch();
+  };
+
+  const fdusArray = useFdusArray(data?.moped_proj_funding);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -206,10 +228,12 @@ const ProjectFundingTable = () => {
   const getLookupValueByID = (lookupTable, attribute, id) => {
     if (!id) return null;
 
-    return data[lookupTable].find(item => item[`${attribute}_id`] === id)[
+    return data[lookupTable].find((item) => item[`${attribute}_id`] === id)[
       `${attribute}_name`
     ];
   };
+
+  const userId = getDatabaseId(user);
 
   /**
    * An array of objects that contain the task order data
@@ -221,15 +245,17 @@ const ProjectFundingTable = () => {
    * Deletes a task order from the list
    * @param {Object} task -The task to be deleted
    */
-  const handleTaskOrderDelete = task =>
+  const handleTaskOrderDelete = (task) =>
     updateProjectTaskOrders({
       variables: {
         projectId: projectId,
-        taskOrders: taskOrderData.filter(t => t.task_order !== task.task_order),
+        taskOrders: taskOrderData.filter(
+          (t) => t.task_order !== task.task_order
+        ),
       },
     })
       .then(() => refetch())
-      .catch(error => {
+      .catch((error) => {
         setSnackbarState({
           open: true,
           message: (
@@ -246,7 +272,7 @@ const ProjectFundingTable = () => {
    * Handle Task Order OnChange event
    * @param {Object} value - Data from the task order list
    */
-  const handleTaskOrderOnChange = value => {
+  const handleTaskOrderOnChange = (value) => {
     setNewTaskOrderList(value);
   };
 
@@ -261,7 +287,7 @@ const ProjectFundingTable = () => {
         taskOrders: [
           ...taskOrderData,
           ...newTaskOrderList.filter(
-            n => !taskOrderData.find(t => t.task_order === n.task_order)
+            (n) => !taskOrderData.find((t) => t.task_order === n.task_order)
           ),
         ],
       },
@@ -311,17 +337,17 @@ const ProjectFundingTable = () => {
    * @param {*} props
    * @returns {React component}
    */
-  const LookupSelectComponent = props => (
+  const LookupSelectComponent = (props) => (
     <Select
       style={{ minWidth: "8em" }}
       id={props.name}
       value={props.value || props.defaultValue}
     >
-      {props.data.map(item => (
+      {props.data.map((item) => (
         <MenuItem
           onChange={() => props.onChange(item[`${props.name}_id`])}
           onClick={() => props.onChange(item[`${props.name}_id`])}
-          onKeyDown={e => handleKeyEvent(e)}
+          onKeyDown={(e) => handleKeyEvent(e)}
           value={item[`${props.name}_id`]}
           key={item[`${props.name}_name`]}
         >
@@ -332,7 +358,7 @@ const ProjectFundingTable = () => {
         <MenuItem
           onChange={() => props.onChange("")}
           onClick={() => props.onChange("")}
-          onKeyDown={e => handleKeyEvent(e)}
+          onKeyDown={(e) => handleKeyEvent(e)}
           value=""
         >
           -
@@ -346,7 +372,7 @@ const ProjectFundingTable = () => {
    * @param {*} props
    * @returns {React component}
    */
-  const FundSelectComponent = props => (
+  const FundSelectComponent = (props) => (
     <Select
       id="moped_funds"
       value={
@@ -354,13 +380,13 @@ const ProjectFundingTable = () => {
           ? `${props.value.fund_id} | ${props.value.fund_name}`
           : ""
       }
-      classes={classes.fundSelectStyle}
+      className={classes.fundSelectStyle}
     >
-      {props.data.map(item => (
+      {props.data.map((item) => (
         <MenuItem
           onChange={() => props.onChange(item)}
           onClick={() => props.onChange(item)}
-          onKeyDown={e => handleKeyEvent(e)}
+          onKeyDown={(e) => handleKeyEvent(e)}
           value={`${item.fund_id} | ${item.fund_name}`}
           key={item.fund_id}
         >
@@ -370,7 +396,7 @@ const ProjectFundingTable = () => {
       <MenuItem
         onChange={() => props.onChange(null)}
         onClick={() => props.onChange(null)}
-        onKeyDown={e => handleKeyEvent(e)}
+        onKeyDown={(e) => handleKeyEvent(e)}
         value=""
       >
         -
@@ -399,7 +425,7 @@ const ProjectFundingTable = () => {
     {
       title: "Source",
       field: "funding_source_id",
-      render: row =>
+      render: (row) =>
         getLookupValueByID(
           "moped_fund_sources",
           "funding_source",
@@ -410,7 +436,7 @@ const ProjectFundingTable = () => {
         "funding_source_id",
         "funding_source_name"
       ),
-      editComponent: props => (
+      editComponent: (props) => (
         <LookupSelectComponent
           {...props}
           name={"funding_source"}
@@ -422,13 +448,13 @@ const ProjectFundingTable = () => {
     {
       title: "Program",
       field: "funding_program_id",
-      render: row =>
+      render: (row) =>
         getLookupValueByID(
           "moped_fund_programs",
           "funding_program",
           row.funding_program_id
         ),
-      editComponent: props => (
+      editComponent: (props) => (
         <LookupSelectComponent
           {...props}
           name={"funding_program"}
@@ -440,26 +466,26 @@ const ProjectFundingTable = () => {
     {
       title: "Description",
       field: "funding_description",
-      editComponent: props => (
+      editComponent: (props) => (
         <TextField
           id="funding_description"
           name="funding_description"
           multiline
           value={props.value}
-          onChange={e => props.onChange(e.target.value)}
+          onChange={(e) => props.onChange(e.target.value)}
         />
       ),
     },
     {
       title: "Status",
       field: "funding_status_id",
-      render: row =>
+      render: (row) =>
         getLookupValueByID(
           "moped_fund_status",
           "funding_status",
           row.funding_status_id
         ),
-      editComponent: props => (
+      editComponent: (props) => (
         <LookupSelectComponent
           {...props}
           name={"funding_status"}
@@ -471,7 +497,7 @@ const ProjectFundingTable = () => {
     {
       title: "Fund",
       field: "fund",
-      render: entry =>
+      render: (entry) =>
         !!entry.fund?.fund_name ? (
           <>
             <Typography>{entry.fund?.fund_id} |</Typography>
@@ -480,14 +506,14 @@ const ProjectFundingTable = () => {
         ) : (
           ""
         ),
-      editComponent: props => (
+      editComponent: (props) => (
         <FundSelectComponent {...props} data={data.moped_funds} />
       ),
     },
     {
       title: "Dept-unit",
       field: "dept_unit",
-      render: entry =>
+      render: (entry) =>
         !!entry.dept_unit?.unit_long_name ? (
           <>
             <Typography>
@@ -498,7 +524,7 @@ const ProjectFundingTable = () => {
         ) : (
           ""
         ),
-      editComponent: props => (
+      editComponent: (props) => (
         <FundingDeptUnitAutocomplete
           classes={classes.deptAutocomplete}
           props={props}
@@ -509,21 +535,23 @@ const ProjectFundingTable = () => {
     {
       title: "Amount",
       field: "funding_amount",
-      render: row => currencyFormatter.format(row.funding_amount),
-      editComponent: props => <FundingAmountIntegerField {...props} />,
+      render: (row) => currencyFormatter.format(row.funding_amount),
+      editComponent: (props) => <FundingAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
+
+  const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
         columns={columns}
         components={{
-          EditRow: props => (
+          EditRow: (props) => (
             <MTableEditRow
               {...props}
-              onKeyDown={e => {
+              onKeyDown={(e) => {
                 if (e.keyCode === 13) {
                   // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                   // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -531,7 +559,7 @@ const ProjectFundingTable = () => {
               }}
             />
           ),
-          Action: props => {
+          Action: (props) => {
             // Add action icons when for NOT "add"
             if (
               typeof props.action === typeof Function ||
@@ -540,7 +568,13 @@ const ProjectFundingTable = () => {
               return <MTableAction {...props} />;
             } else {
               // else add "Add ..." button
-              return (
+              return !!eCaprisID ? (
+                <ButtonDropdownMenu
+                  buttonWrapperStyle={classes.fundingButton}
+                  addAction={props.action.onClick}
+                  openFundingDialog={setIsDialogOpen}
+                />
+              ) : (
                 <Button
                   className={classes.fundingButton}
                   variant="contained"
@@ -576,7 +610,7 @@ const ProjectFundingTable = () => {
             />
             <Box component={"ul"} className={classes.chipContainer}>
               <Typography className={classes.fieldLabel}>Task order</Typography>
-              {taskOrderData.map(task => (
+              {taskOrderData.map((task) => (
                 <li key={task.id}>
                   <Chip
                     label={task.display_name}
@@ -636,6 +670,7 @@ const ProjectFundingTable = () => {
             fontFamily: typography.fontFamily,
           },
           actionsColumnIndex: -1,
+          addRowPosition: "first",
         }}
         localization={{
           header: {
@@ -654,20 +689,20 @@ const ProjectFundingTable = () => {
           Edit: EditOutlinedIcon,
         }}
         editable={{
-          onRowAdd: newData =>
+          onRowAdd: (newData) =>
             addProjectFunding({
               variables: {
                 objects: {
                   ...newData,
                   project_id: projectId,
-                  added_by: getDatabaseId(user),
+                  added_by: userId,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
               },
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -702,7 +737,7 @@ const ProjectFundingTable = () => {
               variables: updateProjectFundingData,
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -715,14 +750,14 @@ const ProjectFundingTable = () => {
                 });
               });
           },
-          onRowDelete: oldData =>
+          onRowDelete: (oldData) =>
             deleteProjectFunding({
               variables: {
                 proj_funding_id: oldData.proj_funding_id,
               },
             })
               .then(() => refetch())
-              .catch(error => {
+              .catch((error) => {
                 setSnackbarState({
                   open: true,
                   message: (
@@ -746,6 +781,16 @@ const ProjectFundingTable = () => {
           {snackbarState.message}
         </Alert>
       </Snackbar>
+      <SubprojectFundingModal
+        isDialogOpen={isDialogOpen}
+        handleDialogClose={handleSubprojectDialogClose}
+        eCaprisID={eCaprisID}
+        fdusArray={fdusArray}
+        addProjectFunding={addProjectFunding}
+        userId={userId}
+        projectId={projectId}
+        setSnackbarState={setSnackbarState}
+      />
     </ApolloErrorHandler>
   );
 };
