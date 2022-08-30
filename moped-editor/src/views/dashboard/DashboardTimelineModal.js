@@ -52,7 +52,7 @@ const DashboardTimelineModal = ({
         maxWidth={"xl"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Update phase - ${projectName}`}</h4>
+          <h4>{`Update ${table} - ${projectName}`}</h4>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>
