@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme) => ({
  */
 const createRecordKeyHash = (recordKey) => `#${recordKey.replace("_", "-")}`;
 
+/**
+ * Scroll to a page element based on its key
+ */
 const scrollToTable = (recordKey, refs) => {
   const ref = refs?.[recordKey];
   if (ref?.current) {
