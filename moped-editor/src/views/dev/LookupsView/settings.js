@@ -17,6 +17,19 @@ const subPhaseHandler = (subphases) =>
 const relatedPhaseHandler = (phase) => phase?.phase_name;
 
 /**
+ * Parses an array of subcomponents into an array of subcomponent names
+ * @param {Object[]} subcomponents - array of moped_subcomponents objects
+ * @returns { JSX } An array of <div>s with the subcomponent name
+ */
+const subComponentHandler = (subcomponents) =>
+  subcomponents &&
+  subcomponents.map((subcomponent) => (
+    <div key={subcomponent.subcomponent_id}>
+      {subcomponent.subcomponent_name}
+    </div>
+  ));
+
+/**
  * Definitions for data tables.
  * @type { Object[]}  - An array of settings for data tables. Each object references a typename
  * returned from a Hasura query
@@ -104,7 +117,7 @@ export const SETTINGS = [
        */
       {
         key: "component_id",
-        label: "Component ID"
+        label: "Component ID",
       },
       {
         key: "component_name",
@@ -117,13 +130,14 @@ export const SETTINGS = [
       {
         key: "line_representation",
         label: "Geometry type",
-        handler: lineRepresentation => lineRepresentation ? "Line" : "Point"
-      }
-      // {
-      //   key: "moped_subphases",
-      //   label: "Subphases",
-      //   handler: subPhaseHandler,
-      // },
+        handler: (lineRepresentation) =>
+          lineRepresentation ? "Line" : "Point",
+      },
+      {
+        key: "moped_subcomponents",
+        label: "Subcomponents",
+        handler: subComponentHandler,
+      },
     ],
   },
 ];
