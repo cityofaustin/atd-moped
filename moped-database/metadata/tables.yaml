@@ -124,6 +124,14 @@
 - table:
     schema: public
     name: moped_components
+  array_relationships:
+    - name: moped_subcomponents
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            schema: public
+            name: moped_subcomponents
   insert_permissions:
     - role: moped-admin
       permission:
