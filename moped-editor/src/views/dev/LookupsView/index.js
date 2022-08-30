@@ -98,7 +98,7 @@ const LookupsView = () => {
             component={Paper}
           >
             {SETTINGS.map((recordType) => (
-              <Grid item>
+              <Grid item key={recordType.key}>
                 <Button
                   color="primary"
                   variant="outlined"
