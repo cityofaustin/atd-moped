@@ -179,7 +179,7 @@ const DashboardView = () => {
           value={entry.project_name}
         />
       ),
-      width: "25%",
+      width: "20%",
     },
     {
       title: "Status",
@@ -202,7 +202,7 @@ const DashboardView = () => {
           }
         />
       ),
-      width: "25%",
+      width: "20%",
     },
     {
       title: "Status update",
@@ -215,10 +215,10 @@ const DashboardView = () => {
           queryRefetch={refetch}
         />
       ),
-      width: "25%",
+      width: "50%",
     },
     {
-      title: "Milestones completed",
+      title: "Milestones",
       field: "completed_milestones",
       render: (entry) => (
         <DashboardTimelineModal
@@ -235,7 +235,7 @@ const DashboardView = () => {
           }
         />
       ),
-      width: "25%",
+      width: "10%",
     },
   ];
 
