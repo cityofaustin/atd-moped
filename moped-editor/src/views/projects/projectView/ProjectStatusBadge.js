@@ -138,7 +138,7 @@ const useFontColorStyles = makeStyles((theme) => ({
 }));
 
 const useStyles = makeStyles((theme) => ({
-  statusUpdateText: {
+  clickableChip: {
     cursor: "pointer",
   },
 }));
@@ -180,6 +180,7 @@ const ProjectStatusBadge = ({
   phase,
   projectStatuses,
   condensed = false,
+  clickable = false
 }) => {
   const classes = useStyles();
   /**
@@ -242,7 +243,7 @@ const ProjectStatusBadge = ({
       <Chip
         className={clsx(
           iconClasses.root,
-          classes.statusUpdateText,
+          clickable && classes.clickableChip,
           condensed ? chipClasses.condensed : chipClasses.root
         )}
         icon={<ChipIcon className={iconClasses.root} />}

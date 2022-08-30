@@ -7,7 +7,6 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { makeStyles } from "@material-ui/core/styles";
-import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import ProjectTimeline from "../projects/projectView/ProjectTimeline";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,15 +17,17 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  clickableDiv: {
+    cursor: "pointer",
+  },
 }));
 
-const DashboardPhaseModal = ({
-  status,
-  phase,
-  project,
-  projectStatuses,
+const DashboardTimelineModal = ({
+  table,
   projectId,
+  projectName,
   queryRefetch,
+  contents,
 }) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -38,13 +39,11 @@ const DashboardPhaseModal = ({
 
   return (
     <>
-      <div onClick={() => setIsDialogOpen(true)}>
-        <ProjectStatusBadge
-          status={status}
-          phase={phase}
-          projectStatuses={projectStatuses}
-          condensed
-        />
+      <div
+        className={classes.clickableDiv}
+        onClick={() => setIsDialogOpen(true)}
+      >
+        {contents}
       </div>
       <Dialog
         open={isDialogOpen}
@@ -53,17 +52,20 @@ const DashboardPhaseModal = ({
         maxWidth={"xl"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Update phase - ${project.project_name}`}</h4>
+          <h4>{`Update ${table} - ${projectName}`}</h4>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <ProjectTimeline projectIdFromPhaseModal={projectId} isPhaseModal />
+          <ProjectTimeline
+            table={table}
+            projectIdFromTimelineModal={projectId}
+          />
         </DialogContent>
       </Dialog>
     </>
   );
 };
 
-export default DashboardPhaseModal;
+export default DashboardTimelineModal;
