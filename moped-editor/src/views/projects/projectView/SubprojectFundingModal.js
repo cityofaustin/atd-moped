@@ -80,7 +80,7 @@ const SubprojectFundingModal = ({
       };
       fduRecord.fund = {
         fund_id: fdu.fund,
-        fund_name: fdu.fundname,
+        fund_name: fdu.fundname.toUpperCase(),
       };
       fduRecord.project_id = projectId;
       fduRecord.added_by = userId;

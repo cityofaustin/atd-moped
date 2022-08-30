@@ -85,7 +85,7 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }
           <ListItemIcon>
             <AddCircle fontSize="small" />
           </ListItemIcon>
-          Generic funding source
+          New funding source
         </MenuItem>
         <MenuItem onClick={() => openFundingDialog(true)}>
           <ListItemIcon>
