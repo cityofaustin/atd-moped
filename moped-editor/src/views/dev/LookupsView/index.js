@@ -12,7 +12,7 @@ import LinkIcon from "@material-ui/icons/Link";
 import { makeStyles } from "@material-ui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
-import { TIMELINE_LOOKUPS_QUERY } from "src/queries/timelineLookups";
+import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 
 const useStyles = makeStyles((theme) => ({
@@ -35,11 +35,13 @@ const createRecordKeyHash = (recordKey) => `#${recordKey.replace("_", "-")}`;
  */
 const LookupsView = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(TIMELINE_LOOKUPS_QUERY, {
+  const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
 
   const [selectedRecordKey, setSelectedRecordKey] = useState(null);
+
+  console.log(SETTINGS);
 
   /**
    * We're using history here (and elsewhere) because it's not possible to use react-router
@@ -86,6 +88,7 @@ const LookupsView = () => {
     }
   }, [selectedRecordKey, refs]);
 
+  console.log(data)
   return (
     <ApolloErrorHandler error={error}>
       <Page title="Moped lookup values">

@@ -10,9 +10,9 @@ const subPhaseHandler = (subphases) =>
   ));
 
 /**
- * Parses an array of phase-subphases into an array of subphase names
- * @param {Object[]} subphases - array of moped_subphases objects
- * @returns { JSX } An array of <div>s with the subphase name
+ * Retrieves phase name from phase object
+ * @param {Object} phase - phase object
+ * @returns { string } phase name
  */
 const relatedPhaseHandler = (phase) => phase?.phase_name;
 
@@ -88,6 +88,42 @@ export const SETTINGS = [
         key: "milestone_description",
         label: "Description",
       },
+    ],
+  },
+  {
+    key: "moped_components",
+    label: "Moped components",
+    columns: [
+      /**
+       * @type { Object } Column definition
+       * @property { string } key - the accessor that will be used to retrieve data from a table row
+       * object
+       * @property { string} label - a human-friendly label which will be used as a table column header
+       * @property { Function } [handler] - an optional transform function that receives any object and
+       * returns a string. You'll want to use this on complex data types.
+       */
+      {
+        key: "component_id",
+        label: "Component ID"
+      },
+      {
+        key: "component_name",
+        label: "Component name",
+      },
+      {
+        key: "component_subtype",
+        label: "Component subtype",
+      },
+      {
+        key: "line_representation",
+        label: "Geometry type",
+        handler: lineRepresentation => lineRepresentation ? "Line" : "Point"
+      }
+      // {
+      //   key: "moped_subphases",
+      //   label: "Subphases",
+      //   handler: subPhaseHandler,
+      // },
     ],
   },
 ];
