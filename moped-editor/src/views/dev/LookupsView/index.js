@@ -41,8 +41,6 @@ const LookupsView = () => {
 
   const [selectedRecordKey, setSelectedRecordKey] = useState(null);
 
-  console.log(SETTINGS);
-
   /**
    * We're using history here (and elsewhere) because it's not possible to use react-router
    * to replace window.loctation w/o forcing a re-render.
@@ -88,7 +86,6 @@ const LookupsView = () => {
     }
   }, [selectedRecordKey, refs]);
 
-  console.log(data)
   return (
     <ApolloErrorHandler error={error}>
       <Page title="Moped lookup values">
