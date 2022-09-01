@@ -190,7 +190,7 @@ const DashboardView = () => {
           table="phases"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
+          dashboardRefetch={refetch}
           contents={
             <ProjectStatusBadge
               status={entry.status_id}
@@ -225,7 +225,7 @@ const DashboardView = () => {
           table="milestones"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
+          dashboardRefetch={refetch}
           contents={
             <MilestoneProgressMeter
               completedMilestonesPercentage={

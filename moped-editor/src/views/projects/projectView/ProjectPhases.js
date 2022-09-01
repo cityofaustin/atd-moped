@@ -47,6 +47,7 @@ const ProjectPhases = ({
   loading,
   data,
   refetch,
+  projectViewRefetch,
 }) => {
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
@@ -124,6 +125,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
+              projectViewRefetch();
             })
             .catch((err) => {
               console.error(err);
@@ -424,6 +426,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
+              projectViewRefetch();
             });
         },
         onRowUpdate: (newData, oldData) => {
@@ -505,6 +508,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
+              projectViewRefetch();
             });
         },
         onRowDelete: (oldData) => {
@@ -539,7 +543,10 @@ const ProjectPhases = ({
                     })
                   : true
               )
-              .then(() => refetch());
+              .then(() => {
+                refetch();
+                projectViewRefetch();
+              });
           });
         },
       }}

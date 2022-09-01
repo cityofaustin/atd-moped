@@ -33,7 +33,7 @@ const DashboardTimelineModal = ({
   table,
   projectId,
   projectName,
-  queryRefetch,
+  dashboardRefetch,
   contents,
 }) => {
   const classes = useStyles();
@@ -53,7 +53,7 @@ const DashboardTimelineModal = ({
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    queryRefetch();
+    dashboardRefetch();
   };
 
   return (

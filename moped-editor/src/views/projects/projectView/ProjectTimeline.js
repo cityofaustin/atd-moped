@@ -1,12 +1,7 @@
 import React from "react";
 
 // Material
-import {
-  Box,
-  CardContent,
-  CircularProgress,
-  Grid,
-} from "@material-ui/core";
+import { Box, CardContent, CircularProgress, Grid } from "@material-ui/core";
 
 // Query
 import { TIMELINE_QUERY } from "../../../queries/project";
@@ -23,7 +18,7 @@ import ProjectMilestones from "./ProjectMilestones";
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = () => {
+const ProjectTimeline = (props) => {
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -41,6 +36,8 @@ const ProjectTimeline = () => {
     fetchPolicy: "no-cache",
   });
 
+  const projectViewRefetch = props.refetch;
+
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
@@ -56,6 +53,7 @@ const ProjectTimeline = () => {
                 loading={loading}
                 data={data}
                 refetch={refetch}
+                projectViewRefetch={projectViewRefetch}
               />
             </Box>
           </Grid>
