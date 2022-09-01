@@ -1,28 +1,10 @@
 import React from "react";
 
 // Material
-import {
-  Box,
-  Button,
-  CardContent,
-  CircularProgress,
-  Grid,
-  Typography,
-} from "@material-ui/core";
-import {
-  AddCircle as AddCircleIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-} from "@material-table/core";
-import typography from "../../../theme/typography";
+import { Box, CardContent, CircularProgress, Grid } from "@material-ui/core";
 
 // Query
 import { TIMELINE_QUERY } from "../../../queries/project";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
