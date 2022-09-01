@@ -1,4 +1,4 @@
-import React, { createRef, useMemo, useEffect, useState } from "react";
+import React, { createRef, useMemo, useEffect } from "react";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
@@ -8,11 +8,12 @@ import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
+import Button from "@material-ui/core/Button";
 import LinkIcon from "@material-ui/icons/Link";
 import { makeStyles } from "@material-ui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
-import { TIMELINE_LOOKUPS_QUERY } from "src/queries/timelineLookups";
+import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
 import { SETTINGS } from "./settings";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +28,16 @@ const useStyles = makeStyles((theme) => ({
 const createRecordKeyHash = (recordKey) => `#${recordKey.replace("_", "-")}`;
 
 /**
+ * Scroll to a page element based on its key
+ */
+const scrollToTable = (recordKey, refs) => {
+  const ref = refs?.[recordKey];
+  if (ref?.current) {
+    ref.current.scrollIntoView({ behavior: "smooth" });
+  }
+};
+
+/**
  * Page component which renders various Moped record types.
  * To add a table to this page:
  * 1. Add an entry to the ./settings/SETTINGS array with the appropriate definitions
@@ -35,11 +46,9 @@ const createRecordKeyHash = (recordKey) => `#${recordKey.replace("_", "-")}`;
  */
 const LookupsView = () => {
   const classes = useStyles();
-  const { loading, error, data } = useQuery(TIMELINE_LOOKUPS_QUERY, {
+  const { loading, error, data } = useQuery(TABLE_LOOKUPS_QUERY, {
     fetchPolicy: "no-cache",
   });
-
-  const [selectedRecordKey, setSelectedRecordKey] = useState(null);
 
   /**
    * We're using history here (and elsewhere) because it's not possible to use react-router
@@ -70,21 +79,8 @@ const LookupsView = () => {
       return;
     }
     const recordKey = recordKeyHash.replace("#", "").replace("-", "_");
-    setSelectedRecordKey(recordKey);
-  }, [recordKeyHash, loading]);
-
-  /**
-   * Listens for changes to the selected record key and scrolls to its table
-   */
-  useEffect(() => {
-    if (!selectedRecordKey) {
-      return;
-    }
-    const ref = refs?.[selectedRecordKey];
-    if (ref?.current) {
-      ref.current.scrollIntoView({ behavior: "smooth" });
-    }
-  }, [selectedRecordKey, refs]);
+    scrollToTable(recordKey, refs);
+  }, [recordKeyHash, loading, refs]);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -94,6 +90,30 @@ const LookupsView = () => {
             <Grid item xs={12}>
               <Typography variant="h1">Moped lookup values</Typography>
             </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={3}
+            className={classes.topMargin}
+            component={Paper}
+          >
+            {SETTINGS.map((recordType) => (
+              <Grid item key={recordType.key}>
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  component={Link}
+                  to={createRecordKeyHash(recordType.key)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToTable(recordType.key, refs);
+                    history.replace(createRecordKeyHash(recordType.key));
+                  }}
+                >
+                  {recordType.label}
+                </Button>
+              </Grid>
+            ))}
           </Grid>
           {SETTINGS.map((recordType) => (
             <Grid
@@ -115,7 +135,7 @@ const LookupsView = () => {
                       to={createRecordKeyHash(recordType.key)}
                       onClick={(e) => {
                         e.preventDefault();
-                        setSelectedRecordKey(recordType.key);
+                        scrollToTable(recordType.key, refs);
                         history.replace(createRecordKeyHash(recordType.key));
                       }}
                     >

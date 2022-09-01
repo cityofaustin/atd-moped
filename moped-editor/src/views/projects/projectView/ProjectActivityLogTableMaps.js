@@ -117,6 +117,7 @@ export const ProjectActivityLogTableMaps = {
         label: "updated timestamp",
         data_type: "timestamp with time zone",
       },
+      // deprecated column, but keeping because historical activities depend on it
       contractor: {
         icon: "",
         label: "contractor",
@@ -137,6 +138,7 @@ export const ProjectActivityLogTableMaps = {
         label: "knack internal ID",
         data_type: "text",
       },
+      // deprecated column, but keeping because historical activities depend on it
       purchase_order_number: {
         icon: "",
         label: "purchase order number",

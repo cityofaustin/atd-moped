@@ -124,6 +124,14 @@
 - table:
     schema: public
     name: moped_components
+  array_relationships:
+    - name: moped_subcomponents
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            schema: public
+            name: moped_subcomponents
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2531,7 +2539,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2553,7 +2560,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2567,7 +2573,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2589,7 +2594,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2603,7 +2607,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2625,7 +2628,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2639,7 +2641,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2661,7 +2662,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2675,7 +2675,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2697,7 +2696,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2712,7 +2710,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2734,7 +2731,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2749,7 +2745,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2771,7 +2766,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2805,7 +2799,6 @@
             - timeline_id
             - task_order
             - ecapris_subproject_id
-            - contractor
             - current_phase
             - current_phase_id
             - current_status
@@ -2816,7 +2809,6 @@
             - project_name
             - project_priority
             - project_website
-            - purchase_order_number
             - work_assignment_id
             - date_added
             - updated_at
@@ -3835,8 +3827,6 @@
           - status_name
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3875,8 +3865,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3915,8 +3903,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
