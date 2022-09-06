@@ -169,6 +169,13 @@ const DashboardView = () => {
 
   const columns = [
     {
+      title: "Project ID",
+      field: "project.project_id",
+      editable: "never",
+      cellStyle: { ...typographyStyle },
+      width: "10%",
+    },
+    {
       title: "Project name",
       field: "project.project_name",
       editable: "never",
@@ -215,7 +222,7 @@ const DashboardView = () => {
           queryRefetch={refetch}
         />
       ),
-      width: "50%",
+      width: "40%",
     },
     {
       title: "Milestones",

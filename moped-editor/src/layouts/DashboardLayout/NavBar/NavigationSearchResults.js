@@ -9,7 +9,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     marginRight: "1em",
@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ListItemLink = props => (
+const ListItemLink = (props) => (
   <ListItem button component={RouterLink} {...props} />
 );
 
@@ -47,12 +47,14 @@ const NavigationSearchResults = ({
 
   return (
     <List className={classes.padding}>
-      {firstResults.map(result => (
+      {firstResults.map((result) => (
         <ListItemLink
           to={`/moped/projects/${result.project_id}`}
           onClick={handleDropdownClose}
         >
-          <ListItemText primary={result.project_name} />
+          <ListItemText
+            primary={`${result.project_id} - ${result.project_name}`}
+          />
         </ListItemLink>
       ))}
       {results.length > 5 && (

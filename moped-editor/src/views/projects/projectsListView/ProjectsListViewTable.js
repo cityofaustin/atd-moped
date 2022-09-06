@@ -137,6 +137,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
   const defaultHiddenColumns = {
+    project_id: false,
     project_name: false,
     current_phase: false,
     project_team_members: false,
@@ -263,6 +264,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   );
 
   const columns = [
+    {
+      title: "Project ID",
+      field: "project_id",
+      hidden: hiddenColumns["project_id"],
+    },
     {
       title: "Project name",
       field: "project_name",
