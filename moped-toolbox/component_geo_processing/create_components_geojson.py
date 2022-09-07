@@ -7,7 +7,10 @@ Merges component features into a single feature per component and ouputs two fea
 """
 import argparse
 import json
+import os
+
 import requests
+
 from settings import PROJECT_LIST_KEYS, QUERY_TEMPLATE, OUTPUT_DIR
 from secrets import HASURA
 
@@ -173,6 +176,7 @@ def main(env):
 
     # filter features by geometry type and write geojson files
     print("Writing files...")
+    os.makedirs(OUTPUT_DIR, exist_ok=True) 
     for geom_type in [
         {"key": "MultiLineString", "name": "lines"},
         {"key": "MultiPoint", "name": "points"},
