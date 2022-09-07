@@ -51,9 +51,11 @@ const NavigationSearchResults = ({
         <ListItemLink
           to={`/moped/projects/${result.project_id}`}
           onClick={handleDropdownClose}
+          key={result.project_id}
         >
           <ListItemText
-            primary={`${result.project_id} - ${result.project_name}`}
+            primary={result.project_name}
+            secondary={result.project_id}
           />
         </ListItemLink>
       ))}
