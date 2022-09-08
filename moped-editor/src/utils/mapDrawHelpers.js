@@ -1,223 +1,15 @@
-import React, { useState, useRef, useCallback } from "react";
-import MapDrawToolbar from "../views/projects/newProjectView/MapDrawToolbar";
-import { Editor } from "react-map-gl-draw";
-import {
-  DrawLineStringMode,
-  DrawPointMode,
-  EditingMode,
-  RENDER_STATE,
-  SHAPE,
-} from "react-map-gl-draw";
-import { v4 as uuidv4 } from "uuid";
+import React, { useState, useRef } from "react";
+import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { get } from "lodash";
-import theme from "../theme/index";
-import { mapStyles, drawnLayerNames } from "../utils/mapHelpers";
-
-export const MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawPoint",
-    text: "Draw Point",
-    handler: DrawPointMode,
-    icon: "icon-draw-marker.svg",
-  },
-  {
-    id: "drawLine",
-    text: "Draw Line",
-    handler: DrawLineStringMode,
-    icon: "icon-draw-lines.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
-
-export const POINT_MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawPoint",
-    text: "Draw Point",
-    handler: DrawPointMode,
-    icon: "icon-draw-marker.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
-
-export const LINE_MODES = [
-  {
-    id: "disableDrawMode",
-    text: "Select & Move",
-    handler: null,
-    icon: "icon-pointer.svg",
-  },
-  {
-    id: "drawLine",
-    text: "Draw Line",
-    handler: DrawLineStringMode,
-    icon: "icon-draw-lines.svg",
-  },
-  {
-    id: "edit",
-    text: "Select Point",
-    handler: EditingMode,
-    icon: "icon-delete.svg",
-  },
-];
-
-const STROKE_COLOR = theme.palette.primary.main;
-const FILL_COLOR = theme.palette.primary.main;
-
-const SELECTED_STYLE = {
-  stroke: STROKE_COLOR,
-  strokeWidth: 8,
-  fill: FILL_COLOR,
-  fillOpacity: 0,
-};
-
-const HOVERED_STYLE = {
-  stroke: STROKE_COLOR,
-  strokeWidth: 8,
-  fill: FILL_COLOR,
-  fillOpacity: 0,
-};
-
-const DEFAULT_STYLE = {
-  stroke: theme.palette.primary.main,
-  strokeWidth: 4,
-  fill: theme.palette.secondary.main,
-  fillOpacity: 1,
-};
-
-/**
- * Interpolate a feature width based on the zoom level of map
- * Adapted from Mapbox GL JS linear interpolation using a formula linked below
- * https://github.com/mapbox/mapbox-gl-js/blob/d66ff288e7ab2e917e9e676bee942dd6a46171e7/src/style-spec/expression/definitions/interpolate.js
- * https://matthew-brett.github.io/teaching/linear_interpolation.html
- * @param {number} currentZoom - Current zoom level from the map
- * @param {number} minZoom - Minimum zoom level from the current bracket
- * @param {number} maxZoom - Maximum zoom level from the current bracket
- * @param {number} minPixelWidth - Minimum pixel width from the current bracket
- * @param {number} maxPixelWidth - Maximum pixel width from the current bracket
- * @return {number} Interpolated pixel width
- */
-function linearInterpolation(
-  currentZoom,
-  minZoom,
-  maxZoom,
-  minPixelWidth,
-  maxPixelWidth
-) {
-  return (
-    ((currentZoom - minZoom) * (maxPixelWidth - minPixelWidth)) /
-      (maxZoom - minZoom) +
-    minPixelWidth
-  );
-}
-
-/**
- * Calculate the circle radius using the circle radius steps in mapStyles and the map zoom level
- * @param {number} currentZoom - Current zoom level from the map
- * @return {number} Circle radius in pixels
- */
-const getCircleRadiusByZoom = currentZoom => {
-  const { stops } = mapStyles.circleRadiusStops;
-  const [bottomZoom, bottomPixelWidth] = stops[0];
-  const [topZoom, topPixelWidth] = stops[stops.length - 1];
-
-  // Loop through the [zoom, radius in pixel] nested arrays in mapStyles.circleRadiusStops
-  // to find which two elements the current zoom level falls between
-  for (let i = 0; i < stops.length - 1; i++) {
-    const [minZoom, minPixelWidth] = stops[i];
-    const [maxZoom, maxPixelWidth] = stops[i + 1];
-
-    // If current zoom is less than zoom in the first element
-    if (currentZoom < bottomZoom) {
-      return bottomPixelWidth;
-    }
-
-    // If current zoom is greater than zoom in the last element
-    if (currentZoom >= topZoom) {
-      return topPixelWidth;
-    }
-
-    // If the current zoom falls somewhere between
-    if (currentZoom >= minZoom && currentZoom < maxZoom) {
-      return linearInterpolation(
-        currentZoom,
-        minZoom,
-        maxZoom,
-        minPixelWidth,
-        maxPixelWidth
-      );
-    }
-  }
-};
-
-// https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#styling-related-options
-/**
- * Style a feature based on feature type and draw render state
- * @param {object} featureStyle - Contains data about feature render state and type (shape)
- * @param {object} featureStyle.feature - A GeoJSON feature
- * @param {string} featureStyle.state - String describing the render state of a drawn feature (SELECTED or HOVERED)
- * @return {object} React style object applied to a feature
- */
-export function getFeatureStyle({ feature, state, currentZoom }) {
-  const type = feature.properties.shape || feature.geometry.type;
-  let style = null;
-
-  const CIRCLE_RADIUS = getCircleRadiusByZoom(currentZoom);
-
-  switch (state) {
-    case RENDER_STATE.SELECTED:
-      style = { ...SELECTED_STYLE };
-      break;
-
-    case RENDER_STATE.HOVERED:
-      style = { ...HOVERED_STYLE };
-      break;
-
-    default:
-      style = { ...DEFAULT_STYLE };
-  }
-
-  switch (type) {
-    case SHAPE.POINT:
-      style.r = CIRCLE_RADIUS;
-      break;
-    case SHAPE.LINE_STRING:
-      style.fillOpacity = 0;
-      break;
-    default:
-  }
-
-  return style;
-}
+import { drawnLayerNames } from "../utils/mapHelpers";
 
 /**
  * Retrieve a list of features that were drawn using the UI exposed from useMapDrawTools
  * @param {object} featureCollection - GeoJSON feature collection containing project extent
  * @return {array} List of features that originated from the draw UI
  */
-const getDrawnFeaturesFromFeatureCollection = featureCollection =>
-  featureCollection.features.filter(feature =>
+const getDrawnFeaturesFromFeatureCollection = (featureCollection) =>
+  featureCollection.features.filter((feature) =>
     drawnLayerNames.includes(feature.properties.sourceLayer)
   );
 
@@ -230,9 +22,9 @@ const getDrawnFeaturesFromFeatureCollection = featureCollection =>
  */
 const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
   arrayOne.filter(
-    arrayOneFeature =>
+    (arrayOneFeature) =>
       !arrayTwo.some(
-        arrayTwoFeature =>
+        (arrayTwoFeature) =>
           arrayOneFeature.properties[featureProperty] ===
           arrayTwoFeature.properties[featureProperty]
       )
@@ -242,10 +34,7 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * Custom hook that builds draw tools and is used to enable or disable them
  * @param {object} featureCollection - GeoJSON feature collection to store drawn points within
  * @param {function} setFeatureCollection - Setter for GeoJSON feature collection state
- * @param {string} projectId - ID of the project associated with the extent being edited
- * @param {function} refetchProjectDetails - Called to update the props passed to the edit maps and show up-to-date features
- * @param {number} currentZoom - Current zoom level of the map
- * @property {function} saveActionDispatch - Function that helps us send signals to other components
+ * @param {boolean} drawLines - Should map draw tools create line strings
  * @return {UseMapDrawToolsObject} Object that exposes a function to render draw tools and setter/getter for isDrawing state
  */
 /**
@@ -253,20 +42,14 @@ const findDifferenceByFeatureProperty = (featureProperty, arrayOne, arrayTwo) =>
  * @property {boolean} isDrawing - Are draw tools enabled or disabled
  * @property {function} setIsDrawing - Toggle draw tools
  * @property {function} renderMapDrawTools - Function that returns JSX for the draw tools in the map
- * @property {function} saveDrawnPoints - Function that saves features drawn in the UI
  */
 export function useMapDrawTools(
   featureCollection,
   setFeatureCollection,
-  projectId,
-  refetchProjectDetails,
-  currentZoom,
-  saveActionDispatch
+  drawLines
 ) {
-  const mapEditorRef = useRef();
+  const drawControlsRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
-  const [modeId, setModeId] = useState(null);
-  const [modeHandler, setModeHandler] = useState(null);
 
   /**
    * Returns true if lineStringA has the same coordinates as lineStringB
@@ -330,255 +113,278 @@ export function useMapDrawTools(
   const featureTypesEqual = (featureA, featureB) =>
     (featureA?.geometry?.type ?? 1) === (featureB?.geometry?.type ?? 0);
 
-  /**
-   * Add existing user drawn points in the project extent feature collection to the draw UI so they are editable
-   */
-  const initializeExistingDrawFeatures = useCallback(
-    ref => {
-      if (ref) {
-        // Only add features that are not already present in the draw UI to avoid duplicates
-        const drawnFeatures = getDrawnFeaturesFromFeatureCollection(
-          featureCollection
-        );
+  const initializeExistingDrawFeatures = () => {
+    // Only add features that are not already present in the draw UI to avoid duplicates
+    const drawnFeatures =
+      getDrawnFeaturesFromFeatureCollection(featureCollection);
 
-        // Collect all the features in the map
-        // getFeatures() is a react-map-gl-draw function
-        const featuresAlreadyInDrawMap = ref.getFeatures();
+    // Collect all the features that the draw UI is tracking
+    const featureCollectionAlreadyInDrawMap = drawControlsRef.current.getAll();
+    const featuresAlreadyInDrawMap = featureCollectionAlreadyInDrawMap.features;
 
-        // Retrieve only the features that are present in state, but not the map
-        const featuresToAdd = findDifferenceByFeatureProperty(
-          "PROJECT_EXTENT_ID",
-          drawnFeatures,
-          featuresAlreadyInDrawMap
-        );
+    // Retrieve only the features that are present in state, but not the map
+    const featuresToAdd = findDifferenceByFeatureProperty(
+      "PROJECT_EXTENT_ID",
+      drawnFeatures,
+      featuresAlreadyInDrawMap
+    );
 
-        // Draw the features
-        ref.addFeatures(featuresToAdd);
-      }
-    },
-    [featureCollection]
-  );
+    // Draw the features
+    featuresToAdd.forEach((feature) => drawControlsRef.current.add(feature));
+  };
 
   /**
    * Updates state and mutates additions and deletions of points drawn with the UI
    */
-  const saveDrawnPoints = (runActionDispatch = true) => {
-    // If there is a map reference, get it's features or assume empty array
-    const drawnFeatures = mapEditorRef.current
-      ? mapEditorRef.current.getFeatures()
-      : [];
+  const saveDrawnPoints = (features) => {
+    const drawnFeatures = features;
 
-    // Filter out anything without a source layer
-    const newDrawnFeatures = drawnFeatures.filter(
-      feature => !drawnLayerNames.includes(feature?.properties?.sourceLayer)
-    );
+    const makeDrawnFeaturesWithMetadata = (
+      previousFeatureCollection,
+      features
+    ) =>
+      features
+        .map((feature) => {
+          return {
+            ...feature,
+            properties: {
+              ...feature.properties,
+              renderType: feature.geometry.type,
+              PROJECT_EXTENT_ID: feature.id,
+              sourceLayer:
+                feature.geometry.type === "LineString"
+                  ? "drawnByUserLine"
+                  : "drawnByUser",
+            },
+          };
+        })
+        .reverse() // Reverse the order so the new get removed first
+        .filter(
+          // Filter anything that already exists in the collection by its coordinates
+          (drawnFeature) =>
+            // For every new drawn feature, check against every feature in featureCollection
+            previousFeatureCollection.features
+              // First remove any features that are not of the current type
+              .filter((fcFeatures) =>
+                featureTypesEqual(fcFeatures, drawnFeature)
+              )
+              // Then check every element left
+              .every(
+                (currentFeatureInCollection) =>
+                  // Verify they are the same type and that they are not equal!
+                  featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
+                  (!pointEqual(drawnFeature, currentFeatureInCollection) ||
+                    !lineStringEqual(drawnFeature, currentFeatureInCollection))
+              ) // If so, return false meaning the filter will exclude them
+        ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
 
-    const drawnFeaturesWithSourceAndId = newDrawnFeatures
-      .map(feature => {
-        const featureUUID = uuidv4();
-
-        return {
-          ...feature,
-          id: featureUUID,
-          properties: {
-            ...feature.properties,
-            renderType: feature.geometry.type,
-            PROJECT_EXTENT_ID: featureUUID,
-            sourceLayer:
-              feature.geometry.type === "LineString"
-                ? "drawnByUserLine"
-                : "drawnByUser",
-          },
-        };
-      })
-      .reverse() // Reverse the order so the new get removed first
-      .filter(
-        // Filter anything that already exists in the collection by its coordinates
-        drawnFeature =>
-          // For every new drawn feature, check against every feature in featureCollection
-          featureCollection.features
-            // First remove any features that are not of the current type
-            .filter(fcFeatures => featureTypesEqual(fcFeatures, drawnFeature))
-            // Then check every element left
-            .every(
-              currentFeatureInCollection =>
-                // Verify they are the same type and that they are not equal!
-                featureTypesEqual(drawnFeature, currentFeatureInCollection) &&
-                (!pointEqual(drawnFeature, currentFeatureInCollection) ||
-                  !lineStringEqual(drawnFeature, currentFeatureInCollection))
-            ) // If so, return false meaning the filter will exclude them
-      ); // If the feature is excluded, then it's technically deleted since it's not part of the new state
-
-    // Add a UUID and layer name to the new features for retrieval and styling
-
-    /**
-     * Generate a new state including the existing data and any
-     * new features with source and id.
-     */
-
-    const updatedFeatureCollection = {
-      ...featureCollection,
-      features: [
-        ...featureCollection.features,
-        ...drawnFeaturesWithSourceAndId,
-      ],
-    };
-
-    // Update the new state
-    setFeatureCollection(updatedFeatureCollection);
-
-    // Dispatch featuresSaved action
-    if (saveActionDispatch && runActionDispatch)
-      saveActionDispatch({ type: "featuresSaved" });
-  };
-
-  /**
-   * Takes the click event and sets the draw mode handler and selected mode ID
-   * @param {Object} e - A click event from a draw toolbar button
-   */
-  const switchMode = e => {
-    const switchModeId = e.target.id === modeId ? null : e.target.id;
-    const mode = MODES.find(m => m.id === switchModeId);
-    const currentModeHandler = mode && mode.handler ? new mode.handler() : null;
-
-    // If the button clicked is disableDrawMode, disable drawing...
-    if (mode?.id === "disableDrawMode") setIsDrawing(false);
-    // Else, enable it!
-    else setIsDrawing(true);
-
-    setModeId(switchModeId);
-    setModeHandler(currentModeHandler);
-  };
-
-  /**
-   * Deletes whatever object is selected
-   * https://github.com/uber/nebula.gl/tree/master/modules/react-map-gl-draw#options
-   * onSelect is "a callback when clicking a position when selectable set to true"
-   * @param {object} selected - Holds data about the selected feature
-   */
-  const onSelect = selected => {
-    // Retrieve a list of all features in the map
-    const currentFeatures = mapEditorRef.current.getFeatures();
-    // Remove the feature from the draw UI feature list
-    if (selected.selectedEditHandleIndexes.length) {
-      try {
-        mapEditorRef.current.deleteHandles(
-          selected.selectedFeatureIndex,
-          selected.selectedEditHandleIndexes
+    // Update our state with callback to keep draw tool additions in sync with other state updates
+    setFeatureCollection((prevFeatureCollection) => {
+      // 1. New drawn features (onCreate)
+      const newDrawnFeatures = drawnFeatures.filter((feature) => {
+        const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+          feature?.properties?.sourceLayer
         );
-      } catch (error) {
-        console.log(error.message);
-      }
-      return;
-    }
+        const hasFeatureAlreadyBeenAddedToFeatureCollection =
+          prevFeatureCollection.features.find(
+            (addedFeature) => feature.id === addedFeature.id
+          )
+            ? true
+            : false;
 
-    if (
-      selected.selectedFeatureIndex === null ||
-      selected.selectedFeatureIndex === undefined
-    ) {
-      return;
-    }
+        return (
+          !doesFeatureHaveDrawnSourceLayer &&
+          !hasFeatureAlreadyBeenAddedToFeatureCollection
+        );
+      });
 
-    // Then, remove the feature from the feature collection of the project extent
-    const featureToDelete = currentFeatures[selected.selectedFeatureIndex];
+      // 2. New drawn feature that were dragged (onUpdate)
+      const newDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
+        (feature) => {
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const hasFeatureAlreadyBeenAddedToFeatureCollection =
+            prevFeatureCollection.features.find(
+              (addedFeature) => feature.id === addedFeature.id
+            )
+              ? true
+              : false;
+
+          return (
+            !doesFeatureHaveDrawnSourceLayer &&
+            hasFeatureAlreadyBeenAddedToFeatureCollection
+          );
+        }
+      );
+
+      // 3. Existing drawn feature that were dragged and already have needed metadata (onUpdate)
+      const existingDrawnFeaturesThatHaveBeenDragged = drawnFeatures.filter(
+        (feature) => {
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const hasFeatureAlreadyBeenAddedToFeatureCollection =
+            prevFeatureCollection.features.find(
+              (addedFeature) => feature.id === addedFeature.id
+            )
+              ? true
+              : false;
+
+          return (
+            doesFeatureHaveDrawnSourceLayer &&
+            hasFeatureAlreadyBeenAddedToFeatureCollection
+          );
+        }
+      );
+
+      // 4. Collect all features that don't fit into #1, #2, or #3 so we retain previously drawn features
+      const allTheOtherFeatures = prevFeatureCollection.features.filter(
+        (feature) => {
+          const doesFeatureHaveDrawnSourceLayer = drawnLayerNames.includes(
+            feature?.properties?.sourceLayer
+          );
+          const isNewFeature = newDrawnFeatures.find(
+            (drawnFeature) => feature.id === drawnFeature.id
+          );
+          const isNewFeatureThanHasBeenDragged =
+            newDrawnFeaturesThatHaveBeenDragged.find(
+              (drawnFeature) => feature.id === drawnFeature.id
+            );
+          const wasFeatureDragged =
+            existingDrawnFeaturesThatHaveBeenDragged.find(
+              (drawnFeature) => feature.id === drawnFeature.id
+            );
+
+          return (
+            doesFeatureHaveDrawnSourceLayer &&
+            !wasFeatureDragged &&
+            !isNewFeatureThanHasBeenDragged &&
+            !isNewFeature
+          );
+        }
+      );
+
+      // Feed newly drawn or newly drawn and dragged before saving features to the function
+      // that gives them needed metadata
+      const drawnFeaturesWithSourceAndId = makeDrawnFeaturesWithMetadata(
+        prevFeatureCollection,
+        [...newDrawnFeatures, ...newDrawnFeaturesThatHaveBeenDragged]
+      );
+
+      /**
+       * Generate a new state including the existing data and any
+       * new features with source and id.
+       */
+      const updatedFeatureCollection = {
+        ...prevFeatureCollection,
+        features: [
+          ...drawnFeaturesWithSourceAndId,
+          ...existingDrawnFeaturesThatHaveBeenDragged,
+          ...allTheOtherFeatures,
+        ],
+      };
+
+      return updatedFeatureCollection;
+    });
+  };
+
+  /**
+   * Callback fired after a single feature is deleted
+   * @param {object} e - Event
+   */
+  const onDelete = (e) => {
+    // Remove the feature from the feature collection of the project extent
+    const featureToDelete = e.features[0];
     const featureIdGetPath = "properties.PROJECT_EXTENT_ID";
     const featureIdToDelete = get(featureToDelete, featureIdGetPath);
 
-    /**
-     * There are duplicates, we need to delete all occurrences of a point.
-     * It's not ideal but the code works. Hopefully in the future we can optimize.
-     */
-    const featuresToDelete = currentFeatures
-      // From the currentFeatures, find any duplicates by their coordinates and return the index
-      .map((feature, index) =>
-        pointEqual(feature, featureToDelete) ? index : -1
-      )
-      // Keep positive integers only
-      .filter(i => i >= 0);
-
-    // Delete the selected feature from the map (including duplicates)...
-    mapEditorRef.current.deleteFeatures(featuresToDelete);
-
     // Regenerate a new feature collection without the selected feature
-    const updatedFeatureCollection = {
-      ...featureCollection,
+    const updateFeatureCollection = (previousFeatureCollection) => ({
+      ...previousFeatureCollection,
       features: [
-        ...featureCollection.features
+        ...previousFeatureCollection.features
           .filter(
             // Keep the features that are not equal to featureIdToDelete
-            feature =>
+            (feature) =>
               !featureIdToDelete ||
               get(feature, featureIdGetPath) !== featureIdToDelete
           )
           .filter(
             // Keep the features (points or lines) that are not duplicates
-            featureInCollection =>
+            (featureInCollection) =>
               (isFeatureOfType("Point", featureInCollection) &&
                 !pointEqual(featureToDelete, featureInCollection)) ||
               (isFeatureOfType("LineString", featureInCollection) &&
                 !lineStringEqual(featureToDelete, featureInCollection))
           ),
       ],
-    };
-    // Update our state
-    setFeatureCollection(updatedFeatureCollection);
+    });
+
+    // Update our state with callback to keep draw tool deletions in sync with other state updates
+    setFeatureCollection((prevCollection) =>
+      updateFeatureCollection(prevCollection)
+    );
   };
 
   /**
-   * This function gets called on any update coming from the map.
-   * https://nebula.gl/docs/api-reference/react-map-gl-draw/react-map-gl-draw
-   * @param {String} editType - The name of the event type
+   * This function gets called after creating a drawn feature
    */
-  const onUpdate = ({ editType }) => {
-    // If the current event is a new feature (point or line)
-    if (editType === "addFeature") {
-      // Save without running dispatch
-      saveDrawnPoints(false); // False = no dispatch
+  const onCreate = (e) => {
+    const { features } = e;
+
+    saveDrawnPoints(features);
+  };
+
+  const onModeChange = (e) => {
+    // If we are not drawing, set isDrawing to false so we can select layer features as components
+    const { mode } = e;
+
+    if (mode === "draw_point" || mode === "draw_line_string") {
+      setIsDrawing(true);
+    } else {
+      setIsDrawing(false);
     }
   };
 
-  /**
-   * Renders the toolbar and buttons that control the map draw UI
-   * @return {JSX.Element} The toolbar for the map draw UI
-   */
-  const renderDrawToolbar = (containerRef, drawLines) => {
-    return (
-      <MapDrawToolbar
-        containerRef={containerRef}
-        selectedModeId={modeId}
-        onSwitchMode={switchMode}
-        drawLines={drawLines}
-      />
-    );
+  const onUpdate = (e) => {
+    const wasFeatureMoved = e.action === "move";
+
+    // if the feature was dragged, we need to update its location
+    if (wasFeatureMoved) {
+      saveDrawnPoints(e.features);
+    }
+  };
+
+  /*
+   * direct_select allows more complex interactions like breaking line strings into midpoints
+   * but we only want users to select and deselect with simple_select mode so we override on load
+   * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#simple_select
+   *  @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#direct_select
+   **/
+  const overrideDirectSelect = () => {
+    drawControlsRef.current.modes.DIRECT_SELECT = "simple_select";
   };
 
   /**
    * Renders the map editor and its toolbar
    * @return {JSX.Element} The whole map draw UI
    */
-  const renderMapDrawTools = (containerRef, drawLines) => (
-    <>
-      <Editor
-        ref={ref => {
-          initializeExistingDrawFeatures(ref);
-          mapEditorRef.current = ref;
-        }}
-        featureStyle={featureStyleObj =>
-          getFeatureStyle({ ...featureStyleObj, currentZoom })
-        }
-        onSelect={onSelect}
-        onUpdate={onUpdate}
-        clickRadius={12}
-        mode={modeHandler}
-      />
-      {renderDrawToolbar(containerRef, drawLines)}
-    </>
+  const renderMapDrawTools = () => (
+    <ComponentsDrawControl
+      ref={drawControlsRef}
+      onCreate={onCreate}
+      onDelete={onDelete}
+      onUpdate={onUpdate}
+      drawLines={drawLines}
+      onModeChange={onModeChange}
+      initializeExistingDrawFeatures={initializeExistingDrawFeatures}
+      overrideDirectSelect={overrideDirectSelect}
+    />
   );
 
   return {
     isDrawing,
-    setIsDrawing,
     renderMapDrawTools,
-    saveDrawnPoints,
   };
 }
