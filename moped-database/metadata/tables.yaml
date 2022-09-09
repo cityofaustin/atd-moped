@@ -2457,6 +2457,70 @@
           name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_tags
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    schema: public
     name: moped_project
   object_relationships:
     - name: moped_entity
