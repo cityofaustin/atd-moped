@@ -1,19 +1,6 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- -- Add "Construction Bid Published" with phase "Bid/Award/Execution"
--- INSERT INTO moped_milestones (milestone_name, related_phase_id) VALUES ('Construction Bid Published', 12);
---
--- -- Add "Construction Bid Due" with phase "Bid/Award/Execution"
--- INSERT INTO moped_milestones (milestone_name, related_phase_id) VALUES ('Construction Bid Due', 12);
---
--- -- Add "Design RFQ Published" with no phase
--- INSERT INTO moped_milestones (milestone_name) VALUES ('Design RFQ Published');
---
--- -- Add "Design RFQ Due" with no phase
--- INSERT INTO moped_milestones (milestone_name) VALUES ('Design RFQ Due');
---
--- -- Add "Design Contract Execution" with no phase
--- INSERT INTO moped_milestones (milestone_name) VALUES ('Design Contract Execution');
---
--- -- Add "Inter-agency Agreement Council Award" with phase "Design"
--- INSERT INTO moped_milestones (milestone_name, related_phase_id) VALUES ('Inter-agency Agreement', 6);
+DELETE FROM moped_milestones  WHERE milestone_name = 'Construction Bid Published';
+DELETE FROM moped_milestones  WHERE milestone_name = 'Construction Bid Due';
+DELETE FROM moped_milestones  VALUES milestone_name = 'Design RFQ Published';
+DELETE FROM moped_milestones  WHERE milestone_name = 'Design RFQ Due';
+DELETE FROM moped_milestones  WHERE milestone_name = 'Design Contract Execution';
+DELETE FROM moped_milestones  WHERE milestone_name = 'Inter-agency Agreement';
