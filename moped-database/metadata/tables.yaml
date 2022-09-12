@@ -2458,6 +2458,10 @@
 - table:
     schema: public
     name: moped_proj_tags
+  object_relationships:
+    - name: moped_tag
+      using:
+        foreign_key_constraint_on: tag_id
   insert_permissions:
     - role: moped-admin
       permission:
