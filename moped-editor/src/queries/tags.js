@@ -29,8 +29,8 @@ export const DELETE_PROJECT_TAG = gql`
   }
 `;
 
-export const ADD_PROJECT_TAG = gql`
-  mutation AddProjectTag($objects: [moped_proj_tags_insert_input!]) {
+export const ADD_PROJECT_TAGS = gql`
+  mutation AddProjectTags($objects: [moped_proj_tags_insert_input!]!) {
     insert_moped_proj_tags(objects: $objects) {
       returning {
         id
