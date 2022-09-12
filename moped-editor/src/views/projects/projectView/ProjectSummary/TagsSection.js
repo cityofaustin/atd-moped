@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 import {
   Box,
+  Button,
   Chip,
   CircularProgress,
   Icon,
@@ -14,6 +15,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
+import AddCircle from "@material-ui/icons/AddCircle";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -130,9 +132,18 @@ const TagsSection = ({ projectId }) => {
     <ApolloErrorHandler errors={error}>
       <Paper elevation={2} className={classes.paperTags}>
         <Toolbar style={{ paddingLeft: "16px" }}>
-          <Typography variant="h2" color="primary">
+          <Typography variant="h2" color="primary" style={{flexGrow:1}}>
             Tags
           </Typography>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  startIcon={<AddCircle />}
+                  onClick={() => setAddTagMode(true)}
+                >
+                  Add tag
+                </Button>
         </Toolbar>
         <Box component={"ul"} className={classes.chipContainer}>
           {data.moped_proj_tags.map((tag) => (
@@ -144,16 +155,18 @@ const TagsSection = ({ projectId }) => {
               />
             </li>
           ))}
-          {!addTagMode && (
-            <li key={`add-task-order`}>
-              <Tooltip title="Add New Tag">
-                <ControlPointIcon
-                  className={classes.editIconFunding}
-                  onClick={() => setAddTagMode(true)}
-                />
-              </Tooltip>
-            </li>
-          )}
+          {
+          //   !addTagMode && (
+          //   <li key={`add-task-order`}>
+          //     <Tooltip title="Add New Tag">
+          //       <ControlPointIcon
+          //         className={classes.editIconFunding}
+          //         onClick={() => setAddTagMode(true)}
+          //       />
+          //     </Tooltip>
+          //   </li>
+          // )
+          }
           {addTagMode && (
             <Box
               display="flex"
