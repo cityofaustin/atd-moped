@@ -2468,6 +2468,9 @@
     - name: moped_status
       using:
         foreign_key_constraint_on: status_id
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: added_by
   array_relationships:
     - name: moped_proj_components
       using:
