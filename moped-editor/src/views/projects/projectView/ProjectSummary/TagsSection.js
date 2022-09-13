@@ -11,12 +11,10 @@ import {
   Paper,
   TextField,
   Toolbar,
-  Tooltip,
   Typography,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import AddCircle from "@material-ui/icons/AddCircle";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
@@ -27,17 +25,11 @@ import {
 } from "../../../../queries/tags";
 
 const useStyles = makeStyles((theme) => ({
-  // fieldGridItem: {
-  //   margin: theme.spacing(2),
-  // },
-  // linkIcon: {
-  //   fontSize: "1rem",
-  // },
-  // syncLinkIcon: {
-  //   fontSize: "1.2rem",
-  // },
   paperTags: {
     padding: "8px",
+  },
+  chip: {
+    margin: theme.spacing(0.5),
   },
   chipContainer: {
     display: "flex",
@@ -49,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
   chipAddContainer: {
-    paddingLeft: "8px"
+    paddingLeft: "8px",
   },
   tagAutocomplete: {
     minWidth: "250px",
@@ -86,6 +78,16 @@ const TagsSection = ({ projectId }) => {
   if (error) console.error(error);
   if (loading || !data) return <CircularProgress />;
 
+  /**
+   * Filter out already selected tags
+   */
+  const availableTags = () => {
+    const tagsIds = data.moped_proj_tags.map((t) => t.id);
+    const availableTags = data.moped_tags.filter(
+      (t) => !tagsIds.includes(t.id)
+    );
+    return availableTags;
+  };
 
   /**
    * Cancels add tag state and resets list of tags
@@ -132,18 +134,18 @@ const TagsSection = ({ projectId }) => {
     <ApolloErrorHandler errors={error}>
       <Paper elevation={2} className={classes.paperTags}>
         <Toolbar style={{ paddingLeft: "16px" }}>
-          <Typography variant="h2" color="primary" style={{flexGrow:1}}>
+          <Typography variant="h2" color="primary" style={{ flexGrow: 1 }}>
             Tags
           </Typography>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<AddCircle />}
-                  onClick={() => setAddTagMode(true)}
-                >
-                  Add tag
-                </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            startIcon={<AddCircle />}
+            onClick={() => setAddTagMode(true)}
+          >
+            Add tag
+          </Button>
         </Toolbar>
         <Box component={"ul"} className={classes.chipContainer}>
           {data.moped_proj_tags.map((tag) => (
@@ -155,18 +157,6 @@ const TagsSection = ({ projectId }) => {
               />
             </li>
           ))}
-          {
-          //   !addTagMode && (
-          //   <li key={`add-task-order`}>
-          //     <Tooltip title="Add New Tag">
-          //       <ControlPointIcon
-          //         className={classes.editIconFunding}
-          //         onClick={() => setAddTagMode(true)}
-          //       />
-          //     </Tooltip>
-          //   </li>
-          // )
-          }
           {addTagMode && (
             <Box
               display="flex"
@@ -177,10 +167,9 @@ const TagsSection = ({ projectId }) => {
                 multiple
                 className={classes.tagAutocomplete}
                 id="tag-autocomplete"
-                // filterOptions={filterOptions}
                 getOptionLabel={(option) => option.name}
                 onChange={(e, value) => setNewTagList(value)}
-                options={data.moped_tags}
+                options={availableTags()}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -190,15 +179,6 @@ const TagsSection = ({ projectId }) => {
                     variant="outlined"
                   />
                 )}
-                // value={value ?? []}
-                // getOptionSelected={(value, option) =>
-                //   value.display_name === option.display_name
-                // }
-                // renderTags={(tagValue, getTagProps) =>
-                //   tagValue.map((option, index) => (
-                //     <Chip label={option.display_name} {...getTagProps({ index })} />
-                //   ))
-                // }
               />
               <div className={classes.editIconContainer}>
                 <IconButton
