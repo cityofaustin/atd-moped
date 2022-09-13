@@ -34,6 +34,9 @@ import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
+// Helpers
+import { phaseNameLookup } from "src/utils/timelineTableHelpers";
+
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
  * tab is active
@@ -57,18 +60,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
-
-  /**
-   * Phase table lookup object formatted into the shape that Dropdown expects
-   * Ex: { 1: "Potential", 2: "Planned", ...}
-   */
-  const phaseNameLookup = data.moped_phases.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.phase_id]: item.phase_name,
-      }),
-    {}
-  );
 
   /**
    * Milestone table lookup object formatted into the shape that <Autocomplete> expects.

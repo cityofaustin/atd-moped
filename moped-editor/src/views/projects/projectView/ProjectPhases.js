@@ -36,6 +36,9 @@ import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
+// Helpers
+import { phaseNameLookup } from "src/utils/timelineTableHelpers";
+
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
  * tab is active
@@ -80,17 +83,17 @@ const ProjectPhases = ({
       (s) => s.status_name.toLowerCase() === phase_name.toLowerCase()
     );
 
-  /**
-   * Phase table lookup object formatted into the shape that Dropdown expects
-   * Ex: { 1: "Potential", 2: "Planned", ...}
-   */
-  const phaseNameLookup = data.moped_phases.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.phase_id]: item.phase_name,
-      }),
-    {}
-  );
+  // /**
+  //  * Phase table lookup object formatted into the shape that Dropdown expects
+  //  * Ex: { 1: "Potential", 2: "Planned", ...}
+  //  */
+  // const phaseNameLookup = data.moped_phases.reduce(
+  //   (obj, item) =>
+  //     Object.assign(obj, {
+  //       [item.phase_id]: item.phase_name,
+  //     }),
+  //   {}
+  // );
 
   /**
    * Subphase table lookup object formatted into the shape that <MaterialTable>
@@ -143,6 +146,7 @@ const ProjectPhases = ({
    */
   const getProjectStatusUpdateObject = (mutationPhaseId) => {
     const newPhaseName = phaseNameLookup[mutationPhaseId];
+    console.log(newPhaseName);
     const statusMapped = getStatusByPhaseName(newPhaseName);
 
     return !!statusMapped
