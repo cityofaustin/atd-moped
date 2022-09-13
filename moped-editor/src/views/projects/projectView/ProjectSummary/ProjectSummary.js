@@ -287,10 +287,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </ErrorBoundary>
             )}
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             <TagsSection projectId={projectId} />
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12} md={6}>
             {!data.moped_project[0].parent_project_id && (
               <SubprojectsTable projectId={projectId} />
             )}
