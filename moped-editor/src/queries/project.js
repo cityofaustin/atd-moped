@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const ADD_PROJECT = gql`
   mutation AddProject($object: moped_project_insert_input!) {
     insert_moped_project_one(object: $object) {
+      added_by
       project_id
       project_name
       project_description
@@ -13,7 +14,7 @@ export const ADD_PROJECT = gql`
       fiscal_year
       capitally_funded
       moped_proj_phases {
-        phase_name
+        phase_id
         is_current_phase
         completion_percentage
         completed
@@ -25,7 +26,6 @@ export const ADD_PROJECT = gql`
       }
       moped_project_types {
         project_type_id
-        status_id
       }
     }
   }
@@ -47,8 +47,6 @@ export const SUMMARY_QUERY = gql`
       project_sponsor
       project_website
       status_id
-      contractor
-      purchase_order_number
       work_assignment_id
       parent_project_id
       interim_project_id
@@ -100,7 +98,6 @@ export const SUMMARY_QUERY = gql`
         is_current_phase: { _eq: true }
       }
     ) {
-      phase_name
       project_phase_id
       is_current_phase
       project_id
@@ -155,7 +152,7 @@ export const TYPES_QUERY = gql`
 export const TEAM_QUERY = gql`
   query TeamSummary($projectId: Int) {
     moped_proj_personnel(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      where: { project_id: { _eq: $projectId } }
     ) {
       user_id
       role_id
@@ -164,11 +161,13 @@ export const TEAM_QUERY = gql`
       project_personnel_id
       date_added
       added_by
+      is_deleted
       moped_user {
         first_name
         last_name
         workgroup_id
         user_id
+        is_deleted
       }
     }
     moped_workgroup {
@@ -183,14 +182,12 @@ export const TEAM_QUERY = gql`
       project_role_name
       project_role_description
     }
-    moped_users(
-      order_by: { last_name: asc }
-      where: { is_deleted: { _eq: false } }
-    ) {
+    moped_users( order_by: { last_name: asc } ) {
       first_name
       last_name
       workgroup_id
       user_id
+      is_deleted
     }
   }
 `;
@@ -236,14 +233,12 @@ export const TIMELINE_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { phase_start: desc }
     ) {
-      phase_name
       phase_id
       project_phase_id
       is_current_phase
       project_id
       phase_start
       phase_end
-      subphase_name
       subphase_id
       phase_description
     }
@@ -283,7 +278,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
     $project_phase_id: Int!
     $phase_id: Int
     $subphase_id: Int = 0
-    $subphase_name: String = null
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -294,7 +288,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
         phase_end: $phase_end
         phase_id: $phase_id
         subphase_id: $subphase_id
-        subphase_name: $subphase_name
       }
     ) {
       project_id
@@ -303,7 +296,6 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       phase_start
       phase_end
       subphase_id
-      subphase_name
       is_current_phase
       phase_description
     }
@@ -365,7 +357,7 @@ export const ADD_PROJECT_PHASE = gql`
   mutation AddProjectPhase($objects: [moped_proj_phases_insert_input!]!) {
     insert_moped_proj_phases(objects: $objects) {
       returning {
-        phase_name
+        phase_id
         phase_description
         phase_start
         phase_end
@@ -437,7 +429,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
         user_id
       }
     }
-    moped_users(where: { is_deleted: { _eq: false } }) {
+    moped_users {
       first_name
       last_name
       user_id
@@ -799,53 +791,6 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { ecapris_subproject_id: null, capitally_funded: false }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_UPDATE_CONTRACTOR = gql`
-  mutation UpdateProjectContractor($projectId: Int!, $contractor: String!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { contractor: $contractor }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_CLEAR_CONTRACTOR = gql`
-  mutation UpdateProjectContractor($projectId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { contractor: null }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_UPDATE_PURCHASE_ORDER_NUMBER = gql`
-  mutation UpdateProjectOrderNumber(
-    $projectId: Int!
-    $purchase_order_number: String!
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { purchase_order_number: $purchase_order_number }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_CLEAR_PURCHASE_ORDER_NUMBER = gql`
-  mutation UpdateProjectOrderNumber($projectId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { purchase_order_number: null }
     ) {
       affected_rows
     }

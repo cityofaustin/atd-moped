@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
-export const TIMELINE_LOOKUPS_QUERY = gql`
-  query TimelineQuery {
+export const TABLE_LOOKUPS_QUERY = gql`
+  query TableLookupQuery {
     moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
@@ -9,7 +9,6 @@ export const TIMELINE_LOOKUPS_QUERY = gql`
       phase_order
       moped_subphases(order_by: { subphase_order: asc }) {
         subphase_id
-        related_phase_id
         subphase_description
         subphase_name
         subphase_order
@@ -20,7 +19,19 @@ export const TIMELINE_LOOKUPS_QUERY = gql`
       milestone_name
       milestone_description
       milestone_order
-      related_phase_id
+      moped_phase {
+        phase_name
+      }
+    }
+    moped_components {
+      component_name
+      component_subtype
+      component_id
+      line_representation
+      moped_subcomponents {
+        subcomponent_name
+        subcomponent_id
+      }
     }
   }
 `;

@@ -117,6 +117,7 @@ export const ProjectActivityLogTableMaps = {
         label: "updated timestamp",
         data_type: "timestamp with time zone",
       },
+      // deprecated column, but keeping because historical activities depend on it
       contractor: {
         icon: "",
         label: "contractor",
@@ -137,6 +138,7 @@ export const ProjectActivityLogTableMaps = {
         label: "knack internal ID",
         data_type: "text",
       },
+      // deprecated column, but keeping because historical activities depend on it
       purchase_order_number: {
         icon: "",
         label: "purchase order number",
@@ -461,10 +463,15 @@ export const ProjectActivityLogTableMaps = {
         label: "order",
         type: "int4",
       },
-      phase_name: {
+      phase_id: {
         icon: "",
-        label: "name",
-        type: "text",
+        label: "phase",
+        type: "integer",
+        lookup: {
+          table: "moped_phases",
+          fieldLabel: "phase_id",
+          fieldValues: ["phase_name"],
+        },
       },
       phase_description: {
         icon: "",
@@ -541,15 +548,15 @@ export const ProjectActivityLogTableMaps = {
         label: "is deleted",
         data_type: "boolean",
       },
-      subphase_name: {
-        icon: "",
-        label: "subphase name",
-        type: "text",
-      },
       subphase_id: {
         icon: "",
         label: "subphase ID",
         type: "integer",
+        lookup: {
+          table: "moped_subphases",
+          fieldLabel: "subphase_id",
+          fieldValues: ["subphase_name"],
+        },
       },
     },
   },
