@@ -14,4 +14,4 @@ INSERT INTO moped_milestones (milestone_name) VALUES ('Design RFQ Due');
 INSERT INTO moped_milestones (milestone_name) VALUES ('Design Contract Execution');
 
 -- Add "Inter-agency Agreement Council Award" with phase "Design"
-INSERT INTO moped_milestones (milestone_name, related_phase_id) VALUES ('Inter-agency Agreement', 6);
+INSERT INTO moped_milestones (milestone_name, related_phase_id) VALUES ('Inter-agency Agreement Council Award', 6);
