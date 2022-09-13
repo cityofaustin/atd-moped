@@ -37,6 +37,7 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import RenderFieldLink from "./RenderFieldLink";
 import RenderSignalLink from "./RenderSignalLink";
 import TaskOrderAutocomplete from "./TaskOrderAutocomplete";
+import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles({
   tableTypography: {
@@ -150,8 +151,8 @@ const SignalProjectTable = () => {
       );
       if (currentPhase) {
         project["current_phase"] =
-          currentPhase.phase_name.charAt(0).toUpperCase() +
-          currentPhase.phase_name.slice(1);
+          currentPhase.moped_phase.phase_name.charAt(0).toUpperCase() +
+          currentPhase.moped_phase.phase_name.slice(1);
       }
     }
 
@@ -174,12 +175,12 @@ const SignalProjectTable = () => {
       project.moped_proj_personnel.forEach(personnel => {
         if (isDesigner(personnel)) {
           designers.push(
-            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+            getUserFullName(personnel)
           );
         }
         if (isInspector(personnel)) {
           inspectors.push(
-            `${personnel?.moped_user?.first_name} ${personnel?.moped_user?.last_name}`
+            getUserFullName(personnel)
           );
         }
       });
@@ -284,12 +285,6 @@ const SignalProjectTable = () => {
       },
     },
     {
-      title: "Contractor/Contract",
-      field: "contractor",
-      emptyValue: "-",
-      render: entry => (entry.contractor === "" ? "-" : entry.contractor),
-    },
-    {
       title: "Status update",
       field: "status_update", // Status update (from Project details page)
       editable: "never",
@@ -307,15 +302,6 @@ const SignalProjectTable = () => {
           tab="funding"
         />
       ),
-    },
-    {
-      title: "Project DO#",
-      field: "purchase_order_number",
-      emptyValue: "-",
-      render: entry =>
-        entry.purchase_order_number.trim().length === 0
-          ? "-"
-          : entry.purchase_order_number,
     },
     {
       title: "Project sponsor",

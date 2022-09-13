@@ -26,6 +26,12 @@ const theme = createTheme({
     map: {
       transparent: "rgba(0,0,0,0)",
       trail: "#4caf50",
+      draw: {
+        activeLineVertices: "#7ac943",
+        orange: "#fbb03b",
+        blue: "#3bb2d0",
+        gray: "#404040",
+      },
     },
   },
   shadows,

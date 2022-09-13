@@ -5,6 +5,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 /**
  * Custom table cell component which incoporates an optional handler to transform record values
@@ -22,7 +23,7 @@ const WrappedTableCell = ({ row, column: { key, handler } }) => {
  * @param { Object[] } columns - the column definitions as defined in the ./settings/SETTINGS object
  * @returns { JSX } a table of record data
  */
-export default function RecordTable({ rows, columns }) {
+export default function RecordTable({ rows, columns, loading }) {
   return (
     <TableContainer>
       <Table aria-label="record table" size="small">
@@ -34,7 +35,14 @@ export default function RecordTable({ rows, columns }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row, i) => {
+          {loading && (
+            <TableRow>
+              <TableCell colSpan={columns.length}>
+                <CircularProgress />
+              </TableCell>
+            </TableRow>
+          )}
+          {rows?.map((row, i) => {
             return (
               <TableRow key={i}>
                 {columns.map((column) => {

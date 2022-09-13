@@ -56,8 +56,6 @@ AS WITH project_person_list_lookup AS (
         ELSE mp.current_status
     END AS status_name,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    mp.contractor,
-    mp.purchase_order_number,
     COALESCE( -- coalesce because this subquery can come back 'null' if there are no component assets
       ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
@@ -81,7 +79,7 @@ AS WITH project_person_list_lookup AS (
       FROM moped_proj_phases phases
       WHERE true
         AND phases.project_id = mp.project_id 
-        AND phases.phase_name = 'construction'::text
+        AND phases.phase_id = 9 -- phase_id 9 is construction
         AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS construction_start_date,
@@ -90,7 +88,7 @@ AS WITH project_person_list_lookup AS (
       FROM moped_proj_phases phases
       WHERE true 
         AND phases.project_id = mp.project_id 
-        AND phases.phase_name = 'complete'::text
+        AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
       ORDER BY phases.date_added DESC
       LIMIT 1) AS completion_end_date,
@@ -143,8 +141,6 @@ AS WITH project_person_list_lookup AS (
     mp.status_id, 
     me.entity_name, 
     mp.updated_at, 
-    mp.task_order, 
-    mp.contractor, 
-    mp.purchase_order_number, 
+    mp.task_order,
     ptl.type_name, 
     fsl.funding_source_name;
