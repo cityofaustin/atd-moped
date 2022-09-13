@@ -2459,6 +2459,9 @@
     schema: public
     name: moped_proj_tags
   object_relationships:
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
     - name: moped_tag
       using:
         foreign_key_constraint_on: tag_id
@@ -2586,6 +2589,13 @@
           table:
             schema: public
             name: moped_proj_phases
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: project_id
+          table:
+            schema: public
+            name: moped_proj_tags
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3488,6 +3498,14 @@
 - table:
     schema: public
     name: moped_tags
+  array_relationships:
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: tag_id
+          table:
+            schema: public
+            name: moped_proj_tags
   insert_permissions:
     - role: moped-admin
       permission:
