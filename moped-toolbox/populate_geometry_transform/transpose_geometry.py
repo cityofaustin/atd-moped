@@ -11,3 +11,15 @@ DB_PASSWORD = os.environ.get("DB_PASSWORD", "moped")
 DB_NAME = os.environ.get("DB_NAME", "moped")
 
 pg = psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, dbname=DB_NAME)
+
+sql = """
+select feature_id, feature
+from moped_proj_features;
+"""
+
+cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+cursor.execute(sql)
+features = cursor.fetchall()
+
+for feature in features:
+    print(feature)
