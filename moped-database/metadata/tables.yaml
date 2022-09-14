@@ -2457,6 +2457,77 @@
           name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_tags
+  object_relationships:
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+    - name: moped_tag
+      using:
+        foreign_key_constraint_on: tag_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    schema: public
     name: moped_project
   object_relationships:
     - name: moped_entity
@@ -2521,6 +2592,13 @@
           table:
             schema: public
             name: moped_proj_phases
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: project_id
+          table:
+            schema: public
+            name: moped_proj_tags
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3420,6 +3498,85 @@
           - subphase_name
         filter: {}
         check: null
+- table:
+    schema: public
+    name: moped_tags
+  array_relationships:
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: tag_id
+          table:
+            schema: public
+            name: moped_proj_tags
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+        check: {}
 - table:
     schema: public
     name: moped_types
