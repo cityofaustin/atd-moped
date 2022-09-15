@@ -23,7 +23,7 @@ def moped_proj_features(args):
     order by random();
     """
 
-    if args.alter:
+    if args.schema:
         alter = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         alter.execute(
             "alter table moped_proj_features add column geography geography(GEOMETRYCOLLECTION, 4326);"
@@ -36,21 +36,27 @@ def moped_proj_features(args):
 
     for record in features:
         feature = geojson.loads(record["feature"])
+
         if not feature.is_valid:
             raise Exception("Invalid feature")
+
         # print("type(feature): " + str(type(feature)))
         print(feature["geometry"]["type"])
 
-    sql = """
-    update moped_proj_features set geography = ST_GeomFromGeoJSON(%s);
-    """
-    update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        if feature["id"]:
+            print("we're in trouble")
+            del feature["id"]
 
-    try:
-        update.execute(sql, (geojson.dumps(feature),))
-    except psycopg2.errors.InternalError_ as e:
-        print("\nPostgres error: " + str(e))
-        print(geojson.dumps(feature, indent=2))
+        sql = """
+        update moped_proj_features set geography = ST_GeomFromGeoJSON(%s);
+        """
+        update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+        try:
+            update.execute(sql, (geojson.dumps(feature),))
+        except psycopg2.errors.InternalError_ as e:
+            print("\nPostgres error: " + str(e))
+            print(geojson.dumps(feature, indent=2))
 
 
 def main(args):
@@ -61,10 +67,10 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "-a",
-        "--alter",
+        "-s",
+        "--schema",
         action="store_true",
-        help=f"Alter tables",
+        help=f"Make schema changes",
     )
     args = parser.parse_args()
     main(args)
