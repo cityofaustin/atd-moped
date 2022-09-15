@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import json
 import argparse
 
 import psycopg2
@@ -40,23 +41,27 @@ def moped_proj_features(args):
         if not feature.is_valid:
             raise Exception("Invalid feature")
 
-        # print("type(feature): " + str(type(feature)))
-        print(feature["geometry"]["type"])
-
-        if feature["id"]:
-            print("we're in trouble")
-            del feature["id"]
+        print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
 
         sql = """
-        update moped_proj_features set geography = ST_GeomFromGeoJSON(%s);
+        update moped_proj_features 
+        set geography = ST_ForceCollection(ST_GeomFromGeoJSON(%s))
+        where feature_id = %s
+        ;
         """
-        update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
 
         try:
-            update.execute(sql, (geojson.dumps(feature),))
+            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            feature_geojson = geojson.dumps(feature, indent=2)
+            update.execute(
+                sql, (geojson.dumps(feature["geometry"]), record["feature_id"])
+            )
         except psycopg2.errors.InternalError_ as e:
-            print("\nPostgres error: " + str(e))
+            print("\n\b🛎Postgres error: " + str(e))
             print(geojson.dumps(feature, indent=2))
+            pg.rollback()
+        else:  # no exception
+            pg.commit()
 
 
 def main(args):
