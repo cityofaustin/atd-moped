@@ -113,8 +113,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         fontSize: "14px",
       },
       customSort: (a, b) => {
-        const aPhaseName = phaseNameLookup[a.moped_milestone.related_phase_id];
-        const bPhaseName = phaseNameLookup[b.moped_milestone.related_phase_id];
+        const aPhaseName = phaseNameLookup(data)[a.moped_milestone.related_phase_id];
+        const bPhaseName = phaseNameLookup(data)[b.moped_milestone.related_phase_id];
         if (aPhaseName > bPhaseName) {
           return 1;
         }
@@ -124,7 +124,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         return 0;
       },
       render: (milestone) =>
-        phaseNameLookup[milestone.moped_milestone.related_phase_id] ?? "",
+        phaseNameLookup(data)[milestone.moped_milestone.related_phase_id] ?? "",
       width: "14%",
     },
     {

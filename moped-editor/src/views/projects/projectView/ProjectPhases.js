@@ -1,11 +1,7 @@
 import React from "react";
 
 // Material
-import {
-  Button,
-  CircularProgress,
-  Typography,
-} from "@material-ui/core";
+import { Button, CircularProgress, Typography } from "@material-ui/core";
 import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
@@ -111,7 +107,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
-              projectViewRefetch();
+              !!projectViewRefetch && projectViewRefetch();
             })
             .catch((err) => {
               console.error(err);
@@ -300,7 +296,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
-              projectViewRefetch();
+              !!projectViewRefetch && projectViewRefetch();
             });
         },
         onRowUpdate: (newData, oldData) => {
@@ -382,7 +378,7 @@ const ProjectPhases = ({
             .then(() => {
               // Refetch data
               refetch();
-              projectViewRefetch();
+              !!projectViewRefetch && projectViewRefetch();
             });
         },
         onRowDelete: (oldData) => {
@@ -419,7 +415,7 @@ const ProjectPhases = ({
               )
               .then(() => {
                 refetch();
-                projectViewRefetch();
+                !!projectViewRefetch && projectViewRefetch();
               });
           });
         },
