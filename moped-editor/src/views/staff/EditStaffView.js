@@ -93,7 +93,6 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
-                      submitOnlyChangedValues={true}
                     />
                   )}
                 </CardContent>

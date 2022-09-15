@@ -118,24 +118,3 @@ export const transformFormDataIntoDatabaseTypes = (formData) => {
 
   return databaseData;
 };
-
-/**
- * Removes unchanged data using the dirtyFields object returned from React Hook Form
- * @param {Object} databaseData - The form data output
- * @param {Object} dirtyFields - Dirty fields returned from React Hook Form
- * @returns {Object} Data containing only values changed in the form
- */
-export const removeUnchangedFieldsFromDatabaseData = (
-  databaseData,
-  dirtyFields
-) => {
-  const onlyChangedData = { ...databaseData };
-
-  Object.keys(onlyChangedData).forEach((field) => {
-    if (!dirtyFields.hasOwnProperty(field)) {
-      delete onlyChangedData[field];
-    }
-  });
-
-  return onlyChangedData;
-};

@@ -62,7 +62,6 @@ const roleOptions = [
  * @param {Object} validationSchema - Yup formatted form validation schema
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
- * @param {boolean} submitOnlyChangedValues - control whether form submits all or only updated values
  * @returns {JSX.Element}
  * @constructor
  */
@@ -78,7 +77,6 @@ const StaffForm = ({
   validationSchema,
   userCognitoId,
   isUserActive,
-  submitOnlyChangedValues = false,
 }) => {
   const classes = useStyles();
 
@@ -120,16 +118,7 @@ const StaffForm = ({
     // Parse data and remove unchanged values
     const databaseData = transformFormDataIntoDatabaseTypes(data);
 
-    if (submitOnlyChangedValues) {
-      const onlyChangedData = removeUnchangedFieldsFromDatabaseData(
-        databaseData,
-        dirtyFields
-      );
-
-      onFormSubmit(onlyChangedData);
-    } else {
-      onFormSubmit(databaseData);
-    }
+    onFormSubmit(databaseData);
   };
 
   const {

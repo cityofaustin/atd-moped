@@ -77,25 +77,6 @@ def is_valid_user_profile(
     return is_valid_profile, user_validator.errors
 
 
-def are_user_profile_updates_valid(user_profile_edits: dict) -> [bool, dict]:
-    """
-    Validates any updated fields coming from the front end and returns validity and any errors
-    :param dict user_profile: The json data from the request
-    :return tuple:
-    """
-    # Create a copy of validation schema rules for only edited fields
-    edits_validation_schema = {}
-    for key in USER_VALIDATION_SCHEMA.keys():
-        if key in user_profile_edits:
-            edits_validation_schema[key] = USER_VALIDATION_SCHEMA[key]
-    # Validate
-    user_validator = Validator()
-    is_valid_profile = user_validator.validate(
-        user_profile_edits, edits_validation_schema
-    )
-    return is_valid_profile, user_validator.errors
-
-
 def is_valid_user_password(password: dict) -> [bool, dict]:
     """
     Returns a tuple if the user password is valid and any errors if available
