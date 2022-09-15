@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  formatApiErrors,
-  transformFormDataIntoDatabaseTypes,
-  removeUnchangedFieldsFromDatabaseData,
-} from "./helpers";
+import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "../../queries/workgroups";
@@ -99,7 +95,7 @@ const StaffForm = ({
     control,
     setValue,
     getValues,
-    formState: { isSubmitting, dirtyFields },
+    formState: { isSubmitting },
     reset,
   } = useForm({
     defaultValues: {
