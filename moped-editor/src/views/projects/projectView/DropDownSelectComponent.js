@@ -16,7 +16,6 @@ import { phaseNameLookup } from "src/utils/timelineTableHelpers";
  * @constructor
  */
 const DropDownSelectComponent = (props) => {
-  console.log(props);
   // If the component name is phase_name, then use phaseNameLookup values, otherwise set as null
   let lookupValues =
     props.name === "phase_name" ? phaseNameLookup(props.data) : null;
