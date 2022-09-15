@@ -1,15 +1,8 @@
 import React, { useCallback, useRef, useState } from "react";
-import ReactMapGL, { NavigationControl } from "react-map-gl";
-import {
-  Box,
-  Button,
-  Collapse,
-  Divider,
-  Grid,
-  makeStyles,
-} from "@material-ui/core";
+import Map, { NavigationControl } from "react-map-gl";
+import { Box, Button, Divider, Grid, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import GeocoderControl from "src/components/Maps/GeocoderControl";
 
 import {
   createSummaryMapLayers,
@@ -19,16 +12,22 @@ import {
   renderTooltip,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
-  mapConfig,
   useLayerSelect,
   getLayerNames,
   makeCommonComponentsMapStyles,
+  mapConfig,
 } from "../../../utils/mapHelpers";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
-import Geocoder from "react-map-gl-geocoder";
+import { KeyboardArrowUp } from "@material-ui/icons";
 import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
+import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 
-const useStyles = makeStyles(theme => ({
+// See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
+import mapboxgl from "mapbox-gl";
+mapboxgl.workerClass =
+  // eslint-disable-next-line import/no-webpack-loader-syntax
+  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
+
+const useStyles = makeStyles((theme) => ({
   toolTip: mapStyles.toolTipStyles,
   locationCountText: {
     fontSize: "0.875rem",
@@ -44,18 +43,6 @@ const useStyles = makeStyles(theme => ({
     "-ms-overflow-style": "none" /* IE and Edge */,
     "scrollbar-width": "none" /* Firefox */,
   },
-  layerSelectButton: {
-    position: "absolute",
-    top: ".5rem",
-    right: "1rem",
-    zIndex: 1,
-    height: "3rem",
-    width: "184px",
-    backgroundColor: "white",
-    "&:hover": {
-      backgroundColor: "white",
-    },
-  },
   editButton: {
     position: "absolute",
     top: 8,
@@ -64,31 +51,6 @@ const useStyles = makeStyles(theme => ({
   mapStyle: {
     position: "relative",
     padding: 0,
-  },
-  mapTools: {
-    position: "absolute",
-    top: "4rem",
-    left: "1rem",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: ".5rem",
-    padding: ".5rem",
-  },
-  mapToolsShowHidden: {
-    position: "absolute",
-    top: "4rem",
-    left: "1rem",
-    zIndex: "1",
-    width: "21rem",
-    background: theme.palette.common.white,
-    border: "lightgray 1px solid",
-    borderRadius: ".5rem",
-    padding: ".5rem",
-    "&:hover": {
-      background: theme.palette.common.white,
-    },
   },
   mapToolsDivider: {
     marginTop: ".5rem",
@@ -114,9 +76,11 @@ const ProjectComponentsMapView = ({
   const [editPanelCollapsed, setEditPanelCollapsed] = useState(true);
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
+  const [cursor, setCursor] = useState("grab");
+  const onMouseEnter = useCallback(() => setCursor("pointer"), []);
+  const onMouseLeave = useCallback(() => setCursor("grab"), []);
+
   const mapRef = useRef();
-  const mapGeocoderContainerRef = useRef();
-  const mapBasemapContainerRef = useRef();
 
   const {
     visibleLayerIds,
@@ -124,7 +88,7 @@ const ProjectComponentsMapView = ({
     mapStyleConfig,
     handleBasemapChange,
     mapStyle,
-  } = useLayerSelect(getLayerNames(), classes);
+  } = useLayerSelect(getLayerNames());
 
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler
@@ -132,11 +96,11 @@ const ProjectComponentsMapView = ({
    */
   const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
 
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
-   * Make use of a custom hook that initializes a map viewport
-   * and fits it to a provided feature collection.
+   * Make use of a custom hook that fits to a provided feature collection.
    */
-  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
     projectFeatureCollection
   );
@@ -146,24 +110,9 @@ const ProjectComponentsMapView = ({
    * @param {Object} viewport - Mapbox object that stores properties of the map view
    */
   const handleViewportChange = useCallback(
-    viewport => setViewport(prevViewport => ({ ...prevViewport, ...viewport })),
+    (viewport) =>
+      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
     [setViewport]
-  );
-
-  /**
-   * Updates viewport on select of location from geocoder form
-   * @param {Object} newViewport - Mapbox object that stores updated location for viewport
-   */
-  const handleGeocoderViewportChange = useCallback(
-    newViewport => {
-      const geocoderDefaultOverrides = { transitionDuration: 1000 };
-
-      return handleViewportChange({
-        ...newViewport,
-        ...geocoderDefaultOverrides,
-      });
-    },
-    [handleViewportChange]
   );
 
   /**
@@ -171,29 +120,13 @@ const ProjectComponentsMapView = ({
    */
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      {/* The following div acts as an anchor and it specifies where the geocoder will live */}
-      <div
-        ref={mapGeocoderContainerRef}
-        className={classes.geocoderContainer}
-      />
-      <div ref={mapBasemapContainerRef} className={classes.speedDial} />
-      <Collapse
-        in={editPanelCollapsedShow}
-        onExit={() => setEditPanelCollapsed(true)}
-      >
-        <Button
-          className={classes.mapToolsShowHidden}
-          size={"small"}
-          onClick={() => setEditPanelCollapsedShow(false)}
-          startIcon={<KeyboardArrowDown />}
-        >
-          Show Components
-        </Button>
-      </Collapse>
-      <Collapse
-        className={classes.mapTools}
-        in={editPanelCollapsed}
-        onExited={() => setEditPanelCollapsedShow(true)}
+      <MapToolsCollapse
+        transitionInEditTools={editPanelCollapsed}
+        onExitedEditTools={() => setEditPanelCollapsedShow(true)}
+        transitionInShowTools={editPanelCollapsedShow}
+        onShowToolsClick={() => setEditPanelCollapsedShow(false)}
+        onExitShowTools={() => setEditPanelCollapsed(true)}
+        showButtonText={"Show Components"}
       >
         <Grid>
           <Grid
@@ -213,20 +146,19 @@ const ProjectComponentsMapView = ({
             </Button>
           </Grid>
         </Grid>
-      </Collapse>
+      </MapToolsCollapse>
 
       {renderLayerSelect(false)}
 
-      <ReactMapGL
+      <Map
         /* Current state of viewport */
         {...viewport}
+        onMove={(e) => handleViewportChange(e.viewState)}
         /* Object reference to this object */
         ref={mapRef}
         maxZoom={20}
-        width="100%"
-        height="60vh"
         /* Access Key */
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxAccessToken={MAPBOX_TOKEN}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
                       The getCursor callback will receive isHovering: true when hover over features of these layers */
@@ -234,25 +166,24 @@ const ProjectComponentsMapView = ({
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onHover={handleLayerHover}
+        onMouseMove={handleLayerHover}
+        cursor={cursor}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
         /* Updates state of viewport on zoom, scroll, and other events */
-        onViewportChange={handleViewportChange}
         mapStyle={mapStyleConfig}
+        style={{ width: "100%", height: "60vh" }}
+        onRender={fitMapToFeatureCollectionOnRender}
       >
-        {/* Draw Navigation controls with specific styles */}
-        <span className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
-        </span>
+        {/* Draw Navigation controls */}
+        <NavigationControl showCompass={false} position="bottom-right" />
 
         {/* GEOCODER */}
-        <Geocoder
-          mapRef={mapRef}
-          onViewportChange={handleGeocoderViewportChange}
-          mapboxApiAccessToken={MAPBOX_TOKEN}
-          bbox={mapConfig.geocoderBbox}
-          containerRef={mapGeocoderContainerRef}
+        <GeocoderControl
           marker={false}
-          position="top-right"
+          mapboxAccessToken={MAPBOX_TOKEN}
+          position="top-left"
+          flyTo={true}
         />
         {/*
           If there is GeoJSON data, create sources and layers for
@@ -261,7 +192,7 @@ const ProjectComponentsMapView = ({
         {projectFeatureCollection &&
           createSummaryMapLayers({
             type: "FeatureCollection",
-            features: projectFeatureCollection.features.filter(feature =>
+            features: projectFeatureCollection.features.filter((feature) =>
               visibleLayerIds.includes(feature?.properties?.sourceLayer)
             ),
           })}
@@ -269,11 +200,10 @@ const ProjectComponentsMapView = ({
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
         <ProjectComponentsBaseMap
-          containerRef={mapBasemapContainerRef}
           handleBasemapChange={handleBasemapChange}
           mapStyle={mapStyle}
         />
-      </ReactMapGL>
+      </Map>
     </Box>
   );
 };

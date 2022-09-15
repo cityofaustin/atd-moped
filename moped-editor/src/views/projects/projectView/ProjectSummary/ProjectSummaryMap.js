@@ -1,8 +1,7 @@
-import React, { useRef } from "react";
-import ReactMapGL, { NavigationControl } from "react-map-gl";
+import React, { useRef, useCallback, useState } from "react";
+import Map, { NavigationControl } from "react-map-gl";
 import { Box, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 
 import {
   createSummaryMapLayers,
@@ -13,6 +12,8 @@ import {
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
+  basemaps,
+  mapConfig,
 } from "../../../../utils/mapHelpers";
 
 const useStyles = makeStyles({
@@ -21,12 +22,6 @@ const useStyles = makeStyles({
     fontWeight: 500,
   },
   toolTip: mapStyles.toolTipStyles,
-  navStyle: {
-    right: "2rem",
-    bottom: "5.5rem",
-    padding: "10px",
-    position: "absolute",
-  },
 });
 
 const ProjectSummaryMap = ({ projectFeatureCollection }) => {
@@ -40,20 +35,26 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    */
   const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
 
+  const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
-   * Make use of a custom hook that initializes a map viewport
-   * and fits it to a provided feature collection.
+   * Make use of a custom hook that fits to a provided feature collection.
    */
-  const [viewport, setViewport] = useFeatureCollectionToFitBounds(
+  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
     mapRef,
-    projectFeatureCollection
+    projectFeatureCollection,
+    true,
+    100
   );
 
   /**
    * Updates viewport on zoom, scroll, and other events
    * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
    */
-  const handleViewportChange = updatedViewPort => setViewport(updatedViewPort);
+  const handleViewportChange = useCallback(
+    (viewport) =>
+      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
+    [setViewport]
+  );
 
   /**
    * Let's throw an error intentionally if there are no features for a project.
@@ -68,16 +69,16 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
    */
   return (
     <Box>
-      <ReactMapGL
+      <Map
         /* Current state of viewport */
         {...viewport}
         /* Object reference to this object */
         ref={mapRef}
         maxZoom={20}
-        width="100%"
-        height="60vh"
+        style={{ width: "100%", height: "60vh" }}
         /* Access Key */
-        mapboxApiAccessToken={MAPBOX_TOKEN}
+        mapboxAccessToken={MAPBOX_TOKEN}
+        onRender={fitMapToFeatureCollectionOnRender}
         /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
         /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
               The getCursor callback will receive isHovering: true when hover over features of these layers */
@@ -85,14 +86,13 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           projectFeatureCollection
         )}
         /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onHover={handleLayerHover}
+        onMouseMove={handleLayerHover}
         /* Updates state of viewport on zoom, scroll, and other events */
-        onViewportChange={handleViewportChange}
+        onMove={(e) => handleViewportChange(e.viewState)}
+        mapStyle={basemaps.streets}
       >
         {/* Draw Navigation controls with specific styles */}
-        <div className={classes.navStyle}>
-          <NavigationControl showCompass={false} />
-        </div>
+        <NavigationControl showCompass={false} position="bottom-right" />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection
@@ -101,7 +101,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           createSummaryMapLayers(projectFeatureCollection)}
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-      </ReactMapGL>
+      </Map>
     </Box>
   );
 };

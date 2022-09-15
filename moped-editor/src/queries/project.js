@@ -3,6 +3,7 @@ import { gql } from "@apollo/client";
 export const ADD_PROJECT = gql`
   mutation AddProject($object: moped_project_insert_input!) {
     insert_moped_project_one(object: $object) {
+      added_by
       project_id
       project_name
       project_description
