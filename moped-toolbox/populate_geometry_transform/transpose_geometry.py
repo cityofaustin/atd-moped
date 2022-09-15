@@ -19,7 +19,8 @@ pg = psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, dbname=D
 def moped_proj_features(args):
     sql = """
     select feature_id, feature::character varying as feature
-    from moped_proj_features;
+    from moped_proj_features
+    order by random();
     """
 
     if args.alter:
@@ -35,10 +36,21 @@ def moped_proj_features(args):
 
     for record in features:
         feature = geojson.loads(record["feature"])
-        # print("feature.is_valid(): " + str(feature.is_valid))
+        if not feature.is_valid:
+            raise Exception("Invalid feature")
         # print("type(feature): " + str(type(feature)))
-        # print(geojson.dumps(feature, indent=2))
         print(feature["geometry"]["type"])
+
+    sql = """
+    update moped_proj_features set geography = ST_GeomFromGeoJSON(%s);
+    """
+    update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+
+    try:
+        update.execute(sql, (geojson.dumps(feature),))
+    except psycopg2.errors.InternalError_ as e:
+        print("\nPostgres error: " + str(e))
+        print(geojson.dumps(feature, indent=2))
 
 
 def main(args):
