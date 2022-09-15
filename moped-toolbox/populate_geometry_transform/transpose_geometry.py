@@ -52,7 +52,6 @@ def moped_proj_features(args):
 
         try:
             update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            feature_geojson = geojson.dumps(feature, indent=2)
             update.execute(
                 sql, (geojson.dumps(feature["geometry"]), record["feature_id"])
             )
