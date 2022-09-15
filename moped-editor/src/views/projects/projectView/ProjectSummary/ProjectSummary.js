@@ -26,7 +26,7 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
-import ProjectSummaryInterimID from "./ProjectSummaryInterimID"
+import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import SubprojectsTable from "./SubprojectsTable";

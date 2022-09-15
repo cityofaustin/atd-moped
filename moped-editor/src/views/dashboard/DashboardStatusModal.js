@@ -11,9 +11,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import { makeStyles } from "@material-ui/core/styles";
 import ProjectComments from "../projects/projectView/ProjectComments";
-import parse from "html-react-parser";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     color: theme.palette.primary.main,
     fontFamily: theme.typography.fontFamily,
@@ -29,7 +28,14 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DashboardStatusModal = ({ project, displayText, queryRefetch }) => {
+const DashboardStatusModal = ({
+  projectId,
+  projectName,
+  modalParent,
+  statusUpdate,
+  queryRefetch,
+  children,
+}) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -44,13 +50,18 @@ const DashboardStatusModal = ({ project, displayText, queryRefetch }) => {
         className={classes.statusUpdateText}
         onClick={() => setIsDialogOpen(true)}
       >
-        {displayText.length > 0 ? (
-          parse(String(displayText))
-        ) : (
-          <Tooltip placement="bottom-start" title="Create new status update">
-            <ControlPointIcon className={classes.tooltipIcon} />
-          </Tooltip>
+        {/* if there is no status update, render the add status icon */}
+        {!statusUpdate && (
+          <div>
+            {/* if the parent is the summary page, also render the status label */}
+            {modalParent === "summary" && children}
+            <Tooltip placement="bottom-start" title="Create new status update">
+              <ControlPointIcon className={classes.tooltipIcon} />
+            </Tooltip>
+          </div>
         )}
+        {/* if there is a status update, render the content */}
+        {!!statusUpdate && children}
       </Typography>
       <Dialog
         open={isDialogOpen}
@@ -59,7 +70,7 @@ const DashboardStatusModal = ({ project, displayText, queryRefetch }) => {
         maxWidth={"md"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Status update - ${project.project_name}`}</h4>
+          <h4>{`Status update - ${projectName}`}</h4>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>
@@ -67,7 +78,7 @@ const DashboardStatusModal = ({ project, displayText, queryRefetch }) => {
         <DialogContent>
           <ProjectComments
             modal
-            projectId={project.project_id}
+            projectId={projectId}
             closeModalDialog={handleDialogClose}
           />
         </DialogContent>

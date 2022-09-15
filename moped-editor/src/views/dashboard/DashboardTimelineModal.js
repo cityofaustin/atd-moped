@@ -34,7 +34,7 @@ const DashboardTimelineModal = ({
   projectId,
   projectName,
   dashboardRefetch,
-  contents,
+  children
 }) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -62,7 +62,7 @@ const DashboardTimelineModal = ({
         className={classes.clickableDiv}
         onClick={() => setIsDialogOpen(true)}
       >
-        {contents}
+        {children}
       </div>
       <Dialog
         open={isDialogOpen}
