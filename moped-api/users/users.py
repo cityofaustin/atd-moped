@@ -16,6 +16,7 @@ from users.helpers import (
     is_valid_user_password,
     is_users_password,
     is_valid_user_profile,
+    are_user_profile_updates_valid,
     db_create_user,
     db_update_user,
     db_activate_user,
@@ -228,8 +229,8 @@ def user_update_user(id: str, claims: list) -> (Response, int):
             return jsonify({"error": {"message": "No email provided"}}), 400
 
         # Validate user details and password
-        profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json
+        profile_valid, profile_error_feedback = are_user_profile_updates_valid(
+            user_profile_edits=request.json
         )
 
         if not profile_valid:
