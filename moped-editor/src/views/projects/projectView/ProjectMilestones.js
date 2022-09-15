@@ -4,9 +4,7 @@ import React from "react";
 import {
   Button,
   CircularProgress,
-  Grid,
   TextField,
-  Switch,
   Typography,
   FormControl,
   FormHelperText,
@@ -19,7 +17,6 @@ import MaterialTable, {
   MTableEditRow,
   MTableAction,
 } from "@material-table/core";
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import typography from "../../../theme/typography";
 
 // Query
@@ -36,6 +33,8 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 
 // Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
+import DateFieldEditComponent from "./DateFieldEditComponent";
+import ToggleEditComponent from "./ToggleEditComponent";
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -71,48 +70,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         [item.milestone_id]: item.milestone_name,
       }),
     {}
-  );
-
-  /**
-   * DateFieldEditComponent - renders a Date type Calendar select
-   * @param {object} props - Values passed through Material Table `editComponent`
-   * @return {JSX.Element}
-   * @constructor
-   */
-  const DateFieldEditComponent = (props) => (
-    <TextField
-      name={props.name}
-      label={props.label}
-      type="date"
-      variant="standard"
-      value={props.value}
-      onChange={(e) => props.onChange(e.target.value)}
-      onKeyDown={(e) => handleKeyEvent(e)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-  );
-
-  /**
-   * ToggleEditComponent - renders a toggle for True/False edit fields
-   * @param {object} props - Values passed through Material Table `editComponent`
-   * @return {JSX.Element}
-   * @constructor
-   */
-  const ToggleEditComponent = (props) => (
-    <Grid component="label" container alignItems="center" spacing={1}>
-      <Grid item>
-        <Switch
-          checked={props.value ?? false}
-          onChange={(e) => props.onChange(!props.value)}
-          color="primary"
-          name={props.name}
-          inputProps={{ "aria-label": "primary checkbox" }}
-          onKeyDown={(e) => handleKeyEvent(e)}
-        />
-      </Grid>
-    </Grid>
   );
 
   /**
