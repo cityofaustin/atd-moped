@@ -129,7 +129,6 @@ const ProjectPhases = ({
    */
   const getProjectStatusUpdateObject = (mutationPhaseId) => {
     const newPhaseName = phaseNameLookup(data)[mutationPhaseId];
-    console.log(newPhaseName);
     const statusMapped = getStatusByPhaseName(newPhaseName);
 
     return !!statusMapped
