@@ -15,6 +15,7 @@ import ProjectView from "src/views/projects/projectView/ProjectView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 import DeviasStyleView from "./views/dev/DeviasStyleView/DeviasStyleView";
 import LookupsView from "./views/dev/LookupsView";
+import MapView from "./views/dev/Map";
 import SignalProjectTable from "src/views/projects/signalProjectTable/SignalProjectTable";
 import DashboardView from "./views/dashboard/DashboardView";
 
@@ -83,6 +84,11 @@ export const routes = [
         element: <LookupsView />,
       },
       {
+        path: "dev/map",
+        action: "style:visit",
+        element: <MapView />,
+      },
+      {
         path: "views/signal-projects",
         action: "projects:visit",
         element: <SignalProjectTable />,
@@ -100,8 +106,8 @@ const unprotectedRoutePaths = ["/", "/moped/session"];
  * @param {Array} routes - Routes composed to pass as arg to React Router useRoutes hook
  * @return {Array} Routes array with protected route's element wrapped with Can component
  */
-export const restrictRoutes = routes =>
-  routes.map(route => {
+export const restrictRoutes = (routes) =>
+  routes.map((route) => {
     if (unprotectedRoutePaths.includes(route.path)) {
       return route;
     } else if (route.children) {
