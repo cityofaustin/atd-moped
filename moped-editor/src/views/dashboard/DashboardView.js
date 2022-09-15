@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
-import DashboardEditModal from "./DashboardEditModal";
+import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
@@ -142,7 +142,7 @@ const DashboardView = () => {
         : 0;
 
       // project status update equivalent to most recent project note
-      // html is parsed before being rendered in the DashboardEditModal component
+      // html is parsed before being rendered in the DashboardStatusModal component
       project["status_update"] = "";
       if (project?.project?.moped_proj_notes?.length) {
         const note = project.project.moped_proj_notes[0]["project_note"];
@@ -197,7 +197,7 @@ const DashboardView = () => {
           table="phases"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
+          dashboardRefetch={refetch}
           contents={
             <ProjectStatusBadge
               status={entry.status_id}
@@ -216,7 +216,7 @@ const DashboardView = () => {
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       render: (entry) => (
-        <DashboardEditModal
+        <DashboardStatusModal
           project={entry.project}
           displayText={entry.status_update}
           queryRefetch={refetch}
@@ -232,7 +232,7 @@ const DashboardView = () => {
           table="milestones"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
+          dashboardRefetch={refetch}
           contents={
             <MilestoneProgressMeter
               completedMilestonesPercentage={
