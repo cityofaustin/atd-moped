@@ -274,7 +274,7 @@ const ProjectComponentsMapEdit = ({
       }
     );
 
-    // identifiy IDs of existing project features
+    // identify IDs of existing project features
     const projectFeatureIds = projectFeaturesToCreateOrUpdate
       .map((projectFeature) => projectFeature.feature_id)
       .filter((featureId) => featureId);
