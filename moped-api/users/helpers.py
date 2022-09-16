@@ -70,7 +70,7 @@ def is_valid_user_profile(
     validation_schema_copy = copy.deepcopy(USER_VALIDATION_SCHEMA)
     # Then scan for fields that need to be ignored, then patch.
     for field_ignored in ignore_fields:
-        validation_schema_copy[field_ignored]["required"] = False
+        validation_schema_copy.pop(field_ignored, None)
     # Continue validation
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, validation_schema_copy)
