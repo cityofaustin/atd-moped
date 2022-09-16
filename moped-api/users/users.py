@@ -227,16 +227,19 @@ def user_update_user(id: str, claims: list) -> (Response, int):
         if email is None:
             return jsonify({"error": {"message": "No email provided"}}), 400
 
-        # Validate user details and password
+        # Validate user details and password (if an updated password is provided)
+        isPasswordUpdated = password is not None and password != ""
+        ignore_fields = [] if isPasswordUpdated else ["password"]
+
         profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile=request.json
+            user_profile=request.json, ignore_fields=ignore_fields
         )
 
         if not profile_valid:
             return jsonify({"error": profile_error_feedback}), 400
 
         # If a password was included and not blank, let's reset it
-        if password is not None and password != "":
+        if isPasswordUpdated:
             cognito_client.admin_set_user_password(
                 UserPoolId=USER_POOL,
                 Username=cognito_user_id,
