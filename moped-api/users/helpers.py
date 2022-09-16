@@ -1,7 +1,7 @@
 """
 Helper methods to update the database via GraphQL
 """
-import re, copy
+import copy
 from cerberus import Validator
 from graphql import run_query
 
