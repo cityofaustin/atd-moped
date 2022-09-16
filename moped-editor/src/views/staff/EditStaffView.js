@@ -49,7 +49,7 @@ const EditStaffView = () => {
   }
   const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
-  const isUserActive = data?.moped_users[0]?.is_deleted;
+  const isUserActive = !data?.moped_users[0]?.is_deleted;
 
   /**
    * Submit edit user request

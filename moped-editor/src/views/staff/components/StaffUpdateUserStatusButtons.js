@@ -167,7 +167,7 @@ const StaffUpdateUserStatusButtons = ({
 
   return (
     <>
-      {isUserActive === false && (
+      {isUserActive === true && (
         <Button
           className={classes.formButton}
           color="secondary"
@@ -177,7 +177,7 @@ const StaffUpdateUserStatusButtons = ({
           Inactivate User
         </Button>
       )}
-      {isUserActive === true && (
+      {isUserActive === false && (
         <Button
           className={clsx(classes.formButton, classes.formButtonGreen)}
           variant="contained"

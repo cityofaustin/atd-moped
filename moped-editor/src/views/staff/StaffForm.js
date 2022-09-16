@@ -72,7 +72,7 @@ const StaffForm = ({
   showFormResetButton,
   validationSchema,
   userCognitoId,
-  isUserActive,
+  isUserActive = true,
 }) => {
   const classes = useStyles();
 
@@ -163,7 +163,7 @@ const StaffForm = ({
             name="first_name"
             id="first-name"
             label="First Name"
-            disabled={isUserActive}
+            disabled={!isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
@@ -182,7 +182,7 @@ const StaffForm = ({
             name="last_name"
             id="last-name"
             label="Last Name"
-            disabled={isUserActive}
+            disabled={!isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
@@ -201,7 +201,7 @@ const StaffForm = ({
             name="title"
             id="title"
             label="Title"
-            disabled={isUserActive}
+            disabled={!isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
@@ -219,7 +219,7 @@ const StaffForm = ({
             name="email"
             id="email"
             label="Email"
-            disabled={isUserActive}
+            disabled={!isUserActive}
             InputLabelProps={{
               shrink: true,
             }}
@@ -262,7 +262,7 @@ const StaffForm = ({
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
-                    disabled={isUserActive}
+                    disabled={!isUserActive}
                     onChange={(e) => onChange(updateWorkgroupFields(e))}
                     inputRef={ref}
                     value={value}
@@ -311,7 +311,7 @@ const StaffForm = ({
                       value={role.value}
                       control={<Radio />}
                       label={role.name}
-                      disabled={isUserActive}
+                      disabled={!isUserActive}
                     />
                   ))}
                 </RadioGroup>
@@ -331,7 +331,7 @@ const StaffForm = ({
             <>
               <Button
                 className={classes.formButton}
-                style={isUserActive ? { display: "none" } : {}}
+                style={!isUserActive ? { display: "none" } : {}}
                 disabled={isSubmitting}
                 type="submit"
                 color="primary"
