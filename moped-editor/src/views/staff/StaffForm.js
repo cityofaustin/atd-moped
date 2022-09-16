@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -94,7 +94,7 @@ const StaffForm = ({
     errors,
     control,
     setValue,
-    getValues,
+    watch,
     formState: { isSubmitting },
     reset,
   } = useForm({
@@ -353,9 +353,9 @@ const StaffForm = ({
                 <StaffUpdateUserStatusButtons
                   isUserActive={isUserActive}
                   handleCloseModal={handleCloseModal}
-                  email={getValues("email")}
-                  password={getValues("password")}
-                  roles={getValues("roles")}
+                  email={watch("email")}
+                  password={watch("password")}
+                  roles={watch("roles")}
                   userCognitoId={userCognitoId}
                   setModalState={setModalState}
                 />
