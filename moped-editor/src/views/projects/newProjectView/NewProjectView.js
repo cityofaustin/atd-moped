@@ -156,7 +156,7 @@ const NewProjectView = () => {
         object: {
           // First we need to copy the project details
           ...projectDetails,
-
+          added_by: userId,
           // We need to add the potential phase as a default
           moped_proj_phases: {
             data: [

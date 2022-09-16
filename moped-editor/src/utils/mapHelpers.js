@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Layer, Source, WebMercatorViewport } from "react-map-gl";
+import { Layer, Source } from "react-map-gl";
 import bbox from "@turf/bbox";
 import combine from "@turf/combine";
 import theme from "../theme/index";
@@ -11,6 +11,7 @@ import {
   ListItemIcon,
   ListItemText,
   withStyles,
+  makeStyles,
 } from "@material-ui/core";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@material-ui/icons";
 import {
@@ -23,20 +24,7 @@ export const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 
 const TRAIL_LINE_TYPE = "Off-Street";
 
-// See MOPED Technical Docs > User Interface > Map > react-map-gl-geocoder
-const austinFullPurposeJurisdictionFeatureCollection = {
-  type: "FeatureCollection",
-  crs: {
-    type: "name",
-    properties: {
-      name: "EPSG:4326",
-    },
-  },
-  bbox: [-97.940377, 30.133717, -97.578205, 30.464826],
-  features: [],
-};
-
-const basemaps = {
+export const basemaps = {
   streets: "mapbox://styles/mapbox/light-v8",
   // Provide style parameters to render Nearmap tiles in react-map-gl
   // https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
@@ -114,10 +102,10 @@ export const mapStyles = {
 /**
  * Common styles of map components in ProjectComponentsMap and ProjectComponentsMapView
  */
-export const makeCommonComponentsMapStyles = theme => ({
+export const makeCommonComponentsMapStyles = (theme) => ({
   speedDial: {
-    right: "3.5rem !important",
-    bottom: "1.7rem !important",
+    right: "49px !important",
+    bottom: "20px !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
@@ -129,11 +117,6 @@ export const makeCommonComponentsMapStyles = theme => ({
       left: theme.spacing(2),
     },
   },
-  navStyle: {
-    position: "absolute",
-    bottom: "6rem",
-    right: "3rem",
-  },
   mapBox: {
     padding: 25,
     position: "relative",
@@ -142,25 +125,11 @@ export const makeCommonComponentsMapStyles = theme => ({
     padding: 0,
     position: "relative",
   },
-  geocoderContainer: {
-    display: "flex",
-    height: 50,
-    position: "absolute",
-    alignItems: "center",
-    width: "21rem",
-    left: "1rem",
-    top: ".5rem",
-    zIndex: 2,
-    // Keep geocoder input in set position when mapbox-gl-geocoder.css media queries kick in
-    "@media (max-width:640px)": {
-      top: 32,
-    },
-  },
 });
 
 /**
  * Map Config
- * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, geocoderBbox: number[], mapboxDefaultMaxZoom: number, layerConfigs: Object}}
+ * @type {{mapInit: {latitude: number, zoom: number, longitude: number}, minimumFeaturesInProject: number, mapboxDefaultMaxZoom: number, layerConfigs: Object}}
  */
 export const mapConfig = {
   // The initial map position and zoom level
@@ -171,8 +140,6 @@ export const mapConfig = {
   },
   mapboxDefaultMaxZoom: 18, // Max zoom level
   minimumFeaturesInProject: 1, // Determines minimum number of features in project
-  // Geocoder Bounding Box
-  geocoderBbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
   // List of layer configurations
   layerConfigs: {
     "ATD_ADMIN.CTN": {
@@ -187,7 +154,7 @@ export const mapConfig = {
       layerMaxLOD: 14,
       isClickEditable: true,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
+        return function (hoveredId, layerIds) {
           const isEditing = !!layerIds;
 
           const editMapPaintStyles = {
@@ -233,7 +200,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: true,
       get layerStyleSpec() {
-        return function(hoveredId, layerIds) {
+        return function (hoveredId, layerIds) {
           const isEditing = !!layerIds;
 
           const editMapPaintStyles = {
@@ -269,7 +236,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "circle",
@@ -291,7 +258,7 @@ export const mapConfig = {
       layerMaxLOD: 12,
       isClickEditable: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "line",
@@ -317,7 +284,7 @@ export const mapConfig = {
       isClickEditable: false,
       isInitiallyVisible: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "line",
@@ -349,7 +316,7 @@ export const mapConfig = {
       isClickEditable: false,
       isInitiallyVisible: false,
       get layerStyleSpec() {
-        return function() {
+        return function () {
           return {
             id: this.layerIdName,
             type: "circle",
@@ -374,7 +341,7 @@ export const mapErrors = {
  * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Array} A nested array that fits the LngLatBounds Mapbox object format
  */
-export const createZoomBbox = featureCollection => {
+export const createZoomBbox = (featureCollection) => {
   const [minLng, minLat, maxLng, maxLat] = bbox(featureCollection);
 
   return [
@@ -399,16 +366,20 @@ export const getClickEditableLayerNames = () =>
  * Edit map needs all layers to be interactive to let users select features
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getEditMapInteractiveIds = drawLines => {
+export const getEditMapInteractiveIds = (drawLines) => {
   const interactiveIds = Object.values(mapConfig.layerConfigs).map(
-    config => config.layerIdName
+    (config) => config.layerIdName
   );
+
   if (drawLines === true) {
-    return interactiveIds.filter(layer => layer !== "project-component-points");
+    return interactiveIds.filter(
+      (layer) => layer !== "project-component-points"
+    );
   }
   if (drawLines === false) {
-    return interactiveIds.filter(layer => layer !== "ctn-lines");
+    return interactiveIds.filter((layer) => layer !== "ctn-lines");
   }
+
   return interactiveIds;
 };
 
@@ -417,10 +388,10 @@ export const getEditMapInteractiveIds = drawLines => {
  * Summary map only needs layers in the project extent to be interactive
  * @return {Array} List of layer IDs to be set as interactive (hover, click) in map
  */
-export const getSummaryMapInteractiveIds = featureCollection => [
+export const getSummaryMapInteractiveIds = (featureCollection) => [
   ...new Set(
     featureCollection.features.map(
-      feature =>
+      (feature) =>
         mapConfig.layerConfigs[feature.properties.sourceLayer].layerIdName
     )
   ),
@@ -455,7 +426,7 @@ export const getFeatureHoverText = (feature, layerName) =>
  * @param {Object} e - Event object for click or hover on map
  * @return {String} The name of the source layer
  */
-export const getLayerSource = e =>
+export const getLayerSource = (e) =>
   e.features &&
   e.features.length > 0 &&
   (e.features[0].layer["source-layer"] ||
@@ -466,9 +437,11 @@ export const getLayerSource = e =>
  * @param {array} projectFeatureRecords - List of project's feature records from the moped_proj_features table
  * @return {object} A GeoJSON feature collection to display project features on a map
  */
-export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures => {
+export const createFeatureCollectionFromProjectFeatures = (
+  mopedProjectFeatures
+) => {
   let featureCollection = { type: "FeatureCollection", features: [] };
-  mopedProjectFeatures.forEach(projectFeature => {
+  mopedProjectFeatures.forEach((projectFeature) => {
     // add proj feature metadata to the feature itself
     // these are stored outside of the feature.properties and serve
     // as metadata that will be useful when handling map edits
@@ -485,7 +458,9 @@ export const createFeatureCollectionFromProjectFeatures = mopedProjectFeatures =
  * @param {object} featureCollection - A GeoJSON feature collection
  * @return {object} Object with layer name keys and values that are a array of feature ID strings
  */
-export const createSelectedIdsObjectFromFeatureCollection = featureCollection => {
+export const createSelectedIdsObjectFromFeatureCollection = (
+  featureCollection
+) => {
   const selectedIdsByLayer = featureCollection.features.reduce(
     (acc, feature) => {
       const sourceLayer = feature.properties.sourceLayer;
@@ -511,7 +486,7 @@ export const createSelectedIdsObjectFromFeatureCollection = featureCollection =>
  * @param {Object} e - Event object for click or hover on map
  * @return {Object} The GeoJSON object that describes the clicked or hovered feature geometry
  */
-export const getGeoJSON = e =>
+export const getGeoJSON = (e) =>
   e.features &&
   e.features.length > 0 && {
     geometry: e.features[0].geometry,
@@ -534,7 +509,7 @@ export const isFeaturePresent = (selectedFeature, features, layerName) => {
   const featureIdProperty = mapConfig.layerConfigs[layerName].featureIdProperty;
 
   return features.some(
-    feature =>
+    (feature) =>
       selectedFeature.properties[featureIdProperty] ===
       feature.properties[featureIdProperty]
   );
@@ -581,7 +556,7 @@ export const createProjectSelectLayerConfig = (
  * @param {object} geoJSON - A GeoJSON feature collection with project features
  * @return {JSX} Mapbox Source and Layer components for each source in the GeoJSON
  */
-export const createSummaryMapLayers = geoJSON => {
+export const createSummaryMapLayers = (geoJSON) => {
   /**
    * Aggregate all features in geoJSON and group by layer
    */
@@ -696,7 +671,7 @@ export const renderTooltip = (tooltipText, hoveredCoords, className) =>
  * @param {Object} featureCollection - A GeoJSON feature collection
  * @return {Number} Total number of string IDs
  */
-export const countFeatures = featureCollection =>
+export const countFeatures = (featureCollection) =>
   featureCollection.features.length;
 
 /**
@@ -725,7 +700,7 @@ export function useHoverLayer() {
    * Gets and sets data from a map feature used to populate and place a tooltip
    * @param {Object} e - Mouse hover event that supplies the feature details and hover coordinates
    */
-  const handleLayerHover = e => {
+  const handleLayerHover = (e) => {
     const layerSource = getLayerSource(e);
 
     // If a layer isn't hovered, reset state and don't proceed
@@ -735,10 +710,9 @@ export function useHoverLayer() {
       setFeatureId(null);
       return;
     }
-
     // Otherwise, get details for tooltip
     const {
-      srcEvent: { offsetX, offsetY },
+      originalEvent: { offsetX, offsetY },
     } = e;
     const featureId = getFeatureId(e.features[0], layerSource);
     const hoveredFeatureText = getFeatureHoverText(e.features[0], layerSource);
@@ -755,68 +729,72 @@ export function useHoverLayer() {
  * Custom hook that initializes a map viewport and fits it to a provided feature collection
  * @param {object} mapRef - Ref object whose current property exposes the map instance
  * @param {object} featureCollection - A GeoJSON feature collection to fit the map bounds around
- * @param {boolean} shouldFitOnUpdate - Determines if map fits to featuresCollection if collection updates
- * @return {ViewportStateArray} Array that exposes the setter and getters for map viewport using useState hook
- */
-/**
- * @typedef {array} ViewportStateArray
- * @property {object} StateArray[0] - A Mapbox viewport object
- * @property {function} StateArray[1] - Setter for viewport state
+ * @param {boolean} shouldFitOnFeatureUpdate - Determines if map fits to featuresCollection if collection updates
+ * @param {number} padding - Padding (in px) to leave around the map components when fitting
+ * @return {function} Function to use as a Mapbox GL JS onRender callback
  */
 export function useFeatureCollectionToFitBounds(
   mapRef,
   featureCollection,
-  shouldFitOnFeatureUpdate = true
+  shouldFitOnFeatureUpdate = true,
+  padding = 250
 ) {
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
+  const thereAreFeatures = featureCollection?.features?.length > 0 || false;
   const [hasFitInitialized, setHasFitInitialized] = useState(false);
 
-  useEffect(() => {
-    if (!mapRef?.current) return;
-    if (!shouldFitOnFeatureUpdate && hasFitInitialized) return;
+  /* Fit map bounds to feature collection if there are features to zoom to */
+  const zoomMapToFeatureCollection = () => {
+    if (!thereAreFeatures) return;
 
     const mapBounds = createZoomBbox(featureCollection);
-    const currentMap = mapRef.current;
-    /**
-     * Takes the existing viewport and transforms it to fit the project's features
-     * @param {Object} viewport - Describes the map view
-     * @return {Object} Viewport object with updated attributes based on project's features
-     */
-    const fitViewportToBounds = viewport => {
-      // Let's check if we have any features are all, otherwise return the state of viewport...
-      if ((featureCollection?.features?.length ?? 0) === 0) return viewport;
-      const featureViewport = new WebMercatorViewport({
-        viewport,
-        width: currentMap?._width ?? window.innerWidth * 0.45,
-        height: currentMap?._height ?? window.innerHeight * 0.6,
-      });
 
-      const newViewport = featureViewport.fitBounds(mapBounds, {
-        padding: 100,
+    mapRef.current &&
+      mapRef.current.fitBounds(mapBounds, {
+        padding,
         maxZoom: 16,
+        duration: 0,
       });
+  };
 
-      const { longitude, latitude, zoom } = newViewport;
+  const fitMapToFeatureCollectionOnRender = () => {
+    if (hasFitInitialized) return;
 
-      return {
-        ...viewport,
-        longitude,
-        latitude,
-        zoom,
-      };
-    };
-
-    setViewport(prevViewport => fitViewportToBounds(prevViewport));
+    zoomMapToFeatureCollection();
     setHasFitInitialized(true);
-  }, [hasFitInitialized, shouldFitOnFeatureUpdate, featureCollection, mapRef]);
+  };
 
-  return [viewport, setViewport];
+  // Watch for changes to the project components and zoom to them if shouldFitOnFeatureUpdate = true
+  useEffect(() => {
+    if (!shouldFitOnFeatureUpdate) return;
+
+    zoomMapToFeatureCollection();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [featureCollection, shouldFitOnFeatureUpdate]);
+
+  return { fitMapToFeatureCollectionOnRender };
 }
+
+const useStyles = makeStyles(() => ({
+  layerSelectButton: {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    zIndex: 1,
+    height: "3rem",
+    width: "205px",
+    backgroundColor: "white",
+    "&:hover": {
+      backgroundColor: "white",
+    },
+  },
+  layerSelectDropdown: {
+    width: "205px",
+  },
+}));
 
 /**
  * Custom hook that creates a layer toggle UI
  * @param {array} initialSelectedLayerNames - Array of layer names to show initially
- * @param {object} classes - Holds Material UI classnames
  * @return {UseLayerObject} Object that exposes updated array of visible layers and map UI render function
  */
 /**
@@ -824,25 +802,27 @@ export function useFeatureCollectionToFitBounds(
  * @property {array} visibleLayerIds - Updated list of visible map layers
  * @property {function} renderLayerSelect - Function that returns JSX for layer toggle UI
  */
-export function useLayerSelect(initialSelectedLayerNames, classes) {
+export function useLayerSelect(initialSelectedLayerNames) {
   /**
    * The initial state of visible ids is retrieved from the initialSelectedLayerNames
    * then we filter out any of them by checking if it has an `isInitiallyVisible` property.
    */
   const [visibleLayerIds, setVisibleLayerIds] = useState(
     initialSelectedLayerNames.filter(
-      layerName => mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
+      (layerName) =>
+        mapConfig.layerConfigs[layerName]?.isInitiallyVisible ?? true
     )
   );
   const [mapStyle, setMapStyle] = useState("streets");
   const mapStyleConfig = basemaps[mapStyle];
   const [anchorEl, setAnchorEl] = useState(null);
+  const classes = useStyles();
 
   /**
    * Handles the click event on a menu item
    * @param {Object} event - The click event
    */
-  const handleMenuItemClick = event => {
+  const handleMenuItemClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -857,10 +837,10 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    * Takes a click event and adds/removes a layer name from the visible layers array
    * @param {string} layerName - The name of the layer to enable
    */
-  const handleLayerCheckboxClick = layerName => {
-    setVisibleLayerIds(prevLayers => {
+  const handleLayerCheckboxClick = (layerName) => {
+    setVisibleLayerIds((prevLayers) => {
       return prevLayers.includes(layerName)
-        ? [...prevLayers.filter(name => name !== layerName)]
+        ? [...prevLayers.filter((name) => name !== layerName)]
         : [...prevLayers, layerName];
     });
   };
@@ -869,15 +849,16 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
    * Takes a click event and sets a basemap key string so a value can be read from the basemaps object
    * @param {string} basemapKey - The name of the base map: streets or aerial
    */
-  const handleBasemapChange = basemapKey => {
+  const handleBasemapChange = (basemapKey) => {
     setMapStyle(basemapKey);
   };
 
   const StyledMenu = withStyles({
     paper: {
       border: "1px solid #d3d4d5",
+      width: "205px",
     },
-  })(props => (
+  })((props) => (
     <Menu
       elevation={0}
       getContentAnchorEl={null}
@@ -893,7 +874,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
     />
   ));
 
-  const StyledMenuItem = withStyles(theme => ({
+  const StyledMenuItem = withStyles((theme) => ({
     root: {
       "&:focus": {
         backgroundColor: theme.palette.grey["100"],
@@ -934,7 +915,7 @@ export function useLayerSelect(initialSelectedLayerNames, classes) {
         onClose={handleMenuClose}
         transitionDuration={0}
       >
-        {getLayerNames().map(name => {
+        {getLayerNames().map((name) => {
           if (!showProjectFeatures && projectFeatureLayerNames.includes(name))
             return null;
 
@@ -1010,7 +991,7 @@ export const useTransformProjectFeatures = (
   // First, enter the type (which never changes)
   type: "FeatureCollection",
   // Then, create the features attribute with the output of a map
-  features: (projectOtherFeaturesCollection?.features ?? []).map(feature => ({
+  features: (projectOtherFeaturesCollection?.features ?? []).map((feature) => ({
     // For every feature, first copy the element
     ...feature,
     // Then, overwrite the feature's 'properties' attribute
@@ -1048,7 +1029,7 @@ export const useSaveActionReducer = () => {
  * @param {Object} features - An array of at least one GeoJSON (or geojson-like) features.
  * @return {Object} The combined GeoJSON geometry object
  */
-export const combineLineGeometries = features => {
+export const combineLineGeometries = (features) => {
   // assemble features into a collection, which turf requires
   let dummyFeatureCollection = {
     type: "FeatureCollection",
@@ -1073,7 +1054,7 @@ export const combineLineGeometries = features => {
  * @param {Object} jsonResponse - The response JSON from AGOL
  * @return {Object} the response JSON, after logging an error if error
  **/
-const handleAgolResponse = jsonResponse => {
+const handleAgolResponse = (jsonResponse) => {
   if (jsonResponse?.error) {
     console.error(`Error fetching geometry: ${JSON.stringify(jsonResponse)}`);
   }
@@ -1086,7 +1067,7 @@ const handleAgolResponse = jsonResponse => {
  * @param {String} ctnAGOLEndpoint - Base url of the feature service endpoint (global var)
  * @return {Object} Geojson featureCollection of the queried feature - or null if fetch error
  */
-export const queryCtnFeatureService = async function(projectExtentId) {
+export const queryCtnFeatureService = async function (projectExtentId) {
   const params = {
     where: `CTN_SEGMENT_ID=${projectExtentId}`,
     outFields: "CTN_SEGMENT_ID",
@@ -1095,16 +1076,16 @@ export const queryCtnFeatureService = async function(projectExtentId) {
   };
 
   const paramString = Object.entries(params)
-    .map(param => `${param[0]}=${encodeURIComponent(param[1])}`)
+    .map((param) => `${param[0]}=${encodeURIComponent(param[1])}`)
     .join("&");
   const url = `${ctnAGOLEndpoint}/query?${paramString}`;
 
   return await fetch(url)
-    .then(response => response.json())
-    .then(jsonResponse => {
+    .then((response) => response.json())
+    .then((jsonResponse) => {
       return handleAgolResponse(jsonResponse);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("Error fetching geometry: " + JSON.stringify(err));
       return null;
     });

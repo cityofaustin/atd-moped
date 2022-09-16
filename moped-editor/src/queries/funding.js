@@ -35,7 +35,7 @@ export const FUNDING_QUERY = gql`
       funding_status_id
       funding_status_name
     }
-    moped_funds {
+    moped_funds(order_by: { fund_id: asc }) {
       fund_id
       fund_name
     }
@@ -108,7 +108,7 @@ export const CONTRACT_QUERY = gql`
   query ProjectPurchaseOrder($projectId: Int) {
     moped_proj_contract(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: {id: asc}
+      order_by: { id: asc }
     ) {
       contractor
       id
@@ -149,14 +149,10 @@ export const UPDATE_CONTRACT = gql`
 `;
 
 export const DELETE_CONTRACT = gql`
-  mutation DeletePurchaseOrder(
-    $id: Int!
-  ) {
+  mutation DeletePurchaseOrder($id: Int!) {
     update_moped_proj_contract_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_deleted: true
-      }
+      _set: { is_deleted: true }
     ) {
       id
     }

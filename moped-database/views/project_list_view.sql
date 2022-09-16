@@ -56,8 +56,6 @@ AS WITH project_person_list_lookup AS (
         ELSE mp.current_status
     END AS status_name,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    mp.contractor,
-    mp.purchase_order_number,
     COALESCE( -- coalesce because this subquery can come back 'null' if there are no component assets
       ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
@@ -143,8 +141,6 @@ AS WITH project_person_list_lookup AS (
     mp.status_id, 
     me.entity_name, 
     mp.updated_at, 
-    mp.task_order, 
-    mp.contractor, 
-    mp.purchase_order_number, 
+    mp.task_order,
     ptl.type_name, 
     fsl.funding_source_name;

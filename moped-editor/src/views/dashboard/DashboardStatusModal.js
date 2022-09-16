@@ -10,7 +10,7 @@ import {
 import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import { makeStyles } from "@material-ui/core/styles";
-import ProjectComments from "./../projects/projectView/ProjectComments";
+import ProjectComments from "../projects/projectView/ProjectComments";
 import parse from "html-react-parser";
 
 const useStyles = makeStyles(theme => ({
@@ -29,7 +29,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
+const DashboardStatusModal = ({ project, displayText, queryRefetch }) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
@@ -76,4 +76,4 @@ const DashboardEditModal = ({ project, displayText, queryRefetch }) => {
   );
 };
 
-export default DashboardEditModal;
+export default DashboardStatusModal;

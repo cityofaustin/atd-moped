@@ -124,6 +124,14 @@
 - table:
     schema: public
     name: moped_components
+  array_relationships:
+    - name: moped_subcomponents
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            schema: public
+            name: moped_subcomponents
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2443,6 +2451,77 @@
           name: MOPED_API_EVENT_NAME
 - table:
     schema: public
+    name: moped_proj_tags
+  object_relationships:
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+    - name: moped_tag
+      using:
+        foreign_key_constraint_on: tag_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_id
+          - tag_id
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    schema: public
     name: moped_project
   object_relationships:
     - name: moped_entity
@@ -2454,6 +2533,9 @@
     - name: moped_status
       using:
         foreign_key_constraint_on: status_id
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: added_by
   array_relationships:
     - name: moped_proj_components
       using:
@@ -2504,6 +2586,13 @@
           table:
             schema: public
             name: moped_proj_phases
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: project_id
+          table:
+            schema: public
+            name: moped_proj_tags
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -2525,7 +2614,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2547,7 +2635,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2561,7 +2648,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2583,7 +2669,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2597,7 +2682,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2619,7 +2703,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2633,7 +2716,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2655,7 +2737,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2669,7 +2750,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2691,7 +2771,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2706,7 +2785,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2728,7 +2806,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2743,7 +2820,6 @@
         columns:
           - added_by
           - capitally_funded
-          - contractor
           - current_phase
           - current_phase_id
           - current_status
@@ -2765,7 +2841,6 @@
           - project_sponsor
           - project_uuid
           - project_website
-          - purchase_order_number
           - status_id
           - task_order
           - timeline_id
@@ -2799,7 +2874,6 @@
             - timeline_id
             - task_order
             - ecapris_subproject_id
-            - contractor
             - current_phase
             - current_phase_id
             - current_status
@@ -2810,7 +2884,6 @@
             - project_name
             - project_priority
             - project_website
-            - purchase_order_number
             - work_assignment_id
             - date_added
             - updated_at
@@ -3420,6 +3493,85 @@
         check: null
 - table:
     schema: public
+    name: moped_tags
+  array_relationships:
+    - name: moped_proj_tags
+      using:
+        foreign_key_constraint_on:
+          column: tag_id
+          table:
+            schema: public
+            name: moped_proj_tags
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - type
+          - slug
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    schema: public
     name: moped_types
   insert_permissions:
     - role: moped-admin
@@ -3828,8 +3980,6 @@
           - status_name
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3868,8 +4018,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
@@ -3908,8 +4056,6 @@
           - project_uuid
           - task_order
           - task_order_name
-          - contractor
-          - purchase_order_number
           - project_feature
           - type_name
           - funding_source_name
