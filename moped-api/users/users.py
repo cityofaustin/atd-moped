@@ -229,7 +229,7 @@ def user_update_user(id: str, claims: list) -> (Response, int):
 
         # Validate user details and password
         profile_valid, profile_error_feedback = is_valid_user_profile(
-            user_profile_edits=request.json
+            user_profile=request.json
         )
 
         if not profile_valid:
