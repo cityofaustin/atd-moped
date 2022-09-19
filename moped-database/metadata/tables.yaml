@@ -754,8 +754,8 @@
         foreign_key_constraint_on:
           column: project_component_id
           table:
-            schema: public
             name: moped_proj_features
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -1153,8 +1153,8 @@
         - value: activity_log
           name: MOPED_API_EVENT_NAME
 - table:
-    schema: public
     name: moped_proj_features
+    schema: public
   object_relationships:
     - name: moped_proj_component
       using:
@@ -1164,69 +1164,97 @@
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
         filter: {}
-        check: null
+        check: {}
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
-          - is_deleted
           - project_component_id
+          - attributes
+          - feature
+          - geography_collection
+          - geography_linestring
+          - geography_point
           - status_id
+          - is_deleted
         filter: {}
-        check: null
+        check: {}
 - table:
     schema: public
     name: moped_proj_financials
