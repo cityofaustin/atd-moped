@@ -67,6 +67,8 @@ const fields = [
 //   );
 // };
 
+const randomComponentId = () => Math.floor(Math.random() * 10000000000);
+
 const CustomAutocomplete = ({
   fieldKey,
   options,
@@ -191,6 +193,7 @@ const ComponentModal = ({ showDialog, setShowDialog, dispatchComponents }) => {
                       ...formState.type.data,
                       description: formState.description,
                       label: formState.type.label,
+                      _id: randomComponentId(),
                     },
                   });
                   setShowDialog(false);

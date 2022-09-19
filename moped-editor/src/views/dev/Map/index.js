@@ -11,6 +11,8 @@ import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import Checkbox from "@material-ui/core/Checkbox";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import ListItemText from "@material-ui/core/ListItemText";
 import TimelineIcon from "@material-ui/icons/Timeline";
@@ -18,7 +20,7 @@ import RoomIcon from "@material-ui/icons/Room";
 import EditOutlined from "@material-ui/icons/EditOutlined";
 import TheMap from "./TheMap";
 import ComponentModal from "./ComponentModal";
-
+import AssociateComponentsDialogue from "./AssociateComponentsDialogue";
 const drawerWidth = 325;
 
 const useStyles = makeStyles((theme) => ({
@@ -70,9 +72,14 @@ function componentsReducer(state, { component, action }) {
 }
 
 export default function MapView() {
+  const [isEditingMap, setIsEditingMap] = useState(false);
+  const [showComponentApplyDialogue, setShowComponentApplyDialogue] =
+    useState(false);
   const classes = useStyles();
   const [showDialog, setShowDialog] = useState(false);
   const [components, dispatchComponents] = useReducer(componentsReducer, []);
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [currTab, setCurrTab] = useState(0);
   const handleTabChange = (event, newValue) => {
     setCurrTab(newValue);
@@ -82,6 +89,11 @@ export default function MapView() {
     type: "FeatureCollection",
     features: [],
   });
+
+  // warning! this is fraught—IDs are not guaranteed unique across multiple layers
+  const selectedFeautreIds = selectedFeatures.map(
+    (feature) => feature.properties.id
+  );
 
   return (
     <div className={classes.root}>
@@ -111,10 +123,10 @@ export default function MapView() {
             onChange={handleTabChange}
             aria-label="simple tabs example"
           >
-            <Tab label="Components" />
             <Tab label="Features" />
+            <Tab label="Components" />
           </Tabs>
-          {currTab === 0 && (
+          {currTab === 1 && (
             <List>
               <ListItem button onClick={() => setShowDialog(!showDialog)}>
                 <ListItemIcon>
@@ -124,7 +136,12 @@ export default function MapView() {
               </ListItem>
               {components.map((component, i) => (
                 <React.Fragment key={i}>
-                  <ListItem button>
+                  <ListItem
+                    button
+                    onClick={() => setSelectedComponentId(component._id)}
+                    selected={component._id === selectedComponentId}
+                    // style={{ backgroundColor: "#fc58ac" }}
+                  >
                     <ListItemText
                       primary={component.component_name}
                       secondary={component.component_subtype}
@@ -135,23 +152,70 @@ export default function MapView() {
               ))}
             </List>
           )}
-          {currTab === 1 && (
+          {currTab === 0 && (
             <List>
-              <ListItem button onClick={() => setShowDialog(!showDialog)}>
-                <ListItemIcon>
-                  <EditOutlined />
-                </ListItemIcon>
-                <ListItemText primary="Edit map" />
-              </ListItem>
-              {projectFeatures?.features.map((feature, i) => (
-                <React.Fragment key={i}>
-                  <ListItem button>
-                    <ListItemIcon>{getIcon(feature)}</ListItemIcon>
-                    <ListItemText {...getFeatureLabel(feature)} />
-                  </ListItem>
-                  <Divider />
-                </React.Fragment>
-              ))}
+              {selectedFeautreIds.length === 0 && (
+                <ListItem button onClick={() => setIsEditingMap(!isEditingMap)}>
+                  <ListItemIcon>
+                    <EditOutlined />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={isEditingMap ? "Save changes" : "Edit map"}
+                  />
+                </ListItem>
+              )}
+
+              {selectedFeautreIds.length > 0 && (
+                <ListItem
+                  button
+                  onClick={() => setShowComponentApplyDialogue(true)}
+                >
+                  <ListItemIcon>
+                    <PlaylistAddIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Add components..." />
+                </ListItem>
+              )}
+              {projectFeatures?.features.map((feature, i) => {
+                const isChecked = selectedFeautreIds.includes(
+                  feature.properties.id
+                );
+                return (
+                  <React.Fragment key={i}>
+                    <ListItem
+                      button
+                      onClick={() => {
+                        if (isEditingMap) {
+                          return;
+                        }
+                        if (isChecked) {
+                          const newSelectedFeatures = selectedFeatures.filter(
+                            (someFeature) =>
+                              someFeature.properties.id !==
+                              feature.properties.id
+                          );
+                          setSelectedFeatures(newSelectedFeatures);
+                        } else {
+                          setSelectedFeatures([...selectedFeatures, feature]);
+                        }
+                      }}
+                    >
+                      {!isEditingMap && (
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={isChecked}
+                            disableRipple
+                          />
+                        </ListItemIcon>
+                      )}
+                      <ListItemText {...getFeatureLabel(feature)} />
+                      <ListItemIcon>{getIcon(feature)}</ListItemIcon>
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                );
+              })}
             </List>
           )}
         </div>
@@ -172,6 +236,12 @@ export default function MapView() {
           showDialog={showDialog}
           setShowDialog={setShowDialog}
           dispatchComponents={dispatchComponents}
+        />
+        <AssociateComponentsDialogue
+          showDialog={showComponentApplyDialogue}
+          setShowDialog={setShowComponentApplyDialogue}
+          components={components}
+          setSelectedFeatures={setSelectedFeatures}
         />
       </main>
     </div>
