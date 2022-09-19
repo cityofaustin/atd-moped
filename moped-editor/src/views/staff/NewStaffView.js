@@ -58,18 +58,30 @@ const NewStaffView = () => {
 
     console.log(data);
 
-    // TODO: If roles === "non-moped-user":
-    // 1. Use new add user mutation to add them to moped_users table
-    // 2. Do not use the Moped API
-    // 3. Down the line - create register user route and button to convert
-    //    from non-Moped user to Moped user (that can log in & is in Cognito and DynamoDB)
+    const isNonMopedUser = data.roles.includes("non-moped-user");
 
-    // requestApi({
-    //   method: "post",
-    //   path: "/users/",
-    //   payload: data,
-    //   callback,
-    // });
+    if (isNonMopedUser) {
+      const { password, ...restOfData } = data;
+
+      // TODO: If roles === "non-moped-user":
+      // 1. Use new add user mutation to add them to moped_users table ✅
+      // 2. Do not use the Moped API ✅
+      // 3. Down the line - create register user route and button to convert
+      //    from non-Moped user to Moped user (that can log in & is in Cognito and DynamoDB)
+
+      addNonMopedUser({
+        variables: {
+          object: restOfData,
+        },
+      }).then(() => callback());
+    } else {
+      requestApi({
+        method: "post",
+        path: "/users/",
+        payload: data,
+        callback,
+      });
+    }
   };
 
   return (
