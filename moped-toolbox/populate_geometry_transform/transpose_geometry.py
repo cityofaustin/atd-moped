@@ -27,7 +27,14 @@ def moped_proj_features(args):
     if args.schema:
         alter = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         alter.execute(
-            "alter table moped_proj_features add column geography geography(GEOMETRYCOLLECTION, 4326);"
+            """
+            alter table moped_proj_features 
+              add column geography_collection geography(GEOMETRYCOLLECTION, 4326),
+              add column geography_point geography(POINT, 4326),
+              add column geography_linestring geography(LINESTRING, 4326),
+              add column attributes jsonb
+              ;
+            """
         )
         pg.commit()
 
@@ -43,24 +50,60 @@ def moped_proj_features(args):
 
         print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
 
-        sql = """
-        update moped_proj_features 
-        set geography = ST_ForceCollection(ST_GeomFromGeoJSON(%s))
-        where feature_id = %s
-        ;
-        """
-
-        try:
-            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            update.execute(
-                sql, (geojson.dumps(feature["geometry"]), record["feature_id"])
-            )
-        except psycopg2.errors.InternalError_ as e:
-            print("\n\b🛎Postgres error: " + str(e))
-            print(geojson.dumps(feature, indent=2))
-            pg.rollback()
-        else:  # no exception
-            pg.commit()
+        if feature["geometry"]["type"] == "Point":
+            sql = """
+            update moped_proj_features 
+            set 
+            geography_collection = ST_ForceCollection(ST_GeomFromGeoJSON(%s)),
+            geography_point = ST_GeomFromGeoJSON(%s),
+            attributes = %s
+            where feature_id = %s
+            ;
+            """
+            try:
+                update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                update.execute(
+                    sql,
+                    (
+                        geojson.dumps(feature["geometry"]),
+                        geojson.dumps(feature["geometry"]),
+                        geojson.dumps(feature["properties"]),
+                        record["feature_id"],
+                    ),
+                )
+            except psycopg2.errors.InternalError_ as e:
+                print("\n\b🛎Postgres error: " + str(e))
+                print(geojson.dumps(feature, indent=2))
+                pg.rollback()
+            else:  # no exception
+                pg.commit()
+        if feature["geometry"]["type"] == "LineString":
+            sql = """
+            update moped_proj_features 
+            set 
+            geography_collection = ST_ForceCollection(ST_GeomFromGeoJSON(%s)),
+            geography_linestring = ST_GeomFromGeoJSON(%s),
+            attributes = %s
+            where feature_id = %s
+            ;
+            """
+            try:
+                update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+                update.execute(
+                    sql,
+                    (
+                        geojson.dumps(feature["geometry"]),
+                        geojson.dumps(feature["geometry"]),
+                        geojson.dumps(feature["properties"]),
+                        record["feature_id"],
+                    ),
+                )
+            except psycopg2.errors.InternalError_ as e:
+                print("\n\b🛎Postgres error: " + str(e))
+                print(geojson.dumps(feature, indent=2))
+                pg.rollback()
+            else:  # no exception
+                pg.commit()
 
 
 def main(args):
