@@ -49,12 +49,20 @@ const NewStaffView = () => {
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
-    requestApi({
-      method: "post",
-      path: "/users/",
-      payload: data,
-      callback,
-    });
+    console.log(data);
+
+    // TODO: If roles === "non-moped-user":
+    // 1. Use new add user mutation to add them to moped_users table
+    // 2. Do not use the Moped API
+    // 3. Down the line - create register user route and button to convert
+    //    from non-Moped user to Moped user (that can log in & is in Cognito and DynamoDB)
+
+    // requestApi({
+    //   method: "post",
+    //   path: "/users/",
+    //   payload: data,
+    //   callback,
+    // });
   };
 
   return (
