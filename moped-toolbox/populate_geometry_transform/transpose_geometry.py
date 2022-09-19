@@ -105,6 +105,17 @@ def moped_proj_features(args):
             else:  # no exception
                 pg.commit()
 
+    if args.schema:
+        alter = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        alter.execute(
+            """
+            alter table moped_proj_features 
+                drop column feature 
+                ;
+            """
+        )
+        pg.commit()
+
 
 def main(args):
     moped_proj_features(args)
