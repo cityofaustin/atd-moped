@@ -32,7 +32,10 @@ const validationSchema = yup.object().shape({
   workgroup: yup.string().required(),
   workgroup_id: yup.string().required(),
   email: yup.string().required().email().lowercase(),
-  password: yup.string().required(),
+  password: yup.string().when("roles", {
+    is: (val) => val !== "non-moped-user",
+    then: yup.string().required(),
+  }),
   roles: yup.string().required(),
 });
 

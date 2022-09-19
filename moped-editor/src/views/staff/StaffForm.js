@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -155,6 +155,12 @@ const StaffForm = ({
     setIsUserApiLoading(false);
   };
 
+  // TODO:
+  // 1. Add disabled fields config to decouple isUserActive from form
+  //    and to allow password field to be disabled when roles === "non-moped-user"
+  // 2. Decouple form from useForm hook so that we can set form elements based on non-moped or moped user
+  const currentSelectedRole = watch("roles");
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -232,25 +238,44 @@ const StaffForm = ({
             }
           />
         </Grid>
+
         <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            name="password"
-            id="password"
-            label="Password"
-            type="password"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-            inputRef={register}
-            error={!!errors.password || !!userApiErrors?.password}
-            helperText={
-              errors.password?.message ||
-              formatApiErrors(userApiErrors?.password)
-            }
-          />
+          {currentSelectedRole !== "non-moped-user" ? (
+            <TextField
+              fullWidth
+              name="password"
+              id="password"
+              label="Password"
+              type="password"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              inputRef={register}
+              error={!!errors.password || !!userApiErrors?.password}
+              helperText={
+                errors.password?.message ||
+                formatApiErrors(userApiErrors?.password)
+              }
+            />
+          ) : (
+            <TextField
+              fullWidth
+              name="password"
+              id="password"
+              label="Password"
+              disabled={true}
+              inputRef={register}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              error={!!errors.password || !!userApiErrors?.password}
+              helperText={"Password not required for non-Moped users"}
+            />
+          )}
         </Grid>
+
         <Grid item xs={12} md={6}>
           {workgroupLoading ? (
             <CircularProgress />
