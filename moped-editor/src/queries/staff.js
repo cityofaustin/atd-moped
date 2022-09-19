@@ -19,3 +19,20 @@ export const GET_USER = gql`
     }
   }
 `;
+
+export const ADD_NON_MOPED_USER = gql`
+mutation AddNonMopedUser($object: moped_users_insert_input!, on_conflict: {constraint: moped_users_email_key}) {
+    date_added
+    first_name
+    last_name
+    staff_uuid
+    title
+    user_id
+    workgroup
+    workgroup_id
+    email
+    roles
+    is_deleted
+  }
+}
+`;

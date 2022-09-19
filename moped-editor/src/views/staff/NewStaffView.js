@@ -2,6 +2,7 @@ import React from "react";
 import StaffForm from "./StaffForm";
 import { useNavigate } from "react-router-dom";
 import { useUserApi } from "./helpers";
+import { useMutation } from "@apollo/client";
 import * as yup from "yup";
 
 import {
@@ -13,6 +14,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Page from "src/components/Page";
+import { ADD_NON_MOPED_USER } from "src/queries/staff";
 
 export const initialFormValues = {
   first_name: "",
@@ -32,6 +34,7 @@ const validationSchema = yup.object().shape({
   workgroup: yup.string().required(),
   workgroup_id: yup.string().required(),
   email: yup.string().required().email().lowercase(),
+  // Password is not required for non-Moped users since they will not be added to Cognito user pool
   password: yup.string().when("roles", {
     is: (val) => val !== "non-moped-user",
     then: yup.string().required(),
@@ -43,6 +46,7 @@ const NewStaffView = () => {
   let navigate = useNavigate();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
+  const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);
 
   /**
    * Submit create user request
