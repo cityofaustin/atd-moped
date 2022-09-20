@@ -238,7 +238,7 @@ const StaffForm = ({
             }
           />
         </Grid>
-
+        {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid item xs={12} md={6}>
           {currentSelectedRole !== "non-moped-user" ? (
             <TextField

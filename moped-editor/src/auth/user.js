@@ -294,6 +294,8 @@ export const findHighestRole = roles => {
       return "moped-editor";
     case findRole("moped-viewer"):
       return "moped-viewer";
+    case findRole("non-moped-user"):
+      return "non-moped-user"
     default:
   }
 };
