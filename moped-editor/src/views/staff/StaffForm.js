@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const roleOptions = [
-  { value: "non-moped-user", name: "Non-Moped User" },
+  { value: "non-login-user", name: "Non-login User" },
   { value: "moped-viewer", name: "Viewer" },
   { value: "moped-editor", name: "Editor" },
   { value: "moped-admin", name: "Admin" },
@@ -157,7 +157,7 @@ const StaffForm = ({
 
   // TODO:
   // 1. Add disabled fields config to decouple isUserActive from form
-  //    and to allow password field to be disabled when roles === "non-moped-user"
+  //    and to allow password field to be disabled when roles === "non-login-user"
   // 2. Decouple form from useForm hook so that we can set form elements based on non-moped or moped user
   const currentSelectedRole = watch("roles");
 
@@ -240,7 +240,7 @@ const StaffForm = ({
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid item xs={12} md={6}>
-          {currentSelectedRole !== "non-moped-user" ? (
+          {currentSelectedRole !== "non-login-user" ? (
             <TextField
               fullWidth
               name="password"
@@ -271,7 +271,7 @@ const StaffForm = ({
               }}
               variant="outlined"
               error={!!errors.password || !!userApiErrors?.password}
-              helperText={"Password not required for non-Moped users"}
+              helperText={"Password not required for non-login users"}
             />
           )}
         </Grid>

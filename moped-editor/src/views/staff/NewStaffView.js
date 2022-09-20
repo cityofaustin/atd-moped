@@ -36,7 +36,7 @@ const validationSchema = yup.object().shape({
   email: yup.string().required().email().lowercase(),
   // Password is not required for non-Moped users since they will not be added to Cognito user pool
   password: yup.string().when("roles", {
-    is: (val) => val !== "non-moped-user",
+    is: (val) => val !== "non-login-user",
     then: yup.string().required(),
   }),
   roles: yup.string().required(),
@@ -58,12 +58,12 @@ const NewStaffView = () => {
 
     console.log(data);
 
-    const isNonMopedUser = data.roles.includes("non-moped-user");
+    const isNonMopedUser = data.roles.includes("non-login-user");
 
     if (isNonMopedUser) {
       const { password, ...restOfData } = data;
 
-      // TODO: If roles === "non-moped-user":
+      // TODO: If roles === "non-login-user":
       // 1. Use new add user mutation to add them to moped_users table ✅
       // 2. Do not use the Moped API ✅
       // 3. Down the line - create register user route and button to convert
