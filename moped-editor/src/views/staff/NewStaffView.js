@@ -7,14 +7,23 @@ import * as yup from "yup";
 
 import {
   Box,
+  Button,
   Container,
   Card,
   CardHeader,
   CardContent,
   Divider,
+  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import { ADD_NON_MOPED_USER } from "src/queries/staff";
+
+const useStyles = makeStyles((theme) => ({
+  formButton: {
+    margin: theme.spacing(1),
+    color: "white",
+  },
+}));
 
 export const initialFormValues = {
   first_name: "",
@@ -44,6 +53,7 @@ const validationSchema = yup.object().shape({
 
 const NewStaffView = () => {
   let navigate = useNavigate();
+  const classes = useStyles();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
   const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);
@@ -56,18 +66,10 @@ const NewStaffView = () => {
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
-    console.log(data);
-
     const isNonMopedUser = data.roles.includes("non-login-user");
 
     if (isNonMopedUser) {
       const { password, ...restOfData } = data;
-
-      // TODO: If roles === "non-login-user":
-      // 1. Use new add user mutation to add them to moped_users table ✅
-      // 2. Do not use the Moped API ✅
-      // 3. Down the line - create register user route and button to convert
-      //    from non-Moped user to Moped user (that can log in & is in Cognito and DynamoDB)
 
       addNonMopedUser({
         variables: {
@@ -102,6 +104,27 @@ const NewStaffView = () => {
                 showUpdateUserStatusButtons={false}
                 showFormResetButton={true}
                 validationSchema={validationSchema}
+                FormButtons={({ isSubmitting, reset }) => (
+                  <>
+                    <Button
+                      className={classes.formButton}
+                      disabled={isSubmitting}
+                      type="submit"
+                      color="primary"
+                      variant="contained"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className={classes.formButton}
+                      color="secondary"
+                      variant="contained"
+                      onClick={() => reset(initialFormValues)}
+                    >
+                      Reset
+                    </Button>
+                  </>
+                )}
               />
             </CardContent>
           </Card>

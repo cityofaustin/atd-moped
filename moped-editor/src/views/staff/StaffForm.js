@@ -74,6 +74,7 @@ const StaffForm = ({
   validationSchema,
   userCognitoId,
   isUserActive = true,
+  FormButtons,
 }) => {
   const classes = useStyles();
 
@@ -354,39 +355,40 @@ const StaffForm = ({
           {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (
-            <>
-              <Button
-                className={classes.formButton}
-                style={!isUserActive ? { display: "none" } : {}}
-                disabled={isSubmitting}
-                type="submit"
-                color="primary"
-                variant="contained"
-              >
-                Save
-              </Button>
-              {showFormResetButton && (
-                <Button
-                  className={classes.formButton}
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => reset(initialFormValues)}
-                >
-                  Reset
-                </Button>
-              )}
-              {showUpdateUserStatusButtons && (
-                <StaffUpdateUserStatusButtons
-                  isUserActive={isUserActive}
-                  handleCloseModal={handleCloseModal}
-                  email={watch("email")}
-                  password={watch("password")}
-                  roles={watch("roles")}
-                  userCognitoId={userCognitoId}
-                  setModalState={setModalState}
-                />
-              )}
-            </>
+            <FormButtons isSubmitting={isSubmitting} reset={reset} />
+            // <>
+            //   <Button
+            //     className={classes.formButton}
+            //     style={!isUserActive ? { display: "none" } : {}}
+            //     disabled={isSubmitting}
+            //     type="submit"
+            //     color="primary"
+            //     variant="contained"
+            //   >
+            //     Save
+            //   </Button>
+            //   {showFormResetButton && (
+            //     <Button
+            //       className={classes.formButton}
+            //       color="secondary"
+            //       variant="contained"
+            //       onClick={() => reset(initialFormValues)}
+            //     >
+            //       Reset
+            //     </Button>
+            //   )}
+            //   {showUpdateUserStatusButtons && (
+            //     <StaffUpdateUserStatusButtons
+            //       isUserActive={isUserActive}
+            //       handleCloseModal={handleCloseModal}
+            //       email={watch("email")}
+            //       password={watch("password")}
+            //       roles={watch("roles")}
+            //       userCognitoId={userCognitoId}
+            //       setModalState={setModalState}
+            //     />
+            //   )}
+            // </>
           )}
           <StaffFormConfirmModal
             isLoading={isUserApiLoading}
