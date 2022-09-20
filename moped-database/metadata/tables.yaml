@@ -139,6 +139,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
     - role: moped-editor
@@ -147,6 +148,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
   select_permissions:
@@ -155,6 +157,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
         filter: {}
@@ -163,6 +166,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
         filter: {}
@@ -171,6 +175,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
         filter: {}
@@ -180,6 +185,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
         filter: {}
@@ -189,6 +195,7 @@
         columns:
           - component_id
           - component_name
+          - status_id
           - component_subtype
           - line_representation
         filter: {}
