@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -7,7 +7,6 @@ import { findHighestRole } from "../../auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
-  Button,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -24,7 +23,6 @@ import {
 } from "@material-ui/core";
 import StaffFormErrorModal from "./components/StaffFormErrorModal";
 import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
-import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
 
 const useStyles = makeStyles((theme) => ({
   formSelect: {
@@ -355,40 +353,13 @@ const StaffForm = ({
           {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (
-            <FormButtons isSubmitting={isSubmitting} reset={reset} />
-            // <>
-            //   <Button
-            //     className={classes.formButton}
-            //     style={!isUserActive ? { display: "none" } : {}}
-            //     disabled={isSubmitting}
-            //     type="submit"
-            //     color="primary"
-            //     variant="contained"
-            //   >
-            //     Save
-            //   </Button>
-            //   {showFormResetButton && (
-            //     <Button
-            //       className={classes.formButton}
-            //       color="secondary"
-            //       variant="contained"
-            //       onClick={() => reset(initialFormValues)}
-            //     >
-            //       Reset
-            //     </Button>
-            //   )}
-            //   {showUpdateUserStatusButtons && (
-            //     <StaffUpdateUserStatusButtons
-            //       isUserActive={isUserActive}
-            //       handleCloseModal={handleCloseModal}
-            //       email={watch("email")}
-            //       password={watch("password")}
-            //       roles={watch("roles")}
-            //       userCognitoId={userCognitoId}
-            //       setModalState={setModalState}
-            //     />
-            //   )}
-            // </>
+            <FormButtons
+              isSubmitting={isSubmitting}
+              reset={reset}
+              handleCloseModal={handleCloseModal}
+              setModalState={setModalState}
+              watch={watch}
+            />
           )}
           <StaffFormConfirmModal
             isLoading={isUserApiLoading}

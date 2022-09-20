@@ -2,21 +2,31 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
+import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
 import { useUserApi } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
 import {
   Box,
+  Button,
   Container,
   Card,
   CardHeader,
   CardContent,
   CircularProgress,
   Divider,
+  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
+
+const useStyles = makeStyles((theme) => ({
+  formButton: {
+    margin: theme.spacing(1),
+    color: "white",
+  },
+}));
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -32,6 +42,7 @@ const validationSchema = yup.object().shape({
 const EditStaffView = () => {
   const { userId } = useParams();
   let navigate = useNavigate();
+  const classes = useStyles();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
@@ -93,6 +104,33 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
+                      FormButtons={({
+                        isSubmitting,
+                        watch,
+                        handleCloseModal,
+                        setModalState,
+                      }) => (
+                        <>
+                          <Button
+                            className={classes.formButton}
+                            disabled={isSubmitting}
+                            type="submit"
+                            color="primary"
+                            variant="contained"
+                          >
+                            Save
+                          </Button>
+                          <StaffUpdateUserStatusButtons
+                            isUserActive={true}
+                            handleCloseModal={handleCloseModal}
+                            email={watch("email")}
+                            password={watch("password")}
+                            roles={watch("roles")}
+                            userCognitoId={userCognitoId}
+                            setModalState={setModalState}
+                          />
+                        </>
+                      )}
                     />
                   )}
                 </CardContent>
