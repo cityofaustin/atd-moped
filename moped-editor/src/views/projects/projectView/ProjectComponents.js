@@ -81,6 +81,8 @@ const ProjectComponents = () => {
     },
   });
 
+  console.log("DATA", data)
+
   const projectFeatureCollection = data?.moped_proj_components
     ? createProjectFeatureCollection(data.moped_proj_components)
     : null;

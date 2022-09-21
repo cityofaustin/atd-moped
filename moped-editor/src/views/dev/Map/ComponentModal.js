@@ -11,7 +11,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { CheckCircleOutline } from "@material-ui/icons";
+import { CheckCircleOutline, SettingsCellOutlined } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -115,7 +115,12 @@ const initialFormState = fields.reduce((prev, curr) => {
   return prev;
 }, {});
 
-const ComponentModal = ({ showDialog, setShowDialog, dispatchComponents }) => {
+const ComponentModal = ({
+  showDialog,
+  setShowDialog,
+  dispatchComponents,
+  setCurrTab,
+}) => {
   const classes = useStyles();
   const [formState, dispatchFormState] = useReducer(
     formStateReducer,
@@ -125,7 +130,7 @@ const ComponentModal = ({ showDialog, setShowDialog, dispatchComponents }) => {
     <Dialog
       open={showDialog}
       onClose={() => setShowDialog(false)}
-      maxWidth={"lg"}
+      fullWidth
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
@@ -196,6 +201,7 @@ const ComponentModal = ({ showDialog, setShowDialog, dispatchComponents }) => {
                       _id: randomComponentId(),
                     },
                   });
+                  setCurrTab(1);
                   setShowDialog(false);
                 }}
               >
