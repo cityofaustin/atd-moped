@@ -12,7 +12,16 @@ create type representation as enum ('point', 'line');
 
 create table component_types (
     id serial primary key,
-    component_type character varying,
-    component_subtype character varying,
-    representation_type representation
+    type character varying,
+    subtype character varying,
+    subcomponent character varying,
+    representation representation
     );
+
+insert into component_types (id, type, subtype, subcomponent, representation) values (1, 'Access Control', 'Driveway Closure', null, 'point');
+insert into component_types (id, type, subtype, subcomponent, representation) values (2, 'Access Control', 'Driveway Gate', null, 'line');
+insert into component_types (id, type, subtype, subcomponent, representation) values (3, 'Access Control', 'Driveway Modification', null, 'point');
+insert into component_types (id, type, subtype, subcomponent, representation) values (4, 'Bike Box', null, null, 'line');
+insert into component_types (id, type, subtype, subcomponent, representation) values (5, 'Bike Lane', 'Buffered', null, 'line');
+insert into component_types (id, type, subtype, subcomponent, representation) values (6, 'Bike Lane', 'Buffered', 'Raised Pavement Markers', 'line');
+insert into component_types (id, type, subtype, subcomponent, representation) values (7, 'Bike Parking', 'Corral', null, 'point');
