@@ -126,4 +126,8 @@ export const nonLoginUserRole = "non-login-user";
  * @param {Array} roles - roles assigned to the user
  * @returns {boolean} Whether the user is a non-login user
  */
-export const isUserNonLoginUser = (roles) => roles.includes(nonLoginUserRole);
+export const isUserNonLoginUser = (roles) => {
+  if (roles === undefined || roles === null) return false;
+
+  return roles.includes(nonLoginUserRole);
+};

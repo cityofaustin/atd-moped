@@ -69,6 +69,7 @@ const NewStaffView = () => {
     const isNonLoginUser = isUserNonLoginUser(data.roles);
 
     if (isNonLoginUser) {
+      // Remove the password for the non-login user create mutation
       const { password, ...restOfData } = data;
 
       addNonMopedUser({

@@ -56,11 +56,9 @@ const roleOptions = [
  * @param {function} setUserApiError - modify or clear Moped API user routes errors
  * @param {boolean} isUserApiLoading - Moped API user route API call loading state
  * @param {function} setIsUserApiLoading - modify Moped API user route API call loading state
- * @param {boolean} showUpdateUserStatusButtons - show/hide user activate/deactivate button
- * @param {boolean} showFormResetButton - show/hide form values reset button
  * @param {Object} validationSchema - Yup formatted form validation schema
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
+ * @param {function} FormButtons - React function components that renders form action buttons
  * @returns {JSX.Element}
  * @constructor
  */
@@ -71,10 +69,7 @@ const StaffForm = ({
   setUserApiError,
   isUserApiLoading,
   setIsUserApiLoading,
-  showUpdateUserStatusButtons,
-  showFormResetButton,
   validationSchema,
-  userCognitoId,
   isUserActive = true,
   FormButtons,
 }) => {
