@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Generates a button to inactivate or activate an existing user
+ * Generates a button to inactivate or activate an existing user AND register/activate a non-login user
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {function} setModalState - set the modal's details
  * @param {function} handleCloseModal - callback that fires on modal close
