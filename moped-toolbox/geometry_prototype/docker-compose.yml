@@ -1,4 +1,4 @@
-# Architecture Independent Docker Stack Components for Moped Development Environment
+# this is aimed at arm64, swapping out the postgis image for one on dockerhub should work for x86
 
 version: '3.7'
 services:
