@@ -26,7 +26,7 @@ AS WITH project_person_list_lookup AS (
         LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
     GROUP BY mpt.project_id
   )
- select
+ SELECT
     mp.project_uuid,
     mp.project_id,
     mp.project_name,
@@ -123,7 +123,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
-     left join moped_proj_contract contracts on (mp.project_id = contracts.project_id)
+     LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id)
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
