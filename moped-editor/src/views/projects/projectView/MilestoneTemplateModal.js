@@ -1,23 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Box,
+  Checkbox,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
+  List,
+  ListItemText,
+  ListItemIcon,
+  ListItem,
   TextField,
-  Typography,
 } from "@material-ui/core";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import AddCircle from "@material-ui/icons/AddCircle";
-import MaterialTable from "@material-table/core";
 import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
-
-
-import typography from "../../../theme/typography";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -29,7 +29,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const templateChoices = ["AMD", "PDD"];
 
 const MilestoneTemplateModal = ({
@@ -37,52 +36,59 @@ const MilestoneTemplateModal = ({
   handleDialogClose,
   projectId,
   milestoneNameLookup,
-  selectedMilestones
+  selectedMilestones,
 }) => {
   const classes = useStyles();
-  const typographyStyle = {
-    fontFamily: typography.fontFamily,
-    fontSize: "14px",
-  };
 
   const [template, setTemplate] = useState(null);
-  const [milestones, setMilestones] = useState([]);
-  const data = [];
-
-
+  const [milestonesList, setMilestonesList] = useState([]);
+  const [milestonesToAdd, setMilestonesToAdd] = useState([]);
   // when you pick a template
   // load the milestones and put in state
-  // show on a table. 
+  // show on a table.
   // make it so you can toggle them off
 
-
   const handleAddMilestones = () => {
-    console.log("add the thing")
+    console.log("add the thing");
     // run the update
   };
 
-  const selectedMilestonesIds = selectedMilestones.map(milestone => milestone.milestone_id)
-
-  const selectMilestones = () => {
-    setMilestones([]);
+  useEffect(() => {
+    console.log("template changed");
     let choices = [];
+    const selectedMilestonesIds = selectedMilestones.map(
+      (milestone) => milestone.milestone_id
+    );
+    setMilestonesList([]);
     if (template === "AMD") {
-      choices = returnSignalPHBMilestoneTemplate(projectId)
-      choices.forEach(choice=>console.log(!selectedMilestonesIds.includes(choice.milestone_id)))
-      setMilestones(choices.filter(choice => !selectedMilestonesIds.includes(choice.milestone_id)))
+      choices = returnSignalPHBMilestoneTemplate(projectId);
+      const filteredChoices = choices.filter(
+        (choice) => !selectedMilestonesIds.includes(choice.milestone_id)
+      );
+      setMilestonesList(filteredChoices);
+      setMilestonesToAdd(filteredChoices);
     }
-  }
+  }, [template, selectedMilestones, projectId]);
 
-console.log(milestones)
-const columns = [
-  {
-    field: "milestone_id",
-    title: "Milestone name",
-    cellStyle: { padding: "12px" },
-    render: (entry) => ( milestoneNameLookup[entry.milestone_id]
-      ),
-  }
-];
+  const handleToggle = (milestone) => {
+    const currentIndex = milestonesToAdd.indexOf(milestone);
+    const newChecked = [...milestonesToAdd];
+
+    if (currentIndex === -1) {
+      newChecked.push(milestone);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setMilestonesToAdd(newChecked);
+  };
+
+  const closeDialog = () => {
+    handleDialogClose();
+    setMilestonesToAdd([]);
+    setMilestonesList([]);
+    setTemplate(null);
+  };
 
   return (
     <Dialog
@@ -93,28 +99,22 @@ const columns = [
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>Select milestone template</h3>
-        <IconButton onClick={() => handleDialogClose()}>
+        <IconButton onClick={closeDialog}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Box my={3} sx={{display: "flex", justifyContent: "space-between" }}>
-                  <Autocomplete
-            // value={
-            //   templateTypesList.filter(type => type.type_id === projectTypeId)
-            //     .type_name
-            // }
-            style={{width: "250px"}}
+        <Box my={3} sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Autocomplete
+            style={{ width: "250px" }}
             defaultValue={null}
             id="specify-milestone-template-autocomplete"
             options={templateChoices}
             // getOptionLabel={t => t.type_name}
             onChange={(event, newValue) => {
-              console.log(newValue)
               setTemplate(newValue);
-              selectMilestones(newValue);
             }}
-            renderInput={params => (
+            renderInput={(params) => (
               <TextField
                 {...params}
                 variant="standard"
@@ -129,30 +129,38 @@ const columns = [
             size="medium"
             startIcon={<AddCircle />}
             onClick={handleAddMilestones}
-            disabled={!template}
+            disabled={milestonesToAdd.length === 0}
           >
             Add milestones
           </Button>
         </Box>
-        {milestones.length > 0 &&
-        <MaterialTable
-          columns={columns}
-          data={milestones}
-          options={{
-            paging: false,
-            search: false,
-            toolbar: false,
-            tableLayout: "fixed",
-            selection: true,
-            rowStyle: typographyStyle,
-            pageSize: 10,
-            showSelectAllCheckbox: false,
-            selectionProps: rowData => {
-              console.log(rowData.milestone_id)
-              return {color: "primary", checked: true}}
-          }}
-          onSelectionChange={(rows) => console.log(rows)}
-        />}
+        <List dense>
+          {milestonesList.map((milestone) => {
+            return (
+              <ListItem
+                button
+                key={milestone.milestone_id}
+                role={undefined}
+                dense
+                onClick={() => handleToggle(milestone)}
+              >
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    checked={milestonesToAdd.indexOf(milestone) > -1}
+                    tabIndex={-1}
+                    disableRipple
+                    color={"primary"}
+                    // inputProps={{ 'aria-labelledby': labelId }}
+                  />
+                </ListItemIcon>
+                <ListItemText
+                  primary={milestoneNameLookup[milestone.milestone_id]}
+                />
+              </ListItem>
+            );
+          })}
+        </List>
       </DialogContent>
     </Dialog>
   );

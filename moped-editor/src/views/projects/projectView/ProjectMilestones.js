@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 // Material
 import {
-  Button,
   CircularProgress,
   TextField,
   Typography,
@@ -10,7 +9,6 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import {
-  AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@material-ui/icons";
 import MaterialTable, {
@@ -328,6 +326,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         handleDialogClose={handleTemplateModalClose}
         milestoneNameLookup={milestoneNameLookup}
         selectedMilestones={data.moped_proj_milestones}
+    //     selectedMilestonesIds={data?.moped_proj_milestones.map(
+    // (milestone) => milestone.milestone_id)}
         projectId={projectId}
       />
       </>
