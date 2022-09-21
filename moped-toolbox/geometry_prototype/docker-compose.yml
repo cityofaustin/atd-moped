@@ -1,0 +1,41 @@
+# Architecture Independent Docker Stack Components for Moped Development Environment
+
+version: '3.7'
+services:
+    graphql-engine:
+        image: hasura/graphql-engine:v2.11.2
+        restart: always
+        depends_on:
+            - postgis 
+        expose:
+            - 8080
+        ports:
+            - 8080:8080
+        environment:
+            - HASURA_GRAPHQL_ENABLE_CONSOLE=false
+            - HASURA_GRAPHQL_ENABLE_TELEMETRY=false
+            - HASURA_GRAPHQL_DATABASE_URL=postgres://moped:moped@postgis:5432/moped
+            - HASURA_GRAPHQL_CONSOLE_ASSETS_DIR=/srv/console-assets
+            - MOPED_API_ACTIONS_URL=http://localhost:5000/actions
+            - MOPED_API_EVENTS_URL=http://localhost:5000/events
+            - MOPED_API_APIKEY=0000000000000000000000000000000000000000000000000000000000000000
+        command: ["graphql-engine", "serve",  "--enable-console"]
+    postgis:
+        image: "frankinaustin/postgis:12-3.2"
+        volumes:
+            - geometry_prototype:/var/lib/postgresql/data
+        expose:
+            - 5432
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=moped
+            - POSTGRES_PASSWORD=moped
+            - POSTGRES_DB=moped
+        command: ["postgres", "-c", "jit=off"]
+
+
+# There is a volume which is common
+volumes:
+    geometry_prototype:
+        driver: local
