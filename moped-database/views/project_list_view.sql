@@ -113,8 +113,8 @@ AS WITH project_person_list_lookup AS (
         AND personnel.is_deleted = false
         AND personnel.project_id = mp.project_id
       GROUP BY personnel.project_id) AS project_designer,
-    string_agg(contracts.contractor, ', ') as contractors,
-    string_agg(contracts.contract_number, ', ') as contract_numbers
+    string_agg(contracts.contractor, ', ') AS contractors,
+    string_agg(contracts.contract_number, ', ') AS contract_numbers
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
