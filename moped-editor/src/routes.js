@@ -84,17 +84,17 @@ export const routes = [
         element: <LookupsView />,
       },
       {
-        path: "dev/map",
-        action: "style:visit",
-        element: <MapView />,
-      },
-      {
         path: "views/signal-projects",
         action: "projects:visit",
         element: <SignalProjectTable />,
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
+  },
+  {
+    path: "moped/dev/map",
+    action: "style:visit",
+    element: <MapView />,
   },
 ];
 
