@@ -153,10 +153,6 @@ const StaffForm = ({
     setIsUserApiLoading(false);
   };
 
-  // TODO:
-  // 1. Add disabled fields config to decouple isUserActive from form
-  //    and to allow password field to be disabled when roles === "non-login-user"
-  // 2. Decouple form from useForm hook so that we can set form elements based on non-moped or moped user
   const currentSelectedRole = watch("roles");
 
   return (
