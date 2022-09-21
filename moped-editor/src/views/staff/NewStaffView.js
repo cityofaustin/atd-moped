@@ -1,5 +1,9 @@
 import React from "react";
 import StaffForm from "./StaffForm";
+import {
+  StaffFormResetButton,
+  StaffFormSaveButton,
+} from "./components/StaffFormButtons";
 import { useNavigate } from "react-router-dom";
 import { isUserNonLoginUser, useUserApi, nonLoginUserRole } from "./helpers";
 import { useMutation } from "@apollo/client";
@@ -7,23 +11,14 @@ import * as yup from "yup";
 
 import {
   Box,
-  Button,
   Container,
   Card,
   CardHeader,
   CardContent,
   Divider,
-  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import { ADD_NON_MOPED_USER } from "src/queries/staff";
-
-const useStyles = makeStyles((theme) => ({
-  formButton: {
-    margin: theme.spacing(1),
-    color: "white",
-  },
-}));
 
 export const initialFormValues = {
   first_name: "",
@@ -53,7 +48,6 @@ const validationSchema = yup.object().shape({
 
 const NewStaffView = () => {
   let navigate = useNavigate();
-  const classes = useStyles();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
   const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);
@@ -107,23 +101,10 @@ const NewStaffView = () => {
                 validationSchema={validationSchema}
                 FormButtons={({ isSubmitting, reset }) => (
                   <>
-                    <Button
-                      className={classes.formButton}
-                      disabled={isSubmitting}
-                      type="submit"
-                      color="primary"
-                      variant="contained"
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      className={classes.formButton}
-                      color="secondary"
-                      variant="contained"
+                    <StaffFormSaveButton disabled={isSubmitting} />
+                    <StaffFormResetButton
                       onClick={() => reset(initialFormValues)}
-                    >
-                      Reset
-                    </Button>
+                    />
                   </>
                 )}
               />

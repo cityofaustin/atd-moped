@@ -9,24 +9,16 @@ import * as yup from "yup";
 
 import {
   Box,
-  Button,
   Container,
   Card,
   CardHeader,
   CardContent,
   CircularProgress,
   Divider,
-  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
-
-const useStyles = makeStyles((theme) => ({
-  formButton: {
-    margin: theme.spacing(1),
-    color: "white",
-  },
-}));
+import { StaffFormSaveButton } from "./components/StaffFormButtons";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -42,7 +34,6 @@ const validationSchema = yup.object().shape({
 const EditStaffView = () => {
   const { userId } = useParams();
   let navigate = useNavigate();
-  const classes = useStyles();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
 
@@ -112,18 +103,11 @@ const EditStaffView = () => {
                         setModalState,
                       }) => (
                         <>
-                          <Button
-                            className={classes.formButton}
-                            disabled={isSubmitting}
-                            type="submit"
-                            color="primary"
-                            variant="contained"
-                          >
-                            Save
-                          </Button>
+                          <StaffFormSaveButton disabled={isSubmitting} />
                           <StaffUpdateUserStatusButtons
                             isUserActive={isUserActive}
                             isUserNonLoginUser={
+                              // Updating from non-login to other role requires user activation
                               watch("roles") !== nonLoginUserRole &&
                               isNonLoginUser
                             }
