@@ -3,6 +3,7 @@ const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 export const MAP_STYLES = {
   "project-points": {
     id: "project-points",
+    _featureIdProp: "INTERSECTION_ID",
     type: "circle",
     paint: {
       "circle-radius": {
@@ -96,7 +97,7 @@ export const MAP_STYLES = {
   "ctn-points": {
     id: "ctn-points",
     type: "circle",
-    // "source-layer": "ATD_ADMIN.CTN_Intersections",
+    _featureIdProp: "INTERSECTION_ID",
     paint: {
       "circle-radius": {
         stops: [
@@ -112,6 +113,23 @@ export const MAP_STYLES = {
         "#607d8f",
       ],
       "circle-opacity": 0.4,
+    },
+    minzoom: 15,
+  },
+  "ctn-points-underlay": {
+    id: "ctn-points-underlay",
+    type: "circle",
+    _featureIdProp: "INTERSECTION_ID",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [5, 2],
+          [16, 15],
+        ],
+      },
+      "circle-stroke-opacity": 0,
+      "circle-color": "#000",
+      "circle-opacity": 0,
     },
     minzoom: 15,
   },

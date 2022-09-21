@@ -14,7 +14,12 @@ const useFeatureTypes = (featureCollection, geomType) =>
     return { type: "FeatureCollection", features };
   }, [featureCollection, geomType]);
 
-export default function TheMap({ projectFeatures, setProjectFeatures }) {
+export default function TheMap({
+  projectFeatures,
+  setProjectFeatures,
+  setHoveredOnMapFeatureId,
+  isEditingMap,
+}) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
   const mapRef = useRef();
@@ -43,6 +48,10 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
   const onMouseEnter = (e) => {
     setCursor("pointer");
     e.features.map((feature) => {
+      if (feature.layer.id.includes("project")) {
+        // it's a project feature, so add to the hover tracking for sidebar interaction
+        setHoveredOnMapFeatureId(feature.properties.id);
+      }
       mapRef.current?.setFeatureState(feature, { hover: true });
     });
   };
@@ -51,6 +60,7 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
     setCursor("grab");
     e.features.map((feature) => {
       mapRef.current?.setFeatureState(feature, { hover: false });
+      setHoveredOnMapFeatureId(null);
     });
   };
 
@@ -103,6 +113,7 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
 
     newProjectFeatures.features.push(newFeature);
     setProjectFeatures(newProjectFeatures);
+    setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
   const onMoveEnd = (e) => {
@@ -114,14 +125,16 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
     <MapGL
       ref={mapRef}
       initialViewState={initialViewState}
-      interactiveLayerIds={[
-        "project-points",
-        // "ctn-lines",
-        "ctn-lines-underlay",
-        "project-lines-underlay",
-        // "project-lines",
-        "ctn-points",
-      ]}
+      interactiveLayerIds={
+        isEditingMap
+          ? [
+              "ctn-lines-underlay",
+              "project-lines-underlay",
+              "ctn-points-underlay",
+              "project-points",
+            ]
+          : []
+      }
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMoveEnd={onMoveEnd}
@@ -136,8 +149,8 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
         data={ctnLinesGeojson}
         promoteId={SOURCES["ctn-lines"]._featureIdProp}
       >
-        <Layer {...mapStyles["ctn-lines-underlay"]} />
-        <Layer {...mapStyles["ctn-lines"]} />
+        {isEditingMap && <Layer {...mapStyles["ctn-lines-underlay"]} />}
+        {isEditingMap && <Layer {...mapStyles["ctn-lines"]} />}
       </Source>
       {/* <Source
         id="ctn-points"
@@ -152,7 +165,8 @@ export default function TheMap({ projectFeatures, setProjectFeatures }) {
         data={ctnPointsGeojson}
         promoteId={SOURCES["ctn-points"]._featureIdProp}
       >
-        <Layer {...mapStyles["ctn-points"]} />
+        {isEditingMap && <Layer {...mapStyles["ctn-points-underlay"]} />}
+        {isEditingMap && <Layer {...mapStyles["ctn-points"]} />}
       </Source>
       <Source
         id="project-lines"

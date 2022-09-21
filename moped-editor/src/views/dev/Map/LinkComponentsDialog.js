@@ -17,6 +17,7 @@ import { CheckCircleOutline } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { cloneDeep } from "lodash";
+import { handleNewComponentFeatureLink } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -43,42 +44,11 @@ const LinkComponentsDialog = ({
   const [componentIdsToLink, setComponentIdsToLink] = useState([]);
 
   const onSave = () => {
-    /**
-     * let's assume componentFeatures is an object that looks like this
-     * {
-     *  features:
-     *    [
-     *      id: <someVal>,
-     *      components: <array of component ids>
-     *     ]
-     *   }
-     * }
-     */
-
-    // make a new copy, then we can rely on object references to keep things tidy
-    const newComponentFeatures = cloneDeep(componentFeatures);
-    // add the selected components to the features
-    const existingFeaturesWithLinks = newComponentFeatures.features;
-    selectedFeatures.forEach((thisFeature) => {
-      // is this feature already known to componentFeatures?
-      const isExistingFeature = existingFeaturesWithLinks.find(
-        (existingFeature) => existingFeature.id === thisFeature.properties.id
-      );
-      if (isExistingFeature) {
-        // add all of the current component IDs to it
-        isExistingFeature.components.push(componentIdsToLink);
-        // and lazily de-dupe it
-        isExistingFeature.components = [
-          ...new Set(isExistingFeature.components),
-        ];
-      } else {
-        // this feature previously had 0 components - add them
-        existingFeaturesWithLinks.push({
-          id: thisFeature.properties.id,
-          components: [...componentIdsToLink],
-        });
-      }
-    });
+    const newComponentFeatures = handleNewComponentFeatureLink(
+      componentFeatures,
+      selectedFeatures,
+      componentIdsToLink
+    );
     // commit state
     setComponentFeatures(newComponentFeatures);
     // reset other states

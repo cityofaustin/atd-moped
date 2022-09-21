@@ -1,23 +1,19 @@
 import React, { useState, useReducer, useMemo } from "react";
 import {
   Button,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
   Grid,
   TextField,
-  Select,
-  MenuItem,
 } from "@material-ui/core";
-import { CheckCircleOutline, SettingsCellOutlined } from "@material-ui/icons";
+import { CheckCircleOutline } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { COMPONENTS } from "./data/components";
-import { input } from "aws-amplify";
-import { sub } from "date-fns";
+import { handleNewComponentFeatureLink } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -35,18 +31,25 @@ const componentLabel = ({ component_name, component_subtype }) => {
     : `${component_name}`;
 };
 
-const componentOptions = COMPONENTS.moped_components.map((comp) => ({
-  value: comp.component_id,
-  label: componentLabel(comp),
-  data: comp,
-}));
+const useComponentOptions = (linkMode) =>
+  useMemo(() => {
+    const isLineRepresentation = linkMode === "lines";
+    const options = COMPONENTS.moped_components
+      .filter((comp) => comp.line_representation === isLineRepresentation)
+      .map((comp) => ({
+        value: comp.component_id,
+        label: componentLabel(comp),
+        data: comp,
+      }));
+    // add empty option for default state
+    return [...options, { value: "", label: "" }];
+  }, [linkMode]);
 
 const fields = [
   {
     key: "type",
     label: "Type",
     type: "autocomplete",
-    options: componentOptions,
   },
   {
     key: "description",
@@ -67,30 +70,28 @@ const fields = [
 //   );
 // };
 
-const randomComponentId = () => Math.floor(Math.random() * 10000000000);
+const randomComponentId = () => Math.floor(Math.random() * 10000000);
 
 const CustomAutocomplete = ({
   fieldKey,
-  options,
   autoFocus,
   dispatchFormState,
   value,
   fieldLabel,
+  linkMode,
 }) => {
-  const theOptions = useMemo(() => {
-    return [...options, { value: "", label: "" }];
-  }, [options]);
+  const options = useComponentOptions(linkMode);
 
   return (
     <Autocomplete
       id="combo-box-demo"
-      options={theOptions}
+      options={options}
       getOptionLabel={(option) => {
         return option.label || "";
       }}
       value={value}
       onChange={(e, option) => {
-        dispatchFormState({ key: fieldKey, value: option });
+        dispatchFormState({ key: fieldKey, value: option, action: "update" });
       }}
       getOptionSelected={(option, value) => option.value === value.value}
       renderInput={(params) => (
@@ -106,30 +107,84 @@ const CustomAutocomplete = ({
   );
 };
 
-function formStateReducer(state, { key, value }) {
-  return { ...state, [key]: value };
-}
-
 const initialFormState = fields.reduce((prev, curr) => {
   prev[curr.key] = "";
   return prev;
 }, {});
+
+function formStateReducer(state, { key, value, action }) {
+  if (action === "update") {
+    return { ...state, [key]: value };
+  } else {
+    return initialFormState;
+  }
+}
 
 const ComponentModal = ({
   showDialog,
   setShowDialog,
   dispatchComponents,
   setCurrTab,
+  selectedFeatures,
+  componentFeatures,
+  setLinkMode,
+  setComponentFeatures,
+  setIsLinkingComponents,
+  setSelectedFeatures,
+  setIsCreatingComponent,
+  linkMode,
 }) => {
   const classes = useStyles();
   const [formState, dispatchFormState] = useReducer(
     formStateReducer,
     initialFormState
   );
+
+  const onSave = (e) => {
+    e.preventDefault();
+    const newComponent = {
+      ...formState.type.data,
+      description: formState.description,
+      label: formState.type.label,
+      _id: randomComponentId(),
+    };
+
+    const newComponentFeatures = handleNewComponentFeatureLink(
+      componentFeatures,
+      selectedFeatures,
+      [newComponent._id]
+    );
+    // save component
+    dispatchComponents({
+      action: "add",
+      component: newComponent,
+    });
+
+    // save componentFeature links
+    setComponentFeatures(newComponentFeatures);
+
+    // reset other states
+    setSelectedFeatures([]);
+    setLinkMode(null);
+    setIsLinkingComponents(false);
+    setIsCreatingComponent(false);
+    dispatchFormState({ action: "reset" });
+    // switch to components tab
+    setCurrTab(0);
+    setShowDialog(false);
+  };
+
   return (
     <Dialog
       open={showDialog}
-      onClose={() => setShowDialog(false)}
+      onClose={() => {
+        setLinkMode(null);
+        setIsLinkingComponents(false);
+        setIsCreatingComponent(false);
+        setSelectedFeatures([]);
+        setShowDialog(false);
+        dispatchFormState({ action: "reset" });
+      }}
       fullWidth
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
@@ -146,43 +201,39 @@ const ComponentModal = ({
       <DialogContent>
         <form onSubmit={(e) => e.preventDefault()}>
           <Grid container spacing={2}>
-            {fields.map((field, i) => (
-              <Grid item xs={12} key={field.key}>
-                {field.type === "autocomplete" && (
-                  <CustomAutocomplete
-                    options={field.options}
-                    fieldKey={field.key}
-                    fieldLabel={field.label}
-                    autoFocus={i === 0}
-                    dispatchFormState={dispatchFormState}
-                    value={formState[field.key] || ""}
-                  />
-                )}
-                {field.type === "textarea" && (
-                  <TextField
-                    fullWidth
-                    autoFocus={i === 0}
-                    size="small"
-                    name={field.key}
-                    id={field.key}
-                    label={field.label}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    variant="outlined"
-                    multiline
-                    minRows={4}
-                    value={formState[field.key]}
-                    onChange={(e) => {
-                      dispatchFormState({
-                        key: field.key,
-                        value: e.target.value,
-                      });
-                    }}
-                  />
-                )}
-              </Grid>
-            ))}
+            <Grid item xs={12}>
+              <CustomAutocomplete
+                linkMode={linkMode}
+                fieldKey={fields[0].key}
+                fieldLabel={fields[0].label}
+                autoFocus
+                dispatchFormState={dispatchFormState}
+                value={formState[fields[0].key] || ""}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size="small"
+                name={fields[1].key}
+                id={fields[1].key}
+                label={fields[1].label}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+                multiline
+                minRows={4}
+                value={formState[fields[1].key]}
+                onChange={(e) => {
+                  dispatchFormState({
+                    key: fields[1].key,
+                    value: e.target.value,
+                    action: "update",
+                  });
+                }}
+              />
+            </Grid>
           </Grid>
           <Grid container spacing={2} display="flex" justifyContent="flex-end">
             <Grid item>
@@ -190,20 +241,7 @@ const ComponentModal = ({
                 variant="contained"
                 color="primary"
                 startIcon={<CheckCircleOutline />}
-                onClick={(e) => {
-                  e.preventDefault();
-                  dispatchComponents({
-                    action: "add",
-                    component: {
-                      ...formState.type.data,
-                      description: formState.description,
-                      label: formState.type.label,
-                      _id: randomComponentId(),
-                    },
-                  });
-                  setCurrTab(1);
-                  setShowDialog(false);
-                }}
+                onClick={onSave}
               >
                 Create component
               </Button>

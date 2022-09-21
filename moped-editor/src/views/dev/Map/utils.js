@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { cloneDeep } from "lodash";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 
@@ -85,4 +86,49 @@ export const getIntersectionLabel = (point, lines) => {
     .map((street) => street.properties.FULL_STREET_NAME);
   const uniqueStreets = [...new Set(streets)].sort();
   return uniqueStreets.join(" / ");
+};
+
+export const handleNewComponentFeatureLink = (
+  componentFeatures,
+  selectedFeatures,
+  componentIdsToLink
+) => {
+  /**
+   * let's assume componentFeatures is an object that looks like this
+   * {
+   *  features:
+   *    [
+   *      id: <someVal>,
+   *      components: <array of component ids>
+   *     ]
+   *   }
+   * }
+   */
+
+  // make a new copy, then we can rely on object references to keep things tidy
+  const newComponentFeatures = cloneDeep(componentFeatures);
+  // add the selected components to the features
+  const existingFeaturesWithLinks = newComponentFeatures.features;
+  selectedFeatures.forEach((thisFeature) => {
+    // is this feature already known to componentFeatures?
+    const isExistingFeature = existingFeaturesWithLinks.find(
+      (existingFeature) => existingFeature.id === thisFeature.properties.id
+    );
+    if (isExistingFeature) {
+      // add all of the current component IDs to it
+      isExistingFeature.components = [
+        ...isExistingFeature.components,
+        ...componentIdsToLink,
+      ];
+      // and lazily de-dupe it
+      isExistingFeature.components = [...new Set(isExistingFeature.components)];
+    } else {
+      // this feature previously had 0 components - add them
+      existingFeaturesWithLinks.push({
+        id: thisFeature.properties.id,
+        components: [...componentIdsToLink],
+      });
+    }
+  });
+  return newComponentFeatures;
 };

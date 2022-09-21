@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 
@@ -8,7 +8,6 @@ import Collapse from "@material-ui/core/Collapse";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import List from "@material-ui/core/List";
-import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -29,6 +28,7 @@ import EditOutlined from "@material-ui/icons/EditOutlined";
 import TheMap from "./TheMap";
 import ComponentModal from "./ComponentModal";
 import LinkComponentsDialog from "./LinkComponentsDialog";
+import LinkModeDialog from "./LinkModeDialog";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 const drawerWidth = 350;
 
@@ -43,11 +43,11 @@ const useStyles = makeStyles((theme) => ({
     width: drawerWidth,
     flexShrink: 0,
   },
-  drawerPaper: {
-    width: drawerWidth,
-  },
   drawerContainer: {
     overflow: "auto",
+  },
+  drawerPaper: {
+    width: drawerWidth,
   },
   content: {
     flexGrow: 1,
@@ -57,15 +57,20 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
+  listItemMapHover: {
+    backgroundColor: "rgba(252, 8, 133, .3)",
+  },
+  nested: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
-const getFeatureLabel = (feature, componentFeatures) => {
-  const linkedFeature = componentFeatures.features.find(
-    (linkedFeature) => linkedFeature.id === feature.properties.id
-  );
-  const componentCount = linkedFeature?.components.length || 0;
+const getFeatureLabel = (feature, thisFeatureComponentIds) => {
+  const componentCount = thisFeatureComponentIds?.length || 0;
   const componentNoun = componentCount === 1 ? "component" : "components";
-  const componentCountText = `${componentCount} ${componentNoun}`;
+  const componentCountText = componentCount
+    ? `${componentCount} ${componentNoun}`
+    : "";
   if (feature.properties._layerId.includes("lines")) {
     const locationText = `${feature.properties.FROM_ADDRESS_MIN} BLK ${feature.properties.FULL_STREET_NAME}`;
     return {
@@ -93,19 +98,51 @@ function componentsReducer(state, { component, action }) {
   return [...state, component];
 }
 
+/**
+ * Return "line", "point", or null if all feature are/are not of the same type
+ * ...in which case we do not need to show link mode dialog
+ */
+const useIsUniformGeometryType = (features) =>
+  useMemo(() => {
+    if (!features || features.length === 0) {
+      return null;
+    }
+    // handling Point, Line, MultiPoint, and MultiLine
+    const featureTypes = features.map((feature) => {
+      if (feature.geometry.type.toLowerCase().includes("line")) {
+        return "lines";
+      } else if (feature.geometry.type.toLowerCase().includes("point")) {
+        return "points";
+      } else {
+        throw `Unsupported geometry type ${feature.geomtery.type}`;
+      }
+    });
+    // are all values the same?
+    const isUniform = featureTypes.every((b) => b === featureTypes[0]);
+    if (isUniform) {
+      return featureTypes[0];
+    } else {
+      return null;
+    }
+  }, [features]);
+
 export default function MapView() {
   const classes = useStyles();
   const [componentFeatures, setComponentFeatures] = useState({
     features: [],
   });
+  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
+  const [hoveredOnMapFeatureId, setHoveredOnMapFeatureId] = useState(null);
   const [linkMode, setLinkMode] = useState(null);
   const [components, dispatchComponents] = useReducer(componentsReducer, []);
   const [selectedComponentId, setSelectedComponentId] = useState(null);
   const [selectedFeatures, setSelectedFeatures] = useState([]);
   const [isEditingMap, setIsEditingMap] = useState(false);
+  const [showLinkModeDialog, setShowLinkModeDialog] = useState(false);
   const [isLinkingComponents, setIsLinkingComponents] = useState(false);
   const [currTab, setCurrTab] = useState(0);
-  const [showDialog, setShowDialog] = useState(false);
+  const [showComponentCreateDialog, setShowComponentCreateDialog] =
+    useState(false);
   const [showLinkComponentsDialog, setShowLinkComponentsDialog] =
     useState(false);
 
@@ -119,6 +156,9 @@ export default function MapView() {
     features: [],
   });
 
+  const uniformGeometryType = useIsUniformGeometryType(
+    projectFeatures?.features
+  );
   /**
    *  warning! this is fraught: mapbox-generated IDs are not guaranteed unique across multiple
    * layers and sessions (i think?)!
@@ -141,7 +181,6 @@ export default function MapView() {
           paper: classes.drawerPaper,
         }}
       >
-        {/* <Toolbar /> */}
         <div className={classes.drawerContainer}>
           <Tabs
             variant="fullWidth"
@@ -184,9 +223,9 @@ export default function MapView() {
                       fullWidth
                       // className={classes.margin}
                       startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => setShowDialog(true)}
+                      onClick={() => setShowComponentCreateDialog(true)}
                     >
-                      New Component{" "}
+                      New Component
                     </Button>
                   </ListItem>
                 </>
@@ -263,20 +302,48 @@ export default function MapView() {
                     feature.properties.id
                   );
                   const isExpanded = expandedFeatureIds.includes(featureId);
-                  console.log("expandedFeatureIds", expandedFeatureIds);
+                  const isHovered = featureId === hoveredOnMapFeatureId;
+                  const linkedFeature = componentFeatures.features.find(
+                    (linkedFeature) =>
+                      linkedFeature.id === feature.properties.id
+                  );
+                  const thisFeatureComponentIds = linkedFeature?.components;
+
+                  const checkboxCallback = () => {
+                    if (isEditingMap) {
+                      return;
+                    }
+                    if (isChecked) {
+                      const newSelectedFeatures = selectedFeatures.filter(
+                        (someFeature) =>
+                          someFeature.properties.id !== feature.properties.id
+                      );
+                      setSelectedFeatures(newSelectedFeatures);
+                    } else {
+                      setSelectedFeatures([...selectedFeatures, feature]);
+                    }
+                  };
                   return (
                     <React.Fragment key={i}>
                       <ListItem
                         button
                         dense
+                        className={isHovered ? classes.listItemMapHover : ""}
                         onClick={() => {
+                          // override expand with checkbox if linking components
+                          if (isLinkingComponents) {
+                            checkboxCallback();
+                            return;
+                          }
                           if (isExpanded) {
+                            // collapse
                             const newExpandedFeatureIds =
                               expandedFeatureIds.filter(
                                 (exFeatureId) => exFeatureId !== featureId
                               );
                             setExpandedFeatureIds(newExpandedFeatureIds);
                           } else {
+                            // expand
                             const newExpandedFeatureIds = [
                               ...expandedFeatureIds,
                               featureId,
@@ -292,47 +359,45 @@ export default function MapView() {
                               checked={isChecked}
                               disableRipple
                               color="primary"
-                              onClick={() => {
-                                if (isEditingMap) {
-                                  return;
-                                }
-                                if (isChecked) {
-                                  const newSelectedFeatures =
-                                    selectedFeatures.filter(
-                                      (someFeature) =>
-                                        someFeature.properties.id !==
-                                        feature.properties.id
-                                    );
-                                  setSelectedFeatures(newSelectedFeatures);
-                                } else {
-                                  setSelectedFeatures([
-                                    ...selectedFeatures,
-                                    feature,
-                                  ]);
-                                }
-                              }}
+                              onClick={checkboxCallback}
                             />
                           </ListItemIcon>
                         )}
 
                         <ListItemText
-                          {...getFeatureLabel(feature, componentFeatures)}
+                          {...getFeatureLabel(feature, thisFeatureComponentIds)}
                         />
                         <ListItemSecondaryAction>
                           <IconButton color="primary">
                             {getIcon(feature)}
                           </IconButton>
-                          {/* <IconButton color="primary">
-                            <ExpandMoreIcon />
-                          </IconButton> */}
                         </ListItemSecondaryAction>
                       </ListItem>
-                      <Collapse
-                        in={expandedFeatureIds.includes(feature.properties.id)}
-                      >
-                        <ListItem>
-                          <ListItemText>Heyyyyy</ListItemText>
-                        </ListItem>
+                      <Collapse in={isExpanded}>
+                        {/* Nested list of components related to feature */}
+                        <List component="div" disablePadding dense>
+                          {thisFeatureComponentIds?.map((componentId) => {
+                            const thisComponent = components.find(
+                              (component) => component._id === componentId
+                            );
+                            return (
+                              <ListItem
+                                key={thisComponent._id}
+                                className={classes.nested}
+                              >
+                                <ListItemText
+                                  primary={`${thisComponent.component_name} #${thisComponent._id}`}
+                                  secondary={thisComponent.component_subtype}
+                                />
+                                <ListItemSecondaryAction>
+                                  <IconButton>
+                                    <Cancel />
+                                  </IconButton>
+                                </ListItemSecondaryAction>
+                              </ListItem>
+                            );
+                          })}
+                        </List>
                       </Collapse>
                       <Divider />
                     </React.Fragment>
@@ -384,7 +449,19 @@ export default function MapView() {
                 color="primary"
                 className={classes.margin}
                 startIcon={<AddCircleOutlineIcon />}
-                onClick={() => setShowDialog(!showDialog)}
+                onClick={() => {
+                  setIsCreatingComponent(true);
+                  setIsLinkingComponents(!isLinkingComponents);
+                  if (uniformGeometryType) {
+                    // we can skip the linkmode step
+                    setLinkMode(uniformGeometryType);
+                  } else {
+                    setShowLinkModeDialog(true);
+                  }
+                  setExpandedFeatureIds([]);
+                  // setShowComponentCreateDialog(!showComponentCreateDialog)
+                }}
+                disabled={!projectFeatures?.features.length > 0}
               >
                 New Component
               </Button>
@@ -402,60 +479,12 @@ export default function MapView() {
                   )
                 }
                 onClick={() => {
-                  setLinkMode(null);
+                  setShowLinkModeDialog(true);
                   setIsLinkingComponents(!isLinkingComponents);
                 }}
               >
                 Link components
               </Button>
-            )}
-
-            {isLinkingComponents && !linkMode && (
-              <>
-                <Typography variant="h4" gutterBottom>
-                  Which type of features?
-                </Typography>
-                <Button
-                  color="primary"
-                  size="small"
-                  variant="outlined"
-                  className={classes.margin}
-                  startIcon={<RoomIcon />}
-                  onClick={() => {
-                    setLinkMode("points");
-                    // switch to features tab
-                    setCurrTab(0);
-                  }}
-                >
-                  Intersections
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  size="small"
-                  className={classes.margin}
-                  startIcon={<TimelineIcon />}
-                  onClick={() => {
-                    setLinkMode("lines");
-                    // switch to features tab
-                    setCurrTab(0);
-                  }}
-                >
-                  Segments
-                </Button>
-                <Button
-                  color="secondary"
-                  size="small"
-                  className={classes.margin}
-                  startIcon={<Cancel />}
-                  onClick={() => {
-                    setLinkMode(null);
-                    setIsLinkingComponents(!isLinkingComponents);
-                  }}
-                >
-                  {isLinkingComponents ? "Cancel" : "Link components"}
-                </Button>
-              </>
             )}
             {isLinkingComponents && linkMode && (
               <>
@@ -466,7 +495,8 @@ export default function MapView() {
                   startIcon={<Cancel />}
                   onClick={() => {
                     setLinkMode(null);
-                    // setIsLinkingComponents(!isLinkingComponents);
+                    setIsLinkingComponents(!isLinkingComponents);
+                    setSelectedFeatures([]);
                   }}
                 >
                   {isLinkingComponents ? "Cancel" : "Link components"}
@@ -476,7 +506,13 @@ export default function MapView() {
                   color="primary"
                   className={classes.margin}
                   startIcon={<NavigateNextIcon />}
-                  onClick={() => setShowLinkComponentsDialog(true)}
+                  onClick={() => {
+                    if (isCreatingComponent) {
+                      setShowComponentCreateDialog(true);
+                    } else {
+                      setShowLinkComponentsDialog(true);
+                    }
+                  }}
                   disabled={selectedFeautreIds?.length === 0}
                 >
                   Continue
@@ -487,13 +523,30 @@ export default function MapView() {
           <TheMap
             projectFeatures={projectFeatures}
             setProjectFeatures={setProjectFeatures}
+            setHoveredOnMapFeatureId={setHoveredOnMapFeatureId}
+            isEditingMap={isEditingMap}
           />
         </div>
         <ComponentModal
-          showDialog={showDialog}
-          setShowDialog={setShowDialog}
+          showDialog={showComponentCreateDialog}
+          setShowDialog={setShowComponentCreateDialog}
           dispatchComponents={dispatchComponents}
           setCurrTab={setCurrTab}
+          selectedFeatures={selectedFeatures}
+          setSelectedFeatures={setSelectedFeatures}
+          componentFeatures={componentFeatures}
+          setComponentFeatures={setComponentFeatures}
+          setIsLinkingComponents={setIsLinkingComponents}
+          setLinkMode={setLinkMode}
+          setIsCreatingComponent={setIsCreatingComponent}
+          linkMode={linkMode}
+        />
+        <LinkModeDialog
+          showDialog={showLinkModeDialog}
+          setShowDialog={setShowLinkModeDialog}
+          setLinkMode={setLinkMode}
+          setCurrTab={setCurrTab}
+          setIsLinkingComponents={setIsLinkingComponents}
         />
         <LinkComponentsDialog
           showDialog={showLinkComponentsDialog}
