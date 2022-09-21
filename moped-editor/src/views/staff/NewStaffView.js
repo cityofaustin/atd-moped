@@ -1,7 +1,7 @@
 import React from "react";
 import StaffForm from "./StaffForm";
 import { useNavigate } from "react-router-dom";
-import { useUserApi } from "./helpers";
+import { isUserNonLoginUser, useUserApi, nonLoginUserRole } from "./helpers";
 import { useMutation } from "@apollo/client";
 import * as yup from "yup";
 
@@ -45,7 +45,7 @@ const validationSchema = yup.object().shape({
   email: yup.string().required().email().lowercase(),
   // Password is not required for non-Moped users since they will not be added to Cognito user pool
   password: yup.string().when("roles", {
-    is: (val) => val !== "non-login-user",
+    is: (val) => val !== nonLoginUserRole,
     then: yup.string().required(),
   }),
   roles: yup.string().required(),
@@ -66,9 +66,9 @@ const NewStaffView = () => {
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
-    const isUserNonLoginUser = data.roles.includes("non-login-user");
+    const isNonLoginUser = isUserNonLoginUser(data.roles);
 
-    if (isUserNonLoginUser) {
+    if (isNonLoginUser) {
       const { password, ...restOfData } = data;
 
       addNonMopedUser({

@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
 import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
-import { useUserApi } from "./helpers";
+import { useUserApi, isUserNonLoginUser, nonLoginUserRole } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -61,8 +61,7 @@ const EditStaffView = () => {
   const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
   const isUserActive = !data?.moped_users[0]?.is_deleted;
-  const isUserNonLoginUser =
-    data?.moped_users[0]?.roles.includes("non-login-user");
+  const isNonLoginUser = isUserNonLoginUser(data?.moped_users[0]?.roles);
 
   /**
    * Submit edit user request
@@ -125,8 +124,8 @@ const EditStaffView = () => {
                           <StaffUpdateUserStatusButtons
                             isUserActive={isUserActive}
                             isUserNonLoginUser={
-                              watch("roles") !== "non-login-user" &&
-                              isUserNonLoginUser
+                              watch("roles") !== nonLoginUserRole &&
+                              isNonLoginUser
                             }
                             handleCloseModal={handleCloseModal}
                             email={watch("email")}

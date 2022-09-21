@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
+import {
+  formatApiErrors,
+  transformFormDataIntoDatabaseTypes,
+  nonLoginUserRole,
+} from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "../../queries/workgroups";
@@ -38,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const roleOptions = [
-  { value: "non-login-user", name: "Non-login User" },
+  { value: nonLoginUserRole, name: "Non-login User" },
   { value: "moped-viewer", name: "Viewer" },
   { value: "moped-editor", name: "Editor" },
   { value: "moped-admin", name: "Admin" },
@@ -239,7 +243,7 @@ const StaffForm = ({
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid item xs={12} md={6}>
-          {currentSelectedRole !== "non-login-user" ? (
+          {currentSelectedRole !== nonLoginUserRole ? (
             <TextField
               fullWidth
               name="password"

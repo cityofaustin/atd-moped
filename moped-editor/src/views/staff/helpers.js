@@ -118,3 +118,12 @@ export const transformFormDataIntoDatabaseTypes = (formData) => {
 
   return databaseData;
 };
+
+export const nonLoginUserRole = "non-login-user";
+
+/**
+ * Determine if the user is a non-login user (true) or Moped user (false)
+ * @param {Array} roles - roles assigned to the user
+ * @returns {boolean} Whether the user is a non-login user
+ */
+export const isUserNonLoginUser = (roles) => roles.includes(nonLoginUserRole);

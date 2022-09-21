@@ -11,6 +11,7 @@ import Amplify, { Auth } from "aws-amplify";
 import { colors } from "@material-ui/core";
 
 import config from "../config";
+import { nonLoginUserRole } from "src/views/staff/helpers";
 
 import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
 
@@ -294,8 +295,8 @@ export const findHighestRole = (roles) => {
       return "moped-editor";
     case findRole("moped-viewer"):
       return "moped-viewer";
-    case findRole("non-login-user"):
-      return "non-login-user";
+    case findRole(nonLoginUserRole):
+      return nonLoginUserRole;
     default:
   }
 };
