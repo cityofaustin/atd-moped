@@ -18,6 +18,7 @@ create table component_types (
     representation representation
     );
 
+-- FIXME: model this more closely on existing moped, because subcomponent & maybe subtype may be in tables to power the drop and options to not pick an option
 insert into component_types (id, type, subtype, subcomponent, representation) values (1, 'Access Control', 'Driveway Closure', null, 'point');
 insert into component_types (id, type, subtype, subcomponent, representation) values (2, 'Access Control', 'Driveway Gate', null, 'line');
 insert into component_types (id, type, subtype, subcomponent, representation) values (3, 'Access Control', 'Driveway Modification', null, 'point');
