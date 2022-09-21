@@ -66,9 +66,9 @@ const NewStaffView = () => {
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
-    const isNonMopedUser = data.roles.includes("non-login-user");
+    const isUserNonLoginUser = data.roles.includes("non-login-user");
 
-    if (isNonMopedUser) {
+    if (isUserNonLoginUser) {
       const { password, ...restOfData } = data;
 
       addNonMopedUser({

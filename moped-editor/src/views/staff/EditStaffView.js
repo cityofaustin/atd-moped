@@ -61,6 +61,8 @@ const EditStaffView = () => {
   const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
   const isUserActive = !data?.moped_users[0]?.is_deleted;
+  const isUserNonLoginUser =
+    data?.moped_users[0]?.roles.includes("non-login-user");
 
   /**
    * Submit edit user request
@@ -121,7 +123,11 @@ const EditStaffView = () => {
                             Save
                           </Button>
                           <StaffUpdateUserStatusButtons
-                            isUserActive={true}
+                            isUserActive={isUserActive}
+                            isUserNonLoginUser={
+                              watch("roles") !== "non-login-user" &&
+                              isUserNonLoginUser
+                            }
                             handleCloseModal={handleCloseModal}
                             email={watch("email")}
                             password={watch("password")}

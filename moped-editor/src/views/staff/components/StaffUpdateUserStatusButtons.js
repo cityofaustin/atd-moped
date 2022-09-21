@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} password - new password required in form for user activate
  * @param {array} roles - user roles to create DynamoDB claims entry
  * @param {boolean} isUserActive - tells us if we are activating or deactivating
+ * @param {boolean} isUserNonLoginUser - tells us if we are converting a non-login user to Moped user
  * @returns {JSX.Element}
  * @constructor
  */
@@ -43,6 +44,7 @@ const StaffUpdateUserStatusButtons = ({
   password,
   roles,
   isUserActive,
+  isUserNonLoginUser,
 }) => {
   const classes = useStyles();
   let navigate = useNavigate();
@@ -167,7 +169,7 @@ const StaffUpdateUserStatusButtons = ({
 
   return (
     <>
-      {isUserActive === true && (
+      {isUserActive === true && isUserNonLoginUser === false && (
         <Button
           className={classes.formButton}
           color="secondary"
@@ -177,7 +179,7 @@ const StaffUpdateUserStatusButtons = ({
           Inactivate User
         </Button>
       )}
-      {isUserActive === false && (
+      {(isUserNonLoginUser === true || isUserActive === false) && (
         <Button
           className={clsx(classes.formButton, classes.formButtonGreen)}
           variant="contained"
