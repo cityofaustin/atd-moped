@@ -15,11 +15,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   SIGNAL_COMPONENTS_QUERY,
   ADD_PROJECT,
-  TYPES_QUERY,
-  ADD_PROJECT_MILESTONE,
   PROJECT_FOLLOW,
 } from "../../../queries/project";
-import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
 
 import { getSessionDatabaseData } from "../../../auth/user";
 
@@ -84,7 +81,6 @@ const NewProjectView = () => {
     type: "FeatureCollection",
     features: [],
   });
-  const [projectTypeId, setProjectTypeId] = useState(null);
 
   /**
    * Signals query
@@ -94,12 +90,6 @@ const NewProjectView = () => {
     loading: componentQueryloading,
     data: componentData,
   } = useQuery(SIGNAL_COMPONENTS_QUERY);
-
-  const {
-    error: typeQueryError,
-    loading: typeQueryLoading,
-    data: typeData,
-  } = useQuery(TYPES_QUERY);
 
   /**
    * Signal component state management
@@ -118,7 +108,6 @@ const NewProjectView = () => {
    */
   const [addProject] = useMutation(ADD_PROJECT);
 
-  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
   const [followProject] = useMutation(PROJECT_FOLLOW);
 
   /**
@@ -183,17 +172,6 @@ const NewProjectView = () => {
                 },
               }
             : {}),
-          ...(projectTypeId
-            ? {
-                moped_project_types: {
-                  data: [
-                    {
-                      project_type_id: projectTypeId,
-                    },
-                  ],
-                },
-              }
-            : {}),
         },
       };
 
@@ -217,14 +195,6 @@ const NewProjectView = () => {
               },
             },
           });
-          // if a project type has been specified, add the milestones from template
-          if (projectTypeId) {
-            return addProjectMilestone({
-              variables: {
-                objects: returnSignalPHBMilestoneTemplate(project_id),
-              },
-            });
-          }
         })
         // If there is an error, we must show it...
         .catch((err) => {
@@ -263,11 +233,10 @@ const NewProjectView = () => {
     }
   }, [success, newProjectId, navigate]);
 
-  if (componentQueryloading || typeQueryLoading) {
+  if (componentQueryloading) {
     return <CircularProgress />;
   }
   if (componentQueryError) return `Error! ${componentQueryError.message}`;
-  if (typeQueryError) return `Error! ${typeQueryError.message}`;
 
   return (
     <Page title="New project">
@@ -286,9 +255,6 @@ const NewProjectView = () => {
                 signal={signal}
                 signalError={signalError}
                 setSignal={setSignal}
-                projectTypeId={projectTypeId}
-                setProjectTypeId={setProjectTypeId}
-                typeData={typeData}
               />
               <Box pt={2} pl={2} className={classes.buttons}>
                 <ProjectSaveButton
