@@ -13,24 +13,19 @@ import clsx from "clsx";
 
 /**
  * Generates a button to inactivate or activate an existing user AND register/activate a non-login user
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {function} setModalState - set the modal's details
  * @param {function} handleCloseModal - callback that fires on modal close
  * @param {string} email - user's email
  * @param {string} password - new password required in form for user activate
  * @param {array} roles - user roles to create DynamoDB claims entry
- * @param {boolean} isUserActive - tells us if we are activating or deactivating
  * @returns {JSX.Element}
- * @constructor
  */
-const StaffUpdateUserStatusButtons = ({
-  userCognitoId,
+const NonLoginUserActivationButtons = ({
   setModalState,
   handleCloseModal,
   email,
   password,
   roles,
-  isUserActive,
 }) => {
   const classes = useButtonStyles();
   let navigate = useNavigate();
@@ -44,10 +39,10 @@ const StaffUpdateUserStatusButtons = ({
   /**
    * Send a request to the user activation route of the Moped API
    */
-  const handleUserActivation = () => {
+  const handleNonLoginUserActivation = () => {
     const rolesParser = fieldParsers["roles"];
-    // The backend uses an array for roles
-    const rolesArray = rolesParser(roles);
+    // Promote user role to editor since we are activating a non-login user
+    const rolesArray = rolesParser("moped-editor");
 
     const data = {
       email,
@@ -67,26 +62,9 @@ const StaffUpdateUserStatusButtons = ({
   };
 
   /**
-   * Handler for Delete Confirm button
+   * Handle Activate Non-login User Confirm
    */
-  const handleDeleteConfirm = () => {
-    const requestPath = "/users/" + userCognitoId;
-    const deleteCallback = () => {
-      handleCloseModal();
-      navigate("/moped/staff/");
-    };
-
-    requestApi({
-      method: "delete",
-      path: requestPath,
-      callback: deleteCallback,
-    });
-  };
-
-  /**
-   * Handle Activate User Confirm
-   */
-  const handleActivateConfirm = () => {
+  const handleActivateNonLoginUserConfirm = () => {
     if (!passwordLooksGood(password)) {
       setModalState({
         open: true,
@@ -112,7 +90,7 @@ const StaffUpdateUserStatusButtons = ({
         hideCloseButton: true,
       });
     } else {
-      handleUserActivation();
+      handleNonLoginUserActivation();
       setModalState({
         open: true,
         title: "Activating",
@@ -130,52 +108,28 @@ const StaffUpdateUserStatusButtons = ({
   };
 
   /**
-   * Activate User
+   * Handles the activation of a non-login user
    */
-  const handleActivateUser = () => {
+  const handleActivateNonLoginUser = () => {
     setModalState({
       open: true,
-      title: "Activate user?",
-      message: "Do you want to activate this user?",
-      action: handleActivateConfirm,
-    });
-  };
-
-  /**
-   * Handles the deactivation of user
-   */
-  const handleDeactivateUser = () => {
-    setModalState({
-      open: true,
-      title: "Inactivate this user?",
-      message: "Are you sure that you want to inactivate this user?",
-      action: handleDeleteConfirm,
+      title: "Activate this non-login user?",
+      message: "Do you want to activate this non-login user?",
+      action: handleActivateNonLoginUserConfirm,
     });
   };
 
   return (
     <>
-      {isUserActive === true && (
-        <Button
-          className={classes.formButton}
-          color="secondary"
-          variant="contained"
-          onClick={handleDeactivateUser}
-        >
-          Inactivate User
-        </Button>
-      )}
-      {isUserActive === false && (
-        <Button
-          className={clsx(classes.formButton, classes.formButtonGreen)}
-          variant="contained"
-          onClick={handleActivateUser}
-        >
-          Activate User
-        </Button>
-      )}
+      <Button
+        className={clsx(classes.formButton, classes.formButtonGreen)}
+        variant="contained"
+        onClick={handleActivateNonLoginUser}
+      >
+        Activate Non-login User
+      </Button>
     </>
   );
 };
 
-export default StaffUpdateUserStatusButtons;
+export default NonLoginUserActivationButtons;

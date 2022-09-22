@@ -2,15 +2,21 @@ import React from "react";
 
 import { Button, makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme) => ({
+export const useButtonStyles = makeStyles((theme) => ({
   formButton: {
     margin: theme.spacing(1),
     color: "white",
   },
+  formButtonGreen: {
+    backgroundColor: theme.palette.success.main,
+    "&:hover": {
+      backgroundColor: theme.palette.success.dark,
+    },
+  },
 }));
 
 export const StaffFormSaveButton = ({ disabled }) => {
-  const classes = useStyles();
+  const classes = useButtonStyles();
 
   return (
     <Button
@@ -26,7 +32,7 @@ export const StaffFormSaveButton = ({ disabled }) => {
 };
 
 export const StaffFormResetButton = ({ onClick }) => {
-  const classes = useStyles();
+  const classes = useButtonStyles();
 
   return (
     <Button

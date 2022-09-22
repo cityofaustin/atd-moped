@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
 import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
-import { useUserApi, isUserNonLoginUser, nonLoginUserRole } from "./helpers";
+import { useUserApi, isUserNonLoginUser } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -19,6 +19,7 @@ import {
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
 import { StaffFormSaveButton } from "./components/StaffFormButtons";
+import NonLoginUserActivationButtons from "./components/NonLoginUserActivationButtons";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -104,16 +105,27 @@ const EditStaffView = () => {
                       }) => (
                         <>
                           <StaffFormSaveButton disabled={isSubmitting} />
-                          <StaffUpdateUserStatusButtons
-                            isUserActive={isUserActive}
-                            isNonLoginUser={isNonLoginUser}
-                            handleCloseModal={handleCloseModal}
-                            email={watch("email")}
-                            password={watch("password")}
-                            roles={watch("roles")}
-                            userCognitoId={userCognitoId}
-                            setModalState={setModalState}
-                          />
+                          {!isNonLoginUser && (
+                            <StaffUpdateUserStatusButtons
+                              isUserActive={isUserActive}
+                              handleCloseModal={handleCloseModal}
+                              email={watch("email")}
+                              password={watch("password")}
+                              roles={watch("roles")}
+                              userCognitoId={userCognitoId}
+                              setModalState={setModalState}
+                            />
+                          )}
+                          {isNonLoginUser && (
+                            <NonLoginUserActivationButtons
+                              isUserActive={isUserActive}
+                              setModalState={setModalState}
+                              handleCloseModal={handleCloseModal}
+                              email={watch("email")}
+                              password={watch("password")}
+                              roles={watch("roles")}
+                            />
+                          )}
                         </>
                       )}
                     />
