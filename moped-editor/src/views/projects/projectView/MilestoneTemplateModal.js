@@ -52,20 +52,19 @@ const MilestoneTemplateModal = ({
 
   useEffect(() => {
     let options = [];
-    let filteredOptions = [];
     const selectedMilestonesIds = selectedMilestones.map(
       (milestone) => milestone.milestone_id
     );
     setMilestonesList([]);
     if (template === "AMD") {
       options = returnSignalPHBMilestoneTemplate(projectId);
-      filteredOptions = options.filter(
-        (option) => !selectedMilestonesIds.includes(option.milestone_id)
-      );
     }
     // if (template === "PDD") {
     // options = return other template
-    //}
+    // }
+    const filteredOptions = options.filter(
+      (option) => !selectedMilestonesIds.includes(option.milestone_id)
+    );
     setMilestonesList(filteredOptions);
     setMilestonesToAdd(filteredOptions);
   }, [template, selectedMilestones, projectId]);
@@ -151,7 +150,6 @@ const MilestoneTemplateModal = ({
               <ListItem
                 button
                 key={milestone.milestone_id}
-                role={undefined}
                 dense
                 onClick={() => handleToggle(milestone)}
               >

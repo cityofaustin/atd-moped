@@ -11,7 +11,6 @@ import {
 import {
   EditOutlined as EditOutlinedIcon
 } from "@material-ui/icons";
-import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -68,7 +67,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     {}
   );
 
-  // Hide Dialog
+  // Hide Milestone template dialog
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
   }
