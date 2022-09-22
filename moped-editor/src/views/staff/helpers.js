@@ -91,7 +91,9 @@ export const passwordLooksGood = (password) =>
  * @returns {boolean}
  */
 export const roleLooksGood = (roles) =>
-  ["moped-viewer", "moped-editor", "moped-admin"].includes(roles);
+  ["moped-viewer", "moped-editor", "moped-admin", nonLoginUserRole].includes(
+    roles
+  );
 
 /**
  * Functions to transform form outputs into the type the DB expects

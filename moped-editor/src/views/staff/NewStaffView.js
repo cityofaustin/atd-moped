@@ -28,7 +28,7 @@ export const initialFormValues = {
   password: "",
   workgroup: "",
   workgroup_id: "",
-  roles: ["moped-viewer"],
+  roles: ["moped-editor"],
 };
 
 const validationSchema = yup.object().shape({

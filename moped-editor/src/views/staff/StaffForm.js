@@ -43,7 +43,6 @@ const useStyles = makeStyles((theme) => ({
 
 const roleOptions = [
   { value: nonLoginUserRole, name: "Non-login User" },
-  { value: "moped-viewer", name: "Viewer" },
   { value: "moped-editor", name: "Editor" },
   { value: "moped-admin", name: "Admin" },
 ];
