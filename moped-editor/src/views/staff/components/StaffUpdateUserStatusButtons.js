@@ -12,7 +12,7 @@ import { Button, Typography, Box } from "@material-ui/core";
 import clsx from "clsx";
 
 /**
- * Generates a button to inactivate or activate an existing user AND register/activate a non-login user
+ * Generates a button to inactivate or activate an existing user
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {function} setModalState - set the modal's details
  * @param {function} handleCloseModal - callback that fires on modal close

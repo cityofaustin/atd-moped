@@ -12,7 +12,7 @@ import { Button, Typography, Box } from "@material-ui/core";
 import clsx from "clsx";
 
 /**
- * Generates a button to inactivate or activate an existing user AND register/activate a non-login user
+ * Generates a button to convert a non-login user to a Moped user with login
  * @param {function} setModalState - set the modal's details
  * @param {function} handleCloseModal - callback that fires on modal close
  * @param {string} email - user's email
@@ -30,14 +30,10 @@ const NonLoginUserActivationButtons = ({
   const classes = useButtonStyles();
   let navigate = useNavigate();
 
-  /**
-   * Make use of the useUserApi to retrieve the requestApi function and
-   * api request loading state and errors from the api.
-   */
   const { requestApi } = useUserApi();
 
   /**
-   * Send a request to the user activation route of the Moped API
+   * Use the user activation API route to convert to a Moped user in the Cognito user pool with a DynamoDB claims entry
    */
   const handleNonLoginUserActivation = () => {
     const rolesParser = fieldParsers["roles"];
@@ -61,9 +57,6 @@ const NonLoginUserActivationButtons = ({
     });
   };
 
-  /**
-   * Handle Activate Non-login User Confirm
-   */
   const handleActivateNonLoginUserConfirm = () => {
     if (!passwordLooksGood(password)) {
       setModalState({
@@ -107,9 +100,6 @@ const NonLoginUserActivationButtons = ({
     }
   };
 
-  /**
-   * Handles the activation of a non-login user
-   */
   const handleActivateNonLoginUser = () => {
     setModalState({
       open: true,

@@ -38,7 +38,7 @@ const validationSchema = yup.object().shape({
   workgroup: yup.string().required(),
   workgroup_id: yup.string().required(),
   email: yup.string().required().email().lowercase(),
-  // Password is not required for non-Moped users since they will not be added to Cognito user pool
+  // Password is not required for non-login users since they will not be added to Cognito user pool
   password: yup.string().when("roles", {
     is: (val) => val !== nonLoginUserRole,
     then: yup.string().required(),
