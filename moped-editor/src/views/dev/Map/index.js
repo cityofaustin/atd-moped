@@ -1,7 +1,6 @@
-import React, { useState, useReducer, useMemo } from "react";
+import React, { useState, useReducer, useMemo, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
 import Collapse from "@material-ui/core/Collapse";
@@ -30,6 +29,16 @@ import ComponentModal from "./ComponentModal";
 import LinkComponentsDialog from "./LinkComponentsDialog";
 import LinkModeDialog from "./LinkModeDialog";
 import CheckCircle from "@material-ui/icons/CheckCircle";
+// DrawModeSelector
+import {
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+} from "@material-ui/core";
+import turfCenter from "@turf/center";
+import { useIsUniformGeometryType } from "./utils";
+
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
@@ -71,19 +80,11 @@ const getFeatureLabel = (feature, thisFeatureComponentIds) => {
   const componentCountText = componentCount
     ? `${componentCount} ${componentNoun}`
     : "";
-  if (feature.properties._layerId.includes("lines")) {
-    const locationText = `${feature.properties.FROM_ADDRESS_MIN} BLK ${feature.properties.FULL_STREET_NAME}`;
-    return {
-      primary: locationText,
-      secondary: componentCountText,
-    };
-  } else if (feature.properties._layerId.includes("points")) {
-    const locationText = `${feature.properties._label}`;
-    return {
-      primary: locationText,
-      secondary: componentCountText,
-    };
-  }
+  const locationText = `${feature.properties._label}`;
+  return {
+    primary: locationText,
+    secondary: componentCountText,
+  };
 };
 
 const getIcon = (feature) => {
@@ -98,63 +99,87 @@ function componentsReducer(state, { component, action }) {
   return [...state, component];
 }
 
-/**
- * Return "line", "point", or null if all feature are/are not of the same type
- * ...in which case we do not need to show link mode dialog
- */
-const useIsUniformGeometryType = (features) =>
-  useMemo(() => {
-    if (!features || features.length === 0) {
-      return null;
-    }
-    // handling Point, Line, MultiPoint, and MultiLine
-    const featureTypes = features.map((feature) => {
-      if (feature.geometry.type.toLowerCase().includes("line")) {
-        return "lines";
-      } else if (feature.geometry.type.toLowerCase().includes("point")) {
-        return "points";
-      } else {
-        throw `Unsupported geometry type ${feature.geomtery.type}`;
-      }
-    });
-    // are all values the same?
-    const isUniform = featureTypes.every((b) => b === featureTypes[0]);
-    if (isUniform) {
-      return featureTypes[0];
-    } else {
-      return null;
-    }
-  }, [features]);
+const DrawModeSelector = () => {
+  return (
+    <FormControl component="fieldset">
+      <RadioGroup row aria-label="position" name="position" defaultValue="top">
+        <FormControlLabel
+          value="select"
+          control={<Radio color="primary" />}
+          label="Select"
+          defaultChecked
+        />
+        <FormControlLabel
+          value="draw"
+          control={<Radio color="primary" />}
+          label="Draw"
+        />
+      </RadioGroup>
+    </FormControl>
+  );
+};
 
 export default function MapView() {
   const classes = useStyles();
+  const mapRef = useRef();
+
+  /* holds this project's map features - this should always
+  match the database state */
+  const [projectFeatures, setProjectFeatures] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
+
+  /* holds new/edited project features which have not been saved to the DB 
+    --- not implemented ----  */
+  const [unSavedFeatures, setUnsavedFeatures] = useState({
+    type: "FeatureCollection",
+    features: [],
+  });
+
+  /* tracks a projectFeature clicked from the list */
+  const [clickedProjectFeatureFromList, setClickedProjectFeatureFromList] =
+    useState(null);
+
+  /* holds this project's components */
+  const [components, dispatchComponents] = useReducer(componentsReducer, []);
+
+  /* tracks component <-> feature links */
   const [componentFeatures, setComponentFeatures] = useState({
     features: [],
   });
-  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
+
+  /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeatureId, setHoveredOnMapFeatureId] = useState(null);
-  const [linkMode, setLinkMode] = useState(null);
-  const [components, dispatchComponents] = useReducer(componentsReducer, []);
-  const [selectedComponentId, setSelectedComponentId] = useState(null);
+
+  /* tracks features that have been "checked" in the link - used during
+    the component <> feature linking flow */
   const [selectedFeatures, setSelectedFeatures] = useState([]);
+
+  /* tracks component list item selected state - doesn't really do anything rn */
+  const [selectedComponentId, setSelectedComponentId] = useState(null);
+
+  /* tracks which features in the list have been clicked/expanded */
+  const [expandedFeatureIds, setExpandedFeatureIds] = useState([]);
+
+  /* sets the type of geometry to use in component-linking mode. allowed values
+  are `points`, `lines`, or `null` */
+  const [linkMode, setLinkMode] = useState(null);
+
+  /* various interaction states */
   const [isEditingMap, setIsEditingMap] = useState(false);
-  const [showLinkModeDialog, setShowLinkModeDialog] = useState(false);
+  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
   const [isLinkingComponents, setIsLinkingComponents] = useState(false);
+  const [showLinkModeDialog, setShowLinkModeDialog] = useState(false);
   const [currTab, setCurrTab] = useState(0);
   const [showComponentCreateDialog, setShowComponentCreateDialog] =
     useState(false);
   const [showLinkComponentsDialog, setShowLinkComponentsDialog] =
     useState(false);
 
-  const [expandedFeatureIds, setExpandedFeatureIds] = useState([]);
   const handleTabChange = (event, newValue) => {
     setCurrTab(newValue);
   };
-
-  const [projectFeatures, setProjectFeatures] = useState({
-    type: "FeatureCollection",
-    features: [],
-  });
 
   const uniformGeometryType = useIsUniformGeometryType(
     projectFeatures?.features
@@ -368,7 +393,18 @@ export default function MapView() {
                           {...getFeatureLabel(feature, thisFeatureComponentIds)}
                         />
                         <ListItemSecondaryAction>
-                          <IconButton color="primary">
+                          <IconButton
+                            color="primary"
+                            onClick={() => {
+                              const center = turfCenter(feature.geometry);
+                              setClickedProjectFeatureFromList(feature);
+                              // using turf here so as to support panning to
+                              // multipoint and multiline features w/o thinking too hard
+                              mapRef.current?.panTo(
+                                center.geometry.coordinates
+                              );
+                            }}
+                          >
                             {getIcon(feature)}
                           </IconButton>
                         </ListItemSecondaryAction>
@@ -432,16 +468,19 @@ export default function MapView() {
               </Button>
             )}
             {isEditingMap && (
-              <Button
-                size="small"
-                variant="contained"
-                color="primary"
-                className={classes.margin}
-                startIcon={<CheckCircle />}
-                onClick={() => setIsEditingMap(!isEditingMap)}
-              >
-                Save edits
-              </Button>
+              <>
+                <Button
+                  size="small"
+                  variant="contained"
+                  color="primary"
+                  className={classes.margin}
+                  startIcon={<CheckCircle />}
+                  onClick={() => setIsEditingMap(!isEditingMap)}
+                >
+                  Save edits
+                </Button>
+                <DrawModeSelector />
+              </>
             )}
             {!isEditingMap && !isLinkingComponents && (
               <Button
@@ -505,7 +544,7 @@ export default function MapView() {
                   variant="contained"
                   color="primary"
                   className={classes.margin}
-                  startIcon={<NavigateNextIcon />}
+                  endIcon={<NavigateNextIcon />}
                   onClick={() => {
                     if (isCreatingComponent) {
                       setShowComponentCreateDialog(true);
@@ -515,16 +554,21 @@ export default function MapView() {
                   }}
                   disabled={selectedFeautreIds?.length === 0}
                 >
-                  Continue
+                  {selectedFeautreIds?.length === 0
+                    ? "Select features..."
+                    : "Continue"}
                 </Button>
               </>
             )}
           </Toolbar>
           <TheMap
+            mapRef={mapRef}
             projectFeatures={projectFeatures}
             setProjectFeatures={setProjectFeatures}
             setHoveredOnMapFeatureId={setHoveredOnMapFeatureId}
             isEditingMap={isEditingMap}
+            clickedProjectFeatureFromList={clickedProjectFeatureFromList}
+            setClickedProjectFeatureFromList={setClickedProjectFeatureFromList}
           />
         </div>
         <ComponentModal

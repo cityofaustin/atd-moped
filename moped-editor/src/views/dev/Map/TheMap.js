@@ -1,28 +1,26 @@
-import { useRef, useState, useMemo, useEffect } from "react";
-import MapGL, { Source, Layer, NavigationControl, Popup } from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import { mapSettings, initialViewState, MAP_STYLES, SOURCES } from "./settings";
+import { useState, useMemo } from "react";
+import MapGL, { Source, Layer, Popup } from "react-map-gl";
 import { cloneDeep } from "lodash";
-import { useFeatureService, getIntersectionLabel } from "./utils";
-
-const useFeatureTypes = (featureCollection, geomType) =>
-  useMemo(() => {
-    const features = featureCollection.features.filter((feature) => {
-      const thisGeom = feature.geometry.type.toLowerCase();
-      return thisGeom.includes(geomType);
-    });
-    return { type: "FeatureCollection", features };
-  }, [featureCollection, geomType]);
+import turfCenter from "@turf/center";
+import { mapSettings, initialViewState, MAP_STYLES, SOURCES } from "./settings";
+import {
+  useFeatureService,
+  getIntersectionLabel,
+  useFeatureTypes,
+} from "./utils";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 export default function TheMap({
   projectFeatures,
   setProjectFeatures,
   setHoveredOnMapFeatureId,
   isEditingMap,
+  mapRef,
+  clickedProjectFeatureFromList,
+  setClickedProjectFeatureFromList,
 }) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
-  const mapRef = useRef();
 
   const mapStyles = MAP_STYLES;
 
@@ -46,14 +44,20 @@ export default function TheMap({
   const projectPoints = useFeatureTypes(projectFeatures, "point");
 
   const onMouseEnter = (e) => {
+    // hover states conflict! the first feature to reach hover state wins
+    // so set point radii and line widths accordingly
     setCursor("pointer");
+    const commitsToMake = [];
+
     e.features.map((feature) => {
       if (feature.layer.id.includes("project")) {
         // it's a project feature, so add to the hover tracking for sidebar interaction
-        setHoveredOnMapFeatureId(feature.properties.id);
+        commitsToMake.push(feature.properties.id);
       }
       mapRef.current?.setFeatureState(feature, { hover: true });
     });
+
+    commitsToMake.length > 0 && setHoveredOnMapFeatureId(commitsToMake[0]);
   };
 
   const onMouseLeave = (e) => {
@@ -68,12 +72,23 @@ export default function TheMap({
     if (e.features.length === 0) {
       return;
     }
+
     const newProjectFeatures = cloneDeep(projectFeatures);
     const clickedProjectFeature = e.features.find(
       (feature) =>
         feature.layer.id === "project-lines-underlay" ||
         feature.layer.id === "project-points"
     );
+
+    // we have to fork our click effect to hand when map is being edited or not
+    if (!isEditingMap) {
+      if (!clickedProjectFeature) {
+        return;
+      }
+      setClickedProjectFeatureFromList(clickedProjectFeature);
+      return;
+    }
+
     if (clickedProjectFeature) {
       // remove project feature, ignore underling CTN features
       // remove feature if it exists
@@ -109,6 +124,8 @@ export default function TheMap({
         newFeature,
         ctnLinesGeojson
       );
+    } else {
+      newFeature.properties._label = `${newFeature.properties.FROM_ADDRESS_MIN} BLK ${newFeature.properties.FULL_STREET_NAME}`;
     }
 
     newProjectFeatures.features.push(newFeature);
@@ -120,6 +137,11 @@ export default function TheMap({
     const newBounds = mapRef.current.getBounds().toArray();
     setBounds(newBounds.flat());
   };
+
+  const clickedProjectFeatureFromListCenter = useMemo(() => {
+    if (!clickedProjectFeatureFromList) return;
+    return turfCenter(clickedProjectFeatureFromList.geometry);
+  }, [clickedProjectFeatureFromList]);
 
   return (
     <MapGL
@@ -133,7 +155,7 @@ export default function TheMap({
               "ctn-points-underlay",
               "project-points",
             ]
-          : []
+          : ["project-points", "project-lines-underlay"]
       }
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
@@ -185,6 +207,17 @@ export default function TheMap({
       >
         <Layer {...mapStyles["project-points"]} />
       </Source>
+      {clickedProjectFeatureFromList && (
+        <Popup
+          longitude={
+            clickedProjectFeatureFromListCenter.geometry.coordinates[0]
+          }
+          latitude={clickedProjectFeatureFromListCenter.geometry.coordinates[1]}
+          onClose={() => setClickedProjectFeatureFromList(null)}
+        >
+          {clickedProjectFeatureFromList.properties._label}
+        </Popup>
+      )}
     </MapGL>
   );
 }

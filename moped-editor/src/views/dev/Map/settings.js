@@ -26,8 +26,8 @@ export const MAP_STYLES = {
     paint: {
       "line-width": {
         stops: [
-          [10, 1],
-          [20, 7],
+          [10, 2],
+          [20, 10],
         ],
       },
       "line-color": [
@@ -123,8 +123,8 @@ export const MAP_STYLES = {
     paint: {
       "circle-radius": {
         stops: [
-          [5, 2],
-          [16, 15],
+          [10, 1],
+          [20, 12],
         ],
       },
       "circle-stroke-opacity": 0,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { cloneDeep } from "lodash";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
@@ -72,6 +72,15 @@ export const useFeatureService = ({
   return geojson;
 };
 
+export const useFeatureTypes = (featureCollection, geomType) =>
+  useMemo(() => {
+    const features = featureCollection.features.filter((feature) => {
+      const thisGeom = feature.geometry.type.toLowerCase();
+      return thisGeom.includes(geomType);
+    });
+    return { type: "FeatureCollection", features };
+  }, [featureCollection, geomType]);
+
 export const getIntersectionLabel = (point, lines) => {
   var radius = 10;
   var options = {
@@ -132,3 +141,31 @@ export const handleNewComponentFeatureLink = (
   });
   return newComponentFeatures;
 };
+
+/**
+ * Return "line", "point", or null if all feature are/are not of the same type
+ * ...in which case we do not need to show link mode dialog
+ */
+export const useIsUniformGeometryType = (features) =>
+  useMemo(() => {
+    if (!features || features.length === 0) {
+      return null;
+    }
+    // handling Point, Line, MultiPoint, and MultiLine
+    const featureTypes = features.map((feature) => {
+      if (feature.geometry.type.toLowerCase().includes("line")) {
+        return "lines";
+      } else if (feature.geometry.type.toLowerCase().includes("point")) {
+        return "points";
+      } else {
+        throw `Unsupported geometry type ${feature.geomtery.type}`;
+      }
+    });
+    // are all values the same?
+    const isUniform = featureTypes.every((b) => b === featureTypes[0]);
+    if (isUniform) {
+      return featureTypes[0];
+    } else {
+      return null;
+    }
+  }, [features]);
