@@ -39,6 +39,7 @@ const LinkComponentsDialog = ({
   setComponentFeatures,
   setIsLinkingComponents,
   setLinkMode,
+  linkMode,
 }) => {
   const classes = useStyles();
   const [componentIdsToLink, setComponentIdsToLink] = useState([]);
@@ -74,44 +75,52 @@ const LinkComponentsDialog = ({
       </DialogTitle>
       <DialogContent>
         <List>
-          {components.map((component, i) => (
-            <React.Fragment key={i}>
-              <ListItem
-                button
-                onClick={() => {
-                  const thisComponentId = component._id;
-                  if (!componentIdsToLink.includes(thisComponentId)) {
-                    // add component
-                    const newComponentIdsToLink = [
-                      ...componentIdsToLink,
-                      thisComponentId,
-                    ];
-                    setComponentIdsToLink(newComponentIdsToLink);
-                  } else {
-                    const newComponentIdsToLink = componentIdsToLink.filter(
-                      (linkedComponentId) =>
-                        linkedComponentId !== thisComponentId
-                    );
+          {components
+            .filter((component) => {
+              if (linkMode === "lines") {
+                return component.line_representation === true;
+              } else {
+                return component.line_representation === false;
+              }
+            })
+            .map((component, i) => (
+              <React.Fragment key={i}>
+                <ListItem
+                  button
+                  onClick={() => {
+                    const thisComponentId = component._id;
+                    if (!componentIdsToLink.includes(thisComponentId)) {
+                      // add component
+                      const newComponentIdsToLink = [
+                        ...componentIdsToLink,
+                        thisComponentId,
+                      ];
+                      setComponentIdsToLink(newComponentIdsToLink);
+                    } else {
+                      const newComponentIdsToLink = componentIdsToLink.filter(
+                        (linkedComponentId) =>
+                          linkedComponentId !== thisComponentId
+                      );
 
-                    setComponentIdsToLink(newComponentIdsToLink);
-                  }
-                }}
-              >
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    disableRipple
-                    checked={componentIdsToLink.includes(component._id)}
+                      setComponentIdsToLink(newComponentIdsToLink);
+                    }
+                  }}
+                >
+                  <ListItemIcon>
+                    <Checkbox
+                      edge="start"
+                      disableRipple
+                      checked={componentIdsToLink.includes(component._id)}
+                    />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={`${component.component_name} #${component._id}`}
+                    secondary={component.component_subtype}
                   />
-                </ListItemIcon>
-                <ListItemText
-                  primary={component.component_name}
-                  secondary={component.component_subtype}
-                />
-              </ListItem>
-              <Divider />
-            </React.Fragment>
-          ))}
+                </ListItem>
+                <Divider />
+              </React.Fragment>
+            ))}
         </List>
         <Grid container spacing={2} display="flex" justifyContent="flex-end">
           <Grid item>

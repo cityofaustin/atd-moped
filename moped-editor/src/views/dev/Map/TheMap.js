@@ -215,7 +215,9 @@ export default function TheMap({
           latitude={clickedProjectFeatureFromListCenter.geometry.coordinates[1]}
           onClose={() => setClickedProjectFeatureFromList(null)}
         >
-          {clickedProjectFeatureFromList.properties._label}
+          <span style={{ fontWeight: "bold" }}>
+            {clickedProjectFeatureFromList.properties._label}
+          </span>
         </Popup>
       )}
     </MapGL>

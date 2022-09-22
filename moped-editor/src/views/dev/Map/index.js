@@ -77,10 +77,23 @@ const useStyles = makeStyles((theme) => ({
 const getFeatureLabel = (feature, thisFeatureComponentIds) => {
   const componentCount = thisFeatureComponentIds?.length || 0;
   const componentNoun = componentCount === 1 ? "component" : "components";
-  const componentCountText = componentCount
+
+  let componentCountText = componentCount
     ? `${componentCount} ${componentNoun}`
     : "";
   const locationText = `${feature.properties._label}`;
+
+  // if (componentCount === 0) {
+  //   componentCountText = (
+  //     <ListItem>
+  //       <ListItemIcon>
+  //         <ErrorIcon />
+  //       </ListItemIcon>
+  //       <ListItemText secondary="No components" />
+  //     </ListItem>
+  //   );
+  // }
+
   return {
     primary: locationText,
     secondary: componentCountText,
@@ -107,12 +120,13 @@ const DrawModeSelector = () => {
           value="select"
           control={<Radio color="primary" />}
           label="Select"
-          defaultChecked
+          checked={true}
         />
         <FormControlLabel
           value="draw"
           control={<Radio color="primary" />}
           label="Draw"
+          checked={false}
         />
       </RadioGroup>
     </FormControl>
@@ -221,7 +235,7 @@ export default function MapView() {
           </Tabs>
           {currTab === 1 && (
             <List>
-              {components.length > 0 && (
+              {/* {components.length > 0 && (
                 <>
                   <ListItem dense>
                     <IconButton>
@@ -231,7 +245,7 @@ export default function MapView() {
                   </ListItem>
                   <Divider />
                 </>
-              )}
+              )} */}
               {!isEditingMap && !components.length > 0 && (
                 <>
                   <ListItem dense>
@@ -248,7 +262,19 @@ export default function MapView() {
                       fullWidth
                       // className={classes.margin}
                       startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => setShowComponentCreateDialog(true)}
+                      onClick={() => {
+                        setIsCreatingComponent(true);
+                        setIsLinkingComponents(!isLinkingComponents);
+                        setCurrTab(0);
+                        if (uniformGeometryType) {
+                          // we can skip the linkmode step
+                          setLinkMode(uniformGeometryType);
+                        } else {
+                          setShowLinkModeDialog(true);
+                        }
+                        setExpandedFeatureIds([]);
+                        // setShowComponentCreateDialog(!showComponentCreateDialog)
+                      }}
                     >
                       New Component
                     </Button>
@@ -264,7 +290,7 @@ export default function MapView() {
                     // style={{ backgroundColor: "#fc58ac" }}
                   >
                     <ListItemText
-                      primary={component.component_name}
+                      primary={`${component.component_name} #${component._id}`}
                       secondary={component.component_subtype}
                     />
                   </ListItem>
@@ -275,7 +301,7 @@ export default function MapView() {
           )}
           {currTab === 0 && (
             <List>
-              {projectFeatures?.features.length > 0 && (
+              {/* {projectFeatures?.features.length > 0 && (
                 <>
                   <ListItem dense>
                     <IconButton>
@@ -285,7 +311,7 @@ export default function MapView() {
                   </ListItem>
                   <Divider />
                 </>
-              )}
+              )} */}
               {!projectFeatures?.features.length > 0 && (
                 <ListItem dense>
                   <ListItemIcon>
@@ -427,6 +453,9 @@ export default function MapView() {
                                 />
                                 <ListItemSecondaryAction>
                                   <IconButton>
+                                    <EditOutlined />
+                                  </IconButton>
+                                  <IconButton>
                                     <Cancel />
                                   </IconButton>
                                 </ListItemSecondaryAction>
@@ -490,6 +519,7 @@ export default function MapView() {
                 startIcon={<AddCircleOutlineIcon />}
                 onClick={() => {
                   setIsCreatingComponent(true);
+                  setCurrTab(0);
                   setIsLinkingComponents(!isLinkingComponents);
                   if (uniformGeometryType) {
                     // we can skip the linkmode step
@@ -520,6 +550,7 @@ export default function MapView() {
                 onClick={() => {
                   setShowLinkModeDialog(true);
                   setIsLinkingComponents(!isLinkingComponents);
+                  setIsCreatingComponent(false);
                 }}
               >
                 Link components
@@ -536,6 +567,7 @@ export default function MapView() {
                     setLinkMode(null);
                     setIsLinkingComponents(!isLinkingComponents);
                     setSelectedFeatures([]);
+                    setIsCreatingComponent(false);
                   }}
                 >
                   {isLinkingComponents ? "Cancel" : "Link components"}
@@ -602,6 +634,7 @@ export default function MapView() {
           setComponentFeatures={setComponentFeatures}
           setIsLinkingComponents={setIsLinkingComponents}
           setLinkMode={setLinkMode}
+          linkMode={linkMode}
         />
       </main>
     </div>

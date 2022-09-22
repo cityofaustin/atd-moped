@@ -8,7 +8,7 @@ import {
   Grid,
   TextField,
 } from "@material-ui/core";
-import { CheckCircleOutline } from "@material-ui/icons";
+import { CheckCircle } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
@@ -48,7 +48,7 @@ const useComponentOptions = (linkMode) =>
 const fields = [
   {
     key: "type",
-    label: "Type",
+    label: "Component Type",
     type: "autocomplete",
   },
   {
@@ -234,13 +234,52 @@ const ComponentModal = ({
                 }}
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size="small"
+                name="demo1"
+                id="demo1"
+                label="Some other field"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size="small"
+                name="demo2"
+                id="demo2"
+                label="Another field"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size="small"
+                name="demo3"
+                id="demo3"
+                label="Yet another"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Grid>
           </Grid>
-          <Grid container spacing={2} display="flex" justifyContent="flex-end">
-            <Grid item>
+          <Grid container spacing={4} display="flex" justifyContent="flex-end">
+            <Grid item style={{margin: 5}}>
               <Button
                 variant="contained"
                 color="primary"
-                startIcon={<CheckCircleOutline />}
+                startIcon={<CheckCircle />}
                 onClick={onSave}
               >
                 Create component
