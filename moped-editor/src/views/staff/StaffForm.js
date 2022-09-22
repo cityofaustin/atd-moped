@@ -41,11 +41,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const roleOptions = [
-  { value: nonLoginUserRole, name: "Non-login User" },
-  { value: "moped-editor", name: "Editor" },
-  { value: "moped-admin", name: "Admin" },
-];
+const makeRoleOptions = (userCognitoId) => {
+  // If user is not a non-login user, then we want to hide the non-login role
+  // until we have/need a process to downgrade from login to non-login user
+  const isUserMopedUser = userCognitoId !== null && userCognitoId !== undefined;
+
+  return !isUserMopedUser
+    ? [
+        { value: nonLoginUserRole, name: "Non-login User" },
+        { value: "moped-editor", name: "Editor" },
+        { value: "moped-admin", name: "Admin" },
+      ]
+    : [
+        { value: "moped-editor", name: "Editor" },
+        { value: "moped-admin", name: "Admin" },
+      ];
+};
 
 /**
  * Generates a StaffForm Component
@@ -56,6 +67,7 @@ const roleOptions = [
  * @param {boolean} isUserApiLoading - Moped API user route API call loading state
  * @param {function} setIsUserApiLoading - modify Moped API user route API call loading state
  * @param {Object} validationSchema - Yup formatted form validation schema
+ * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
  * @param {function} FormButtons - React function components that renders form action buttons
  * @returns {JSX.Element}
@@ -69,6 +81,7 @@ const StaffForm = ({
   isUserApiLoading,
   setIsUserApiLoading,
   validationSchema,
+  userCognitoId = null,
   isUserActive = true,
   FormButtons,
 }) => {
@@ -324,7 +337,7 @@ const StaffForm = ({
             <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
-                  {roleOptions.map((role) => (
+                  {makeRoleOptions(userCognitoId).map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}

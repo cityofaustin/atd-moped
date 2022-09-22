@@ -106,11 +106,7 @@ const EditStaffView = () => {
                           <StaffFormSaveButton disabled={isSubmitting} />
                           <StaffUpdateUserStatusButtons
                             isUserActive={isUserActive}
-                            isUserNonLoginUser={
-                              // Updating from non-login to other role requires user activation
-                              watch("roles") !== nonLoginUserRole &&
-                              isNonLoginUser
-                            }
+                            isNonLoginUser={isNonLoginUser}
                             handleCloseModal={handleCloseModal}
                             email={watch("email")}
                             password={watch("password")}
