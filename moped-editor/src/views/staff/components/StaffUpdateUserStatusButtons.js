@@ -94,7 +94,7 @@ const StaffUpdateUserStatusButtons = ({
         message: (
           <Typography>
             The password is required when activating a user. It needs to be at
-            least 8 characters long, it must include at least one lower-case,
+            least 12 characters long, it must include at least one lower-case,
             upper-case, one number, and one special character: _-!@%^~?.:&()[]$.
           </Typography>
         ),

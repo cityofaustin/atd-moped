@@ -69,7 +69,7 @@ const errorsToTranslate = {
   "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'":
     "not a valid email format",
   "value does not match regex '^[a-zA-Z0-9_-!@%^*~?.:&*()[]$]*$'":
-    "password must be at least 8 characters long, it must include at least one lower-case, upper-case, one number, and one symbol characters. special characters: _-!@%^~?.:&()[]$",
+    "password must be at least 12 characters long, it must include at least one lower-case, upper-case, one number, and one special character: _-!@%^~?.:&()[]$",
 };
 
 export const formatApiErrors = (errorsArray) =>
@@ -83,7 +83,7 @@ export const formatApiErrors = (errorsArray) =>
  */
 export const passwordLooksGood = (password) =>
   new RegExp(
-    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$"
+    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
   ).test(password);
 
 /**
