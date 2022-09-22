@@ -5,6 +5,7 @@ import {
   roleLooksGood,
   passwordLooksGood,
   fieldParsers,
+  nonLoginUserRole,
 } from "../helpers";
 
 import { Button, Typography, Box, makeStyles } from "@material-ui/core";
@@ -32,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} password - new password required in form for user activate
  * @param {array} roles - user roles to create DynamoDB claims entry
  * @param {boolean} isUserActive - tells us if we are activating or deactivating
- * @param {boolean} isUserNonLoginUser - tells us if we are converting a non-login user to Moped user
+ * @param {boolean} isNonLoginUser - tells us if we are converting a non-login user to Moped user
  * @returns {JSX.Element}
  * @constructor
  */
@@ -44,7 +45,7 @@ const StaffUpdateUserStatusButtons = ({
   password,
   roles,
   isUserActive,
-  isUserNonLoginUser,
+  isNonLoginUser,
 }) => {
   const classes = useStyles();
   let navigate = useNavigate();
@@ -98,6 +99,31 @@ const StaffUpdateUserStatusButtons = ({
   };
 
   /**
+   * Send a request to the user activation route of the Moped API
+   */
+  const handleNonLoginUserActivation = () => {
+    const rolesParser = fieldParsers["roles"];
+    // Update role to editor since we are activating a non-login user
+    const rolesArray = rolesParser("moped-editor");
+
+    const data = {
+      email,
+      password,
+      roles: rolesArray,
+    };
+
+    // Navigate to user table on success
+    const callback = () => navigate("/moped/staff");
+
+    requestApi({
+      method: "put",
+      path: "/users/activate/",
+      payload: data,
+      callback,
+    });
+  };
+
+  /**
    * Handle Activate User Confirm
    */
   const handleActivateConfirm = () => {
@@ -144,6 +170,52 @@ const StaffUpdateUserStatusButtons = ({
   };
 
   /**
+   * Handle Activate Non-login User Confirm
+   */
+  const handleActivateNonLoginUserConfirm = () => {
+    if (!passwordLooksGood(password)) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: (
+          <Typography>
+            The password is required when activating a user. It needs to be 8
+            characters long, it must include at least one lower-case,
+            upper-case, one number, and one symbol characters.
+          </Typography>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else if (!roleLooksGood(roles)) {
+      setModalState({
+        open: true,
+        title: "Error",
+        message: "The role is required when activating a user.",
+        action: handleCloseModal,
+        actionButtonLabel: "Ok",
+        hideCloseButton: true,
+      });
+    } else {
+      handleNonLoginUserActivation();
+      setModalState({
+        open: true,
+        title: "Activating",
+        message: (
+          <Box display="flex" justifyContent="flex-start">
+            <Typography>Please Wait...</Typography>
+          </Box>
+        ),
+        action: handleCloseModal,
+        actionButtonLabel: null,
+        hideActionButton: true,
+        hideCloseButton: true,
+      });
+    }
+  };
+
+  /**
    * Activate User
    */
   const handleActivateUser = () => {
@@ -167,9 +239,21 @@ const StaffUpdateUserStatusButtons = ({
     });
   };
 
+  /**
+   * Handles the activation of a non-login user
+   */
+  const handleActivateNonLoginUser = () => {
+    setModalState({
+      open: true,
+      title: "Activate this non-login user?",
+      message: "Do you want to activate this non-login user?",
+      action: handleActivateNonLoginUserConfirm,
+    });
+  };
+
   return (
     <>
-      {isUserActive === true && isUserNonLoginUser === false && (
+      {isUserActive === true && isNonLoginUser === false && (
         <Button
           className={classes.formButton}
           color="secondary"
@@ -179,13 +263,22 @@ const StaffUpdateUserStatusButtons = ({
           Inactivate User
         </Button>
       )}
-      {(isUserNonLoginUser === true || isUserActive === false) && (
+      {isUserActive === false && (
         <Button
           className={clsx(classes.formButton, classes.formButtonGreen)}
           variant="contained"
           onClick={handleActivateUser}
         >
           Activate User
+        </Button>
+      )}
+      {isNonLoginUser === true && roles === nonLoginUserRole && (
+        <Button
+          className={clsx(classes.formButton, classes.formButtonGreen)}
+          variant="contained"
+          onClick={handleActivateNonLoginUser}
+        >
+          Activate Non-login User
         </Button>
       )}
     </>
