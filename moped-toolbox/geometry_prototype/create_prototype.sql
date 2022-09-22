@@ -47,3 +47,10 @@ create table drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (components);
 
+-- Typeless components; these should not be alloed per policy?
+insert into components (project_id, component_type_id, name) values (1, 1, 'Driveway Closure 1');
+insert into components (project_id, component_type_id, name) values (1, 1, 'Driveway Closure 2');
+
+insert into signals (project_id, component_type_id, name, signal_id, geography) values (2, 7, 'Bike Parking Corral Install', 1, ST_GeographyFromText(
+    'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
+    ));
