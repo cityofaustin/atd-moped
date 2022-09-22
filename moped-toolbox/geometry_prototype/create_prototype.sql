@@ -25,3 +25,12 @@ insert into component_types (id, type, subtype, subcomponent, representation) va
 insert into component_types (id, type, subtype, subcomponent, representation) values (5, 'Bike Lane', 'Buffered', null, 'line');
 insert into component_types (id, type, subtype, subcomponent, representation) values (6, 'Bike Lane', 'Buffered', 'Raised Pavement Markers', 'line');
 insert into component_types (id, type, subtype, subcomponent, representation) values (7, 'Bike Parking', 'Corral', null, 'point');
+
+
+create table components (
+    id serial primary key, 
+    project_id integer references projects(id),
+    component_type_id integer references component_types(id),
+    name character varying
+    );
+
