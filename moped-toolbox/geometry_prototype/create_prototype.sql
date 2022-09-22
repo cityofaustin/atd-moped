@@ -34,3 +34,16 @@ create table components (
     name character varying
     );
 
+create table signals (
+    signal_id integer default null,
+    geography geography('MULTIPOINT') default null
+    ) inherits (components);
+
+create table drawn_points (
+    geography geography('MULTIPOINT') default null
+    ) inherits (components);
+
+create table drawn_lines (
+    geography geography('MULTILINESTRING') default null
+    ) inherits (components);
+
