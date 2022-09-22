@@ -9,8 +9,9 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import {
-  EditOutlined as EditOutlinedIcon,
+  EditOutlined as EditOutlinedIcon
 } from "@material-ui/icons";
+import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -67,9 +68,9 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     {}
   );
 
+  // Hide Dialog
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
-    refetch();
   }
 
   /**
@@ -202,23 +203,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           } else {
             return (
               <ButtonDropdownMenu
-                // buttonWrapperStyle={classes.fundingButton}
                 addAction={props.action.onClick}
                 openActionDialog={setIsDialogOpen}
                 parentButtonText="Add milestone"
                 firstOptionText="New milestone"
                 secondOptionText="From template"
+                secondOptionIcon
               />
-              // <Button
-              //   variant="contained"
-              //   color="primary"
-              //   size="large"
-              //   startIcon={<AddCircleIcon />}
-              //   ref={addActionRefMilestones}
-              //   onClick={props.action.onClick}
-              // >
-              //   Add milestone
-              // </Button>
             );
           }
         },
@@ -326,9 +317,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         handleDialogClose={handleTemplateModalClose}
         milestoneNameLookup={milestoneNameLookup}
         selectedMilestones={data.moped_proj_milestones}
-    //     selectedMilestonesIds={data?.moped_proj_milestones.map(
-    // (milestone) => milestone.milestone_id)}
         projectId={projectId}
+        refetch={refetch}
       />
       </>
   );

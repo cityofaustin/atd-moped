@@ -19,6 +19,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import AddCircle from "@material-ui/icons/AddCircle";
 import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
 
+import { ADD_PROJECT_MILESTONE } from "../../../queries/project";
+import { useMutation } from "@apollo/client";
+
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
     color: theme.palette.primary.main,
@@ -37,39 +40,38 @@ const MilestoneTemplateModal = ({
   projectId,
   milestoneNameLookup,
   selectedMilestones,
+  refetch,
 }) => {
   const classes = useStyles();
 
   const [template, setTemplate] = useState(null);
   const [milestonesList, setMilestonesList] = useState([]);
   const [milestonesToAdd, setMilestonesToAdd] = useState([]);
-  // when you pick a template
-  // load the milestones and put in state
-  // show on a table.
-  // make it so you can toggle them off
 
-  const handleAddMilestones = () => {
-    console.log("add the thing");
-    // run the update
-  };
+  const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
   useEffect(() => {
-    console.log("template changed");
-    let choices = [];
+    let options = [];
+    let filteredOptions = [];
     const selectedMilestonesIds = selectedMilestones.map(
       (milestone) => milestone.milestone_id
     );
     setMilestonesList([]);
     if (template === "AMD") {
-      choices = returnSignalPHBMilestoneTemplate(projectId);
-      const filteredChoices = choices.filter(
-        (choice) => !selectedMilestonesIds.includes(choice.milestone_id)
+      options = returnSignalPHBMilestoneTemplate(projectId);
+      filteredOptions = options.filter(
+        (option) => !selectedMilestonesIds.includes(option.milestone_id)
       );
-      setMilestonesList(filteredChoices);
-      setMilestonesToAdd(filteredChoices);
     }
+    // if (template === "PDD") {
+    // options = return other template
+    //}
+    setMilestonesList(filteredOptions);
+    setMilestonesToAdd(filteredOptions);
   }, [template, selectedMilestones, projectId]);
 
+  // checks if milestone is in list of milestones to add
+  // if in list, remove. if not, add.
   const handleToggle = (milestone) => {
     const currentIndex = milestonesToAdd.indexOf(milestone);
     const newChecked = [...milestonesToAdd];
@@ -83,11 +85,21 @@ const MilestoneTemplateModal = ({
     setMilestonesToAdd(newChecked);
   };
 
+  // calls function to close dialog and also resets state
   const closeDialog = () => {
     handleDialogClose();
     setMilestonesToAdd([]);
     setMilestonesList([]);
     setTemplate(null);
+  };
+
+  const handleAddMilestones = () => {
+    addProjectMilestone({
+      variables: {
+        objects: milestonesToAdd,
+      },
+    }).then(() => refetch());
+    closeDialog();
   };
 
   return (
@@ -110,7 +122,6 @@ const MilestoneTemplateModal = ({
             defaultValue={null}
             id="specify-milestone-template-autocomplete"
             options={templateChoices}
-            // getOptionLabel={t => t.type_name}
             onChange={(event, newValue) => {
               setTemplate(newValue);
             }}
@@ -151,7 +162,6 @@ const MilestoneTemplateModal = ({
                     tabIndex={-1}
                     disableRipple
                     color={"primary"}
-                    // inputProps={{ 'aria-labelledby': labelId }}
                   />
                 </ListItemIcon>
                 <ListItemText

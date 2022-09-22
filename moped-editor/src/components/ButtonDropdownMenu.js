@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, ListItemIcon, Menu, MenuItem } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import AddCircle from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core";
 
@@ -48,6 +49,7 @@ const ButtonDropdownMenu = ({
   parentButtonText,
   firstOptionText,
   secondOptionText,
+  secondOptionIcon,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
@@ -102,7 +104,11 @@ const ButtonDropdownMenu = ({
         </MenuItem>
         <MenuItem onClick={() => openActionDialog(true)}>
           <ListItemIcon>
-            <AddCircle fontSize="small" />
+            {secondOptionIcon ? (
+              <PlaylistAddIcon fontSize="small" />
+            ) : (
+              <AddCircle fontSize="small" />
+            )}
           </ListItemIcon>
           {secondOptionText}
         </MenuItem>
