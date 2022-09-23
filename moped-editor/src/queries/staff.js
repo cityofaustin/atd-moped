@@ -40,3 +40,21 @@ export const ADD_NON_MOPED_USER = gql`
     }
   }
 `;
+
+export const UPDATE_NON_MOPED_USER = gql`
+  mutation AddNonMopedUser($userId: Int!, $changes: moped_users_set_input) {
+    update_moped_users_by_pk(pk_columns: { user_id: $userId }, _set: $changes) {
+      date_added
+      first_name
+      last_name
+      staff_uuid
+      title
+      user_id
+      workgroup
+      workgroup_id
+      email
+      roles
+      is_deleted
+    }
+  }
+`;

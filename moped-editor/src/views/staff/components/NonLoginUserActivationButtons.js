@@ -1,5 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { UPDATE_NON_MOPED_USER } from "src/queries/staff";
 import {
   useUserApi,
   roleLooksGood,
@@ -16,22 +18,22 @@ import clsx from "clsx";
  * Generates a button to convert a non-login user to a Moped user with login
  * @param {function} setModalState - set the modal's details
  * @param {function} handleCloseModal - callback that fires on modal close
- * @param {string} email - user's email
- * @param {string} password - new password required in form for user activate
- * @param {array} roles - user roles to create DynamoDB claims entry
+ * @param {string} userId - moped_user primary key user_id
+ * @param {Object} formValues - User values from StaffForm
  * @returns {JSX.Element}
  */
 const NonLoginUserActivationButtons = ({
   setModalState,
   handleCloseModal,
-  email,
-  password,
-  roles,
+  userId,
+  formValues,
 }) => {
   const classes = useButtonStyles();
   let navigate = useNavigate();
+  const { email, password, roles } = formValues;
 
   const { requestApi } = useUserApi();
+  const [updateNonMopedUser] = useMutation(UPDATE_NON_MOPED_USER);
   const hasUserSelectedMopedUserRole = roles !== nonLoginUserRole;
 
   /**
@@ -56,6 +58,17 @@ const NonLoginUserActivationButtons = ({
       payload: data,
       callback,
     });
+  };
+
+  const handleUpdateNonLoginUser = () => {
+    const { password, ...restOfFormValues } = formValues;
+
+    updateNonMopedUser({
+      variables: {
+        userId: userId,
+        changes: restOfFormValues,
+      },
+    }).then(() => navigate("/moped/staff"));
   };
 
   const handleActivateNonLoginUserConfirm = () => {
@@ -113,6 +126,14 @@ const NonLoginUserActivationButtons = ({
   return (
     <>
       {/* Need to create a save button to update only the moped_user row with a new mutation */}
+      <Button
+        className={classes.formButton}
+        onClick={handleUpdateNonLoginUser}
+        color="primary"
+        variant="contained"
+      >
+        Save
+      </Button>
       {hasUserSelectedMopedUserRole && (
         <Button
           className={clsx(classes.formButton, classes.formButtonGreen)}

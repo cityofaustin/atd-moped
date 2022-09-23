@@ -123,9 +123,8 @@ const EditStaffView = () => {
                               isUserActive={isUserActive}
                               setModalState={setModalState}
                               handleCloseModal={handleCloseModal}
-                              email={watch("email")}
-                              password={watch("password")}
-                              roles={watch("roles")}
+                              userId={userId}
+                              formValues={watch()}
                             />
                           )}
                         </>
