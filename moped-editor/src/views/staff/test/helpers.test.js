@@ -7,7 +7,7 @@ import {
 } from "../helpers";
 
 describe("passwordLooksGood()", () => {
-  it("returns false for an invalid passwords", () => {
+  it("returns false for invalid passwords", () => {
     const noSpecialCharacter = "thisislongenoughbutisonlyletters";
     const notLongEnough = "shortpw?";
     const invalidCharacter = "`isnotavalidcharintheregex";
@@ -17,7 +17,7 @@ describe("passwordLooksGood()", () => {
     expect(passwordLooksGood(invalidCharacter)).toBe(false);
   });
 
-  it("returns true for an valid passwords", () => {
+  it("returns true for a valid password", () => {
     const validPassword = "Th1isis3nota4realpassword?";
 
     expect(passwordLooksGood(validPassword)).toBe(true);
@@ -25,7 +25,7 @@ describe("passwordLooksGood()", () => {
 });
 
 describe("roleLooksGood()", () => {
-  it("returns true for no role or invalid role", () => {
+  it("returns false for no role or invalid role", () => {
     const noRoleSelected = [];
     const invalidRole = ["not-a-real-role"];
 
@@ -41,13 +41,13 @@ describe("roleLooksGood()", () => {
 });
 
 describe("transformFormDataIntoDatabaseTypes()", () => {
-  const formData = {
+  const formOutputData = {
     workgroup_id: "1",
     roles: "moped-editor",
   };
 
   it("transforms a workgroup ID string from the form to an integer the DB expects", () => {
-    const transformed = transformFormDataIntoDatabaseTypes(formData);
+    const transformed = transformFormDataIntoDatabaseTypes(formOutputData);
     const { workgroup_id } = transformed;
 
     expect(workgroup_id).toBe(1);
@@ -55,7 +55,7 @@ describe("transformFormDataIntoDatabaseTypes()", () => {
   });
 
   it("transforms a role string from the form to an array the DB expects", () => {
-    const transformed = transformFormDataIntoDatabaseTypes(formData);
+    const transformed = transformFormDataIntoDatabaseTypes(formOutputData);
     const { roles } = transformed;
 
     expect(roles.includes("moped-editor")).toBe(true);
