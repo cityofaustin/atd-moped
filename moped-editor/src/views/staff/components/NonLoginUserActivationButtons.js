@@ -7,7 +7,6 @@ import {
   roleLooksGood,
   passwordLooksGood,
   fieldParsers,
-  nonLoginUserRole,
 } from "../helpers";
 import { useButtonStyles } from "./StaffFormButtons";
 
@@ -34,14 +33,13 @@ const NonLoginUserActivationButtons = ({
 
   const { requestApi } = useUserApi();
   const [updateNonMopedUser] = useMutation(UPDATE_NON_MOPED_USER);
-  const hasUserSelectedMopedUserRole = roles !== nonLoginUserRole;
 
   /**
    * Use the user activation API route to convert to a Moped user in the Cognito user pool with a DynamoDB claims entry
    */
   const handleNonLoginUserActivation = () => {
     const rolesParser = fieldParsers["roles"];
-    const rolesArray = rolesParser(roles);
+    const rolesArray = rolesParser(["moped-editor"]);
 
     const data = {
       email,
@@ -134,15 +132,13 @@ const NonLoginUserActivationButtons = ({
       >
         Save
       </Button>
-      {hasUserSelectedMopedUserRole && (
-        <Button
-          className={clsx(classes.formButton, classes.formButtonGreen)}
-          variant="contained"
-          onClick={handleActivateNonLoginUser}
-        >
-          Activate Non-login User
-        </Button>
-      )}
+      <Button
+        className={clsx(classes.formButton, classes.formButtonGreen)}
+        variant="contained"
+        onClick={handleActivateNonLoginUser}
+      >
+        Activate Non-login User
+      </Button>
     </>
   );
 };

@@ -31,6 +31,12 @@ export const initialFormValues = {
   roles: ["moped-editor"],
 };
 
+const newUserRoleOptions = [
+  { value: nonLoginUserRole, name: "Non-login User" },
+  { value: "moped-editor", name: "Editor" },
+  { value: "moped-admin", name: "Admin" },
+];
+
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
   last_name: yup.string().required(),
@@ -99,6 +105,7 @@ const NewStaffView = () => {
                 showUpdateUserStatusButtons={false}
                 showFormResetButton={true}
                 validationSchema={validationSchema}
+                roleOptions={newUserRoleOptions}
                 FormButtons={({ isSubmitting, reset }) => (
                   <>
                     <StaffFormSaveButton disabled={isSubmitting} />

@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
 import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
-import { useUserApi, isUserNonLoginUser } from "./helpers";
+import { useUserApi, nonLoginUserRole, isUserNonLoginUser } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -71,6 +71,14 @@ const EditStaffView = () => {
     });
   };
 
+  const existingNonLoginUserRoleOptions = [
+    { value: nonLoginUserRole, name: "Non-login User" },
+  ];
+  const existingLoginUserRoleOptions = [
+    { value: "moped-editor", name: "Editor" },
+    { value: "moped-admin", name: "Admin" },
+  ];
+
   return (
     <>
       {data && !data?.moped_users?.length && <NotFoundView />}
@@ -97,6 +105,11 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
+                      roleOptions={
+                        isNonLoginUser
+                          ? existingNonLoginUserRoleOptions
+                          : existingLoginUserRoleOptions
+                      }
                       FormButtons={({
                         isSubmitting,
                         watch,

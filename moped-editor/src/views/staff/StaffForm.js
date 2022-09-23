@@ -41,24 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const makeRoleOptions = (userCognitoId, isUserActive) => {
-  // If user is an active or inactive login user, then we want to hide the non-login role
-  // until we have/need a process to downgrade from login to non-login user
-  const isUserMopedUser = userCognitoId !== null && userCognitoId !== undefined;
-  const isInactivatedUser = isUserActive === false;
-
-  return isUserMopedUser || isInactivatedUser
-    ? [
-        { value: "moped-editor", name: "Editor" },
-        { value: "moped-admin", name: "Admin" },
-      ]
-    : [
-        { value: nonLoginUserRole, name: "Non-login User" },
-        { value: "moped-editor", name: "Editor" },
-        { value: "moped-admin", name: "Admin" },
-      ];
-};
-
 /**
  * Generates a StaffForm Component
  * @param {Object} initialFormValues - The form data
@@ -70,6 +52,7 @@ const makeRoleOptions = (userCognitoId, isUserActive) => {
  * @param {Object} validationSchema - Yup formatted form validation schema
  * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
+ * @param {array} roleOptions - role options to present in the form
  * @param {function} FormButtons - React function components that renders form action buttons
  * @returns {JSX.Element}
  * @constructor
@@ -84,6 +67,7 @@ const StaffForm = ({
   validationSchema,
   userCognitoId = null,
   isUserActive = true,
+  roleOptions,
   FormButtons,
 }) => {
   const classes = useStyles();
@@ -338,7 +322,7 @@ const StaffForm = ({
             <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
-                  {makeRoleOptions(userCognitoId, isUserActive).map((role) => (
+                  {roleOptions.map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}
