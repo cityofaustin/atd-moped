@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Button,
   Box,
@@ -34,6 +34,21 @@ const useStyles = makeStyles((theme) => ({
 
 const templateChoices = ["AMD", "PDD"];
 
+ /**
+  * useMemo hook to choose milestone options
+  * @return {Object[]}
+  */
+const useMilestoneOptions = (template, projectId) =>
+  useMemo(() => {
+    if (template === "AMD") {
+      return returnSignalPHBMilestoneTemplate(projectId);
+      // } else if (template === "PDD") {
+      //   // etc return [];
+    } else {
+      return [];
+    }
+  }, [template, projectId]);
+
 const MilestoneTemplateModal = ({
   isDialogOpen,
   handleDialogClose,
@@ -45,29 +60,23 @@ const MilestoneTemplateModal = ({
   const classes = useStyles();
 
   const [template, setTemplate] = useState(null);
-  const [milestonesList, setMilestonesList] = useState([]);
   const [milestonesToAdd, setMilestonesToAdd] = useState([]);
 
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
+  // Array of milestone ids already in moped_proj_milestones
+  const selectedMilestonesIds = selectedMilestones.map(
+    (milestone) => milestone.milestone_id
+  );
+
+  // milestone options with existing milestones filtered out
+  const milestonesList = useMilestoneOptions(template, projectId).filter(
+    (option) => !selectedMilestonesIds.includes(option.milestone_id)
+  );
+
   useEffect(() => {
-    let options = [];
-    const selectedMilestonesIds = selectedMilestones.map(
-      (milestone) => milestone.milestone_id
-    );
-    setMilestonesList([]);
-    if (template === "AMD") {
-      options = returnSignalPHBMilestoneTemplate(projectId);
-    }
-    // if (template === "PDD") {
-    // options = return other template
-    // }
-    const filteredOptions = options.filter(
-      (option) => !selectedMilestonesIds.includes(option.milestone_id)
-    );
-    setMilestonesList(filteredOptions);
-    setMilestonesToAdd(filteredOptions);
-  }, [template, selectedMilestones, projectId]);
+    setMilestonesToAdd([...milestonesList]);
+  }, [milestonesList]);
 
   // checks if milestone is in list of milestones to add
   // if in list, remove. if not, add.
@@ -88,7 +97,6 @@ const MilestoneTemplateModal = ({
   const closeDialog = () => {
     handleDialogClose();
     setMilestonesToAdd([]);
-    setMilestonesList([]);
     setTemplate(null);
   };
 
