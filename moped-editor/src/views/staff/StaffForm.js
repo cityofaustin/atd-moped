@@ -41,18 +41,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const makeRoleOptions = (userCognitoId) => {
-  // If user is not a non-login user, then we want to hide the non-login role
+const makeRoleOptions = (userCognitoId, isUserActive) => {
+  // If user is an active or inactive login user, then we want to hide the non-login role
   // until we have/need a process to downgrade from login to non-login user
   const isUserMopedUser = userCognitoId !== null && userCognitoId !== undefined;
+  const isInactivatedUser = isUserActive === false;
 
-  return !isUserMopedUser
+  return isUserMopedUser || isInactivatedUser
     ? [
-        { value: nonLoginUserRole, name: "Non-login User" },
         { value: "moped-editor", name: "Editor" },
         { value: "moped-admin", name: "Admin" },
       ]
     : [
+        { value: nonLoginUserRole, name: "Non-login User" },
         { value: "moped-editor", name: "Editor" },
         { value: "moped-admin", name: "Admin" },
       ];
@@ -337,7 +338,7 @@ const StaffForm = ({
             <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
-                  {makeRoleOptions(userCognitoId).map((role) => (
+                  {makeRoleOptions(userCognitoId, isUserActive).map((role) => (
                     <FormControlLabel
                       key={role.value}
                       value={role.value}

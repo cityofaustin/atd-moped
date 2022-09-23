@@ -104,7 +104,9 @@ const EditStaffView = () => {
                         setModalState,
                       }) => (
                         <>
-                          <StaffFormSaveButton disabled={isSubmitting} />
+                          {!isNonLoginUser && (
+                            <StaffFormSaveButton disabled={isSubmitting} />
+                          )}
                           {!isNonLoginUser && (
                             <StaffUpdateUserStatusButtons
                               isUserActive={isUserActive}
