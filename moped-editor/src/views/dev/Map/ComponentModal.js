@@ -13,7 +13,6 @@ import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { COMPONENTS } from "./data/components";
-import { handleNewComponentFeatureLink } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -31,19 +30,16 @@ const componentLabel = ({ component_name, component_subtype }) => {
     : `${component_name}`;
 };
 
-const useComponentOptions = (linkMode) =>
+const useComponentOptions = () =>
   useMemo(() => {
-    const isLineRepresentation = linkMode === "lines";
-    const options = COMPONENTS.moped_components
-      .filter((comp) => comp.line_representation === isLineRepresentation)
-      .map((comp) => ({
-        value: comp.component_id,
-        label: componentLabel(comp),
-        data: comp,
-      }));
+    const options = COMPONENTS.moped_components.map((comp) => ({
+      value: comp.component_id,
+      label: componentLabel(comp),
+      data: comp,
+    }));
     // add empty option for default state
     return [...options, { value: "", label: "" }];
-  }, [linkMode]);
+  }, []);
 
 const fields = [
   {
@@ -80,7 +76,7 @@ const CustomAutocomplete = ({
   fieldLabel,
   linkMode,
 }) => {
-  const options = useComponentOptions(linkMode);
+  const options = useComponentOptions();
 
   return (
     <Autocomplete
@@ -123,15 +119,9 @@ function formStateReducer(state, { key, value, action }) {
 const ComponentModal = ({
   showDialog,
   setShowDialog,
-  dispatchComponents,
-  setCurrTab,
-  selectedFeatures,
-  componentFeatures,
+  setDraftComponent,
   setLinkMode,
-  setComponentFeatures,
-  setIsLinkingComponents,
-  setSelectedFeatures,
-  setIsCreatingComponent,
+  setIsEditingComponent,
   linkMode,
 }) => {
   const classes = useStyles();
@@ -147,54 +137,30 @@ const ComponentModal = ({
       description: formState.description,
       label: formState.type.label,
       _id: randomComponentId(),
+      features: [],
     };
 
-    const newComponentFeatures = handleNewComponentFeatureLink(
-      componentFeatures,
-      selectedFeatures,
-      [newComponent._id]
-    );
-    // save component
-    dispatchComponents({
-      action: "add",
-      component: newComponent,
-    });
+    const linkMode = newComponent.line_representation ? "lines" : "points";
 
-    // save componentFeature links
-    setComponentFeatures(newComponentFeatures);
-
-    // reset other states
-    setSelectedFeatures([]);
-    setLinkMode(null);
-    setIsLinkingComponents(false);
-    setIsCreatingComponent(false);
-    dispatchFormState({ action: "reset" });
+    setDraftComponent(newComponent);
+    setLinkMode(linkMode);
     // switch to components tab
-    setCurrTab(0);
     setShowDialog(false);
   };
 
+  const onClose = () => {
+    setLinkMode(null);
+    setDraftComponent(null);
+    setIsEditingComponent(false);
+    setShowDialog(false);
+    dispatchFormState({ action: "reset" });
+  };
+
   return (
-    <Dialog
-      open={showDialog}
-      onClose={() => {
-        setLinkMode(null);
-        setIsLinkingComponents(false);
-        setIsCreatingComponent(false);
-        setSelectedFeatures([]);
-        setShowDialog(false);
-        dispatchFormState({ action: "reset" });
-      }}
-      fullWidth
-    >
+    <Dialog open={showDialog} onClose={onClose} fullWidth>
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
-        <IconButton
-          onClick={(e) => {
-            e.preventDefault();
-            setShowDialog(false);
-          }}
-        >
+        <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
@@ -275,14 +241,14 @@ const ComponentModal = ({
             </Grid>
           </Grid>
           <Grid container spacing={4} display="flex" justifyContent="flex-end">
-            <Grid item style={{margin: 5}}>
+            <Grid item style={{ margin: 5 }}>
               <Button
                 variant="contained"
                 color="primary"
                 startIcon={<CheckCircle />}
                 onClick={onSave}
               >
-                Create component
+                Continue
               </Button>
             </Grid>
           </Grid>

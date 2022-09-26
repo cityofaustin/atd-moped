@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
 export const MAP_STYLES = {
@@ -41,6 +42,46 @@ export const MAP_STYLES = {
       "line-cap": "round",
     },
   },
+  "project-points-muted": {
+    id: "project-points",
+    _featureIdProp: "INTERSECTION_ID",
+    type: "circle",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [10, 1],
+          [20, 12],
+        ],
+      },
+      "circle-stroke-color": "#8d8b8b",
+      "circle-stroke-width": 2,
+      "circle-stroke-opacity": 0.9,
+      "circle-color": "#8d8b8b",
+      "circle-opacity": 0.9,
+    },
+  },
+  "project-lines-muted": {
+    id: "project-lines",
+    _featureIdProp: "CTN_SEGMENT_ID",
+    type: "line",
+    paint: {
+      "line-width": {
+        stops: [
+          [10, 2],
+          [20, 10],
+        ],
+      },
+      "line-color": [
+        "case",
+        ["boolean", ["feature-state", "hover"], false],
+        "#8d8b8b",
+        "#8d8b8b",
+      ],
+    },
+    layout: {
+      "line-cap": "round",
+    },
+  },
   "project-lines-underlay": {
     id: "project-lines-underlay",
     _featureIdProp: "CTN_SEGMENT_ID",
@@ -52,6 +93,41 @@ export const MAP_STYLES = {
     },
     layout: {
       "line-cap": "round",
+    },
+  },
+  "draft-component-lines": {
+    id: "draft-component-lines",
+    _featureIdProp: "id",
+    type: "line",
+    paint: {
+      "line-width": {
+        stops: [
+          [10, 2],
+          [20, 10],
+        ],
+      },
+      "line-color": "#1276D1",
+    },
+    layout: {
+      "line-cap": "round",
+    },
+  },
+  "draft-component-points": {
+    id: "draft-component-points",
+    _featureIdProp: "id",
+    type: "circle",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [10, 1],
+          [20, 12],
+        ],
+      },
+      "circle-stroke-color": "#000",
+      "circle-stroke-width": 2,
+      "circle-stroke-opacity": 0.9,
+      "circle-color": "#fc74ba",
+      "circle-opacity": 0.9,
     },
   },
   "ctn-lines": {
@@ -101,8 +177,8 @@ export const MAP_STYLES = {
     paint: {
       "circle-radius": {
         stops: [
-          [5, 2],
-          [16, 6],
+          [5, 4],
+          [16, 10],
         ],
       },
       "circle-stroke-opacity": 0.9,
@@ -132,6 +208,41 @@ export const MAP_STYLES = {
       "circle-opacity": 0,
     },
     minzoom: 15,
+  },
+  "clicked-component-features-lines": {
+    id: "clicked-component-features-lines",
+    featureIdProp: "id",
+    type: "line",
+    paint: {
+      "line-width": {
+        stops: [
+          [10, 2],
+          [20, 10],
+        ],
+      },
+      "line-color": "#1276D1",
+    },
+    layout: {
+      "line-cap": "round",
+    },
+  },
+  "clicked-component-features-points": {
+    id: "clicked-component-features-points",
+    featureIdProp: "id",
+    type: "circle",
+    paint: {
+      "circle-radius": {
+        stops: [
+          [10, 1],
+          [20, 12],
+        ],
+      },
+      "circle-stroke-color": "#1069bc",
+      "circle-stroke-width": 2,
+      "circle-stroke-opacity": 0.9,
+      "circle-color": "#a1cdf7",
+      "circle-opacity": 0.9,
+    },
   },
 };
 
@@ -175,3 +286,8 @@ export const mapSettings = {
   mapStyle: "mapbox://styles/mapbox/light-v10",
   mapboxAccessToken: MAPBOX_TOKEN,
 };
+
+export const useMapStyles = () =>
+  useMemo(() => {
+    return MAP_STYLES;
+  });

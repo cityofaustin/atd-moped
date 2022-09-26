@@ -50,14 +50,17 @@ export const useFeatureService = ({
     type: "FeatureCollection",
     features: [],
   });
+  const [controller, setController] = useState(new AbortController());
+
   useEffect(() => {
     if (!bounds || !isVisible) {
       return;
     }
+
     const queryString = getQuerySring(bounds);
     const url = `${ENDPOINT}/${name}/FeatureServer/${layerId}/query?${queryString}`;
 
-    fetch(url)
+    fetch(url, { signal: controller.signal })
       .then((response) => response.json())
       .then((data) => {
         const allFeatures = [...geojson.features, ...data.features];
@@ -67,7 +70,19 @@ export const useFeatureService = ({
           features: uniqueFeatures,
         });
       })
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        if (error instanceof DOMException) {
+          console.warn("Aborted requested");
+        } else {
+          console.error(error);
+        }
+      });
+
+    return () => {
+      // cancel this request on next render
+      controller.abort();
+      setController(new AbortController());
+    };
   }, [bounds, name, layerId, isVisible, featureIdProp]);
   return geojson;
 };

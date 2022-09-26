@@ -1,7 +1,8 @@
 import { useState, useMemo } from "react";
 import MapGL, { Source, Layer, Popup } from "react-map-gl";
 import { cloneDeep } from "lodash";
-import turfCenter from "@turf/center";
+import ComponentPopup from "./ComponentPopup";
+import FeaturePopup from "./FeaturePopup";
 import { mapSettings, initialViewState, MAP_STYLES, SOURCES } from "./settings";
 import {
   useFeatureService,
@@ -10,17 +11,64 @@ import {
 } from "./utils";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+const useComponentFeatureCollection = (component) =>
+  useMemo(() => {
+    if (!component || !component?.features) return;
+    return { type: "FeatureCollection", features: component.features };
+  }, [component]);
+
+const deDeupeProjectFeatures = (features) => {
+  return features.filter(
+    (value, index, self) =>
+      index ===
+      self.findIndex(
+        (f) =>
+          f.properties.id === value.properties.id &&
+          f.properties._layerId === value.properties._layerId
+      )
+  );
+};
+
+// returns geojson of **unique** features across all components
+const useProjectFeatures = (components) =>
+  useMemo(() => {
+    const allComponentfeatures = [];
+    components.forEach((component) =>
+      allComponentfeatures.push(component.features)
+    );
+    return {
+      type: "FeatureCollection",
+      features: deDeupeProjectFeatures(allComponentfeatures.flat()),
+    };
+  }, [components]);
+
+const useDraftComponentFeatures = (draftComponent) =>
+  useMemo(() => {
+    return {
+      type: "FeatureCollection",
+      features: draftComponent?.features || [],
+    };
+  }, [draftComponent]);
+
 export default function TheMap({
-  projectFeatures,
-  setProjectFeatures,
   setHoveredOnMapFeatureId,
-  isEditingMap,
+  components,
+  isEditingComponent,
+  draftComponent,
+  setDraftComponent,
   mapRef,
-  clickedProjectFeatureFromList,
-  setClickedProjectFeatureFromList,
+  clickedProjectFeature,
+  setClickedProjectFeature,
+  clickedComponent,
+  setClickedComponent,
+  linkMode,
 }) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
+  const projectFeatures = useProjectFeatures(components);
+
+  const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
+  const draftLayerId = `draft-component-${linkMode}`;
 
   const mapStyles = MAP_STYLES;
 
@@ -73,37 +121,36 @@ export default function TheMap({
       return;
     }
 
-    const newProjectFeatures = cloneDeep(projectFeatures);
-    const clickedProjectFeature = e.features.find(
-      (feature) =>
-        feature.layer.id === "project-lines-underlay" ||
-        feature.layer.id === "project-points"
-    );
-
-    // we have to fork our click effect to hand when map is being edited or not
-    if (!isEditingMap) {
+    /* If not editing, handle click on project feature */
+    if (!isEditingComponent) {
+      const clickedProjectFeature = e.features.find((feature) =>
+        feature.layer.id.includes("project")
+      );
       if (!clickedProjectFeature) {
         return;
       }
-      setClickedProjectFeatureFromList(clickedProjectFeature);
+      setClickedProjectFeature(clickedProjectFeature);
       return;
     }
 
-    if (clickedProjectFeature) {
-      // remove project feature, ignore underling CTN features
-      // remove feature if it exists
-      const filteredFeatures = projectFeatures.features.filter(
-        (projFeature) => {
-          return !(
-            projFeature.properties.id === clickedProjectFeature.properties.id &&
-            projFeature.properties._layerId ===
-              clickedProjectFeature.properties._layerId
-          );
-        }
-      );
+    /* We're editing, so handle add/remove draft component feature */
+    const newDraftComponent = cloneDeep(draftComponent);
+    const clickedDraftComponentFeature = e.features.find(
+      (feature) => feature.layer.id === draftLayerId
+    );
 
-      newProjectFeatures.features = filteredFeatures;
-      setProjectFeatures(newProjectFeatures);
+    if (clickedDraftComponentFeature) {
+      // remove project feature, ignore underling CTN features
+      const filteredFeatures = draftComponent.features.filter((compFeature) => {
+        return !(
+          compFeature.properties.id ===
+            clickedDraftComponentFeature.properties.id &&
+          compFeature.properties._layerId ===
+            clickedDraftComponentFeature.properties._layerId
+        );
+      });
+      newDraftComponent.features = filteredFeatures;
+      setDraftComponent(newDraftComponent);
       return;
     }
 
@@ -128,9 +175,9 @@ export default function TheMap({
       newFeature.properties._label = `${newFeature.properties.FROM_ADDRESS_MIN} BLK ${newFeature.properties.FULL_STREET_NAME}`;
     }
 
-    newProjectFeatures.features.push(newFeature);
-    setProjectFeatures(newProjectFeatures);
-    setHoveredOnMapFeatureId(newFeature.properties.id);
+    newDraftComponent.features.push(newFeature);
+    setDraftComponent(newDraftComponent);
+    // setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
   const onMoveEnd = (e) => {
@@ -138,23 +185,18 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
-  const clickedProjectFeatureFromListCenter = useMemo(() => {
-    if (!clickedProjectFeatureFromList) return;
-    return turfCenter(clickedProjectFeatureFromList.geometry);
-  }, [clickedProjectFeatureFromList]);
+  const componentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
 
   return (
     <MapGL
       ref={mapRef}
       initialViewState={initialViewState}
       interactiveLayerIds={
-        isEditingMap
-          ? [
-              "ctn-lines-underlay",
-              "project-lines-underlay",
-              "ctn-points-underlay",
-              "project-points",
-            ]
+        isEditingComponent
+          ? linkMode === "lines"
+            ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
+            : ["ctn-points-underlay", "project-points", draftLayerId]
           : ["project-points", "project-lines-underlay"]
       }
       onMouseEnter={onMouseEnter}
@@ -171,8 +213,12 @@ export default function TheMap({
         data={ctnLinesGeojson}
         promoteId={SOURCES["ctn-lines"]._featureIdProp}
       >
-        {isEditingMap && <Layer {...mapStyles["ctn-lines-underlay"]} />}
-        {isEditingMap && <Layer {...mapStyles["ctn-lines"]} />}
+        {isEditingComponent && linkMode === "lines" && (
+          <Layer {...mapStyles["ctn-lines-underlay"]} />
+        )}
+        {isEditingComponent && linkMode === "lines" && (
+          <Layer {...mapStyles["ctn-lines"]} />
+        )}
       </Source>
       {/* <Source
         id="ctn-points"
@@ -187,8 +233,12 @@ export default function TheMap({
         data={ctnPointsGeojson}
         promoteId={SOURCES["ctn-points"]._featureIdProp}
       >
-        {isEditingMap && <Layer {...mapStyles["ctn-points-underlay"]} />}
-        {isEditingMap && <Layer {...mapStyles["ctn-points"]} />}
+        {isEditingComponent && linkMode === "points" && (
+          <Layer {...mapStyles["ctn-points-underlay"]} />
+        )}
+        {isEditingComponent && linkMode === "points" && (
+          <Layer {...mapStyles["ctn-points"]} />
+        )}
       </Source>
       <Source
         id="project-lines"
@@ -197,7 +247,11 @@ export default function TheMap({
         promoteId="id"
       >
         <Layer {...mapStyles["project-lines-underlay"]} />
-        <Layer {...mapStyles["project-lines"]} />
+        <Layer
+          {...mapStyles[
+            clickedComponent ? "project-lines-muted" : "project-lines"
+          ]}
+        />
       </Source>
       <Source
         id="project-points"
@@ -205,21 +259,48 @@ export default function TheMap({
         data={projectPoints}
         promoteId="id"
       >
-        <Layer {...mapStyles["project-points"]} />
+        <Layer
+          {...mapStyles[
+            clickedComponent ? "project-points-muted" : "project-points"
+          ]}
+        />
       </Source>
-      {clickedProjectFeatureFromList && (
-        <Popup
-          longitude={
-            clickedProjectFeatureFromListCenter.geometry.coordinates[0]
-          }
-          latitude={clickedProjectFeatureFromListCenter.geometry.coordinates[1]}
-          onClose={() => setClickedProjectFeatureFromList(null)}
+      {linkMode && (
+        <Source
+          id={draftLayerId}
+          type="geojson"
+          data={draftComponentFeatures}
+          promoteId="id"
         >
-          <span style={{ fontWeight: "bold" }}>
-            {clickedProjectFeatureFromList.properties._label}
-          </span>
-        </Popup>
+          <Layer {...mapStyles[draftLayerId]} />
+        </Source>
       )}
+      {componentFeatureCollection && (
+        <Source
+          id="clicked-component-features"
+          type="geojson"
+          data={componentFeatureCollection}
+          promoteId="id"
+        >
+          {clickedComponent.line_representation && (
+            <Layer {...mapStyles["clicked-component-features-lines"]} />
+          )}
+          {!clickedComponent.line_representation && (
+            <Layer {...mapStyles["clicked-component-features-points"]} />
+          )}
+        </Source>
+      )}
+      <FeaturePopup
+        onClose={() => setClickedProjectFeature(null)}
+        feature={clickedProjectFeature}
+        components={components}
+        setClickedComponent={setClickedComponent}
+      />
+      {/* <ComponentPopup
+        component={clickedComponent}
+        onClose={() => setClickedComponent(null)}
+        featureCollection={componentFeatureCollection}
+      /> */}
     </MapGL>
   );
 }
