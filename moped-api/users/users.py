@@ -368,7 +368,7 @@ def user_activate_user(claims: list) -> (Response, int):
 
         # 2. Update database user table row
         db_response = db_activate_user(
-            user_email=email, user_cognito_id=cognito_username_uuid
+            user_email=email, user_cognito_id=cognito_username_uuid, roles=roles
         )
 
         if "errors" in db_response:
