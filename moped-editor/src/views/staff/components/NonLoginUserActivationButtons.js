@@ -39,7 +39,7 @@ const NonLoginUserActivationButtons = ({
    */
   const handleNonLoginUserActivation = () => {
     const rolesParser = fieldParsers["roles"];
-    const rolesArray = rolesParser(["moped-editor"]);
+    const rolesArray = rolesParser("moped-editor");
 
     const data = {
       email,
@@ -77,8 +77,8 @@ const NonLoginUserActivationButtons = ({
         message: (
           <Typography>
             The password is required when activating a user. It needs to be 8
-            characters long, it must include at least one lower-case,
-            upper-case, one number, and one symbol characters.
+            characters long, and it must include at least one lower-case letter,
+            one upper-case letter, one number, and one symbol character.
           </Typography>
         ),
         action: handleCloseModal,
