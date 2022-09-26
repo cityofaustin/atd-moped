@@ -50,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
  * @param {boolean} isUserApiLoading - Moped API user route API call loading state
  * @param {function} setIsUserApiLoading - modify Moped API user route API call loading state
  * @param {Object} validationSchema - Yup formatted form validation schema
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
  * @param {array} roleOptions - role options to present in the form
+ * @param {boolean} isPasswordFieldDisabled - disable password field when not required
  * @param {function} FormButtons - React function components that renders form action buttons
  * @returns {JSX.Element}
  * @constructor
@@ -65,9 +65,9 @@ const StaffForm = ({
   isUserApiLoading,
   setIsUserApiLoading,
   validationSchema,
-  userCognitoId = null,
   isUserActive = true,
   roleOptions,
+  isPasswordFieldDisabled,
   FormButtons,
 }) => {
   const classes = useStyles();
@@ -231,7 +231,8 @@ const StaffForm = ({
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid item xs={12} md={6}>
-          {currentSelectedRole !== nonLoginUserRole ? (
+          {isPasswordFieldDisabled === false ||
+          currentSelectedRole !== nonLoginUserRole ? (
             <TextField
               fullWidth
               name="password"

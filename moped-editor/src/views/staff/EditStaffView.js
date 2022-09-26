@@ -79,6 +79,8 @@ const EditStaffView = () => {
     { value: "moped-admin", name: "Admin" },
   ];
 
+  // TODO: Don't disable password if we are editing are non-login user, ONLY CREATING
+
   return (
     <>
       {data && !data?.moped_users?.length && <NotFoundView />}
@@ -105,6 +107,7 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
+                      isPasswordFieldDisabled={false}
                       roleOptions={
                         isNonLoginUser
                           ? existingNonLoginUserRoleOptions
