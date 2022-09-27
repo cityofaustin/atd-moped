@@ -409,7 +409,7 @@ const ProjectComments = (props) => {
                 })}
               </List>
             ) : (
-              <Typography component={"span"} className={classes.emptyState}>
+              <Typography className={classes.emptyState}>
                 No comments to display
               </Typography>
             )}
