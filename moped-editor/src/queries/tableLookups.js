@@ -33,5 +33,11 @@ export const TABLE_LOOKUPS_QUERY = gql`
         subcomponent_id
       }
     }
+    moped_tags {
+      id
+      name
+      slug
+      type
+    }
   }
 `;
