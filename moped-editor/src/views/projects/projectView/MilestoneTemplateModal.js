@@ -53,12 +53,15 @@ const useMilestoneOptions = (template, projectId, selectedMilestonesIds) =>
  * useMemo hook to filter out already selected milestones
  * @return {Object[]}
  */
-const useMilestoneSelections = (milestonesList, selectedMilestonesIds) =>
+const useMilestoneSelections = (milestonesList, selectedMilestones) =>
   useMemo(() => {
+    const selectedMilestonesIds = selectedMilestones.map(
+      (milestone) => milestone.milestone_id
+    );
     return milestonesList.filter(
       (option) => !selectedMilestonesIds.includes(option.milestone_id)
     );
-  }, [milestonesList, selectedMilestonesIds]);
+  }, [milestonesList, selectedMilestones]);
 
 const MilestoneTemplateModal = ({
   isDialogOpen,
@@ -75,21 +78,16 @@ const MilestoneTemplateModal = ({
 
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
 
-  // Array of milestone ids already in moped_proj_milestones
-  const selectedMilestonesIds = selectedMilestones.map(
-    (milestone) => milestone.milestone_id
-  );
-
   const milestonesList = useMilestoneOptions(template, projectId);
 
   const filteredMilestonesList = useMilestoneSelections(
     milestonesList,
-    selectedMilestonesIds
+    selectedMilestones
   );
 
   useEffect(() => {
-    setMilestonesToAdd([...milestonesList]);
-  }, [milestonesList]);
+    setMilestonesToAdd([...filteredMilestonesList]);
+  }, [filteredMilestonesList]);
 
   // checks if milestone is in list of milestones to add
   // if in list, remove. if not, add.
