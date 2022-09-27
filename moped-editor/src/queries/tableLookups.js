@@ -33,7 +33,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
         subcomponent_id
       }
     }
-    moped_tags {
+    moped_tags(where: { is_deleted: { _eq: false } }) {
       id
       name
       slug
