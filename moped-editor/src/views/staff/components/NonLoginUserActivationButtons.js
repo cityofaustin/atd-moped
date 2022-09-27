@@ -76,7 +76,7 @@ const NonLoginUserActivationButtons = ({
         title: "Error",
         message: (
           <Typography>
-            The password is required when activating a user. It needs to be 8
+            The password is required when activating a user. It needs to be 12
             characters long, and it must include at least one lowercase letter,
             one uppercase letter, one number, and one symbol character.
           </Typography>
