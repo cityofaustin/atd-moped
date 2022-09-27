@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Material
 import {
-  Button,
   CircularProgress,
   TextField,
   Typography,
@@ -10,8 +9,7 @@ import {
   FormHelperText,
 } from "@material-ui/core";
 import {
-  AddCircle as AddCircleIcon,
-  EditOutlined as EditOutlinedIcon,
+  EditOutlined as EditOutlinedIcon
 } from "@material-ui/icons";
 import MaterialTable, {
   MTableEditRow,
@@ -35,19 +33,16 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
+import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
+import MilestoneTemplateModal from "./MilestoneTemplateModal";
 
 /**
- * ProjectTimeline Component - renders the view displayed when the "Timeline"
- * tab is active
+ * ProjectMilestones Component - Renders Project Milestone table
  * @return {JSX.Element}
  * @constructor
  */
 const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
-  const addActionRefMilestones = React.useRef();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Mutations
   const [updateProjectMilestone] = useMutation(
@@ -71,6 +66,11 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       }),
     {}
   );
+
+  // Hide Milestone template dialog
+  const handleTemplateModalClose = () => {
+    setIsDialogOpen(false);
+  }
 
   /**
    * Column configuration for <MaterialTable> Milestones table
@@ -113,8 +113,10 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         fontSize: "14px",
       },
       customSort: (a, b) => {
-        const aPhaseName = phaseNameLookup(data)[a.moped_milestone.related_phase_id];
-        const bPhaseName = phaseNameLookup(data)[b.moped_milestone.related_phase_id];
+        const aPhaseName =
+          phaseNameLookup(data)[a.moped_milestone.related_phase_id];
+        const bPhaseName =
+          phaseNameLookup(data)[b.moped_milestone.related_phase_id];
         if (aPhaseName > bPhaseName) {
           return 1;
         }
@@ -171,6 +173,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   ];
 
   return (
+    <>
     <MaterialTable
       columns={milestoneColumns}
       data={data.moped_proj_milestones}
@@ -198,16 +201,14 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             return <MTableAction {...props} />;
           } else {
             return (
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<AddCircleIcon />}
-                ref={addActionRefMilestones}
-                onClick={props.action.onClick}
-              >
-                Add milestone
-              </Button>
+              <ButtonDropdownMenu
+                addAction={props.action.onClick}
+                openActionDialog={setIsDialogOpen}
+                parentButtonText="Add milestone"
+                firstOptionText="New milestone"
+                secondOptionText="From template"
+                secondOptionIcon
+              />
             );
           }
         },
@@ -310,6 +311,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         },
       }}
     />
+      <MilestoneTemplateModal
+        isDialogOpen={isDialogOpen}
+        handleDialogClose={handleTemplateModalClose}
+        milestoneNameLookup={milestoneNameLookup}
+        selectedMilestones={data.moped_proj_milestones}
+        projectId={projectId}
+        refetch={refetch}
+      />
+      </>
   );
 };
 
