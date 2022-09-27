@@ -1,7 +1,12 @@
 import React from "react";
 import StaffForm from "./StaffForm";
+import {
+  StaffFormResetButton,
+  StaffFormSaveButton,
+} from "./components/StaffFormButtons";
 import { useNavigate } from "react-router-dom";
-import { useUserApi } from "./helpers";
+import { isUserNonLoginUser, useUserApi, nonLoginUserRole } from "./helpers";
+import { useMutation } from "@apollo/client";
 import * as yup from "yup";
 
 import {
@@ -13,6 +18,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import Page from "src/components/Page";
+import { ADD_NON_MOPED_USER } from "src/queries/staff";
 
 export const initialFormValues = {
   first_name: "",
@@ -22,8 +28,14 @@ export const initialFormValues = {
   password: "",
   workgroup: "",
   workgroup_id: "",
-  roles: ["moped-viewer"],
+  roles: ["moped-editor"],
 };
+
+const newUserRoleOptions = [
+  { value: nonLoginUserRole, name: "Non-login User" },
+  { value: "moped-editor", name: "Editor" },
+  { value: "moped-admin", name: "Admin" },
+];
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -32,7 +44,11 @@ const validationSchema = yup.object().shape({
   workgroup: yup.string().required(),
   workgroup_id: yup.string().required(),
   email: yup.string().required().email().lowercase(),
-  password: yup.string().required(),
+  // Password is not required for non-login users since they will not be added to Cognito user pool
+  password: yup.string().when("roles", {
+    is: (val) => val !== nonLoginUserRole,
+    then: yup.string().required(),
+  }),
   roles: yup.string().required(),
 });
 
@@ -40,6 +56,7 @@ const NewStaffView = () => {
   let navigate = useNavigate();
 
   const { loading, requestApi, error, setError, setLoading } = useUserApi();
+  const [addNonMopedUser] = useMutation(ADD_NON_MOPED_USER);
 
   /**
    * Submit create user request
@@ -49,12 +66,36 @@ const NewStaffView = () => {
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
-    requestApi({
-      method: "post",
-      path: "/users/",
-      payload: data,
-      callback,
-    });
+    const isNonLoginUser = isUserNonLoginUser(data.roles);
+
+    if (isNonLoginUser) {
+      // Remove the password for the non-login user create mutation
+      const { password, ...restOfData } = data;
+
+      addNonMopedUser({
+        variables: {
+          object: restOfData,
+        },
+      }).then((res) => {
+        const didUserCreateSuccessfully =
+          res?.data?.insert_moped_users_one !== null;
+
+        if (didUserCreateSuccessfully) {
+          callback();
+        } else {
+          setError({
+            email: ["A user with this email address already exists"],
+          });
+        }
+      });
+    } else {
+      requestApi({
+        method: "post",
+        path: "/users/",
+        payload: data,
+        callback,
+      });
+    }
   };
 
   return (
@@ -75,6 +116,15 @@ const NewStaffView = () => {
                 showUpdateUserStatusButtons={false}
                 showFormResetButton={true}
                 validationSchema={validationSchema}
+                roleOptions={newUserRoleOptions}
+                FormButtons={({ isSubmitting, reset }) => (
+                  <>
+                    <StaffFormSaveButton disabled={isSubmitting} />
+                    <StaffFormResetButton
+                      onClick={() => reset(initialFormValues)}
+                    />
+                  </>
+                )}
               />
             </CardContent>
           </Card>

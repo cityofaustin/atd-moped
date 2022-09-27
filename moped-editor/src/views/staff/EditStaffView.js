@@ -2,7 +2,8 @@ import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams, useNavigate } from "react-router-dom";
 import StaffForm from "./StaffForm";
-import { useUserApi } from "./helpers";
+import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
+import { useUserApi, nonLoginUserRole, isUserNonLoginUser } from "./helpers";
 import { GET_USER } from "src/queries/staff";
 import * as yup from "yup";
 
@@ -17,6 +18,8 @@ import {
 } from "@material-ui/core";
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
+import { StaffFormSaveButton } from "./components/StaffFormButtons";
+import NonLoginUserActivationButtons from "./components/NonLoginUserActivationButtons";
 
 const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
@@ -50,6 +53,7 @@ const EditStaffView = () => {
   const userData = data?.moped_users[0] || null;
   const userCognitoId = data?.moped_users[0]?.cognito_user_id;
   const isUserActive = !data?.moped_users[0]?.is_deleted;
+  const isNonLoginUser = isUserNonLoginUser(data?.moped_users[0]?.roles);
 
   /**
    * Submit edit user request
@@ -66,6 +70,14 @@ const EditStaffView = () => {
       callback,
     });
   };
+
+  const existingNonLoginUserRoleOptions = [
+    { value: nonLoginUserRole, name: "Non-login User" },
+  ];
+  const existingLoginUserRoleOptions = [
+    { value: "moped-editor", name: "Editor" },
+    { value: "moped-admin", name: "Admin" },
+  ];
 
   return (
     <>
@@ -93,6 +105,44 @@ const EditStaffView = () => {
                       validationSchema={validationSchema}
                       userCognitoId={userCognitoId}
                       isUserActive={isUserActive}
+                      isPasswordFieldDisabled={false}
+                      roleOptions={
+                        isNonLoginUser
+                          ? existingNonLoginUserRoleOptions
+                          : existingLoginUserRoleOptions
+                      }
+                      FormButtons={({
+                        isSubmitting,
+                        watch,
+                        handleCloseModal,
+                        setModalState,
+                      }) => (
+                        <>
+                          {!isNonLoginUser && (
+                            <StaffFormSaveButton disabled={isSubmitting} />
+                          )}
+                          {!isNonLoginUser && (
+                            <StaffUpdateUserStatusButtons
+                              isUserActive={isUserActive}
+                              handleCloseModal={handleCloseModal}
+                              email={watch("email")}
+                              password={watch("password")}
+                              roles={watch("roles")}
+                              userCognitoId={userCognitoId}
+                              setModalState={setModalState}
+                            />
+                          )}
+                          {isNonLoginUser && (
+                            <NonLoginUserActivationButtons
+                              isUserActive={isUserActive}
+                              setModalState={setModalState}
+                              handleCloseModal={handleCloseModal}
+                              userId={userId}
+                              formValues={watch()}
+                            />
+                          )}
+                        </>
+                      )}
                     />
                   )}
                 </CardContent>

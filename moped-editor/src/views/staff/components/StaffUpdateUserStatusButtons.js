@@ -6,22 +6,10 @@ import {
   passwordLooksGood,
   fieldParsers,
 } from "../helpers";
+import { useButtonStyles } from "./StaffFormButtons";
 
-import { Button, Typography, Box, makeStyles } from "@material-ui/core";
+import { Button, Typography, Box } from "@material-ui/core";
 import clsx from "clsx";
-
-const useStyles = makeStyles((theme) => ({
-  formButton: {
-    margin: theme.spacing(1),
-    color: "white",
-  },
-  formButtonGreen: {
-    backgroundColor: theme.palette.success.main,
-    "&:hover": {
-      backgroundColor: theme.palette.success.dark,
-    },
-  },
-}));
 
 /**
  * Generates a button to inactivate or activate an existing user
@@ -44,7 +32,7 @@ const StaffUpdateUserStatusButtons = ({
   roles,
   isUserActive,
 }) => {
-  const classes = useStyles();
+  const classes = useButtonStyles();
   let navigate = useNavigate();
 
   /**
@@ -105,9 +93,9 @@ const StaffUpdateUserStatusButtons = ({
         title: "Error",
         message: (
           <Typography>
-            The password is required when activating a user. It needs to be 8
-            characters long, it must include at least one lower-case,
-            upper-case, one number, and one symbol characters.
+            The password is required when activating a user. It needs to be at
+            least 12 characters long, it must include at least one lowercase,
+            uppercase, one number, and one special character: _-!@%^~?.:&()[]$.
           </Typography>
         ),
         action: handleCloseModal,

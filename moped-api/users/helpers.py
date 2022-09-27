@@ -167,7 +167,7 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     return response.json()
 
 
-def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
+def db_activate_user(user_email: str, user_cognito_id: str, roles: list) -> dict:
     """
     Activates a user in the database via GraphQL
     :param str user_email: The email of the user
@@ -176,7 +176,11 @@ def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
     """
     response = run_query(
         query=GRAPHQL_ACTIVATE_USER,
-        variables={"userEmail": user_email, "cognitoUserId": user_cognito_id},
+        variables={
+            "userEmail": user_email,
+            "cognitoUserId": user_cognito_id,
+            "roles": roles,
+        },
     )
     return response.json()
 

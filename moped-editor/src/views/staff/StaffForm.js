@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { formatApiErrors, transformFormDataIntoDatabaseTypes } from "./helpers";
+import {
+  formatApiErrors,
+  transformFormDataIntoDatabaseTypes,
+  nonLoginUserRole,
+} from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { WORKGROUPS_QUERY } from "../../queries/workgroups";
@@ -7,7 +11,6 @@ import { findHighestRole } from "../../auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
-  Button,
   CircularProgress,
   FormControl,
   FormControlLabel,
@@ -24,7 +27,6 @@ import {
 } from "@material-ui/core";
 import StaffFormErrorModal from "./components/StaffFormErrorModal";
 import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
-import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
 
 const useStyles = makeStyles((theme) => ({
   formSelect: {
@@ -39,12 +41,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const roleOptions = [
-  { value: "moped-viewer", name: "Viewer" },
-  { value: "moped-editor", name: "Editor" },
-  { value: "moped-admin", name: "Admin" },
-];
-
 /**
  * Generates a StaffForm Component
  * @param {Object} initialFormValues - The form data
@@ -53,11 +49,11 @@ const roleOptions = [
  * @param {function} setUserApiError - modify or clear Moped API user routes errors
  * @param {boolean} isUserApiLoading - Moped API user route API call loading state
  * @param {function} setIsUserApiLoading - modify Moped API user route API call loading state
- * @param {boolean} showUpdateUserStatusButtons - show/hide user activate/deactivate button
- * @param {boolean} showFormResetButton - show/hide form values reset button
  * @param {Object} validationSchema - Yup formatted form validation schema
- * @param {string} userCognitoId - The User's Cognito UUID (if available)
  * @param {boolean} isUserActive - is existing user active or inactive
+ * @param {array} roleOptions - role options to present in the form
+ * @param {boolean} isPasswordFieldDisabled - disable password field when not required
+ * @param {function} FormButtons - React function components that renders form action buttons
  * @returns {JSX.Element}
  * @constructor
  */
@@ -68,11 +64,11 @@ const StaffForm = ({
   setUserApiError,
   isUserApiLoading,
   setIsUserApiLoading,
-  showUpdateUserStatusButtons,
-  showFormResetButton,
   validationSchema,
-  userCognitoId,
   isUserActive = true,
+  roleOptions,
+  isPasswordFieldDisabled,
+  FormButtons,
 }) => {
   const classes = useStyles();
 
@@ -154,6 +150,8 @@ const StaffForm = ({
     setIsUserApiLoading(false);
   };
 
+  const currentSelectedRole = watch("roles");
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -231,25 +229,45 @@ const StaffForm = ({
             }
           />
         </Grid>
+        {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
         <Grid item xs={12} md={6}>
-          <TextField
-            fullWidth
-            name="password"
-            id="password"
-            label="Password"
-            type="password"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-            inputRef={register}
-            error={!!errors.password || !!userApiErrors?.password}
-            helperText={
-              errors.password?.message ||
-              formatApiErrors(userApiErrors?.password)
-            }
-          />
+          {isPasswordFieldDisabled === false ||
+          currentSelectedRole !== nonLoginUserRole ? (
+            <TextField
+              fullWidth
+              name="password"
+              id="password"
+              label="Password"
+              type="password"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              inputRef={register}
+              error={!!errors.password || !!userApiErrors?.password}
+              helperText={
+                errors.password?.message ||
+                formatApiErrors(userApiErrors?.password)
+              }
+            />
+          ) : (
+            <TextField
+              fullWidth
+              name="password"
+              id="password"
+              label="Password"
+              disabled={true}
+              inputRef={register}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              error={!!errors.password || !!userApiErrors?.password}
+              helperText={"Password not required for non-login users"}
+            />
+          )}
         </Grid>
+
         <Grid item xs={12} md={6}>
           {workgroupLoading ? (
             <CircularProgress />
@@ -328,39 +346,13 @@ const StaffForm = ({
           {!userApiErrors && (isUserApiLoading || isSubmitting) ? (
             <CircularProgress />
           ) : (
-            <>
-              <Button
-                className={classes.formButton}
-                style={!isUserActive ? { display: "none" } : {}}
-                disabled={isSubmitting}
-                type="submit"
-                color="primary"
-                variant="contained"
-              >
-                Save
-              </Button>
-              {showFormResetButton && (
-                <Button
-                  className={classes.formButton}
-                  color="secondary"
-                  variant="contained"
-                  onClick={() => reset(initialFormValues)}
-                >
-                  Reset
-                </Button>
-              )}
-              {showUpdateUserStatusButtons && (
-                <StaffUpdateUserStatusButtons
-                  isUserActive={isUserActive}
-                  handleCloseModal={handleCloseModal}
-                  email={watch("email")}
-                  password={watch("password")}
-                  roles={watch("roles")}
-                  userCognitoId={userCognitoId}
-                  setModalState={setModalState}
-                />
-              )}
-            </>
+            <FormButtons
+              isSubmitting={isSubmitting}
+              reset={reset}
+              handleCloseModal={handleCloseModal}
+              setModalState={setModalState}
+              watch={watch}
+            />
           )}
           <StaffFormConfirmModal
             isLoading={isUserApiLoading}
