@@ -3,7 +3,13 @@ import MapGL, { Source, Layer, Popup } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import ComponentPopup from "./ComponentPopup";
 import FeaturePopup from "./FeaturePopup";
-import { mapSettings, initialViewState, MAP_STYLES, SOURCES } from "./settings";
+import {
+  mapSettings,
+  initialViewState,
+  MAP_STYLES,
+  SOURCES,
+  MIN_SELECT_FEATURE_ZOOM,
+} from "./settings";
 import {
   useFeatureService,
   getIntersectionLabel,
@@ -51,7 +57,8 @@ const useDraftComponentFeatures = (draftComponent) =>
   }, [draftComponent]);
 
 export default function TheMap({
-  setHoveredOnMapFeatureId,
+  setHoveredOnMapFeature,
+  hoveredOnMapFeature,
   components,
   isEditingComponent,
   draftComponent,
@@ -62,6 +69,7 @@ export default function TheMap({
   clickedComponent,
   setClickedComponent,
   linkMode,
+  setIsFetchingFeatures,
 }) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
@@ -76,16 +84,22 @@ export default function TheMap({
     layerId: SOURCES["ctn-lines"].featureService.layerId,
     name: SOURCES["ctn-lines"].featureService.name,
     bounds,
-    isVisible: mapRef?.current?.getZoom() >= SOURCES["ctn-lines"].minZoom,
+    isVisible:
+      linkMode === "lines" &&
+      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
+    setIsFetchingFeatures,
   });
 
   const ctnPointsGeojson = useFeatureService({
     layerId: SOURCES["ctn-points"].featureService.layerId,
     name: SOURCES["ctn-points"].featureService.name,
     bounds,
-    isVisible: mapRef?.current?.getZoom() >= SOURCES["ctn-points"].minZoom,
+    isVisible:
+      linkMode === "points" &&
+      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ctn-points"]._featureIdProp,
+    setIsFetchingFeatures,
   });
 
   const projectLines = useFeatureTypes(projectFeatures, "line");
@@ -95,29 +109,31 @@ export default function TheMap({
     // hover states conflict! the first feature to reach hover state wins
     // so set point radii and line widths accordingly
     setCursor("pointer");
-    const commitsToMake = [];
 
-    e.features.map((feature) => {
+    e.features.forEach((feature) => {
       if (feature.layer.id.includes("project")) {
         // it's a project feature, so add to the hover tracking for sidebar interaction
-        commitsToMake.push(feature.properties.id);
+        setHoveredOnMapFeature(feature);
       }
-      mapRef.current?.setFeatureState(feature, { hover: true });
+      // mapRef.current?.setFeatureState(feature, { hover: true });
     });
-
-    commitsToMake.length > 0 && setHoveredOnMapFeatureId(commitsToMake[0]);
   };
 
   const onMouseLeave = (e) => {
     setCursor("grab");
-    e.features.map((feature) => {
-      mapRef.current?.setFeatureState(feature, { hover: false });
-      setHoveredOnMapFeatureId(null);
-    });
+    setHoveredOnMapFeature(null);
+    // e.features.forEach((feature) => {
+    //   mapRef.current?.setFeatureState(feature, { hover: false });
+    //   // setHoveredOnMapFeatureId(null);
+    // });
   };
 
   const onClick = (e) => {
     if (e.features.length === 0) {
+      // clear clickedComponent if map is clicked elsewhere
+      if (clickedComponent) {
+        setClickedComponent(null);
+      }
       return;
     }
 
@@ -249,7 +265,9 @@ export default function TheMap({
         <Layer {...mapStyles["project-lines-underlay"]} />
         <Layer
           {...mapStyles[
-            clickedComponent ? "project-lines-muted" : "project-lines"
+            clickedComponent || isEditingComponent
+              ? "project-lines-muted"
+              : "project-lines"
           ]}
         />
       </Source>
@@ -261,7 +279,9 @@ export default function TheMap({
       >
         <Layer
           {...mapStyles[
-            clickedComponent ? "project-points-muted" : "project-points"
+            clickedComponent || isEditingComponent
+              ? "project-points-muted"
+              : "project-points"
           ]}
         />
       </Source>

@@ -1,5 +1,8 @@
-import { useMemo } from "react";
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+
+// minimum map zoom to display selectable features, and
+// also to query AGOL for them
+export const MIN_SELECT_FEATURE_ZOOM = 14;
 
 export const MAP_STYLES = {
   "project-points": {
@@ -153,7 +156,7 @@ export const MAP_STYLES = {
     layout: {
       "line-cap": "round",
     },
-    minzoom: 15,
+    minzoom: MIN_SELECT_FEATURE_ZOOM,
   },
   "ctn-lines-underlay": {
     _featureIdProp: "CTN_SEGMENT_ID",
@@ -167,7 +170,7 @@ export const MAP_STYLES = {
     layout: {
       "line-cap": "round",
     },
-    minzoom: 15,
+    minzoom: MIN_SELECT_FEATURE_ZOOM,
   },
 
   "ctn-points": {
@@ -190,7 +193,7 @@ export const MAP_STYLES = {
       ],
       "circle-opacity": 0.4,
     },
-    minzoom: 15,
+    minzoom: MIN_SELECT_FEATURE_ZOOM,
   },
   "ctn-points-underlay": {
     id: "ctn-points-underlay",
@@ -207,7 +210,7 @@ export const MAP_STYLES = {
       "circle-color": "#000",
       "circle-opacity": 0,
     },
-    minzoom: 15,
+    minzoom: MIN_SELECT_FEATURE_ZOOM,
   },
   "clicked-component-features-lines": {
     id: "clicked-component-features-lines",
@@ -254,7 +257,7 @@ export const SOURCES = {
       layerId: 0,
     },
     _featureIdProp: "CTN_SEGMENT_ID",
-    minZoom: MAP_STYLES["ctn-lines"].minzoom,
+    minZoom: MIN_SELECT_FEATURE_ZOOM,
   },
   "ctn-points": {
     id: "ctn-points",
@@ -263,14 +266,14 @@ export const SOURCES = {
       layerId: 0,
     },
     _featureIdProp: "INTERSECTION_ID",
-    minZoom: MAP_STYLES["ctn-points"].minzoom,
+    minZoom: MIN_SELECT_FEATURE_ZOOM,
   },
 };
 
 export const initialViewState = {
   latitude: 30.28,
   longitude: -97.74,
-  zoom: 14,
+  zoom: 15,
 };
 
 /**
@@ -286,8 +289,3 @@ export const mapSettings = {
   mapStyle: "mapbox://styles/mapbox/light-v10",
   mapboxAccessToken: MAPBOX_TOKEN,
 };
-
-export const useMapStyles = () =>
-  useMemo(() => {
-    return MAP_STYLES;
-  });

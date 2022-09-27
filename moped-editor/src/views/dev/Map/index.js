@@ -6,6 +6,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Toolbar from "@material-ui/core/Toolbar";
+import CircularProgress from "@material-ui/core/CircularProgress";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
@@ -102,6 +103,66 @@ const DrawModeSelector = () => {
   );
 };
 
+const DraftComponentListItem = ({ component, onSave, onCancel }) => {
+  return (
+    <Box
+      borderLeft={7}
+      style={{
+        borderColor: "#1276D1",
+        // backgroundColor: "#e8f3fd",
+      }}
+    >
+      <ListItem dense>
+        <ListItemText
+          primary={component.component_name}
+          secondary={component.component_subtype}
+        />
+      </ListItem>
+      {/* {!component?.features.length > 0 && (
+        <ListItem dense>
+          <ListItemIcon style={{ flexShrink: 1 }}>
+            <ErrorIcon />
+          </ListItemIcon>
+          <ListItemText secondary="Select or draw features to save" />
+        </ListItem>
+      )} */}
+      <ListItem dense>
+        <ListItemText
+          primary={
+            <Button
+              fullWidth
+              size="small"
+              color="primary"
+              variant="contained"
+              disabled={!component?.features.length > 0}
+              startIcon={<CheckCircle />}
+              onClick={onSave}
+            >
+              Save
+            </Button>
+          }
+        />
+        <ListItemText
+          primary={
+            <Button
+              fullWidth
+              size="small"
+              color="secondary"
+              startIcon={<Cancel />}
+              // variant="outlined"
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
+          }
+        />
+      </ListItem>
+
+      <Divider />
+    </Box>
+  );
+};
+
 export default function MapView() {
   const classes = useStyles();
   const mapRef = useRef();
@@ -118,36 +179,39 @@ export default function MapView() {
   const [clickedComponent, setClickedComponent] = useState(null);
 
   /* tracks a projectFeature hovered on map */
-  const [hoveredOnMapFeatureId, setHoveredOnMapFeatureId] = useState(null);
-
-  /* tracks features that have been "checked" in the link - used during
-    the component <> feature linking flow */
-  const [selectedFeatures, setSelectedFeatures] = useState([]);
-
-  /* tracks which features in the list have been clicked/expanded */
-  const [expandedComponentId, setExpandedComponentId] = useState(null);
+  const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
 
   /* sets the type of geometry to use in component-linking mode. allowed values
   are `points`, `lines`, or `null` */
   const [linkMode, setLinkMode] = useState(null);
 
-  /* various interaction states */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
+
+  /* tracks the loading state of AGOL feature service fetching */
+  const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
   const [showComponentCreateDialog, setShowComponentCreateDialog] =
     useState(false);
 
-  /**
-   *  warning! this is fraught: mapbox-generated IDs are not guaranteed unique across multiple
-   * layers and sessions (i think?)!
-   * a critical todo of this feature is to revisit how we manage uniquness between
-   *    1. existing project features/components
-   *    2. new project/features/relationships being added
-   * IIRC in the current editor we generate (temporary?) uuids to keep track
-   */
-  const selectedFeautreIds = selectedFeatures.map(
-    (feature) => feature.properties.id
-  );
+  const onSaveComponent = () => {
+    const newComponents = [...components, draftComponent];
+    setComponents(newComponents);
+    setIsEditingComponent(false);
+    setDraftComponent(null);
+    setLinkMode(null);
+  };
+
+  const onCancelComponent = () => {
+    setIsEditingComponent(!isEditingComponent);
+    setDraftComponent(null);
+    setLinkMode(null);
+  };
+
+  const onStartEditingComponent = () => {
+    setIsEditingComponent(true);
+    setShowComponentCreateDialog(true);
+    setClickedComponent(null);
+  };
 
   return (
     <div className={classes.root}>
@@ -159,62 +223,35 @@ export default function MapView() {
               Project map
             </Typography>
           </Box>
-
           {isEditingComponent && draftComponent && (
             <>
               <Box color="text.primary">
                 <DrawModeSelector />
               </Box>
-              <Box>
-                <Button
-                  size="small"
-                  variant="outlined"
-                  color="secondary"
-                  className={classes.margin}
-                  startIcon={<Cancel />}
-                  onClick={() => {
-                    setIsEditingComponent(!isEditingComponent);
-                    setDraftComponent(null);
-                    setLinkMode(null);
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  size="small"
-                  variant="contained"
-                  color="primary"
-                  disabled={!draftComponent?.features.length > 0}
-                  className={classes.margin}
-                  startIcon={<CheckCircle />}
-                  onClick={() => {
-                    const newComponents = [...components, draftComponent];
-                    setComponents(newComponents);
-                    setIsEditingComponent(false);
-                    setDraftComponent(null);
-                    setLinkMode(null);
-                  }}
-                >
-                  Save
-                </Button>
-              </Box>
             </>
           )}
           {!isEditingComponent && components?.length > 0 && (
-            <Button
-              size="small"
-              color="primary"
-              className={classes.margin}
-              startIcon={<AddCircleOutlineIcon />}
-              onClick={() => {
-                setIsEditingComponent(true);
-                setShowComponentCreateDialog(true);
-                setClickedComponent(null);
-              }}
-            >
-              New Component
-            </Button>
+            <Box>
+              <Button
+                size="small"
+                color="primary"
+                className={classes.margin}
+                startIcon={<AddCircleOutlineIcon />}
+                onClick={onStartEditingComponent}
+              >
+                New Component
+              </Button>
+            </Box>
           )}
+
+          <Box
+            color="primary"
+            display="flex"
+            flexGrow={1}
+            justifyContent="flex-end"
+          >
+            {isFetchingFeatures && <CircularProgress />}
+          </Box>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -244,16 +281,19 @@ export default function MapView() {
                     fullWidth
                     // className={classes.margin}
                     startIcon={<AddCircleOutlineIcon />}
-                    onClick={() => {
-                      setIsEditingComponent(true);
-                      setShowComponentCreateDialog(true);
-                      setClickedComponent(null);
-                    }}
+                    onClick={onStartEditingComponent}
                   >
                     New Component
                   </Button>
                 </ListItem>
               </>
+            )}
+            {draftComponent && (
+              <DraftComponentListItem
+                component={draftComponent}
+                onSave={onSaveComponent}
+                onCancel={onCancelComponent}
+              />
             )}
             {components.map((component, i) => {
               const isExpanded = clickedComponent?._id === component._id;
@@ -364,12 +404,14 @@ export default function MapView() {
             components={components}
             draftComponent={draftComponent}
             setDraftComponent={setDraftComponent}
-            setHoveredOnMapFeatureId={setHoveredOnMapFeatureId}
+            setHoveredOnMapFeature={setHoveredOnMapFeature}
+            hoveredOnMapFeature={hoveredOnMapFeature}
             isEditingComponent={isEditingComponent}
             clickedComponent={clickedComponent}
             setClickedComponent={setClickedComponent}
             clickedProjectFeature={clickedProjectFeature}
             setClickedProjectFeature={setClickedProjectFeature}
+            setIsFetchingFeatures={setIsFetchingFeatures}
             linkMode={linkMode}
           />
         </div>

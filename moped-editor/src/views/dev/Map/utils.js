@@ -45,6 +45,7 @@ export const useFeatureService = ({
   bounds,
   isVisible,
   featureIdProp,
+  setIsFetchingFeatures,
 }) => {
   const [geojson, setGeojson] = useState({
     type: "FeatureCollection",
@@ -54,9 +55,10 @@ export const useFeatureService = ({
 
   useEffect(() => {
     if (!bounds || !isVisible) {
+      setIsFetchingFeatures(false);
       return;
     }
-
+    setIsFetchingFeatures(true);
     const queryString = getQuerySring(bounds);
     const url = `${ENDPOINT}/${name}/FeatureServer/${layerId}/query?${queryString}`;
 
@@ -64,11 +66,13 @@ export const useFeatureService = ({
       .then((response) => response.json())
       .then((data) => {
         const allFeatures = [...geojson.features, ...data.features];
+        // TODO: dedupe features in a separate hook - this hook should only fetch data!
         const uniqueFeatures = deDeupeFeatures(allFeatures, featureIdProp);
         setGeojson({
           type: "FeatureCollection",
           features: uniqueFeatures,
         });
+        setIsFetchingFeatures(false);
       })
       .catch((error) => {
         if (error instanceof DOMException) {
@@ -83,7 +87,7 @@ export const useFeatureService = ({
       controller.abort();
       setController(new AbortController());
     };
-  }, [bounds, name, layerId, isVisible, featureIdProp]);
+  }, [bounds, name, layerId, isVisible, featureIdProp, setIsFetchingFeatures]);
   return geojson;
 };
 
