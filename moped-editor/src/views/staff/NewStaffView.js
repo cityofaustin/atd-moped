@@ -76,7 +76,18 @@ const NewStaffView = () => {
         variables: {
           object: restOfData,
         },
-      }).then(() => callback());
+      }).then((res) => {
+        const didUserCreateSuccessfully =
+          res?.data?.insert_moped_users_one !== null;
+
+        if (didUserCreateSuccessfully) {
+          callback();
+        } else {
+          setError({
+            email: ["A user with this email address already exists"],
+          });
+        }
+      });
     } else {
       requestApi({
         method: "post",
