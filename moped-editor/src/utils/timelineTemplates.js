@@ -153,3 +153,107 @@ export const returnSignalPHBMilestoneTemplate = projectId => {
     },
   ];
 };
+
+
+export const returnPDDMilestoneTemplate = projectId => {
+  return [
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 22,
+      milestone_order: 1,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 59,
+      milestone_order: 2,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 60,
+      milestone_order: 3,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 1,
+      milestone_order: 4,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 61,
+      milestone_order: 5,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 9,
+      milestone_order: 6,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 57,
+      milestone_order: 7,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 58,
+      milestone_order: 8,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 7,
+      milestone_order: 9,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 8,
+      milestone_order: 10,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 21,
+      milestone_order: 11,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 19,
+      milestone_order: 12,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 62,
+      milestone_order: 13,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      completed: false,
+      milestone_id: 4,
+      milestone_order: 14,
+    },
+  ];
+};

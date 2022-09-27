@@ -22,7 +22,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Page from "src/components/Page";
 
 import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
-import DashboardEditModal from "./DashboardEditModal";
+import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
@@ -34,6 +34,8 @@ import TrafficIcon from "@material-ui/icons/Traffic";
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
 import { getSessionDatabaseData } from "../../auth/user";
+
+import parse from "html-react-parser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -142,7 +144,7 @@ const DashboardView = () => {
         : 0;
 
       // project status update equivalent to most recent project note
-      // html is parsed before being rendered in the DashboardEditModal component
+      // html is parsed before being rendered in the DashboardStatusModal component
       project["status_update"] = "";
       if (project?.project?.moped_proj_notes?.length) {
         const note = project.project.moped_proj_notes[0]["project_note"];
@@ -169,6 +171,13 @@ const DashboardView = () => {
 
   const columns = [
     {
+      title: "Project ID",
+      field: "project.project_id",
+      editable: "never",
+      cellStyle: { ...typographyStyle },
+      width: "10%",
+    },
+    {
       title: "Project name",
       field: "project.project_name",
       editable: "never",
@@ -190,17 +199,16 @@ const DashboardView = () => {
           table="phases"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
-          contents={
-            <ProjectStatusBadge
-              status={entry.status_id}
-              phase={entry.current_phase}
-              projectStatuses={data?.moped_status ?? []}
-              condensed
-              clickable
-            />
-          }
-        />
+          dashboardRefetch={refetch}
+        >
+          <ProjectStatusBadge
+            status={entry.status_id}
+            phase={entry.current_phase}
+            projectStatuses={data?.moped_status ?? []}
+            condensed
+            clickable
+          />
+        </DashboardTimelineModal>
       ),
       width: "20%",
     },
@@ -209,13 +217,17 @@ const DashboardView = () => {
       field: "status_update", // Status update (from Project details page)
       editable: "never",
       render: (entry) => (
-        <DashboardEditModal
-          project={entry.project}
-          displayText={entry.status_update}
+        <DashboardStatusModal
+          projectId={entry.project_id}
+          projectName={entry.project.project_name}
+          modalParent="dashboard"
+          statusUpdate={entry.status_update}
           queryRefetch={refetch}
-        />
+        >
+          {parse(String(entry.status_update))}
+        </DashboardStatusModal>
       ),
-      width: "50%",
+      width: "40%",
     },
     {
       title: "Milestones",
@@ -225,15 +237,14 @@ const DashboardView = () => {
           table="milestones"
           projectId={entry.project_id}
           projectName={entry.project.project_name}
-          queryRefetch={refetch}
-          contents={
-            <MilestoneProgressMeter
-              completedMilestonesPercentage={
-                entry.completed_milestones_percentage
-              }
-            />
-          }
-        />
+          dashboardRefetch={refetch}
+        >
+          <MilestoneProgressMeter
+            completedMilestonesPercentage={
+              entry.completed_milestones_percentage
+            }
+          />
+        </DashboardTimelineModal>
       ),
       width: "10%",
     },

@@ -135,7 +135,7 @@ const SubprojectFundingModal = ({
             },
           }}
           options={{
-            ...(data.length < 11 && {
+            ...(filteredData.length < 11 && {
               paging: false,
             }),
             search: false,

@@ -78,11 +78,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "8rem",
     marginLeft: "8px",
   },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: "0.25rem 0",
-    fontSize: "24px",
-  },
   editIconButton: {
     margin: "8px 0",
     padding: "8px",
@@ -572,7 +567,10 @@ const ProjectFundingTable = () => {
                 <ButtonDropdownMenu
                   buttonWrapperStyle={classes.fundingButton}
                   addAction={props.action.onClick}
-                  openFundingDialog={setIsDialogOpen}
+                  openActionDialog={setIsDialogOpen}
+                  parentButtonText="Add Funding Source"
+                  firstOptionText="New funding source"
+                  secondOptionText="From eCapris"
                 />
               ) : (
                 <Button

@@ -137,6 +137,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
   const defaultHiddenColumns = {
+    project_id: false,
     project_name: false,
     current_phase: false,
     project_team_members: false,
@@ -153,6 +154,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     completion_end_date: false,
     project_inspector: true,
     project_designer: true,
+    contractors: false,
+    contract_numbers: false,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -263,6 +266,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   );
 
   const columns = [
+    {
+      title: "Project ID",
+      field: "project_id",
+      hidden: hiddenColumns["project_id"],
+    },
     {
       title: "Project name",
       field: "project_name",
@@ -412,6 +420,18 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Inspector",
       field: "project_inspector",
       hidden: hiddenColumns["project_inspector"],
+      emptyValue: "-",
+    },
+    {
+      title: "Contractors",
+      field: "contractors",
+      hidden: hiddenColumns["contractors"],
+      emptyValue: "-",
+    },
+    {
+      title: "Contract numbers",
+      field: "contract_numbers",
+      hidden: hiddenColumns["contract_numbers"],
       emptyValue: "-",
     },
   ];
