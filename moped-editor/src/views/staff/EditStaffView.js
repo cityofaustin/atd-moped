@@ -1,7 +1,11 @@
 import React from "react";
-import { useQuery, gql } from "@apollo/client";
-import { useParams } from "react-router-dom";
-import StaffForm, { initialFormValues } from "./StaffForm";
+import { useQuery } from "@apollo/client";
+import { useParams, useNavigate } from "react-router-dom";
+import StaffForm from "./StaffForm";
+import StaffUpdateUserStatusButtons from "./components/StaffUpdateUserStatusButtons";
+import { useUserApi, nonLoginUserRole, isUserNonLoginUser } from "./helpers";
+import { GET_USER } from "src/queries/staff";
+import * as yup from "yup";
 
 import {
   Box,
@@ -11,90 +15,134 @@ import {
   CardContent,
   CircularProgress,
   Divider,
-  makeStyles,
 } from "@material-ui/core";
 import Page from "src/components/Page";
-import { findHighestRole } from "../../auth/user";
 import NotFoundView from "../errors/NotFoundView";
+import { StaffFormSaveButton } from "./components/StaffFormButtons";
+import NonLoginUserActivationButtons from "./components/NonLoginUserActivationButtons";
 
-const useStyles = makeStyles(() => ({
-  root: {},
-}));
-
-const GET_USER = gql`
-  query GetUser($userId: Int) {
-    moped_users(where: { user_id: { _eq: $userId } }) {
-      date_added
-      first_name
-      is_coa_staff
-      last_name
-      staff_uuid
-      title
-      user_id
-      workgroup
-      workgroup_id
-      cognito_user_id
-      email
-      roles
-      is_deleted
-    }
-  }
-`;
-
-const fieldFormatters = {
-  workgroup_id: id => id.toString(),
-  roles: roles => findHighestRole(roles),
-};
+const validationSchema = yup.object().shape({
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  title: yup.string().required(),
+  workgroup: yup.string().required(),
+  workgroup_id: yup.string().required(),
+  email: yup.string().required().email().lowercase(),
+  password: yup.string(),
+  roles: yup.string().required(),
+});
 
 const EditStaffView = () => {
-  const classes = useStyles();
   const { userId } = useParams();
+  let navigate = useNavigate();
 
-  const { data, loading, error } = useQuery(GET_USER, {
+  const { loading, requestApi, error, setError, setLoading } = useUserApi();
+
+  // Get the user data so we can populate the form with existing user details
+  const {
+    data,
+    loading: isUserQueryLoading,
+    error: userQueryError,
+  } = useQuery(GET_USER, {
     variables: { userId },
   });
-  if (error) {
+
+  if (userQueryError) {
     console.log(error);
   }
+  const userData = data?.moped_users[0] || null;
+  const userCognitoId = data?.moped_users[0]?.cognito_user_id;
+  const isUserActive = !data?.moped_users[0]?.is_deleted;
+  const isNonLoginUser = isUserNonLoginUser(data?.moped_users[0]?.roles);
 
-  const formatUserFormData = data => {
-    // Format to types required by MUI form components
-    Object.entries(fieldFormatters).forEach(([fieldName, formatter]) => {
-      const originalValue = data[fieldName];
+  /**
+   * Submit edit user request
+   * @param {Object} data - The data returned from user form to submit to the Moped API
+   */
+  const onFormSubmit = (data) => {
+    // Navigate to user table on successful add/edit
+    const callback = () => navigate("/moped/staff");
 
-      if (originalValue !== undefined) {
-        const formattedValue = formatter(originalValue);
-        data = { ...data, [fieldName]: formattedValue };
-      }
+    requestApi({
+      method: "put",
+      path: "/users/" + userCognitoId,
+      payload: data,
+      callback,
     });
-
-    // If Hasura doesn't return a field, set to default
-    Object.entries(initialFormValues).forEach(([field, value]) => {
-      if (data[field] === undefined) {
-        data = { ...data, [field]: value };
-      }
-    });
-
-    return data;
   };
+
+  const existingNonLoginUserRoleOptions = [
+    { value: nonLoginUserRole, name: "Non-login User" },
+  ];
+  const existingLoginUserRoleOptions = [
+    { value: "moped-editor", name: "Editor" },
+    { value: "moped-admin", name: "Admin" },
+  ];
 
   return (
     <>
       {data && !data?.moped_users?.length && <NotFoundView />}
       {data && !!data?.moped_users?.length && (
-        <Page className={classes.root} title="Staff">
+        <Page title="Staff">
           <Container maxWidth={false}>
             <Box mt={3}>
-              <Card className={classes.root}>
+              <Card>
                 <CardHeader title="Edit User" />
                 <Divider />
                 <CardContent>
-                  {loading ? (
+                  {isUserQueryLoading ? (
                     <CircularProgress />
                   ) : (
                     <StaffForm
-                      editFormData={formatUserFormData(data.moped_users[0])}
-                      userCognitoId={data.moped_users[0].cognito_user_id}
+                      initialFormValues={userData}
+                      onFormSubmit={onFormSubmit}
+                      userApiErrors={error}
+                      setUserApiError={setError}
+                      isUserApiLoading={loading}
+                      setIsUserApiLoading={setLoading}
+                      showUpdateUserStatusButtons={true}
+                      showFormResetButton={false}
+                      validationSchema={validationSchema}
+                      userCognitoId={userCognitoId}
+                      isUserActive={isUserActive}
+                      isPasswordFieldDisabled={false}
+                      roleOptions={
+                        isNonLoginUser
+                          ? existingNonLoginUserRoleOptions
+                          : existingLoginUserRoleOptions
+                      }
+                      FormButtons={({
+                        isSubmitting,
+                        watch,
+                        handleCloseModal,
+                        setModalState,
+                      }) => (
+                        <>
+                          {!isNonLoginUser && (
+                            <StaffFormSaveButton disabled={isSubmitting} />
+                          )}
+                          {!isNonLoginUser && (
+                            <StaffUpdateUserStatusButtons
+                              isUserActive={isUserActive}
+                              handleCloseModal={handleCloseModal}
+                              email={watch("email")}
+                              password={watch("password")}
+                              roles={watch("roles")}
+                              userCognitoId={userCognitoId}
+                              setModalState={setModalState}
+                            />
+                          )}
+                          {isNonLoginUser && (
+                            <NonLoginUserActivationButtons
+                              isUserActive={isUserActive}
+                              setModalState={setModalState}
+                              handleCloseModal={handleCloseModal}
+                              userId={userId}
+                              formValues={watch()}
+                            />
+                          )}
+                        </>
+                      )}
                     />
                   )}
                 </CardContent>

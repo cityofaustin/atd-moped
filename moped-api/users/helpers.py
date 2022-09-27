@@ -1,7 +1,7 @@
 """
 Helper methods to update the database via GraphQL
 """
-import re, copy
+import copy
 from cerberus import Validator
 from graphql import run_query
 
@@ -68,9 +68,10 @@ def is_valid_user_profile(
     """
     # First copy the validation schema
     validation_schema_copy = copy.deepcopy(USER_VALIDATION_SCHEMA)
-    # Then scan for fields that need to be ignored, then patch.
+    # Then scan for fields to ignore and remove them from the schema and profile
     for field_ignored in ignore_fields:
-        validation_schema_copy[field_ignored]["required"] = False
+        validation_schema_copy.pop(field_ignored, None)
+        user_profile.pop(field_ignored, None)
     # Continue validation
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, validation_schema_copy)
@@ -166,7 +167,7 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     return response.json()
 
 
-def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
+def db_activate_user(user_email: str, user_cognito_id: str, roles: list) -> dict:
     """
     Activates a user in the database via GraphQL
     :param str user_email: The email of the user
@@ -175,7 +176,11 @@ def db_activate_user(user_email: str, user_cognito_id: str) -> dict:
     """
     response = run_query(
         query=GRAPHQL_ACTIVATE_USER,
-        variables={"userEmail": user_email, "cognitoUserId": user_cognito_id},
+        variables={
+            "userEmail": user_email,
+            "cognitoUserId": user_cognito_id,
+            "roles": roles,
+        },
     )
     return response.json()
 

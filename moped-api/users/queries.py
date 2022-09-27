@@ -57,8 +57,8 @@ GRAPHQL_DEACTIVATE_USER = """
 
 
 GRAPHQL_ACTIVATE_USER = """
-    mutation update_moped_user($userEmail: citext!, $cognitoUserId: uuid!) {
-      update_moped_users(where: { email: { _eq: $userEmail } }, _set: { is_deleted: false, cognito_user_id: $cognitoUserId}){
+    mutation update_moped_user($userEmail: citext!, $cognitoUserId: uuid!, $roles: jsonb!) {
+      update_moped_users(where: { email: { _eq: $userEmail } }, _set: { is_deleted: false, cognito_user_id: $cognitoUserId, roles: $roles}){
         affected_rows
         returning {
           user_id
