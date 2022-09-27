@@ -77,8 +77,8 @@ const NonLoginUserActivationButtons = ({
         message: (
           <Typography>
             The password is required when activating a user. It needs to be 8
-            characters long, and it must include at least one lower-case letter,
-            one upper-case letter, one number, and one symbol character.
+            characters long, and it must include at least one lowercase letter,
+            one uppercase letter, one number, and one symbol character.
           </Typography>
         ),
         action: handleCloseModal,
