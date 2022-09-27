@@ -14,7 +14,6 @@ import ProjectComments from "../projects/projectView/ProjectComments";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
-    color: theme.palette.primary.main,
     fontFamily: theme.typography.fontFamily,
     display: "flex",
     justifyContent: "space-between",
@@ -47,6 +46,7 @@ const DashboardStatusModal = ({
   return (
     <>
       <Typography
+        component={"span"}
         className={classes.statusUpdateText}
         onClick={() => setIsDialogOpen(true)}
       >
@@ -70,7 +70,7 @@ const DashboardStatusModal = ({
         maxWidth={"md"}
       >
         <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Status update - ${projectName}`}</h4>
+          <h3>{`Status update - ${projectName}`}</h3>
           <IconButton onClick={() => handleDialogClose()}>
             <CloseIcon />
           </IconButton>

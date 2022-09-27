@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Grid, Typography } from "@material-ui/core";
+import { Box, Grid } from "@material-ui/core";
 import parse from "html-react-parser";
 
 import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAndTime";
@@ -34,24 +34,18 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
           queryRefetch={refetch}
         >
           <Box className={classes.fieldBox}>
-            <Typography className={classes.fieldLabel}>
-              Status update
-            </Typography>
+            <span className={classes.fieldLabel}>Status update</span>
             {!!statusUpdate && (
               <>
-                <Typography className={classes.fieldBoxTypography}>
-                  <span className={classes.fieldLabelTextSpan}>
-                    {parse(String(statusUpdate))}
-                  </span>
-                </Typography>
-                <Typography>
-                  <span className={classes.fieldAuthor}>{addedBy}</span>
-                  <span className={classes.fieldLabel}>
-                    {makeUSExpandedFormDateFromTimeStampTZ(
-                      dateCreated
-                    ).toUpperCase()}
-                  </span>
-                </Typography>
+                <span className={classes.fieldLabelTextSpan}>
+                  {parse(String(statusUpdate))}
+                </span>
+                <span className={classes.fieldAuthor}>{addedBy}</span>
+                <span className={classes.fieldLabel}>
+                  {makeUSExpandedFormDateFromTimeStampTZ(
+                    dateCreated
+                  ).toUpperCase()}
+                </span>
               </>
             )}
           </Box>

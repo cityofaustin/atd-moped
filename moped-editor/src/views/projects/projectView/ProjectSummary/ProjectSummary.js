@@ -84,9 +84,6 @@ const useStyles = makeStyles((theme) => ({
   fieldBox: {
     width: "100%",
   },
-  fieldBoxTypography: {
-    width: "100%",
-  },
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
   },
