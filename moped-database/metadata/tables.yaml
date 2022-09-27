@@ -3995,6 +3995,8 @@
           - completion_end_date
           - project_inspector
           - project_designer
+          - contractors
+          - contract_numbers
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4033,6 +4035,8 @@
           - completion_end_date
           - project_inspector
           - project_designer
+          - contractors
+          - contract_numbers
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4071,5 +4075,7 @@
           - completion_end_date
           - project_inspector
           - project_designer
+          - contractors
+          - contract_numbers
         filter: {}
         allow_aggregations: true
