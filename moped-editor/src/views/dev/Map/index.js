@@ -195,7 +195,7 @@ export default function MapView() {
                     setLinkMode(null);
                   }}
                 >
-                  Save edits
+                  Save
                 </Button>
               </Box>
             </>
