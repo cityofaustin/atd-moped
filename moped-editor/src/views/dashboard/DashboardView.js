@@ -35,6 +35,8 @@ import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
 import { getSessionDatabaseData } from "../../auth/user";
 
+import parse from "html-react-parser";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -198,16 +200,15 @@ const DashboardView = () => {
           projectId={entry.project_id}
           projectName={entry.project.project_name}
           dashboardRefetch={refetch}
-          contents={
-            <ProjectStatusBadge
-              status={entry.status_id}
-              phase={entry.current_phase}
-              projectStatuses={data?.moped_status ?? []}
-              condensed
-              clickable
-            />
-          }
-        />
+        >
+          <ProjectStatusBadge
+            status={entry.status_id}
+            phase={entry.current_phase}
+            projectStatuses={data?.moped_status ?? []}
+            condensed
+            clickable
+          />
+        </DashboardTimelineModal>
       ),
       width: "20%",
     },
@@ -217,10 +218,14 @@ const DashboardView = () => {
       editable: "never",
       render: (entry) => (
         <DashboardStatusModal
-          project={entry.project}
-          displayText={entry.status_update}
+          projectId={entry.project_id}
+          projectName={entry.project.project_name}
+          modalParent="dashboard"
+          statusUpdate={entry.status_update}
           queryRefetch={refetch}
-        />
+        >
+          {parse(String(entry.status_update))}
+        </DashboardStatusModal>
       ),
       width: "40%",
     },
@@ -233,14 +238,13 @@ const DashboardView = () => {
           projectId={entry.project_id}
           projectName={entry.project.project_name}
           dashboardRefetch={refetch}
-          contents={
-            <MilestoneProgressMeter
-              completedMilestonesPercentage={
-                entry.completed_milestones_percentage
-              }
-            />
-          }
-        />
+        >
+          <MilestoneProgressMeter
+            completedMilestonesPercentage={
+              entry.completed_milestones_percentage
+            }
+          />
+        </DashboardTimelineModal>
       ),
       width: "10%",
     },
