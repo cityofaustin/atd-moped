@@ -35,21 +35,30 @@ const useStyles = makeStyles((theme) => ({
 const templateChoices = ["AMD", "PDD"];
 
 /**
- * useMemo hook to choose milestone options with already selected milestones filtered out
+ * useMemo hook to choose milestone options
  * @return {Object[]}
  */
 const useMilestoneOptions = (template, projectId, selectedMilestonesIds) =>
   useMemo(() => {
     if (template === "AMD") {
-      return returnSignalPHBMilestoneTemplate(projectId).filter(
-        (option) => !selectedMilestonesIds.includes(option.milestone_id)
-      );
+      return returnSignalPHBMilestoneTemplate(projectId);
       // } else if (template === "PDD") {
       //   // etc return [];
     } else {
       return [];
     }
   }, [template, projectId]);
+
+/**
+ * useMemo hook to filter out already selected milestones
+ * @return {Object[]}
+ */
+const useMilestoneSelections = (milestonesList, selectedMilestonesIds) =>
+  useMemo(() => {
+    return milestonesList.filter(
+      (option) => !selectedMilestonesIds.includes(option.milestone_id)
+    );
+  }, [milestonesList, selectedMilestonesIds]);
 
 const MilestoneTemplateModal = ({
   isDialogOpen,
@@ -71,9 +80,10 @@ const MilestoneTemplateModal = ({
     (milestone) => milestone.milestone_id
   );
 
-  const milestonesList = useMilestoneOptions(
-    template,
-    projectId,
+  const milestonesList = useMilestoneOptions(template, projectId);
+
+  const filteredMilestonesList = useMilestoneSelections(
+    milestonesList,
     selectedMilestonesIds
   );
 
@@ -156,7 +166,7 @@ const MilestoneTemplateModal = ({
           </Button>
         </Box>
         <List dense>
-          {milestonesList.map((milestone) => {
+          {filteredMilestonesList.map((milestone) => {
             return (
               <ListItem
                 button
