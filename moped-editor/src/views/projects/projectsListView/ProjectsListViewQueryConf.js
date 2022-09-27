@@ -37,16 +37,23 @@ export const ProjectsListViewQueryConf = {
   export: ProjectsListViewExportConf,
   search: {
     placeholder:
-      "Search by project name, project description, project phase, or eCAPRIS subproject ID.",
+      "Search by project ID, name, description, phase, or eCAPRIS subproject ID.",
     defaultFieldsOperator: "_or",
   },
   columns: {
     project_id: {
       hidden: true,
       primary_key: true,
-      searchable: false,
+      searchable: true,
       sortable: false,
-      label: "",
+      label: "Project ID",
+      search: {
+        label: "Search by project ID",
+        operator: "_eq",
+        quoted: false,
+        envelope: "%{VALUE}%",
+        invalidValueDefault: 0,
+      },
       icon: {
         name: "edit_road",
         color: "primary",
@@ -163,7 +170,7 @@ export const ProjectsListViewQueryConf = {
       ),
       type: "number",
       search: {
-        label: "Search by eCapris subproject id",
+        label: "Search by eCapris subproject ID",
         operator: "_eq",
         quoted: false,
         envelope: "%{VALUE}%",
