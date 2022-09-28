@@ -11,6 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import { EditOutlined } from "@material-ui/icons";
 import ListItemText from "@material-ui/core/ListItemText";
+import { COLORS } from "./settings";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -32,8 +33,7 @@ export default function ComponentListItem({
     <Box
       borderLeft={7}
       style={{
-        borderColor: isExpanded ? "#1276D1" : "#fff",
-        // backgroundColor: isExpanded ? "#e8f3fd" : "#fff",
+        borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
       }}
     >
       <ListItem

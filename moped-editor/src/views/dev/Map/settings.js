@@ -1,5 +1,18 @@
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
+export const COLORS = {
+  black: "#000",
+  mutedGray: "#8d8b8b",
+  brightPink: "#fc0885",
+  darkPink: "#b5055f",
+  bluePrimary: "#1276D1",
+  blueDark: "#1069bc",
+  blueLight: "#a1cdf7",
+  lightPink: "#fc74ba",
+  steel: "#607d8f",
+  white: "#fff",
+};
+
 // minimum map zoom to display selectable features, and
 // also to query AGOL for them
 export const MIN_SELECT_FEATURE_ZOOM = 15;
@@ -16,10 +29,10 @@ export const MAP_STYLES = {
           [20, 12],
         ],
       },
-      "circle-stroke-color": "#fc0885",
+      "circle-stroke-color": COLORS.brightPink,
       "circle-stroke-width": 2,
       "circle-stroke-opacity": 0.9,
-      "circle-color": "#fc74ba",
+      "circle-color": COLORS.lightPink,
       "circle-opacity": 0.9,
     },
   },
@@ -37,8 +50,8 @@ export const MAP_STYLES = {
       "line-color": [
         "case",
         ["boolean", ["feature-state", "hover"], false],
-        "#b5055f",
-        "#fc0885",
+        COLORS.darkPink,
+        COLORS.brightPink,
       ],
     },
     layout: {
@@ -56,10 +69,10 @@ export const MAP_STYLES = {
           [20, 12],
         ],
       },
-      "circle-stroke-color": "#8d8b8b",
+      "circle-stroke-color": COLORS.mutedGray,
       "circle-stroke-width": 2,
       "circle-stroke-opacity": 0.9,
-      "circle-color": "#8d8b8b",
+      "circle-color": COLORS.mutedGray,
       "circle-opacity": 0.9,
     },
   },
@@ -74,12 +87,7 @@ export const MAP_STYLES = {
           [20, 10],
         ],
       },
-      "line-color": [
-        "case",
-        ["boolean", ["feature-state", "hover"], false],
-        "#8d8b8b",
-        "#8d8b8b",
-      ],
+      "line-color": COLORS.mutedGray,
     },
     layout: {
       "line-cap": "round",
@@ -91,7 +99,7 @@ export const MAP_STYLES = {
     type: "line",
     paint: {
       "line-width": 20,
-      "line-color": "#fff",
+      "line-color": COLORS.white,
       "line-opacity": 0,
     },
     layout: {
@@ -109,7 +117,7 @@ export const MAP_STYLES = {
           [20, 10],
         ],
       },
-      "line-color": "#1276D1",
+      "line-color": COLORS.bluePrimary,
     },
     layout: {
       "line-cap": "round",
@@ -126,10 +134,10 @@ export const MAP_STYLES = {
           [20, 12],
         ],
       },
-      "circle-stroke-color": "#000",
+      "circle-stroke-color": COLORS.black,
       "circle-stroke-width": 2,
       "circle-stroke-opacity": 0.9,
-      "circle-color": "#fc74ba",
+      "circle-color": COLORS.lightPink,
       "circle-opacity": 0.9,
     },
   },
@@ -149,8 +157,8 @@ export const MAP_STYLES = {
       "line-color": [
         "case",
         ["boolean", ["feature-state", "hover"], false],
-        "#000",
-        "#607d8f",
+        COLORS.black,
+        COLORS.steel,
       ],
     },
     layout: {
@@ -165,7 +173,7 @@ export const MAP_STYLES = {
     paint: {
       "line-opacity": 0,
       "line-width": 20,
-      "line-color": "#fff",
+      "line-color": COLORS.white,
     },
     layout: {
       "line-cap": "round",
@@ -189,7 +197,7 @@ export const MAP_STYLES = {
         "case",
         ["boolean", ["feature-state", "hover"], false],
         "black",
-        "#607d8f",
+        COLORS.steel,
       ],
       "circle-opacity": 0.4,
     },
@@ -207,7 +215,7 @@ export const MAP_STYLES = {
         ],
       },
       "circle-stroke-opacity": 0,
-      "circle-color": "#000",
+      "circle-color": COLORS.black,
       "circle-opacity": 0,
     },
     minzoom: MIN_SELECT_FEATURE_ZOOM,
@@ -223,7 +231,7 @@ export const MAP_STYLES = {
           [20, 10],
         ],
       },
-      "line-color": "#1276D1",
+      "line-color": COLORS.bluePrimary,
     },
     layout: {
       "line-cap": "round",
@@ -240,10 +248,10 @@ export const MAP_STYLES = {
           [20, 12],
         ],
       },
-      "circle-stroke-color": "#1069bc",
+      "circle-stroke-color": COLORS.blueDark,
       "circle-stroke-width": 2,
       "circle-stroke-opacity": 0.9,
-      "circle-color": "#a1cdf7",
+      "circle-color": COLORS.blueLight,
       "circle-opacity": 0.9,
     },
   },
