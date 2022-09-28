@@ -54,7 +54,7 @@ export const ProjectsListViewFiltersConf = {
       defaultOperator: "string_equals_case_sensitive",
       lookup: {
         table_name: "moped_types",
-        field_name: "type_name"
+        field_name: "type_name",
       },
       operators: [
         "string_equals_case_sensitive",
@@ -116,7 +116,7 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
       lookup: {
         table_name: "moped_entity",
-        field_name: "entity_name"
+        field_name: "entity_name",
       },
       operators: [
         "string_contains_case_insensitive",
@@ -135,7 +135,7 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
       lookup: {
         table_name: "moped_entity",
-        field_name: "entity_name"
+        field_name: "entity_name",
       },
       operators: [
         "string_contains_case_insensitive",
@@ -169,7 +169,7 @@ export const ProjectsListViewFiltersConf = {
       type: "string",
       lookup: {
         table_name: "moped_fund_sources",
-        field_name: "funding_source_name"
+        field_name: "funding_source_name",
       },
       operators: [
         "string_contains_case_insensitive",
@@ -271,6 +271,21 @@ export const ProjectsListViewFiltersConf = {
       name: "contract_numbers",
       label: "Contract numbers",
       placeholder: "Contract number",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_equals_case_sensitive",
+        "string_does_not_equal_case_sensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
+    {
+      name: "project_tags",
+      label: "Project tags",
+      placeholder: "Project tags",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
