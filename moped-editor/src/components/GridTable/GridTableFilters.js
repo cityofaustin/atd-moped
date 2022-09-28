@@ -163,7 +163,7 @@ const GridTableFilters = ({
     filtersNewState[uuid] = generateEmptyField(uuid);
     // Update new state
     setFilterParameters(filtersNewState);
-  });
+  }, []);
 
   /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
