@@ -434,11 +434,6 @@ const GridTableFilters = ({
           <Icon fontSize={"small"}>close</Icon>
         </IconButton>
       </Grid>
-      {Object.keys(filterParameters).length === 0 && (
-        <Alert className={classes.filterAlert} severity="info">
-          You don't have any search filters, add one below.
-        </Alert>
-      )}
       {Object.keys(filterParameters).map((filterId) => {
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
