@@ -150,7 +150,7 @@ const GridTableFilters = ({
    */
   const generateEmptyField = useCallback((uuid) => {
     return { ...defaultNewFieldState, id: uuid };
-  }, []);
+  }, [defaultNewFieldState]);
 
   const generateEmptyFilter = useCallback(() => {
     // Generate a random UUID string
