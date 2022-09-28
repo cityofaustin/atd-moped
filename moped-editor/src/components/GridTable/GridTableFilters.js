@@ -159,7 +159,7 @@ const GridTableFilters = ({
     return (
       field.lookup_table &&
       !loading &&
-      ["_eq", "_neq"].includes(field.gqlOperator)
+      ["_eq", "_neq", "_ilike"].includes(field.gqlOperator)
     );
   };
 

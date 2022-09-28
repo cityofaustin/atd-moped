@@ -935,5 +935,9 @@ export const LOOKUP_TABLES_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
   }
 `;

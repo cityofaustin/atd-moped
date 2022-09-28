@@ -287,6 +287,10 @@ export const ProjectsListViewFiltersConf = {
       label: "Project tags",
       placeholder: "Project tags",
       type: "string",
+      lookup: {
+        table_name: "moped_tags",
+        field_name: "name",
+      },
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
