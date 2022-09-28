@@ -47,6 +47,20 @@ $ source venv/bin/activate
 $ pip install -r requirements/development.txt
 ```
 
+If you run into problems with installing `cryptography`, see the [cryptography docs on installing on macOS](https://cryptography.io/en/latest/installation/#building-cryptography-on-macos). If you've already run the last command and install of `cryptography` failed, then you may need to:
+
+```
+$ pip uninstall cryptography
+$ brew install openssl@1.1 rust
+$ env LDFLAGS="-L$(brew --prefix openssl@1.1)/lib" CFLAGS="-I$(brew --prefix openssl@1.1)/include" pip install cryptography==3.3.2
+```
+
+and then (to install the rest of the requirements):
+
+```
+$ pip install -r requirements/development.txt
+```
+
 This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.
 
 Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console.
