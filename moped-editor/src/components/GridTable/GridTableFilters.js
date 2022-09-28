@@ -419,7 +419,7 @@ const GridTableFilters = ({
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       handleAddFilterButtonClick();
     }
-  }, [filterParameters, filterState]);
+  }, [filterParameters, filterState, handleAddFilterButtonClick]);
 
   return (
     <Grid>
