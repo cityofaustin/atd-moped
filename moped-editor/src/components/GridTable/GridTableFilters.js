@@ -416,6 +416,8 @@ const GridTableFilters = ({
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
       filterState.setFilterParameters(filterParameters);
+      // Add an empty filter so the user doesn't have to click the 'add filter' button
+      handleAddFilterButtonClick();
     }
   }, [filterParameters, filterState]);
 
