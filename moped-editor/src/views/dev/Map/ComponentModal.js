@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Button,
   Dialog,
@@ -13,6 +13,7 @@ import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { COMPONENTS } from "./data/components";
+import { COMPONENT_FORM_FIELDS } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -41,19 +42,6 @@ const useComponentOptions = () =>
     return [...options, { value: "", label: "" }];
   }, []);
 
-const fields = [
-  {
-    key: "type",
-    label: "Component Type",
-    type: "autocomplete",
-  },
-  {
-    key: "description",
-    label: "Description",
-    type: "textarea",
-  },
-];
-
 // const CustomSelect = ({ key, label, options }) => {
 //   return (
 //     <Select id={key} labelId="workgroup-label" label="Workgroup">
@@ -71,10 +59,9 @@ const randomComponentId = () => Math.floor(Math.random() * 10000000);
 const CustomAutocomplete = ({
   fieldKey,
   autoFocus,
-  dispatchFormState,
+  dispatchComponentFormState,
   value,
   fieldLabel,
-  linkMode,
 }) => {
   const options = useComponentOptions();
 
@@ -87,7 +74,11 @@ const CustomAutocomplete = ({
       }}
       value={value}
       onChange={(e, option) => {
-        dispatchFormState({ key: fieldKey, value: option, action: "update" });
+        dispatchComponentFormState({
+          key: fieldKey,
+          value: option,
+          action: "update",
+        });
       }}
       getOptionSelected={(option, value) => option.value === value.value}
       renderInput={(params) => (
@@ -103,19 +94,6 @@ const CustomAutocomplete = ({
   );
 };
 
-const initialFormState = fields.reduce((prev, curr) => {
-  prev[curr.key] = "";
-  return prev;
-}, {});
-
-function formStateReducer(state, { key, value, action }) {
-  if (action === "update") {
-    return { ...state, [key]: value };
-  } else {
-    return initialFormState;
-  }
-}
-
 const ComponentModal = ({
   showDialog,
   setShowDialog,
@@ -123,19 +101,17 @@ const ComponentModal = ({
   setLinkMode,
   setIsEditingComponent,
   linkMode,
+  componentFormState,
+  dispatchComponentFormState,
 }) => {
   const classes = useStyles();
-  const [formState, dispatchFormState] = useReducer(
-    formStateReducer,
-    initialFormState
-  );
 
   const onSave = (e) => {
     e.preventDefault();
     const newComponent = {
-      ...formState.type.data,
-      description: formState.description,
-      label: formState.type.label,
+      ...componentFormState.type.data,
+      description: componentFormState.description,
+      label: componentFormState.type.label,
       _id: randomComponentId(),
       features: [],
     };
@@ -153,7 +129,7 @@ const ComponentModal = ({
     setDraftComponent(null);
     setIsEditingComponent(false);
     setShowDialog(false);
-    dispatchFormState({ action: "reset" });
+    dispatchComponentFormState({ action: "reset" });
   };
 
   return (
@@ -169,31 +145,30 @@ const ComponentModal = ({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <CustomAutocomplete
-                linkMode={linkMode}
-                fieldKey={fields[0].key}
-                fieldLabel={fields[0].label}
+                fieldKey={COMPONENT_FORM_FIELDS[0].key}
+                fieldLabel={COMPONENT_FORM_FIELDS[0].label}
                 autoFocus
-                dispatchFormState={dispatchFormState}
-                value={formState[fields[0].key] || ""}
+                dispatchComponentFormState={dispatchComponentFormState}
+                value={componentFormState[COMPONENT_FORM_FIELDS[0].key] || ""}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 size="small"
-                name={fields[1].key}
-                id={fields[1].key}
-                label={fields[1].label}
+                name={COMPONENT_FORM_FIELDS[1].key}
+                id={COMPONENT_FORM_FIELDS[1].key}
+                label={COMPONENT_FORM_FIELDS[1].label}
                 InputLabelProps={{
                   shrink: true,
                 }}
                 variant="outlined"
                 multiline
                 minRows={4}
-                value={formState[fields[1].key]}
+                value={componentFormState[COMPONENT_FORM_FIELDS[1].key]}
                 onChange={(e) => {
-                  dispatchFormState({
-                    key: fields[1].key,
+                  dispatchComponentFormState({
+                    key: COMPONENT_FORM_FIELDS[1].key,
                     value: e.target.value,
                     action: "update",
                   });

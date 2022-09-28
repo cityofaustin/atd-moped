@@ -4,6 +4,9 @@ import turfCenter from "@turf/center";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 const useFeatureComponents = (feature, components) =>
   useMemo(() => {
@@ -42,10 +45,9 @@ export default function FeaturePopup({
     >
       <div>
         <List dense>
-          <ListItem style={{ fontWeight: "bold" }}>
-            {feature.properties._label}
+          <ListItem >
+            <ListItemText primary={feature.properties._label} />
           </ListItem>
-
           {featureComponents?.map((component) => {
             return (
               <React.Fragment key={component._id}>
@@ -55,7 +57,11 @@ export default function FeaturePopup({
                     setClickedComponent(component);
                     onClose();
                   }}
+                  disableGutters
                 >
+                  <ListItemIcon style={{ minWidth: 0, paddingRight: "1rem" }}>
+                    <ChevronRightIcon />
+                  </ListItemIcon>
                   <ListItemText
                     primary={component.component_name}
                     secondary={component.component_subtype}

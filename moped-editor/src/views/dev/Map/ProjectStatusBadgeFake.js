@@ -167,22 +167,40 @@ const useChipStyles = makeStyles((theme) => ({
   },
 }));
 
-/**
- * Renders a chip
- * @param {number} status - The status id of the current project
- * @param {string} phase - The current phase name of the project
- * @param {Object} projectStatuses - A dictionary of all available project statuses
- * @returns {JSX.Element}
- * @constructor
- */
-const ProjectStatusBadge = ({
+const PROJECT_STATUSES = [
+  {
+    status_id: 1,
+    status_name: "Active",
+    __typename: "moped_status",
+  },
+  {
+    status_id: 2,
+    status_name: "Potential",
+    __typename: "moped_status",
+  },
+  {
+    status_id: 3,
+    status_name: "Canceled",
+    __typename: "moped_status",
+  },
+  {
+    status_id: 4,
+    status_name: "On hold",
+    __typename: "moped_status",
+  },
+  {
+    status_id: 5,
+    status_name: "Complete",
+    __typename: "moped_status",
+  },
+];
+
+const ProjectStatusBadgeFake = ({
   status,
   phase,
-  projectStatuses,
   condensed = false,
-  clickable = false
+  clickable = false,
 }) => {
-  console.log(projectStatuses)
   const classes = useStyles();
   /**
    * Returns the label given a status-phase combination
@@ -194,7 +212,7 @@ const ProjectStatusBadge = ({
     status > 1 // is not active?
       ? // Then it can be found as a status
         (
-          projectStatuses.find((s) => s.status_id === status)?.status_name ??
+          PROJECT_STATUSES.find((s) => s.status_id === status)?.status_name ??
           String(phase)
         ) // if not, default to phase
           .toLowerCase()
@@ -255,4 +273,4 @@ const ProjectStatusBadge = ({
   );
 };
 
-export default ProjectStatusBadge;
+export default ProjectStatusBadgeFake;

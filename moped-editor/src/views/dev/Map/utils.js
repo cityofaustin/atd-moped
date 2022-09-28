@@ -55,7 +55,6 @@ export const useFeatureService = ({
 
   useEffect(() => {
     if (!bounds || !isVisible) {
-      setIsFetchingFeatures(false);
       return;
     }
     setIsFetchingFeatures(true);
@@ -86,6 +85,7 @@ export const useFeatureService = ({
       // cancel this request on next render
       controller.abort();
       setController(new AbortController());
+      setIsFetchingFeatures(false);
     };
   }, [bounds, name, layerId, isVisible, featureIdProp, setIsFetchingFeatures]);
   return geojson;
@@ -188,3 +188,29 @@ export const useIsUniformGeometryType = (features) =>
       return null;
     }
   }, [features]);
+
+export const COMPONENT_FORM_FIELDS = [
+  {
+    key: "type",
+    label: "Component Type",
+    type: "autocomplete",
+  },
+  {
+    key: "description",
+    label: "Description",
+    type: "textarea",
+  },
+];
+
+export const initialComponentFormState = COMPONENT_FORM_FIELDS.reduce((prev, curr) => {
+  prev[curr.key] = "";
+  return prev;
+}, {});
+
+export function componentFormStateReducer(state, { key, value, action }) {
+  if (action === "update") {
+    return { ...state, [key]: value };
+  } else {
+    return initialComponentFormState;
+  }
+}

@@ -2,7 +2,7 @@ const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 
 // minimum map zoom to display selectable features, and
 // also to query AGOL for them
-export const MIN_SELECT_FEATURE_ZOOM = 14;
+export const MIN_SELECT_FEATURE_ZOOM = 15;
 
 export const MAP_STYLES = {
   "project-points": {

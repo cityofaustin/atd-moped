@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
-import MapGL, { Source, Layer, Popup } from "react-map-gl";
+import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
-import ComponentPopup from "./ComponentPopup";
 import FeaturePopup from "./FeaturePopup";
 import {
   mapSettings,
@@ -316,11 +315,6 @@ export default function TheMap({
         components={components}
         setClickedComponent={setClickedComponent}
       />
-      {/* <ComponentPopup
-        component={clickedComponent}
-        onClose={() => setClickedComponent(null)}
-        featureCollection={componentFeatureCollection}
-      /> */}
     </MapGL>
   );
 }
