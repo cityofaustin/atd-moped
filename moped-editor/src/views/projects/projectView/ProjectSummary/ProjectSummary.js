@@ -26,7 +26,7 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
-import ProjectSummaryInterimID from "./ProjectSummaryInterimID"
+import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 
 import { countFeatures } from "../../../../utils/mapHelpers";
 import SubprojectsTable from "./SubprojectsTable";
@@ -82,9 +82,6 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: "nowrap",
   },
   fieldBox: {
-    width: "100%",
-  },
-  fieldBoxTypography: {
     width: "100%",
   },
   fieldSelectItem: {

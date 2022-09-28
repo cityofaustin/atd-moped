@@ -17,7 +17,10 @@ import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import AddCircle from "@material-ui/icons/AddCircle";
-import { returnSignalPHBMilestoneTemplate } from "../../../utils/timelineTemplates";
+import {
+  returnSignalPHBMilestoneTemplate,
+  returnPDDMilestoneTemplate,
+} from "../../../utils/timelineTemplates";
 
 import { ADD_PROJECT_MILESTONE } from "../../../queries/project";
 import { useMutation } from "@apollo/client";
@@ -32,18 +35,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const templateChoices = ["AMD", "PDD"];
+const templateChoices = ["Arterial Management", "Project Delivery"];
 
 /**
  * useMemo hook to choose milestone options
  * @return {Object[]}
  */
-const useMilestoneOptions = (template, projectId, selectedMilestonesIds) =>
+const useMilestoneOptions = (template, projectId) =>
   useMemo(() => {
-    if (template === "AMD") {
+    if (template === "Arterial Management") {
       return returnSignalPHBMilestoneTemplate(projectId);
-      // } else if (template === "PDD") {
-      //   // etc return [];
+    } else if (template === "Project Delivery") {
+      return returnPDDMilestoneTemplate(projectId);
     } else {
       return [];
     }
