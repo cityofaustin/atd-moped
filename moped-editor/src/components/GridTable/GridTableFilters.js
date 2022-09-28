@@ -159,7 +159,10 @@ const GridTableFilters = ({
     return (
       field.lookup_table &&
       !loading &&
-      ["_eq", "_neq", "_ilike"].includes(field.gqlOperator)
+      [
+        "string_equals_case_sensitive",
+        "string_does_not_equal_case_sensitive",
+      ].includes(field.operator)
     );
   };
 

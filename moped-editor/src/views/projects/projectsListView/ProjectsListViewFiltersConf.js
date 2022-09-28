@@ -297,8 +297,6 @@ export const ProjectsListViewFiltersConf = {
         "string_ends_with_case_insensitive",
         "string_equals_case_sensitive",
         "string_does_not_equal_case_sensitive",
-        "string_is_null",
-        "string_is_not_null",
       ],
     },
   ],
