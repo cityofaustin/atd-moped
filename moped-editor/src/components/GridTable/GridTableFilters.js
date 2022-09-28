@@ -148,7 +148,6 @@ const GridTableFilters = ({
       specialNullValue: null,
       label: null,
     };
-
     return { ...defaultNewFieldState, id: uuid };
   }, []);
 
