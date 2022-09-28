@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
@@ -152,6 +152,19 @@ const GridTableFilters = ({
     return { ...defaultNewFieldState, id: uuid };
   };
 
+  const generateEmptyFilter = useCallback(() => {
+    // Generate a random UUID string
+    const uuid = uuidv4();
+    // Clone state
+    const filtersNewState = {
+      ...filterParameters,
+    };
+    // Patch new state
+    filtersNewState[uuid] = generateEmptyField(uuid);
+    // Update new state
+    setFilterParameters(filtersNewState);
+  });
+
   /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
    */
@@ -301,16 +314,7 @@ const GridTableFilters = ({
    * Adds an empty filter to the state
    */
   const handleAddFilterButtonClick = () => {
-    // Generate a random UUID string
-    const uuid = uuidv4();
-    // Clone state
-    const filtersNewState = {
-      ...filterParameters,
-    };
-    // Patch new state
-    filtersNewState[uuid] = generateEmptyField(uuid);
-    // Update new state
-    setFilterParameters(filtersNewState);
+    generateEmptyFilter();
   };
 
   /**
@@ -419,7 +423,7 @@ const GridTableFilters = ({
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       handleAddFilterButtonClick();
     }
-  }, [filterParameters, filterState, handleAddFilterButtonClick]);
+  }, [filterParameters, filterState, generateEmptyFilter]);
 
   return (
     <Grid>
