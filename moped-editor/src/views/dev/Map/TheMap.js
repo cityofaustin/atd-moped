@@ -9,11 +9,8 @@ import {
   SOURCES,
   MIN_SELECT_FEATURE_ZOOM,
 } from "./settings";
-import {
-  useFeatureService,
-  getIntersectionLabel,
-  useFeatureTypes,
-} from "./utils";
+import { getIntersectionLabel, useFeatureTypes } from "./utils";
+import { useFeatureService } from "./agolUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 const useComponentFeatureCollection = (component) =>
@@ -79,6 +76,7 @@ export default function TheMap({
 
   const mapStyles = MAP_STYLES;
 
+  // yeah, these props are mess :/
   const ctnLinesGeojson = useFeatureService({
     layerId: SOURCES["ctn-lines"].featureService.layerId,
     name: SOURCES["ctn-lines"].featureService.name,
@@ -155,7 +153,7 @@ export default function TheMap({
     );
 
     if (clickedDraftComponentFeature) {
-      // remove project feature, ignore underling CTN features
+      // remove project feature, ignore underlying CTN features
       const filteredFeatures = draftComponent.features.filter((compFeature) => {
         return !(
           compFeature.properties.id ===
@@ -203,6 +201,7 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
+  console.log(draftComponent?.features);
   return (
     <MapGL
       ref={mapRef}

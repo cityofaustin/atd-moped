@@ -6,7 +6,6 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ChevronRightIcon from "@material-ui/icons/ChevronRight";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 
 const useFeatureComponents = (feature, components) =>
   useMemo(() => {
@@ -45,7 +44,7 @@ export default function FeaturePopup({
     >
       <div>
         <List dense>
-          <ListItem >
+          <ListItem>
             <ListItemText primary={feature.properties._label} />
           </ListItem>
           {featureComponents?.map((component) => {
