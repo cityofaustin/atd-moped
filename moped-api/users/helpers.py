@@ -1,7 +1,7 @@
 """
 Helper methods to update the database via GraphQL
 """
-import re, copy
+import copy
 from cerberus import Validator
 from graphql import run_query
 
@@ -14,7 +14,7 @@ from users.queries import (
     GRAPHQL_CREATE_USER,
     GRAPHQL_UPDATE_USER,
     GRAPHQL_DEACTIVATE_USER,
-    GRAPHQL_USER_EXISTS,
+    GRAPHQL_ACTIVATE_USER,
 )
 from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
 
@@ -68,9 +68,10 @@ def is_valid_user_profile(
     """
     # First copy the validation schema
     validation_schema_copy = copy.deepcopy(USER_VALIDATION_SCHEMA)
-    # Then scan for fields that need to be ignored, then patch.
+    # Then scan for fields to ignore and remove them from the schema and profile
     for field_ignored in ignore_fields:
-        validation_schema_copy[field_ignored]["required"] = False
+        validation_schema_copy.pop(field_ignored, None)
+        user_profile.pop(field_ignored, None)
     # Continue validation
     user_validator = Validator()
     is_valid_profile = user_validator.validate(user_profile, validation_schema_copy)
@@ -100,18 +101,6 @@ def is_users_password(user_profile: dict, request_cognito_id: str) -> bool:
     user_cognito_id = user_profile.get("cognito:username", None)
     is_users_password = user_cognito_id == request_cognito_id
     return is_users_password
-
-
-def is_valid_uuid(cognito_id: str) -> bool:
-    """
-    Returns true if the cognito_id string is a valid UUID format.
-    :param str cognito_id: The string to be evaluated
-    :return bool:
-    """
-    pattern = re.compile(
-        r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
-    )
-    return True if pattern.search(cognito_id) else False
 
 
 """
@@ -178,42 +167,22 @@ def db_deactivate_user(user_cognito_id: str) -> dict:
     return response.json()
 
 
-def db_user_exists(user_email: str) -> tuple:
+def db_activate_user(user_email: str, user_cognito_id: str, roles: list) -> dict:
     """
-    Runs a search in the database for any users with the email
-    or user_cognito_uuid provided.
-    :param str user_email: The email to search
-    :return tuple:
+    Activates a user in the database via GraphQL
+    :param str user_email: The email of the user
+    :param str user_cognito_id: The cognito id of the user
+    :return dict: The response from the GraphQL server
     """
-    # Find the user
-    try:
-        response = run_query(
-            query=GRAPHQL_USER_EXISTS, variables={"userEmail": user_email}
-        ).json()
-    except:
-        return False, None
-
-    # Check if response is not a valid response
-    if not isinstance(response, dict):
-        return False, None
-
-    # If we have a response but it is not data, then it's an error. Return false.
-    if "data" not in response or "moped_users" not in response["data"]:
-        return False, None
-
-    # If the list is empty, then the user does not exist
-    if len(response["data"]["moped_users"]) == 0:
-        return False, None
-
-    # Select the first element (it should be the only element)
-    moped_user = response["data"]["moped_users"][0]
-
-    # Check if the user is in fact what we are looking for
-    if moped_user["email"] == user_email:
-        return True, moped_user["cognito_user_id"]
-
-    # It's not
-    return False, None
+    response = run_query(
+        query=GRAPHQL_ACTIVATE_USER,
+        variables={
+            "userEmail": user_email,
+            "cognitoUserId": user_cognito_id,
+            "roles": roles,
+        },
+    )
+    return response.json()
 
 
 def get_user_email_from_attr(user_attr: object) -> str:

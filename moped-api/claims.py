@@ -222,7 +222,7 @@ def format_claims(user_id: str, roles: list, database_id: int = 0, workgroup_id:
 
 def put_claims(user_email: str, user_claims: dict, cognito_uuid: str = None, database_id: int = 0, workgroup_id: int = 0):
     """
-    Sets claims in DynamoDB
+    Creates new entry or replaces existing entry in DynamoDB Hasura claims table
     :param str user_email: The user email to set the claims for
     :param dict user_claims: The claims object to be persisted in DynamoDB
     :param str cognito_uuid: The Cognito UUID

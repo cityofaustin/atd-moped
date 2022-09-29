@@ -154,6 +154,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     completion_end_date: false,
     project_inspector: true,
     project_designer: true,
+    contractors: false,
+    contract_numbers: false,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -418,6 +420,18 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Inspector",
       field: "project_inspector",
       hidden: hiddenColumns["project_inspector"],
+      emptyValue: "-",
+    },
+    {
+      title: "Contractors",
+      field: "contractors",
+      hidden: hiddenColumns["contractors"],
+      emptyValue: "-",
+    },
+    {
+      title: "Contract numbers",
+      field: "contract_numbers",
+      hidden: hiddenColumns["contract_numbers"],
       emptyValue: "-",
     },
   ];
