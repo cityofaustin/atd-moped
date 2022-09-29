@@ -201,7 +201,6 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
-  console.log(draftComponent?.features);
   return (
     <MapGL
       ref={mapRef}
