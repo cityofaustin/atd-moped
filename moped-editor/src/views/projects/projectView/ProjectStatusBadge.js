@@ -182,7 +182,6 @@ const ProjectStatusBadge = ({
   condensed = false,
   clickable = false
 }) => {
-  console.log(projectStatuses)
   const classes = useStyles();
   /**
    * Returns the label given a status-phase combination
