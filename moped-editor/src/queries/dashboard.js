@@ -27,6 +27,7 @@ export const DASHBOARD_QUERY = gql`
         ) {
           added_by
           project_note_type
+          status_id
           project_note
         }
       }
@@ -53,6 +54,7 @@ export const DASHBOARD_QUERY = gql`
         ) {
           added_by
           project_note_type
+          status_id
           project_note
         }
       }
