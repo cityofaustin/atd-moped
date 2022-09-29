@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 
 /**
  * Provides a hook and supporting functions to query an AGOL feature service
