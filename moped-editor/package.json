@@ -49,6 +49,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.10.0",
+    "@testing-library/jest-dom": "^5.16.5",
     "@turf/bbox": "^6.3.0",
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",
@@ -95,6 +96,7 @@
     "npm": ">=6.0.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^12.1.5",
     "babel-plugin-import": "^1.13.5"
   }
 }
