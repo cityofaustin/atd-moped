@@ -26,6 +26,19 @@ const DraftComponentListItem = ({ component, onSave, onCancel }) => {
             <Button
               fullWidth
               size="small"
+              startIcon={<Cancel />}
+              onClick={onCancel}
+            >
+              Cancel
+            </Button>
+          }
+        />
+
+        <ListItemText
+          primary={
+            <Button
+              fullWidth
+              size="small"
               color="primary"
               variant="contained"
               disabled={!component?.features.length > 0}
@@ -36,21 +49,7 @@ const DraftComponentListItem = ({ component, onSave, onCancel }) => {
             </Button>
           }
         />
-        <ListItemText
-          primary={
-            <Button
-              fullWidth
-              size="small"
-              color="secondary"
-              startIcon={<Cancel />}
-              onClick={onCancel}
-            >
-              Cancel
-            </Button>
-          }
-        />
       </ListItem>
-
       <Divider />
     </Box>
   );
