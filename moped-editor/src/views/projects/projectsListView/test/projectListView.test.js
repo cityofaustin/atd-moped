@@ -1,29 +1,31 @@
 import { render, screen } from "src/utils/testUtils";
 import "@testing-library/jest-dom";
-import GridTableSearch from "src/components/GridTable/GridTableSearch";
+import GQLAbstract from "src/libs/GQLAbstract";
+import GridTableFilters from "src/components/GridTable/GridTableFilters";
 import { ProjectsListViewQueryConf } from "../ProjectsListViewQueryConf";
+import { createBrowserHistory } from "history";
 
-// Show DOM in test runner - screen.debug();
+// Show DOM in test runner -
+screen.debug();
 
 let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
+const filterQuery = new URLSearchParams("");
+const history = createBrowserHistory();
 
-describe("StaffListView", () => {
-  it("renders a title", () => {
+describe("ProjectListView", () => {
+  it("renders advanced filters with dropdown options & autocomplete when a lookup config is set", () => {
     render(
-      <GridTableSearch
+      <GridTableFilters
         query={projectsQuery}
-        searchState={null}
-        filterState={null}
-        children={null}
-        filterQuery={null}
-        parentData={null}
-        advancedSearchAnchor={null}
-        setAdvancedSearchAnchor={null}
+        filterState={{ filterParameters: {}, setFilterParameters: () => true }}
+        filterQuery={filterQuery}
+        history={history}
+        handleAdvancedSearchClose={() => true}
       />
     );
 
-    const titleElement = screen.getByText("Staff");
+    const addFilterButton = screen.getByText("Add Filter");
 
-    expect(titleElement).toBeInTheDocument();
+    expect(addFilterButton).toBeInTheDocument();
   });
 });

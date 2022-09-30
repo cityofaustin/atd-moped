@@ -95,17 +95,6 @@ const GridTableSearch = ({
   const queryPath = useLocation().pathname;
   const divRef = React.useRef();
 
-  console.log({
-    query,
-    searchState,
-    filterState,
-    children,
-    filterQuery,
-    parentData,
-    advancedSearchAnchor,
-    setAdvancedSearchAnchor,
-  });
-
   /**
    * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
