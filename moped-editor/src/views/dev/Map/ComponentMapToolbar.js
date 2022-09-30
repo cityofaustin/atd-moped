@@ -32,10 +32,13 @@ export default function ComponentMapToolbar({ isFetchingFeatures }) {
           <Button
             size="small"
             color="primary"
-            variant="outlined"
             fullWidth
-            startIcon={<CloseIcon />}
-            onClick={() => console.log("exit")}
+            endIcon={<CloseIcon />}
+            onClick={() =>
+              alert(
+                "This button returns you to the previous page you visted. Defaults to sumamry tab."
+              )
+            }
           >
             Close map
           </Button>
