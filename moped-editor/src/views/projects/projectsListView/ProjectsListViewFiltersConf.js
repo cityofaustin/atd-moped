@@ -285,7 +285,7 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "project_tags",
       label: "Project tags",
-      placeholder: "Project tags",
+      placeholder: "Tags",
       type: "string",
       lookup: {
         table_name: "moped_tags",
