@@ -11,18 +11,20 @@ import {
   ListItemText,
 } from "@material-ui/core";
 import Cancel from "@material-ui/icons/Cancel";
-import { CheckCircle } from "@material-ui/icons";
-import { makeStyles } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
 import CloseIcon from "@material-ui/icons/Close";
+import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
-    color: theme.palette.primary.main,
+    color: theme.palette.text.primary,
     fontFamily: theme.typography.fontFamily,
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 0,
+  },
+  dialogContent: {
+    paddingBottom: theme.spacing(3),
   },
 }));
 
@@ -49,7 +51,7 @@ const DeleteComponentModal = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent className={classes.dialogContent}>
         <Grid container spacing={1}>
           <List>
             <Box borderLeft={7} borderColor="secondary.main">
@@ -62,27 +64,21 @@ const DeleteComponentModal = ({
             </Box>
           </List>
         </Grid>
-        <Grid container spacing={1} display="flex" justifyContent="flex-end">
+        <Grid container spacing={2} display="flex" justifyContent="flex-end">
           <Grid item>
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<CheckCircle />}
-              onClick={onDeleteComponent}
-              size="small"
-            >
-              Delete component
+            <Button size="small" startIcon={<Cancel />} onClick={onClose}>
+              Cancel
             </Button>
           </Grid>
           <Grid item>
             <Button
-              size="small"
-              variant="outlined"
+              variant="contained"
               color="primary"
-              startIcon={<Cancel />}
-              onClick={onClose}
+              startIcon={<DeleteIcon />}
+              onClick={onDeleteComponent}
+              size="small"
             >
-              Cancel
+              Delete component
             </Button>
           </Grid>
         </Grid>
