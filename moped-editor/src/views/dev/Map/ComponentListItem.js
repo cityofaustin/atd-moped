@@ -67,7 +67,19 @@ export default function ComponentListItem({
               <ListItemText secondary={component.description} />
             </ListItem>
           )}
-          <ListItem dense>
+          <ListItem dense disableGutters>
+            <ListItemText
+              primary={
+                <Button
+                  fullWidth
+                  size="small"  
+                  startIcon={<DeleteIcon />}
+                  onClick={() => setIsDeletingComponent(true)}
+                >
+                  Delete
+                </Button>
+              }
+            />
             <ListItemText
               primary={
                 <Button
@@ -78,19 +90,6 @@ export default function ComponentListItem({
                   onClick={onStartEditingComponent}
                 >
                   Edit
-                </Button>
-              }
-            />
-            <ListItemText
-              primary={
-                <Button
-                  fullWidth
-                  size="small"
-                  color="secondary"
-                  startIcon={<DeleteIcon />}
-                  onClick={() => setIsDeletingComponent(true)}
-                >
-                  Delete
                 </Button>
               }
             />
