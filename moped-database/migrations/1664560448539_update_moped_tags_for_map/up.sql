@@ -1,0 +1,17 @@
+update moped_tags set is_deleted = true where slug = 'map_signals2023';
+update moped_tags set is_deleted = true where slug = 'map_transitenhancement2023';
+update moped_tags set is_deleted = true where slug = 'map_vzero_systemicsafety_curves2023';
+update moped_tags set is_deleted = true where slug = 'map_vzero_intersectionspotential2023';
+update moped_tags set is_deleted = true where slug = 'map_vzero_intersections2023';
+update moped_tags set is_deleted = true where slug = 'map_vzero_speedmanagement2023';
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Transit Speed and Reliability (CapMetro ILA)','map-transit-speed-and-reliability-capmetro-ila');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Transit Enhancement','map-transit-enhancement');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Major Safety','map-vision-zero-major-safety');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Ped Safety','map-vision-zero-ped-safety');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Rapid Response/Small Scale','map-vision-zero-rapid-response-small-scale');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Signal Safety','map-vision-zero-signal-safety');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Speed Management','map-vision-zero-speed-management');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Street Lighting','map-vision-zero-street-lighting');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Systemic Safety','map-vision-zero-systemic-safety');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Systemic Safety Access Management','map-vision-zero-systemic-safety-access-management');
+insert into moped_tags (type, name, slug) values ('Work Plan','MAP Vision Zero - Systemic Safety Curve Warnings','map-vision-zero-systemic-safety-curve-warnings');
