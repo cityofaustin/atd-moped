@@ -10,7 +10,7 @@ import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
-import ComponentModal from "./ComponentModal";
+import ComponentEditModal from "./ComponentEditModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
@@ -221,7 +221,7 @@ export default function MapView() {
             linkMode={linkMode}
           />
         </div>
-        <ComponentModal
+        <ComponentEditModal
           showDialog={showComponentEditDialog}
           setShowDialog={setShowComponentEditDialog}
           draftComponent={draftComponent}

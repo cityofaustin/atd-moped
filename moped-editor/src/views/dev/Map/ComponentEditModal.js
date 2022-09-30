@@ -17,7 +17,7 @@ import { COMPONENT_FORM_FIELDS } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
-    color: theme.palette.primary.main,
+    color: theme.palette.text.primary,
     fontFamily: theme.typography.fontFamily,
     display: "flex",
     justifyContent: "space-between",
@@ -41,18 +41,6 @@ const useComponentOptions = () =>
     // add empty option for default state
     return [...options, { value: "", label: "" }];
   }, []);
-
-// const CustomSelect = ({ key, label, options }) => {
-//   return (
-//     <Select id={key} labelId="workgroup-label" label="Workgroup">
-//       {options.map((option) => (
-//         <MenuItem key={option.value} value={option.value}>
-//           {option.label}
-//         </MenuItem>
-//       ))}
-//     </Select>
-//   );
-// };
 
 const randomComponentId = () => Math.floor(Math.random() * 10000000);
 
@@ -94,7 +82,7 @@ const CustomAutocomplete = ({
   );
 };
 
-const ComponentModal = ({
+const ComponentEditModal = ({
   showDialog,
   setShowDialog,
   setDraftComponent,
@@ -156,6 +144,19 @@ const ComponentModal = ({
               <TextField
                 fullWidth
                 size="small"
+                name="demo1"
+                id="demo1"
+                label="Subcomponents"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                size="small"
                 name={COMPONENT_FORM_FIELDS[1].key}
                 id={COMPONENT_FORM_FIELDS[1].key}
                 label={COMPONENT_FORM_FIELDS[1].label}
@@ -173,19 +174,6 @@ const ComponentModal = ({
                     action: "update",
                   });
                 }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name="demo1"
-                id="demo1"
-                label="Some other field"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
               />
             </Grid>
             <Grid item xs={12}>
@@ -233,4 +221,4 @@ const ComponentModal = ({
   );
 };
 
-export default ComponentModal;
+export default ComponentEditModal;
