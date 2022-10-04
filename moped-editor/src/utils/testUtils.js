@@ -6,8 +6,7 @@ import theme from "src/theme";
 import GlobalStyles from "src/components/GlobalStyles";
 import { UserContext } from "../auth/user";
 import { MockedProvider } from "@apollo/client/testing";
-
-const apolloMocks = [];
+import { apolloMocks } from "./testUtilApolloMocks";
 
 /*
  * Wrapper that contains all of the providers a React component expects to find in this app
