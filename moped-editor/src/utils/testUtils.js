@@ -5,16 +5,14 @@ import { ThemeProvider } from "@material-ui/core";
 import theme from "src/theme";
 import GlobalStyles from "src/components/GlobalStyles";
 import { UserContext } from "../auth/user";
-import { ApolloProvider, ApolloClient, InMemoryCache } from "@apollo/client";
+import { MockedProvider } from "@apollo/client/testing";
+
+const apolloMocks = [];
 
 /*
  * Wrapper that contains all of the providers a React component expects to find in this app
  */
 const AllTheProviders = ({ children }) => {
-  const client = new ApolloClient({
-    cache: new InMemoryCache(),
-  });
-
   const mockUserContextValues = {
     user: {
       idToken: {
@@ -34,14 +32,14 @@ const AllTheProviders = ({ children }) => {
   };
 
   return (
-    <ApolloProvider client={client}>
+    <MockedProvider mocks={apolloMocks} addTypename={false}>
       <ThemeProvider theme={theme}>
         <UserContext.Provider value={mockUserContextValues}>
           <GlobalStyles />
           <BrowserRouter>{children}</BrowserRouter>
         </UserContext.Provider>
       </ThemeProvider>
-    </ApolloProvider>
+    </MockedProvider>
   );
 };
 
