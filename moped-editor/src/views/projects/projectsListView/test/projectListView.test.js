@@ -34,12 +34,14 @@ describe("ProjectListView", () => {
 
     fireEvent.click(addFilterButton);
 
-    const fieldDropdownInput = screen.getByText("Field");
-    const operatorDropdownInput = screen.getByText("Operator");
+    const fieldDropdownInput = screen.getByLabelText("Field");
+    const operatorDropdownInput = screen.getByLabelText("Operator");
 
     const lookupConfig = filterConfigsWithLookups[0];
-    const fieldChoiceThatWillUseALookup = lookupConfig.label;
-    fireEvent.click(fieldDropdownInput);
+    const dropdownLabel = lookupConfig.label;
+    fireEvent.change(fieldDropdownInput, {
+      target: { value: dropdownLabel },
+    });
 
     screen.debug();
 
