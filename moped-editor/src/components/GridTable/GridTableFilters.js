@@ -80,6 +80,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Generates a copy of an empty field
+ * @param uuid
+ * @return {Object}
+ */
+const generateEmptyField = (uuid) => {
+  /**
+   * The default structure of an empty field
+   * @type {Object}
+   * @property {string} id - The uuid of the field
+   * @property {string} field - The name of the column
+   * @property {operator} operator - The name of the operator
+   * @property {string[]} availableOperators - A string array containing the names of available operators
+   * @property {string} gqlOperator - A string containing the GraphQL operator
+   * @property {string} envelope - The a pattern to use as an envelope
+   * @property {string} value - The text value to be searched
+   * @property {string} type - The type of field it is (string, number, etc.)
+   * @constant
+   * @default
+   */
+  const defaultNewFieldState = {
+    id: null,
+    field: null,
+    operator: null,
+    availableOperators: [],
+    gqlOperator: null,
+    envelope: null,
+    placeholder: null,
+    value: null,
+    type: null,
+    specialNullValue: null,
+    label: null,
+  };
+  return { ...defaultNewFieldState, id: uuid };
+};
+
+/**
  * Filter Search Component aka Advanced Search
  * @param {Object} query - The main query object
  * @param {Object} filterState - The current state/state-modifier bundle for filters
@@ -116,40 +152,9 @@ const GridTableFilters = ({
   );
 
   /**
-   * Generates a copy of an empty field
-   * @param uuid
-   * @return {Object}
+   * Tracks whether the user has added a complete filter
    */
-  const generateEmptyField = useCallback((uuid) => {
-    /**
-     * The default structure of an empty field
-     * @type {Object}
-     * @property {string} id - The uuid of the field
-     * @property {string} field - The name of the column
-     * @property {operator} operator - The name of the operator
-     * @property {string[]} availableOperators - A string array containing the names of available operators
-     * @property {string} gqlOperator - A string containing the GraphQL operator
-     * @property {string} envelope - The a pattern to use as an envelope
-     * @property {string} value - The text value to be searched
-     * @property {string} type - The type of field it is (string, number, etc.)
-     * @constant
-     * @default
-     */
-    const defaultNewFieldState = {
-      id: null,
-      field: null,
-      operator: null,
-      availableOperators: [],
-      gqlOperator: null,
-      envelope: null,
-      placeholder: null,
-      value: null,
-      type: null,
-      specialNullValue: null,
-      label: null,
-    };
-    return { ...defaultNewFieldState, id: uuid };
-  }, []);
+  const [filterComplete, setFilterComplete] = useState(false);
 
   const generateEmptyFilter = useCallback(() => {
     // Generate a random UUID string
@@ -424,6 +429,22 @@ const GridTableFilters = ({
     }
   }, [filterParameters, filterState, generateEmptyFilter]);
 
+  /**
+   * This side effect monitors whether the user has added a complete filter
+   */
+  useEffect(() => {
+    Object.keys(filterParameters).forEach((filterKey) => {
+      if (
+        filterParameters[filterKey].value === null ||
+        filterParameters[filterKey].value === ""
+      ) {
+        setFilterComplete(false);
+      } else {
+        setFilterComplete(true);
+      }
+    });
+  });
+
   return (
     <Grid>
       <Grid container justifyContent={"flex-end"}>
@@ -465,6 +486,7 @@ const GridTableFilters = ({
                     renderInput={(params) => (
                       <TextField
                         {...params}
+                        autoFocus
                         variant="standard"
                         label={"Field"}
                       />
@@ -523,6 +545,7 @@ const GridTableFilters = ({
                       <Autocomplete
                         value={filterParameters[filterId].value || null}
                         options={data[filterParameters[filterId].lookup_table]}
+                        disabled={!filterParameters[filterId].operator}
                         getOptionLabel={(option) =>
                           Object.hasOwn(
                             option,
@@ -558,6 +581,7 @@ const GridTableFilters = ({
                       <TextField
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
+                        disabled={!filterParameters[filterId].operator}
                         type={
                           filterParameters[filterId].type
                             ? filterParameters[filterId].type
@@ -575,6 +599,7 @@ const GridTableFilters = ({
               <Hidden smDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
+                    disabled={!filterParameters[filterId].value}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                   >
@@ -585,6 +610,7 @@ const GridTableFilters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
+                    disabled={!filterParameters[filterId].value}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
@@ -601,6 +627,8 @@ const GridTableFilters = ({
       <Grid container spacing={3} id={`filter-options`} key={`filter-options`}>
         <Grid item xs={12} md={2}>
           <Button
+            // Disable button until the user has added a complete filter
+            disabled={!filterComplete}
             className={classes.bottomButton}
             fullWidth
             variant="outlined"
