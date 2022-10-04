@@ -141,6 +141,14 @@ def add_project_properties(properties, project_data, project_list_keys):
         properties[key] = project_data[key]
 
 
+def add_project_tags(properties, moped_proj_tags):
+    if not moped_proj_tags:
+        return
+    tags = [proj_tag["moped_tag"]["name"] for proj_tag in moped_proj_tags]
+    properties["moped_proj_tags"] = ",".join(tags)
+    return
+
+
 def main(env):
     query = get_query(QUERY_TEMPLATE, PROJECT_LIST_KEYS)
     print("Fetching project data...")
@@ -166,6 +174,7 @@ def main(env):
             geometry = merge_geoms(features)
             properties = get_component_properties(proj_component["moped_components"])
             add_project_properties(properties, project_data, PROJECT_LIST_KEYS)
+            add_project_tags(properties, proj["moped_proj_tags"])
             component_features.append(
                 {
                     "type": "Feature",
@@ -176,7 +185,7 @@ def main(env):
 
     # filter features by geometry type and write geojson files
     print("Writing files...")
-    os.makedirs(OUTPUT_DIR, exist_ok=True) 
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
     for geom_type in [
         {"key": "MultiLineString", "name": "lines"},
         {"key": "MultiPoint", "name": "points"},
