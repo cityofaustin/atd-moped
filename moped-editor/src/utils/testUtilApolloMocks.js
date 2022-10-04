@@ -1,15 +1,12 @@
+import { LOOKUP_TABLES_QUERY } from "src/queries/project";
+
 export const apolloMocks = [
   {
     request: {
-      query: GET_DOG_QUERY,
-      variables: {
-        name: "Buck",
-      },
+      query: LOOKUP_TABLES_QUERY,
     },
     result: {
-      data: {
-        dog: { id: "1", name: "Buck", breed: "bulldog" },
-      },
+      data: {},
     },
   },
 ];
