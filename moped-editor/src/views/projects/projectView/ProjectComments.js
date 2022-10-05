@@ -15,6 +15,11 @@ import {
   Typography,
   Button,
   FormControlLabel,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import EditIcon from "@material-ui/icons/EditOutlined";
@@ -26,6 +31,7 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 import "./ProjectComments.css";
 
@@ -79,6 +85,9 @@ const useStyles = makeStyles((theme) => ({
   editDeleteButtons: {
     color: "#000000",
   },
+  deleteCommentButton: {
+    color: theme.palette.error.main,
+  },
 }));
 
 // Lookup array to convert project note types to a human readable interpretation
@@ -97,6 +106,7 @@ const ProjectComments = (props) => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -210,6 +220,14 @@ const ProjectComments = (props) => {
         projectNoteId: project_note_id,
       },
     });
+  };
+
+  const handleDeleteCommentOpen = () => {
+    setDeleteConfirmationOpen(true);
+  };
+
+  const handleDeleteCommentClose = () => {
+    setDeleteConfirmationOpen(false);
   };
 
   /**
@@ -387,17 +405,56 @@ const ProjectComments = (props) => {
                                 </IconButton>
                               )}
                               {!editingComment && (
-                                <IconButton
-                                  edge="end"
-                                  aria-label="delete"
-                                  onClick={() =>
-                                    submitDeleteComment(item.project_note_id)
-                                  }
-                                >
-                                  <DeleteIcon
-                                    className={classes.editDeleteButtons}
-                                  />
-                                </IconButton>
+                                <span>
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() => handleDeleteCommentOpen()}
+                                  >
+                                    <DeleteIcon
+                                      className={classes.editDeleteButtons}
+                                    />
+                                  </IconButton>
+                                  {/* <DeleteConfirmationModal
+                                    open={deleteConfirmationOpen}
+                                    onClose={handleDeleteCommentClose}
+                                  /> */}
+                                  <Dialog
+                                    open={deleteConfirmationOpen}
+                                    onClose={handleDeleteCommentClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                  >
+                                    <DialogContent>
+                                      <DialogContentText id="alert-dialog-description">
+                                        Are you sure you want to delete this
+                                        comment?
+                                      </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                      <Button
+                                        variant="outlined"
+                                        className={classes.deleteCommentButton}
+                                        onClick={() => {
+                                          submitDeleteComment(
+                                            item.project_note_id
+                                          );
+                                          handleDeleteCommentClose();
+                                        }}
+                                      >
+                                        Delete
+                                      </Button>
+                                      <Button
+                                        variant="outlined"
+                                        color="primary"
+                                        onClick={handleDeleteCommentClose}
+                                        autoFocus
+                                      >
+                                        Cancel
+                                      </Button>
+                                    </DialogActions>
+                                  </Dialog>
+                                </span>
                               )}
                             </ListItemSecondaryAction>
                           )
