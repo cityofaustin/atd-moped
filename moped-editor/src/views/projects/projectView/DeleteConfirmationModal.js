@@ -3,13 +3,20 @@ import {
   Button,
   Dialog,
   DialogActions,
-  DialogTitle,
   DialogContent,
   DialogContentText,
 } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 
-const DeleteConfirmationModal = () => {
-    console.log("you opened a modal");
+const useStyles = makeStyles((theme) => ({
+  deleteCommentButton: {
+    color: theme.palette.error.main,
+  },
+}));
+
+const DeleteConfirmationModal = ({ item, submitDeleteComment, children }) => {
+  const classes = useStyles();
+
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
   const handleDeleteCommentOpen = () => {
@@ -21,30 +28,41 @@ const DeleteConfirmationModal = () => {
   };
 
   return (
-    <div>
+    <span>
+      <span onClick={() => handleDeleteCommentOpen()}>{children}</span>
       <Dialog
         open={deleteConfirmationOpen}
         onClose={handleDeleteCommentClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending
-            anonymous location data to Google, even when no apps are running.
+            Are you sure you want to delete this comment?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleDeleteCommentClose}>Disagree</Button>
-          <Button onClick={handleDeleteCommentClose} autoFocus>
-            Agree
+          <Button
+            variant="outlined"
+            className={classes.deleteCommentButton}
+            onClick={() => {
+              submitDeleteComment(item.project_note_id);
+              handleDeleteCommentClose();
+            }}
+          >
+            Delete
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={handleDeleteCommentClose}
+            autoFocus
+          >
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </span>
   );
 };
 
