@@ -1,61 +1,77 @@
 import React, { useState } from "react";
 import {
   Button,
+  Chip,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 
 const useStyles = makeStyles((theme) => ({
-  deleteCommentButton: {
+  deleteButton: {
     color: theme.palette.error.main,
+  },
+  chip: {
+    margin: theme.spacing(0.5),
   },
 }));
 
-const DeleteConfirmationModal = ({ item, submitDeleteComment, children }) => {
+const DeleteConfirmationModal = ({ type, item, submitDelete, children }) => {
   const classes = useStyles();
 
   const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
 
-  const handleDeleteCommentOpen = () => {
+  const handleDeleteOpen = () => {
     setDeleteConfirmationOpen(true);
   };
 
-  const handleDeleteCommentClose = () => {
+  const handleDeleteClose = () => {
     setDeleteConfirmationOpen(false);
   };
 
   return (
     <span>
-      <span onClick={() => handleDeleteCommentOpen()}>{children}</span>
+      {type === "comment" && (
+        <span onClick={() => handleDeleteOpen()}>{children}</span>
+      )}
+      {type === "tag" && (
+        <Chip
+          label={item.moped_tag.name}
+          onDelete={() => handleDeleteOpen()}
+          className={classes.chip}
+        />
+      )}
       <Dialog
         open={deleteConfirmationOpen}
-        onClose={handleDeleteCommentClose}
+        onClose={handleDeleteClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this comment?
+            {`Are you sure you want to delete this ${type}?`}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button
             variant="outlined"
-            className={classes.deleteCommentButton}
+            className={classes.deleteButton}
+            startIcon={<DeleteIcon />}
             onClick={() => {
-              submitDeleteComment(item.project_note_id);
-              handleDeleteCommentClose();
+              type === "comment" && submitDelete(item.project_note_id);
+              type === "tag" && submitDelete(item);
+              handleDeleteClose();
             }}
           >
-            Delete
+            <span>Delete</span>
           </Button>
           <Button
             variant="outlined"
             color="primary"
-            onClick={handleDeleteCommentClose}
+            onClick={handleDeleteClose}
             autoFocus
           >
             Cancel

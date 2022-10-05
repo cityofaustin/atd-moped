@@ -17,6 +17,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import AddCircle from "@material-ui/icons/AddCircle";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 import {
   TAGS_QUERY,
@@ -150,11 +151,12 @@ const TagsSection = ({ projectId }) => {
         <Box component={"ul"} className={classes.chipContainer}>
           {data.moped_proj_tags.map((tag) => (
             <li key={tag.id}>
-              <Chip
-                label={tag.moped_tag.name}
-                onDelete={() => handleTagDelete(tag)}
-                className={classes.chip}
-              />
+              <DeleteConfirmationModal
+                type="tag"
+                item={tag}
+                submitDelete={handleTagDelete}
+              >
+              </DeleteConfirmationModal>
             </li>
           ))}
           {addTagMode && (

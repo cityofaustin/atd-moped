@@ -390,8 +390,9 @@ const ProjectComments = (props) => {
                               {!editingComment && (
                                 <span>
                                   <DeleteConfirmationModal
+                                    type="comment"
                                     item={item}
-                                    submitDeleteComment={submitDeleteComment}
+                                    submitDelete={submitDeleteComment}
                                   >
                                     <IconButton edge="end" aria-label="delete">
                                       <DeleteIcon
