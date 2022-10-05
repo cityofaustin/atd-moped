@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   Box,
   Button,
-  Chip,
   CircularProgress,
   Icon,
   IconButton,
