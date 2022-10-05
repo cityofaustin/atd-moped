@@ -20,22 +20,23 @@ const filterConfigsWithLookups = ProjectsListViewFiltersConf.fields.filter(
 );
 
 describe("ProjectListView", () => {
-  it("renders advanced filters with dropdown options & autocomplete when a lookup config is set", async () => {
-    const user = userEvent.setup();
+  const user = userEvent.setup();
 
-    render(
-      <GridTableFilters
-        query={projectsQuery}
-        filterState={{ filterParameters: {}, setFilterParameters: () => true }}
-        filterQuery={filterQuery}
-        history={history}
-        handleAdvancedSearchClose={() => true}
-      />
-    );
+  render(
+    <GridTableFilters
+      query={projectsQuery}
+      filterState={{ filterParameters: {}, setFilterParameters: () => true }}
+      filterQuery={filterQuery}
+      history={history}
+      handleAdvancedSearchClose={() => true}
+    />
+  );
 
+  it("renders the 'Add Filter' button to start filtering by clicking", async () => {
     const addFilterButton = screen.getByText("Add Filter");
+    expect(addFilterButton).toBeInTheDocument();
 
-    fireEvent.click(addFilterButton);
+    await user.click(addFilterButton);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
     const operatorDropdownInput = screen.getByTestId("operator-select");
@@ -53,12 +54,11 @@ describe("ProjectListView", () => {
     //   target: { value: "string_does_not_equal_case_sensitive" },
     // });
     await user.click(operatorDropdownInput);
-    const isOperatorOption = screen.getByText("is");
-    console.log(isOperatorOption);
+    // const isOperatorOption = screen.getByText("is");
+    // console.log(isOperatorOption);
 
     // screen.debug();
 
-    expect(addFilterButton).toBeInTheDocument();
     // expect(fieldDropdownInput).toBeInTheDocument();
     // expect(operatorDropdownInput).toBeInTheDocument();
   });
