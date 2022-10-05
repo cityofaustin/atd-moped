@@ -6,7 +6,12 @@ export const apolloMocks = [
       query: LOOKUP_TABLES_QUERY,
     },
     result: {
-      data: {},
+      data: {
+        moped_fund_sources: [],
+        moped_types: [],
+        moped_entity: [],
+        moped_tags: [],
+      },
     },
   },
 ];

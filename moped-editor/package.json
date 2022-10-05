@@ -50,6 +50,7 @@
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.10.0",
     "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
     "@turf/bbox": "^6.3.0",
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",

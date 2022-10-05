@@ -100,6 +100,7 @@ const GridTableFilters = ({
    */
   const classes = useStyles();
   const queryPath = useLocation().pathname;
+  console.log(filterQuery);
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
@@ -498,6 +499,7 @@ const GridTableFilters = ({
                       handleFilterOperatorClick(filterId, e.target.value)
                     }
                     label="field"
+                    data-testid="operator-select"
                   >
                     {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
