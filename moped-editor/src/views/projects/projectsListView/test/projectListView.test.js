@@ -35,11 +35,16 @@ describe("ProjectListView", () => {
   it("renders the 'Add Filter' button to start filtering by clicking", async () => {
     const addFilterButton = screen.getByText("Add Filter");
     expect(addFilterButton).toBeInTheDocument();
+  });
 
+  it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
     await user.click(addFilterButton);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
     const operatorDropdownInput = screen.getByTestId("operator-select");
+
+    expect(fieldDropdownInput).toBeInTheDocument();
+    expect(operatorDropdownInput).toBeInTheDocument();
 
     const filterConfigsWithLookup = filterConfigsWithLookups[0];
     const lookupConfig = filterConfigsWithLookup.lookup;
