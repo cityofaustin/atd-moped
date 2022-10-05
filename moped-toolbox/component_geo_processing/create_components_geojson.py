@@ -143,7 +143,7 @@ def add_project_properties(properties, project_data, project_list_keys):
 
 def add_project_tags(properties, moped_proj_tags):
     tags = [proj_tag["moped_tag"]["name"] for proj_tag in moped_proj_tags]
-    properties["moped_proj_tags"] = ",".join(tags)
+    properties["moped_proj_tags"] = ",".join(tags) if tags else None
     return
 
 
