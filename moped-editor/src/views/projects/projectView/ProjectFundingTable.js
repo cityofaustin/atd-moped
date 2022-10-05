@@ -61,14 +61,6 @@ const useStyles = makeStyles((theme) => ({
   linkIcon: {
     fontSize: "1rem",
   },
-  syncLinkIcon: {
-    fontSize: "1.2rem",
-  },
-  editIcon: {
-    cursor: "pointer",
-    margin: "0 .5rem",
-    fontSize: "20px",
-  },
   editIconFunding: {
     cursor: "pointer",
     margin: "0.5rem",
@@ -87,27 +79,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
     margin: "8px 0",
-  },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-  },
-  fieldLabelTextSpan: {
-    borderBottom: "1px dashed",
-    borderBottomColor: theme.palette.text.secondary,
-  },
-  fieldLabelLink: {
-    width: "calc(100% - 2rem)",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-  },
-  fieldBox: {
-    maxWidth: "10rem",
-  },
-  fieldBoxTypography: {
-    width: "100%",
-  },
-  fieldSelectItem: {
-    width: "calc(100% - 3rem)",
   },
   fundingButton: {
     position: "absolute",
