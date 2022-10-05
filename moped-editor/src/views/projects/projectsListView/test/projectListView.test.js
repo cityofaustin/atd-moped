@@ -19,25 +19,31 @@ const filterConfigsWithLookups = ProjectsListViewFiltersConf.fields.filter(
   (config) => config.hasOwnProperty("lookup")
 );
 
+const GridTableFiltersWithMockedProps = () => (
+  <GridTableFilters
+    query={projectsQuery}
+    filterState={{ filterParameters: {}, setFilterParameters: () => true }}
+    filterQuery={filterQuery}
+    history={history}
+    handleAdvancedSearchClose={() => true}
+  />
+);
+
 describe("ProjectListView", () => {
-  const user = userEvent.setup();
+  it("renders the 'Add Filter' button to start filtering by clicking", () => {
+    render(<GridTableFiltersWithMockedProps />);
 
-  render(
-    <GridTableFilters
-      query={projectsQuery}
-      filterState={{ filterParameters: {}, setFilterParameters: () => true }}
-      filterQuery={filterQuery}
-      history={history}
-      handleAdvancedSearchClose={() => true}
-    />
-  );
-
-  it("renders the 'Add Filter' button to start filtering by clicking", async () => {
     const addFilterButton = screen.getByText("Add Filter");
+
     expect(addFilterButton).toBeInTheDocument();
   });
 
   it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
+    const user = userEvent.setup();
+
+    render(<GridTableFiltersWithMockedProps />);
+
+    const addFilterButton = screen.getByText("Add Filter");
     await user.click(addFilterButton);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
@@ -45,26 +51,28 @@ describe("ProjectListView", () => {
 
     expect(fieldDropdownInput).toBeInTheDocument();
     expect(operatorDropdownInput).toBeInTheDocument();
-
-    const filterConfigsWithLookup = filterConfigsWithLookups[0];
-    const lookupConfig = filterConfigsWithLookup.lookup;
-    const lookupTableName = lookupConfig.table_name;
-
-    const dropdownLabel = lookupConfig.label;
-    fireEvent.change(fieldDropdownInput, {
-      target: { value: dropdownLabel },
-    });
-
-    // fireEvent.change(operatorDropdownInput, {
-    //   target: { value: "string_does_not_equal_case_sensitive" },
-    // });
-    await user.click(operatorDropdownInput);
-    // const isOperatorOption = screen.getByText("is");
-    // console.log(isOperatorOption);
-
-    // screen.debug();
-
-    // expect(fieldDropdownInput).toBeInTheDocument();
-    // expect(operatorDropdownInput).toBeInTheDocument();
   });
+
+  // it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
+  //   const filterConfigsWithLookup = filterConfigsWithLookups[0];
+  //   const lookupConfig = filterConfigsWithLookup.lookup;
+  //   const lookupTableName = lookupConfig.table_name;
+
+  //   // const dropdownLabel = lookupConfig.label;
+  //   // fireEvent.change(fieldDropdownInput, {
+  //   //   target: { value: dropdownLabel },
+  //   // });
+
+  //   // fireEvent.change(operatorDropdownInput, {
+  //   //   target: { value: "string_does_not_equal_case_sensitive" },
+  //   // });
+  //   // await user.click(operatorDropdownInput);
+  //   // const isOperatorOption = screen.getByText("is");
+  //   // console.log(isOperatorOption);
+
+  //   // screen.debug();
+
+  //   // expect(fieldDropdownInput).toBeInTheDocument();
+  //   // expect(operatorDropdownInput).toBeInTheDocument();
+  // });
 });
