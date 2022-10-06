@@ -8,7 +8,10 @@ export const apolloMocks = [
     result: {
       data: {
         moped_fund_sources: [],
-        moped_types: [],
+        moped_types: [
+          { type_id: 1, type_name: "this is an option" },
+          { type_id: 2, type_name: "this is an option too" },
+        ],
         moped_entity: [],
         moped_tags: [],
       },

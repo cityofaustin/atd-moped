@@ -1,23 +1,14 @@
-import { render, screen, fireEvent, within } from "src/utils/testUtils";
+import { render, screen } from "src/utils/testUtils";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GQLAbstract from "src/libs/GQLAbstract";
 import GridTableFilters from "src/components/GridTable/GridTableFilters";
 import { ProjectsListViewQueryConf } from "../ProjectsListViewQueryConf";
-import { ProjectsListViewFiltersConf } from "../ProjectsListViewFiltersConf";
 import { createBrowserHistory } from "history";
-
-// Show DOM in test runner
-// screen.debug();
 
 let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
 const filterQuery = new URLSearchParams("");
 const history = createBrowserHistory();
-
-// Find a config with a lookup key
-const filterConfigsWithLookups = ProjectsListViewFiltersConf.fields.filter(
-  (config) => config.hasOwnProperty("lookup")
-);
 
 const GridTableFiltersWithMockedProps = () => (
   <GridTableFilters
@@ -53,7 +44,7 @@ describe("ProjectListView", () => {
     expect(operatorDropdownInput).toBeInTheDocument();
   });
 
-  it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
+  it("renders returned results from lookup table in 'Option' dropdown", async () => {
     const user = userEvent.setup();
 
     render(<GridTableFiltersWithMockedProps />);
@@ -61,35 +52,28 @@ describe("ProjectListView", () => {
     const addFilterButton = screen.getByText("Add Filter");
     await user.click(addFilterButton);
 
-    const fieldDropdownInput = screen.getByLabelText("Field");
-    // const operatorDropdownInput = screen.getByTestId("operator-select");
-    const operatorDropdownInput = screen.getByRole("button", {
-      name: /operator/i,
-    });
-
-    // Find a config that uses a lookup table to find a choice to click
-    const filterConfigWithLookup = filterConfigsWithLookups[0];
-    const lookupConfig = filterConfigWithLookup.lookup;
-    const lookupTableName = lookupConfig.table_name;
-
     // Click the 'Field' dropdown and click an option that uses a lookup table
-    const dropdownLabel = filterConfigWithLookup.label;
-    await user.click(fieldDropdownInput);
-    const optionWithLookup = screen.getByText(dropdownLabel);
+    await user.click(screen.getByLabelText("Field"));
+    const optionWithLookup = screen.getByText("Project type");
     await user.click(optionWithLookup);
 
-    // screen.debug();
-    // fireEvent.change(fieldDropdownInput, {
-    //   target: { value: dropdownLabel },
-    // });
-
-    // console.log(operatorDropdownInput);
-    await user.click(operatorDropdownInput);
+    // Click the 'Operator' dropdown and click 'is' option
+    await user.click(
+      screen.getByRole("button", {
+        name: /operator/i,
+      })
+    );
     const isOperatorListItem = screen.getByRole("option", { name: "is" });
     await user.click(isOperatorListItem);
-    // const optionsPopupEl = screen.getByRole("listbox");
-    // console.log(optionsPopupEl);
 
-    screen.debug(undefined, Infinity);
+    // Click the 'Option' dropdown and click first mocked option
+    await user.click(screen.getByLabelText("Option"));
+    const autocompleteOption = screen.getByRole("option", {
+      name: "this is an option",
+    });
+    const autocompleteOptions = screen.getAllByRole("option");
+
+    expect(autocompleteOption).toBeInTheDocument();
+    expect(autocompleteOptions.length).toBe(2);
   });
 });
