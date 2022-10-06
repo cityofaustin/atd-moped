@@ -38,6 +38,10 @@ create table components (
     name character varying
     );
 
+insert into components (id, project_id, component_type_id, name) values (1, 1, 8, 'A component (signal-phb) for project (project_a).');
+insert into components (id, project_id, component_type_id, name) values (2, 1, 11, 'A sidewalk for project (project_a).');
+
+-- feature type generic fields related to the geometry could be put here, plus i really like the global ID space it enforces over feature geometry subtables
 create table features (
     id serial primary key, 
     name character varying
