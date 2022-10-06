@@ -66,6 +66,7 @@ create table sidewalks (
 insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (1, 'A new set of PHBs', 4242, 'This is a sidewalk name', ST_GeographyFromText(
     'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
     ));
+
 create table drawn_points (
     geography geography('MULTIPOINT') default null
     ) inherits (features);
