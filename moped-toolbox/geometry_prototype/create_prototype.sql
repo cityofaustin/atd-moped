@@ -57,6 +57,12 @@ insert into signals (id, name, signal_id, geography) values (1, 'A new set of PH
     'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
     ));
 
+create table sidewalks (
+    sidewalk_id integer default null,
+    sidewalk_name character varying default null,
+    geography geography('MULTILINESTRING') default null
+    ) inherits (features);
+
 create table drawn_points (
     geography geography('MULTIPOINT') default null
     ) inherits (features);
