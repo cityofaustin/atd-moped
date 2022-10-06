@@ -91,7 +91,7 @@ create view uniform_features as (
 create table component_feature_map (
     id serial primary key,
     component_id integer references components(id),
-    feature_id integer references features(id)
+    feature_id integer default null
     );
 
 insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1);
