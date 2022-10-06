@@ -59,6 +59,9 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
+    "&:hover": {
+      backgroundColor: "#f2f2f2",
+    },
   },
   fieldAuthor: {
     marginRight: ".25rem",
@@ -70,8 +73,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
   },
   fieldLabelTextSpan: {
-    borderBottom: "1px dashed",
-    borderBottomColor: theme.palette.text.secondary,
+    // "&:hover": {
+    //   borderBottom: "1px dashed",
+    //   borderBottomColor: theme.palette.text.secondary,
+    //   cursor: "pointer",
+    // },
   },
   fieldLabelTextSpanNoBorder: {
     borderBottom: "inherit",
