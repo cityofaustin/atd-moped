@@ -52,6 +52,11 @@ create table signals (
     geography geography('MULTIPOINT') default null
     ) inherits (features);
 
+
+insert into signals (id, name, signal_id, geography) values (1, 'A new set of PHBs', 1001, ST_GeographyFromText(
+    'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
+    ));
+
 create table drawn_points (
     geography geography('MULTIPOINT') default null
     ) inherits (features);
