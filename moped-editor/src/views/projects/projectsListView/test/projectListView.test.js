@@ -62,7 +62,10 @@ describe("ProjectListView", () => {
     await user.click(addFilterButton);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
-    const operatorDropdownInput = screen.getByTestId("operator-select");
+    // const operatorDropdownInput = screen.getByTestId("operator-select");
+    const operatorDropdownInput = screen.getByRole("button", {
+      name: /operator/i,
+    });
 
     // Find a config that uses a lookup table to find a choice to click
     const filterConfigWithLookup = filterConfigsWithLookups[0];
@@ -73,19 +76,20 @@ describe("ProjectListView", () => {
     const dropdownLabel = filterConfigWithLookup.label;
     await user.click(fieldDropdownInput);
     const optionWithLookup = screen.getByText(dropdownLabel);
-
     await user.click(optionWithLookup);
-    screen.debug();
+
+    // screen.debug();
     // fireEvent.change(fieldDropdownInput, {
     //   target: { value: dropdownLabel },
     // });
 
     // console.log(operatorDropdownInput);
-    // await user.click(operatorDropdownInput);
-    // screen.debug();
+    await user.click(operatorDropdownInput);
+    const isOperatorListItem = screen.getByRole("option", { name: "is" });
+    await user.click(isOperatorListItem);
     // const optionsPopupEl = screen.getByRole("listbox");
     // console.log(optionsPopupEl);
 
-    // screen.debug();
+    screen.debug(undefined, Infinity);
   });
 });

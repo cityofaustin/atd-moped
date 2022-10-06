@@ -100,7 +100,6 @@ const GridTableFilters = ({
    */
   const classes = useStyles();
   const queryPath = useLocation().pathname;
-  console.log(filterQuery);
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
