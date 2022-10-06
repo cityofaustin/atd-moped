@@ -75,16 +75,17 @@ create table drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
--- Typeless components; these should not be allowed per policy?
-insert into features (name) values ('Driveway Closure 1');
-insert into features (name) values ('Driveway Closure 2');
-
-insert into signals (name, signal_id, geography) values ('A new set of PHBs', 1001, ST_GeographyFromText(
-    'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
-    ));
-
-
-
+create view uniform_features as (
+    select id, json_build_object('signal_id', signal_id) as attributes, geography
+    FROM signals
+        union all
+    select id, json_build_object('sidewalk_id', sidewalk_id, 'sidewalk_name', sidewalk_name) as attributes, geography
+    FROM sidewalks
+        union all
+    select id, null as attributes, geography from drawn_points
+        union all
+    select id, null as attributes, geography from drawn_lines
+);
 
 
 create table component_feature_map (
