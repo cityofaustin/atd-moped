@@ -10,7 +10,7 @@ insert into projects (id, name) values (3, 'project_c');
 
 --create type representation as enum ('point', 'line');
 
-create type component_type as enum ('signals', 'drawn_points', 'drawn_lines');
+create type component_type as enum ('signals', 'sidewalks', 'drawn_points', 'drawn_lines');
 create table component_types (
     id serial primary key,
     type character varying,
