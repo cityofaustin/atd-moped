@@ -182,7 +182,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               classes={classes}
             />
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryProjectSponsor
                   projectId={projectId}
                   data={data}
@@ -191,7 +191,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryProjectPartners
                   projectId={projectId}
                   data={data}
@@ -202,7 +202,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
             </Grid>
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryProjectTypes
                   projectId={projectId}
                   data={data}
@@ -211,7 +211,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryProjectWebsite
                   projectId={projectId}
                   data={data}
@@ -272,32 +272,37 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             </Grid>
           </Grid>
           <Grid item xs={12} md={6}>
-            {projectFeatureCollection && (
-              <ErrorBoundary
-                FallbackComponent={({ error, resetErrorBoundary }) => (
-                  <ProjectSummaryMapFallback
-                    error={error}
-                    resetErrorBoundary={resetErrorBoundary}
-                    projectId={projectId}
-                    refetchProjectDetails={refetch}
-                    mapData={projectFeatureCollection}
-                  />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {projectFeatureCollection && (
+                  <ErrorBoundary
+                    FallbackComponent={({ error, resetErrorBoundary }) => (
+                      <ProjectSummaryMapFallback
+                        error={error}
+                        resetErrorBoundary={resetErrorBoundary}
+                        projectId={projectId}
+                        refetchProjectDetails={refetch}
+                        mapData={projectFeatureCollection}
+                      />
+                    )}
+                    onReset={() => setMapError(false)}
+                    resetKeys={[mapError]}
+                  >
+                    {renderMap()}
+                  </ErrorBoundary>
                 )}
-                onReset={() => setMapError(false)}
-                resetKeys={[mapError]}
-              >
-                {renderMap()}
-              </ErrorBoundary>
-            )}
-          </Grid>
-          <Grid item xs={12} md={6}>
+              </Grid>
+              <Grid item xs={12}>
             <TagsSection projectId={projectId} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12}>
             {!data.moped_project[0].parent_project_id && (
               <SubprojectsTable projectId={projectId} />
             )}
           </Grid>
+            </Grid>
+          </Grid>
+
         </Grid>
       </CardContent>
     </ApolloErrorHandler>
