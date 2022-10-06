@@ -508,6 +508,7 @@ const GridTableFilters = ({
                             value={operator.id}
                             key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                             id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                            data-testid={operator.label}
                           >
                             {operator.label}
                           </MenuItem>

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "src/utils/testUtils";
+import { render, screen, fireEvent, within } from "src/utils/testUtils";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GQLAbstract from "src/libs/GQLAbstract";
@@ -53,26 +53,39 @@ describe("ProjectListView", () => {
     expect(operatorDropdownInput).toBeInTheDocument();
   });
 
-  // it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
-  //   const filterConfigsWithLookup = filterConfigsWithLookups[0];
-  //   const lookupConfig = filterConfigsWithLookup.lookup;
-  //   const lookupTableName = lookupConfig.table_name;
+  it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
+    const user = userEvent.setup();
 
-  //   // const dropdownLabel = lookupConfig.label;
-  //   // fireEvent.change(fieldDropdownInput, {
-  //   //   target: { value: dropdownLabel },
-  //   // });
+    render(<GridTableFiltersWithMockedProps />);
 
-  //   // fireEvent.change(operatorDropdownInput, {
-  //   //   target: { value: "string_does_not_equal_case_sensitive" },
-  //   // });
-  //   // await user.click(operatorDropdownInput);
-  //   // const isOperatorOption = screen.getByText("is");
-  //   // console.log(isOperatorOption);
+    const addFilterButton = screen.getByText("Add Filter");
+    await user.click(addFilterButton);
 
-  //   // screen.debug();
+    const fieldDropdownInput = screen.getByLabelText("Field");
+    const operatorDropdownInput = screen.getByTestId("operator-select");
 
-  //   // expect(fieldDropdownInput).toBeInTheDocument();
-  //   // expect(operatorDropdownInput).toBeInTheDocument();
-  // });
+    // Find a config that uses a lookup table to find a choice to click
+    const filterConfigWithLookup = filterConfigsWithLookups[0];
+    const lookupConfig = filterConfigWithLookup.lookup;
+    const lookupTableName = lookupConfig.table_name;
+
+    // Click the 'Field' dropdown and click an option that uses a lookup table
+    const dropdownLabel = filterConfigWithLookup.label;
+    await user.click(fieldDropdownInput);
+    const optionWithLookup = screen.getByText(dropdownLabel);
+
+    await user.click(optionWithLookup);
+    screen.debug();
+    // fireEvent.change(fieldDropdownInput, {
+    //   target: { value: dropdownLabel },
+    // });
+
+    // console.log(operatorDropdownInput);
+    // await user.click(operatorDropdownInput);
+    // screen.debug();
+    // const optionsPopupEl = screen.getByRole("listbox");
+    // console.log(optionsPopupEl);
+
+    // screen.debug();
+  });
 });
