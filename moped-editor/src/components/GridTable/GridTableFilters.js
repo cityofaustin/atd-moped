@@ -443,7 +443,7 @@ const GridTableFilters = ({
         setFilterComplete(true);
       }
     });
-  });
+  }, [filterParameters]);
 
   return (
     <Grid>
@@ -599,7 +599,7 @@ const GridTableFilters = ({
               <Hidden smDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={!filterParameters[filterId].value}
+                    disabled={Object.keys(filterParameters).length === 1 && !filterComplete}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                   >
@@ -610,7 +610,7 @@ const GridTableFilters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={!filterParameters[filterId].value}
+                    disabled={Object.keys(filterParameters).length === 1 && !filterComplete}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
