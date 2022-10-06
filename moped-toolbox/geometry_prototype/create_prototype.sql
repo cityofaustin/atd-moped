@@ -29,6 +29,7 @@ insert into component_types (id, type, subtype, subcomponent, component_type) va
 insert into component_types (id, type, subtype, subcomponent, component_type) values (8, 'Signal', 'PHB', null, 'signals');
 insert into component_types (id, type, subtype, subcomponent, component_type) values (9, 'Signal', 'PHB', 'Audible Push Button', 'signals');
 insert into component_types (id, type, subtype, subcomponent, component_type) values (10, 'Signal', 'Traffic', null, 'signals');
+insert into component_types (id, type, subtype, subcomponent, component_type) values (11, 'Sidewalk', null, null, 'sidewalks');
 
 create table components (
     id serial primary key, 
