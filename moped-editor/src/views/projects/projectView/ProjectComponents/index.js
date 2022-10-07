@@ -1,5 +1,6 @@
 import { useState, useReducer, useRef } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -149,103 +150,105 @@ export default function MapView() {
   };
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <ComponentMapToolbar isFetchingFeatures={isFetchingFeatures} />
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
-        <Toolbar />
-        <div className={classes.drawerContainer}>
-          <List>
-            {!isEditingComponent && (
-              <>
-                <ListItem dense>
-                  <Button
-                    size="small"
-                    color="primary"
-                    fullWidth
-                    startIcon={<AddCircleOutlineIcon />}
-                    onClick={onStartCreatingComponent}
-                  >
-                    New Component
-                  </Button>
-                </ListItem>
-                <Divider />
-              </>
-            )}
-            {draftComponent && (
-              <DraftComponentListItem
-                component={draftComponent}
-                onSave={onSaveComponent}
-                onCancel={onCancelComponentCreate}
-              />
-            )}
-            {components.map((component) => {
-              const isExpanded = clickedComponent?._id === component._id;
-              return (
-                <ComponentListItem
-                  key={component._id}
-                  component={component}
-                  isExpanded={isExpanded}
-                  setClickedComponent={setClickedComponent}
-                  setIsDeletingComponent={setIsDeletingComponent}
-                  onStartEditingComponent={onStartEditingComponent}
-                  onClickZoomToComponent={onClickZoomToComponent}
+    <Dialog fullScreen open={true}>
+      <div className={classes.root}>
+        <CssBaseline />
+        <ComponentMapToolbar isFetchingFeatures={isFetchingFeatures} />
+        <Drawer
+          className={classes.drawer}
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
+          <Toolbar />
+          <div className={classes.drawerContainer}>
+            <List>
+              {!isEditingComponent && (
+                <>
+                  <ListItem dense>
+                    <Button
+                      size="small"
+                      color="primary"
+                      fullWidth
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={onStartCreatingComponent}
+                    >
+                      New Component
+                    </Button>
+                  </ListItem>
+                  <Divider />
+                </>
+              )}
+              {draftComponent && (
+                <DraftComponentListItem
+                  component={draftComponent}
+                  onSave={onSaveComponent}
+                  onCancel={onCancelComponentCreate}
                 />
-              );
-            })}
-          </List>
-        </div>
-      </Drawer>
-      <main className={classes.content}>
-        <div style={{ height: "100%" }}>
-          <TheMap
-            mapRef={mapRef}
-            components={components}
+              )}
+              {components.map((component) => {
+                const isExpanded = clickedComponent?._id === component._id;
+                return (
+                  <ComponentListItem
+                    key={component._id}
+                    component={component}
+                    isExpanded={isExpanded}
+                    setClickedComponent={setClickedComponent}
+                    setIsDeletingComponent={setIsDeletingComponent}
+                    onStartEditingComponent={onStartEditingComponent}
+                    onClickZoomToComponent={onClickZoomToComponent}
+                  />
+                );
+              })}
+            </List>
+          </div>
+        </Drawer>
+        <main className={classes.content}>
+          <div style={{ height: "100%" }}>
+            <TheMap
+              mapRef={mapRef}
+              components={components}
+              draftComponent={draftComponent}
+              setDraftComponent={setDraftComponent}
+              setHoveredOnMapFeature={setHoveredOnMapFeature}
+              hoveredOnMapFeature={hoveredOnMapFeature}
+              isEditingComponent={isEditingComponent}
+              clickedComponent={clickedComponent}
+              setClickedComponent={setClickedComponent}
+              clickedProjectFeature={clickedProjectFeature}
+              setClickedProjectFeature={setClickedProjectFeature}
+              setIsFetchingFeatures={setIsFetchingFeatures}
+              linkMode={linkMode}
+            />
+          </div>
+          <ComponentEditModal
+            showDialog={showComponentEditDialog}
+            setShowDialog={setShowComponentEditDialog}
             draftComponent={draftComponent}
             setDraftComponent={setDraftComponent}
-            setHoveredOnMapFeature={setHoveredOnMapFeature}
-            hoveredOnMapFeature={hoveredOnMapFeature}
-            isEditingComponent={isEditingComponent}
+            setLinkMode={setLinkMode}
+            setIsEditingComponent={setIsEditingComponent}
+            componentFormState={componentFormState}
+            dispatchComponentFormState={dispatchComponentFormState}
+          />
+          <DeleteComponentModal
+            showDialog={isDeletingComponent}
+            setShowDialog={setIsDeletingComponent}
             clickedComponent={clickedComponent}
             setClickedComponent={setClickedComponent}
-            clickedProjectFeature={clickedProjectFeature}
-            setClickedProjectFeature={setClickedProjectFeature}
-            setIsFetchingFeatures={setIsFetchingFeatures}
-            linkMode={linkMode}
+            setIsDeletingComponent={setIsDeletingComponent}
+            onDeleteComponent={onDeleteComponent}
           />
-        </div>
-        <ComponentEditModal
-          showDialog={showComponentEditDialog}
-          setShowDialog={setShowComponentEditDialog}
-          draftComponent={draftComponent}
-          setDraftComponent={setDraftComponent}
-          setLinkMode={setLinkMode}
-          setIsEditingComponent={setIsEditingComponent}
-          componentFormState={componentFormState}
-          dispatchComponentFormState={dispatchComponentFormState}
-        />
-        <DeleteComponentModal
-          showDialog={isDeletingComponent}
-          setShowDialog={setIsDeletingComponent}
-          clickedComponent={clickedComponent}
-          setClickedComponent={setClickedComponent}
-          setIsDeletingComponent={setIsDeletingComponent}
-          onDeleteComponent={onDeleteComponent}
-        />
-        <EditModeDialog
-          setIsEditingComponent={setIsEditingComponent}
-          setShowComponentEditDialog={setShowComponentEditDialog}
-          showDialog={showEditModeDialog}
-          onClose={onCancelComponentEdit}
-        />
-      </main>
-    </div>
+          <EditModeDialog
+            setIsEditingComponent={setIsEditingComponent}
+            setShowComponentEditDialog={setShowComponentEditDialog}
+            showDialog={showEditModeDialog}
+            onClose={onCancelComponentEdit}
+          />
+        </main>
+      </div>
+    </Dialog>
   );
 }
