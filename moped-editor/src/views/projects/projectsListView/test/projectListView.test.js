@@ -21,21 +21,17 @@ const GridTableFiltersWithMockedProps = () => (
 );
 
 describe("ProjectListView", () => {
-  it("renders the 'Add Filter' button to start filtering by clicking", () => {
+  it("renders a disabled 'Add Filter' button before a filter is added", async () => {
     render(<GridTableFiltersWithMockedProps />);
 
-    const addFilterButton = screen.getByText("Add Filter");
+    const addFilterButton = screen.getByRole("button", { name: "Add Filter" });
 
     expect(addFilterButton).toBeInTheDocument();
+    expect(addFilterButton).toHaveAttribute("disabled");
   });
 
-  it("renders 'Field' and 'Operator' dropdowns after clicking 'Add Filter'", async () => {
-    const user = userEvent.setup();
-
+  it("renders 'Field' and 'Operator' dropdowns on render", async () => {
     render(<GridTableFiltersWithMockedProps />);
-
-    const addFilterButton = screen.getByText("Add Filter");
-    await user.click(addFilterButton);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
     const operatorDropdownInput = screen.getByTestId("operator-select");
@@ -49,8 +45,7 @@ describe("ProjectListView", () => {
 
     render(<GridTableFiltersWithMockedProps />);
 
-    const addFilterButton = screen.getByText("Add Filter");
-    await user.click(addFilterButton);
+    const addFilterButton = screen.getByRole("button", { name: "Add Filter" });
 
     // Click the 'Field' dropdown and click an option that uses a lookup table
     await user.click(screen.getByLabelText("Field"));
