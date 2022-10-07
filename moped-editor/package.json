@@ -22,7 +22,7 @@
     "build:production": "env-cmd -e production npm run build:local",
     "build:netlifypr": "env-cmd -e netlifypr npm run build:local",
     "build:netlifybranch": "./set_env_branch_build.py",
-    "test": "react-scripts test",
+    "test": "react-scripts test --verbose",
     "eject": "react-scripts eject"
   },
   "browserslist": {
