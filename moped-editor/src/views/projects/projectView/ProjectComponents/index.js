@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MapView() {
+export default function MapView({ projectName }) {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -153,7 +153,10 @@ export default function MapView() {
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
         <CssBaseline />
-        <ComponentMapToolbar isFetchingFeatures={isFetchingFeatures} />
+        <ComponentMapToolbar
+          isFetchingFeatures={isFetchingFeatures}
+          projectName={projectName}
+        />
         <Drawer
           className={classes.drawer}
           variant="permanent"

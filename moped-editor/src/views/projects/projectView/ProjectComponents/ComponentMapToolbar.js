@@ -7,6 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
 import ProjectStatusBadgeFake from "./ProjectStatusBadgeFake";
 import ProjectName from "./ProjectName";
+import { useNavigate, useParams } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -14,13 +15,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function ComponentMapToolbar({ isFetchingFeatures }) {
+export default function ComponentMapToolbar({
+  isFetchingFeatures,
+  projectName,
+}) {
   const classes = useStyles();
+  const navigate = useNavigate();
+  const { projectId } = useParams();
+
   return (
     <AppBar position="fixed" className={classes.appBar}>
       <Toolbar style={{ backgroundColor: "#fff" }}>
         <Box mr={2}>
-          <ProjectName name="John's Latest Project" id={456} />
+          <ProjectName name={projectName} id={projectId} />
         </Box>
         <Box mr={2}>
           <ProjectStatusBadgeFake phase="Construction" status={1} condensed />
@@ -34,11 +41,9 @@ export default function ComponentMapToolbar({ isFetchingFeatures }) {
             color="primary"
             fullWidth
             endIcon={<CloseIcon />}
-            onClick={() =>
-              alert(
-                "This button returns you to the previous page you visted. Defaults to sumamry tab."
-              )
-            }
+            onClick={() => {
+              navigate(`/moped/projects/${projectId}?tab=summary`);
+            }}
           >
             Close map
           </Button>
