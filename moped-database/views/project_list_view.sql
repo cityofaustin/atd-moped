@@ -120,7 +120,7 @@ AS WITH project_person_list_lookup AS (
       WHERE 1 = 1
         AND ptags.is_deleted = false
         AND ptags.project_id = mp.project_id
-      GROUP BY tags.project_id) AS project_tags,
+      GROUP BY ptags.project_id) AS project_tags,
     string_agg(contracts.contractor, ', ') AS contractors,
     string_agg(contracts.contract_number, ', ') AS contract_numbers
    FROM moped_project mp
