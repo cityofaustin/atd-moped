@@ -21,7 +21,7 @@ const GridTableFiltersWithMockedProps = () => (
 );
 
 describe("ProjectListView", () => {
-  it("renders a disabled 'Add Filter' button before a filter is added", async () => {
+  it("renders a disabled 'Add Filter' button before a filter is added", () => {
     render(<GridTableFiltersWithMockedProps />);
 
     const addFilterButton = screen.getByRole("button", { name: "Add Filter" });
@@ -30,7 +30,7 @@ describe("ProjectListView", () => {
     expect(addFilterButton).toHaveAttribute("disabled");
   });
 
-  it("renders 'Field' and 'Operator' dropdowns on render", async () => {
+  it("renders 'Field' and 'Operator' dropdowns on render", () => {
     render(<GridTableFiltersWithMockedProps />);
 
     const fieldDropdownInput = screen.getByLabelText("Field");
@@ -45,12 +45,9 @@ describe("ProjectListView", () => {
 
     render(<GridTableFiltersWithMockedProps />);
 
-    const addFilterButton = screen.getByRole("button", { name: "Add Filter" });
-
     // Click the 'Field' dropdown and click an option that uses a lookup table
     await user.click(screen.getByLabelText("Field"));
-    const optionWithLookup = screen.getByText("Project type");
-    await user.click(optionWithLookup);
+    await user.click(screen.getByText("Project type"));
 
     // Click the 'Operator' dropdown and click 'is' option
     await user.click(
@@ -58,10 +55,9 @@ describe("ProjectListView", () => {
         name: /operator/i,
       })
     );
-    const isOperatorListItem = screen.getByRole("option", { name: "is" });
-    await user.click(isOperatorListItem);
+    await user.click(screen.getByRole("option", { name: "is" }));
 
-    // Click the 'Option' dropdown and click first mocked option
+    // Click the 'Option' dropdown to show lookup results
     await user.click(screen.getByLabelText("Option"));
     const autocompleteOption = screen.getByRole("option", {
       name: "this is an option",
