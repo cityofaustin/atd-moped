@@ -567,7 +567,10 @@ const ProjectFundingTable = () => {
                 <ButtonDropdownMenu
                   buttonWrapperStyle={classes.fundingButton}
                   addAction={props.action.onClick}
-                  openFundingDialog={setIsDialogOpen}
+                  openActionDialog={setIsDialogOpen}
+                  parentButtonText="Add Funding Source"
+                  firstOptionText="New funding source"
+                  secondOptionText="From eCapris"
                 />
               ) : (
                 <Button

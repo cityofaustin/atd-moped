@@ -26,7 +26,8 @@ AS WITH project_person_list_lookup AS (
         LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
     GROUP BY mpt.project_id
   )
- SELECT mp.project_uuid,
+ SELECT
+    mp.project_uuid,
     mp.project_id,
     mp.project_name,
     mp.project_description,
@@ -111,7 +112,17 @@ AS WITH project_person_list_lookup AS (
         AND roles.project_role_name = 'Designer'::text
         AND personnel.is_deleted = false
         AND personnel.project_id = mp.project_id
-      GROUP BY personnel.project_id) AS project_designer
+      GROUP BY personnel.project_id) AS project_designer,
+    ( -- get me all of the tags added to a project
+    SELECT string_agg(tags.name, ', '::text) AS string_agg
+      FROM moped_proj_tags ptags
+        JOIN moped_tags tags ON ptags.tag_id = tags.id
+      WHERE 1 = 1
+        AND ptags.is_deleted = false
+        AND ptags.project_id = mp.project_id
+      GROUP BY tags.project_id) AS project_tags,
+    string_agg(contracts.contractor, ', ') AS contractors,
+    string_agg(contracts.contract_number, ', ') AS contract_numbers
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -120,6 +131,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
+     LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 

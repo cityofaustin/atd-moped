@@ -116,7 +116,7 @@ export const StaffListViewQueryConf = {
       searchable: false,
       sortable: false,
       label: "Role",
-      filter: value => (value ?? "N/A").replaceAll("moped-", ""),
+      filter: (value) => (value ?? "N/A").replaceAll("moped-", ""),
       width: "10%",
       type: "String",
     },

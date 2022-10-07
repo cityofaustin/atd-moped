@@ -11,7 +11,7 @@ export const TAGS_QUERY = gql`
         id
       }
     }
-    moped_tags(order_by: { name: asc }) {
+    moped_tags(where: { is_deleted: { _eq: false } }, order_by: { name: asc }) {
       id
       name
     }

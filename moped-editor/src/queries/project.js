@@ -61,7 +61,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-        order_by: { date_created: asc }
+        order_by: { date_created: desc }
       ) {
         project_note_id
         project_note
@@ -934,6 +934,10 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
+    }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
     }
   }
 `;

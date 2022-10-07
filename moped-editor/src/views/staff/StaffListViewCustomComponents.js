@@ -21,7 +21,7 @@ export const newItemButton = (
   />
 );
 
-export const editItemButton = id => (
+export const editItemButton = (id) => (
   <Can
     perform="user:edit"
     yes={
