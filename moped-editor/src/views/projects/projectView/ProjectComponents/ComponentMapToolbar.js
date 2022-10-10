@@ -5,7 +5,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
-import ProjectStatusBadgeFake from "./ProjectStatusBadgeFake";
+import ProjectStatusBadge from "../ProjectStatusBadge";
 import ProjectName from "./ProjectName";
 import { useNavigate, useParams } from "react-router";
 
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme) => ({
 export default function ComponentMapToolbar({
   isFetchingFeatures,
   projectName,
+  projectStatuses,
 }) {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -30,7 +31,12 @@ export default function ComponentMapToolbar({
           <ProjectName name={projectName} id={projectId} />
         </Box>
         <Box mr={2}>
-          <ProjectStatusBadgeFake phase="Construction" status={1} condensed />
+          <ProjectStatusBadge
+            phase="Construction"
+            status={1}
+            projectStatuses={projectStatuses}
+            condensed
+          />
         </Box>
         <Box color="primary" display="flex" flexGrow={1}>
           {isFetchingFeatures && <CircularProgress />}

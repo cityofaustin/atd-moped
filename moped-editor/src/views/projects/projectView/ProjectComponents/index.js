@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MapView({ projectName }) {
+export default function MapView({ projectName, projectStatuses }) {
   const classes = useStyles();
   const mapRef = useRef();
 
@@ -156,6 +156,7 @@ export default function MapView({ projectName }) {
         <ComponentMapToolbar
           isFetchingFeatures={isFetchingFeatures}
           projectName={projectName}
+          projectStatuses={projectStatuses}
         />
         <Drawer
           className={classes.drawer}

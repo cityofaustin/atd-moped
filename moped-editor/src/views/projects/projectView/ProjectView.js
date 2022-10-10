@@ -616,6 +616,7 @@ const ProjectView = () => {
                           error={error}
                           refetch={refetch}
                           projectName={data.moped_project[0].project_name}
+                          projectStatuses={data?.moped_status ?? []}
                         />
                       </TabPanel>
                     );
