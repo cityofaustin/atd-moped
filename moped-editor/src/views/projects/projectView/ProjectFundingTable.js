@@ -14,10 +14,11 @@ import {
   Select,
   Snackbar,
   TextField,
+  Popper,
   Tooltip,
   Typography,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
@@ -53,6 +54,16 @@ import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import FundingAmountIntegerField from "./FundingAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
+
+const PopperMy = function (props) {
+  return (
+    <Popper
+      {...props}
+      style={{ width: "fit-content" }}
+      placement="bottom-start"
+    />
+  );
+};
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -128,7 +139,6 @@ const useFdusArray = (projectFunding) =>
         `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
     );
   }, [projectFunding]);
-
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -333,6 +343,25 @@ const ProjectFundingTable = () => {
     </Select>
   );
 
+  const LookupAutocompleteComponent = (props) => (
+    <Autocomplete
+      PopperComponent={PopperMy}
+      id={props.name}
+      style={{ minWidth: "200px" }}
+      options={props.data}
+      renderInput={(params) => <TextField {...params} />}
+      getOptionLabel={(option) => option[`${props.name}_name`]}
+      getOptionSelected={(value, option) =>
+        value[`${props.name}_name`] === option[`${props.name}_name`]
+      }
+      onChange={(e, value) => {
+        value
+          ? props.onChange(value[`${props.name}_id`])
+          : props.onChange(null);
+      }}
+    />
+  );
+
   /**
    * Component for dropdown select for Funds
    * @param {*} props
@@ -403,10 +432,15 @@ const ProjectFundingTable = () => {
         "funding_source_name"
       ),
       editComponent: (props) => (
-        <LookupSelectComponent
+        // <LookupSelectComponent
+        //   {...props}
+        //   name={"funding_source"}
+        //   defaultValue={""}
+        //   data={data.moped_fund_sources}
+        // />
+        <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
-          defaultValue={""}
           data={data.moped_fund_sources}
         />
       ),
