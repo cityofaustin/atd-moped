@@ -3,12 +3,12 @@ import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import {
-  mapSettings,
+  mapParameters,
   initialViewState,
-  MAP_STYLES,
   SOURCES,
   MIN_SELECT_FEATURE_ZOOM,
-} from "./settings";
+} from "./mapSettings";
+import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -224,7 +224,7 @@ export default function TheMap({
       onClick={onClick}
       boxZoom={false}
       cursor={cursor}
-      {...mapSettings}
+      {...mapParameters}
     >
       <Source
         id="ctn-lines"

@@ -11,7 +11,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
 import { EditOutlined } from "@material-ui/icons";
 import ListItemText from "@material-ui/core/ListItemText";
-import { COLORS } from "./settings";
+import { COLORS } from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -72,7 +72,7 @@ export default function ComponentListItem({
               primary={
                 <Button
                   fullWidth
-                  size="small"  
+                  size="small"
                   startIcon={<DeleteIcon />}
                   onClick={() => setIsDeletingComponent(true)}
                 >
