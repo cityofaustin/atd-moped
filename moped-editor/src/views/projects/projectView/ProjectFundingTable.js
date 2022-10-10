@@ -195,10 +195,10 @@ const ProjectFundingTable = () => {
   if (loading || !data) return <CircularProgress />;
 
   /**
-   * Get lookup value for a given table using a row ID and returning a name
+   * Get lookup value for a given table using a record ID and returning a name
    * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
    * @param {string} attribute - Prefix version of attribute name relying on the pattern of _id and _name
-   * @param {number} id - ID used to find target row in lookup table
+   * @param {number} id - ID used to find target record in lookup table
    * @return {string} - Name of attribute in the given row.
    */
   const getLookupValueByID = (lookupTable, attribute, id) => {
@@ -345,12 +345,22 @@ const ProjectFundingTable = () => {
 
   const LookupAutocompleteComponent = (props) => (
     <Autocomplete
+      style={{ minWidth: "200px" }}
+      value={
+        // if we are editing, the autocomplete has the value provided by the material table, which is the record id
+        // need to get its corresponding text value
+        props.value
+          ? getLookupValueByID(props.lookupTableName, props.name, props.value)
+          : null
+      }
       PopperComponent={PopperMy}
       id={props.name}
-      style={{ minWidth: "200px" }}
       options={props.data}
-      renderInput={(params) => <TextField {...params} />}
-      getOptionLabel={(option) => option[`${props.name}_name`]}
+      renderInput={(params) => <TextField {...params} multiline />}
+      getOptionLabel={(option) =>
+        // if our value is a string, just return the string instead of accessing the name
+        typeof option === "string" ? option : option[`${props.name}_name`]
+      }
       getOptionSelected={(value, option) =>
         value[`${props.name}_name`] === option[`${props.name}_name`]
       }
@@ -432,15 +442,10 @@ const ProjectFundingTable = () => {
         "funding_source_name"
       ),
       editComponent: (props) => (
-        // <LookupSelectComponent
-        //   {...props}
-        //   name={"funding_source"}
-        //   defaultValue={""}
-        //   data={data.moped_fund_sources}
-        // />
         <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
+          lookupTableName={"moped_fund_sources"}
           data={data.moped_fund_sources}
         />
       ),
