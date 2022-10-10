@@ -14,7 +14,6 @@ import {
   Select,
   Snackbar,
   TextField,
-  Popper,
   Tooltip,
   Typography,
 } from "@material-ui/core";
@@ -54,16 +53,8 @@ import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import FundingAmountIntegerField from "./FundingAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
-
-const PopperMy = function (props) {
-  return (
-    <Popper
-      {...props}
-      style={{ width: "fit-content" }}
-      placement="bottom-start"
-    />
-  );
-};
+import CustomPopper from "../../../components/CustomPopper";
+import LookupSelectComponent from "../../../components/LookupSelectComponent";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -308,41 +299,11 @@ const ProjectFundingTable = () => {
     }, {});
   };
 
-  /**
-   * Component for dropdown select using a lookup table as options
-   * @param {*} props
-   * @returns {React component}
-   */
-  const LookupSelectComponent = (props) => (
-    <Select
-      style={{ minWidth: "8em" }}
-      id={props.name}
-      value={props.value || props.defaultValue}
-    >
-      {props.data.map((item) => (
-        <MenuItem
-          onChange={() => props.onChange(item[`${props.name}_id`])}
-          onClick={() => props.onChange(item[`${props.name}_id`])}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value={item[`${props.name}_id`]}
-          key={item[`${props.name}_name`]}
-        >
-          {item[`${props.name}_name`]}
-        </MenuItem>
-      ))}
-      {props.columnDef.title === "Program" && (
-        <MenuItem
-          onChange={() => props.onChange("")}
-          onClick={() => props.onChange("")}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value=""
-        >
-          -
-        </MenuItem>
-      )}
-    </Select>
-  );
-
+/**
+ * Component for autocomplete using a lookup table as options
+ * @param {*} props
+ * @returns {React component}
+ */
   const LookupAutocompleteComponent = (props) => (
     <Autocomplete
       style={{ minWidth: "200px" }}
@@ -353,7 +314,8 @@ const ProjectFundingTable = () => {
           ? getLookupValueByID(props.lookupTableName, props.name, props.value)
           : null
       }
-      PopperComponent={PopperMy}
+      // use customized popper component so menu expands to fullwidth
+      PopperComponent={CustomPopper}
       id={props.name}
       options={props.data}
       renderInput={(params) => <TextField {...params} multiline />}
@@ -458,10 +420,10 @@ const ProjectFundingTable = () => {
           row.funding_program_id
         ),
       editComponent: (props) => (
-        <LookupSelectComponent
+        <LookupAutocompleteComponent
           {...props}
           name={"funding_program"}
-          defaultValue={""}
+          lookupTableName={"moped_fund_programs"}
           data={data.moped_fund_programs}
         />
       ),
