@@ -361,9 +361,7 @@ const ProjectFundingTable = () => {
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
       }
-      getOptionSelected={(value, option) =>
-        value[`${props.name}_name`] === option[`${props.name}_name`]
-      }
+      getOptionSelected={(value, option) => value[`${props.name}_name`] === option}
       onChange={(e, value) => {
         value
           ? props.onChange(value[`${props.name}_id`])
