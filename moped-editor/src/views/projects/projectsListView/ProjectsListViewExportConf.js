@@ -39,7 +39,7 @@ export const ProjectsListViewExportConf = {
     label: "contractors",
   },
   contract_numbers: {
-    label: "stcontract_numbersring",
+    label: "contract_numbers",
   },
   project_tags: {
     label: "project_tags",
