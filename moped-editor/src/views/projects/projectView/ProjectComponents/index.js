@@ -210,6 +210,8 @@ export default function MapView({ projectName, projectStatuses }) {
           </div>
         </Drawer>
         <main className={classes.content}>
+          {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
+          <Toolbar />
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
