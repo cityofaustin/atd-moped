@@ -3,7 +3,9 @@ import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
+import BaseMapSpeedDial from "./BaseMapSpeedDial";
 import {
+  basemaps,
   mapParameters,
   initialViewState,
   SOURCES,
@@ -13,6 +15,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
+import "./ProjectComponentsMap.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -76,6 +79,7 @@ export default function TheMap({
 }) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
+  const [basemapKey, setBasemapKey] = useState("streets");
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
@@ -225,8 +229,10 @@ export default function TheMap({
       onClick={onClick}
       boxZoom={false}
       cursor={cursor}
+      mapStyle={basemaps[basemapKey]}
       {...mapParameters}
     >
+      <BaseMapSpeedDial basemapKey={basemapKey} setBaseMapKey={setBasemapKey} />
       <GeocoderControl
         marker={false}
         mapboxAccessToken={mapParameters.mapboxAccessToken}

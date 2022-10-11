@@ -1,0 +1,90 @@
+.MuiSpeedDial-fab {
+  background: lightgray !important;
+  border-radius: 4px !important;
+  background-size: 100% 100% !important;
+  /* Height and width are set to match Mapbox zoom controls height */
+  width: 58px !important;
+  height: 58px !important;
+}
+
+.MuiFab-sizeSmall {
+  background: lightgray !important;
+  border-radius: 4px !important;
+  background-size: 100% 100% !important;
+  /* Height and width are set to match Mapbox zoom controls height */
+  width: 58px !important;
+  height: 58px !important;
+}
+
+.MuiFab-label {
+  font-size: 0.8rem !important;
+  font-weight: bold !important;
+}
+
+/* Override Mapbox Geocoder styles so controls and icons stay in place in Components UI */
+.mapboxgl-ctrl-geocoder {
+  width: 21rem;
+  height: 48px;
+  /* Match up the styling with the rest of components maps styles */
+  border: lightgray 1px solid; 
+}
+
+@media screen and (min-width: 640px) {
+  .mapboxgl-ctrl-geocoder--icon-search {
+    top: 0.9rem;
+  }
+
+  .mapboxgl-ctrl-geocoder--input {
+    height: 3rem;
+  }
+
+  .mapboxgl-ctrl-geocoder--icon-close {
+    margin-top: 8px;
+  }
+}
+
+/* Override Mapbox Draw control styles so they are horizontal to the left of the "Map Features" layer select dropdown */
+/* Rotating these controls made this challenging but width are based on 48px icon widths and 10px Mapbox spacing */
+.mapboxgl-ctrl-top-right {
+  transform: rotate(270deg); 
+  right: 248px;
+  top: -24px;
+}
+
+/* Set active draw tool background color, color copied straight from previous tools */
+.mapboxgl-ctrl-top-right .active {
+  background-color: #55ACF8; 
+}
+
+.mapboxgl-ctrl-top-right .mapboxgl-ctrl-group {
+  height: 96px;
+  width: 48px;
+}
+
+.mapboxgl-ctrl-top-right .mapbox-gl-draw_line {
+  transform: rotate(90deg);
+  width: 48px;
+  height: 48px;
+}
+
+.mapboxgl-ctrl-top-right .mapbox-gl-draw_trash {
+  transform: rotate(90deg);
+  width: 48px;
+  /* Bug where 1px is getting shaved from this one icon, pushed 1 pixel to get icons lined up with equal size */
+  height: 49px;
+}
+
+.mapboxgl-ctrl-top-right .mapbox-gl-draw_point {
+  transform: rotate(90deg);
+  width: 48px;
+  height: 48px;
+}
+
+/* Since we rotated the buttons, we need to update which corners are rounded */
+.mapboxgl-ctrl-group button:first-child {
+  border-radius: 4px 0 0 4px;
+}
+
+.mapboxgl-ctrl-group button:last-child {
+  border-radius: 0 4px 4px 0;
+}

@@ -17,7 +17,11 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { initialComponentFormState, componentFormStateReducer } from "./utils";
+import {
+  initialComponentFormState,
+  componentFormStateReducer,
+  useAppBarHeight,
+} from "./utils";
 
 const drawerWidth = 350;
 
@@ -38,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     backgroundColor: "#fff",
-    minHeight: "100vh",
+    minHeight: ({ appBarHeight }) => `calc(100vh - ${appBarHeight}px)`,
   },
   margin: {
     margin: theme.spacing(1),
@@ -49,7 +53,8 @@ const useStyles = makeStyles((theme) => ({
 const PlaceholderToolbar = () => <Toolbar />;
 
 export default function MapView({ projectName, projectStatuses }) {
-  const classes = useStyles();
+  const appBarHeight = useAppBarHeight();
+  const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
 
   /* holds this project's components */
@@ -212,7 +217,6 @@ export default function MapView({ projectName, projectStatuses }) {
           </div>
         </Drawer>
         <main className={classes.content}>
-          {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
           <PlaceholderToolbar />
           <div style={{ height: "100%" }}>
             <TheMap
