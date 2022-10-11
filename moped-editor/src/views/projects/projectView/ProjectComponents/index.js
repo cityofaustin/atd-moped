@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */
+const PlaceholderToolbar = () => <Toolbar />;
+
 export default function MapView({ projectName, projectStatuses }) {
   const classes = useStyles();
   const mapRef = useRef();
@@ -165,8 +168,7 @@ export default function MapView({ projectName, projectStatuses }) {
             paper: classes.drawerPaper,
           }}
         >
-          {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
-          <Toolbar />
+          <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
               {!isEditingComponent && (
@@ -211,7 +213,7 @@ export default function MapView({ projectName, projectStatuses }) {
         </Drawer>
         <main className={classes.content}>
           {/* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */}
-          <Toolbar />
+          <PlaceholderToolbar />
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
