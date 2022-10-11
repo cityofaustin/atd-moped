@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
+import GeocoderControl from "src/components/Maps/GeocoderControl";
 import {
   mapParameters,
   initialViewState,
@@ -226,6 +227,12 @@ export default function TheMap({
       cursor={cursor}
       {...mapParameters}
     >
+      <GeocoderControl
+        marker={false}
+        mapboxAccessToken={mapParameters.mapboxAccessToken}
+        position="top-left"
+        flyTo={true}
+      />
       <Source
         id="ctn-lines"
         type="geojson"
