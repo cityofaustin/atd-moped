@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   Box,
   Button,
+  Chip,
   CircularProgress,
   Icon,
   IconButton,
@@ -64,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
 const TagsSection = ({ projectId }) => {
   const [addTagMode, setAddTagMode] = useState(false);
   const [newTagList, setNewTagList] = useState([]);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(TAGS_QUERY, {
     variables: { projectId: projectId },
@@ -130,6 +133,11 @@ const TagsSection = ({ projectId }) => {
       .then(() => handleNewTagCancel());
   };
 
+  const handleDeleteOpen = (id) => {
+    setDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <Paper elevation={2} className={classes.paperTags}>
@@ -152,9 +160,15 @@ const TagsSection = ({ projectId }) => {
             <li key={tag.id}>
               <DeleteConfirmationModal
                 type="tag"
-                item={tag}
-                submitDelete={handleTagDelete}
+                submitDelete={() => handleTagDelete(deleteConfirmationId)}
+                deleteConfirmationOpen={deleteConfirmationOpen}
+                setDeleteConfirmationOpen={setDeleteConfirmationOpen}
               >
+                <Chip
+                  label={tag.moped_tag.name}
+                  onDelete={() => handleDeleteOpen(tag)}
+                  className={classes.chip}
+                />
               </DeleteConfirmationModal>
             </li>
           ))}

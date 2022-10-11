@@ -80,6 +80,9 @@ const useStyles = makeStyles((theme) => ({
   editDeleteButtons: {
     color: "#000000",
   },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
 }));
 
 // Lookup array to convert project note types to a human readable interpretation
@@ -98,6 +101,8 @@ const ProjectComments = (props) => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -262,6 +267,11 @@ const ProjectComments = (props) => {
     </Button>
   );
 
+  const handleDeleteOpen = (id) => {
+    setDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  };
+
   return (
     <CardContent>
       <Grid container spacing={2}>
@@ -388,19 +398,30 @@ const ProjectComments = (props) => {
                                 </IconButton>
                               )}
                               {!editingComment && (
-                                <span>
-                                  <DeleteConfirmationModal
-                                    type="comment"
-                                    item={item}
-                                    submitDelete={submitDeleteComment}
+                                <DeleteConfirmationModal
+                                  type="comment"
+                                  submitDelete={() =>
+                                    submitDeleteComment(deleteConfirmationId)
+                                  }
+                                  deleteConfirmationOpen={
+                                    deleteConfirmationOpen
+                                  }
+                                  setDeleteConfirmationOpen={
+                                    setDeleteConfirmationOpen
+                                  }
+                                >
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() =>
+                                      handleDeleteOpen(item.project_note_id)
+                                    }
                                   >
-                                    <IconButton edge="end" aria-label="delete">
-                                      <DeleteIcon
-                                        className={classes.editDeleteButtons}
-                                      />
-                                    </IconButton>
-                                  </DeleteConfirmationModal>
-                                </span>
+                                    <DeleteIcon
+                                      className={classes.editDeleteButtons}
+                                    />
+                                  </IconButton>
+                                </DeleteConfirmationModal>
                               )}
                             </ListItemSecondaryAction>
                           )

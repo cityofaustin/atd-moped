@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Button,
-  Chip,
   Dialog,
   DialogActions,
   DialogContent,
@@ -14,19 +13,16 @@ const useStyles = makeStyles((theme) => ({
   deleteButton: {
     color: theme.palette.error.main,
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
 }));
 
-const DeleteConfirmationModal = ({ type, item, submitDelete, children }) => {
+const DeleteConfirmationModal = ({
+  type,
+  submitDelete,
+  deleteConfirmationOpen,
+  setDeleteConfirmationOpen,
+  children
+}) => {
   const classes = useStyles();
-
-  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
-
-  const handleDeleteOpen = () => {
-    setDeleteConfirmationOpen(true);
-  };
 
   const handleDeleteClose = () => {
     setDeleteConfirmationOpen(false);
@@ -34,16 +30,7 @@ const DeleteConfirmationModal = ({ type, item, submitDelete, children }) => {
 
   return (
     <span>
-      {type === "comment" && (
-        <span onClick={() => handleDeleteOpen()}>{children}</span>
-      )}
-      {type === "tag" && (
-        <Chip
-          label={item.moped_tag.name}
-          onDelete={() => handleDeleteOpen()}
-          className={classes.chip}
-        />
-      )}
+      {children}
       <Dialog
         open={deleteConfirmationOpen}
         onClose={handleDeleteClose}
@@ -61,8 +48,7 @@ const DeleteConfirmationModal = ({ type, item, submitDelete, children }) => {
             className={classes.deleteButton}
             startIcon={<DeleteIcon />}
             onClick={() => {
-              type === "comment" && submitDelete(item.project_note_id);
-              type === "tag" && submitDelete(item);
+              submitDelete();
               handleDeleteClose();
             }}
           >
