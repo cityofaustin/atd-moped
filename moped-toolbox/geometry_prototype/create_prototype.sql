@@ -3,19 +3,13 @@ create table projects (
   name character varying
   );
   
--- laying down IDs so we can just insert carte blanche on this DB
-insert into projects (id, name) values (1, 'project_a');
-insert into projects (id, name) values (2, 'project_b');
-insert into projects (id, name) values (3, 'project_c');
-
---create type representation as enum ('point', 'line');
-
 create table layers (   
     id serial primary key,
     internal_table character varying, -- I want to call this "table" but that's a very reserved word. Any other ideas? 
     reference_layer_primary_key_column character varying
 );
 
+-- NB: inserts which are happening here between the creates are records which are part of the app, not user entered data
 
 insert into layers (id, internal_table, reference_layer_primary_key_column) values (1, 'drawn_points', null);
 insert into layers (id, internal_table, reference_layer_primary_key_column) values (2, 'drawn_lines', null);
@@ -32,8 +26,8 @@ create table component_types (
     layer_id integer references layers(id) -- think of this layer as the default source layer that users pick geometr from
     );
 
--- These are the valid choices of component_types that can be added.
--- Component_type, subtype, and subcomponent are canidates for breaking out into their own tables.
+-- Massively incomplete list of the valid choices of component_types that can be added. 
+-- Component_type, subtype, and subcomponent are canidates for breaking out into their own tables
 insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (1, 'Signal', 'PHB', null, 3);
 insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (2, 'Signal', 'PHB', 'Audible Push Button', 3);
 insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (3, 'Signal', 'Traffic', null, 3);
@@ -48,10 +42,6 @@ create table components (
     name character varying
     );
 
-insert into components (id, project_id, component_type_id, name) values (1, 1, 1, 'A component (signal-phb) for project (project_a).');
-insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 1, 1, 2, 'A sidewalk for project (project_a). Hand drawn.');
-insert into components (id, project_id, component_type_id, layer_id_override, name) values (3, 1, 1, null, 'A street_segment based sidewalk project.');
-
 -- feature type generic fields related to the geometry could be put here, plus i really like the global ID space it enforces over feature geometry subtables
 create table features (
     id serial primary key, 
@@ -64,20 +54,11 @@ create table signals (
     geography geography('MULTIPOINT') default null
     ) inherits (features);
 
-
-insert into signals (id, name, signal_id, geography) values (1, 'A new set of PHBs', 1001, ST_GeographyFromText(
-    'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
-    ));
-
 create table sidewalks (
     sidewalk_id integer default null,
     sidewalk_name character varying default null,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
-
-insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
-    'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
-    ));
 
 create table drawn_points (
     geography geography('MULTIPOINT') default null
@@ -87,10 +68,13 @@ create table drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
-insert into drawn_lines (id, name, geography) values (3, 'Franks dream sidewalk', ST_GeographyFromText(
-    'MULTILINESTRING((-82.228756 27.298322, -96.298725 31.90283, -96.982325 31.298231))'
-    ));
+create table component_feature_map (
+    id serial primary key,
+    component_id integer references components(id),
+    feature_id integer default null
+    );
 
+-- this could be (should be?) a CTE to the project_geography view, but this seems easier to read in a prototype
 create view uniform_features as (
         select id, 'signals' as table, name, json_build_object('signal_id', signal_id) as attributes, geography
         FROM signals
@@ -102,16 +86,6 @@ create view uniform_features as (
     union all
         select id, 'drawn_lines' as table, name, null as attributes, geography from drawn_lines
 );
-
-create table component_feature_map (
-    id serial primary key,
-    component_id integer references components(id),
-    feature_id integer default null
-    );
-
-insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1);
-insert into component_feature_map (id, component_id, feature_id) values (2, 3, 2);
-insert into component_feature_map (id, component_id, feature_id) values (3, 2, 3);
 
 create view project_geography as (
     select 
@@ -132,3 +106,33 @@ create view project_geography as (
     join component_feature_map on (components.id = component_feature_map.component_id)
     join uniform_features on (component_feature_map.feature_id = uniform_features.id)
 );
+
+
+-- example project creation statements
+
+-- All inserts are specifying IDs, for ease of the prototype, but prostgres would normally be assigning those.
+-- Hardcoding an id into an insert is almost always not what you want.
+
+insert into projects (id, name) values (1, 'project_a');
+insert into projects (id, name) values (2, 'project_b');
+
+insert into components (id, project_id, component_type_id, name) values (1, 1, 1, 'A component (signal-phb) for project (project_a).');
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 1, 1, 2, 'A sidewalk for project (project_a). Hand drawn.');
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (3, 1, 1, null, 'A street_segment based sidewalk project.');
+
+insert into signals (id, name, signal_id, geography) values (1, 'A new set of PHBs', 1001, ST_GeographyFromText(
+    'MULTIPOINT(-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231)'
+    ));
+
+insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
+    'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
+    ));
+
+insert into drawn_lines (id, name, geography) values (3, 'Franks dream sidewalk', ST_GeographyFromText(
+    'MULTILINESTRING((-82.228756 27.298322, -96.298725 31.90283, -96.982325 31.298231))'
+    ));
+
+insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1);
+insert into component_feature_map (id, component_id, feature_id) values (2, 3, 2);
+insert into component_feature_map (id, component_id, feature_id) values (3, 2, 3);
+
