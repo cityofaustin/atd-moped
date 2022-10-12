@@ -332,7 +332,7 @@ const ProjectFundingTable = () => {
   );
 
   /**
-   * Component for autcomplete for Funds
+   * Autocomplete component for Funds
    * @param {*} props
    * @returns {React component}
    */
