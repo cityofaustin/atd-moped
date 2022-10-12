@@ -82,7 +82,7 @@ const TagsSection = ({ projectId }) => {
    * Filter out already selected tags
    */
   const availableTags = () => {
-    const tagsIds = data.moped_proj_tags.map((t) => t.id);
+    const tagsIds = data.moped_proj_tags.map((t) => t.moped_tag.id);
     const availableTags = data.moped_tags.filter(
       (t) => !tagsIds.includes(t.id)
     );
