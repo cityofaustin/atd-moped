@@ -57,6 +57,7 @@ create table features (
     name character varying
     );
 
+-- should we prefix these tables with something to logically group them? schema them?
 create table signals (
     signal_id integer default null,
     geography geography('MULTIPOINT') default null
