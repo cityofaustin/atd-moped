@@ -10,8 +10,6 @@ import {
   CircularProgress,
   Icon,
   IconButton,
-  MenuItem,
-  Select,
   Snackbar,
   TextField,
   Tooltip,
@@ -33,7 +31,6 @@ import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { currencyFormatter } from "../../../utils/numberFormatters";
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -335,34 +332,33 @@ const ProjectFundingTable = () => {
   );
 
   /**
-   * Component for dropdown select for Funds
+   * Component for autcomplete for Funds
    * @param {*} props
    * @returns {React component}
    */
-  const FundSelectComponent = (props) => (
-      <Autocomplete
-        style={{ minWidth: "200px" }}
-        value={props.value ? props.value : null}
-        // use customized popper component so menu expands to fullwidth
-        PopperComponent={CustomPopper}
-        id={"moped_funds"}
-        options={props.data}
-        renderInput={(params) => <TextField {...params} multiline />}
-        getOptionLabel={(option) =>
-          // if our value is a string, just return the string
-          typeof option === "string"
-            ? option
-            : `${option.fund_id} | ${option.fund_name}`
-        }
-        getOptionSelected={(value, option) =>
-          value.fund_id === option.fund_id &&
-          value.fund_name === option.fund_name
-        }
-        onChange={(e, value) => {
-          value ? props.onChange(value) : props.onChange(null);
-        }}
-      />
-    );
+  const FundAutocompleteComponent = (props) => (
+    <Autocomplete
+      className={classes.fundSelectStyle}
+      value={props.value ? props.value : null}
+      // use customized popper component so menu expands to fullwidth
+      PopperComponent={CustomPopper}
+      id={"moped_funds"}
+      options={props.data}
+      renderInput={(params) => <TextField {...params} multiline />}
+      getOptionLabel={(option) =>
+        // if our value is a string, just return the string
+        typeof option === "string"
+          ? option
+          : `${option.fund_id} | ${option.fund_name}`
+      }
+      getOptionSelected={(value, option) =>
+        value.fund_id === option.fund_id && value.fund_name === option.fund_name
+      }
+      onChange={(e, value) => {
+        value ? props.onChange(value) : props.onChange(null);
+      }}
+    />
+  );
 
   /**
    * Handles the click for adding new task orders
@@ -467,7 +463,7 @@ const ProjectFundingTable = () => {
           ""
         ),
       editComponent: (props) => (
-        <FundSelectComponent {...props} data={data.moped_funds} />
+        <FundAutocompleteComponent {...props} data={data.moped_funds} />
       ),
     },
     {
