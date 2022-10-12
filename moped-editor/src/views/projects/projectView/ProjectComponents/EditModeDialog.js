@@ -31,7 +31,6 @@ const EditModeDialog = ({ showDialog, onClose, setIsEditingComponent }) => {
     <Dialog
       open={showDialog}
       onClose={onClose}
-      className={{ paper: classes.dialog }}
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>What do you want to edit?</h3>

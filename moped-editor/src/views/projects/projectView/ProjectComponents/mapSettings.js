@@ -42,12 +42,11 @@ export const mapParameters = {
     [-99, 29],
     [-96, 32],
   ],
-  mapStyle: "mapbox://styles/mapbox/light-v10",
   mapboxAccessToken: MAPBOX_TOKEN,
 };
 
 export const basemaps = {
-  streets: "mapbox://styles/mapbox/light-v8",
+  streets: "mapbox://styles/mapbox/light-v10",
   // Provide style parameters to render Nearmap tiles in react-map-gl
   // https://docs.mapbox.com/mapbox-gl-js/example/map-tiles/
   aerial: {
