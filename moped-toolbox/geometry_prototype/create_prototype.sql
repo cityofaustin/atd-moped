@@ -108,18 +108,21 @@ insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1
 insert into component_feature_map (id, component_id, feature_id) values (2, 2, 2);
 
 create view project_geography as (
-    select projects.id as project_id,
-    uniform_features.id as feature_id,
-    components.id as component_id,
-    projects.name as project_name,
-    component_types."type" as component_type,
-    components.name as component_name,
-    uniform_features.name as feature_name,
-    uniform_features.attributes as attribute_name,
-    uniform_features.geography as geography
+    select 
+      projects.id as project_id,
+      uniform_features.id as feature_id,
+      components.id as component_id,
+      projects.name as project_name,
+      layers.internal_table as table,
+      layers.reference_layer_primary_key_column as original_fk,
+      components.name as component_name,
+      uniform_features.name as feature_name,
+      uniform_features.attributes as attribute_name,
+      uniform_features.geography as geography
     from projects
     join components on (components.project_id = projects.id)
     join component_types on (components.component_type_id = component_types.id)
+    join layers on (coalesce(components.layer_id_override, component_types.layer_id) = layers.id)
     join component_feature_map on (components.id = component_feature_map.component_id)
     join uniform_features on (component_feature_map.feature_id = uniform_features.id)
 );
