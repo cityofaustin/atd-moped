@@ -1,0 +1,22 @@
+.MuiSpeedDial-fab {
+    background: lightgray !important;
+    border-radius: 4px !important;
+    background-size: 100% 100% !important;
+    /* Height and width are set to match Mapbox zoom controls height */
+    width: 58px !important;
+    height: 58px !important;
+  }
+  
+  .MuiFab-sizeSmall {
+    background: lightgray !important;
+    border-radius: 4px !important;
+    background-size: 100% 100% !important;
+    /* Height and width are set to match Mapbox zoom controls height */
+    width: 58px !important;
+    height: 58px !important;
+  }
+  
+  .MuiFab-label {
+    font-size: 0.8rem !important;
+    font-weight: bold !important;
+  }

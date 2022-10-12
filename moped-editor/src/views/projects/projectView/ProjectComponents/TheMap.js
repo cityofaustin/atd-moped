@@ -15,7 +15,8 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./ProjectComponentsMap.css";
+import "./MapboxStyleOverrides.css";
+import "./MUIStyleOverrides.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
