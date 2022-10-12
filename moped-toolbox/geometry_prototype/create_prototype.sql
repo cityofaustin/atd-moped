@@ -26,7 +26,7 @@ insert into layers (id, internal_table, reference_layer_primary_key_column) valu
 
 create table component_types (
     id serial primary key,
-    type character varying,
+    component_type character varying,
     subtype character varying,
     subcomponent character varying,
     component_type component_type
