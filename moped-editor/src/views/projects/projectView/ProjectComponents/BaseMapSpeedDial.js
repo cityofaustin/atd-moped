@@ -33,22 +33,16 @@ export const useStyles = makeStyles((theme) => ({
     fontWeight: "bold",
     marginRight: "4px",
   },
-  mapStyleToggleTypography: {
+  mapStyleToggle: ({ isSpeedDialOpen }) => ({
+    ...(isSpeedDialOpen && { backgroundColor: "rgba(0,0,0,.25)" }),
     position: "absolute",
     height: "100%",
     width: "100%",
     top: "0",
-  },
-  mapStyleToggleTypographyOpen: {
-    backgroundColor: "rgba(0,0,0,.25)",
-    position: "absolute",
-    height: "100%",
-    width: "100%",
-    top: "0",
-  },
-  speedDialWithLayerCopyrightText: {
+  }),
+  speedDial: ({ basemapKey }) => ({
     right: "10px !important",
-    bottom: "10px !important",
+    bottom: basemapKey === "streets" ? "2px !important" : "10px !important",
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
@@ -59,21 +53,7 @@ export const useStyles = makeStyles((theme) => ({
       top: theme.spacing(2),
       left: theme.spacing(2),
     },
-  },
-  speedDial: {
-    right: "49px !important",
-    bottom: "2px !important",
-    position: "absolute",
-    zIndex: 1,
-    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
-  },
+  }),
 }));
 
 /**
@@ -84,55 +64,44 @@ export const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
-  const classes = useStyles();
+  // TODO: Make speedial 44 px from bottom when at 990px or below
 
   /**
    * Basemap Speed Dial State
    */
-  const [mapBasemapSpeedDialOpen, setBasemapSpeedDialOpen] = useState(false);
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+  const classes = useStyles({ basemapKey, isSpeedDialOpen });
 
   /**
    * Changes the current basemap and closes the speed dial menu
    * @param basemapName
    */
   const handleBasemapSpeedDialClose = (basemapName) => {
-    setBasemapSpeedDialOpen(false);
-    if (basemapName) setBasemapKey(basemapName);
+    setIsSpeedDialOpen(false);
+    if (basemapName !== null) setBasemapKey(basemapName);
   };
 
   /**
    * Opens the speed dial menu
    */
   const handleBasemapSpeedDialOpen = () => {
-    setBasemapSpeedDialOpen(true);
+    setIsSpeedDialOpen(true);
   };
 
   return (
-    <div
-      className={
-        basemapKey === "streets"
-          ? classes.speedDialWithLayerCopyrightText
-          : classes.speedDial
-      }
-    >
+    <div className={classes.speedDial}>
       <SpeedDial
         ariaLabel="Basemap Select"
         hidden={false}
         icon={
-          <Typography
-            className={
-              mapBasemapSpeedDialOpen
-                ? classes.mapStyleToggleTypographyOpen
-                : classes.mapStyleToggleTypography
-            }
-          >
+          <Typography className={classes.mapStyleToggle}>
             <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
             <span className={classes.mapStyleToggleLabel}>Map</span>
           </Typography>
         }
         onClose={() => handleBasemapSpeedDialClose(null)}
         onOpen={handleBasemapSpeedDialOpen}
-        open={mapBasemapSpeedDialOpen}
+        open={isSpeedDialOpen}
         direction={"left"}
         FabProps={{
           className:

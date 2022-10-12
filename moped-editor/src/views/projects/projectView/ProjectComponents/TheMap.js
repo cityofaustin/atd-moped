@@ -233,7 +233,7 @@ export default function TheMap({
       mapStyle={basemaps[basemapKey]}
       {...mapParameters}
     >
-      <BaseMapSpeedDial basemapKey={basemapKey} setBaseMapKey={setBasemapKey} />
+      <BaseMapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl
         marker={false}
         mapboxAccessToken={mapParameters.mapboxAccessToken}
