@@ -63,7 +63,7 @@ create table sidewalks (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
-insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (1, 'A new set of PHBs', 4242, 'This is a sidewalk name', ST_GeographyFromText(
+insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A fancy new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
     'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
     ));
 
