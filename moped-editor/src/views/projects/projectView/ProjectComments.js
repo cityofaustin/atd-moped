@@ -101,7 +101,7 @@ const ProjectComments = (props) => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
-  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   // if component is being used in edit modal from dashboard
@@ -268,7 +268,7 @@ const ProjectComments = (props) => {
   );
 
   const handleDeleteOpen = (id) => {
-    setDeleteConfirmationOpen(true);
+    setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
   };
 
@@ -403,11 +403,11 @@ const ProjectComments = (props) => {
                                   submitDelete={() =>
                                     submitDeleteComment(deleteConfirmationId)
                                   }
-                                  deleteConfirmationOpen={
-                                    deleteConfirmationOpen
+                                  isDeleteConfirmationOpen={
+                                    isDeleteConfirmationOpen
                                   }
-                                  setDeleteConfirmationOpen={
-                                    setDeleteConfirmationOpen
+                                  setIsDeleteConfirmationOpen={
+                                    setIsDeleteConfirmationOpen
                                   }
                                 >
                                   <IconButton

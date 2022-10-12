@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
 const TagsSection = ({ projectId }) => {
   const [addTagMode, setAddTagMode] = useState(false);
   const [newTagList, setNewTagList] = useState([]);
-  const [deleteConfirmationOpen, setDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(TAGS_QUERY, {
@@ -134,7 +134,7 @@ const TagsSection = ({ projectId }) => {
   };
 
   const handleDeleteOpen = (id) => {
-    setDeleteConfirmationOpen(true);
+    setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
   };
 
@@ -161,8 +161,8 @@ const TagsSection = ({ projectId }) => {
               <DeleteConfirmationModal
                 type="tag"
                 submitDelete={() => handleTagDelete(deleteConfirmationId)}
-                deleteConfirmationOpen={deleteConfirmationOpen}
-                setDeleteConfirmationOpen={setDeleteConfirmationOpen}
+                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
               >
                 <Chip
                   label={tag.moped_tag.name}

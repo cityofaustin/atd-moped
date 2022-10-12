@@ -18,21 +18,21 @@ const useStyles = makeStyles((theme) => ({
 const DeleteConfirmationModal = ({
   type,
   submitDelete,
-  deleteConfirmationOpen,
-  setDeleteConfirmationOpen,
-  children
+  isDeleteConfirmationOpen,
+  setIsDeleteConfirmationOpen,
+  children,
 }) => {
   const classes = useStyles();
 
   const handleDeleteClose = () => {
-    setDeleteConfirmationOpen(false);
+    setIsDeleteConfirmationOpen(false);
   };
 
   return (
     <span>
       {children}
       <Dialog
-        open={deleteConfirmationOpen}
+        open={isDeleteConfirmationOpen}
         onClose={handleDeleteClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -44,7 +44,14 @@ const DeleteConfirmationModal = ({
         </DialogContent>
         <DialogActions>
           <Button
-            variant="outlined"
+            color="primary"
+            onClick={handleDeleteClose}
+            autoFocus
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
             className={classes.deleteButton}
             startIcon={<DeleteIcon />}
             onClick={() => {
@@ -53,14 +60,6 @@ const DeleteConfirmationModal = ({
             }}
           >
             <span>Delete</span>
-          </Button>
-          <Button
-            variant="outlined"
-            color="primary"
-            onClick={handleDeleteClose}
-            autoFocus
-          >
-            Cancel
           </Button>
         </DialogActions>
       </Dialog>
