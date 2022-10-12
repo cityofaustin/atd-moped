@@ -94,4 +94,5 @@ create table component_feature_map (
     );
 
 insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1);
+insert into component_feature_map (id, component_id, feature_id) values (2, 2, 2);
 
