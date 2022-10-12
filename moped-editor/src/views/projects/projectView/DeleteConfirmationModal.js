@@ -6,14 +6,7 @@ import {
   DialogContent,
   DialogContentText,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/DeleteOutlined";
-
-const useStyles = makeStyles((theme) => ({
-  deleteButton: {
-    color: theme.palette.error.main,
-  },
-}));
 
 const DeleteConfirmationModal = ({
   type,
@@ -22,7 +15,6 @@ const DeleteConfirmationModal = ({
   setIsDeleteConfirmationOpen,
   children,
 }) => {
-  const classes = useStyles();
 
   const handleDeleteClose = () => {
     setIsDeleteConfirmationOpen(false);
@@ -51,8 +43,8 @@ const DeleteConfirmationModal = ({
             Cancel
           </Button>
           <Button
+            color="primary"
             variant="contained"
-            className={classes.deleteButton}
             startIcon={<DeleteIcon />}
             onClick={() => {
               submitDelete();
