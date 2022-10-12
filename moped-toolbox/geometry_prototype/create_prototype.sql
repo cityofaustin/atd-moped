@@ -32,17 +32,13 @@ create table component_types (
     layer_id integer references layers(id) -- think of this layer as the default source layer that users pick geometr from
     );
 
-insert into component_types (id, type, subtype, subcomponent, component_type) values (1, 'Access Control', 'Driveway Closure', null, 'drawn_points');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (2, 'Access Control', 'Driveway Gate', null, 'drawn_lines');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (3, 'Access Control', 'Driveway Modification', null, 'drawn_points');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (4, 'Bike Box', null, null, 'drawn_lines');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (5, 'Bike Lane', 'Buffered', null, 'drawn_lines');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (6, 'Bike Lane', 'Buffered', 'Raised Pavement Markers', 'drawn_lines');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (7, 'Bike Parking', 'Corral', null, 'drawn_points');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (8, 'Signal', 'PHB', null, 'signals');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (9, 'Signal', 'PHB', 'Audible Push Button', 'signals');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (10, 'Signal', 'Traffic', null, 'signals');
-insert into component_types (id, type, subtype, subcomponent, component_type) values (11, 'Sidewalk', null, null, 'sidewalks');
+-- These are the valid choices of component_types that can be added.
+-- Component_type, subtype, and subcomponent are canidates for breaking out into their own tables.
+insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (1, 'Signal', 'PHB', null, 3);
+insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (2, 'Signal', 'PHB', 'Audible Push Button', 3);
+insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (3, 'Signal', 'Traffic', null, 3);
+insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (4, 'Sidewalk Install', 'Concrete', null, 4);
+insert into component_types (id, component_type, subtype, subcomponent, layer_id) values (5, 'Intersection Markings', null, null, 5);
 
 create table components (
     id serial primary key, 
