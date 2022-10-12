@@ -50,6 +50,7 @@ create table components (
 
 insert into components (id, project_id, component_type_id, name) values (1, 1, 1, 'A component (signal-phb) for project (project_a).');
 insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 1, 1, 2, 'A sidewalk for project (project_a). Hand drawn.');
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (3, 1, 1, null, 'A street_segment based sidewalk project.');
 
 -- feature type generic fields related to the geometry could be put here, plus i really like the global ID space it enforces over feature geometry subtables
 create table features (
@@ -74,7 +75,7 @@ create table sidewalks (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
-insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A fancy new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
+insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
     'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
     ));
 
@@ -85,6 +86,10 @@ create table drawn_points (
 create table drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
+
+insert into drawn_lines (id, name, geography) values (3, 'Franks dream sidewalk', ST_GeographyFromText(
+    'MULTILINESTRING((-82.228756 27.298322, -96.298725 31.90283, -96.982325 31.298231))'
+    ));
 
 create view uniform_features as (
         select id, 'signals' as table, name, json_build_object('signal_id', signal_id) as attributes, geography
@@ -105,7 +110,8 @@ create table component_feature_map (
     );
 
 insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1);
-insert into component_feature_map (id, component_id, feature_id) values (2, 2, 2);
+insert into component_feature_map (id, component_id, feature_id) values (2, 3, 2);
+insert into component_feature_map (id, component_id, feature_id) values (3, 2, 3);
 
 create view project_geography as (
     select 
