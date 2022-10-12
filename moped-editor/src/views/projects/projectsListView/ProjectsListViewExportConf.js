@@ -35,4 +35,13 @@ export const ProjectsListViewExportConf = {
   project_partner: {
     label: "project_partner",
   },
+  contractors: {
+    label: "contractors",
+  },
+  contract_numbers: {
+    label: "contract_numbers",
+  },
+  project_tags: {
+    label: "project_tags",
+  },
 };
