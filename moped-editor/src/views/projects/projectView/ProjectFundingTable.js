@@ -299,11 +299,11 @@ const ProjectFundingTable = () => {
     }, {});
   };
 
-/**
- * Component for autocomplete using a lookup table as options
- * @param {*} props
- * @returns {React component}
- */
+  /**
+   * Component for autocomplete using a lookup table as options
+   * @param {*} props
+   * @returns {React component}
+   */
   const LookupAutocompleteComponent = (props) => (
     <Autocomplete
       style={{ minWidth: "200px" }}
@@ -323,7 +323,9 @@ const ProjectFundingTable = () => {
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
       }
-      getOptionSelected={(value, option) => value[`${props.name}_name`] === option}
+      getOptionSelected={(value, option) =>
+        value[`${props.name}_name`] === option
+      }
       onChange={(e, value) => {
         value
           ? props.onChange(value[`${props.name}_id`])
@@ -338,36 +340,29 @@ const ProjectFundingTable = () => {
    * @returns {React component}
    */
   const FundSelectComponent = (props) => (
-    <Select
-      id="moped_funds"
-      value={
-        props.value?.fund_id
-          ? `${props.value.fund_id} | ${props.value.fund_name}`
-          : ""
-      }
-      className={classes.fundSelectStyle}
-    >
-      {props.data.map((item) => (
-        <MenuItem
-          onChange={() => props.onChange(item)}
-          onClick={() => props.onChange(item)}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value={`${item.fund_id} | ${item.fund_name}`}
-          key={item.fund_id}
-        >
-          {`${item.fund_id} | ${item.fund_name}`}
-        </MenuItem>
-      ))}
-      <MenuItem
-        onChange={() => props.onChange(null)}
-        onClick={() => props.onChange(null)}
-        onKeyDown={(e) => handleKeyEvent(e)}
-        value=""
-      >
-        -
-      </MenuItem>
-    </Select>
-  );
+      <Autocomplete
+        style={{ minWidth: "200px" }}
+        value={props.value ? props.value : null}
+        // use customized popper component so menu expands to fullwidth
+        PopperComponent={CustomPopper}
+        id={"moped_funds"}
+        options={props.data}
+        renderInput={(params) => <TextField {...params} multiline />}
+        getOptionLabel={(option) =>
+          // if our value is a string, just return the string
+          typeof option === "string"
+            ? option
+            : `${option.fund_id} | ${option.fund_name}`
+        }
+        getOptionSelected={(value, option) =>
+          value.fund_id === option.fund_id &&
+          value.fund_name === option.fund_name
+        }
+        onChange={(e, value) => {
+          value ? props.onChange(value) : props.onChange(null);
+        }}
+      />
+    );
 
   /**
    * Handles the click for adding new task orders
