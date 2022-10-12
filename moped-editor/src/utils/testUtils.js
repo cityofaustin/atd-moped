@@ -10,6 +10,7 @@ import { apolloMocks } from "./testUtilApolloMocks";
 
 /*
  * Wrapper that contains all of the providers a React component expects to find in this app
+ * @see https://testing-library.com/docs/react-testing-library/setup#custom-render
  */
 const AllTheProviders = ({ children }) => {
   const mockUserContextValues = {
