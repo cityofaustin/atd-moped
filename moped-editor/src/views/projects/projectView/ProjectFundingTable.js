@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fundSelectStyle: {
-    width: "8em",
+    width: "10em",
   },
 }));
 
