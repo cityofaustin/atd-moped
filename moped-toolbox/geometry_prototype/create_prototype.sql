@@ -76,17 +76,16 @@ create table drawn_lines (
     ) inherits (features);
 
 create view uniform_features as (
-    select id, json_build_object('signal_id', signal_id) as attributes, geography
-    FROM signals
-        union all
-    select id, json_build_object('sidewalk_id', sidewalk_id, 'sidewalk_name', sidewalk_name) as attributes, geography
-    FROM sidewalks
-        union all
-    select id, null as attributes, geography from drawn_points
-        union all
-    select id, null as attributes, geography from drawn_lines
+        select id, 'signals' as table, name, json_build_object('signal_id', signal_id) as attributes, geography
+        FROM signals
+    union all
+        select id, 'sidewalks' as table, name, json_build_object('sidewalk_id', sidewalk_id, 'sidewalk_name', sidewalk_name) as attributes, geography
+        FROM sidewalks
+    union all
+        select id, 'drawn_points' as table, name, null as attributes, geography from drawn_points
+    union all
+        select id, 'drawn_lines' as table, name, null as attributes, geography from drawn_lines
 );
-
 
 create table component_feature_map (
     id serial primary key,
