@@ -123,7 +123,7 @@ create view project_geography as (
       layers.reference_layer_primary_key_column as original_fk,
       components.name as component_name,
       uniform_features.name as feature_name,
-      uniform_features.attributes as attribute_name,
+      uniform_features.attributes as attributes,
       uniform_features.geography as geography
     from projects
     join components on (components.project_id = projects.id)
