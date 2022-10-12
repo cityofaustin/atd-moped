@@ -29,7 +29,7 @@ create table component_types (
     component_type character varying,
     subtype character varying,
     subcomponent character varying,
-    component_type component_type
+    layer_id integer references layers(id) -- think of this layer as the default source layer that users pick geometr from
     );
 
 insert into component_types (id, type, subtype, subcomponent, component_type) values (1, 'Access Control', 'Driveway Closure', null, 'drawn_points');
