@@ -10,7 +10,20 @@ insert into projects (id, name) values (3, 'project_c');
 
 --create type representation as enum ('point', 'line');
 
-create type component_type as enum ('signals', 'sidewalks', 'drawn_points', 'drawn_lines');
+create table layers (   
+    id serial primary key,
+    internal_table character varying, -- I want to call this "table" but that's a very reserved word. Any other ideas? 
+    reference_layer_primary_key_column character varying
+);
+
+
+insert into layers (id, internal_table, reference_layer_primary_key_column) values (1, 'drawn_points', null);
+insert into layers (id, internal_table, reference_layer_primary_key_column) values (2, 'drawn_lines', null);
+-- the following entries in this table are records of outside data sources
+insert into layers (id, internal_table, reference_layer_primary_key_column) values (3, 'signals', 'signal_id');
+insert into layers (id, internal_table, reference_layer_primary_key_column) values (4, 'segments', 'segment_id');
+insert into layers (id, internal_table, reference_layer_primary_key_column) values (5, 'intersections', 'intersection_id');
+
 create table component_types (
     id serial primary key,
     type character varying,
