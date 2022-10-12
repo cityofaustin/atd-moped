@@ -74,7 +74,7 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: values => {
+      filter: (values) => {
         const jsonValues = JSON.parse(values);
         return (
           <RouterLink
@@ -144,7 +144,7 @@ export const ProjectsListViewQueryConf = {
         envelope: "%{VALUE}%",
       },
       type: "string",
-      filter: value => (value === "None" ? "-" : value),
+      filter: (value) => (value === "None" ? "-" : value),
     },
     project_partner: {
       label: "Project partners",
@@ -162,7 +162,7 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
-      filter: value => (
+      filter: (value) => (
         <ExternalLink
           text={value}
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
@@ -182,7 +182,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => formatTimeStampTZType(value),
+      filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
     },
     // the following column configurations only work with material table and do not have the
@@ -222,7 +222,10 @@ export const ProjectsListViewQueryConf = {
     },
     contract_numbers: {
       type: "string",
-    }
+    },
+    project_tags: {
+      type: "string",
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
