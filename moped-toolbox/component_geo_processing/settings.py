@@ -42,6 +42,11 @@ QUERY_TEMPLATE = """
     query ProjectComponentsQuery {
         moped_project(where: {is_deleted: {_eq: false}}) {
             project_id
+            moped_proj_tags(where: {is_deleted: {_eq: false}}) {
+                moped_tag {
+                    name
+                }
+            }
             moped_proj_components(where: {is_deleted: {_eq: false}}) {
                 moped_components {
                     component_name
