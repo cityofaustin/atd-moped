@@ -127,14 +127,14 @@ insert into component_feature_map (id, component_id, feature_id) values (1, 1, 1
 -- a project with two components, one hand drawn for a new sidewalk and one taken from the street segments layer
 insert into projects (id, name) values (2, 'project_b');
 
-insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 1, 1, 2, 'A sidewalk for project (project_a). Hand drawn.');
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 2, 1, 2, 'A sidewalk for project 2. Hand drawn.');
 insert into drawn_lines (id, name, geography) values (2, 'Franks dream sidewalk', ST_GeographyFromText(
     'MULTILINESTRING((-82.228756 27.298322, -96.298725 31.90283, -96.982325 31.298231))'
     ));
 insert into component_feature_map (id, component_id, feature_id) values (2, 2, 2);
 
-insert into components (id, project_id, component_type_id, layer_id_override, name) values (3, 1, 1, null, 'A street_segment based sidewalk project.');
-insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (2, 'A new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (3, 2, 1, null, 'A street_segment based sidewalk project.');
+insert into sidewalks (id, name, sidewalk_id, sidewalk_name, geography) values (3, 'A new sidewalk', 4242, 'This is a sidewalk attribute: name', ST_GeographyFromText(
     'MULTILINESTRING((-97.740556 30.274722, -97.725125 30.257440, -97.760225 30.286231))'
     ));
 insert into component_feature_map (id, component_id, feature_id) values (3, 3, 3);
