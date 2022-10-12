@@ -44,11 +44,12 @@ create table components (
     id serial primary key, 
     project_id integer references projects(id),
     component_type_id integer references component_types(id),
+    layer_id_override integer references layers(id) default null, -- think of this layer, which is optional, as an override of the default source, and most likly will always be a pointer to 'drawn_points' or 'drawn_lines'
     name character varying
     );
 
-insert into components (id, project_id, component_type_id, name) values (1, 1, 8, 'A component (signal-phb) for project (project_a).');
-insert into components (id, project_id, component_type_id, name) values (2, 1, 11, 'A sidewalk for project (project_a).');
+insert into components (id, project_id, component_type_id, name) values (1, 1, 1, 'A component (signal-phb) for project (project_a).');
+insert into components (id, project_id, component_type_id, layer_id_override, name) values (2, 1, 1, 2, 'A sidewalk for project (project_a). Hand drawn.');
 
 -- feature type generic fields related to the geometry could be put here, plus i really like the global ID space it enforces over feature geometry subtables
 create table features (
