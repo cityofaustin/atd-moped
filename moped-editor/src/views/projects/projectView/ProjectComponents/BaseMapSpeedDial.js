@@ -40,9 +40,16 @@ export const useStyles = makeStyles((theme) => ({
     width: "100%",
     top: "0",
   }),
-  speedDial: ({ basemapKey }) => ({
+  speedDial: {
     right: "10px !important",
-    bottom: basemapKey === "streets" ? "2px !important" : "10px !important",
+    // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
+    bottom: ({ basemapKey }) =>
+      basemapKey === "aerial" ? "2px !important" : "10px !important",
+    // Mapbox copyright info collapses to a taller info icon at 990px and below
+    [theme.breakpoints.down(990)]: {
+      bottom: ({ basemapKey }) =>
+        basemapKey === "aerial" ? "2px !important" : "26px !important",
+    },
     position: "absolute",
     zIndex: 1,
     "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
@@ -53,7 +60,7 @@ export const useStyles = makeStyles((theme) => ({
       top: theme.spacing(2),
       left: theme.spacing(2),
     },
-  }),
+  },
 }));
 
 /**
