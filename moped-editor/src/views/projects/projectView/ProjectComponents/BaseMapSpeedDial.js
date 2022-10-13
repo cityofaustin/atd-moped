@@ -68,11 +68,6 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
-  // TODO: Make speedial 44 px from bottom when at 990px or below
-
-  /**
-   * Basemap Speed Dial State
-   */
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
   const classes = useStyles({ basemapKey, isSpeedDialOpen });
 
