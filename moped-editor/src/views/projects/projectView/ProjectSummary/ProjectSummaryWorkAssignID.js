@@ -140,7 +140,7 @@ const ProjectSummaryWorkAssignmentID = ({
             text={
               projectWorkAssignmentID.length > 0
                 ? projectWorkAssignmentID
-                : "None"
+                : ""
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

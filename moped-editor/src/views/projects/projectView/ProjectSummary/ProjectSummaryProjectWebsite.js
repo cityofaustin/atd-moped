@@ -121,7 +121,7 @@ const ProjectSummaryProjectWebsite = ({
                   <OpenInNew className={classes.linkIcon} />
                 </Link>
               )) ||
-              "None"
+              ""
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

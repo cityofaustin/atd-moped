@@ -195,7 +195,7 @@ const ProjectSummaryProjectECapris = ({
                   </Link>
                 </>
               )) ||
-              "None"
+              ""
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

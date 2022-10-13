@@ -47,7 +47,7 @@ const ProjectSummaryProjectPartners = ({
   // Establish original partners
   const originalPartners = data?.moped_proj_partners ?? [];
   // Establish original entities
-  const originalEntities = originalPartners.map(e => e.entity_id);
+  const originalEntities = originalPartners.map((e) => e.entity_id);
   /**
    * Edit Mode and selected Entities states, and a list of its IDs which is put there for performance
    */
@@ -61,7 +61,7 @@ const ProjectSummaryProjectPartners = ({
    * Handles whenever there is a click in any of the menu items
    * @param {Object} event - The event object
    */
-  const handleChange = event => {
+  const handleChange = (event) => {
     setSelectedEntities(event.target.value);
   };
 
@@ -83,22 +83,22 @@ const ProjectSummaryProjectPartners = ({
     const newPartnersList = selectedEntities;
     // Retrieves the ids of oldPartnersList that are not present in newPartnersList
     const partnerIdsToDelete = oldPartnersList.filter(
-      p => !newPartnersList.includes(p)
+      (p) => !newPartnersList.includes(p)
     );
     // Retrieves the ids of newPartnersList that are not present in oldPartnersList
     const partnerIdsToInsert = newPartnersList.filter(
-      p => !oldPartnersList.includes(p)
+      (p) => !oldPartnersList.includes(p)
     );
     // We need a final list of objects to insert
-    const partnerObjectsToInsert = partnerIdsToInsert.map(id => ({
+    const partnerObjectsToInsert = partnerIdsToInsert.map((id) => ({
       project_id: projectId,
       partner_name: entityDict[id],
       entity_id: id,
     }));
     // We need a final list of primary keys to delete
     const partnerPksToDelete = originalPartners
-      .filter(p => partnerIdsToDelete.includes(p.entity_id))
-      .map(p => p.proj_partner_id);
+      .filter((p) => partnerIdsToDelete.includes(p.entity_id))
+      .map((p) => p.proj_partner_id);
 
     updateProjectPartners({
       variables: {
@@ -111,7 +111,7 @@ const ProjectSummaryProjectPartners = ({
         setEditMode(false);
         snackbarHandle(true, "Update successful", "success");
       })
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(
           true,
           "Failed to update partners: " + String(err),
@@ -121,10 +121,6 @@ const ProjectSummaryProjectPartners = ({
       });
     setEditMode(false);
   };
-
-  const selectedEntitiesJoint = selectedEntities
-    .map(e => entityDict[e])
-    .join(", ");
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -142,8 +138,8 @@ const ProjectSummaryProjectPartners = ({
               value={selectedEntities}
               onChange={handleChange}
               input={<Input />}
-              renderValue={entity_ids =>
-                entity_ids.map(e => entityDict[e]).join(", ")
+              renderValue={(entity_ids) =>
+                entity_ids.map((e) => entityDict[e]).join(", ")
               }
               /*
                 There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
@@ -159,7 +155,7 @@ const ProjectSummaryProjectPartners = ({
               }}
               className={classes.fieldSelectItem}
             >
-              {entityList.map(entity => (
+              {entityList.map((entity) => (
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
                   <Checkbox
                     checked={selectedEntities.includes(entity.entity_id)}
@@ -185,11 +181,7 @@ const ProjectSummaryProjectPartners = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={
-              selectedEntitiesJoint.trim() === ""
-                ? "None"
-                : selectedEntitiesJoint
-            }
+            text={selectedEntities.map((e) => entityDict[e])}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

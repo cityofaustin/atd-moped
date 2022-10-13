@@ -106,6 +106,7 @@ const ProjectSummaryProjectSponsor = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
+            // does this 'n/a' case ever occur?
             text={sponsor?.entity_name || "n/a"}
             classes={classes}
             onClickEdit={() => setEditMode(true)}

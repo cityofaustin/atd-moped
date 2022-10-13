@@ -178,7 +178,7 @@ const ProjectSummaryProjectTypes = ({
         ) : (
           <ProjectSummaryLabel
             text={
-              selectedTypesJoint.trim() === "" ? "None" : selectedTypesJoint
+              selectedTypes.map(t => typeDict[t])
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

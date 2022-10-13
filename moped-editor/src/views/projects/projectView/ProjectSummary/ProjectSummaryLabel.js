@@ -19,12 +19,27 @@ const ProjectSummaryLabel = ({
 }) => {
   return (
     <>
-      <Typography
+      <span
+        // what purpose doe these conditionals have if they are set to null?
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
-        <span className={spanClassName ?? classes.fieldLabelTextSpan}>{text}</span>
-      </Typography>
+        {text.length === 0 && <Typography>-</Typography>}
+        {!Array.isArray(text) && (
+          <Typography className={spanClassName ?? classes.fieldLabelTextSpan}>
+            {text}
+          </Typography>
+        )}
+        {Array.isArray(text) &&
+          text.map((element, i) => (
+            <Typography
+              key={i}
+              className={spanClassName ?? classes.fieldLabelTextSpan}
+            >
+              {element}
+            </Typography>
+          ))}
+      </span>
     </>
   );
 };
