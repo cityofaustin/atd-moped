@@ -149,11 +149,9 @@ export const TYPES_QUERY = gql`
   }
 `;
 
-export const TEAM_QUERY = gql`
+export const TEAM_QUERY_OLD = gql`
   query TeamSummary($projectId: Int) {
-    moped_proj_personnel(
-      where: { project_id: { _eq: $projectId } }
-    ) {
+    moped_proj_personnel(where: { project_id: { _eq: $projectId } }) {
       user_id
       role_id
       notes
@@ -182,7 +180,59 @@ export const TEAM_QUERY = gql`
       project_role_name
       project_role_description
     }
-    moped_users( order_by: { last_name: asc } ) {
+    moped_users(order_by: { last_name: asc }) {
+      first_name
+      last_name
+      workgroup_id
+      user_id
+      is_deleted
+    }
+  }
+`;
+
+export const TEAM_QUERY = gql`
+  query TeamQuery($projectId: Int!) {
+    moped_project_by_pk(project_id: $projectId) {
+      project_id
+      moped_proj_personnel(where: { is_deleted: { _eq: false } }) {
+        notes
+        project_personnel_id
+        date_added
+        added_by
+        is_deleted
+        moped_user {
+          first_name
+          last_name
+          workgroup_id
+          user_id
+          is_deleted
+          moped_workgroup {
+            workgroup_id
+            workgroup_name
+          }
+        }
+        moped_proj_personnel_roles {
+          id
+          moped_project_role {
+            project_role_id
+            project_role_name
+            project_role_description
+          }
+        }
+      }
+    }
+    moped_project_roles(
+      order_by: { role_order: asc }
+      where: { project_role_id: { _gt: 0 }, active_role: { _eq: true } }
+    ) {
+      project_role_id
+      project_role_name
+      project_role_description
+    }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
       first_name
       last_name
       workgroup_id
@@ -823,25 +873,25 @@ export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
 `;
 
 export const PROJECT_UPDATE_INTERIM_ID = gql`
-mutation UpdateProjectInterimId($projectId: Int!, $interimProjectId: Int) {
-  update_moped_project_by_pk(
-    pk_columns: {project_id: $projectId},
-    _set: {interim_project_id: $interimProjectId}
-  ) {
-    interim_project_id
+  mutation UpdateProjectInterimId($projectId: Int!, $interimProjectId: Int) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { interim_project_id: $interimProjectId }
+    ) {
+      interim_project_id
+    }
   }
-}
 `;
 
 export const PROJECT_CLEAR_INTERIM_ID = gql`
-mutation UpdateProjectInterimId($projectId: Int!) {
-  update_moped_project_by_pk(
-    pk_columns: {project_id: $projectId},
-    _set: {interim_project_id: null}
-  ) {
-    interim_project_id
+  mutation UpdateProjectInterimId($projectId: Int!) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { interim_project_id: null }
+    ) {
+      interim_project_id
+    }
   }
-}
 `;
 
 /**
