@@ -104,7 +104,7 @@ const ProjectTeamTable = ({ projectId }) => {
       title: "Name",
       field: "moped_user",
       render: (personnel) => {
-        const isDeleted = personnel.moped_user.is_deleted;
+        const isDeleted = personnel?.moped_user.is_deleted;
         const fullName = getUserFullName(personnel.moped_user);
 
         return isDeleted ? (
@@ -115,9 +115,8 @@ const ProjectTeamTable = ({ projectId }) => {
           <Typography>{fullName}</Typography>
         );
       },
-      validate: (rowData) => !!rowData.moped_user.user_id,
+      validate: (rowData) => !!rowData?.moped_user?.user_id,
       editComponent: (props) => {
-        console.log("PROPS", props);
         return (
           <FormControl style={{ width: "100%" }}>
             <Autocomplete
@@ -164,12 +163,12 @@ const ProjectTeamTable = ({ projectId }) => {
           {getPersonnelRoles(personnel.moped_proj_personnel_roles)}
         </Typography>
       ),
-      validate: (rowData) => rowData?.roleIds.length > 0,
+      validate: (rowData) => rowData?.roleIds?.length > 0,
       editComponent: (props) => (
         <ProjectTeamRoleMultiselect
           id="role_ids"
           name="role_ids"
-          value={props.value}
+          value={props.value || []}
           onChange={props.onChange}
           roles={roles}
         />
