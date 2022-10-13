@@ -26,6 +26,7 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 import "./ProjectComments.css";
 
@@ -79,6 +80,9 @@ const useStyles = makeStyles((theme) => ({
   editDeleteButtons: {
     color: "#000000",
   },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
 }));
 
 // Lookup array to convert project note types to a human readable interpretation
@@ -97,6 +101,8 @@ const ProjectComments = (props) => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -261,6 +267,11 @@ const ProjectComments = (props) => {
     </Button>
   );
 
+  const handleDeleteOpen = (id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  };
+
   return (
     <CardContent>
       <Grid container spacing={2}>
@@ -387,17 +398,30 @@ const ProjectComments = (props) => {
                                 </IconButton>
                               )}
                               {!editingComment && (
-                                <IconButton
-                                  edge="end"
-                                  aria-label="delete"
-                                  onClick={() =>
-                                    submitDeleteComment(item.project_note_id)
+                                <DeleteConfirmationModal
+                                  type="comment"
+                                  submitDelete={() =>
+                                    submitDeleteComment(deleteConfirmationId)
+                                  }
+                                  isDeleteConfirmationOpen={
+                                    isDeleteConfirmationOpen
+                                  }
+                                  setIsDeleteConfirmationOpen={
+                                    setIsDeleteConfirmationOpen
                                   }
                                 >
-                                  <DeleteIcon
-                                    className={classes.editDeleteButtons}
-                                  />
-                                </IconButton>
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() =>
+                                      handleDeleteOpen(item.project_note_id)
+                                    }
+                                  >
+                                    <DeleteIcon
+                                      className={classes.editDeleteButtons}
+                                    />
+                                  </IconButton>
+                                </DeleteConfirmationModal>
                               )}
                             </ListItemSecondaryAction>
                           )
