@@ -2,12 +2,15 @@ import React, { useState } from "react";
 import clsx from "clsx";
 import { Icon, makeStyles, Typography } from "@material-ui/core";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
-import { MAPBOX_PADDING_PIXELS } from "./mapStyleSettings";
+import {
+  MAPBOX_PADDING_PIXELS,
+  MAPBOX_CONTROL_BUTTON_WIDTH,
+} from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
   speedDialAction: {
-    width: 58,
-    height: 58,
+    width: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
+    height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     backgroundSize: "100% 100%",
     borderRadius: 4,
     background: "lightgray",
@@ -19,15 +22,6 @@ const useStyles = makeStyles((theme) => ({
   speedDialAerial: {
     color: "white",
     backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
-  },
-  mapStyleToggle: {
-    position: "absolute",
-    bottom: "2rem",
-    right: "-2.5rem;",
-  },
-  mapStyleToggleImage: {
-    width: "5rem",
-    borderRadius: ".5rem",
   },
   mapStyleToggleLabel: {
     position: "relative",
@@ -50,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     top: "0",
   }),
   speedDial: {
-    height: 58,
+    height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     right: `${MAPBOX_PADDING_PIXELS}px`,
     // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
     bottom: ({ basemapKey }) =>
@@ -63,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
         basemapKey === "aerial" ? `${MAPBOX_PADDING_PIXELS}px` : "26px",
     },
     position: "absolute",
-    zIndex: 1,
   },
 }));
 
