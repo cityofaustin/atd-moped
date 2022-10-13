@@ -56,7 +56,7 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       loading={loading}
       options={data}
       renderInput={params => DeptUnitInput(params, null, "standard")}
-      value={value ?? ""}
+      value={value ?? null}
       getOptionSelected={(value, option) =>
         value.unit_long_name === option.unit_long_name
       }
