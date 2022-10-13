@@ -15,7 +15,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./MapboxStyleOverrides.css";
+// import "./MapboxStyleOverrides.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -233,12 +233,7 @@ export default function TheMap({
       {...mapParameters}
     >
       <BaseMapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
-      <GeocoderControl
-        marker={false}
-        mapboxAccessToken={mapParameters.mapboxAccessToken}
-        position="top-left"
-        flyTo={true}
-      />
+      <GeocoderControl position="top-left" />
       <Source
         id="ctn-lines"
         type="geojson"
