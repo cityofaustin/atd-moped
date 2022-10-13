@@ -62,10 +62,9 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Generates the basemap selector using the SpeedDial component
- * @param {function} handleBasemapChange - The function we will call with to change the basemap
- * @param {string} mapStyle - The name of the current basemap
- * @return {React.ReactPortal|null}
- * @constructor
+ * @param {function} setBasemapKey - The function we will call with to change the basemap key value
+ * @param {string} basemapKey - The name of the current basemap key
+ * @return {JSX.Element}
  */
 const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
@@ -75,17 +74,19 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
    * Changes the current basemap and closes the speed dial menu
    * @param basemapName
    */
-  const handleBasemapSpeedDialClose = (basemapName) => {
+  const onBasemapSelect = (basemapKey) => {
     setIsSpeedDialOpen(false);
-    if (basemapName !== null) setBasemapKey(basemapName);
+    setBasemapKey(basemapKey);
   };
 
   /**
    * Opens the speed dial menu
    */
-  const handleBasemapSpeedDialOpen = () => {
+  const onOpen = () => {
     setIsSpeedDialOpen(true);
   };
+
+  const onClose = () => setIsSpeedDialOpen(false);
 
   return (
     <SpeedDial
@@ -105,8 +106,8 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
           <span className={classes.mapStyleToggleLabel}>Map</span>
         </Typography>
       }
-      onClose={() => handleBasemapSpeedDialClose(null)}
-      onOpen={handleBasemapSpeedDialOpen}
+      onClose={onClose}
+      onOpen={onOpen}
       open={isSpeedDialOpen}
       direction={"left"}
       FabProps={{
@@ -135,7 +136,7 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         }
         tooltipTitle={"Streets Base Map"}
         tooltipPlacement={"top"}
-        onClick={() => handleBasemapSpeedDialClose("streets")}
+        onClick={() => onBasemapSelect("streets")}
         className={clsx(classes.speedDialStreets, classes.speedDialAction)}
       />
       <SpeedDialAction
@@ -153,7 +154,7 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         tooltipTitle={"Aerial Base Map"}
         tooltipPlacement={"top"}
         className={clsx(classes.speedDialAerial, classes.speedDialAction)}
-        onClick={() => handleBasemapSpeedDialClose("aerial")}
+        onClick={() => onBasemapSelect("aerial")}
       />
     </SpeedDial>
   );
