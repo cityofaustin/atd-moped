@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Icon, makeStyles, Typography } from "@material-ui/core";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
+import { MAPBOX_PADDING_PIXELS } from "./mapStyleSettings";
 
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   speedDialStreets: {
     color: "black",
     backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg) !important`,
@@ -41,25 +42,20 @@ export const useStyles = makeStyles((theme) => ({
     top: "0",
   }),
   speedDial: {
-    right: "10px !important",
+    height: 58,
+    right: `${MAPBOX_PADDING_PIXELS}px`,
     // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
     bottom: ({ basemapKey }) =>
-      basemapKey === "aerial" ? "2px !important" : "10px !important",
+      basemapKey === "aerial"
+        ? `${MAPBOX_PADDING_PIXELS}px`
+        : `${MAPBOX_PADDING_PIXELS * 3}px`,
     // Mapbox copyright info collapses to a taller info icon at 990px and below
     [theme.breakpoints.down(990)]: {
       bottom: ({ basemapKey }) =>
-        basemapKey === "aerial" ? "2px !important" : "26px !important",
+        basemapKey === "aerial" ? `${MAPBOX_PADDING_PIXELS}px` : "26px",
     },
     position: "absolute",
     zIndex: 1,
-    "&.MuiSpeedDial-directionUp, &.MuiSpeedDial-directionLeft": {
-      bottom: theme.spacing(2),
-      right: theme.spacing(2),
-    },
-    "&.MuiSpeedDial-directionDown, &.MuiSpeedDial-directionRight": {
-      top: theme.spacing(2),
-      left: theme.spacing(2),
-    },
   },
 }));
 
@@ -96,53 +92,52 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
   };
 
   return (
-    <div className={classes.speedDial}>
-      <SpeedDial
-        ariaLabel="Basemap Select"
-        hidden={false}
+    <SpeedDial
+      className={classes.speedDial}
+      ariaLabel="Basemap Select"
+      hidden={false}
+      icon={
+        <Typography className={classes.mapStyleToggle}>
+          <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
+          <span className={classes.mapStyleToggleLabel}>Map</span>
+        </Typography>
+      }
+      onClose={() => handleBasemapSpeedDialClose(null)}
+      onOpen={handleBasemapSpeedDialOpen}
+      open={isSpeedDialOpen}
+      direction={"left"}
+      FabProps={{
+        className:
+          basemapKey !== "streets"
+            ? classes.speedDialStreets
+            : classes.speedDialAerial,
+      }}
+    >
+      <SpeedDialAction
+        key={"streets"}
         icon={
-          <Typography className={classes.mapStyleToggle}>
-            <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
-            <span className={classes.mapStyleToggleLabel}>Map</span>
+          <Typography className={classes.mapStyleToggleLabel}>
+            Streets
           </Typography>
         }
-        onClose={() => handleBasemapSpeedDialClose(null)}
-        onOpen={handleBasemapSpeedDialOpen}
-        open={isSpeedDialOpen}
-        direction={"left"}
-        FabProps={{
-          className:
-            basemapKey !== "streets"
-              ? classes.speedDialStreets
-              : classes.speedDialAerial,
-        }}
-      >
-        <SpeedDialAction
-          key={"streets"}
-          icon={
-            <Typography>
-              <span className={classes.mapStyleToggleLabel}>Streets</span>
-            </Typography>
-          }
-          tooltipTitle={"Streets Base Map"}
-          tooltipPlacement={"top"}
-          onClick={() => handleBasemapSpeedDialClose("streets")}
-          className={classes.speedDialStreets}
-        />
-        <SpeedDialAction
-          key={"aerial"}
-          icon={
-            <Typography>
-              <span className={classes.mapStyleToggleLabel}>Aerial</span>
-            </Typography>
-          }
-          tooltipTitle={"Aerial Base Map"}
-          tooltipPlacement={"top"}
-          className={classes.speedDialAerial}
-          onClick={() => handleBasemapSpeedDialClose("aerial")}
-        />
-      </SpeedDial>
-    </div>
+        tooltipTitle={"Streets Base Map"}
+        tooltipPlacement={"top"}
+        onClick={() => handleBasemapSpeedDialClose("streets")}
+        className={classes.speedDialStreets}
+      />
+      <SpeedDialAction
+        key={"aerial"}
+        icon={
+          <Typography className={classes.mapStyleToggleLabel}>
+            Aerial
+          </Typography>
+        }
+        tooltipTitle={"Aerial Base Map"}
+        tooltipPlacement={"top"}
+        className={classes.speedDialAerial}
+        onClick={() => handleBasemapSpeedDialClose("aerial")}
+      />
+    </SpeedDial>
   );
 };
 
