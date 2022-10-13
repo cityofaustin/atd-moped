@@ -10,14 +10,12 @@ import {
   CircularProgress,
   Icon,
   IconButton,
-  MenuItem,
-  Select,
   Snackbar,
   TextField,
   Tooltip,
   Typography,
 } from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
@@ -33,7 +31,6 @@ import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { currencyFormatter } from "../../../utils/numberFormatters";
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -53,6 +50,8 @@ import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import FundingAmountIntegerField from "./FundingAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
+import CustomPopper from "../../../components/CustomPopper";
+import LookupSelectComponent from "../../../components/LookupSelectComponent";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -60,14 +59,6 @@ const useStyles = makeStyles((theme) => ({
   },
   linkIcon: {
     fontSize: "1rem",
-  },
-  syncLinkIcon: {
-    fontSize: "1.2rem",
-  },
-  editIcon: {
-    cursor: "pointer",
-    margin: "0 .5rem",
-    fontSize: "20px",
   },
   editIconFunding: {
     cursor: "pointer",
@@ -78,11 +69,6 @@ const useStyles = makeStyles((theme) => ({
     minWidth: "8rem",
     marginLeft: "8px",
   },
-  editIconConfirm: {
-    cursor: "pointer",
-    margin: "0.25rem 0",
-    fontSize: "24px",
-  },
   editIconButton: {
     margin: "8px 0",
     padding: "8px",
@@ -92,27 +78,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
     margin: "8px 0",
-  },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-  },
-  fieldLabelTextSpan: {
-    borderBottom: "1px dashed",
-    borderBottomColor: theme.palette.text.secondary,
-  },
-  fieldLabelLink: {
-    width: "calc(100% - 2rem)",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
-  },
-  fieldBox: {
-    maxWidth: "10rem",
-  },
-  fieldBoxTypography: {
-    width: "100%",
-  },
-  fieldSelectItem: {
-    width: "calc(100% - 3rem)",
   },
   fundingButton: {
     position: "absolute",
@@ -147,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fundSelectStyle: {
-    width: "8em",
+    width: "10em",
   },
 }));
 
@@ -162,7 +127,6 @@ const useFdusArray = (projectFunding) =>
         `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
     );
   }, [projectFunding]);
-
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -219,10 +183,10 @@ const ProjectFundingTable = () => {
   if (loading || !data) return <CircularProgress />;
 
   /**
-   * Get lookup value for a given table using a row ID and returning a name
+   * Get lookup value for a given table using a record ID and returning a name
    * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
    * @param {string} attribute - Prefix version of attribute name relying on the pattern of _id and _name
-   * @param {number} id - ID used to find target row in lookup table
+   * @param {number} id - ID used to find target record in lookup table
    * @return {string} - Name of attribute in the given row.
    */
   const getLookupValueByID = (lookupTable, attribute, id) => {
@@ -333,75 +297,67 @@ const ProjectFundingTable = () => {
   };
 
   /**
-   * Component for dropdown select using a lookup table as options
+   * Component for autocomplete using a lookup table as options
    * @param {*} props
    * @returns {React component}
    */
-  const LookupSelectComponent = (props) => (
-    <Select
-      style={{ minWidth: "8em" }}
+  const LookupAutocompleteComponent = (props) => (
+    <Autocomplete
+      style={{ minWidth: "200px" }}
+      value={
+        // if we are editing, the autocomplete has the value provided by the material table, which is the record id
+        // need to get its corresponding text value
+        props.value
+          ? getLookupValueByID(props.lookupTableName, props.name, props.value)
+          : null
+      }
+      // use customized popper component so menu expands to fullwidth
+      PopperComponent={CustomPopper}
       id={props.name}
-      value={props.value || props.defaultValue}
-    >
-      {props.data.map((item) => (
-        <MenuItem
-          onChange={() => props.onChange(item[`${props.name}_id`])}
-          onClick={() => props.onChange(item[`${props.name}_id`])}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value={item[`${props.name}_id`]}
-          key={item[`${props.name}_name`]}
-        >
-          {item[`${props.name}_name`]}
-        </MenuItem>
-      ))}
-      {props.columnDef.title === "Program" && (
-        <MenuItem
-          onChange={() => props.onChange("")}
-          onClick={() => props.onChange("")}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value=""
-        >
-          -
-        </MenuItem>
-      )}
-    </Select>
+      options={props.data}
+      renderInput={(params) => <TextField {...params} multiline />}
+      getOptionLabel={(option) =>
+        // if our value is a string, just return the string instead of accessing the name
+        typeof option === "string" ? option : option[`${props.name}_name`]
+      }
+      getOptionSelected={(value, option) =>
+        value[`${props.name}_name`] === option
+      }
+      onChange={(e, value) => {
+        value
+          ? props.onChange(value[`${props.name}_id`])
+          : props.onChange(null);
+      }}
+    />
   );
 
   /**
-   * Component for dropdown select for Funds
+   * Autocomplete component for Funds
    * @param {*} props
    * @returns {React component}
    */
-  const FundSelectComponent = (props) => (
-    <Select
-      id="moped_funds"
-      value={
-        props.value?.fund_id
-          ? `${props.value.fund_id} | ${props.value.fund_name}`
-          : ""
-      }
+  const FundAutocompleteComponent = (props) => (
+    <Autocomplete
       className={classes.fundSelectStyle}
-    >
-      {props.data.map((item) => (
-        <MenuItem
-          onChange={() => props.onChange(item)}
-          onClick={() => props.onChange(item)}
-          onKeyDown={(e) => handleKeyEvent(e)}
-          value={`${item.fund_id} | ${item.fund_name}`}
-          key={item.fund_id}
-        >
-          {`${item.fund_id} | ${item.fund_name}`}
-        </MenuItem>
-      ))}
-      <MenuItem
-        onChange={() => props.onChange(null)}
-        onClick={() => props.onChange(null)}
-        onKeyDown={(e) => handleKeyEvent(e)}
-        value=""
-      >
-        -
-      </MenuItem>
-    </Select>
+      value={props.value ? props.value : null}
+      // use customized popper component so menu expands to fullwidth
+      PopperComponent={CustomPopper}
+      id={"moped_funds"}
+      options={props.data}
+      renderInput={(params) => <TextField {...params} multiline />}
+      getOptionLabel={(option) =>
+        // if our value is a string, just return the string
+        typeof option === "string"
+          ? option
+          : `${option.fund_id} | ${option.fund_name}`
+      }
+      getOptionSelected={(value, option) =>
+        value.fund_id === option.fund_id && value.fund_name === option.fund_name
+      }
+      onChange={(e, value) => {
+        value ? props.onChange(value) : props.onChange(null);
+      }}
+    />
   );
 
   /**
@@ -437,10 +393,10 @@ const ProjectFundingTable = () => {
         "funding_source_name"
       ),
       editComponent: (props) => (
-        <LookupSelectComponent
+        <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
-          defaultValue={""}
+          lookupTableName={"moped_fund_sources"}
           data={data.moped_fund_sources}
         />
       ),
@@ -455,10 +411,10 @@ const ProjectFundingTable = () => {
           row.funding_program_id
         ),
       editComponent: (props) => (
-        <LookupSelectComponent
+        <LookupAutocompleteComponent
           {...props}
           name={"funding_program"}
-          defaultValue={""}
+          lookupTableName={"moped_fund_programs"}
           data={data.moped_fund_programs}
         />
       ),
@@ -507,7 +463,7 @@ const ProjectFundingTable = () => {
           ""
         ),
       editComponent: (props) => (
-        <FundSelectComponent {...props} data={data.moped_funds} />
+        <FundAutocompleteComponent {...props} data={data.moped_funds} />
       ),
     },
     {
@@ -572,7 +528,10 @@ const ProjectFundingTable = () => {
                 <ButtonDropdownMenu
                   buttonWrapperStyle={classes.fundingButton}
                   addAction={props.action.onClick}
-                  openFundingDialog={setIsDialogOpen}
+                  openActionDialog={setIsDialogOpen}
+                  parentButtonText="Add Funding Source"
+                  firstOptionText="New funding source"
+                  secondOptionText="From eCapris"
                 />
               ) : (
                 <Button

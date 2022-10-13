@@ -37,16 +37,23 @@ export const ProjectsListViewQueryConf = {
   export: ProjectsListViewExportConf,
   search: {
     placeholder:
-      "Search by project name, project description, project phase, or eCAPRIS subproject ID.",
+      "Search by project ID, name, description, phase, or eCAPRIS subproject ID.",
     defaultFieldsOperator: "_or",
   },
   columns: {
     project_id: {
       hidden: true,
       primary_key: true,
-      searchable: false,
+      searchable: true,
       sortable: false,
-      label: "",
+      label: "Project ID",
+      search: {
+        label: "Search by project ID",
+        operator: "_eq",
+        quoted: false,
+        envelope: "%{VALUE}%",
+        invalidValueDefault: 0,
+      },
       icon: {
         name: "edit_road",
         color: "primary",
@@ -67,7 +74,7 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: values => {
+      filter: (values) => {
         const jsonValues = JSON.parse(values);
         return (
           <RouterLink
@@ -137,7 +144,7 @@ export const ProjectsListViewQueryConf = {
         envelope: "%{VALUE}%",
       },
       type: "string",
-      filter: value => (value === "None" ? "-" : value),
+      filter: (value) => (value === "None" ? "-" : value),
     },
     project_partner: {
       label: "Project partners",
@@ -155,7 +162,7 @@ export const ProjectsListViewQueryConf = {
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
-      filter: value => (
+      filter: (value) => (
         <ExternalLink
           text={value}
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
@@ -163,7 +170,7 @@ export const ProjectsListViewQueryConf = {
       ),
       type: "number",
       search: {
-        label: "Search by eCapris subproject id",
+        label: "Search by eCapris subproject ID",
         operator: "_eq",
         quoted: false,
         envelope: "%{VALUE}%",
@@ -175,7 +182,7 @@ export const ProjectsListViewQueryConf = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: value => formatTimeStampTZType(value),
+      filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
     },
     // the following column configurations only work with material table and do not have the
@@ -208,6 +215,15 @@ export const ProjectsListViewQueryConf = {
       type: "string",
     },
     project_designer: {
+      type: "string",
+    },
+    contractors: {
+      type: "string",
+    },
+    contract_numbers: {
+      type: "string",
+    },
+    project_tags: {
       type: "string",
     },
   },

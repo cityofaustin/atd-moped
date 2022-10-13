@@ -10,12 +10,12 @@ import {
 } from "@material-ui/core";
 import { useMutation } from "@apollo/client";
 import { Alert } from "@material-ui/lab";
-import { UPDATE_PROJECT_NAME_QUERY } from "../../../queries/project"
+import { UPDATE_PROJECT_NAME_QUERY } from "../../../queries/project";
 
 /**
  * GridTable Style
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
@@ -32,6 +32,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: "16px",
     fontSize: "2rem",
   },
+  titleDisplayField: {
+    display: "flex",
+  },
   titleEditField: {
     "font-size": "1.5rem",
     "font-weight": "bold",
@@ -41,7 +44,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectNameEditable = props => {
+const ProjectNameEditable = (props) => {
   const classes = useStyles();
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -52,9 +55,8 @@ const ProjectNameEditable = props => {
 
   const initialProjectName = props?.projectName;
   const [projectName, setProjectName] = useState(initialProjectName);
-  const [projectNameBeforeEdit, setProjectNameBeforeEdit] = useState(
-    projectName
-  );
+  const [projectNameBeforeEdit, setProjectNameBeforeEdit] =
+    useState(projectName);
   const [isEditing, setIsEditing] = useState(props?.isEditing ?? false);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [titleError, setTitleError] = useState(false);
@@ -65,7 +67,7 @@ const ProjectNameEditable = props => {
 
   const [updateProjectName] = useMutation(UPDATE_PROJECT_NAME_QUERY);
 
-  const handleProjectNameChange = e => {
+  const handleProjectNameChange = (e) => {
     if (titleError) {
       setTitleError(false);
     }
@@ -75,7 +77,7 @@ const ProjectNameEditable = props => {
   /**
    * Makes the update via GraphQL
    */
-  const handleAcceptClick = e => {
+  const handleAcceptClick = (e) => {
     e.preventDefault();
     if (!(projectName.trim() === "")) {
       updateProjectName({
@@ -84,7 +86,7 @@ const ProjectNameEditable = props => {
           projectName: projectName,
         },
       })
-        .then(res => {
+        .then((res) => {
           setProjectNameBeforeEdit(projectName);
           setSnackbarState({
             open: true,
@@ -92,7 +94,7 @@ const ProjectNameEditable = props => {
             severity: "success",
           });
         })
-        .catch(err => {
+        .catch((err) => {
           setProjectName(projectNameBeforeEdit);
           setSnackbarState({
             open: true,
@@ -107,7 +109,7 @@ const ProjectNameEditable = props => {
           if (props?.setIsEditing) props.setIsEditing(false);
           setIsEditing(false);
           setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-        props.updatedCallback();
+          props.updatedCallback();
         });
     } else {
       setTitleError(true);
@@ -118,7 +120,7 @@ const ProjectNameEditable = props => {
    * Handles closing the edit mode
    * @param {ChangeEvent} e - HTML DOM Event
    */
-  const handleCancelClick = e => {
+  const handleCancelClick = (e) => {
     e.preventDefault();
     if (props?.setIsEditing) props.setIsEditing(false);
     setIsEditing(false);
@@ -132,7 +134,7 @@ const ProjectNameEditable = props => {
   return (
     <Box className={isEditing ? classes.boxField : null}>
       {isEditing && (
-        <form onSubmit={e => handleAcceptClick(e)}>
+        <form onSubmit={(e) => handleAcceptClick(e)}>
           <Grid container fullWidth>
             <Grid item xs={12} sm={11}>
               <TextField
@@ -147,7 +149,7 @@ const ProjectNameEditable = props => {
                 }
                 multiline={false}
                 rows={1}
-                onChange={e => handleProjectNameChange(e)}
+                onChange={(e) => handleProjectNameChange(e)}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -167,7 +169,7 @@ const ProjectNameEditable = props => {
               </Icon>
               <Icon
                 className={classes.editIconConfirm}
-                onClick={e => handleCancelClick(e)}
+                onClick={(e) => handleCancelClick(e)}
               >
                 close
               </Icon>
@@ -175,16 +177,23 @@ const ProjectNameEditable = props => {
           </Grid>
         </form>
       )}
-      { // if not Editing Project Name, clicking on project title allows one to edit
-      !isEditing && (
-        <Typography
-          color="textPrimary"
-          variant="h1"
-          onClick={() => setIsEditing(true)}
-        >
-          {projectName}
-        </Typography>
-      )}
+      {
+        // if not Editing Project Name, clicking on project title allows one to edit
+        !isEditing && (
+          <span className={classes.titleDisplayField}>
+            <Typography
+              color="textPrimary"
+              variant="h1"
+              onClick={() => setIsEditing(true)}
+            >
+              {projectName}
+            </Typography>
+            <Typography color="textSecondary" variant="h1">
+              &nbsp;#{props.projectId}
+            </Typography>
+          </span>
+        )
+      }
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}

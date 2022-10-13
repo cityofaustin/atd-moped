@@ -11,6 +11,7 @@ import Amplify, { Auth } from "aws-amplify";
 import { colors } from "@material-ui/core";
 
 import config from "../config";
+import { nonLoginUserRole } from "src/views/staff/helpers";
 
 import { ACCOUNT_USER_PROFILE_GET_PLAIN } from "../queries/account";
 
@@ -57,16 +58,16 @@ export const destroyLoggedInProfile = () =>
  */
 export const getSessionDatabaseData = () => {
   if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
-    return null
+    return null;
   }
-  return JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName))
-}
+  return JSON.parse(localStorage.getItem(atdSessionDatabaseDataKeyName));
+};
 
 /**
  * Persists the user database data into localStorage
  * @param userObject
  */
-export const setSessionDatabaseData = userObject =>
+export const setSessionDatabaseData = (userObject) =>
   localStorage.setItem(
     atdSessionDatabaseDataKeyName,
     JSON.stringify(userObject)
@@ -82,7 +83,7 @@ export const deleteSessionDatabaseData = () =>
  * Retrieves the user database data from Hasura
  * @param {Object} userObject - The user object as provided by AWS
  */
-export const initializeUserDBObject = userObject => {
+export const initializeUserDBObject = (userObject) => {
   // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
 
@@ -105,9 +106,9 @@ export const initializeUserDBObject = userObject => {
               : getDatabaseId(userObject),
         },
       }),
-    }).then(res => {
+    }).then((res) => {
       // Then we parse the response
-      res.json().then(resData => {
+      res.json().then((resData) => {
         // If we have any user data,  use it
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
@@ -134,7 +135,7 @@ export const UserProvider = ({ children }) => {
    * Persists user context object into localstorage
    * @param {str} context - The user context object
    */
-  const setPersistedContext = context => {
+  const setPersistedContext = (context) => {
     localStorage.setItem(atdSessionKeyName, JSON.stringify(context));
   };
 
@@ -154,11 +155,11 @@ export const UserProvider = ({ children }) => {
     Amplify.Logger.LOG_LEVEL = "INFO";
 
     Auth.currentSession()
-      .then(user => {
+      .then((user) => {
         setPersistedContext(user);
         setUser(user);
       })
-      .catch(error => {
+      .catch((error) => {
         setPersistedContext(null);
         setUser(null);
       });
@@ -175,12 +176,12 @@ export const UserProvider = ({ children }) => {
     setLoginLoading(true);
 
     return Auth.signIn(usernameOrEmail, password)
-      .then(user => {
+      .then((user) => {
         setUser(user.signInUserSession);
         setLoginLoading(false);
         return user.signInUserSession;
       })
-      .catch(err => {
+      .catch((err) => {
         if (err.code === "UserNotFoundException") {
           err.message = "Invalid username or password";
         }
@@ -196,7 +197,7 @@ export const UserProvider = ({ children }) => {
     destroyProfileColor();
     destroyLoggedInProfile();
     deleteSessionDatabaseData();
-    return Auth.signOut().then(data => {
+    return Auth.signOut().then((data) => {
       // Remove the current color
       setUser(null);
       return data;
@@ -209,10 +210,10 @@ export const UserProvider = ({ children }) => {
   // to re-render as well. If it does, we want to make sure to give the `UserContext.Provider` the
   // same value as long as the user data is the same. If you have multiple other "controller"
   // components or Providers above this component, then this will be a performance booster.
-  const values = useMemo(() => ({ user, login, logout, loginLoading }), [
-    user,
-    loginLoading,
-  ]);
+  const values = useMemo(
+    () => ({ user, login, logout, loginLoading }),
+    [user, loginLoading]
+  );
 
   // Finally, return the interface that we want to expose to our other components
   return <UserContext.Provider value={values}>{children}</UserContext.Provider>;
@@ -254,9 +255,9 @@ export const useUser = () => {
   return context;
 };
 
-export const getJwt = user => user.idToken.jwtToken;
+export const getJwt = (user) => user.idToken.jwtToken;
 
-export const getHasuraClaims = user => {
+export const getHasuraClaims = (user) => {
   try {
     return JSON.parse(user.idToken.payload["https://hasura.io/jwt/claims"]);
   } catch {
@@ -264,7 +265,7 @@ export const getHasuraClaims = user => {
   }
 };
 
-export const getDatabaseId = user => {
+export const getDatabaseId = (user) => {
   // if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
@@ -274,7 +275,7 @@ export const getDatabaseId = user => {
   }
 };
 
-export const isUserSSO = user =>
+export const isUserSSO = (user) =>
   user.idToken.payload["cognito:username"].startsWith("azuread_");
 
 /**
@@ -282,10 +283,10 @@ export const isUserSSO = user =>
  * @param {array} roles - Array of user roles
  * @return {string} Highest user role
  */
-export const findHighestRole = roles => {
+export const findHighestRole = (roles) => {
   if (roles === null) return null;
 
-  const findRole = role => roles.includes(role) && roles;
+  const findRole = (role) => roles.includes(role) && roles;
 
   switch (roles) {
     case findRole("moped-admin"):
@@ -294,6 +295,8 @@ export const findHighestRole = roles => {
       return "moped-editor";
     case findRole("moped-viewer"):
       return "moped-viewer";
+    case findRole(nonLoginUserRole):
+      return nonLoginUserRole;
     default:
   }
 };
@@ -303,7 +306,7 @@ export const findHighestRole = roles => {
  * @param {object} user - Cognito User object containing roles in the token
  * @return {string} Highest user role
  */
-export const getHighestRole = user => {
+export const getHighestRole = (user) => {
   const claims = user.idToken.payload["https://hasura.io/jwt/claims"];
 
   const allowedRoles = JSON.parse(claims)["x-hasura-allowed-roles"];

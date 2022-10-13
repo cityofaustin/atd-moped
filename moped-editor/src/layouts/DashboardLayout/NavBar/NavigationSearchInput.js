@@ -281,7 +281,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               onExited={resetSearchInput}
             >
               <InputBase
-                placeholder="Project name, description or eCAPRIS ID"
+                placeholder="Project ID, name, description or eCAPRIS ID"
                 classes={{
                   root: input404Class
                     ? classes.inputRoot404

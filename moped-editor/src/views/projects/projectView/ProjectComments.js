@@ -26,6 +26,7 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 import "./ProjectComments.css";
 
@@ -42,7 +43,7 @@ import {
 } from "src/utils/dateAndTime";
 import { getUserFullName } from "src/utils/userNames";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     backgroundColor: theme.palette.background.paper,
@@ -79,13 +80,16 @@ const useStyles = makeStyles(theme => ({
   editDeleteButtons: {
     color: "#000000",
   },
+  chip: {
+    margin: theme.spacing(0.5),
+  },
 }));
 
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
-const ProjectComments = props => {
+const ProjectComments = (props) => {
   const isStatusEditModal = props.modal;
   let { projectId } = useParams();
   const classes = useStyles();
@@ -97,6 +101,8 @@ const ProjectComments = props => {
   const [commentId, setCommentId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -191,7 +197,7 @@ const ProjectComments = props => {
     setCommentId(null);
   };
 
-  const submitEditComment = project_note_id => {
+  const submitEditComment = (project_note_id) => {
     setCommentAddLoading(true);
     setCommentId(null);
     editExistingComment({
@@ -203,7 +209,7 @@ const ProjectComments = props => {
     });
   };
 
-  const submitDeleteComment = project_note_id => {
+  const submitDeleteComment = (project_note_id) => {
     deleteExistingComment({
       variables: {
         projectId: Number(projectId),
@@ -216,7 +222,7 @@ const ProjectComments = props => {
    * Updates the type based on conditions
    * @param {Number} typeId
    */
-  const filterNoteType = typeId => setNoteType(Number(typeId));
+  const filterNoteType = (typeId) => setNoteType(Number(typeId));
 
   // when the data changes, update the display notes state
   useEffect(() => {
@@ -236,7 +242,7 @@ const ProjectComments = props => {
       // on first few renders, mopedProjNotes is still undefined.
       // Check to see if array exists before trying to filter
       const filteredNotes = mopedProjNotes
-        ? mopedProjNotes.filter(n => n.project_note_type === noteType)
+        ? mopedProjNotes.filter((n) => n.project_note_type === noteType)
         : [];
       setDisplayNotes(filteredNotes);
     }
@@ -250,7 +256,7 @@ const ProjectComments = props => {
    * @return {JSX.Element}
    * @constructor
    */
-  const CommentButton = props => (
+  const CommentButton = (props) => (
     <Button
       color="primary"
       className={classes.showButtonItem}
@@ -260,6 +266,11 @@ const ProjectComments = props => {
       {props.children}
     </Button>
   );
+
+  const handleDeleteOpen = (id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  };
 
   return (
     <CardContent>
@@ -320,17 +331,26 @@ const ProjectComments = props => {
                           }
                           primary={
                             <>
-                              <Typography className={classes.commentorText}>
+                              <Typography
+                                component={"span"}
+                                className={classes.commentorText}
+                              >
                                 {item.added_by}
                               </Typography>
-                              <Typography className={classes.commentDate}>
+                              <Typography
+                                component={"span"}
+                                className={classes.commentDate}
+                              >
                                 {` - ${makeUSExpandedFormDateFromTimeStampTZ(
                                   item.date_created
                                 )} ${makeHourAndMinutesFromTimeStampTZ(
                                   item.date_created
                                 )}`}
                               </Typography>
-                              <Typography className={classes.noteType}>
+                              <Typography
+                                component={"span"}
+                                className={classes.noteType}
+                              >
                                 {` ${projectNoteTypes[item.project_note_type]}`}
                               </Typography>
                             </>
@@ -348,46 +368,64 @@ const ProjectComments = props => {
                                 cancelCommentEdit={cancelCommentEdit}
                               />
                             ) : (
-                              <Typography className={"noteBody"}>
+                              <Typography
+                                component={"span"}
+                                className={"noteBody"}
+                              >
                                 {parse(item.project_note)}
                               </Typography>
                             )
                           }
                         />
-                        {// show edit/delete icons if comment authored by logged in user
-                        // or user is admin
-                        editableComment && (
-                          <ListItemSecondaryAction
-                            className={classes.editControls}
-                          >
-                            {commentId !== item.project_note_id && (
-                              <IconButton
-                                edge="end"
-                                aria-label="edit"
-                                onClick={() =>
-                                  editComment(i, item.project_note_id)
-                                }
-                              >
-                                <EditIcon
-                                  className={classes.editDeleteButtons}
-                                />
-                              </IconButton>
-                            )}
-                            {!editingComment && (
-                              <IconButton
-                                edge="end"
-                                aria-label="delete"
-                                onClick={() =>
-                                  submitDeleteComment(item.project_note_id)
-                                }
-                              >
-                                <DeleteIcon
-                                  className={classes.editDeleteButtons}
-                                />
-                              </IconButton>
-                            )}
-                          </ListItemSecondaryAction>
-                        )}
+                        {
+                          // show edit/delete icons if comment authored by logged in user
+                          // or user is admin
+                          editableComment && (
+                            <ListItemSecondaryAction
+                              className={classes.editControls}
+                            >
+                              {commentId !== item.project_note_id && (
+                                <IconButton
+                                  edge="end"
+                                  aria-label="edit"
+                                  onClick={() =>
+                                    editComment(i, item.project_note_id)
+                                  }
+                                >
+                                  <EditIcon
+                                    className={classes.editDeleteButtons}
+                                  />
+                                </IconButton>
+                              )}
+                              {!editingComment && (
+                                <DeleteConfirmationModal
+                                  type="comment"
+                                  submitDelete={() =>
+                                    submitDeleteComment(deleteConfirmationId)
+                                  }
+                                  isDeleteConfirmationOpen={
+                                    isDeleteConfirmationOpen
+                                  }
+                                  setIsDeleteConfirmationOpen={
+                                    setIsDeleteConfirmationOpen
+                                  }
+                                >
+                                  <IconButton
+                                    edge="end"
+                                    aria-label="delete"
+                                    onClick={() =>
+                                      handleDeleteOpen(item.project_note_id)
+                                    }
+                                  >
+                                    <DeleteIcon
+                                      className={classes.editDeleteButtons}
+                                    />
+                                  </IconButton>
+                                </DeleteConfirmationModal>
+                              )}
+                            </ListItemSecondaryAction>
+                          )
+                        }
                       </ListItem>
                       {isNotLastItem && <Divider component="li" />}
                     </React.Fragment>

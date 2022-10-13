@@ -1,7 +1,10 @@
 ## Associated issues
 
 ## Testing
-**URL to test:** <!-- https://moped-test.austinmobility.io/moped/ or Netlify -->
+**URL to test:** 
+<!---
+ [branch-name]--atd-moped-main.netlify.app/moped/ if test instance or deploy-preview-[pr-number]--atd-moped-main.netlify.app/moped/ 
+--->
 
 **Steps to test:**
 
