@@ -121,24 +121,8 @@ AS WITH project_person_list_lookup AS (
         AND ptags.is_deleted = false
         AND ptags.project_id = mp.project_id
       GROUP BY ptags.project_id) AS project_tags,
-    ( -- get me all of the contractors added to a project
-      SELECT string_agg(contract.contractor, ', ' :: text) AS string_agg
-      FROM moped_proj_contract contract
-      WHERE 1 = 1
-      AND contract.is_deleted = FALSE
-      AND contract.project_id = mp.project_id
-      GROUP BY
-      contract.project_id) AS contractors,
-    ( -- get me all of the contract numbers added to a project
-      SELECT
-        string_agg(
-            contract.contract_number, ', ' :: text
-        ) AS string_agg
-      FROM moped_proj_contract contract
-      WHERE 1 = 1
-        AND contract.is_deleted = FALSE
-        AND contract.project_id = mp.project_id
-      GROUP BY contract.project_id) AS contract_numbers
+    string_agg(contracts.contractor, ', ') AS contractors,
+    string_agg(contracts.contract_number, ', ') AS contract_numbers
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
