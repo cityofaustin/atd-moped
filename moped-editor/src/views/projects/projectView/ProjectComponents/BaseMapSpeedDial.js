@@ -1,16 +1,24 @@
 import React, { useState } from "react";
+import clsx from "clsx";
 import { Icon, makeStyles, Typography } from "@material-ui/core";
 import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 import { MAPBOX_PADDING_PIXELS } from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
+  speedDialAction: {
+    width: 58,
+    height: 58,
+    backgroundSize: "100% 100%",
+    borderRadius: 4,
+    background: "lightgray",
+  },
   speedDialStreets: {
     color: "black",
-    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg) !important`,
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg)`,
   },
   speedDialAerial: {
     color: "white",
-    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg) !important`,
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
   },
   mapStyleToggle: {
     position: "absolute",
@@ -107,10 +115,12 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       open={isSpeedDialOpen}
       direction={"left"}
       FabProps={{
-        className:
+        className: clsx(
+          classes.speedDialAction,
           basemapKey !== "streets"
             ? classes.speedDialStreets
-            : classes.speedDialAerial,
+            : classes.speedDialAerial
+        ),
       }}
     >
       <SpeedDialAction
@@ -123,7 +133,7 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         tooltipTitle={"Streets Base Map"}
         tooltipPlacement={"top"}
         onClick={() => handleBasemapSpeedDialClose("streets")}
-        className={classes.speedDialStreets}
+        className={clsx(classes.speedDialStreets, classes.speedDialAction)}
       />
       <SpeedDialAction
         key={"aerial"}
@@ -134,7 +144,7 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
         }
         tooltipTitle={"Aerial Base Map"}
         tooltipPlacement={"top"}
-        className={classes.speedDialAerial}
+        className={clsx(classes.speedDialAerial, classes.speedDialAction)}
         onClick={() => handleBasemapSpeedDialClose("aerial")}
       />
     </SpeedDial>
