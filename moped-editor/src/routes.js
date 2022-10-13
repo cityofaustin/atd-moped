@@ -100,8 +100,8 @@ const unprotectedRoutePaths = ["/", "/moped/session"];
  * @param {Array} routes - Routes composed to pass as arg to React Router useRoutes hook
  * @return {Array} Routes array with protected route's element wrapped with Can component
  */
-export const restrictRoutes = routes =>
-  routes.map(route => {
+export const restrictRoutes = (routes) =>
+  routes.map((route) => {
     if (unprotectedRoutePaths.includes(route.path)) {
       return route;
     } else if (route.children) {

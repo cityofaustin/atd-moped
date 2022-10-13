@@ -150,7 +150,7 @@ export const GridTableFiltersCommonOperators = {
     type: "date",
   },
   string_equals_case_sensitive: {
-    operator: "_eq",
+    operator: "_ilike",
     label: "is",
     description: "Field content equals string (case-sensitive)",
     envelope: null,

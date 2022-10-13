@@ -140,4 +140,26 @@ export const SETTINGS = [
       },
     ],
   },
+  {
+    key: "moped_tags",
+    label: "Project Tags",
+    columns: [
+      {
+        key: "id",
+        label: "Tag ID",
+      },
+      {
+        key: "type",
+        label: "Type",
+      },
+      {
+        key: "name",
+        label: "Name",
+      },
+      {
+        key: "slug",
+        label: "Slug",
+      },
+    ],
+  },
 ];

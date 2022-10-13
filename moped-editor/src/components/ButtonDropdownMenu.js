@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, ListItemIcon, Menu, MenuItem } from "@material-ui/core";
 import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
 import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
+import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
 import AddCircle from "@material-ui/icons/AddCircle";
 import { makeStyles } from "@material-ui/core";
 
@@ -13,29 +14,43 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.background.paper,
     },
     "& .MuiList-root": {
-      padding: "0px"
+      padding: "0px",
     },
     "& .MuiListItem-root": {
       textTransform: "uppercase",
       fontSize: "14px",
       fontWeight: 500,
       paddingTop: "8px",
-      paddingBottom: "8px"
+      paddingBottom: "8px",
     },
     "& .MuiListItem-root:hover": {
-      backgroundColor: theme.palette.primary.dark
+      backgroundColor: theme.palette.primary.dark,
     },
     "& .MuiListItem-root:first-of-type": {
-      borderBottom: `1px solid ${theme.palette.primary.dark}`
+      borderBottom: `1px solid ${theme.palette.primary.dark}`,
     },
     "& .MuiListItemIcon-root": {
       color: theme.palette.background.paper,
-      minWidth: "28px"
-    }
+      minWidth: "28px",
+    },
   },
 }));
 
-const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }) => {
+/**
+ * ButtonDropdownMenu - Button that opens to show two different options
+ *
+ * @return {JSX.Element}
+ * @constructor
+ */
+const ButtonDropdownMenu = ({
+  buttonWrapperStyle,
+  addAction,
+  openActionDialog,
+  parentButtonText,
+  firstOptionText,
+  secondOptionText,
+  secondOptionIcon,
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -63,7 +78,7 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }
         }
         className={buttonWrapperStyle}
       >
-        Add Funding Source
+        {parentButtonText}
       </Button>
       <Menu
         className={classes.dropDownMenu}
@@ -85,13 +100,17 @@ const ButtonDropdownMenu = ({ buttonWrapperStyle, addAction, openFundingDialog }
           <ListItemIcon>
             <AddCircle fontSize="small" />
           </ListItemIcon>
-          New funding source
+          {firstOptionText}
         </MenuItem>
-        <MenuItem onClick={() => openFundingDialog(true)}>
+        <MenuItem onClick={() => openActionDialog(true)}>
           <ListItemIcon>
-            <AddCircle fontSize="small" />
+            {secondOptionIcon ? (
+              <PlaylistAddIcon fontSize="small" />
+            ) : (
+              <AddCircle fontSize="small" />
+            )}
           </ListItemIcon>
-          From eCapris
+          {secondOptionText}
         </MenuItem>
       </Menu>
     </div>
