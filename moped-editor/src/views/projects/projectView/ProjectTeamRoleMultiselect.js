@@ -27,8 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
 const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
   const classes = useStyles();
-
-  console.log("VALUE", value);
   return (
     <FormControl className={classes.formControl}>
       <Select

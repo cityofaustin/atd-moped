@@ -29,7 +29,11 @@ import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
+import {
+  TEAM_QUERY,
+  UPSERT_PROJECT_PERSONNEL,
+  INSERT_PROJECT_PERSONNEL,
+} from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -62,7 +66,8 @@ const getPersonnelRoles = (projRolesArray) => {
 };
 
 /**
- * Adds a `roleIds`property to each team member
+ * Adds a `roleIds` property to each team member - which we'll use as the i/o for the
+ *  moped_project_role multiselect
  * @param {Array} projPersonnel - An array of of moped_proj_personnel objects
  * @return {string} the same array, with a `roleIds` prop added to each object
  */
@@ -78,6 +83,22 @@ const usePersonnel = (projPersonnel) =>
     return projPersonnel;
   }, [projPersonnel]);
 
+const getNewPersonnelPayload = ({
+  newData: {
+    moped_user: { user_id },
+    notes,
+    roleIds,
+  },
+  projectId: project_id,
+}) => {
+  const payload = { notes, project_id, user_id };
+  const personnelRoles = roleIds.map((roleId) => ({
+    project_role_id: roleId,
+  }));
+  payload["moped_proj_personnel_roles"] = { data: personnelRoles };
+  return payload;
+};
+
 const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
 
@@ -89,6 +110,7 @@ const ProjectTeamTable = ({ projectId }) => {
   const addActionRef = React.useRef();
 
   const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
+  const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
 
   const personnel = usePersonnel(
     data?.moped_project_by_pk.moped_proj_personnel
@@ -262,8 +284,12 @@ const ProjectTeamTable = ({ projectId }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
-            console.log("new row");
-            return Promise.resolve();
+            const payload = getNewPersonnelPayload({ newData, projectId });
+            return insertProjectPersonnel({
+              variables: {
+                objects: payload,
+              },
+            }).then(() => refetch());
           },
           onRowUpdate: (newData, oldData) => {
             console.log("do an update");

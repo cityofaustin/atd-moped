@@ -258,6 +258,18 @@ export const UPSERT_PROJECT_PERSONNEL = gql`
   }
 `;
 
+export const INSERT_PROJECT_PERSONNEL = gql`
+  mutation InsertProjectPersonnel(
+    $objects: [moped_proj_personnel_insert_input!]!
+  ) {
+    insert_moped_proj_personnel(
+      objects: $objects
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
     moped_phases(
