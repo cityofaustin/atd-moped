@@ -1156,7 +1156,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
     - role: moped-editor
       permission:
@@ -1169,7 +1168,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
   select_permissions:
     - role: moped-admin
@@ -1182,7 +1180,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
         filter: {}
     - role: moped-editor
@@ -1195,7 +1192,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
         filter: {}
     - role: moped-viewer
@@ -1208,7 +1204,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
         filter: {}
   update_permissions:
@@ -1222,7 +1217,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
         filter: {}
         check: {}
@@ -1236,7 +1230,6 @@
           - geography_collection
           - geography_linestring
           - geography_point
-          - status_id
           - is_deleted
         filter: {}
         check: {}
