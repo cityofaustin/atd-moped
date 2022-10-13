@@ -5,6 +5,7 @@ import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,
+  COLORS,
 } from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
@@ -13,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     backgroundSize: "100% 100%",
     borderRadius: 4,
-    background: "lightgray",
+    background: COLORS.mutedGray,
   },
   speedDialStreets: {
     color: "black",
@@ -23,27 +24,25 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
   },
+  fabLabel: ({ isSpeedDialOpen }) => ({
+    ...(isSpeedDialOpen && { backgroundColor: "rgba(0,0,0,.25)" }),
+    height: "100%",
+  }),
   mapStyleToggleLabel: {
-    position: "relative",
-    bottom: "-1.3rem",
     fontSize: ".8rem",
     fontWeight: "bold",
   },
   mapStyleToggleLabelIcon: {
     position: "relative",
-    bottom: "-1.5rem",
-    fontSize: ".8rem",
-    fontWeight: "bold",
+    top: 3,
     marginRight: "4px",
   },
-  mapStyleToggle: ({ isSpeedDialOpen }) => ({
-    ...(isSpeedDialOpen && { backgroundColor: "rgba(0,0,0,.25)" }),
+  mapStyleActionLabel: {
     position: "absolute",
-    height: "100%",
-    width: "100%",
-    top: "0",
-  }),
+    bottom: 0,
+  },
   speedDial: {
+    position: "absolute",
     height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     right: `${MAPBOX_PADDING_PIXELS}px`,
     // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
@@ -52,11 +51,12 @@ const useStyles = makeStyles((theme) => ({
         ? `${MAPBOX_PADDING_PIXELS}px`
         : `${MAPBOX_PADDING_PIXELS * 3}px`,
     // Mapbox copyright info collapses to a taller info icon at 990px and below
-    [theme.breakpoints.down(990)]: {
+    [theme.breakpoints.down(991)]: {
       bottom: ({ basemapKey }) =>
-        basemapKey === "aerial" ? `${MAPBOX_PADDING_PIXELS}px` : "26px",
+        basemapKey === "aerial"
+          ? `${MAPBOX_PADDING_PIXELS}px`
+          : `${MAPBOX_PADDING_PIXELS * 4}px`,
     },
-    position: "absolute",
   },
 }));
 
@@ -98,8 +98,15 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       ariaLabel="Basemap Select"
       hidden={false}
       icon={
-        <Typography className={classes.mapStyleToggle}>
-          <Icon className={classes.mapStyleToggleLabelIcon}>layers</Icon>
+        <Typography>
+          <Icon
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleToggleLabelIcon
+            )}
+          >
+            layers
+          </Icon>
           <span className={classes.mapStyleToggleLabel}>Map</span>
         </Typography>
       }
@@ -108,6 +115,9 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       open={isSpeedDialOpen}
       direction={"left"}
       FabProps={{
+        classes: {
+          label: classes.fabLabel,
+        },
         className: clsx(
           classes.speedDialAction,
           basemapKey !== "streets"
@@ -119,7 +129,12 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       <SpeedDialAction
         key={"streets"}
         icon={
-          <Typography className={classes.mapStyleToggleLabel}>
+          <Typography
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleActionLabel
+            )}
+          >
             Streets
           </Typography>
         }
@@ -131,7 +146,12 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
       <SpeedDialAction
         key={"aerial"}
         icon={
-          <Typography className={classes.mapStyleToggleLabel}>
+          <Typography
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleActionLabel
+            )}
+          >
             Aerial
           </Typography>
         }
