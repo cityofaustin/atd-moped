@@ -3,7 +3,7 @@ import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
-import BaseMapSpeedDial from "./BaseMapSpeedDial";
+import BasemapSpeedDial from "./BasemapSpeedDial";
 import {
   basemaps,
   mapParameters,
@@ -232,8 +232,8 @@ export default function TheMap({
       mapStyle={basemaps[basemapKey]}
       {...mapParameters}
     >
-      <BaseMapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
-      <GeocoderControl position="top-left" />
+      <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
+      <GeocoderControl position="top-left" marker={false} />
       <Source
         id="ctn-lines"
         type="geojson"

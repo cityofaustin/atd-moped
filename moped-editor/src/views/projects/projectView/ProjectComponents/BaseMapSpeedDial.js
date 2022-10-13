@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} basemapKey - The name of the current basemap key
  * @return {JSX.Element}
  */
-const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
+const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
   const classes = useStyles({ basemapKey, isSpeedDialOpen });
 
@@ -160,4 +160,4 @@ const BaseMapSpeedDial = ({ setBasemapKey, basemapKey }) => {
   );
 };
 
-export default BaseMapSpeedDial;
+export default BasemapSpeedDial;

@@ -26,7 +26,6 @@ export default function GeocoderControl(props) {
     () => {
       const ctrl = new MapboxGeocoder({
         ...props,
-        marker: false,
         flyTo: true,
         accessToken: mapParameters.mapboxAccessToken,
         bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
