@@ -56,37 +56,40 @@ const ControlledAutocomplete = ({
   id,
   disabled = false,
   options,
-  getOptionLabel,
   name,
   control,
   label,
   autoFocus = false,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    disabled={disabled}
-    render={({ field, value }) => (
-      <Autocomplete
-        options={options}
-        getOptionLabel={getOptionLabel}
-        value={value}
-        {...field}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-          />
-        )}
-        onChange={(_event, data) => field.onChange(data?.code ?? "")}
-      />
-    )}
-  />
-);
+}) => {
+  console.log(options);
+  return (
+    <Controller
+      id={id}
+      name={name}
+      control={control}
+      disabled={disabled}
+      render={({ onChange, value, ref }) => (
+        <Autocomplete
+          options={options}
+          getOptionLabel={(option) => option.label || ""}
+          getOptionSelected={(option, value) => option.value === value.value}
+          value={value}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              inputRef={ref}
+              size="small"
+              label={label}
+              variant="outlined"
+              autoFocus={autoFocus}
+            />
+          )}
+          onChange={(_event, option) => onChange(option)}
+        />
+      )}
+    />
+  );
+};
 
 const ComponentEditModal = ({
   showDialog,
@@ -96,27 +99,16 @@ const ComponentEditModal = ({
   setIsEditingComponent,
   linkMode,
   componentFormState,
-  dispatchComponentFormState,
 }) => {
   const classes = useStyles();
 
   // Get options and format them
-  const {
-    data: optionsData,
-    loading: areOptionsLoading,
-    error: optionsError,
-  } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
+  const { data: optionsData, loading: areOptionsLoading } = useQuery(
+    GET_COMPONENTS_FORM_OPTIONS
+  );
   const componentOptions = useComponentOptions(optionsData);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    control,
-    setValue,
-    formState: { isSubmitting },
-    reset,
-  } = useForm({
+  const { register, handleSubmit, control, reset } = useForm({
     defaultValues: initialFormValues,
   });
 
@@ -143,7 +135,7 @@ const ComponentEditModal = ({
     setDraftComponent(null);
     setIsEditingComponent(false);
     setShowDialog(false);
-    dispatchComponentFormState({ action: "reset" });
+    reset(initialFormValues);
   };
 
   return (
@@ -162,34 +154,10 @@ const ComponentEditModal = ({
                 id="components-type"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
-                getOptionLabel={(option) => option.label || ""}
                 name="componentType"
                 control={control}
                 autoFocus
               />
-              {/* <Autocomplete
-                id="components-type"
-                options={areOptionsLoading ? [] : componentOptions}
-                getOptionLabel={(option) => {
-                  return option.label || "";
-                }}
-                value={""}
-                onChange={(_, option) => {
-                  console.log(option);
-                }}
-                getOptionSelected={(option, value) =>
-                  option.value === value.value
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={"Component Type"}
-                    variant="outlined"
-                    autoFocus
-                  />
-                )}
-              /> */}
             </Grid>
             <Grid item xs={12}>
               {/* Subcomponents
@@ -199,33 +167,9 @@ const ComponentEditModal = ({
                 id="subcomponents"
                 label="Subcomponents"
                 options={areOptionsLoading ? [] : componentOptions}
-                getOptionLabel={(option) => option.label || ""}
                 name="subcomponent"
                 control={control}
               />
-              {/*  <Autocomplete
-                 id="subcomponents"
-                 disabled={false}
-                 options={areOptionsLoading ? [] : componentOptions}
-                 getOptionLabel={(option) => {
-                   return option.label || "";
-                 }}
-                 value={""}
-                 onChange={(_, option) => {
-                   console.log(option);
-                 }}
-                 getOptionSelected={(option, value) =>
-                   option.value === value.value
-                 }
-                 renderInput={(params) => (
-                   <TextField
-                     {...params}
-                     size="small"
-                     label={"Subcomponents"}
-                     variant="outlined"
-                   />
-                 )}
-               /> */}
             </Grid>
             <Grid item xs={12}>
               <TextField
