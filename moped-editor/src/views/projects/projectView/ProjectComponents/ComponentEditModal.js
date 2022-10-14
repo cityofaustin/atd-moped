@@ -40,14 +40,14 @@ const useComponentOptions = (data) =>
     const options = data.moped_components.map((comp) => ({
       value: comp.component_id,
       label: componentLabel(comp),
-      subcomponents: comp.moped_subcomponents,
+      data: comp,
     }));
     // add empty option for default state
     return [...options, { value: "", label: "" }];
   }, [data]);
 
 const initialFormValues = {
-  componentType: "",
+  component: "",
   subcomponent: null,
   description: "",
 };
@@ -110,13 +110,28 @@ const ComponentEditModal = ({
   });
 
   const onSave = (formData) => {
-    console.log(formData);
-    e.preventDefault();
+    const {
+      component: {
+        data: {
+          component_id,
+          component_name,
+          component_subtype,
+          line_representation,
+        },
+      },
+      subcomponents,
+      description,
+    } = formData;
+
     const newComponent = {
-      ...componentFormState.type.data,
-      description: componentFormState.description,
-      label: componentFormState.type.label,
       _id: makeRandomComponentId(),
+      component_id,
+      component_name,
+      component_subtype,
+      line_representation,
+      moped_subcomponents: subcomponents,
+      description,
+      label: component_name, // Should this be component name or component subtype?
       features: [],
     };
 
@@ -152,7 +167,7 @@ const ComponentEditModal = ({
                 id="components-type"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
-                name="componentType"
+                name="component"
                 control={control}
                 autoFocus
               />
@@ -174,7 +189,7 @@ const ComponentEditModal = ({
                 inputRef={register}
                 fullWidth
                 size="small"
-                name={"Description"}
+                name="description"
                 id="description"
                 label={"Description"}
                 InputLabelProps={{
