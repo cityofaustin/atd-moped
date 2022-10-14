@@ -60,36 +60,33 @@ const ControlledAutocomplete = ({
   control,
   label,
   autoFocus = false,
-}) => {
-  console.log(options);
-  return (
-    <Controller
-      id={id}
-      name={name}
-      control={control}
-      disabled={disabled}
-      render={({ onChange, value, ref }) => (
-        <Autocomplete
-          options={options}
-          getOptionLabel={(option) => option.label || ""}
-          getOptionSelected={(option, value) => option.value === value.value}
-          value={value}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              inputRef={ref}
-              size="small"
-              label={label}
-              variant="outlined"
-              autoFocus={autoFocus}
-            />
-          )}
-          onChange={(_event, option) => onChange(option)}
-        />
-      )}
-    />
-  );
-};
+}) => (
+  <Controller
+    id={id}
+    name={name}
+    control={control}
+    disabled={disabled}
+    render={({ onChange, value, ref }) => (
+      <Autocomplete
+        options={options}
+        getOptionLabel={(option) => option.label || ""}
+        getOptionSelected={(option, value) => option.value === value.value}
+        value={value}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            inputRef={ref}
+            size="small"
+            label={label}
+            variant="outlined"
+            autoFocus={autoFocus}
+          />
+        )}
+        onChange={(_event, option) => onChange(option)}
+      />
+    )}
+  />
+);
 
 const ComponentEditModal = ({
   showDialog,
@@ -112,7 +109,8 @@ const ComponentEditModal = ({
     defaultValues: initialFormValues,
   });
 
-  const onSave = (e) => {
+  const onSave = (formData) => {
+    console.log(formData);
     e.preventDefault();
     const newComponent = {
       ...componentFormState.type.data,
@@ -147,7 +145,7 @@ const ComponentEditModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <form onSubmit={(e) => e.preventDefault()}>
+        <form onSubmit={handleSubmit(onSave)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <ControlledAutocomplete
@@ -185,10 +183,6 @@ const ComponentEditModal = ({
                 variant="outlined"
                 multiline
                 minRows={4}
-                value={""}
-                onChange={(e) => {
-                  console.log(e.target.value);
-                }}
               />
             </Grid>
           </Grid>
@@ -198,7 +192,7 @@ const ComponentEditModal = ({
                 variant="contained"
                 color="primary"
                 startIcon={<CheckCircle />}
-                onClick={onSave}
+                type="submit"
               >
                 Continue
               </Button>
