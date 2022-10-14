@@ -35,20 +35,33 @@ const componentLabel = ({ component_name, component_subtype }) => {
 
 const useComponentOptions = (data) =>
   useMemo(() => {
-    if (data === undefined) return [];
+    if (!data) return [];
 
     const options = data.moped_components.map((comp) => ({
       value: comp.component_id,
       label: componentLabel(comp),
       data: comp,
     }));
-    // add empty option for default state
-    return [...options, { value: "", label: "" }];
+
+    return options;
   }, [data]);
 
+const useSubcomponentOptions = (component) =>
+  useMemo(() => {
+    const subcomponents = component?.data?.moped_subcomponents;
+    if (!subcomponents) return [];
+
+    const options = subcomponents.map((subComp) => ({
+      value: subComp.subcomponent_id,
+      label: subComp.subcomponent_name,
+    }));
+
+    return options;
+  }, [component]);
+
 const initialFormValues = {
-  component: "",
-  subcomponent: null,
+  component: {},
+  subcomponents: [],
   description: "",
 };
 
@@ -71,8 +84,8 @@ const ControlledAutocomplete = ({
         options={options}
         multiple={multiple}
         disabled={disabled}
-        getOptionLabel={(option) => option.label || ""}
-        getOptionSelected={(option, value) => option.value === value.value}
+        getOptionLabel={(option) => option?.label || ""}
+        getOptionSelected={(option, value) => option?.value === value?.value}
         value={value}
         renderInput={(params) => (
           <TextField
@@ -136,8 +149,6 @@ const ComponentEditModal = ({
       features: [],
     };
 
-    console.log(newComponent);
-
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
     setDraftComponent(newComponent);
@@ -154,8 +165,8 @@ const ComponentEditModal = ({
     reset(initialFormValues);
   };
 
-  const { component: { data: { moped_subcomponents = [] } = {} } = {} } =
-    watch();
+  const { component } = watch();
+  const subcomponentOptions = useSubcomponentOptions(component);
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth>
@@ -184,11 +195,8 @@ const ComponentEditModal = ({
                 id="subcomponents"
                 label="Subcomponents"
                 multiple
-                disabled={moped_subcomponents.length === 0}
-                options={moped_subcomponents.map((subComp) => ({
-                  value: subComp.subcomponent_id,
-                  label: subComp.subcomponent_name,
-                }))}
+                disabled={subcomponentOptions.length === 0}
+                options={subcomponentOptions}
                 name="subcomponents"
                 control={control}
               />
