@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import { useQuery } from "@apollo/client";
 import {
   Button,
   Dialog,
@@ -14,6 +15,7 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { COMPONENTS } from "./data/components";
 import { COMPONENT_FORM_FIELDS } from "./utils";
+import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -42,6 +44,7 @@ const useComponentOptions = () =>
     return [...options, { value: "", label: "" }];
   }, []);
 
+// TODO: Use uuid here
 const randomComponentId = () => Math.floor(Math.random() * 10000000);
 
 const CustomAutocomplete = ({
@@ -93,6 +96,13 @@ const ComponentEditModal = ({
   dispatchComponentFormState,
 }) => {
   const classes = useStyles();
+
+  // Get options
+  const {
+    data: optionsData,
+    loading: areOptionsLoading,
+    error: optionsError,
+  } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
 
   const onSave = (e) => {
     e.preventDefault();
