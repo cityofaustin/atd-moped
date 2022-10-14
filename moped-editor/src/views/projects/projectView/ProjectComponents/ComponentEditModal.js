@@ -95,7 +95,6 @@ const ComponentEditModal = ({
   setLinkMode,
   setIsEditingComponent,
   linkMode,
-  componentFormState,
 }) => {
   const classes = useStyles();
 

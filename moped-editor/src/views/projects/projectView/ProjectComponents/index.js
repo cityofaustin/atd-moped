@@ -17,7 +17,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { componentFormStateReducer, useAppBarHeight } from "./utils";
+import { useAppBarHeight } from "./utils";
 
 const drawerWidth = 350;
 
@@ -85,12 +85,6 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
-  /* manages component form state. todo: just use react-hook-form */
-  const [componentFormState, dispatchComponentFormState] = useReducer(
-    componentFormStateReducer,
-    {}
-  );
-
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
     const featureCollection = {
@@ -119,14 +113,14 @@ export default function MapView({ projectName, projectStatuses }) {
     setIsEditingComponent(false);
     setDraftComponent(null);
     setLinkMode(null);
-    dispatchComponentFormState({ action: "reset" });
+    // TODO: Reset form? Or just reset it after setting draft to state
   };
 
   const onCancelComponentCreate = () => {
     setIsEditingComponent(!isEditingComponent);
     setDraftComponent(null);
     setLinkMode(null);
-    dispatchComponentFormState({ action: "reset" });
+    // TODO: Reset form? Or just reset it after setting draft to state
   };
 
   const onStartCreatingComponent = () => {
@@ -238,8 +232,6 @@ export default function MapView({ projectName, projectStatuses }) {
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
             setIsEditingComponent={setIsEditingComponent}
-            componentFormState={componentFormState}
-            dispatchComponentFormState={dispatchComponentFormState}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}
