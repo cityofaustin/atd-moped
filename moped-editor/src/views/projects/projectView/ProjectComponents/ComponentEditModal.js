@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
+import { v4 as uuidv4 } from "uuid";
 import {
   Button,
   Dialog,
@@ -45,44 +46,7 @@ const useComponentOptions = (data) =>
     return [...options, { value: "", label: "" }];
   }, [data]);
 
-// TODO: Use uuid here
-const randomComponentId = () => Math.floor(Math.random() * 10000000);
-
-// const CustomAutocomplete = ({
-//   fieldKey,
-//   autoFocus,
-//   dispatchComponentFormState,
-//   value,
-//   fieldLabel,
-// }) => {
-//   return (
-//     <Autocomplete
-//       id="combo-box-demo"
-//       options={options}
-//       getOptionLabel={(option) => {
-//         return option.label || "";
-//       }}
-//       value={value}
-//       onChange={(e, option) => {
-//         dispatchComponentFormState({
-//           key: fieldKey,
-//           value: option,
-//           action: "update",
-//         });
-//       }}
-//       getOptionSelected={(option, value) => option.value === value.value}
-//       renderInput={(params) => (
-//         <TextField
-//           {...params}
-//           size="small"
-//           label={fieldLabel}
-//           variant="outlined"
-//           autoFocus={autoFocus}
-//         />
-//       )}
-//     />
-//   );
-// };
+const randomComponentId = () => uuidv4();
 
 const ComponentEditModal = ({
   showDialog,
@@ -143,15 +107,6 @@ const ComponentEditModal = ({
         <form onSubmit={(e) => e.preventDefault()}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              {/* Component Type
-              This shows "component - subtype" (if there is a subtype) */}
-              {/* <CustomAutocomplete
-                fieldKey={COMPONENT_FORM_FIELDS[0].key}
-                fieldLabel={COMPONENT_FORM_FIELDS[0].label}
-                autoFocus
-                dispatchComponentFormState={dispatchComponentFormState}
-                value={componentFormState[COMPONENT_FORM_FIELDS[0].key] || ""}
-              /> */}
               <Autocomplete
                 id="components-type"
                 options={areOptionsLoading ? [] : componentOptions}
@@ -160,11 +115,6 @@ const ComponentEditModal = ({
                 }}
                 value={""}
                 onChange={(e, option) => {
-                  // dispatchComponentFormState({
-                  //   key: fieldKey,
-                  //   value: option,
-                  //   action: "update",
-                  // });
                   console.log(option);
                 }}
                 getOptionSelected={(option, value) =>
