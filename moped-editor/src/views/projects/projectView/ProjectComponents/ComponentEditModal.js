@@ -60,6 +60,7 @@ const ControlledAutocomplete = ({
   name,
   control,
   label,
+  autoFocus = false,
 }) => (
   <Controller
     id={id}
@@ -78,6 +79,7 @@ const ControlledAutocomplete = ({
             size="small"
             label={label}
             variant="outlined"
+            autoFocus={autoFocus}
           />
         )}
         onChange={(_event, data) => field.onChange(data?.code ?? "")}
@@ -156,7 +158,16 @@ const ComponentEditModal = ({
         <form onSubmit={(e) => e.preventDefault()}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Autocomplete
+              <ControlledAutocomplete
+                id="components-type"
+                label="Component Type"
+                options={areOptionsLoading ? [] : componentOptions}
+                getOptionLabel={(option) => option.label || ""}
+                name="componentType"
+                control={control}
+                autoFocus
+              />
+              {/* <Autocomplete
                 id="components-type"
                 options={areOptionsLoading ? [] : componentOptions}
                 getOptionLabel={(option) => {
@@ -178,35 +189,43 @@ const ComponentEditModal = ({
                     autoFocus
                   />
                 )}
-              />
+              /> */}
             </Grid>
             <Grid item xs={12}>
               {/* Subcomponents
               This shows available subcomponents
               grey out if none available for selected component type */}
-              <Autocomplete
+              <ControlledAutocomplete
                 id="subcomponents"
-                disabled={false}
+                label="Subcomponents"
                 options={areOptionsLoading ? [] : componentOptions}
-                getOptionLabel={(option) => {
-                  return option.label || "";
-                }}
-                value={""}
-                onChange={(_, option) => {
-                  console.log(option);
-                }}
-                getOptionSelected={(option, value) =>
-                  option.value === value.value
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    size="small"
-                    label={"Subcomponents"}
-                    variant="outlined"
-                  />
-                )}
+                getOptionLabel={(option) => option.label || ""}
+                name="subcomponent"
+                control={control}
               />
+              {/*  <Autocomplete
+                 id="subcomponents"
+                 disabled={false}
+                 options={areOptionsLoading ? [] : componentOptions}
+                 getOptionLabel={(option) => {
+                   return option.label || "";
+                 }}
+                 value={""}
+                 onChange={(_, option) => {
+                   console.log(option);
+                 }}
+                 getOptionSelected={(option, value) =>
+                   option.value === value.value
+                 }
+                 renderInput={(params) => (
+                   <TextField
+                     {...params}
+                     size="small"
+                     label={"Subcomponents"}
+                     variant="outlined"
+                   />
+                 )}
+               /> */}
             </Grid>
             <Grid item xs={12}>
               <TextField
