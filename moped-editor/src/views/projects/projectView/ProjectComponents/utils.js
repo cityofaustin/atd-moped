@@ -41,14 +41,6 @@ export const getIntersectionLabel = (point, lines) => {
  */
 export const makeRandomComponentId = () => uuidv4();
 
-export function componentFormStateReducer(state, { key, value, action }) {
-  if (action === "update") {
-    return { ...state, [key]: value };
-  } else {
-    return {};
-  }
-}
-
 // See https://github.com/mui/material-ui/issues/10739#issuecomment-1001530270
 export function useAppBarHeight() {
   const {

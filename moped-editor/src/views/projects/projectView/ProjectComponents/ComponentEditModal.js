@@ -65,10 +65,10 @@ const ControlledAutocomplete = ({
     id={id}
     name={name}
     control={control}
-    disabled={disabled}
     render={({ onChange, value, ref }) => (
       <Autocomplete
         options={options}
+        disabled={disabled}
         getOptionLabel={(option) => option.label || ""}
         getOptionSelected={(option, value) => option.value === value.value}
         value={value}
@@ -104,7 +104,7 @@ const ComponentEditModal = ({
   );
   const componentOptions = useComponentOptions(optionsData);
 
-  const { register, handleSubmit, control, reset } = useForm({
+  const { register, handleSubmit, control, reset, watch } = useForm({
     defaultValues: initialFormValues,
   });
 
@@ -134,6 +134,8 @@ const ComponentEditModal = ({
       features: [],
     };
 
+    console.log(newComponent);
+
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
     setDraftComponent(newComponent);
@@ -150,6 +152,9 @@ const ComponentEditModal = ({
     reset(initialFormValues);
   };
 
+  const { component: { data: { moped_subcomponents = [] } = {} } = {} } =
+    watch();
+
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth>
       <DialogTitle disableTypography className={classes.dialogTitle}>
@@ -163,7 +168,7 @@ const ComponentEditModal = ({
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <ControlledAutocomplete
-                id="components-type"
+                id="component"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
                 name="component"
@@ -172,14 +177,16 @@ const ComponentEditModal = ({
               />
             </Grid>
             <Grid item xs={12}>
-              {/* Subcomponents
-              This shows available subcomponents
-              grey out if none available for selected component type */}
+              {/* Disabled unless there are subcomponents of the chosen component */}
               <ControlledAutocomplete
                 id="subcomponents"
                 label="Subcomponents"
-                options={areOptionsLoading ? [] : componentOptions}
-                name="subcomponent"
+                disabled={moped_subcomponents.length === 0}
+                options={moped_subcomponents.map((subComp) => ({
+                  value: subComp.subcomponent_id,
+                  label: subComp.subcomponent_name,
+                }))}
+                name="subcomponents"
                 control={control}
               />
             </Grid>
