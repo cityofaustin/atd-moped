@@ -113,14 +113,12 @@ export default function MapView({ projectName, projectStatuses }) {
     setIsEditingComponent(false);
     setDraftComponent(null);
     setLinkMode(null);
-    // TODO: Reset form? Or just reset it after setting draft to state
   };
 
   const onCancelComponentCreate = () => {
     setIsEditingComponent(!isEditingComponent);
     setDraftComponent(null);
     setLinkMode(null);
-    // TODO: Reset form? Or just reset it after setting draft to state
   };
 
   const onStartCreatingComponent = () => {
