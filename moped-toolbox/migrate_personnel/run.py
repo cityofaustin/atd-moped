@@ -98,10 +98,10 @@ def main(env):
     # update these in batches per unique project_id + user_id
     for pers in p_index.values():
         id = pers[0]["project_personnel_id"]
-        # merge all the notes into one personnel record
+        # we'll keep one personnel record and update it
         updated_pers = {}
         notes = [p["notes"] for p in pers if p["notes"]]
-        # merge notes in the same way the editor used to do it
+        # string-join notes in the same way the editor used to do it
         updated_pers["notes"] = " ".join(notes) or None
         # create new moped_proj_personnel_roles records, one for each role
         project_roles = [
