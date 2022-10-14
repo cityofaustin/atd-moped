@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
+import { v4 as uuidv4 } from "uuid";
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
@@ -35,34 +36,16 @@ export const getIntersectionLabel = (point, lines) => {
   return uniqueStreets.join(" / ");
 };
 
-/* This form stuff was obvi quick and dirty, prob best to use
-RFH or whatever we already have in prod */
-export const COMPONENT_FORM_FIELDS = [
-  {
-    key: "type",
-    label: "Component Type",
-    type: "autocomplete",
-  },
-  {
-    key: "description",
-    label: "Description",
-    type: "textarea",
-  },
-];
-
-export const initialComponentFormState = COMPONENT_FORM_FIELDS.reduce(
-  (prev, curr) => {
-    prev[curr.key] = "";
-    return prev;
-  },
-  {}
-);
+/*
+ * Components need a unique id generated on creation to avoid collisions
+ */
+export const makeRandomComponentId = () => uuidv4();
 
 export function componentFormStateReducer(state, { key, value, action }) {
   if (action === "update") {
     return { ...state, [key]: value };
   } else {
-    return initialComponentFormState;
+    return {};
   }
 }
 

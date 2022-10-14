@@ -17,11 +17,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import {
-  initialComponentFormState,
-  componentFormStateReducer,
-  useAppBarHeight,
-} from "./utils";
+import { componentFormStateReducer, useAppBarHeight } from "./utils";
 
 const drawerWidth = 350;
 
@@ -92,7 +88,7 @@ export default function MapView({ projectName, projectStatuses }) {
   /* manages component form state. todo: just use react-hook-form */
   const [componentFormState, dispatchComponentFormState] = useReducer(
     componentFormStateReducer,
-    initialComponentFormState
+    {}
   );
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { v4 as uuidv4 } from "uuid";
+import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Dialog,
@@ -14,8 +14,8 @@ import { CheckCircle } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { COMPONENT_FORM_FIELDS } from "./utils";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
+import { makeRandomComponentId } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -40,13 +40,51 @@ const useComponentOptions = (data) =>
     const options = data.moped_components.map((comp) => ({
       value: comp.component_id,
       label: componentLabel(comp),
-      data: comp,
+      subcomponents: comp.moped_subcomponents,
     }));
     // add empty option for default state
     return [...options, { value: "", label: "" }];
   }, [data]);
 
-const randomComponentId = () => uuidv4();
+const initialFormValues = {
+  componentType: "",
+  subcomponent: null,
+  description: "",
+};
+
+const ControlledAutocomplete = ({
+  id,
+  disabled = false,
+  options,
+  getOptionLabel,
+  name,
+  control,
+  label,
+}) => (
+  <Controller
+    id={id}
+    name={name}
+    control={control}
+    disabled={disabled}
+    render={({ field, value }) => (
+      <Autocomplete
+        options={options}
+        getOptionLabel={getOptionLabel}
+        value={value}
+        {...field}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            size="small"
+            label={label}
+            variant="outlined"
+          />
+        )}
+        onChange={(_event, data) => field.onChange(data?.code ?? "")}
+      />
+    )}
+  />
+);
 
 const ComponentEditModal = ({
   showDialog,
@@ -60,14 +98,25 @@ const ComponentEditModal = ({
 }) => {
   const classes = useStyles();
 
-  // Get options
+  // Get options and format them
   const {
     data: optionsData,
     loading: areOptionsLoading,
     error: optionsError,
   } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
-
   const componentOptions = useComponentOptions(optionsData);
+
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    setValue,
+    formState: { isSubmitting },
+    reset,
+  } = useForm({
+    defaultValues: initialFormValues,
+  });
 
   const onSave = (e) => {
     e.preventDefault();
@@ -75,7 +124,7 @@ const ComponentEditModal = ({
       ...componentFormState.type.data,
       description: componentFormState.description,
       label: componentFormState.type.label,
-      _id: randomComponentId(),
+      _id: makeRandomComponentId(),
       features: [],
     };
 
@@ -161,6 +210,7 @@ const ComponentEditModal = ({
             </Grid>
             <Grid item xs={12}>
               <TextField
+                inputRef={register}
                 fullWidth
                 size="small"
                 name={"Description"}
