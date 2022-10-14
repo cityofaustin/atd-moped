@@ -236,6 +236,18 @@ export const UPDATE_PROJECT_PERSONNEL = gql`
   }
 `;
 
+export const DELETE_PROJECT_PERSONNEL = gql`
+  mutation DeleteProjectPersonnel($id: Int!) {
+    update_moped_proj_personnel_by_pk(
+      pk_columns: { project_personnel_id: $id }
+      _set: { is_deleted: true }
+    ) {
+      is_deleted
+      project_personnel_id
+    }
+  }
+`;
+
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
     moped_phases(

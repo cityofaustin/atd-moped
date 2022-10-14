@@ -33,6 +33,7 @@ import {
   TEAM_QUERY,
   UPDATE_PROJECT_PERSONNEL,
   INSERT_PROJECT_PERSONNEL,
+  DELETE_PROJECT_PERSONNEL,
 } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
@@ -137,8 +138,9 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const addActionRef = React.useRef();
 
-  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
   const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
+  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
+  const [deleteProjecPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
 
   const personnel = usePersonnel(
     data?.moped_project_by_pk.moped_proj_personnel
@@ -343,8 +345,10 @@ const ProjectTeamTable = ({ projectId }) => {
             }).then(() => refetch());
           },
           onRowDelete: (oldData) => {
-            console.log("do a delete");
-            return Promise.resolve();
+            const id = oldData.project_personnel_id;
+            return deleteProjecPersonnel({
+              variables: { id },
+            }).then(() => refetch());
           },
         }}
       />
