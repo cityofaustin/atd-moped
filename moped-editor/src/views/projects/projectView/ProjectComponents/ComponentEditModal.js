@@ -60,6 +60,7 @@ const ControlledAutocomplete = ({
   control,
   label,
   autoFocus = false,
+  multiple = false,
 }) => (
   <Controller
     id={id}
@@ -68,6 +69,7 @@ const ControlledAutocomplete = ({
     render={({ onChange, value, ref }) => (
       <Autocomplete
         options={options}
+        multiple={multiple}
         disabled={disabled}
         getOptionLabel={(option) => option.label || ""}
         getOptionSelected={(option, value) => option.value === value.value}
@@ -181,6 +183,7 @@ const ComponentEditModal = ({
               <ControlledAutocomplete
                 id="subcomponents"
                 label="Subcomponents"
+                multiple
                 disabled={moped_subcomponents.length === 0}
                 options={moped_subcomponents.map((subComp) => ({
                   value: subComp.subcomponent_id,
