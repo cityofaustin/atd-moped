@@ -249,6 +249,8 @@ const ProjectTeamTable = ({ projectId }) => {
     },
   ];
 
+  if (loading || !data) return <CircularProgress />;
+
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
