@@ -73,10 +73,10 @@ const usePersonnel = (projPersonnel) =>
   }, [projPersonnel]);
 
 /**
- * Construct a moped_project_personnel object that can be passed to a mutation payload
- * @param {Object} newData - a "row" object from Material table
- * * @param {integer} projectId - the project ID
- * @return {Ojbect} a moped_project_personnel object
+ * Construct a moped_project_personnel object that can be passed to an insert mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
  */
 const getNewPersonnelPayload = ({
   newData: {
@@ -94,7 +94,14 @@ const getNewPersonnelPayload = ({
   return payload;
 };
 
-const getEditPersonnelPayload = ({ newData, oldData }) => {
+/**
+ * Construct a moped_project_personnel object that can be passed to an update mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ *  is handled separately
+ */
+const getEditPersonnelPayload = ({ newData }) => {
   // and the new values
   const {
     moped_user: { user_id },
@@ -103,10 +110,17 @@ const getEditPersonnelPayload = ({ newData, oldData }) => {
   return { user_id, notes };
 };
 
+/**
+ * Constructs payload objects for adding and removing moped_proj_personnel_roles
+ * @param {Object} newData - a table row object with the new values
+ * @param {Object} oldData - a table row object with the old values
+ * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
+ *  personnel role objects to delete
+ */
 const getEditRolesPayload = ({ newData, oldData }) => {
-  // identify existing role records to delete
   const { project_personnel_id } = oldData;
 
+  // get an array of moped_proj_personnel_roles IDs to delete
   const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
     .filter((projRole) => {
       const roleId = projRole.moped_project_role.project_role_id;
@@ -114,7 +128,7 @@ const getEditRolesPayload = ({ newData, oldData }) => {
     })
     .map((projRole) => projRole.id);
 
-  // check for new roles
+  // contruct an array of new moped_proj_personnel_roles objects
   const existingRoleIds = oldData.moped_proj_personnel_roles.map(
     ({ moped_project_role }) => moped_project_role.project_role_id
   );
@@ -330,13 +344,11 @@ const ProjectTeamTable = ({ projectId }) => {
             const { project_personnel_id } = oldData;
             const payload = getEditPersonnelPayload({
               newData,
-              oldData,
             });
             const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload({
               newData,
               oldData,
             });
-
             return updateProjectPersonnel({
               variables: {
                 updatePersonnelObject: payload,
