@@ -153,7 +153,10 @@ export const TEAM_QUERY = gql`
   query TeamQuery($projectId: Int!) {
     moped_project_by_pk(project_id: $projectId) {
       project_id
-      moped_proj_personnel(where: { is_deleted: { _eq: false } }) {
+      moped_proj_personnel(
+        where: { is_deleted: { _eq: false } }
+        order_by: { project_personnel_id: asc }
+      ) {
         notes
         project_personnel_id
         date_added
