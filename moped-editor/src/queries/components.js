@@ -8,6 +8,10 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       component_id
       component_name
       component_subtype
+      moped_subcomponents(order_by: { subcomponent_name: asc }) {
+        subcomponent_id
+        subcomponent_name
+      }
     }
   }
 `;
