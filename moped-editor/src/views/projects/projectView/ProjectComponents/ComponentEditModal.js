@@ -113,15 +113,17 @@ const ComponentEditModal = ({
 }) => {
   const classes = useStyles();
 
-  // Get options and format them
+  const { register, handleSubmit, control, reset, watch } = useForm({
+    defaultValues: initialFormValues,
+  });
+
+  // Get and format component and subcomponent options
   const { data: optionsData, loading: areOptionsLoading } = useQuery(
     GET_COMPONENTS_FORM_OPTIONS
   );
   const componentOptions = useComponentOptions(optionsData);
-
-  const { register, handleSubmit, control, reset, watch } = useForm({
-    defaultValues: initialFormValues,
-  });
+  const { component } = watch();
+  const subcomponentOptions = useSubcomponentOptions(component);
 
   const onSave = (formData) => {
     const {
@@ -165,9 +167,6 @@ const ComponentEditModal = ({
     reset(initialFormValues);
   };
 
-  const { component } = watch();
-  const subcomponentOptions = useSubcomponentOptions(component);
-
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth>
       <DialogTitle disableTypography className={classes.dialogTitle}>
@@ -190,7 +189,7 @@ const ComponentEditModal = ({
               />
             </Grid>
             <Grid item xs={12}>
-              {/* Disabled unless there are subcomponents of the chosen component */}
+              {/* Disabled unless there are subcomponents for the chosen component */}
               <ControlledAutocomplete
                 id="subcomponents"
                 label="Subcomponents"
