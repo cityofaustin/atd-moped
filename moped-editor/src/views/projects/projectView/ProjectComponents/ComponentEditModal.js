@@ -114,7 +114,7 @@ const ComponentEditModal = ({
                   return option.label || "";
                 }}
                 value={""}
-                onChange={(e, option) => {
+                onChange={(_, option) => {
                   console.log(option);
                 }}
                 getOptionSelected={(option, value) =>
@@ -135,67 +135,49 @@ const ComponentEditModal = ({
               {/* Subcomponents
               This shows available subcomponents
               grey out if none available for selected component type */}
-              <TextField
-                fullWidth
-                size="small"
-                name="demo1"
-                id="demo1"
-                label="Subcomponents"
-                InputLabelProps={{
-                  shrink: true,
+              <Autocomplete
+                id="subcomponents"
+                disabled={false}
+                options={areOptionsLoading ? [] : componentOptions}
+                getOptionLabel={(option) => {
+                  return option.label || "";
                 }}
-                variant="outlined"
+                value={""}
+                onChange={(_, option) => {
+                  console.log(option);
+                }}
+                getOptionSelected={(option, value) =>
+                  option.value === value.value
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    size="small"
+                    label={"Subcomponents"}
+                    variant="outlined"
+                  />
+                )}
               />
             </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
                 size="small"
-                name={COMPONENT_FORM_FIELDS[1].key}
-                id={COMPONENT_FORM_FIELDS[1].key}
-                label={COMPONENT_FORM_FIELDS[1].label}
+                name={"Description"}
+                id="description"
+                label={"Description"}
                 InputLabelProps={{
                   shrink: true,
                 }}
                 variant="outlined"
                 multiline
                 minRows={4}
-                value={componentFormState[COMPONENT_FORM_FIELDS[1].key]}
+                value={""}
                 onChange={(e) => {
-                  dispatchComponentFormState({
-                    key: COMPONENT_FORM_FIELDS[1].key,
-                    value: e.target.value,
-                    action: "update",
-                  });
+                  console.log(e.target.value);
                 }}
               />
             </Grid>
-            {/* <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name="demo2"
-                id="demo2"
-                label="Another field"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name="demo3"
-                id="demo3"
-                label="Yet another"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Grid> */}
           </Grid>
           <Grid container spacing={4} display="flex" justifyContent="flex-end">
             <Grid item style={{ margin: 5 }}>
