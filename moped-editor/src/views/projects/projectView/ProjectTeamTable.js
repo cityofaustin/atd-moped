@@ -31,7 +31,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import {
   TEAM_QUERY,
-  UPSERT_PROJECT_PERSONNEL,
+  UPDATE_PROJECT_PERSONNEL,
   INSERT_PROJECT_PERSONNEL,
 } from "../../../queries/project";
 
@@ -54,18 +54,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Get string of role names from roleIDs
- * @param {Array} projRolesArray - Array of moped_proj_personnel_roles
- * @return {string} role names separated by comma and space
- */
-const getPersonnelRoles = (projRolesArray) => {
-  const roleNames = projRolesArray.map(
-    ({ moped_project_role }) => moped_project_role.project_role_name
-  );
-  return roleNames.join(", ");
-};
-
-/**
  * Adds a `roleIds` property to each team member - which we'll use as the i/o for the
  *  moped_project_role multiselect
  * @param {Array} projPersonnel - An array of of moped_proj_personnel objects
@@ -83,6 +71,12 @@ const usePersonnel = (projPersonnel) =>
     return projPersonnel;
   }, [projPersonnel]);
 
+/**
+ * Construct a moped_project_personnel object that can be passed to a mutation payload
+ * @param {Object} newData - a "row" object from Material table
+ * * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object
+ */
 const getNewPersonnelPayload = ({
   newData: {
     moped_user: { user_id },
@@ -99,6 +93,40 @@ const getNewPersonnelPayload = ({
   return payload;
 };
 
+const getEditPersonnelPayload = ({ newData, oldData }) => {
+  // and the new values
+  const {
+    moped_user: { user_id },
+    notes,
+  } = newData;
+  return { user_id, notes };
+};
+
+const getEditRolesPayload = ({ newData, oldData }) => {
+  // identify existing role records to delete
+  const { project_personnel_id } = oldData;
+
+  const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
+    .filter((projRole) => {
+      const roleId = projRole.moped_project_role.project_role_id;
+      return !newData.roleIds.includes(roleId);
+    })
+    .map((projRole) => projRole.id);
+
+  // check for new roles
+  const existingRoleIds = oldData.moped_proj_personnel_roles.map(
+    ({ moped_project_role }) => moped_project_role.project_role_id
+  );
+  const roleIdsToAdd = newData.roleIds.filter(
+    (roleId) => !existingRoleIds.includes(roleId)
+  );
+  const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
+    project_personnel_id,
+    project_role_id: newRoleId,
+  }));
+  return [rolesToAddPayload, projRoleIdsToDelete];
+};
+
 const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
 
@@ -109,7 +137,7 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const addActionRef = React.useRef();
 
-  const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
+  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
   const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
 
   const personnel = usePersonnel(
@@ -180,11 +208,14 @@ const ProjectTeamTable = ({ projectId }) => {
         </span>
       ),
       field: "roleIds",
-      render: (personnel) => (
-        <Typography>
-          {getPersonnelRoles(personnel.moped_proj_personnel_roles)}
-        </Typography>
-      ),
+      render: (personnel) =>
+        personnel.moped_proj_personnel_roles.map(
+          ({ id, moped_project_role }) => (
+            <Typography key={id}>
+              {moped_project_role.project_role_name}
+            </Typography>
+          )
+        ),
       validate: (rowData) => rowData?.roleIds?.length > 0,
       editComponent: (props) => (
         <ProjectTeamRoleMultiselect
@@ -287,13 +318,29 @@ const ProjectTeamTable = ({ projectId }) => {
             const payload = getNewPersonnelPayload({ newData, projectId });
             return insertProjectPersonnel({
               variables: {
-                objects: payload,
+                object: payload,
               },
             }).then(() => refetch());
           },
-          onRowUpdate: (newData, oldData) => {
-            console.log("do an update");
-            return Promise.resolve();
+          onRowUpdate: async (newData, oldData) => {
+            const { project_personnel_id } = oldData;
+            const payload = getEditPersonnelPayload({
+              newData,
+              oldData,
+            });
+            const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload({
+              newData,
+              oldData,
+            });
+
+            return updateProjectPersonnel({
+              variables: {
+                updatePersonnelObject: payload,
+                id: project_personnel_id,
+                deleteIds: roleIdsToDelete,
+                addRolesObjects: rolesToAdd,
+              },
+            }).then(() => refetch());
           },
           onRowDelete: (oldData) => {
             console.log("do a delete");

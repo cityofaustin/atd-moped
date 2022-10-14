@@ -170,8 +170,10 @@ export const TEAM_QUERY = gql`
             workgroup_name
           }
         }
-        moped_proj_personnel_roles {
+        moped_proj_personnel_roles(where: { is_deleted: { _eq: false } }) {
           id
+          project_personnel_id
+          project_role_id
           moped_project_role {
             project_role_id
             project_role_name
@@ -201,27 +203,34 @@ export const TEAM_QUERY = gql`
   }
 `;
 
-export const UPSERT_PROJECT_PERSONNEL = gql`
-  mutation UpsertProjectPersonnel(
-    $objects: [moped_proj_personnel_insert_input!]!
-  ) {
-    insert_moped_proj_personnel(
-      objects: $objects
-      on_conflict: {
-        constraint: moped_proj_personnel_project_id_user_id_role_id_key
-        update_columns: [project_id, user_id, role_id, is_deleted, notes]
-      }
-    ) {
-      affected_rows
+export const INSERT_PROJECT_PERSONNEL = gql`
+  mutation InserProjectPersonnel($object: moped_proj_personnel_insert_input!) {
+    insert_moped_proj_personnel_one(object: $object) {
+      project_personnel_id
     }
   }
 `;
 
-export const INSERT_PROJECT_PERSONNEL = gql`
-  mutation InsertProjectPersonnel(
-    $objects: [moped_proj_personnel_insert_input!]!
+export const UPDATE_PROJECT_PERSONNEL = gql`
+  mutation UpdateProjectPersonnel(
+    $deleteIds: [Int!]
+    $id: Int!
+    $updatePersonnelObject: moped_proj_personnel_set_input!
+    $addRolesObjects: [moped_proj_personnel_roles_insert_input!]!
   ) {
-    insert_moped_proj_personnel(objects: $objects) {
+    update_moped_proj_personnel_by_pk(
+      pk_columns: { project_personnel_id: $id }
+      _set: $updatePersonnelObject
+    ) {
+      project_personnel_id
+    }
+    update_moped_proj_personnel_roles(
+      where: { id: { _in: $deleteIds } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_personnel_roles(objects: $addRolesObjects) {
       affected_rows
     }
   }
