@@ -11,3 +11,4 @@ insert into feature_layers (internal_table, reference_layer_primary_key_column) 
 insert into feature_layers (internal_table, reference_layer_primary_key_column) values ('segments', 'segment_id');
 insert into feature_layers (internal_table, reference_layer_primary_key_column) values ('intersections', 'intersection_id');
 
+-- todo: update rows to point to right layer in above table
