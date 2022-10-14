@@ -59,15 +59,24 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
           },
         }}
       >
-        {roles.map(({ project_role_id, project_role_name }) => {
-          const isChecked = value.includes(project_role_id);
-          return (
-            <MenuItem key={project_role_id} value={project_role_id}>
-              <Checkbox checked={isChecked} color={"primary"} />
-              <ListItemText primary={project_role_name} />
-            </MenuItem>
-          );
-        })}
+        {roles.map(
+          ({
+            project_role_id,
+            project_role_name,
+            project_role_description,
+          }) => {
+            const isChecked = value.includes(project_role_id);
+            return (
+              <MenuItem key={project_role_id} value={project_role_id}>
+                <Checkbox checked={isChecked} color={"primary"} />
+                <ListItemText
+                  primary={project_role_name}
+                  secondary={project_role_description}
+                />
+              </MenuItem>
+            );
+          }
+        )}
       </Select>
       <FormHelperText>Required</FormHelperText>
     </FormControl>
