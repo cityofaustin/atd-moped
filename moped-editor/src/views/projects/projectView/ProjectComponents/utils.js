@@ -41,7 +41,11 @@ export const getIntersectionLabel = (point, lines) => {
  */
 export const makeRandomComponentId = () => uuidv4();
 
-// See https://github.com/mui/material-ui/issues/10739#issuecomment-1001530270
+/**
+ * Use MUI-exposed breakpoints and toolbar height to size content below the toolbar
+ * @returns {number} Current pixel height of the toolbar
+ * @see https://github.com/mui/material-ui/issues/10739#issuecomment-1001530270
+ */
 export function useAppBarHeight() {
   const {
     mixins: { toolbar },
@@ -61,5 +65,55 @@ export function useAppBarHeight() {
   } else {
     currentToolbarMinHeight = toolbar;
   }
+
   return currentToolbarMinHeight.minHeight;
 }
+
+/**
+ * Not all component type records have a value in the subtype column but let's concatenate them if they do
+ * @param {string} component_name The name of the component
+ * @param {string} component_subtype The name value in the component_subtype column of the component record
+ * @returns {string}
+ */
+export const makeComponentLabel = ({ component_name, component_subtype }) => {
+  return component_subtype
+    ? `${component_name} - ${component_subtype}`
+    : `${component_name}`;
+};
+
+/**
+ * Take the moped_components records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_components records
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
+export const useComponentOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_components.map((comp) => ({
+      value: comp.component_id,
+      label: makeComponentLabel(comp),
+      data: comp,
+    }));
+
+    return options;
+  }, [data]);
+
+/**
+ * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
+ * for a MUI autocomplete
+ * @param {Object} component Data stored in the currently selected component record
+ * @returns {Array} The options with value and label
+ */
+export const useSubcomponentOptions = (component) =>
+  useMemo(() => {
+    const subcomponents = component?.data?.moped_subcomponents;
+    if (!subcomponents) return [];
+
+    const options = subcomponents.map((subComp) => ({
+      value: subComp.subcomponent_id,
+      label: subComp.subcomponent_name,
+    }));
+
+    return options;
+  }, [component]);

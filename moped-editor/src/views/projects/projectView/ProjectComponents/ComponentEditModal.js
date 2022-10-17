@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -15,7 +15,11 @@ import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
-import { makeRandomComponentId } from "./utils";
+import {
+  makeRandomComponentId,
+  useComponentOptions,
+  useSubcomponentOptions,
+} from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -26,38 +30,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-
-const componentLabel = ({ component_name, component_subtype }) => {
-  return component_subtype
-    ? `${component_name} - ${component_subtype}`
-    : `${component_name}`;
-};
-
-const useComponentOptions = (data) =>
-  useMemo(() => {
-    if (!data) return [];
-
-    const options = data.moped_components.map((comp) => ({
-      value: comp.component_id,
-      label: componentLabel(comp),
-      data: comp,
-    }));
-
-    return options;
-  }, [data]);
-
-const useSubcomponentOptions = (component) =>
-  useMemo(() => {
-    const subcomponents = component?.data?.moped_subcomponents;
-    if (!subcomponents) return [];
-
-    const options = subcomponents.map((subComp) => ({
-      value: subComp.subcomponent_id,
-      label: subComp.subcomponent_name,
-    }));
-
-    return options;
-  }, [component]);
 
 const initialFormValues = {
   component: {},
@@ -147,7 +119,7 @@ const ComponentEditModal = ({
       line_representation,
       moped_subcomponents: subcomponents,
       description,
-      label: component_name, // Should this be component name or component subtype?
+      label: component_name,
       features: [],
     };
 
