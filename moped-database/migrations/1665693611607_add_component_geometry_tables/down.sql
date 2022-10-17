@@ -1,3 +1,7 @@
+drop view project_geography;
+drop view uniform_features;
+
+
 drop table component_feature_map;
 
 drop table feature_drawn_lines;
