@@ -45,17 +45,11 @@ const useStyles = makeStyles((theme) => ({
     position: "absolute",
     height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     right: `${MAPBOX_PADDING_PIXELS}px`,
-    // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
-    bottom: ({ basemapKey }) =>
-      basemapKey === "aerial"
-        ? `${MAPBOX_PADDING_PIXELS}px`
-        : `${MAPBOX_PADDING_PIXELS * 3}px`,
+    // Make some room for the Mapbox attribution
+    bottom: `${MAPBOX_PADDING_PIXELS * 3}px`,
     // Mapbox copyright info collapses to a taller info icon at 990px and below
     [theme.breakpoints.down(991)]: {
-      bottom: ({ basemapKey }) =>
-        basemapKey === "aerial"
-          ? `${MAPBOX_PADDING_PIXELS}px`
-          : `${MAPBOX_PADDING_PIXELS * 4}px`,
+      bottom: `${MAPBOX_PADDING_PIXELS * 4}px`,
     },
   },
 }));
@@ -68,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
  */
 const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
   const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
-  const classes = useStyles({ basemapKey, isSpeedDialOpen });
+  const classes = useStyles({ isSpeedDialOpen });
 
   /**
    * Changes the current basemap and closes the speed dial menu
