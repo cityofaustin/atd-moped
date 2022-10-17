@@ -19,13 +19,29 @@ DB_NAME = os.environ.get("DB_NAME", "moped")
 
 pg = psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, dbname=DB_NAME)
 
+# function to remove leading underscore from argument if there is one
+def remove_leading_underscore(arg):
+    if arg.startswith("_"):
+        return arg[1:]
+    else:
+        return arg
+
 
 def moped_proj_features(args):
     sql = """
-    select moped_proj_components.project_id, moped_components.component_name, moped_components.component_subtype, feature_id, feature::character varying as feature
+    select
+      moped_proj_components.project_id,
+      moped_components.component_id,
+      moped_components.component_name,
+      moped_components.component_subtype,
+      feature_layers.internal_table,
+      feature_id,
+      feature::character varying as feature
     from moped_proj_features
     join moped_proj_components on (moped_proj_components.project_component_id = moped_proj_features.project_component_id)
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
+    left join feature_layers on (feature_layers.id = moped_components.feature_layer_id)
+    where feature_layers.internal_table = 'feature_signals'
     order by random();
     """
 
@@ -39,15 +55,49 @@ def moped_proj_features(args):
         if not feature.is_valid:
             raise Exception("Invalid feature")
 
-        if str(feature["geometry"]["type"]) == 'Point':
-            continue
+        #if str(feature["geometry"]["type"]) == 'Point':
+            #continue
 
-        print("Project ID: ", record["project_id"])
-        print("Component Name: ", record["component_name"])
-        print("Component Subtype: ", record["component_subtype"])
-        print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
-        pp.pprint(feature["properties"])
+        #print("Project ID: ", record["project_id"])
+        #print("Component Name: ", record["component_name"])
+        #print("Component Subtype: ", record["component_subtype"])
+        #print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
+        #pp.pprint(feature["properties"])
+
+        sql = f"""
+        insert into {record["internal_table"]}
+        """
+
+        fields = []
+        values = []
+        for key, value in feature["properties"].items():
+
+            key = remove_leading_underscore(key)
+            key = key.lower()
+            key = 'render_type' if key == 'rendertype' else key
+            key = 'knack_id' if key == 'id' else key
+
+            fields.append(key)
+            values.append(value)
+        
+        sql += "(" + ", ".join(fields) + ") values ("
+        sql += ", ".join(["%s"] * len(values)) + ')'
+
+        print(sql)
         print("\n")
+
+
+        try:
+            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            update.execute(
+                sql, values,
+            )
+        except psycopg2.errors.InternalError_ as e:
+            print("\n\b🛎Postgres error: " + str(e))
+            print(geojson.dumps(feature, indent=2))
+            pg.rollback()
+        else:  # no exception
+            pg.commit()
 
         continue;
 
