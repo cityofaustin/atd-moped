@@ -228,7 +228,7 @@ export default function TheMap({
       onClick={onClick}
       boxZoom={false}
       cursor={cursor}
-      mapStyle={basemaps[basemapKey]}
+      mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
@@ -319,6 +319,14 @@ export default function TheMap({
             <Layer {...mapStyles["clicked-component-features-points"]} />
           )}
         </Source>
+      )}
+      {basemapKey === "aerial" && (
+        <>
+          <Source {...basemaps[basemapKey].sources.aerials} />
+          <Layer {...basemaps[basemapKey].layers.aerials} />
+          {/* show street labels on top of other layers */}
+          <Layer {...basemaps[basemapKey].layers.streetLabels} />
+        </>
       )}
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
