@@ -82,3 +82,23 @@ update moped_components set component_type_id = (select id from feature_layers w
 update moped_components set component_type_id = (select id from feature_layers where internal_table = 'feature_intersections'  ) where component_name = 'Intersection' and component_subtype = 'Roundabout';
 
 alter table moped_components alter column component_type_id set not null;
+
+create table features (
+    id serial primary key, 
+    name character varying
+    );
+
+create table feature_signals (
+    signal_id integer default null,
+    geography geography('MULTIPOINT') default null
+    ) inherits (features);
+
+create table feature_intersections (
+    intersection_id integer default null,
+    geography geography('MULTIPOINT') default null
+    ) inherits (features);
+
+create table feature_street_segments (
+    segment_id integer default null,
+    geography geography('MULTILINESTRING') default null
+    ) inherits (features);
