@@ -4,6 +4,7 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
   query GetComponentsFormOptions {
     moped_components(
       order_by: [{ component_name: asc }, { component_subtype: asc }]
+      where: { status_id: { _neq: 0 } }
     ) {
       component_id
       component_name
