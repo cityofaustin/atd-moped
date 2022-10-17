@@ -114,3 +114,9 @@ create table feature_drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
+create table component_feature_map (
+    id serial primary key,
+    component_id integer references moped_proj_components(project_component_id),
+    feature_id integer default null
+    );
+
