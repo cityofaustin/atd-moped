@@ -105,3 +105,12 @@ create table feature_street_segments (
     segment_id integer default null,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
+
+create table feature_drawn_points (
+    geography geography('MULTILINESTRING') default null
+    ) inherits (features);
+
+create table feature_drawn_lines (
+    geography geography('MULTILINESTRING') default null
+    ) inherits (features);
+

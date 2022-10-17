@@ -1,3 +1,5 @@
+drop table feature_drawn_lines;
+drop table feature_drawn_points;
 drop table feature_street_segments;
 drop table feature_intersections;
 drop table feature_signals;
