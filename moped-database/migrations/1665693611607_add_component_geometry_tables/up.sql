@@ -83,7 +83,8 @@ update moped_components set feature_layer_id = (select id from feature_layers wh
 
 alter table moped_components alter column feature_layer_id set not null;
 
-alter table moped_components alter column component_type_id set not null;
+alter table moped_proj_components
+  add column feature_layer_id_override integer references feature_layers(id);
 
 create table features (
     id serial primary key, 
