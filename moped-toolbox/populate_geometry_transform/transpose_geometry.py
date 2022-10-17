@@ -24,20 +24,6 @@ def moped_proj_features(args):
     order by random();
     """
 
-    if args.schema:
-        alter = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        alter.execute(
-            """
-            alter table moped_proj_features 
-              add column geography_collection geography(GEOMETRYCOLLECTION, 4326),
-              add column geography_point geography(POINT, 4326),
-              add column geography_linestring geography(LINESTRING, 4326),
-              add column attributes jsonb
-              ;
-            """
-        )
-        pg.commit()
-
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
     cursor.execute(sql)
     features = cursor.fetchall()
@@ -104,17 +90,6 @@ def moped_proj_features(args):
                 pg.rollback()
             else:  # no exception
                 pg.commit()
-
-    if args.schema:
-        alter = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        alter.execute(
-            """
-            alter table moped_proj_features 
-                drop column feature 
-                ;
-            """
-        )
-        pg.commit()
 
 
 def main(args):
