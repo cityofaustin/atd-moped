@@ -93,6 +93,12 @@ create table features (
 
 create table feature_signals (
     signal_id integer default null,
+    knack_id character varying,
+    project_extent_id uuid,
+    location_name character varying,
+    render_type character varying,
+    signal_type character varying,
+    sourceLayer character varying,
     geography geography('MULTIPOINT') default null
     ) inherits (features);
 
