@@ -143,12 +143,3 @@ export const basemaps = {
     },
   },
 };
-
-// Use a custom hook that manages basemap and the
-const useMapLayersAndSources = () => {
-  // this should manage the sources and layers needed for:
-  // 1. The NearMap aerial tiles with labels
-  // 2. A project's components feature collection (made up from the DB data)
-  // 3. The drawing things if the library doesn't take care of it
-  // 4.
-};
