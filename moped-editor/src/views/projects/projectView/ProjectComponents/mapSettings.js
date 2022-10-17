@@ -1,4 +1,5 @@
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
+// This API key is managed by CTM. Contact help desk for maintenance and troubleshooting.
 const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 
 // minimum map zoom to display selectable features, and
