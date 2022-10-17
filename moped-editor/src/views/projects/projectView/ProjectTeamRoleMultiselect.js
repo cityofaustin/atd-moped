@@ -67,11 +67,16 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
           }) => {
             const isChecked = value.includes(project_role_id);
             return (
+              // ListItemClasses
               <MenuItem key={project_role_id} value={project_role_id}>
                 <Checkbox checked={isChecked} color={"primary"} />
                 <ListItemText
-                  primary={project_role_name}
-                  secondary={project_role_description}
+                  primary={<span>{project_role_name}</span>}
+                  secondary={
+                    <span style={{ whiteSpace: "normal" }}>
+                      {project_role_description}
+                    </span>
+                  }
                 />
               </MenuItem>
             );
