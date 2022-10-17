@@ -108,7 +108,13 @@ create table feature_intersections (
     ) inherits (features);
 
 create table feature_street_segments (
-    segment_id integer default null,
+    ctn_segment_id integer default null,
+    from_address_min integer default null,
+    to_address_min integer default null,
+    full_street_name character varying,
+    line_type character varying,
+    symbol: integer default null,
+    source_layer character varying,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
