@@ -160,7 +160,7 @@ truncate features;
             print(sql, values)
             execute(sql, values, get_result=False)
 
-
+            # set the override field for this row
             sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
             values = [record["feature_layer_id"], record["project_component_id"]]
 
