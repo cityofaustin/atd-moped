@@ -2422,8 +2422,8 @@
         - name: MOPED_API_EVENT_NAME
           value: activity_log
 - table:
-    schema: public
     name: moped_proj_tags
+    schema: public
   object_relationships:
     - name: moped_project
       using:
@@ -2493,7 +2493,6 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_project
     schema: public
   object_relationships:
@@ -2558,13 +2557,14 @@
           column: project_id
           table:
             name: moped_proj_phases
+            schema: public
     - name: moped_proj_tags
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_tags
+            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3457,16 +3457,16 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_tags
+    schema: public
   array_relationships:
     - name: moped_proj_tags
       using:
         foreign_key_constraint_on:
           column: tag_id
           table:
-            schema: public
             name: moped_proj_tags
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3536,7 +3536,6 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_types
     schema: public
   insert_permissions:
