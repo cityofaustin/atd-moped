@@ -75,9 +75,9 @@ truncate features;
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
     left join feature_layers on (feature_layers.id = moped_components.feature_layer_id)
     where true
-    and feature_layers.internal_table in ('feature_signals')
+    --and feature_layers.internal_table in ('feature_signals')
     --and feature_layers.internal_table in ('feature_street_segments')
-    --and moped_proj_components.project_id = 1
+    --and moped_proj_components.project_id = 228
     order by moped_proj_features.feature_id asc
     """
 
@@ -94,66 +94,70 @@ truncate features;
         #if str(feature["geometry"]["type"]) == 'Point':
             #continue
 
+        feature_id = None
         # These need special handling, I think they will be half intersections, half segments.
         # It is a genuinely un-geographically typed feature. 🤔
         if record["component_name"] == "Project Extent - Generic":
             continue
 
-        if (record["component_name"] == "Sidewalk" and
+        elif (record["component_name"] == "Sidewalk" and
                 record["component_subtype"] == 'With Curb and Gutter' and 
                 str(feature["geometry"]["type"]) == 'Point'):
             continue
 
-        if (record["component_name"] == "Transit" and 
+        elif (record["component_name"] == "Transit" and 
                 record["component_subtype"] == 'Transit/Bike Lane' and 
                 str(feature["geometry"]["type"]) == 'Point'):
             continue
-
-        if True:
-            print("Project ID: ", record["project_id"])
-            print("Component Name: ", record["component_name"])
-            print("Component Subtype: ", record["component_subtype"])
-            print("Feature ID: ", record["feature_id"])
-            print("Default internal table: ", record["internal_table"])
-            print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
-            pp.pprint(feature["properties"])
-            pp.pprint(feature["geometry"])
-
-        sql = f"""
-        insert into {record["internal_table"]}
-        """
-
-        fields = []
-        values = []
-        for key, value in feature["properties"].items():
-
-            key = remove_leading_underscore(key)
-            key = key.lower()
-            key = 'render_type' if key == 'rendertype' else key
-            key = 'knack_id' if key == 'id' else key
-            key = 'source_layer' if key == 'sourcelayer' else key
-            key = 'intersection_id' if key == 'intersectionid' else key
-
-            fields.append(key)
-            values.append(value)
         
-        sql += "(" + ",\n".join(fields) + ") values ("
-        sql += ",\n".join(["%s"] * len(values)) + ')'
-        sql += "\nreturning id"
+        else:
 
-        print(sql, values)
-        result = execute(sql, values, get_result=True)
-        feature_id = result["id"]
+            if True:
+                print("Project ID: ", record["project_id"])
+                print("Component Name: ", record["component_name"])
+                print("Component Subtype: ", record["component_subtype"])
+                print("Feature ID: ", record["feature_id"])
+                print("Default internal table: ", record["internal_table"])
+                print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
+                pp.pprint(feature["properties"])
+                pp.pprint(feature["geometry"])
 
-        sql = f"""
-        update {record["internal_table"]}
-        set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
-        where id = %s
-        """
-        values = [str(feature["geometry"]), feature_id]
+            sql = f"""
+            insert into {record["internal_table"]}
+            """
 
-        print(sql, values)
-        execute(sql, values, get_result=False)
+            fields = []
+            values = []
+            for key, value in feature["properties"].items():
+
+                # key transformation rules
+                key = remove_leading_underscore(key)
+                key = key.lower()
+                key = 'render_type' if key == 'rendertype' else key
+                key = 'knack_id' if key == 'id' else key
+                key = 'source_layer' if key == 'sourcelayer' else key
+                key = 'intersection_id' if key == 'intersectionid' else key
+
+                fields.append(key)
+                values.append(value)
+            
+            sql += "(" + ",\n".join(fields) + ") values ("
+            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += "\nreturning id"
+
+            print(sql, values)
+            result = execute(sql, values, get_result=True)
+            feature_id = result["id"]
+
+            sql = f"""
+            update {record["internal_table"]}
+            set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+            where id = %s
+            """
+            values = [str(feature["geometry"]), feature_id]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
 
         sql = f"""
         insert into component_feature_map
