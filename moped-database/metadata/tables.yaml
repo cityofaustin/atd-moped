@@ -2231,6 +2231,14 @@
           - project_personnel_id
           - project_role_id
         filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
   update_permissions:
     - role: moped-admin
       permission:
