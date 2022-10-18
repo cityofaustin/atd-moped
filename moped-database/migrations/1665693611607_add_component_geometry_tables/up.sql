@@ -165,7 +165,12 @@ create view uniform_features as (
             ) as attributes, geography
         FROM feature_street_segments
     union all
-        select id, 'feature_intersections' as table, name, json_build_object('intersection_id', intersection_id) as attributes, geography
+        select id, 'feature_intersections' as table, name, json_build_object(
+            'intersection_id', intersection_id,
+            'project_extent_id', project_extent_id,
+            'source_layer', source_layer,
+            'render_type', render_type
+            ) as attributes, geography
         FROM feature_intersections
     union all
         select id, 'feature_drawn_points' as table, name, null as attributes, geography from feature_drawn_points
