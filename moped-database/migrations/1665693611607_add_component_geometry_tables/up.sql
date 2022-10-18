@@ -179,6 +179,7 @@ create view project_geography as (
       uniform_features.id as feature_id,
       moped_components.component_id as component_archtype_id,
       moped_proj_components.project_component_id as component_id,
+      moped_proj_components.is_deleted,
       moped_project.project_name as project_name,
       feature_layers.internal_table as table,
       feature_layers.reference_layer_primary_key_column as original_fk,
