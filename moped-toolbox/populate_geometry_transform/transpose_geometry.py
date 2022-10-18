@@ -29,6 +29,29 @@ def remove_leading_underscore(arg):
 
 def moped_proj_features(args):
     sql = """
+truncate component_feature_map;
+truncate feature_drawn_lines;
+truncate feature_drawn_points;
+truncate feature_intersections;
+truncate feature_signals;
+truncate feature_street_segments;
+truncate features;
+"""
+    values = []
+    try:
+        update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        update.execute(
+            sql, values,
+        )
+    except psycopg2.errors.InternalError_ as e:
+        print("\n\b🛎Postgres error: " + str(e))
+        print(geojson.dumps(feature, indent=2))
+        pg.rollback()
+    else:  # no exception
+        pg.commit()
+
+
+    sql = """
     select
       moped_proj_components.project_id,
       moped_components.component_id,
