@@ -154,7 +154,6 @@ truncate features;
             set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
             where id = %s
             """
-            print("Me!")
             values = [str(feature["geometry"]), feature_id]
 
             print(sql, values)
