@@ -39,7 +39,6 @@ const initialFormValues = {
 
 const ControlledAutocomplete = ({
   id,
-  disabled = false,
   options,
   name,
   control,
@@ -55,7 +54,6 @@ const ControlledAutocomplete = ({
       <Autocomplete
         options={options}
         multiple={multiple}
-        disabled={disabled}
         getOptionLabel={(option) => option?.label || ""}
         getOptionSelected={(option, value) => option?.value === value?.value}
         value={value}
@@ -122,7 +120,7 @@ const ComponentEditModal = ({
       label: component_name,
       features: [],
     };
-
+    console.log(newComponent);
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
     setDraftComponent(newComponent);
@@ -160,18 +158,19 @@ const ComponentEditModal = ({
                 autoFocus
               />
             </Grid>
-            <Grid item xs={12}>
-              {/* Disabled unless there are subcomponents for the chosen component */}
-              <ControlledAutocomplete
-                id="subcomponents"
-                label="Subcomponents"
-                multiple
-                disabled={subcomponentOptions.length === 0}
-                options={subcomponentOptions}
-                name="subcomponents"
-                control={control}
-              />
-            </Grid>
+            {/* Hide unless there are subcomponents for the chosen component */}
+            {subcomponentOptions.length !== 0 && (
+              <Grid item xs={12}>
+                <ControlledAutocomplete
+                  id="subcomponents"
+                  label="Subcomponents"
+                  multiple
+                  options={subcomponentOptions}
+                  name="subcomponents"
+                  control={control}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <TextField
                 inputRef={register}
