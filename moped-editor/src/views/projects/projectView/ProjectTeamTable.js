@@ -186,8 +186,8 @@ const ProjectTeamTable = ({ projectId }) => {
         return (
           <FormControl style={{ width: "100%" }}>
             <Autocomplete
-              id="user_id"
-              name="user_id"
+              id="moped_user_autocomplete"
+              name="moped_user_autocomplete"
               options={userOptions}
               getOptionLabel={(option) => getUserFullName(option)}
               getOptionSelected={(option, value) =>
@@ -195,7 +195,8 @@ const ProjectTeamTable = ({ projectId }) => {
               }
               value={props.value || null}
               onChange={(event, value) => props.onChange(value)}
-              renderInput={(params) => <TextField {...params} />}
+              renderInput={(params) => <TextField {...params} autoFocus />}
+              auto
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
@@ -311,9 +312,7 @@ const ProjectTeamTable = ({ projectId }) => {
           </Typography>
         }
         options={{
-          ...(data?.moped_proj_personnel?.length < PAGING_DEFAULT_COUNT + 1 && {
-            paging: false,
-          }),
+          paging: false,
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
