@@ -67,6 +67,7 @@ truncate features;
       moped_components.component_name,
       moped_components.component_subtype,
       feature_layers.internal_table,
+      feature_layers.id as feature_layer_id,
       feature_id,
       feature::character varying as feature,
       moped_proj_features.feature_id
