@@ -153,7 +153,7 @@ const useUserOptions = ({ users, personnel }) =>
     return users.filter(
       (user) => !existingPersonnelUserIds.includes(user.user_id)
     );
-  });
+  }, [users, personnel]);
 
 const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
