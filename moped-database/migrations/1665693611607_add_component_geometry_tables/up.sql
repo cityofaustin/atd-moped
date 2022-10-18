@@ -136,12 +136,30 @@ create table component_feature_map (
     feature_id integer default null
     );
 
--- todo - add all the new columns to this view
 create view uniform_features as (
-        select id, 'feature_signals' as table, name, json_build_object('signal_id', signal_id) as attributes, geography
+        select id, 'feature_signals' as table, name, json_build_object(
+            'signal_id', signal_id,
+            'knack_id', knack_id,
+            'project_extent_id', project_extent_id,
+            'location_name', location_name,
+            'render_type', render_type,
+            'signal_type', signal_type,
+            'source_layer', source_layer
+            ) as attributes, geography
         FROM feature_signals
     union all
-        select id, 'feature_street_segments' as table, name, json_build_object('ctn_segment_id', ctn_segment_id) as attributes, geography
+        select id, 'feature_street_segments' as table, name, json_build_object(
+            'knack_id', knack_id,
+            'ctn_segment_id', ctn_segment_id,
+            'project_extent_id', project_extent_id,
+            'from_address_min', from_address_min,
+            'render_type', render_type,
+            'to_address_max', to_address_max,
+            'full_street_name', full_street_name,
+            'line_type', line_type,
+            'symbol', symbol,
+            'source_layer', source_layer
+            ) as attributes, geography
         FROM feature_street_segments
     union all
         select id, 'feature_intersections' as table, name, json_build_object('intersection_id', intersection_id) as attributes, geography
