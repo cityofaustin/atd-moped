@@ -26,6 +26,25 @@ def remove_leading_underscore(arg):
     else:
         return arg
 
+def execute(sql, values, get_result=False):
+    try:
+        update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+        update.execute(
+            sql, values,
+        )
+        if get_result:
+            result = update.fetchone()
+    except psycopg2.errors.InternalError_ as e:
+        print("\n\b🛎Postgres error: " + str(e))
+        print(geojson.dumps(feature, indent=2))
+        pg.rollback()
+    else:  # no exception
+        pg.commit()
+    if get_result:
+        return result
+    else:
+        return True
+
 
 def moped_proj_features(args):
     sql = """
@@ -37,18 +56,7 @@ truncate feature_signals;
 truncate feature_street_segments;
 truncate features;
 """
-    values = []
-    try:
-        update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-        update.execute(
-            sql, values,
-        )
-    except psycopg2.errors.InternalError_ as e:
-        print("\n\b🛎Postgres error: " + str(e))
-        print(geojson.dumps(feature, indent=2))
-        pg.rollback()
-    else:  # no exception
-        pg.commit()
+    execute(sql, [], get_result=False)
 
 
     sql = """
@@ -123,25 +131,9 @@ truncate features;
         sql += ",\n".join(["%s"] * len(values)) + ')'
         sql += "\nreturning id"
 
-        print(sql)
-        print("\n")
-
-        try:
-            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            update.execute(
-                sql, values,
-            )
-            result = update.fetchone()
-        except psycopg2.errors.InternalError_ as e:
-            print("\n\b🛎Postgres error: " + str(e))
-            print(geojson.dumps(feature, indent=2))
-            pg.rollback()
-        else:  # no exception
-            pg.commit()
-
+        print(sql, values)
+        result = execute(sql, values, get_result=True)
         feature_id = result["id"]
-
-        print(feature["geometry"])
 
         sql = f"""
         update {record["internal_table"]}
@@ -151,20 +143,7 @@ truncate features;
         values = [str(feature["geometry"]), feature_id]
 
         print(sql, values)
-
-        try:
-            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            update.execute(
-                sql, values,
-            )
-        except psycopg2.errors.InternalError_ as e:
-            print("\n\b🛎Postgres error: " + str(e))
-            print(geojson.dumps(feature, indent=2))
-            pg.rollback()
-        else:  # no exception
-            pg.commit()
-
-
+        execute(sql, values, get_result=False)
 
         sql = f"""
         insert into component_feature_map
@@ -173,20 +152,10 @@ truncate features;
         """
         values = [record["project_component_id"], feature_id]
 
-        print(sql)
+        print(sql, values)
+        result = execute(sql, values, get_result=True)
+        feature_id = result["id"]
 
-        try:
-            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-            update.execute(
-                sql, values,
-            )
-            result = update.fetchone()
-        except psycopg2.errors.InternalError_ as e:
-            print("\n\b🛎Postgres error: " + str(e))
-            print(geojson.dumps(feature, indent=2))
-            pg.rollback()
-        else:  # no exception
-            pg.commit()
 
 
 
