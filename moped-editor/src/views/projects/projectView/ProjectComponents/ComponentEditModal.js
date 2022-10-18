@@ -138,14 +138,14 @@ const ComponentEditModal = ({
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth>
+    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers={true}>
         <form onSubmit={handleSubmit(onSave)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
