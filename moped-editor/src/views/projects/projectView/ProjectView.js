@@ -76,10 +76,6 @@ const useStyles = makeStyles((theme) => ({
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
-  cardActions: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
   button: {
     marginTop: theme.spacing(1),
     marginRight: theme.spacing(2),
@@ -429,6 +425,8 @@ const ProjectView = () => {
     current_status: data?.moped_project?.[0]?.current_status ?? null,
   };
 
+  const isProjectDeleted = data?.moped_project[0].is_deleted;
+
   return (
     <ApolloErrorHandler error={error}>
       {data && !data?.moped_project?.length && <NotFoundView />}
@@ -457,22 +455,48 @@ const ProjectView = () => {
                           </Breadcrumbs>
                         </Box>
                       </Grid>
-                      <Grid item xs={1} md={1}>
-                        <Box
-                          className={classes.followDiv}
-                          onClick={() => handleFollowProject()}
-                        >
-                          <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
-                            {isFollowing ? (
-                              <BookmarkIcon className={classes.unfollowIcon} />
-                            ) : (
-                              <BookmarkBorderIcon
-                                className={classes.followIcon}
-                              />
-                            )}
-                          </Tooltip>
-                        </Box>
-                      </Grid>
+                      {!isProjectDeleted && (
+                        <Grid item xs={1} md={1}>
+                          <Box
+                            className={classes.followDiv}
+                            onClick={() => handleFollowProject()}
+                          >
+                            <Tooltip
+                              title={isFollowing ? "Unfollow" : "Follow"}
+                            >
+                              {isFollowing ? (
+                                <BookmarkIcon
+                                  className={classes.unfollowIcon}
+                                />
+                              ) : (
+                                <BookmarkBorderIcon
+                                  className={classes.followIcon}
+                                />
+                              )}
+                            </Tooltip>
+                          </Box>
+                        </Grid>
+                      )}
+                      {isProjectDeleted && (
+                        <Grid item xs={12}>
+                          <Box pb={2} pt={1}>
+                            <Alert severity="error">
+                              This project has been deleted and is no longer
+                              visible in Moped. If you need to restore a deleted
+                              project, please{" "}
+                              <Link
+                                href={
+                                  "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+                                }
+                                target="new"
+                              >
+                                submit a Data &amp; Technology Services support
+                                request
+                              </Link>
+                            </Alert>
+                          </Box>
+                        </Grid>
+                      )}
                       <Grid item xs={11} md={11} className={classes.title}>
                         <Box
                           alignItems="center"
