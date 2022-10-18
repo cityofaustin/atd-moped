@@ -3114,6 +3114,15 @@
       using:
         foreign_key_constraint_on: added_by
   array_relationships:
+    - name: geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
+            schema: public
     - name: moped_proj_components
       using:
         foreign_key_constraint_on:
