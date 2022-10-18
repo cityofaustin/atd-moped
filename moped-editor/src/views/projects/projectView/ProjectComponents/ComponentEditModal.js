@@ -120,7 +120,7 @@ const ComponentEditModal = ({
       label: component_name,
       features: [],
     };
-    console.log(newComponent);
+
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
     setDraftComponent(newComponent);
