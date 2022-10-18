@@ -4676,3 +4676,6 @@
           - project_tags
         filter: {}
         allow_aggregations: true
+- table:
+    name: uniform_features
+    schema: public
