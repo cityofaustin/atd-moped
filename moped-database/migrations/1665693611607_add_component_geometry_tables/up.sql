@@ -98,7 +98,7 @@ create table feature_signals (
     location_name character varying,
     render_type character varying,
     signal_type character varying,
-    sourceLayer character varying,
+    source_layer character varying,
     geography geography('MULTIPOINT') default null
     ) inherits (features);
 
@@ -108,12 +108,15 @@ create table feature_intersections (
     ) inherits (features);
 
 create table feature_street_segments (
+    knack_id character varying,
     ctn_segment_id integer default null,
+    project_extent_id uuid,
     from_address_min integer default null,
-    to_address_min integer default null,
+    render_type character varying,
+    to_address_max integer default null,
     full_street_name character varying,
     line_type character varying,
-    symbol: integer default null,
+    symbol integer default null,
     source_layer character varying,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
@@ -132,11 +135,12 @@ create table component_feature_map (
     feature_id integer default null
     );
 
+-- todo - add all the new columns to this view
 create view uniform_features as (
         select id, 'feature_signals' as table, name, json_build_object('signal_id', signal_id) as attributes, geography
         FROM feature_signals
     union all
-        select id, 'feature_street_segments' as table, name, json_build_object('segment_id', segment_id) as attributes, geography
+        select id, 'feature_street_segments' as table, name, json_build_object('ctn_segment_id', ctn_segment_id) as attributes, geography
         FROM feature_street_segments
     union all
         select id, 'feature_intersections' as table, name, json_build_object('intersection_id', intersection_id) as attributes, geography

@@ -36,13 +36,15 @@ def moped_proj_features(args):
       moped_components.component_subtype,
       feature_layers.internal_table,
       feature_id,
-      feature::character varying as feature
+      feature::character varying as feature,
+      moped_proj_features.feature_id
     from moped_proj_features
     join moped_proj_components on (moped_proj_components.project_component_id = moped_proj_features.project_component_id)
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
     left join feature_layers on (feature_layers.id = moped_components.feature_layer_id)
-    where feature_layers.internal_table = 'feature_signals'
-    order by random();
+    where feature_layers.internal_table in ('feature_signals')
+    --where feature_layers.internal_table in ('feature_street_segments')
+    order by moped_proj_features.feature_id asc
     """
 
     cursor = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
@@ -58,11 +60,21 @@ def moped_proj_features(args):
         #if str(feature["geometry"]["type"]) == 'Point':
             #continue
 
-        #print("Project ID: ", record["project_id"])
-        #print("Component Name: ", record["component_name"])
-        #print("Component Subtype: ", record["component_subtype"])
-        #print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
-        #pp.pprint(feature["properties"])
+        # These need special handling, I think they will be half intersections, half segments.
+        # It is a genuinely un-geographically typed feature. 🤔
+        if record["component_name"] == "Project Extent - Generic":
+            continue
+
+        if record["component_name"] == "Sidewalk" and record["component_subtype"] == 'With Curb and Gutter' and str(feature["geometry"]["type"]) == 'Point':
+            continue
+
+        if True:
+            print("Project ID: ", record["project_id"])
+            print("Component Name: ", record["component_name"])
+            print("Component Subtype: ", record["component_subtype"])
+            print("Feature ID: ", record["feature_id"])
+            print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
+            pp.pprint(feature["properties"])
 
         sql = f"""
         insert into {record["internal_table"]}
@@ -76,28 +88,55 @@ def moped_proj_features(args):
             key = key.lower()
             key = 'render_type' if key == 'rendertype' else key
             key = 'knack_id' if key == 'id' else key
+            key = 'source_layer' if key == 'sourcelayer' else key
 
             fields.append(key)
             values.append(value)
         
-        sql += "(" + ", ".join(fields) + ") values ("
-        sql += ", ".join(["%s"] * len(values)) + ')'
+        sql += "(" + ",\n".join(fields) + ") values ("
+        sql += ",\n".join(["%s"] * len(values)) + ')'
+        sql += "\nreturning id"
 
         print(sql)
         print("\n")
-
 
         try:
             update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
             update.execute(
                 sql, values,
             )
+            result = update.fetchone()
         except psycopg2.errors.InternalError_ as e:
             print("\n\b🛎Postgres error: " + str(e))
             print(geojson.dumps(feature, indent=2))
             pg.rollback()
         else:  # no exception
             pg.commit()
+
+        feature_id = result["id"]
+
+        sql = f"""
+        insert into component_feature_map
+        (component_id, feature_id) values (%s, %s)
+        returning id
+        """
+        values = [record["component_id"], feature_id]
+
+        try:
+            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            update.execute(
+                sql, values,
+            )
+            result = update.fetchone()
+        except psycopg2.errors.InternalError_ as e:
+            print("\n\b🛎Postgres error: " + str(e))
+            print(geojson.dumps(feature, indent=2))
+            pg.rollback()
+        else:  # no exception
+            pg.commit()
+
+
+
 
         continue;
 
