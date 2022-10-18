@@ -108,7 +108,7 @@ truncate features;
             # It is a genuinely un-geographically typed feature. 🤔
             
             # i think this code which is so similar to the blocks around it could be DRYed up
-            # but i don't think it's worth the effort here
+            # but i don't think it's worth the effort here. see comment below.
 
             sql = f"""
             insert into feature_intersections
@@ -215,8 +215,9 @@ truncate features;
             print(sql, values)
             execute(sql, values, get_result=False)
         
-        # these are the lion share of records
         else:
+            # This is the branch which handles records which require no special handling.
+            # It handles the vast majority of records.
 
             sql = f"""
             insert into {record["internal_table"]}
