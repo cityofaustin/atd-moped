@@ -1,8 +1,6 @@
 #!/usr/bin/python3
 
 import os
-import json
-import argparse
 
 import psycopg2
 import psycopg2.extras
