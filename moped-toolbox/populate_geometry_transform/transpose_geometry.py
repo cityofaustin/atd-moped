@@ -46,7 +46,7 @@ def execute(sql, values, get_result=False):
         return True
 
 
-def moped_proj_features(args):
+def moped_proj_features():
     sql = """
 truncate component_feature_map;
 truncate feature_drawn_lines;
@@ -174,13 +174,10 @@ truncate features;
         print("\n\n\n")
 
 
-def main(args):
-    moped_proj_features(args)
+def main():
+    moped_proj_features()
 
 
 if __name__ == "__main__":
 
-    #parser = argparse.ArgumentParser()
-    #parser.add_argument()
-    #args = parser.parse_args()
-    main(args)
+    main()
