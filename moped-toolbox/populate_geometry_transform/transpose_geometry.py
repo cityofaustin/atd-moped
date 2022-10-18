@@ -132,6 +132,7 @@ truncate features;
             key = 'render_type' if key == 'rendertype' else key
             key = 'knack_id' if key == 'id' else key
             key = 'source_layer' if key == 'sourcelayer' else key
+            key = 'intersection_id' if key == 'intersectionid' else key
 
             fields.append(key)
             values.append(value)
