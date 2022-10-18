@@ -180,12 +180,7 @@ def main(args):
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "-s",
-        "--schema",
-        action="store_true",
-        help=f"Make schema changes",
-    )
-    args = parser.parse_args()
+    #parser = argparse.ArgumentParser()
+    #parser.add_argument()
+    #args = parser.parse_args()
     main(args)
