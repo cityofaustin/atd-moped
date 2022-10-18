@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import os
+import time
 
 import psycopg2
 import psycopg2.extras
@@ -212,11 +213,12 @@ truncate features;
 
             # set the override field for this row
             sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
-            values = [record["feature_layer_id"], record["project_component_id"]]
+            values = [ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
 
             print(sql, values)
             execute(sql, values, get_result=False)
         
+        # these are the lion share of records
         else:
 
             sql = f"""
@@ -272,9 +274,9 @@ truncate features;
 
 
 def main():
+    # i thought there were maybe multiple tables to migrate, 😅
     moped_proj_features()
 
 
 if __name__ == "__main__":
-
     main()
