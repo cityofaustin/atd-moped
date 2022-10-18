@@ -174,6 +174,7 @@ create view project_geography as (
     select 
       moped_project.project_id as project_id,
       uniform_features.id as feature_id,
+      moped_components.component_id as component_archtype_id,
       moped_proj_components.project_component_id as component_id,
       moped_project.project_name as project_name,
       feature_layers.internal_table as table,
