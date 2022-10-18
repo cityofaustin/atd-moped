@@ -1,6 +1,25 @@
 - table:
     name: component_feature_map
     schema: public
+  object_relationships:
+    - name: component_feature_map_to_components
+      using:
+        manual_configuration:
+          column_mapping:
+            component_id: project_component_id
+          insertion_order: null
+          remote_table:
+            name: moped_proj_components
+            schema: public
+    - name: component_feature_map_to_features
+      using:
+        manual_configuration:
+          column_mapping:
+            feature_id: id
+          insertion_order: null
+          remote_table:
+            name: uniform_features
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
