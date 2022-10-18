@@ -88,6 +88,7 @@ alter table moped_proj_components
 
 create table features (
     id serial primary key, 
+    -- do we want an auto-popualted UUID here, something non-sequence based and unique for use in the mapbox library?
     name character varying
     );
 
