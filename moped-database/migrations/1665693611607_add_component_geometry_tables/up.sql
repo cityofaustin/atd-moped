@@ -105,6 +105,9 @@ create table feature_signals (
 
 create table feature_intersections (
     intersection_id integer default null,
+    project_extent_id uuid,
+    source_layer character varying,
+    render_type character varying,
     geography geography('MULTIPOINT') default null
     ) inherits (features);
 
