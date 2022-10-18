@@ -142,6 +142,19 @@ const getEditRolesPayload = ({ newData, oldData }) => {
   return [rolesToAddPayload, projRoleIdsToDelete];
 };
 
+const useUserOptions = ({ users, personnel }) =>
+  useMemo(() => {
+    if (!users || !personnel) {
+      return users;
+    }
+    const existingPersonnelUserIds = personnel.map(
+      (pers) => pers.moped_user.user_id
+    );
+    return users.filter(
+      (user) => !existingPersonnelUserIds.includes(user.user_id)
+    );
+  });
+
 const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
 
@@ -160,7 +173,11 @@ const ProjectTeamTable = ({ projectId }) => {
     data?.moped_project_by_pk.moped_proj_personnel
   );
   const roles = data?.moped_project_roles;
-  const userOptions = data?.moped_users || [];
+
+  const userOptions = useUserOptions({
+    users: data?.moped_users || [],
+    personnel,
+  });
 
   /**
    * Column configuration for <MaterialTable>
@@ -183,7 +200,6 @@ const ProjectTeamTable = ({ projectId }) => {
       },
       validate: (rowData) => !!rowData?.moped_user?.user_id,
       editComponent: (props) => {
-        console.log("PROPS", props)
         return (
           <FormControl style={{ width: "100%" }}>
             <Autocomplete
