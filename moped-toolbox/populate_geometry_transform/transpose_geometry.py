@@ -143,7 +143,9 @@ truncate features;
         (component_id, feature_id) values (%s, %s)
         returning id
         """
-        values = [record["component_id"], feature_id]
+        values = [record["project_component_id"], feature_id]
+
+        print(sql)
 
         try:
             update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
