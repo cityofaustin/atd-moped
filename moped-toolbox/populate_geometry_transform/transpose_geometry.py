@@ -93,9 +93,6 @@ truncate features;
         if not feature.is_valid:
             raise Exception("Invalid feature")
 
-        #if str(feature["geometry"]["type"]) == 'Point':
-            #continue
-
         if True:
             print("Project ID: ", record["project_id"])
             print("Component Name: ", record["component_name"])
