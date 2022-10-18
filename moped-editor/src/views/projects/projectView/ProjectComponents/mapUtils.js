@@ -11,7 +11,13 @@
 // 1. basemap source and layer if aerial
 // 2. sources and layers in correct order
 // 3. array of interactive layers based on config and what layers are present in the data
-const useMapLayers = ({ basemapKey, data, isEditingComponent }) => {
+export const useMapLayers = ({
+  basemapKey,
+  data,
+  isEditingComponent,
+  linkMode,
+  draftLayerId,
+}) => {
   // Handle basemaps
   // Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   //   {basemapKey === "aerial" && (
@@ -24,11 +30,14 @@ const useMapLayers = ({ basemapKey, data, isEditingComponent }) => {
   //   )}
   console.log({ basemapKey, data, isEditingComponent });
 
-  //   isEditingComponent
-  //           ? linkMode === "lines"
-  //             ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
-  //             : ["ctn-points-underlay", "project-points", draftLayerId]
-  //           : ["project-points", "project-lines-underlay"]
+  const interactiveLayerIds = isEditingComponent
+    ? linkMode === "lines"
+      ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
+      : ["ctn-points-underlay", "project-points", draftLayerId]
+    : ["project-points", "project-lines-underlay"];
+
+  const BaseMapComponents = null;
+  const ProjectComponentsSourcesAndLayers = null;
 
   // Handle sources and layer for data
   return {

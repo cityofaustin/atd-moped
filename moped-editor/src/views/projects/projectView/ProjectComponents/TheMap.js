@@ -14,6 +14,7 @@ import {
 import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
+import { useMapLayers } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -215,19 +216,19 @@ export default function TheMap({
     interactiveLayerIds,
     BaseMapComponents,
     ProjectComponentsSourcesAndLayers,
-  } = useMapLayers({ basemapKey, data, isEditingComponent });
+  } = useMapLayers({
+    basemapKey,
+    data: {},
+    isEditingComponent,
+    linkMode,
+    draftLayerId,
+  });
 
   return (
     <MapGL
       ref={mapRef}
       initialViewState={initialViewState}
-      interactiveLayerIds={
-        isEditingComponent
-          ? linkMode === "lines"
-            ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
-            : ["ctn-points-underlay", "project-points", draftLayerId]
-          : ["project-points", "project-lines-underlay"]
-      }
+      interactiveLayerIds={interactiveLayerIds}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       onMoveEnd={onMoveEnd}

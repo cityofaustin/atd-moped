@@ -55,6 +55,7 @@ export default function MapView({ projectName, projectStatuses }) {
 
   /* holds this project's components */
   const [components, setComponents] = useState([]);
+  console.log(components);
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
