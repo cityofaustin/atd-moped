@@ -1,3 +1,5 @@
+import { Source, Layer } from "react-map-gl";
+import { basemaps } from "./mapSettings";
 // There is a config here that sets the order of layers on the map
 // The hook makes sure this is enforced
 // Config also sets whether a layer is interactive or not
@@ -19,15 +21,17 @@ export const useMapLayers = ({
   draftLayerId,
 }) => {
   // Handle basemaps
-  // Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
-  //   {basemapKey === "aerial" && (
-  //     <>
-  //       <Source {...basemaps[basemapKey].sources.aerials} />
-  //       <Layer {...basemaps[basemapKey].layers.aerials} />
-  //       {/* show street labels on top of other layers */}
-  //       <Layer {...basemaps[basemapKey].layers.streetLabels} />
-  //     </>
-  //   )}
+  // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
+  const BaseMapComponents = () =>
+    basemapKey === "aerial" && (
+      <>
+        <Source {...basemaps[basemapKey].sources.aerials} />
+        <Layer {...basemaps[basemapKey].layers.aerials} />
+        {/* show street labels on top of other layers */}
+        {/* Use beforeId here to make street labels above everything else */}
+        <Layer {...basemaps[basemapKey].layers.streetLabels} />
+      </>
+    );
   console.log({ basemapKey, data, isEditingComponent });
 
   const interactiveLayerIds = isEditingComponent
@@ -36,7 +40,6 @@ export const useMapLayers = ({
       : ["ctn-points-underlay", "project-points", draftLayerId]
     : ["project-points", "project-lines-underlay"];
 
-  const BaseMapComponents = null;
   const ProjectComponentsSourcesAndLayers = null;
 
   // Handle sources and layer for data

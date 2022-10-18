@@ -327,14 +327,7 @@ export default function TheMap({
           )}
         </Source>
       )}
-      {basemapKey === "aerial" && (
-        <>
-          <Source {...basemaps[basemapKey].sources.aerials} />
-          <Layer {...basemaps[basemapKey].layers.aerials} />
-          {/* show street labels on top of other layers */}
-          <Layer {...basemaps[basemapKey].layers.streetLabels} />
-        </>
-      )}
+      <BaseMapComponents />
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
