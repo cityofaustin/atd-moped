@@ -118,8 +118,57 @@ truncate features;
 
         elif (record["component_name"] == "Transit" and 
                 record["component_subtype"] == 'Transit/Bike Lane' and 
-                str(feature["geometry"]["type"]) == 'Point'):
-            continue
+                str(feature["geometry"]["type"]) == 'Point' and
+                record["feature_id"] == 297):
+        
+
+            # i think this code which is so similar to the blocks around it could be DRYed up
+            # but i don't think it's worth the effort here
+
+            sql = f"""
+            insert into feature_signals
+            """
+
+            fields = []
+            values = []
+            for key, value in feature["properties"].items():
+
+                # key transformation rules
+                key = remove_leading_underscore(key)
+                key = key.lower()
+                key = 'render_type' if key == 'rendertype' else key
+                key = 'knack_id' if key == 'id' else key
+                key = 'source_layer' if key == 'sourcelayer' else key
+                key = 'intersection_id' if key == 'intersectionid' else key
+
+                fields.append(key)
+                values.append(value)
+            
+            sql += "(" + ",\n".join(fields) + ") values ("
+            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += "\nreturning id"
+
+            print(sql, values)
+            result = execute(sql, values, get_result=True)
+            feature_id = result["id"]
+
+            sql = f"""
+            update feature_signals
+            set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+            where id = %s
+            """
+            print("Me!")
+            values = [str(feature["geometry"]), feature_id]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
+
+
+            sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
+            values = [record["feature_layer_id"], record["project_component_id"]]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
         
         else:
 
