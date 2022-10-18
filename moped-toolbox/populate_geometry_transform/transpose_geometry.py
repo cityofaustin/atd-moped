@@ -99,7 +99,14 @@ truncate features;
         if record["component_name"] == "Project Extent - Generic":
             continue
 
-        if record["component_name"] == "Sidewalk" and record["component_subtype"] == 'With Curb and Gutter' and str(feature["geometry"]["type"]) == 'Point':
+        if (record["component_name"] == "Sidewalk" and
+                record["component_subtype"] == 'With Curb and Gutter' and 
+                str(feature["geometry"]["type"]) == 'Point'):
+            continue
+
+        if (record["component_name"] == "Transit" and 
+                record["component_subtype"] == 'Transit/Bike Lane' and 
+                str(feature["geometry"]["type"]) == 'Point'):
             continue
 
         if True:
