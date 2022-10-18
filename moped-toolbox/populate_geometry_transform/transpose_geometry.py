@@ -46,15 +46,16 @@ def execute(sql, values, get_result=False):
 
 
 def moped_proj_features():
+    # this should make you pass an argument because it's destructive
     sql = """
-truncate component_feature_map;
-truncate feature_drawn_lines;
-truncate feature_drawn_points;
-truncate feature_intersections;
-truncate feature_signals;
-truncate feature_street_segments;
-truncate features;
-"""
+    truncate component_feature_map;
+    truncate feature_drawn_lines;
+    truncate feature_drawn_points;
+    truncate feature_intersections;
+    truncate feature_signals;
+    truncate feature_street_segments;
+    truncate features;
+    """
     execute(sql, [], get_result=False)
 
 
