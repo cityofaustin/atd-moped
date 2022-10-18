@@ -211,6 +211,12 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
+  const {
+    interactiveLayerIds,
+    BaseMapComponents,
+    ProjectComponentsSourcesAndLayers,
+  } = useMapLayers({ basemapKey, data, isEditingComponent });
+
   return (
     <MapGL
       ref={mapRef}
