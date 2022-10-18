@@ -183,6 +183,7 @@ const ProjectTeamTable = ({ projectId }) => {
       },
       validate: (rowData) => !!rowData?.moped_user?.user_id,
       editComponent: (props) => {
+        console.log("PROPS", props)
         return (
           <FormControl style={{ width: "100%" }}>
             <Autocomplete
@@ -196,7 +197,6 @@ const ProjectTeamTable = ({ projectId }) => {
               value={props.value || null}
               onChange={(event, value) => props.onChange(value)}
               renderInput={(params) => <TextField {...params} autoFocus />}
-              auto
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
