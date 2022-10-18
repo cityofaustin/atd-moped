@@ -109,16 +109,15 @@ truncate features;
         if record["component_name"] == "Project Extent - Generic":
             continue
 
-        elif (record["component_name"] == "Sidewalk" and
+        elif ((record["component_name"] == "Sidewalk" and
                 record["component_subtype"] == 'With Curb and Gutter' and 
-                str(feature["geometry"]["type"]) == 'Point'):
-            continue
-
-        elif (record["component_name"] == "Transit" and 
+                str(feature["geometry"]["type"]) == 'Point')
+                or
+                # the next three line are just being explicit about how i found record 297
+                (record["component_name"] == "Transit" and 
                 record["component_subtype"] == 'Transit/Bike Lane' and 
                 str(feature["geometry"]["type"]) == 'Point' and
-                record["feature_id"] == 297):
-        
+                record["feature_id"] == 297)):
 
             # i think this code which is so similar to the blocks around it could be DRYed up
             # but i don't think it's worth the effort here
