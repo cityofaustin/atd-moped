@@ -425,7 +425,7 @@ const ProjectView = () => {
     current_status: data?.moped_project?.[0]?.current_status ?? null,
   };
 
-  const isProjectDeleted = data?.moped_project[0].is_deleted;
+  const isProjectDeleted = data?.moped_project[0]?.is_deleted;
 
   return (
     <ApolloErrorHandler error={error}>
