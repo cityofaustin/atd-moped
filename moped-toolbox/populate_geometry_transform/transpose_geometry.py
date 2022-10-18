@@ -16,9 +16,6 @@ DB_USER = os.environ.get("DB_USER", "moped")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "moped")
 DB_NAME = os.environ.get("DB_NAME", "moped")
 
-ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS = 5
-ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS = 3
-
 pg = psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, dbname=DB_NAME)
 
 # function to remove leading underscore from argument if there is one
@@ -152,14 +149,12 @@ truncate features;
 
             # set the override field for this row
             sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
-            # this isn't right -- it would be right on the next query
+
+            ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS = 5
             values = [ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
 
             print(sql, values)
             execute(sql, values, get_result=False)
-
-
-            continue
 
         elif ((record["component_name"] == "Sidewalk" and
                 record["component_subtype"] == 'With Curb and Gutter' and 
@@ -213,6 +208,8 @@ truncate features;
 
             # set the override field for this row
             sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
+
+            ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS = 3
             values = [ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
 
             print(sql, values)
