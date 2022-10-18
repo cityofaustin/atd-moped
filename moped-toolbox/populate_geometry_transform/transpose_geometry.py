@@ -54,7 +54,8 @@ truncate features;
     sql = """
     select
       moped_proj_components.project_id,
-      moped_components.component_id,
+      moped_components.component_id as component_archtype_id,
+      moped_proj_components.project_component_id,
       moped_components.component_name,
       moped_components.component_subtype,
       feature_layers.internal_table,
@@ -65,8 +66,10 @@ truncate features;
     join moped_proj_components on (moped_proj_components.project_component_id = moped_proj_features.project_component_id)
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
     left join feature_layers on (feature_layers.id = moped_components.feature_layer_id)
-    where feature_layers.internal_table in ('feature_signals')
-    --where feature_layers.internal_table in ('feature_street_segments')
+    where true
+    and feature_layers.internal_table in ('feature_signals')
+    --and feature_layers.internal_table in ('feature_street_segments')
+    --and moped_proj_components.project_id = 1
     order by moped_proj_features.feature_id asc
     """
 
