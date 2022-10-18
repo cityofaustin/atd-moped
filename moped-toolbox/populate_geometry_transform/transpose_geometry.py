@@ -104,9 +104,60 @@ truncate features;
             pp.pprint(feature["geometry"])
 
         feature_id = None
-        # These need special handling, I think they will be half intersections, half segments.
-        # It is a genuinely un-geographically typed feature. 🤔
-        if record["component_name"] == "Project Extent - Generic":
+        if (record["component_name"] == "Project Extent - Generic" and
+                str(feature["geometry"]["type"]) == "Point"):
+            # These need special handling, I think this component type will be half intersections, half segments.
+            # It is a genuinely un-geographically typed feature. 🤔
+            
+            # i think this code which is so similar to the blocks around it could be DRYed up
+            # but i don't think it's worth the effort here
+
+            sql = f"""
+            insert into feature_intersections
+            """
+
+            fields = []
+            values = []
+            for key, value in feature["properties"].items():
+
+                # key transformation rules
+                key = remove_leading_underscore(key)
+                key = key.lower()
+                key = 'render_type' if key == 'rendertype' else key
+                key = 'knack_id' if key == 'id' else key
+                key = 'source_layer' if key == 'sourcelayer' else key
+                key = 'intersection_id' if key == 'intersectionid' else key
+
+                fields.append(key)
+                values.append(value)
+            
+            sql += "(" + ",\n".join(fields) + ") values ("
+            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += "\nreturning id"
+
+            print(sql, values)
+            result = execute(sql, values, get_result=True)
+            feature_id = result["id"]
+
+            sql = f"""
+            update feature_intersections
+            set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+            where id = %s
+            """
+            values = [str(feature["geometry"]), feature_id]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
+
+            # set the override field for this row
+            sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
+            # this isn't right -- it would be right on the next query
+            values = [ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
+
+
             continue
 
         elif ((record["component_name"] == "Sidewalk" and
