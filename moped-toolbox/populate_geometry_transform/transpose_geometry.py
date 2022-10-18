@@ -172,16 +172,6 @@ truncate features;
         
         else:
 
-            if True:
-                print("Project ID: ", record["project_id"])
-                print("Component Name: ", record["component_name"])
-                print("Component Subtype: ", record["component_subtype"])
-                print("Feature ID: ", record["feature_id"])
-                print("Default internal table: ", record["internal_table"])
-                print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
-                pp.pprint(feature["properties"])
-                pp.pprint(feature["geometry"])
-
             sql = f"""
             insert into {record["internal_table"]}
             """
