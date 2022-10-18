@@ -174,64 +174,6 @@ truncate features;
         print("\n\n\n")
 
 
-        continue;
-
-        if feature["geometry"]["type"] == "Point":
-            sql = """
-            update moped_proj_features 
-            set 
-            geography_collection = ST_ForceCollection(ST_GeomFromGeoJSON(%s)),
-            geography_point = ST_GeomFromGeoJSON(%s),
-            attributes = %s
-            where feature_id = %s
-            ;
-            """
-            try:
-                update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-                update.execute(
-                    sql,
-                    (
-                        geojson.dumps(feature["geometry"]),
-                        geojson.dumps(feature["geometry"]),
-                        geojson.dumps(feature["properties"]),
-                        record["feature_id"],
-                    ),
-                )
-            except psycopg2.errors.InternalError_ as e:
-                print("\n\b🛎Postgres error: " + str(e))
-                print(geojson.dumps(feature, indent=2))
-                pg.rollback()
-            else:  # no exception
-                pg.commit()
-        if feature["geometry"]["type"] == "LineString":
-            sql = """
-            update moped_proj_features 
-            set 
-            geography_collection = ST_ForceCollection(ST_GeomFromGeoJSON(%s)),
-            geography_linestring = ST_GeomFromGeoJSON(%s),
-            attributes = %s
-            where feature_id = %s
-            ;
-            """
-            try:
-                update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-                update.execute(
-                    sql,
-                    (
-                        geojson.dumps(feature["geometry"]),
-                        geojson.dumps(feature["geometry"]),
-                        geojson.dumps(feature["properties"]),
-                        record["feature_id"],
-                    ),
-                )
-            except psycopg2.errors.InternalError_ as e:
-                print("\n\b🛎Postgres error: " + str(e))
-                print(geojson.dumps(feature, indent=2))
-                pg.rollback()
-            else:  # no exception
-                pg.commit()
-
-
 def main(args):
     moped_proj_features(args)
 
