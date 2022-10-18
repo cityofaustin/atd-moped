@@ -15,6 +15,9 @@ DB_USER = os.environ.get("DB_USER", "moped")
 DB_PASSWORD = os.environ.get("DB_PASSWORD", "moped")
 DB_NAME = os.environ.get("DB_NAME", "moped")
 
+ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS = 5
+ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS = 3
+
 pg = psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD, dbname=DB_NAME)
 
 # function to remove leading underscore from argument if there is one
