@@ -141,6 +141,31 @@ truncate features;
 
         feature_id = result["id"]
 
+        print(feature["geometry"])
+
+        sql = f"""
+        update {record["internal_table"]}
+        set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+        where id = %s
+        """
+        values = [str(feature["geometry"]), feature_id]
+
+        print(sql, values)
+
+        try:
+            update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+            update.execute(
+                sql, values,
+            )
+        except psycopg2.errors.InternalError_ as e:
+            print("\n\b🛎Postgres error: " + str(e))
+            print(geojson.dumps(feature, indent=2))
+            pg.rollback()
+        else:  # no exception
+            pg.commit()
+
+
+
         sql = f"""
         insert into component_feature_map
         (component_id, feature_id) values (%s, %s)
