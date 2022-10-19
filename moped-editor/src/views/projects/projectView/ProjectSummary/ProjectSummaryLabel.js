@@ -1,6 +1,5 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
-import { SpaTwoTone } from "@material-ui/icons";
 
 /**
  *
@@ -24,21 +23,17 @@ const ProjectSummaryLabel = ({
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
+        {/* If there is no input, render a "-"*/}
         {text.length === 0 && <span>-</span>}
-        {!Array.isArray(text) && (
-          <span className={spanClassName}>
-            {text}
-          </span>
-        )}
+        {/* If the input is an array, render one item per line */}
         {Array.isArray(text) &&
           text.map((element, i) => (
-            <span
-              key={i}
-              className={spanClassName}
-            >
-              {element}
+            <span key={i} className={spanClassName}>
+              {element} <br />
             </span>
           ))}
+        {/* Otherwise, render the input on one line */}
+        {!Array.isArray(text) && <span className={spanClassName}>{text}</span>}
       </Typography>
     </>
   );
