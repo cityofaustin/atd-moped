@@ -23,7 +23,7 @@ const ProjectSummaryLabel = ({
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
-        {/* If there is no input, render a "-"*/}
+        {/* If there is no input, render a "-" */}
         {text.length === 0 && <span>-</span>}
         {/* If the input is an array, render one item per line */}
         {Array.isArray(text) &&
