@@ -1,5 +1,15 @@
+import { useMemo } from "react";
 import { Source, Layer } from "react-map-gl";
-import { basemaps } from "./mapSettings";
+import { basemaps, SOURCES } from "./mapSettings";
+import { MAP_STYLES } from "./mapStyleSettings";
+
+const mapStyles = MAP_STYLES;
+
+const useComponentFeatureCollection = (component) =>
+  useMemo(() => {
+    if (!component || !component?.features) return;
+    return { type: "FeatureCollection", features: component.features };
+  }, [component]);
 // There is a config here that sets the order of layers on the map
 // The hook makes sure this is enforced
 // Config also sets whether a layer is interactive or not
@@ -19,9 +29,11 @@ export const useMapLayers = ({
   isEditingComponent,
   linkMode,
   draftLayerId,
+  clickedComponent,
 }) => {
   // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
+  // See https://github.com/visgl/react-map-gl/issues/939
   const BaseMapComponents = () =>
     basemapKey === "aerial" && (
       <>
@@ -32,17 +44,121 @@ export const useMapLayers = ({
         <Layer {...basemaps[basemapKey].layers.streetLabels} />
       </>
     );
-  console.log({ basemapKey, data, isEditingComponent });
 
-  const interactiveLayerIds = isEditingComponent
-    ? linkMode === "lines"
-      ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
-      : ["ctn-points-underlay", "project-points", draftLayerId]
-    : ["project-points", "project-lines-underlay"];
+  const makeInteractiveLayerIds = () => {
+    return isEditingComponent
+      ? linkMode === "lines"
+        ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
+        : ["ctn-points-underlay", "project-points", draftLayerId]
+      : ["project-points", "project-lines-underlay"];
+  };
 
-  const ProjectComponentsSourcesAndLayers = null;
+  const interactiveLayerIds = makeInteractiveLayerIds();
 
   // Handle sources and layer for data
+  const {
+    ctnLinesGeojson,
+    ctnPointsGeojson,
+    projectLines,
+    projectPoints,
+    draftComponentFeatures,
+  } = data;
+
+  const componentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
+
+  const ProjectComponentsSourcesAndLayers = () => (
+    <>
+      <Source
+        id="ctn-lines"
+        type="geojson"
+        data={ctnLinesGeojson}
+        promoteId={SOURCES["ctn-lines"]._featureIdProp}
+      >
+        {isEditingComponent && linkMode === "lines" && (
+          <Layer {...mapStyles["ctn-lines-underlay"]} />
+        )}
+        {isEditingComponent && linkMode === "lines" && (
+          <Layer {...mapStyles["ctn-lines"]} />
+        )}
+      </Source>
+      {/* <Source
+        id="ctn-points"
+        type="vector"
+        tiles={[
+          "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Intersections_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
+        ]}
+      > */}
+      <Source
+        id="ctn-points"
+        type="geojson"
+        data={ctnPointsGeojson}
+        promoteId={SOURCES["ctn-points"]._featureIdProp}
+      >
+        {isEditingComponent && linkMode === "points" && (
+          <Layer {...mapStyles["ctn-points-underlay"]} />
+        )}
+        {isEditingComponent && linkMode === "points" && (
+          <Layer {...mapStyles["ctn-points"]} />
+        )}
+      </Source>
+      <Source
+        id="project-lines"
+        type="geojson"
+        data={projectLines}
+        promoteId="id"
+      >
+        <Layer {...mapStyles["project-lines-underlay"]} />
+        <Layer
+          {...mapStyles[
+            clickedComponent || isEditingComponent
+              ? "project-lines-muted"
+              : "project-lines"
+          ]}
+        />
+      </Source>
+      <Source
+        id="project-points"
+        type="geojson"
+        data={projectPoints}
+        promoteId="id"
+      >
+        <Layer
+          {...mapStyles[
+            clickedComponent || isEditingComponent
+              ? "project-points-muted"
+              : "project-points"
+          ]}
+        />
+      </Source>
+      {linkMode && (
+        <Source
+          id={draftLayerId}
+          type="geojson"
+          data={draftComponentFeatures}
+          promoteId="id"
+        >
+          <Layer {...mapStyles[draftLayerId]} />
+        </Source>
+      )}
+      {componentFeatureCollection && (
+        <Source
+          id="clicked-component-features"
+          type="geojson"
+          data={componentFeatureCollection}
+          promoteId="id"
+        >
+          {clickedComponent.line_representation && (
+            <Layer {...mapStyles["clicked-component-features-lines"]} />
+          )}
+          {!clickedComponent.line_representation && (
+            <Layer {...mapStyles["clicked-component-features-points"]} />
+          )}
+        </Source>
+      )}
+    </>
+  );
+
   return {
     interactiveLayerIds,
     BaseMapComponents,

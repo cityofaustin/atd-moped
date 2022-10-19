@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import MapGL, { Source, Layer } from "react-map-gl";
+import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
@@ -11,7 +11,6 @@ import {
   SOURCES,
   MIN_SELECT_FEATURE_ZOOM,
 } from "./mapSettings";
-import { MAP_STYLES } from "./mapStyleSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import { useMapLayers } from "./mapUtils";
@@ -22,12 +21,6 @@ import mapboxgl from "mapbox-gl";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
-
-const useComponentFeatureCollection = (component) =>
-  useMemo(() => {
-    if (!component || !component?.features) return;
-    return { type: "FeatureCollection", features: component.features };
-  }, [component]);
 
 const deDeupeProjectFeatures = (features) => {
   return features.filter(
@@ -84,8 +77,6 @@ export default function TheMap({
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftLayerId = `draft-component-${linkMode}`;
-
-  const mapStyles = MAP_STYLES;
 
   // yeah, these props are mess :/
   const ctnLinesGeojson = useFeatureService({
@@ -209,8 +200,13 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
-  const componentFeatureCollection =
-    useComponentFeatureCollection(clickedComponent);
+  const data = {
+    draftComponentFeatures,
+    ctnLinesGeojson,
+    ctnPointsGeojson,
+    projectLines,
+    projectPoints,
+  };
 
   const {
     interactiveLayerIds,
@@ -218,10 +214,11 @@ export default function TheMap({
     ProjectComponentsSourcesAndLayers,
   } = useMapLayers({
     basemapKey,
-    data: {},
+    data,
     isEditingComponent,
     linkMode,
     draftLayerId,
+    clickedComponent,
   });
 
   return (
@@ -240,94 +237,8 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <Source
-        id="ctn-lines"
-        type="geojson"
-        data={ctnLinesGeojson}
-        promoteId={SOURCES["ctn-lines"]._featureIdProp}
-      >
-        {isEditingComponent && linkMode === "lines" && (
-          <Layer {...mapStyles["ctn-lines-underlay"]} />
-        )}
-        {isEditingComponent && linkMode === "lines" && (
-          <Layer {...mapStyles["ctn-lines"]} />
-        )}
-      </Source>
-      {/* <Source
-        id="ctn-points"
-        type="vector"
-        tiles={[
-          "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Intersections_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-        ]}
-      > */}
-      <Source
-        id="ctn-points"
-        type="geojson"
-        data={ctnPointsGeojson}
-        promoteId={SOURCES["ctn-points"]._featureIdProp}
-      >
-        {isEditingComponent && linkMode === "points" && (
-          <Layer {...mapStyles["ctn-points-underlay"]} />
-        )}
-        {isEditingComponent && linkMode === "points" && (
-          <Layer {...mapStyles["ctn-points"]} />
-        )}
-      </Source>
-      <Source
-        id="project-lines"
-        type="geojson"
-        data={projectLines}
-        promoteId="id"
-      >
-        <Layer {...mapStyles["project-lines-underlay"]} />
-        <Layer
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-lines-muted"
-              : "project-lines"
-          ]}
-        />
-      </Source>
-      <Source
-        id="project-points"
-        type="geojson"
-        data={projectPoints}
-        promoteId="id"
-      >
-        <Layer
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-points-muted"
-              : "project-points"
-          ]}
-        />
-      </Source>
-      {linkMode && (
-        <Source
-          id={draftLayerId}
-          type="geojson"
-          data={draftComponentFeatures}
-          promoteId="id"
-        >
-          <Layer {...mapStyles[draftLayerId]} />
-        </Source>
-      )}
-      {componentFeatureCollection && (
-        <Source
-          id="clicked-component-features"
-          type="geojson"
-          data={componentFeatureCollection}
-          promoteId="id"
-        >
-          {clickedComponent.line_representation && (
-            <Layer {...mapStyles["clicked-component-features-lines"]} />
-          )}
-          {!clickedComponent.line_representation && (
-            <Layer {...mapStyles["clicked-component-features-points"]} />
-          )}
-        </Source>
-      )}
       <BaseMapComponents />
+      <ProjectComponentsSourcesAndLayers />
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
