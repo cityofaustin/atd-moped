@@ -24,7 +24,7 @@ const ProjectSummaryLabel = ({
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
-        {text.length === 0 && <Typography>-</Typography>}
+        {text.length === 0 && <span>-</span>}
         {!Array.isArray(text) && (
           <span className={spanClassName}>
             {text}
