@@ -7,7 +7,7 @@ const mapStyles = MAP_STYLES;
 
 export const useComponentFeatureCollection = (component) =>
   useMemo(() => {
-    if (!component || !component?.features) return;
+    if (!component || !component?.features) return null;
     return { type: "FeatureCollection", features: component.features };
   }, [component]);
 
@@ -62,7 +62,6 @@ export const ProjectComponentsSourcesAndLayers = ({
   data,
   isEditingComponent,
   linkMode,
-  draftLayerId,
   clickedComponent,
   componentFeatureCollection,
 }) => {
@@ -104,13 +103,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           }}
         />
       </Source>
-      {/* <Source
-            id="ctn-points"
-            type="vector"
-            tiles={[
-              "https://tiles.arcgis.com/tiles/0L95CJ0VTaxqcmED/arcgis/rest/services/CTN_Intersections_MOPED/VectorTileServer/tile/{z}/{y}/{x}.pbf",
-            ]}
-          > */}
+
       <Source
         id="ctn-points"
         type="geojson"
@@ -179,7 +172,7 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...{
-            ...mapStyles[draftLayerId],
+            ...mapStyles["draft-component-lines"],
             layout: {
               ...mapStyles["clicked-component-features-lines"].layout,
               visibility: linkMode ? "visible" : "none",
@@ -194,7 +187,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         data={draftComponentFeatures}
         promoteId="id"
       >
-        <Layer {...mapStyles[draftLayerId]} />
+        <Layer {...mapStyles["draft-component-points"]} />
       </Source>
 
       <Source
