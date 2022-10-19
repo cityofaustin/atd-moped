@@ -1,5 +1,6 @@
 import React from "react";
 import { Typography } from "@material-ui/core";
+import { SpaTwoTone } from "@material-ui/icons";
 
 /**
  *
@@ -19,26 +20,26 @@ const ProjectSummaryLabel = ({
 }) => {
   return (
     <>
-      <span
+      <Typography
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
         {text.length === 0 && <Typography>-</Typography>}
         {!Array.isArray(text) && (
-          <Typography className={spanClassName}>
+          <span className={spanClassName}>
             {text}
-          </Typography>
+          </span>
         )}
         {Array.isArray(text) &&
           text.map((element, i) => (
-            <Typography
+            <span
               key={i}
               className={spanClassName}
             >
               {element}
-            </Typography>
+            </span>
           ))}
-      </span>
+      </Typography>
     </>
   );
 };
