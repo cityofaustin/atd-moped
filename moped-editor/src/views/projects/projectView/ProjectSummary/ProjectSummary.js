@@ -34,7 +34,7 @@ import TagsSection from "./TagsSection";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
-    margin: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   linkIcon: {
     fontSize: "1rem",
@@ -56,28 +56,26 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
+    paddingLeft: theme.spacing(.5),
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
+    padding: theme.spacing(.5),
     "&:hover": {
       backgroundColor: "#f2f2f2",
+      borderRadius: theme.spacing(.5),
+      cursor: "pointer",
     },
   },
   fieldAuthor: {
     marginRight: ".25rem",
     fontSize: ".8rem",
     fontWeight: "bold",
+    paddingLeft: theme.spacing(.5),
   },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
     cursor: "pointer",
-  },
-  fieldLabelTextSpan: {
-    // "&:hover": {
-    //   borderBottom: "1px dashed",
-    //   borderBottomColor: theme.palette.text.secondary,
-    //   cursor: "pointer",
-    // },
   },
   fieldLabelTextSpanNoBorder: {
     borderBottom: "inherit",
@@ -92,6 +90,16 @@ const useStyles = makeStyles((theme) => ({
   },
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
+  },
+  dialogTitle: {
+    fontFamily: theme.typography.fontFamily,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  newStatusIconDiv: {
+    display: "flex",
+    alignItems: "center",
   },
 }));
 
@@ -222,7 +230,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
             </Grid>
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryKnackDataTrackerSync
                   classes={classes}
                   project={data?.moped_project?.[0]}
@@ -230,7 +238,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryWorkAssignmentID
                   projectId={projectId}
                   data={data}
@@ -241,7 +249,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
             </Grid>
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryInterimID
                   projectId={projectId}
                   data={data}
@@ -250,7 +258,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryProjectECapris
                   projectId={projectId}
                   data={data}
@@ -261,7 +269,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
             </Grid>
             <Grid container spacing={0}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <ProjectSummaryWorkOrders
                   classes={classes}
                   project={data?.moped_project?.[0]}
@@ -293,16 +301,15 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 )}
               </Grid>
               <Grid item xs={12}>
-            <TagsSection projectId={projectId} />
-          </Grid>
-          <Grid item xs={12}>
-            {!data.moped_project[0].parent_project_id && (
-              <SubprojectsTable projectId={projectId} />
-            )}
-          </Grid>
+                <TagsSection projectId={projectId} />
+              </Grid>
+              <Grid item xs={12}>
+                {!data.moped_project[0].parent_project_id && (
+                  <SubprojectsTable projectId={projectId} />
+                )}
+              </Grid>
             </Grid>
           </Grid>
-
         </Grid>
       </CardContent>
     </ApolloErrorHandler>

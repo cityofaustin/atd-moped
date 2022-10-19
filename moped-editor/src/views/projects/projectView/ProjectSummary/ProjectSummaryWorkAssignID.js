@@ -115,6 +115,7 @@ const ProjectSummaryWorkAssignmentID = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-work-assignment"
               label={null}

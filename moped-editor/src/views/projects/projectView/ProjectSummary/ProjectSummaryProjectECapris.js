@@ -158,6 +158,7 @@ const ProjectSummaryProjectECapris = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-ecapris"
               label={null}

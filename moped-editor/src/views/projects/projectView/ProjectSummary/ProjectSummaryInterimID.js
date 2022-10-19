@@ -108,6 +108,7 @@ const ProjectSummaryInterimID = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-interimID"
               label={null}

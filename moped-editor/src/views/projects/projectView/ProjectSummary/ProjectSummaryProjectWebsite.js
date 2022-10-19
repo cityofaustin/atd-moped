@@ -61,7 +61,7 @@ const ProjectSummaryProjectWebsite = ({
         refetch();
         snackbarHandle(true, "Project website updated!", "success");
       })
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(
           true,
           "Failed to update project website: " + String(err),
@@ -76,7 +76,7 @@ const ProjectSummaryProjectWebsite = ({
    * Updates the state of website
    * @param {Object} e - Event object
    */
-  const handleProjectWebsiteChange = e => {
+  const handleProjectWebsiteChange = (e) => {
     setWebsite(e.target.value);
   };
 
@@ -91,6 +91,7 @@ const ProjectSummaryProjectWebsite = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-website"
               label={null}
@@ -113,7 +114,6 @@ const ProjectSummaryProjectWebsite = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            className={classes.fieldLabelLink} // Override
             text={
               (website && website.length > 0 && (
                 <Link href={website} target={"_blank"}>

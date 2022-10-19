@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Box, Grid } from "@material-ui/core";
+import { Box, Grid, Typography } from "@material-ui/core";
 import parse from "html-react-parser";
 
 import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAndTime";
@@ -25,30 +25,35 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Box display="flex" justifyContent="flex-start">
+      <Typography className={classes.fieldLabel}>Status update</Typography>
+      <Box
+        display="flex"
+        justifyContent="flex-start"
+        className={classes.fieldBox}
+        flexWrap="nowrap"
+        alignItems="center"
+      >
         <DashboardStatusModal
           projectId={projectId}
           projectName={projectName}
           modalParent="summary"
           statusUpdate={statusUpdate}
           queryRefetch={refetch}
+          classes={classes}
         >
-          <Box className={classes.fieldBox}>
-            <span className={classes.fieldLabel}>Status update</span>
-            {!!statusUpdate && (
-              <>
-                <span className={classes.fieldLabelTextSpan}>
-                  {parse(String(statusUpdate))}
-                </span>
-                <span className={classes.fieldAuthor}>{addedBy}</span>
-                <span className={classes.fieldLabel}>
-                  {makeUSExpandedFormDateFromTimeStampTZ(
-                    dateCreated
-                  ).toUpperCase()}
-                </span>
-              </>
-            )}
-          </Box>
+          {!!statusUpdate && (
+            <div>
+              <div className={classes.fieldLabelText}>
+                {parse(String(statusUpdate))}
+              </div>
+              <span className={classes.fieldAuthor}>{addedBy}</span>
+              <span className={classes.fieldLabel}>
+                {makeUSExpandedFormDateFromTimeStampTZ(
+                  dateCreated
+                ).toUpperCase()}
+              </span>
+            </div>
+          )}
         </DashboardStatusModal>
       </Box>
     </Grid>

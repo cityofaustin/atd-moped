@@ -20,13 +20,12 @@ const ProjectSummaryLabel = ({
   return (
     <>
       <span
-        // what purpose doe these conditionals have if they are set to null?
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
         {text.length === 0 && <Typography>-</Typography>}
         {!Array.isArray(text) && (
-          <Typography className={spanClassName ?? classes.fieldLabelTextSpan}>
+          <Typography className={spanClassName}>
             {text}
           </Typography>
         )}
@@ -34,7 +33,7 @@ const ProjectSummaryLabel = ({
           text.map((element, i) => (
             <Typography
               key={i}
-              className={spanClassName ?? classes.fieldLabelTextSpan}
+              className={spanClassName}
             >
               {element}
             </Typography>
