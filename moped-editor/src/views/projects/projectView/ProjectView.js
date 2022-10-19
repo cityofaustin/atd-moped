@@ -119,6 +119,9 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontSize: "2rem",
   },
+  deletedMessage: {
+    border: "1px red dotted",
+  },
 }));
 
 function a11yProps(index) {
@@ -648,10 +651,10 @@ const ProjectView = () => {
               aria-describedby="alert-dialog-description"
             >
               <DialogContent>
-                <Typography gutterBottom>
+                <Typography variant={"h3"} align={"center"} gutterBottom>
                   This project has been deleted.
                 </Typography>
-                <Typography gutterBottom>
+                <Typography align={"center"} style={{ paddingTop: "15px" }}>
                   If you need to restore a deleted project, please{" "}
                   <Link
                     href={
@@ -663,6 +666,16 @@ const ProjectView = () => {
                   </Link>
                 </Typography>
               </DialogContent>
+              <DialogActions>
+                <Button>
+                  <RouterLink
+                    to={allProjectsLink}
+                    className={"MuiTypography-colorPrimary"}
+                  >
+                    Back to all projects
+                  </RouterLink>
+                </Button>
+              </DialogActions>
             </Dialog>
           )}
         </Page>
