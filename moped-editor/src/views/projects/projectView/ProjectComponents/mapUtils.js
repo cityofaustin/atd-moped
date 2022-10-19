@@ -34,6 +34,7 @@ export const useMapLayers = ({
   // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   // See https://github.com/visgl/react-map-gl/issues/939
+
   const BaseMapComponents = () =>
     basemapKey === "aerial" && (
       <>
@@ -54,6 +55,8 @@ export const useMapLayers = ({
   };
 
   const interactiveLayerIds = makeInteractiveLayerIds();
+
+  console.log(interactiveLayerIds);
 
   // Handle sources and layer for data
   const {
