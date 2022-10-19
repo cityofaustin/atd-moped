@@ -13,7 +13,12 @@ import {
 } from "./mapSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
-import { useBasemapLayers, useMapLayers } from "./mapUtils";
+import {
+  useBasemapLayers,
+  useInteractiveIds,
+  useComponentFeatureCollection,
+  ProjectComponentsSourcesAndLayers,
+} from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -77,6 +82,9 @@ export default function TheMap({
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftLayerId = `draft-component-${linkMode}`;
+
+  const componentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
 
   // yeah, these props are mess :/
   const ctnLinesGeojson = useFeatureService({
@@ -210,14 +218,11 @@ export default function TheMap({
 
   const { BaseMapSourceAndLayers } = useBasemapLayers({ basemapKey });
 
-  const { interactiveLayerIds, ProjectComponentsSourcesAndLayers } =
-    useMapLayers({
-      data,
-      isEditingComponent,
-      linkMode,
-      draftLayerId,
-      clickedComponent,
-    });
+  const { interactiveLayerIds } = useInteractiveIds({
+    isEditingComponent,
+    linkMode,
+    draftLayerId,
+  });
 
   return (
     <MapGL
@@ -236,7 +241,14 @@ export default function TheMap({
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
       <BaseMapSourceAndLayers />
-      <ProjectComponentsSourcesAndLayers />
+      <ProjectComponentsSourcesAndLayers
+        data={data}
+        isEditingComponent={isEditingComponent}
+        linkMode={linkMode}
+        draftLayerId={draftLayerId}
+        clickedComponent={clickedComponent}
+        componentFeatureCollection={componentFeatureCollection}
+      />
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
