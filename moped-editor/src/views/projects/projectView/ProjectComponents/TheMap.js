@@ -13,7 +13,7 @@ import {
 } from "./mapSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
-import { useMapLayers } from "./mapUtils";
+import { useBasemapLayers, useMapLayers } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -208,18 +208,16 @@ export default function TheMap({
     projectPoints,
   };
 
-  const {
-    interactiveLayerIds,
-    BaseMapComponents,
-    ProjectComponentsSourcesAndLayers,
-  } = useMapLayers({
-    basemapKey,
-    data,
-    isEditingComponent,
-    linkMode,
-    draftLayerId,
-    clickedComponent,
-  });
+  const { BaseMapSourceAndLayers } = useBasemapLayers({ basemapKey });
+
+  const { interactiveLayerIds, ProjectComponentsSourcesAndLayers } =
+    useMapLayers({
+      data,
+      isEditingComponent,
+      linkMode,
+      draftLayerId,
+      clickedComponent,
+    });
 
   return (
     <MapGL
@@ -237,7 +235,7 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <BaseMapComponents />
+      <BaseMapSourceAndLayers />
       <ProjectComponentsSourcesAndLayers />
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}

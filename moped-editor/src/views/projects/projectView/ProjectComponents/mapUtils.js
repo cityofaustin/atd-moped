@@ -10,6 +10,26 @@ const useComponentFeatureCollection = (component) =>
     if (!component || !component?.features) return;
     return { type: "FeatureCollection", features: component.features };
   }, [component]);
+
+export const useBasemapLayers = ({ basemapKey }) => {
+  // Handle basemaps
+  // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
+  // See https://github.com/visgl/react-map-gl/issues/939
+
+  const BaseMapSourceAndLayers = () =>
+    basemapKey === "aerial" && (
+      <>
+        <Source {...basemaps[basemapKey].sources.aerials} />
+        <Layer {...basemaps[basemapKey].layers.aerials} />
+        {/* show street labels on top of other layers */}
+        {/* Use beforeId on other layers to make street labels above everything else */}
+        {/* Should we just style this layer to be hidden with Mapbox style spec? */}
+        <Layer {...basemaps[basemapKey].layers.streetLabels} />
+      </>
+    );
+
+  return { BaseMapSourceAndLayers };
+};
 // There is a config here that sets the order of layers on the map
 // The hook makes sure this is enforced
 // Config also sets whether a layer is interactive or not
@@ -24,37 +44,19 @@ const useComponentFeatureCollection = (component) =>
 // 2. sources and layers in correct order
 // 3. array of interactive layers based on config and what layers are present in the data
 export const useMapLayers = ({
-  basemapKey,
   data,
   isEditingComponent,
   linkMode,
   draftLayerId,
   clickedComponent,
 }) => {
-  // Handle basemaps
-  // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
-  // See https://github.com/visgl/react-map-gl/issues/939
-
-  const BaseMapComponents = () =>
-    basemapKey === "aerial" && (
-      <>
-        <Source {...basemaps[basemapKey].sources.aerials} />
-        <Layer {...basemaps[basemapKey].layers.aerials} />
-        {/* show street labels on top of other layers */}
-        {/* Use beforeId here to make street labels above everything else */}
-        <Layer {...basemaps[basemapKey].layers.streetLabels} />
-      </>
-    );
-
-  const makeInteractiveLayerIds = () => {
+  const interactiveLayerIds = useMemo(() => {
     return isEditingComponent
       ? linkMode === "lines"
         ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
         : ["ctn-points-underlay", "project-points", draftLayerId]
       : ["project-points", "project-lines-underlay"];
-  };
-
-  const interactiveLayerIds = makeInteractiveLayerIds();
+  }, [isEditingComponent, linkMode]);
 
   console.log(interactiveLayerIds);
 
@@ -164,7 +166,6 @@ export const useMapLayers = ({
 
   return {
     interactiveLayerIds,
-    BaseMapComponents,
     ProjectComponentsSourcesAndLayers,
   };
 };
