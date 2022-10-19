@@ -311,6 +311,11 @@ const DashboardView = () => {
                       search: false,
                       toolbar: false,
                       tableLayout: "fixed",
+                      ...(selectedData.length < 51 && {
+                        paging: false,
+                      }),
+                      pageSize: 50,
+                      pageSizeOptions: [10, 50, 100],
                     }}
                   />
                 )}

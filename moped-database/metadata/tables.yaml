@@ -3922,6 +3922,7 @@
           - project_designer
           - contractors
           - contract_numbers
+          - project_tags
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -3962,6 +3963,7 @@
           - project_designer
           - contractors
           - contract_numbers
+          - project_tags
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4002,5 +4004,6 @@
           - project_designer
           - contractors
           - contract_numbers
+          - project_tags
         filter: {}
         allow_aggregations: true
