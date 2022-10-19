@@ -105,9 +105,6 @@ def moped_proj_features():
         feature_id = None
         if (record["component_name"] == "Project Extent - Generic" and
                 str(feature["geometry"]["type"]) == "Point"):
-            # These need special handling, I think this component type will be half intersections, half segments.
-            # It is a genuinely un-geographically typed feature. 🤔
-            
             # i think this code which is so similar to the blocks around it could be DRYed up
             # but i don't think it's worth the effort here. see comment below.
 
