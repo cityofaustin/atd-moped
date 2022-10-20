@@ -119,9 +119,6 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontSize: "2rem",
   },
-  deletedMessage: {
-    border: "1px red dotted",
-  },
 }));
 
 function a11yProps(index) {
