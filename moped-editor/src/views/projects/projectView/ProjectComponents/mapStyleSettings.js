@@ -197,7 +197,6 @@ export const MAP_STYLES = {
       minzoom: MIN_SELECT_FEATURE_ZOOM,
     },
   },
-
   "ctn-points": {
     layerProps: {
       id: "ctn-points",

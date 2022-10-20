@@ -191,7 +191,10 @@ export const ProjectComponentsSourcesAndLayers = ({
         data={draftComponentFeatures}
         promoteId="id"
       >
-        <Layer {...mapStyles["draft-component-points"].layerProps} />
+        <Layer
+          {...mapStyles["draft-component-points"].layerProps}
+          layout={{ visibility: linkMode ? "visible" : "none" }}
+        />
       </Source>
 
       <Source
