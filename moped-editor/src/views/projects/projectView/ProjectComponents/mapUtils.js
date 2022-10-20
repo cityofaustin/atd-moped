@@ -13,12 +13,12 @@ export const useComponentFeatureCollection = (component) =>
 
 // TODO:
 // Just make this a component
-export const useBasemapLayers = ({ basemapKey }) => {
+export const BaseMapSourceAndLayers = ({ basemapKey }) => {
   // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   // See https://github.com/visgl/react-map-gl/issues/939
   // TODO: Hide/show these layers with layout visibility too
-  const BaseMapSourceAndLayers = () =>
+  return (
     basemapKey === "aerial" && (
       <>
         <Source {...basemaps[basemapKey].sources.aerials} />
@@ -28,20 +28,13 @@ export const useBasemapLayers = ({ basemapKey }) => {
         {/* Should we just style this layer to be hidden with Mapbox style spec? */}
         <Layer {...basemaps[basemapKey].layers.streetLabels} />
       </>
-    );
-
-  return { BaseMapSourceAndLayers };
+    )
+  );
 };
 
 // There is a config here that sets the order of layers on the map
-// The hook makes sure this is enforced
-// Config also sets whether a layer is interactive or not
 // Iterate the config and return an array of interactive = true
-export const useInteractiveIds = ({
-  isEditingComponent,
-  linkMode,
-  draftLayerId,
-}) => {
+export const makeInteractiveIds = () => {
   const interactiveLayerIds = [
     "ctn-lines-underlay",
     "project-lines-underlay",
@@ -49,13 +42,6 @@ export const useInteractiveIds = ({
     "project-points",
     "project-lines-underlay",
   ];
-  //   const interactiveLayerIds = useMemo(() => {
-  // return isEditingComponent
-  //   ? linkMode === "lines"
-  //     ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
-  //     : ["ctn-points-underlay", "project-points", draftLayerId]
-  //   : ["project-points", "project-lines-underlay"];
-  //   }, [isEditingComponent, linkMode, draftLayerId]);
 
   return {
     interactiveLayerIds,

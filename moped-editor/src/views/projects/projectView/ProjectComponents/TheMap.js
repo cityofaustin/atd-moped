@@ -14,8 +14,8 @@ import {
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import {
-  useBasemapLayers,
-  useInteractiveIds,
+  BaseMapSourceAndLayers,
+  makeInteractiveIds,
   useComponentFeatureCollection,
   ProjectComponentsSourcesAndLayers,
 } from "./mapUtils";
@@ -216,9 +216,7 @@ export default function TheMap({
     projectPoints,
   };
 
-  const { BaseMapSourceAndLayers } = useBasemapLayers({ basemapKey });
-
-  const { interactiveLayerIds } = useInteractiveIds({
+  const { interactiveLayerIds } = makeInteractiveIds({
     isEditingComponent,
     linkMode,
     draftLayerId,
@@ -240,7 +238,7 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <BaseMapSourceAndLayers />
+      <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers
         data={data}
         isEditingComponent={isEditingComponent}
