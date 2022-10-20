@@ -208,6 +208,7 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
+  // This is a temporary to get data into the map sources
   const data = {
     draftComponentFeatures,
     ctnLinesGeojson,

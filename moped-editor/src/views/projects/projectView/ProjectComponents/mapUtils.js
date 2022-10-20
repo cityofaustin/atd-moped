@@ -51,7 +51,7 @@ export const makeInteractiveIds = () => {
       if (value.isInteractive) {
         acc.push(key);
       }
-      g;
+
       return acc;
     },
     []
@@ -60,9 +60,15 @@ export const makeInteractiveIds = () => {
   return interactiveLayerIds;
 };
 
-// This component builds sources and layers
-// TODOs
-// 1. sources and layers in correct order
+/**
+ * Component that renders all sources and layers for project components
+ * @param {Object} data - GeoJSON data for all project components
+ * @param {Boolean} isEditingComponent - are we editing a component?
+ * @param {String} linkMode - Tracks if we are editing "lines" or "points"
+ * @param {Object} clickedComponent - Details of the component that was clicked
+ * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
+ * @returns JSX.Element
+ */
 export const ProjectComponentsSourcesAndLayers = ({
   data,
   isEditingComponent,
@@ -70,6 +76,7 @@ export const ProjectComponentsSourcesAndLayers = ({
   clickedComponent,
   componentFeatureCollection,
 }) => {
+  // This is a temporary to get data into the map sources
   const {
     ctnLinesGeojson,
     ctnPointsGeojson,
@@ -154,6 +161,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           ].layerProps}
         />
       </Source>
+
       <Source
         id="project-points"
         type="geojson"
@@ -219,7 +227,6 @@ export const ProjectComponentsSourcesAndLayers = ({
             },
           }}
         />
-
         <Layer
           {...{
             ...mapStyles["clicked-component-features-points"].layerProps,
