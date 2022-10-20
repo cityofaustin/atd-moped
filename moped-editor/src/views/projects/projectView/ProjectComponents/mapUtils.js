@@ -11,24 +11,29 @@ export const useComponentFeatureCollection = (component) =>
     return { type: "FeatureCollection", features: component.features };
   }, [component]);
 
-// TODO:
-// Just make this a component
 export const BaseMapSourceAndLayers = ({ basemapKey }) => {
   // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   // See https://github.com/visgl/react-map-gl/issues/939
-  // TODO: Hide/show these layers with layout visibility too
   return (
-    basemapKey === "aerial" && (
-      <>
-        <Source {...basemaps[basemapKey].sources.aerials} />
-        <Layer {...basemaps[basemapKey].layers.aerials} />
-        {/* show street labels on top of other layers */}
-        {/* Use beforeId on other layers to make street labels above everything else */}
-        {/* Should we just style this layer to be hidden with Mapbox style spec? */}
-        <Layer {...basemaps[basemapKey].layers.streetLabels} />
-      </>
-    )
+    <>
+      <Source {...basemaps.aerial.sources.aerials} />
+      <Layer
+        {...basemaps.aerial.layers.aerials}
+        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
+      />
+      {/* show street labels on top of other layers */}
+      {/* Use beforeId on other layers to make street labels above everything else */}
+      <Layer
+        {...{
+          ...basemaps.aerial.layers.streetLabels,
+          layout: {
+            ...basemaps.aerialgi.layers.streetLabels.layout,
+            visibility: basemapKey === "aerial" ? "visible" : "none",
+          },
+        }}
+      />
+    </>
   );
 };
 
