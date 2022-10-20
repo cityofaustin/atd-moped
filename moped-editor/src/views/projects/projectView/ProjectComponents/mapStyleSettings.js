@@ -18,6 +18,7 @@ export const COLORS = {
 
 export const MAP_STYLES = {
   "project-points": {
+    isInteractive: true,
     layerProps: {
       id: "project-points",
       _featureIdProp: "INTERSECTION_ID",
@@ -38,6 +39,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines": {
+    isInteractive: true,
     layerProps: {
       id: "project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -62,6 +64,7 @@ export const MAP_STYLES = {
     },
   },
   "project-points-muted": {
+    isInteractive: false,
     layerProps: {
       id: "project-points",
       _featureIdProp: "INTERSECTION_ID",
@@ -82,6 +85,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines-muted": {
+    isInteractive: false,
     layerProps: {
       id: "project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -101,6 +105,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines-underlay": {
+    isInteractive: false,
     layerProps: {
       id: "project-lines-underlay",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -116,6 +121,7 @@ export const MAP_STYLES = {
     },
   },
   "draft-component-lines": {
+    isInteractive: true,
     layerProps: {
       id: "draft-component-lines",
       _featureIdProp: "id",
@@ -135,6 +141,7 @@ export const MAP_STYLES = {
     },
   },
   "draft-component-points": {
+    isInteractive: true,
     layerProps: {
       id: "draft-component-points",
       _featureIdProp: "id",
@@ -155,6 +162,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-lines": {
+    isInteractive: true,
     layerProps: {
       _featureIdProp: "CTN_SEGMENT_ID",
       id: "ctn-lines",
@@ -182,6 +190,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-lines-underlay": {
+    isInteractive: false,
     layerProps: {
       _featureIdProp: "CTN_SEGMENT_ID",
       id: "ctn-lines-underlay",
@@ -198,6 +207,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-points": {
+    isInteractive: true,
     layerProps: {
       id: "ctn-points",
       type: "circle",
@@ -222,6 +232,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-points-underlay": {
+    isInteractive: false,
     layerProps: {
       id: "ctn-points-underlay",
       type: "circle",
@@ -241,6 +252,7 @@ export const MAP_STYLES = {
     },
   },
   "clicked-component-features-lines": {
+    isInteractive: false,
     layerProps: {
       id: "clicked-component-features-lines",
       featureIdProp: "id",
@@ -260,6 +272,7 @@ export const MAP_STYLES = {
     },
   },
   "clicked-component-features-points": {
+    isInteractive: false,
     layerProps: {
       id: "clicked-component-features-points",
       featureIdProp: "id",

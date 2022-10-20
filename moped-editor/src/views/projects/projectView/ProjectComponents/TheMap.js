@@ -216,11 +216,7 @@ export default function TheMap({
     projectPoints,
   };
 
-  const { interactiveLayerIds } = makeInteractiveIds({
-    isEditingComponent,
-    linkMode,
-    draftLayerId,
-  });
+  const interactiveLayerIds = makeInteractiveIds();
 
   return (
     <MapGL

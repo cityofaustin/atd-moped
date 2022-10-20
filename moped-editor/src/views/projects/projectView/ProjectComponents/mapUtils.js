@@ -41,21 +41,23 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
   );
 };
 
-// There is a config here that sets the order of layers on the map
-// Iterate the config and return an array of interactive = true
+/**
+ * Iterate through the MAP_STYLES config to create an array of interactive layers
+ * @returns {Array} Array of interactive layers
+ */
 export const makeInteractiveIds = () => {
-  const interactiveLayerIds = [
-    "ctn-lines",
-    "project-lines",
-    "draft-component-lines",
-    "ctn-points",
-    "project-points",
-    "draft-component-points",
-  ];
+  const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
+    (acc, [key, value]) => {
+      if (value.isInteractive) {
+        acc.push(key);
+      }
+      g;
+      return acc;
+    },
+    []
+  );
 
-  return {
-    interactiveLayerIds,
-  };
+  return interactiveLayerIds;
 };
 
 // This component builds sources and layers
