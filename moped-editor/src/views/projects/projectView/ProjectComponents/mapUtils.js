@@ -29,7 +29,6 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
           ...basemaps.aerial.layers.streetLabels,
           layout: {
             ...basemaps.aerial.layers.streetLabels.layout,
-            visibility: basemapKey === "aerial" ? "visible" : "none",
           },
         }}
       />
