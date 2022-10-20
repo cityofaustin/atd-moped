@@ -76,6 +76,7 @@ export const basemaps = {
         maxzoom: 22,
       },
       streetLabels: {
+        id: "street-labels",
         // borrowed from mapbox mapbox streets v11 style
         type: "symbol",
         metadata: {

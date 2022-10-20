@@ -17,8 +17,6 @@ export const useComponentFeatureCollection = (component) =>
  * @returns JSX.Element
  */
 export const BaseMapSourceAndLayers = ({ basemapKey }) => {
-  // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
-  // See https://github.com/visgl/react-map-gl/issues/939
   return (
     <>
       <Source {...basemaps.aerial.sources.aerials} />
@@ -26,8 +24,6 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
         {...basemaps.aerial.layers.aerials}
         layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
       />
-      {/* show street labels on top of other layers */}
-      {/* Use beforeId on other layers to make street labels above everything else */}
       <Layer
         {...{
           ...basemaps.aerial.layers.streetLabels,
@@ -62,6 +58,7 @@ export const makeInteractiveIds = () => {
 
 /**
  * Component that renders all sources and layers for project components
+ * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} data - GeoJSON data for all project components
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
@@ -94,6 +91,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId={SOURCES["ctn-lines"]._featureIdProp}
       >
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["ctn-lines-underlay"].layerProps,
             layout: {
@@ -105,6 +103,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         />
 
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["ctn-lines"].layerProps,
             layout: {
@@ -123,6 +122,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId={SOURCES["ctn-points"]._featureIdProp}
       >
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["ctn-points-underlay"].layerProps,
             layout: {
@@ -134,6 +134,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           }}
         />
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["ctn-points"].layerProps,
             layout: {
@@ -152,8 +153,12 @@ export const ProjectComponentsSourcesAndLayers = ({
         data={projectLines}
         promoteId="id"
       >
-        <Layer {...mapStyles["project-lines-underlay"].layerProps} />
         <Layer
+          beforeId="street-labels"
+          {...mapStyles["project-lines-underlay"].layerProps}
+        />
+        <Layer
+          beforeId="street-labels"
           {...mapStyles[
             clickedComponent || isEditingComponent
               ? "project-lines-muted"
@@ -169,6 +174,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
+          beforeId="street-labels"
           {...mapStyles[
             clickedComponent || isEditingComponent
               ? "project-points-muted"
@@ -184,6 +190,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["draft-component-lines"].layerProps,
             layout: {
@@ -202,6 +209,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
+          beforeId="street-labels"
           {...mapStyles["draft-component-points"].layerProps}
           layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
         />
@@ -214,6 +222,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["clicked-component-features-lines"].layerProps,
             layout: {
@@ -228,6 +237,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           }}
         />
         <Layer
+          beforeId="street-labels"
           {...{
             ...mapStyles["clicked-component-features-points"].layerProps,
             layout: {
