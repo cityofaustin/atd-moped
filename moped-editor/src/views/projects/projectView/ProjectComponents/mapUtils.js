@@ -17,7 +17,7 @@ export const useBasemapLayers = ({ basemapKey }) => {
   // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   // See https://github.com/visgl/react-map-gl/issues/939
-
+  // TODO: Hide/show these layers with layout visibility too
   const BaseMapSourceAndLayers = () =>
     basemapKey === "aerial" && (
       <>
@@ -36,18 +36,26 @@ export const useBasemapLayers = ({ basemapKey }) => {
 // There is a config here that sets the order of layers on the map
 // The hook makes sure this is enforced
 // Config also sets whether a layer is interactive or not
+// Iterate the config and return an array of interactive = true
 export const useInteractiveIds = ({
   isEditingComponent,
   linkMode,
   draftLayerId,
 }) => {
-  const interactiveLayerIds = useMemo(() => {
-    return isEditingComponent
-      ? linkMode === "lines"
-        ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
-        : ["ctn-points-underlay", "project-points", draftLayerId]
-      : ["project-points", "project-lines-underlay"];
-  }, [isEditingComponent, linkMode, draftLayerId]);
+  const interactiveLayerIds = [
+    "ctn-lines-underlay",
+    "project-lines-underlay",
+    "ctn-points-underlay",
+    "project-points",
+    "project-lines-underlay",
+  ];
+  //   const interactiveLayerIds = useMemo(() => {
+  // return isEditingComponent
+  //   ? linkMode === "lines"
+  //     ? ["ctn-lines-underlay", "project-lines-underlay", draftLayerId]
+  //     : ["ctn-points-underlay", "project-points", draftLayerId]
+  //   : ["project-points", "project-lines-underlay"];
+  //   }, [isEditingComponent, linkMode, draftLayerId]);
 
   return {
     interactiveLayerIds,
