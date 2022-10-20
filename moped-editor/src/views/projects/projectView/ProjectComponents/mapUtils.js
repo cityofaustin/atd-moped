@@ -45,11 +45,12 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
 // Iterate the config and return an array of interactive = true
 export const makeInteractiveIds = () => {
   const interactiveLayerIds = [
-    "ctn-lines-underlay",
-    "project-lines-underlay",
-    "ctn-points-underlay",
+    "ctn-lines",
+    "project-lines",
+    "draft-component-lines",
+    "ctn-points",
     "project-points",
-    "project-lines-underlay",
+    "draft-component-points",
   ];
 
   return {
@@ -58,7 +59,6 @@ export const makeInteractiveIds = () => {
 };
 
 // This component builds sources and layers
-// Not dynamic rendering but dynamic visibility use Mapbox style spec
 // TODOs
 // 1. sources and layers in correct order
 export const ProjectComponentsSourcesAndLayers = ({
@@ -75,7 +75,6 @@ export const ProjectComponentsSourcesAndLayers = ({
     projectPoints,
     draftComponentFeatures,
   } = data;
-  console.log(linkMode);
 
   return (
     <>
