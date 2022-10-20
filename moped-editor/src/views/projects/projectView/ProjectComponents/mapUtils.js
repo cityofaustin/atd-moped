@@ -38,11 +38,11 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
 };
 
 /**
- * Iterate through the MAP_STYLES config to create an array of interactive layers
+ * Iterate through the mapStyles config to create an array of interactive layers
  * @returns {Array} Array of interactive layers
  */
 export const makeInteractiveIds = () => {
-  const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
+  const interactiveLayerIds = Object.entries(mapStyles).reduce(
     (acc, [key, value]) => {
       if (value.isInteractive) {
         acc.push(key);
