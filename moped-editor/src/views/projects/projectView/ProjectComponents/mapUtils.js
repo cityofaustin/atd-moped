@@ -12,31 +12,6 @@ export const useComponentFeatureCollection = (component) =>
   }, [component]);
 
 /**
- * Component that renders a Mapbox source and layers needed for the aerial basemap
- * @param {string} basemapKey
- * @returns JSX.Element
- */
-export const BaseMapSourceAndLayers = ({ basemapKey }) => {
-  return (
-    <>
-      <Source {...basemaps.aerial.sources.aerials} />
-      <Layer
-        {...basemaps.aerial.layers.aerials}
-        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
-      />
-      <Layer
-        {...{
-          ...basemaps.aerial.layers.streetLabels,
-          layout: {
-            ...basemaps.aerial.layers.streetLabels.layout,
-          },
-        }}
-      />
-    </>
-  );
-};
-
-/**
  * Iterate through the mapStyles config to create an array of interactive layers
  * @returns {Array} Array of interactive layers
  */
@@ -53,6 +28,33 @@ export const makeInteractiveIds = () => {
   );
 
   return interactiveLayerIds;
+};
+
+/**
+ * Component that renders Mapbox source and layers needed for the aerial basemap
+ * @param {string} basemapKey
+ * @returns JSX.Element
+ */
+export const BaseMapSourceAndLayers = ({ basemapKey }) => {
+  return (
+    <>
+      <Source {...basemaps.aerial.sources.aerials} />
+      <Layer
+        {...basemaps.aerial.layers.aerials}
+        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
+      />
+      {/* Always show street labels so they can be the "target" of beforeId 
+      and always appear on top of everything else */}
+      <Layer
+        {...{
+          ...basemaps.aerial.layers.streetLabels,
+          layout: {
+            ...basemaps.aerial.layers.streetLabels.layout,
+          },
+        }}
+      />
+    </>
+  );
 };
 
 /**
