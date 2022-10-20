@@ -75,6 +75,7 @@ export const ProjectComponentsSourcesAndLayers = ({
     projectPoints,
     draftComponentFeatures,
   } = data;
+  console.log(linkMode);
 
   return (
     <>
@@ -179,7 +180,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             layout: {
               ...mapStyles["clicked-component-features-lines"].layerProps
                 .layout,
-              visibility: linkMode ? "visible" : "none",
+              visibility: linkMode === "lines" ? "visible" : "none",
             },
           }}
         />
@@ -193,7 +194,7 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...mapStyles["draft-component-points"].layerProps}
-          layout={{ visibility: linkMode ? "visible" : "none" }}
+          layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
         />
       </Source>
 
