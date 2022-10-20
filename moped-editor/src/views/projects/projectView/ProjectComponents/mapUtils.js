@@ -11,8 +11,12 @@ export const useComponentFeatureCollection = (component) =>
     return { type: "FeatureCollection", features: component.features };
   }, [component]);
 
+/**
+ * Component that renders a Mapbox source and layers needed for the aerial basemap
+ * @param {string} basemapKey
+ * @returns JSX.Element
+ */
 export const BaseMapSourceAndLayers = ({ basemapKey }) => {
-  // Handle basemaps
   // TODO: Address https://github.com/cityofaustin/atd-moped/pull/837#pullrequestreview-1146234061
   // See https://github.com/visgl/react-map-gl/issues/939
   return (
@@ -28,7 +32,7 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
         {...{
           ...basemaps.aerial.layers.streetLabels,
           layout: {
-            ...basemaps.aerialgi.layers.streetLabels.layout,
+            ...basemaps.aerial.layers.streetLabels.layout,
             visibility: basemapKey === "aerial" ? "visible" : "none",
           },
         }}
@@ -82,9 +86,9 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...{
-            ...mapStyles["ctn-lines-underlay"],
+            ...mapStyles["ctn-lines-underlay"].layerProps,
             layout: {
-              ...mapStyles["ctn-lines-underlay"].layout,
+              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
               visibility:
                 isEditingComponent && linkMode === "lines" ? "visible" : "none",
             },
@@ -93,9 +97,9 @@ export const ProjectComponentsSourcesAndLayers = ({
 
         <Layer
           {...{
-            ...mapStyles["ctn-lines"],
+            ...mapStyles["ctn-lines"].layerProps,
             layout: {
-              ...mapStyles["ctn-lines"].layout,
+              ...mapStyles["ctn-lines"].layerProps.layout,
               visibility:
                 isEditingComponent && linkMode === "lines" ? "visible" : "none",
             },
@@ -111,7 +115,7 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...{
-            ...mapStyles["ctn-points-underlay"],
+            ...mapStyles["ctn-points-underlay"].layerProps,
             layout: {
               visibility:
                 isEditingComponent && linkMode === "points"
@@ -120,10 +124,9 @@ export const ProjectComponentsSourcesAndLayers = ({
             },
           }}
         />
-
         <Layer
           {...{
-            ...mapStyles["ctn-points"],
+            ...mapStyles["ctn-points"].layerProps,
             layout: {
               visibility:
                 isEditingComponent && linkMode === "points"
@@ -133,19 +136,20 @@ export const ProjectComponentsSourcesAndLayers = ({
           }}
         />
       </Source>
+
       <Source
         id="project-lines"
         type="geojson"
         data={projectLines}
         promoteId="id"
       >
-        <Layer {...mapStyles["project-lines-underlay"]} />
+        <Layer {...mapStyles["project-lines-underlay"].layerProps} />
         <Layer
           {...mapStyles[
             clickedComponent || isEditingComponent
               ? "project-lines-muted"
               : "project-lines"
-          ]}
+          ].layerProps}
         />
       </Source>
       <Source
@@ -159,7 +163,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             clickedComponent || isEditingComponent
               ? "project-points-muted"
               : "project-points"
-          ]}
+          ].layerProps}
         />
       </Source>
 
@@ -171,9 +175,10 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...{
-            ...mapStyles["draft-component-lines"],
+            ...mapStyles["draft-component-lines"].layerProps,
             layout: {
-              ...mapStyles["clicked-component-features-lines"].layout,
+              ...mapStyles["clicked-component-features-lines"].layerProps
+                .layout,
               visibility: linkMode ? "visible" : "none",
             },
           }}
@@ -186,7 +191,7 @@ export const ProjectComponentsSourcesAndLayers = ({
         data={draftComponentFeatures}
         promoteId="id"
       >
-        <Layer {...mapStyles["draft-component-points"]} />
+        <Layer {...mapStyles["draft-component-points"].layerProps} />
       </Source>
 
       <Source
@@ -197,9 +202,10 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           {...{
-            ...mapStyles["clicked-component-features-lines"],
+            ...mapStyles["clicked-component-features-lines"].layerProps,
             layout: {
-              ...mapStyles["clicked-component-features-lines"].layout,
+              ...mapStyles["clicked-component-features-lines"].layerProps
+                .layout,
               visibility:
                 componentFeatureCollection &&
                 clickedComponent.line_representation
@@ -211,7 +217,7 @@ export const ProjectComponentsSourcesAndLayers = ({
 
         <Layer
           {...{
-            ...mapStyles["clicked-component-features-points"],
+            ...mapStyles["clicked-component-features-points"].layerProps,
             layout: {
               visibility:
                 componentFeatureCollection &&
