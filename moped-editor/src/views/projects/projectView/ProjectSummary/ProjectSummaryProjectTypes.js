@@ -117,7 +117,6 @@ const ProjectSummaryProjectTypes = ({
 
   // join selected type names in a comma separated string
   // used to display when not editing
-  const selectedTypesJoint = selectedTypes.map(t => typeDict[t]).join(", ");
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>

@@ -26,7 +26,6 @@ const ProjectSummaryProjectSponsor = ({
   snackbarHandle,
 }) => {
   const entityList = data?.moped_entity ?? [];
-  //to-do: write migration to change 0 id entity to "-" instead of "none"
   const noneSponsor = entityList.find(e => e.entity_id === 0);
   const originalSponsor = entityList.find(
     e => e.entity_id === data?.moped_project?.[0]?.project_sponsor
@@ -107,7 +106,6 @@ const ProjectSummaryProjectSponsor = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            // does this 'n/a' case ever occur?
             text={sponsor?.entity_name || "n/a"}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
