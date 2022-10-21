@@ -180,6 +180,17 @@ export default function TheMap({
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
 
+    const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
+    const clickedFeatureFromGeoJson = ctnLinesGeojson.features.find(
+      (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
+    );
+    console.log({
+      clickedFeature,
+      clickedFeatureId,
+      ctnLinesGeojson,
+      clickedFeatureFromGeoJson,
+    });
+
     const newFeature = {
       geometry: clickedFeature.geometry,
       properties: {
