@@ -660,7 +660,7 @@ const ProjectView = () => {
                     target="new"
                   >
                     submit a Data &amp; Technology Services support request
-                  </Link>
+                  </Link>.
                 </Typography>
               </DialogContent>
               <DialogActions>
