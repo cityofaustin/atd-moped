@@ -70,9 +70,6 @@ export default function TheMap({
   setIsFetchingFeatures,
 }) {
   const [cursor, setCursor] = useState("grap");
-  // Move this state to the parent component?
-  // Move useAgolFeatures to the parent component and then move isFetchingFeatures to parent?
-  // Then setIsFetchingFeatures can be in the custom hook too
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectFeatures = useProjectFeatures(components);
