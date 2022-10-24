@@ -70,6 +70,9 @@ export default function TheMap({
   setIsFetchingFeatures,
 }) {
   const [cursor, setCursor] = useState("grap");
+  // Move this state to the parent component?
+  // Move useAgolFeatures to the parent component and then move isFetchingFeatures to parent?
+  // Then setIsFetchingFeatures can be in the custom hook too
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectFeatures = useProjectFeatures(components);
@@ -80,16 +83,12 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
+  const currentZoom = mapRef?.current?.getZoom();
   const {
     ctnLinesGeojson,
     ctnPointsGeojson,
     findFeatureInAgolGeojsonFeatures,
-  } = useAgolFeatures({
-    linkMode,
-    setIsFetchingFeatures,
-    mapRef,
-    bounds,
-  });
+  } = useAgolFeatures(linkMode, setIsFetchingFeatures, currentZoom, bounds);
 
   const projectLines = useFeatureTypes(projectFeatures, "line");
   const projectPoints = useFeatureTypes(projectFeatures, "point");
@@ -161,14 +160,14 @@ export default function TheMap({
 
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
-    const clickedFeatureFromAgolGeoJson =
+    const clickedFeatureFromAgolGeojson =
       findFeatureInAgolGeojsonFeatures(clickedFeature);
 
     const newFeature = {
-      geometry: clickedFeatureFromAgolGeoJson.geometry,
+      geometry: clickedFeatureFromAgolGeojson.geometry,
       properties: {
-        ...clickedFeatureFromAgolGeoJson.properties,
-        id: clickedFeatureFromAgolGeoJson.id,
+        ...clickedFeatureFromAgolGeojson.properties,
+        id: clickedFeatureFromAgolGeojson.id,
         // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
         _layerId: clickedFeature.layer.id,
       },

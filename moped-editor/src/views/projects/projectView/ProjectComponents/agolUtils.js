@@ -52,19 +52,25 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
   return { type: "FeatureCollection", features: uniqueFeatures };
 };
 
-export const useAgolFeatures = ({
+/**
+ * Fetch CTN lines and points and a helper to find a feature record that matches a clicked layer feature by ID
+ * @param {String} linkMode - the current link mode ("lines" or "points")
+ * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
+ * @param {Number} currentZoom - current level of zoom in the map
+ * @param {Array} bounds - the current map bounds
+ * @returns
+ */
+export const useAgolFeatures = (
   linkMode,
   setIsFetchingFeatures,
-  mapRef,
-  bounds,
-}) => {
+  currentZoom,
+  bounds
+) => {
   const ctnLinesGeojson = useFeatureService({
     layerId: SOURCES["ctn-lines"].featureService.layerId,
     name: SOURCES["ctn-lines"].featureService.name,
     bounds,
-    isVisible:
-      linkMode === "lines" &&
-      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
+    isVisible: linkMode === "lines" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
     setIsFetchingFeatures,
   });
@@ -73,9 +79,7 @@ export const useAgolFeatures = ({
     layerId: SOURCES["ctn-points"].featureService.layerId,
     name: SOURCES["ctn-points"].featureService.name,
     bounds,
-    isVisible:
-      linkMode === "points" &&
-      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
+    isVisible: linkMode === "points" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
     featureIdProp: SOURCES["ctn-points"]._featureIdProp,
     setIsFetchingFeatures,
   });
