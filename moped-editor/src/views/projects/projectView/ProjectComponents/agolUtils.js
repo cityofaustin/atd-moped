@@ -58,7 +58,13 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
  * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
  * @param {Number} currentZoom - current level of zoom in the map
  * @param {Array} bounds - the current map bounds
- * @returns
+ * @returns {AgolFeaturesObject}
+ */
+/**
+ * @typedef {Object} AgolFeaturesObject
+ * @property {Object} ctnLinesGeojson - Feature collection containing query results for CTN lines
+ * @property {Object} ctnPointsGeojson - Feature collection containing query results for CTN points
+ * @property {Function} findFeatureInAgolGeojsonFeatures - find a fetched AGOL feature record by unique ID
  */
 export const useAgolFeatures = (
   linkMode,
