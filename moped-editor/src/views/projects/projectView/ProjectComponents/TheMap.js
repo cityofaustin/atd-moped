@@ -114,6 +114,7 @@ export default function TheMap({
   };
 
   const onClick = (e) => {
+    console.log(e.features);
     if (e.features.length === 0) {
       // clear clickedComponent if map is clicked elsewhere
       if (clickedComponent) {

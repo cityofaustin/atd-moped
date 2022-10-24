@@ -112,6 +112,34 @@ export const ProjectComponentsSourcesAndLayers = ({
       </Source>
 
       <Source
+        id="project-lines"
+        type="geojson"
+        data={projectLines}
+        promoteId="id"
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-lines-underlay"].layerProps,
+            layout: {
+              ...mapStyles["project-lines-underlay"].layerProps.layout,
+              visibility:
+                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+            },
+          }}
+        />
+        {/* TODO: Split this layer into two so that we can control when visible/interactive */}
+        <Layer
+          beforeId="street-labels"
+          {...mapStyles[
+            clickedComponent || isEditingComponent
+              ? "project-lines-muted"
+              : "project-lines"
+          ].layerProps}
+        />
+      </Source>
+
+      <Source
         id="ctn-points"
         type="geojson"
         data={ctnPointsGeojson}
@@ -140,26 +168,6 @@ export const ProjectComponentsSourcesAndLayers = ({
                   : "none",
             },
           }}
-        />
-      </Source>
-
-      <Source
-        id="project-lines"
-        type="geojson"
-        data={projectLines}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...mapStyles["project-lines-underlay"].layerProps}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-lines-muted"
-              : "project-lines"
-          ].layerProps}
         />
       </Source>
 
