@@ -80,7 +80,27 @@ export const useAgolFeatures = ({
     setIsFetchingFeatures,
   });
 
-  return { ctnLinesGeojson, ctnPointsGeojson };
+  const findFeatureInAgolGeojsonFeatures = (clickedFeature) => {
+    if (linkMode === "lines") {
+      const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
+
+      return ctnLinesGeojson.features.find(
+        (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
+      );
+    } else if (linkMode === "points") {
+      const clickedFeatureId = clickedFeature.properties.id;
+
+      return ctnPointsGeojson.features.find(
+        (feature) => feature.properties.id === clickedFeatureId
+      );
+    }
+  };
+
+  return {
+    ctnLinesGeojson,
+    ctnPointsGeojson,
+    findFeatureInAgolGeojsonFeatures,
+  };
 };
 
 /* Hook which AGOL rest service for features within a bbox, and continuously

@@ -80,7 +80,11 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
-  const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures({
+  const {
+    ctnLinesGeojson,
+    ctnPointsGeojson,
+    findFeatureInAgolGeojsonFeatures,
+  } = useAgolFeatures({
     linkMode,
     setIsFetchingFeatures,
     mapRef,
@@ -157,24 +161,15 @@ export default function TheMap({
 
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
-
-    const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
-    const clickedFeatureFromGeoJson = ctnLinesGeojson.features.find(
-      (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
-    );
-    console.log({
-      clickedFeature,
-      clickedFeatureId,
-      ctnLinesGeojson,
-      clickedFeatureFromGeoJson,
-    });
+    const clickedFeatureFromAgolGeoJson =
+      findFeatureInAgolGeojsonFeatures(clickedFeature);
 
     const newFeature = {
-      geometry: clickedFeatureFromGeoJson.geometry,
+      geometry: clickedFeatureFromAgolGeoJson.geometry,
       properties: {
-        ...clickedFeatureFromGeoJson.properties,
-        id: clickedFeatureFromGeoJson.id,
-        // AGOL data doesn't include layer so we grab it from the clicked feature
+        ...clickedFeatureFromAgolGeoJson.properties,
+        id: clickedFeatureFromAgolGeoJson.id,
+        // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
         _layerId: clickedFeature.layer.id,
       },
     };
