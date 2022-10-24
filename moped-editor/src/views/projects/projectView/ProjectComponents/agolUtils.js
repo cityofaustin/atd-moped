@@ -88,10 +88,10 @@ export const useAgolFeatures = ({
         (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
       );
     } else if (linkMode === "points") {
-      const clickedFeatureId = clickedFeature.properties.id;
+      const clickedFeatureId = clickedFeature.properties.INTERSECTION_ID;
 
       return ctnPointsGeojson.features.find(
-        (feature) => feature.properties.id === clickedFeatureId
+        (feature) => feature.properties.INTERSECTION_ID === clickedFeatureId
       );
     }
   };
