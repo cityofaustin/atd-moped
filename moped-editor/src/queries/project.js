@@ -50,6 +50,7 @@ export const SUMMARY_QUERY = gql`
       work_assignment_id
       parent_project_id
       interim_project_id
+      is_deleted
       moped_project {
         project_name
       }
