@@ -4,15 +4,9 @@ import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
-import {
-  basemaps,
-  mapParameters,
-  initialViewState,
-  SOURCES,
-  MIN_SELECT_FEATURE_ZOOM,
-} from "./mapSettings";
+import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
-import { useFeatureService } from "./agolUtils";
+import { useAgolFeatures } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
   interactiveLayerIds,
@@ -86,27 +80,11 @@ export default function TheMap({
   const componentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
-  // yeah, these props are mess :/
-  const ctnLinesGeojson = useFeatureService({
-    layerId: SOURCES["ctn-lines"].featureService.layerId,
-    name: SOURCES["ctn-lines"].featureService.name,
-    bounds,
-    isVisible:
-      linkMode === "lines" &&
-      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
-    featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
+  const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures({
+    linkMode,
     setIsFetchingFeatures,
-  });
-
-  const ctnPointsGeojson = useFeatureService({
-    layerId: SOURCES["ctn-points"].featureService.layerId,
-    name: SOURCES["ctn-points"].featureService.name,
+    mapRef,
     bounds,
-    isVisible:
-      linkMode === "points" &&
-      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
-    featureIdProp: SOURCES["ctn-points"]._featureIdProp,
-    setIsFetchingFeatures,
   });
 
   const projectLines = useFeatureTypes(projectFeatures, "line");
@@ -192,10 +170,11 @@ export default function TheMap({
     });
 
     const newFeature = {
-      geometry: clickedFeature.geometry,
+      geometry: clickedFeatureFromGeoJson.geometry,
       properties: {
-        ...clickedFeature.properties,
-        id: clickedFeature.id,
+        ...clickedFeatureFromGeoJson.properties,
+        id: clickedFeatureFromGeoJson.id,
+        // AGOL data doesn't include layer so we grab it from the clicked feature
         _layerId: clickedFeature.layer.id,
       },
     };

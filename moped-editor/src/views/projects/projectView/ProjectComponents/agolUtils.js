@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef } from "react";
+import { SOURCES, MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
 
 /**
  * Provides a hook and supporting functions to query an AGOL feature service
@@ -49,6 +50,37 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
   const allFeatures = [...geojson.features, ...features];
   const uniqueFeatures = deDeupeFeatures(allFeatures, featureIdProp);
   return { type: "FeatureCollection", features: uniqueFeatures };
+};
+
+export const useAgolFeatures = ({
+  linkMode,
+  setIsFetchingFeatures,
+  mapRef,
+  bounds,
+}) => {
+  const ctnLinesGeojson = useFeatureService({
+    layerId: SOURCES["ctn-lines"].featureService.layerId,
+    name: SOURCES["ctn-lines"].featureService.name,
+    bounds,
+    isVisible:
+      linkMode === "lines" &&
+      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
+    featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
+    setIsFetchingFeatures,
+  });
+
+  const ctnPointsGeojson = useFeatureService({
+    layerId: SOURCES["ctn-points"].featureService.layerId,
+    name: SOURCES["ctn-points"].featureService.name,
+    bounds,
+    isVisible:
+      linkMode === "points" &&
+      mapRef?.current?.getZoom() >= MIN_SELECT_FEATURE_ZOOM,
+    featureIdProp: SOURCES["ctn-points"]._featureIdProp,
+    setIsFetchingFeatures,
+  });
+
+  return { ctnLinesGeojson, ctnPointsGeojson };
 };
 
 /* Hook which AGOL rest service for features within a bbox, and continuously
