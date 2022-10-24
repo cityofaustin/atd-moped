@@ -15,7 +15,7 @@ import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useFeatureService } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
-  makeInteractiveIds,
+  interactiveLayerIds,
   useComponentFeatureCollection,
   ProjectComponentsSourcesAndLayers,
 } from "./mapUtils";
@@ -216,8 +216,6 @@ export default function TheMap({
     projectLines,
     projectPoints,
   };
-
-  const interactiveLayerIds = makeInteractiveIds();
 
   return (
     <MapGL

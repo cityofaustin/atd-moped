@@ -13,22 +13,17 @@ export const useComponentFeatureCollection = (component) =>
 
 /**
  * Iterate through the mapStyles config to create an array of interactive layers
- * @returns {Array} Array of interactive layers
  */
-export const makeInteractiveIds = () => {
-  const interactiveLayerIds = Object.entries(mapStyles).reduce(
-    (acc, [key, value]) => {
-      if (value.isInteractive) {
-        acc.push(key);
-      }
+export const interactiveLayerIds = Object.entries(mapStyles).reduce(
+  (acc, [key, value]) => {
+    if (value.isInteractive) {
+      acc.push(key);
+    }
 
-      return acc;
-    },
-    []
-  );
-
-  return interactiveLayerIds;
-};
+    return acc;
+  },
+  []
+);
 
 /**
  * Component that renders Mapbox source and layers needed for the aerial basemap

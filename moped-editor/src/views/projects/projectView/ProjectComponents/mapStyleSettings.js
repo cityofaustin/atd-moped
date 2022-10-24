@@ -16,9 +16,15 @@ export const COLORS = {
   white: "#fff",
 };
 
+/**
+ * Sets the interactivity and styles of the map layers
+ * isInteractive - whether the layer is included in the map's interactiveLayerIds array
+ * layerProps - spread into a layer component and these comply to the Mapbox layer style specs
+ * Note - we set the underlays as interactive to give users more clickable area
+ */
 export const MAP_STYLES = {
   "project-points": {
-    isInteractive: true,
+    isInteractive: false,
     layerProps: {
       id: "project-points",
       _featureIdProp: "INTERSECTION_ID",
@@ -39,7 +45,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines": {
-    isInteractive: true,
+    isInteractive: false,
     layerProps: {
       id: "project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -105,7 +111,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines-underlay": {
-    isInteractive: false,
+    isInteractive: true,
     layerProps: {
       id: "project-lines-underlay",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -190,7 +196,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-lines-underlay": {
-    isInteractive: false,
+    isInteractive: true,
     layerProps: {
       _featureIdProp: "CTN_SEGMENT_ID",
       id: "ctn-lines-underlay",
@@ -232,7 +238,7 @@ export const MAP_STYLES = {
     },
   },
   "ctn-points-underlay": {
-    isInteractive: false,
+    isInteractive: true,
     layerProps: {
       id: "ctn-points-underlay",
       type: "circle",
