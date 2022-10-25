@@ -34,7 +34,7 @@ import TagsSection from "./TagsSection";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
-    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(3),
   },
   linkIcon: {
     fontSize: "1rem",
@@ -56,14 +56,14 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
-    paddingLeft: theme.spacing(.5),
+    paddingLeft: theme.spacing(0.5),
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
-    padding: theme.spacing(.5),
+    paddingLeft: theme.spacing(0.5),
     "&:hover": {
       backgroundColor: "#f2f2f2",
-      borderRadius: theme.spacing(.5),
+      borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
   },
@@ -71,7 +71,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: ".25rem",
     fontSize: ".8rem",
     fontWeight: "bold",
-    paddingLeft: theme.spacing(.5),
   },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -100,6 +99,10 @@ const useStyles = makeStyles((theme) => ({
   newStatusIconDiv: {
     display: "flex",
     alignItems: "center",
+  },
+  fieldLabelDataTrackerLink: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
   },
 }));
 
@@ -166,30 +169,30 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
-            <ProjectSummaryProjectDescription
-              projectId={projectId}
-              data={data}
-              refetch={refetch}
-              classes={classes}
-              snackbarHandle={snackbarHandle}
-            />
-            {data.moped_project[0]?.parent_project_id && (
-              <ProjectSummaryParentProjectLink
+            <Grid container spacing={0}>
+              <ProjectSummaryProjectDescription
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
                 classes={classes}
                 snackbarHandle={snackbarHandle}
               />
-            )}
-            {/*Status Update Component*/}
-            <ProjectSummaryStatusUpdate
-              projectId={projectId}
-              data={data}
-              refetch={refetch}
-              classes={classes}
-            />
-            <Grid container spacing={0}>
+              {data.moped_project[0]?.parent_project_id && (
+                <ProjectSummaryParentProjectLink
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              )}
+              {/*Status Update Component*/}
+              <ProjectSummaryStatusUpdate
+                projectId={projectId}
+                data={data}
+                refetch={refetch}
+                classes={classes}
+              />
               <Grid item xs={12}>
                 <ProjectSummaryProjectSponsor
                   projectId={projectId}
@@ -208,8 +211,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={0}>
               <Grid item xs={12}>
                 <ProjectSummaryProjectTypes
                   projectId={projectId}
@@ -228,16 +229,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={0}>
-              <Grid item xs={12}>
-                <ProjectSummaryKnackDataTrackerSync
-                  classes={classes}
-                  project={data?.moped_project?.[0]}
-                  refetch={refetch}
-                  snackbarHandle={snackbarHandle}
-                />
-              </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryWorkAssignmentID
                   projectId={projectId}
@@ -247,8 +238,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={0}>
               <Grid item xs={12}>
                 <ProjectSummaryInterimID
                   projectId={projectId}
@@ -267,8 +256,14 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   snackbarHandle={snackbarHandle}
                 />
               </Grid>
-            </Grid>
-            <Grid container spacing={0}>
+              <Grid item xs={12}>
+                <ProjectSummaryKnackDataTrackerSync
+                  classes={classes}
+                  project={data?.moped_project?.[0]}
+                  refetch={refetch}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryWorkOrders
                   classes={classes}

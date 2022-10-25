@@ -31,8 +31,7 @@ const DashboardStatusModal = ({
     <>
       <Typography
         component={"span"}
-        // if there is no status update, render a clickable border around the add status icon
-        className={!statusUpdate && classes.fieldLabelText}
+        className={classes.fieldLabelText}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}

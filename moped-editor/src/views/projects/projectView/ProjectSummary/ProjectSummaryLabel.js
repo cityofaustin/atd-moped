@@ -14,8 +14,8 @@ const ProjectSummaryLabel = ({
   text,
   classes,
   onClickEdit,
-  className = null,
-  spanClassName = null,
+  className,
+  spanClassName,
 }) => {
   return (
     <>

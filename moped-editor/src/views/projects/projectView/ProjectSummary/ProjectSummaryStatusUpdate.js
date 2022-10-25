@@ -43,9 +43,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         >
           {!!statusUpdate && (
             <div>
-              <div className={classes.fieldLabelText}>
-                {parse(String(statusUpdate))}
-              </div>
+              <div>{parse(String(statusUpdate))}</div>
               <span className={classes.fieldAuthor}>{addedBy}</span>
               <span className={classes.fieldLabel}>
                 {makeUSExpandedFormDateFromTimeStampTZ(

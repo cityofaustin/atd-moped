@@ -87,7 +87,7 @@ const ProjectSummaryProjectSponsor = ({
                 setSponsor(newValue);
               }}
               renderInput={params => (
-                <TextField {...params} variant="standard" label={null} />
+                <TextField {...params} variant="standard" label={null} autoFocus />
               )}
             />
             <Icon

@@ -133,7 +133,7 @@ const ProjectSummaryProjectTypes = ({
               multiple
               value={selectedTypes}
               onChange={handleChange}
-              input={<Input />}
+              input={<Input autoFocus/>}
               renderValue={type_ids =>
                 type_ids.map(t => typeDict[t]).join(", ")
               }

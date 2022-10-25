@@ -137,7 +137,7 @@ const ProjectSummaryProjectPartners = ({
               multiple
               value={selectedEntities}
               onChange={handleChange}
-              input={<Input />}
+              input={<Input autoFocus />}
               renderValue={(entity_ids) =>
                 entity_ids.map((e) => entityDict[e]).join(", ")
               }
