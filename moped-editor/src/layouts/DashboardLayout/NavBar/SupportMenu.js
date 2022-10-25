@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { IconButton, Menu, MenuItem } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import ExternalLink from "../../../components/ExternalLink";
-import NavLink from "../../../components/NavLink";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import { Typography } from "@material-ui/core";
 
 export const helpItems = [
   {
