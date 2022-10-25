@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   titleDisplayField: {
     display: "flex",
+    cursor: "pointer",
   },
   titleEditField: {
     "font-size": "1.5rem",
