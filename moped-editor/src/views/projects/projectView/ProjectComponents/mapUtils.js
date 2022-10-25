@@ -78,7 +78,13 @@ export const ProjectComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
-  console.log(clickedComponent);
+  console.log({
+    data,
+    isEditingComponent,
+    linkMode,
+    clickedComponent,
+    componentFeatureCollection,
+  });
 
   return (
     <>
@@ -132,7 +138,14 @@ export const ProjectComponentsSourcesAndLayers = ({
         />
         <Layer
           beforeId="street-labels"
-          {...mapStyles["project-lines"].layerProps}
+          {...{
+            ...mapStyles["project-lines"].layerProps,
+            layout: {
+              ...mapStyles["project-lines"].layerProps.layout,
+              visibility:
+                !isEditingComponent && !clickedComponent ? "visible" : "none",
+            },
+          }}
         />
         <Layer
           beforeId="street-labels"
@@ -187,11 +200,24 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-points-muted"
-              : "project-points"
-          ].layerProps}
+          {...{
+            ...mapStyles["project-points"].layerProps,
+            layout: {
+              ...mapStyles["project-points"].layerProps.layout,
+              visibility:
+                !isEditingComponent && !clickedComponent ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-points-muted"].layerProps,
+            layout: {
+              visibility:
+                clickedComponent || isEditingComponent ? "visible" : "none",
+            },
+          }}
         />
       </Source>
 

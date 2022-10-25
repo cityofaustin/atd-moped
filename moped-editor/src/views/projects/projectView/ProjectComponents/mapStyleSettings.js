@@ -72,7 +72,7 @@ export const MAP_STYLES = {
   "project-points-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-points",
+      id: "project-points-muted",
       _featureIdProp: "INTERSECTION_ID",
       type: "circle",
       paint: {
