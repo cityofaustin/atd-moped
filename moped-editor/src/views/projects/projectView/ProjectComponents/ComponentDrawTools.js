@@ -1,7 +1,11 @@
 import React from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 
-const ComponentDrawTools = () => {
+const ComponentDrawTools = ({
+  draftComponent,
+  setDraftComponent,
+  drawLines,
+}) => {
   const drawControlsRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
 
@@ -16,8 +20,6 @@ const ComponentDrawTools = () => {
   const onDelete = () => {
     console.log("onDelete");
   };
-
-  const drawLines = true;
 
   const onModeChange = (e) => {
     // If we are not drawing, set isDrawing to false so we can select layer features as components

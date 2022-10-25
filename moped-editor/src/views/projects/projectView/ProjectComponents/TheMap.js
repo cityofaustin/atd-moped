@@ -4,6 +4,7 @@ import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
+import ComponentDrawTools from "./ComponentDrawTools";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { getIntersectionLabel, useFeatureTypes } from "./utils";
 import { useAgolFeatures } from "./agolUtils";
@@ -214,6 +215,11 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
+      <ComponentDrawTools
+        draftComponent={draftComponent}
+        setDraftComponent={setDraftComponent}
+        drawLines={true}
+      />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers
         data={data}
