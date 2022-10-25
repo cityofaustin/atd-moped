@@ -304,7 +304,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
-      title: "Project sponsor",
+      title: "Sponsor",
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
@@ -312,7 +312,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
     {
-      title: "Project partners",
+      title: "Partners",
       field: "project_partner",
       hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
@@ -329,7 +329,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
       render: (entry) => formatTimeStampTZType(entry.updated_at),
@@ -405,7 +405,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => formatDateType(entry.construction_start_date),
     },
     {
-      title: "Project completion",
+      title: "Completion date",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
@@ -436,7 +436,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       emptyValue: "-",
     },
     {
-      title: "Project tags",
+      title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
       emptyValue: "-",
