@@ -291,9 +291,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         </Typography>
       }
       options={{
-        ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
-          paging: false,
-        }),
+        paging: false,
         search: false,
         rowStyle: { fontFamily: typography.fontFamily },
         actionsColumnIndex: -1,
