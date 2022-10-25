@@ -268,12 +268,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project_id",
       hidden: hiddenColumns["project_id"],
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
       render: (entry) => (
@@ -297,10 +297,10 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
     },
     {
-      title: "Team members",
+      title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap" },
+      cellStyle: { whiteSpace: "pre-wrap", "min-width": "250px" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
@@ -379,13 +379,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       },
     },
     {
-      title: "Project type",
+      title: "Type",
       field: "type_name",
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
     },
     {
-      title: "Funding source",
+      title: "Funding",
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
       emptyValue: "-",
@@ -534,6 +534,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       zIndex: 1,
                     },
                     columnsButton: true,
+                    headerStyle: {
+                      whiteSpace: "nowrap",
+                    },
                   }}
                   components={{
                     Pagination: (props) => (
