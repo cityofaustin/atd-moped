@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
   mapStyleToggleLabelIcon: {
     position: "relative",
     top: 3,
-    marginRight: "4px",
+    fontSize: "1.75rem",
   },
   mapStyleActionLabel: {
     position: "absolute",
@@ -72,16 +72,13 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
 
   /**
    * Changes the current basemap and closes the speed dial menu
-   * @param basemapName
+   * @param basemapKey - layer key used to expose config in the basemaps object
    */
   const onBasemapSelect = (basemapKey) => {
     setIsSpeedDialOpen(false);
     setBasemapKey(basemapKey);
   };
 
-  /**
-   * Opens the speed dial menu
-   */
   const onOpen = () => {
     setIsSpeedDialOpen(true);
   };
@@ -103,7 +100,6 @@ const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
           >
             layers
           </Icon>
-          <span className={classes.mapStyleToggleLabel}>Map</span>
         </Typography>
       }
       onClose={onClose}
