@@ -13,16 +13,24 @@ const ComponentDrawTools = ({
   console.log({ draftComponent });
   // TODO: Add/update/remove draftComponent.features
 
-  const onCreate = () => {
-    console.log("onCreate");
+  const onCreate = ({ features: createdFeaturesArray }) => {
+    console.log({ createdFeaturesArray });
+
+    // TODO: iterate createdFeaturesArray, update IDs with uuids and add to draftComponent.features
+    // probably need to update the ids of the features in the draw tools tracking too
   };
 
-  const onUpdate = () => {
-    console.log("onUpdate");
+  const onUpdate = ({ features: updatedFeaturesArray, action }) => {
+    console.log({ updatedFeaturesArray, action });
+
+    // TODO: look at action type, iterate updatedFeaturesArray, update IDs with uuids and add to draftComponent.features
+    // probably most concerned with drag updates (action === "move")
   };
 
-  const onDelete = () => {
-    console.log("onDelete");
+  const onDelete = ({ features: deletedFeaturesArray }) => {
+    console.log(deletedFeaturesArray);
+
+    // TODO: iterate deletedFeaturesArray and remove those from the draft feature
   };
 
   const onModeChange = (e) => {
