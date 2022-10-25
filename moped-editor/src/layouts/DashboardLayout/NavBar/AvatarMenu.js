@@ -1,5 +1,12 @@
 import React from "react";
-import { Button, Menu, MenuItem, makeStyles } from "@material-ui/core";
+import {
+  Button,
+  Divider,
+  Menu,
+  MenuItem,
+  makeStyles,
+  Typography,
+} from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
 import ExternalLink from "../../../components/ExternalLink";
 import CDNAvatar from "../../../components/CDN/Avatar";
@@ -27,20 +34,6 @@ export const helpItems = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
-  tabs: {
-    marginLeft: "12px",
-  },
-  tab: {
-    textTransform: "capitalize",
-    color: theme.palette.text.header,
-    fontSize: "1.2em",
-    minWidth: "75px",
-    height: "64px",
-    opacity: 1,
-  },
   avatar: {
     margin: 0,
   },
@@ -48,21 +41,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     height: "64px",
   },
-  active: {
-    color: theme.palette.primary.main,
-    borderColor: theme.palette.primary.main,
-    borderBottomWidth: "2px",
-    borderStyle: "solid",
-    fontWeight: 800,
+  helpHeader: {
+    paddingLeft: "16px",
+    paddingTop: "6px",
   },
-  mobileMenu: {
-    width: 300,
-  },
-  subMenu: {
-    marginLeft: "1em",
-  },
-  newProject: {
-    marginRight: 8,
+  helpItems: {
+    paddingLeft: "32px",
   },
 }));
 
@@ -115,16 +99,14 @@ const AvatarMenu = ({
         >
           Account
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            handleAvatarClose();
-            navigate("/moped/dev/lookups");
-          }}
-        >
-          Lookups
-        </MenuItem>
+        <Divider />
+        <Typography className={classes.helpHeader}>Help</Typography>
         {helpItems.map((item) => (
-          <MenuItem key={item.href} onClick={handleAvatarClose}>
+          <MenuItem
+            className={classes.helpItems}
+            key={item.href}
+            onClick={handleAvatarClose}
+          >
             <ExternalLink
               url={item.href}
               text={item.title}
@@ -133,6 +115,16 @@ const AvatarMenu = ({
             />
           </MenuItem>
         ))}
+        <MenuItem
+          className={classes.helpItems}
+          onClick={() => {
+            handleAvatarClose();
+            navigate("/moped/dev/lookups");
+          }}
+        >
+          Lookups
+        </MenuItem>
+        <Divider />
         <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
       </Menu>
     </>

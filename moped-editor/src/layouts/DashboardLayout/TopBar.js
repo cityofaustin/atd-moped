@@ -34,13 +34,6 @@ const useStyles = makeStyles((theme) => ({
     height: "64px",
     opacity: 1,
   },
-  avatar: {
-    margin: 0,
-  },
-  avatarButton: {
-    borderRadius: "50%",
-    height: "64px",
-  },
   active: {
     color: theme.palette.primary.main,
     borderColor: theme.palette.primary.main,
