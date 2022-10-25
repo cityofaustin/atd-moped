@@ -13,16 +13,14 @@ const ComponentDrawTools = ({
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   //   console.log({ draftComponent });
-  // TODO: Add/update/remove draftComponent.features
-
   const onCreate = ({ features: createdFeaturesArray }) => {
+    // TODO: Refactor this to not pass a function
     setDraftComponent((prevDraftComponent) => {
       const drawnFeatures = cloneDeep(createdFeaturesArray);
 
       const previouslyDrawnFeatures = cloneDeep(
         prevDraftComponent.features
       ).filter((feature) => !!feature.properties?.["DRAW_ID"]);
-      console.log({ previouslyDrawnFeatures });
 
       // Add a unique id to each drawn feature's properties
       drawnFeatures.forEach(
@@ -35,8 +33,6 @@ const ComponentDrawTools = ({
         type: "FeatureCollection",
         features: [...previouslyDrawnFeatures, ...drawnFeatures],
       });
-
-      console.log(prevDraftComponent.features, drawnFeatures);
 
       return {
         ...prevDraftComponent,
@@ -53,9 +49,27 @@ const ComponentDrawTools = ({
   };
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
-    console.log(deletedFeaturesArray);
+    setDraftComponent((prevDraftComponent) => {
+      const featureIdsToDelete = deletedFeaturesArray.map(
+        (feature) => feature.properties["DRAW_ID"]
+      );
 
-    // const draftFeaturesToKeep = draftComponent.features.filter(feature => {})
+      const draftFeaturesToKeep = prevDraftComponent.features.filter(
+        (feature) => {
+          if (feature.properties["DRAW_ID"]) {
+            return !featureIdsToDelete.includes(feature.properties["DRAW_ID"]);
+          } else {
+            return true;
+          }
+        }
+      );
+
+      console.log(draftFeaturesToKeep);
+      return {
+        ...prevDraftComponent,
+        features: [...draftFeaturesToKeep],
+      };
+    });
 
     // TODO: iterate deletedFeaturesArray and remove those from the draft feature
   };
