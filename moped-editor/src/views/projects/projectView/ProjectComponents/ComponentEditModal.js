@@ -1,4 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
+import { useQuery } from "@apollo/client";
+import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Dialog,
@@ -12,8 +14,12 @@ import { CheckCircle } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { COMPONENTS } from "./data/components";
-import { COMPONENT_FORM_FIELDS } from "./utils";
+import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
+import {
+  makeRandomComponentId,
+  useComponentOptions,
+  useSubcomponentOptions,
+} from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -25,62 +31,47 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const componentLabel = ({ component_name, component_subtype }) => {
-  return component_subtype
-    ? `${component_name} - ${component_subtype}`
-    : `${component_name}`;
+const initialFormValues = {
+  component: {},
+  subcomponents: [],
+  description: "",
 };
 
-const useComponentOptions = () =>
-  useMemo(() => {
-    const options = COMPONENTS.moped_components.map((comp) => ({
-      value: comp.component_id,
-      label: componentLabel(comp),
-      data: comp,
-    }));
-    // add empty option for default state
-    return [...options, { value: "", label: "" }];
-  }, []);
-
-const randomComponentId = () => Math.floor(Math.random() * 10000000);
-
-const CustomAutocomplete = ({
-  fieldKey,
-  autoFocus,
-  dispatchComponentFormState,
-  value,
-  fieldLabel,
-}) => {
-  const options = useComponentOptions();
-
-  return (
-    <Autocomplete
-      id="combo-box-demo"
-      options={options}
-      getOptionLabel={(option) => {
-        return option.label || "";
-      }}
-      value={value}
-      onChange={(e, option) => {
-        dispatchComponentFormState({
-          key: fieldKey,
-          value: option,
-          action: "update",
-        });
-      }}
-      getOptionSelected={(option, value) => option.value === value.value}
-      renderInput={(params) => (
-        <TextField
-          {...params}
-          size="small"
-          label={fieldLabel}
-          variant="outlined"
-          autoFocus={autoFocus}
-        />
-      )}
-    />
-  );
-};
+const ControlledAutocomplete = ({
+  id,
+  options,
+  name,
+  control,
+  label,
+  autoFocus = false,
+  multiple = false,
+}) => (
+  <Controller
+    id={id}
+    name={name}
+    control={control}
+    render={({ onChange, value, ref }) => (
+      <Autocomplete
+        options={options}
+        multiple={multiple}
+        getOptionLabel={(option) => option?.label || ""}
+        getOptionSelected={(option, value) => option?.value === value?.value}
+        value={value}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            inputRef={ref}
+            size="small"
+            label={label}
+            variant="outlined"
+            autoFocus={autoFocus}
+          />
+        )}
+        onChange={(_event, option) => onChange(option)}
+      />
+    )}
+  />
+);
 
 const ComponentEditModal = ({
   showDialog,
@@ -89,18 +80,44 @@ const ComponentEditModal = ({
   setLinkMode,
   setIsEditingComponent,
   linkMode,
-  componentFormState,
-  dispatchComponentFormState,
 }) => {
   const classes = useStyles();
 
-  const onSave = (e) => {
-    e.preventDefault();
+  const { register, handleSubmit, control, reset, watch } = useForm({
+    defaultValues: initialFormValues,
+  });
+
+  // Get and format component and subcomponent options
+  const { data: optionsData, loading: areOptionsLoading } = useQuery(
+    GET_COMPONENTS_FORM_OPTIONS
+  );
+  const componentOptions = useComponentOptions(optionsData);
+  const { component } = watch();
+  const subcomponentOptions = useSubcomponentOptions(component);
+
+  const onSave = (formData) => {
+    const {
+      component: {
+        data: {
+          component_id,
+          component_name,
+          component_subtype,
+          line_representation,
+        },
+      },
+      subcomponents,
+      description,
+    } = formData;
+
     const newComponent = {
-      ...componentFormState.type.data,
-      description: componentFormState.description,
-      label: componentFormState.type.label,
-      _id: randomComponentId(),
+      _id: makeRandomComponentId(),
+      component_id,
+      component_name,
+      component_subtype,
+      line_representation,
+      moped_subcomponents: subcomponents,
+      description,
+      label: component_name,
       features: [],
     };
 
@@ -117,89 +134,57 @@ const ComponentEditModal = ({
     setDraftComponent(null);
     setIsEditingComponent(false);
     setShowDialog(false);
-    dispatchComponentFormState({ action: "reset" });
+    reset(initialFormValues);
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth>
+    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
-        <form onSubmit={(e) => e.preventDefault()}>
+      <DialogContent dividers={true}>
+        <form onSubmit={handleSubmit(onSave)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <CustomAutocomplete
-                fieldKey={COMPONENT_FORM_FIELDS[0].key}
-                fieldLabel={COMPONENT_FORM_FIELDS[0].label}
+              <ControlledAutocomplete
+                id="component"
+                label="Component Type"
+                options={areOptionsLoading ? [] : componentOptions}
+                name="component"
+                control={control}
                 autoFocus
-                dispatchComponentFormState={dispatchComponentFormState}
-                value={componentFormState[COMPONENT_FORM_FIELDS[0].key] || ""}
               />
             </Grid>
+            {/* Hide unless there are subcomponents for the chosen component */}
+            {subcomponentOptions.length !== 0 && (
+              <Grid item xs={12}>
+                <ControlledAutocomplete
+                  id="subcomponents"
+                  label="Subcomponents"
+                  multiple
+                  options={subcomponentOptions}
+                  name="subcomponents"
+                  control={control}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <TextField
+                inputRef={register}
                 fullWidth
                 size="small"
-                name="demo1"
-                id="demo1"
-                label="Subcomponents"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name={COMPONENT_FORM_FIELDS[1].key}
-                id={COMPONENT_FORM_FIELDS[1].key}
-                label={COMPONENT_FORM_FIELDS[1].label}
+                name="description"
+                id="description"
+                label={"Description"}
                 InputLabelProps={{
                   shrink: true,
                 }}
                 variant="outlined"
                 multiline
                 minRows={4}
-                value={componentFormState[COMPONENT_FORM_FIELDS[1].key]}
-                onChange={(e) => {
-                  dispatchComponentFormState({
-                    key: COMPONENT_FORM_FIELDS[1].key,
-                    value: e.target.value,
-                    action: "update",
-                  });
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name="demo2"
-                id="demo2"
-                label="Another field"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                size="small"
-                name="demo3"
-                id="demo3"
-                label="Yet another"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                variant="outlined"
               />
             </Grid>
           </Grid>
@@ -209,7 +194,7 @@ const ComponentEditModal = ({
                 variant="contained"
                 color="primary"
                 startIcon={<CheckCircle />}
-                onClick={onSave}
+                type="submit"
               >
                 Continue
               </Button>

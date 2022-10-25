@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
+import { v4 as uuidv4 } from "uuid";
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
@@ -35,38 +36,16 @@ export const getIntersectionLabel = (point, lines) => {
   return uniqueStreets.join(" / ");
 };
 
-/* This form stuff was obvi quick and dirty, prob best to use
-RFH or whatever we already have in prod */
-export const COMPONENT_FORM_FIELDS = [
-  {
-    key: "type",
-    label: "Component Type",
-    type: "autocomplete",
-  },
-  {
-    key: "description",
-    label: "Description",
-    type: "textarea",
-  },
-];
+/*
+ * Components need a unique id generated on creation to avoid collisions
+ */
+export const makeRandomComponentId = () => uuidv4();
 
-export const initialComponentFormState = COMPONENT_FORM_FIELDS.reduce(
-  (prev, curr) => {
-    prev[curr.key] = "";
-    return prev;
-  },
-  {}
-);
-
-export function componentFormStateReducer(state, { key, value, action }) {
-  if (action === "update") {
-    return { ...state, [key]: value };
-  } else {
-    return initialComponentFormState;
-  }
-}
-
-// See https://github.com/mui/material-ui/issues/10739#issuecomment-1001530270
+/**
+ * Use MUI-exposed breakpoints and toolbar height to size content below the toolbar
+ * @returns {number} Current pixel height of the toolbar
+ * @see https://github.com/mui/material-ui/issues/10739#issuecomment-1001530270
+ */
 export function useAppBarHeight() {
   const {
     mixins: { toolbar },
@@ -86,5 +65,55 @@ export function useAppBarHeight() {
   } else {
     currentToolbarMinHeight = toolbar;
   }
+
   return currentToolbarMinHeight.minHeight;
 }
+
+/**
+ * Not all component type records have a value in the subtype column but let's concatenate them if they do
+ * @param {string} component_name The name of the component
+ * @param {string} component_subtype The name value in the component_subtype column of the component record
+ * @returns {string}
+ */
+export const makeComponentLabel = ({ component_name, component_subtype }) => {
+  return component_subtype
+    ? `${component_name} - ${component_subtype}`
+    : `${component_name}`;
+};
+
+/**
+ * Take the moped_components records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_components records
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
+export const useComponentOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_components.map((comp) => ({
+      value: comp.component_id,
+      label: makeComponentLabel(comp),
+      data: comp,
+    }));
+
+    return options;
+  }, [data]);
+
+/**
+ * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
+ * for a MUI autocomplete
+ * @param {Object} component Data stored in the currently selected component record
+ * @returns {Array} The options with value and label
+ */
+export const useSubcomponentOptions = (component) =>
+  useMemo(() => {
+    const subcomponents = component?.data?.moped_subcomponents;
+    if (!subcomponents) return [];
+
+    const options = subcomponents.map((subComp) => ({
+      value: subComp.subcomponent_id,
+      label: subComp.subcomponent_name,
+    }));
+
+    return options;
+  }, [component]);
