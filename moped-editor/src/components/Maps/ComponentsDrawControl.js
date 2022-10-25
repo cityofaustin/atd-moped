@@ -97,12 +97,21 @@ const ComponentsDrawControl = React.forwardRef(
       drawLines,
       onModeChange,
       initializeExistingDrawFeatures,
-      overrideDirectSelect,
     },
     ref
   ) => {
     const shouldDrawLines = drawLines === true;
     const shouldDrawPoints = drawLines === false;
+
+    /**
+     * direct_select allows more complex interactions like breaking line strings into midpoints
+     * but we only want users to select and deselect with simple_select mode so we override on load
+     * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#simple_select
+     *  @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#direct_select
+     */
+    const overrideDirectSelect = () => {
+      ref.current.modes.DIRECT_SELECT = "simple_select";
+    };
 
     const sharedProps = {
       position: "top-right",
