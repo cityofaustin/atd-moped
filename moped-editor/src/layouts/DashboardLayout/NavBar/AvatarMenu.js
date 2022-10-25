@@ -3,6 +3,7 @@ import {
   Button,
   Divider,
   Link,
+  // Icon,
   Menu,
   MenuItem,
   makeStyles,
@@ -13,7 +14,8 @@ import { useNavigate } from "react-router-dom";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import ListIcon from "@material-ui/icons/List";
+import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined"
+// import ListIcon from "@material-ui/icons/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
@@ -149,10 +151,11 @@ const AvatarMenu = ({
             navigate("/moped/dev/lookups");
           }}
         >
-          <ListItemIcon>
-            <ListIcon fontSize="small" />
+        <ListItemIcon>
+          <MenuBookOutlinedIcon fontSize="small" />
+           {/*           <Icon>menu_book_outline</Icon>*/}
           </ListItemIcon>
-          Lookups
+          Data Dictionary
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => navigate("/moped/logout")}>
