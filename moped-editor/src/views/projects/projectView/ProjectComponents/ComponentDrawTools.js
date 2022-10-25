@@ -23,6 +23,13 @@ const ComponentDrawTools = ({
       (feature) => (feature.properties["DRAW_ID"] = uuidv4())
     );
 
+    // We must override the draw control's features with ones that have "DRAW_ID" properties
+    // so that we can access them when we want to delete them by UUID before saving
+    drawControlsRef.current.set({
+      type: "FeatureCollection",
+      features: drawnFeatures,
+    });
+
     setDraftComponent((prevDraftComponent) => ({
       ...prevDraftComponent,
       features: [...draftComponent.features, ...drawnFeatures],
@@ -30,7 +37,7 @@ const ComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    console.log({ updatedFeaturesArray, action });
+    console.log({ updatedFeaturesArray, action, draftComponent });
 
     // TODO: look at action type, iterate updatedFeaturesArray, update IDs with uuids and add to draftComponent.features
     // probably most concerned with drag updates (action === "move")
@@ -38,6 +45,8 @@ const ComponentDrawTools = ({
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
     console.log(deletedFeaturesArray);
+
+    // const draftFeaturesToKeep = draftComponent.features.filter(feature => {})
 
     // TODO: iterate deletedFeaturesArray and remove those from the draft feature
   };
