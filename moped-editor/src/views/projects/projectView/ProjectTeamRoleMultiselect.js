@@ -8,14 +8,13 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  Typography,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
   },
   noLabel: {
     marginTop: theme.spacing(3),
@@ -41,10 +40,9 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
           const selectedRoles = roles.filter((role) =>
             value.includes(role.project_role_id)
           );
-          const roleNames = selectedRoles.map(
-            ({ project_role_name }) => project_role_name
-          );
-          return roleNames.join(", ");
+          return selectedRoles.map(({ project_role_name }) => (
+            <Typography key={project_role_name}>{project_role_name}</Typography>
+          ));
         }}
         /*  
             There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
@@ -54,8 +52,7 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
         MenuProps={{
           getContentAnchorEl: () => null,
           style: {
-            maxHeight: 400,
-            width: 450,
+            maxHeight: 500,
           },
         }}
       >
