@@ -525,14 +525,16 @@
     - role: moped-admin
       permission:
         columns:
-          - id
           - name
+          - component_id
+          - id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
           - name
+          - component_id
           - id
         filter: {}
         allow_aggregations: true
@@ -540,6 +542,7 @@
       permission:
         columns:
           - name
+          - component_id
           - id
         filter: {}
         allow_aggregations: true
