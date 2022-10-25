@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 
 const ComponentDrawTools = ({
   draftComponent,
   setDraftComponent,
-  drawLines,
+  linkMode,
 }) => {
   const drawControlsRef = useRef();
   const [isDrawing, setIsDrawing] = useState(false);
+  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = () => {
     console.log("onCreate");
@@ -37,15 +38,17 @@ const ComponentDrawTools = ({
   };
 
   return (
-    <ComponentsDrawControl
-      ref={drawControlsRef}
-      onCreate={onCreate}
-      onDelete={onDelete}
-      onUpdate={onUpdate}
-      drawLines={drawLines}
-      onModeChange={onModeChange}
-      initializeExistingDrawFeatures={initializeExistingDrawFeatures}
-    />
+    shouldShowDrawControls && (
+      <ComponentsDrawControl
+        ref={drawControlsRef}
+        onCreate={onCreate}
+        onDelete={onDelete}
+        onUpdate={onUpdate}
+        linkMode={linkMode}
+        onModeChange={onModeChange}
+        initializeExistingDrawFeatures={initializeExistingDrawFeatures}
+      />
+    )
   );
 };
 

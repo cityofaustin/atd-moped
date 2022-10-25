@@ -94,14 +94,14 @@ const ComponentsDrawControl = React.forwardRef(
       onCreate,
       onUpdate,
       onDelete,
-      drawLines,
+      linkMode,
       onModeChange,
       initializeExistingDrawFeatures,
     },
     ref
   ) => {
-    const shouldDrawLines = drawLines === true;
-    const shouldDrawPoints = drawLines === false;
+    const shouldDrawLines = linkMode === "lines";
+    const shouldDrawPoints = linkMode === "points";
 
     /**
      * direct_select allows more complex interactions like breaking line strings into midpoints

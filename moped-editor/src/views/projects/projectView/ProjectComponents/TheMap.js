@@ -218,7 +218,7 @@ export default function TheMap({
       <ComponentDrawTools
         draftComponent={draftComponent}
         setDraftComponent={setDraftComponent}
-        drawLines={true}
+        linkMode={linkMode}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers
