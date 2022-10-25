@@ -12,28 +12,37 @@ const ComponentDrawTools = ({
   const drawControlsRef = useRef();
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
-  console.log({ draftComponent });
+  //   console.log({ draftComponent });
   // TODO: Add/update/remove draftComponent.features
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    const drawnFeatures = cloneDeep(createdFeaturesArray);
+    setDraftComponent((prevDraftComponent) => {
+      const drawnFeatures = cloneDeep(createdFeaturesArray);
 
-    // Add a unique id to each drawn feature's properties
-    drawnFeatures.forEach(
-      (feature) => (feature.properties["DRAW_ID"] = uuidv4())
-    );
+      const previouslyDrawnFeatures = cloneDeep(
+        prevDraftComponent.features
+      ).filter((feature) => !!feature.properties?.["DRAW_ID"]);
+      console.log({ previouslyDrawnFeatures });
 
-    // We must override the draw control's features with ones that have "DRAW_ID" properties
-    // so that we can access them when we want to delete them by UUID before saving
-    drawControlsRef.current.set({
-      type: "FeatureCollection",
-      features: drawnFeatures,
+      // Add a unique id to each drawn feature's properties
+      drawnFeatures.forEach(
+        (feature) => (feature.properties["DRAW_ID"] = uuidv4())
+      );
+
+      // We must override the draw control's features with ones that have "DRAW_ID" properties
+      // so that we can access them when we want to delete them by UUID before saving
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: [...previouslyDrawnFeatures, ...drawnFeatures],
+      });
+
+      console.log(prevDraftComponent.features, drawnFeatures);
+
+      return {
+        ...prevDraftComponent,
+        features: [...prevDraftComponent.features, ...drawnFeatures],
+      };
     });
-
-    setDraftComponent((prevDraftComponent) => ({
-      ...prevDraftComponent,
-      features: [...draftComponent.features, ...drawnFeatures],
-    }));
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
