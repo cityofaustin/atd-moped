@@ -117,6 +117,7 @@ const TopBar = ({ className, ...rest }) => {
           <Box flexGrow={1} />
           <NavigationSearchInput />
         </Hidden>
+        <Hidden smDown>
         <Box>
           <AvatarMenu
             handleAvatarClick={handleAvatarClick}
@@ -124,6 +125,7 @@ const TopBar = ({ className, ...rest }) => {
             avatarAnchorEl={avatarAnchorEl}
           />
         </Box>
+        </Hidden>
         <Hidden mdUp>
           <MobileDropdownMenu />
         </Hidden>

@@ -14,6 +14,7 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import ListIcon from "@material-ui/icons/List";
+import MenuIcon from "@material-ui/icons/Menu";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
 import { getInitials } from "src/utils/userNames";
@@ -58,8 +59,8 @@ const useStyles = makeStyles((theme) => ({
   },
   dropdownAvatar: {
     height: "30px",
-    width: "30px"
-  }
+    width: "30px",
+  },
 }));
 
 /**
@@ -86,12 +87,7 @@ const AvatarMenu = ({
   return (
     <>
       <Button className={classes.avatarButton} onClick={handleAvatarClick}>
-        <CDNAvatar
-          className={classes.avatar}
-          src={userDbData?.picture}
-          initials={userInitials}
-          userColor={user?.userColor}
-        />
+<MenuIcon />
       </Button>
       <Menu
         id="avatarDropdown"
@@ -112,6 +108,7 @@ const AvatarMenu = ({
           <ListItemIcon>
             <CDNAvatar
               className={classes.dropdownAvatar}
+              src={userDbData?.picture}
               initials={userInitials}
               userColor={user?.userColor}
             />
@@ -120,12 +117,10 @@ const AvatarMenu = ({
         </MenuItem>
         <Divider />
         <span className={classes.helpHeader}>
-                  <ListItemIcon>
+          <ListItemIcon>
             <HelpOutlineIcon fontSize="small" />
           </ListItemIcon>
-        <Typography>
-          Help
-        </Typography>
+          <Typography>Help</Typography>
         </span>
         {helpItems.map((item) => (
           <MenuItem
