@@ -47,7 +47,6 @@ def execute(sql, values, get_result=False):
 def moped_proj_features():
     # this should make you pass an argument because it's destructive
     sql = """
-    truncate component_feature_map;
     truncate feature_drawn_lines;
     truncate feature_drawn_points;
     truncate feature_intersections;
@@ -93,6 +92,7 @@ def moped_proj_features():
 
         if True:
             print("Project ID: ", record["project_id"])
+            print("Component ID: ", record["project_component_id"])
             print("Component Name: ", record["component_name"])
             print("Component Subtype: ", record["component_subtype"])
             print("Feature ID: ", record["feature_id"])
@@ -111,8 +111,9 @@ def moped_proj_features():
             insert into feature_intersections
             """
 
-            fields = []
-            values = []
+            fields = ['component_id']
+            values = [record["project_component_id"]]
+
             for key, value in feature["properties"].items():
 
                 # key transformation rules
@@ -170,8 +171,8 @@ def moped_proj_features():
             insert into feature_signals
             """
 
-            fields = []
-            values = []
+            fields = ['component_id']
+            values = [record["project_component_id"]]
             for key, value in feature["properties"].items():
 
                 # key transformation rules
@@ -220,8 +221,8 @@ def moped_proj_features():
             insert into {record["internal_table"]}
             """
 
-            fields = []
-            values = []
+            fields = ['component_id']
+            values = [record["project_component_id"]]
             for key, value in feature["properties"].items():
 
                 # key transformation rules
@@ -252,19 +253,6 @@ def moped_proj_features():
 
             print(sql, values)
             execute(sql, values, get_result=False)
-
-        sql = f"""
-        insert into component_feature_map
-        (component_id, feature_id) values (%s, %s)
-        returning id
-        """
-        values = [record["project_component_id"], feature_id]
-
-        print(sql, values)
-        result = execute(sql, values, get_result=True)
-        feature_id = result["id"]
-
-
         print("\n\n\n")
 
 
