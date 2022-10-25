@@ -2,13 +2,18 @@ import React from "react";
 import {
   Button,
   Divider,
+  Link,
   Menu,
   MenuItem,
   makeStyles,
   Typography,
+  ListItemIcon,
 } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
-import ExternalLink from "../../../components/ExternalLink";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import OpenInNewIcon from "@material-ui/icons/OpenInNew";
+import ListIcon from "@material-ui/icons/List";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
 import { getInitials } from "src/utils/userNames";
@@ -44,10 +49,17 @@ const useStyles = makeStyles((theme) => ({
   helpHeader: {
     paddingLeft: "16px",
     paddingTop: "6px",
+    alignItems: "center",
+    display: "flex",
+    position: "relative",
   },
   helpItems: {
     paddingLeft: "32px",
   },
+  dropdownAvatar: {
+    height: "30px",
+    width: "30px"
+  }
 }));
 
 /**
@@ -97,22 +109,42 @@ const AvatarMenu = ({
             navigate("/moped/account");
           }}
         >
+          <ListItemIcon>
+            <CDNAvatar
+              className={classes.dropdownAvatar}
+              initials={userInitials}
+              userColor={user?.userColor}
+            />
+          </ListItemIcon>
           Account
         </MenuItem>
         <Divider />
-        <Typography className={classes.helpHeader}>Help</Typography>
+        <span className={classes.helpHeader}>
+                  <ListItemIcon>
+            <HelpOutlineIcon fontSize="small" />
+          </ListItemIcon>
+        <Typography>
+          Help
+        </Typography>
+        </span>
         {helpItems.map((item) => (
           <MenuItem
             className={classes.helpItems}
             key={item.href}
             onClick={handleAvatarClose}
           >
-            <ExternalLink
-              url={item.href}
-              text={item.title}
-              linkColor="inherit"
+            <ListItemIcon>
+              <OpenInNewIcon fontSize="small" />
+            </ListItemIcon>
+            <Link
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              color="inherit"
               underline="none"
-            />
+            >
+              {item.title}
+            </Link>
           </MenuItem>
         ))}
         <MenuItem
@@ -122,10 +154,18 @@ const AvatarMenu = ({
             navigate("/moped/dev/lookups");
           }}
         >
+          <ListItemIcon>
+            <ListIcon fontSize="small" />
+          </ListItemIcon>
           Lookups
         </MenuItem>
         <Divider />
-        <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
+        <MenuItem onClick={() => navigate("/moped/logout")}>
+          <ListItemIcon>
+            <ExitToAppIcon fontSize="small" />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
       </Menu>
     </>
   );
