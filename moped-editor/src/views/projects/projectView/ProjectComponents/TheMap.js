@@ -219,6 +219,7 @@ export default function TheMap({
         draftComponent={draftComponent}
         setDraftComponent={setDraftComponent}
         linkMode={linkMode}
+        setCursor={setCursor}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers

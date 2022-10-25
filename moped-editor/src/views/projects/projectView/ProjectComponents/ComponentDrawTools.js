@@ -1,14 +1,17 @@
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 
 const ComponentDrawTools = ({
   draftComponent,
   setDraftComponent,
   linkMode,
+  setCursor,
 }) => {
   const drawControlsRef = useRef();
-  const [isDrawing, setIsDrawing] = useState(false);
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
+
+  console.log({ draftComponent });
+  // TODO: Add/update/remove draftComponent.features
 
   const onCreate = () => {
     console.log("onCreate");
@@ -27,9 +30,9 @@ const ComponentDrawTools = ({
     const { mode } = e;
 
     if (mode === "draw_point" || mode === "draw_line_string") {
-      setIsDrawing(true);
+      setCursor("crosshair");
     } else {
-      setIsDrawing(false);
+      setCursor("grab");
     }
   };
 
