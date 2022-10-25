@@ -3,7 +3,6 @@ import {
   Button,
   Divider,
   Link,
-  // Icon,
   Menu,
   MenuItem,
   makeStyles,
@@ -14,8 +13,6 @@ import { useNavigate } from "react-router-dom";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import MenuBookOutlinedIcon from "@material-ui/icons/MenuBookOutlined"
-// import ListIcon from "@material-ui/icons/List";
 import MenuIcon from "@material-ui/icons/Menu";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
@@ -89,7 +86,7 @@ const AvatarMenu = ({
   return (
     <>
       <Button className={classes.avatarButton} onClick={handleAvatarClick}>
-<MenuIcon />
+        <MenuIcon />
       </Button>
       <Menu
         id="avatarDropdown"
@@ -151,9 +148,8 @@ const AvatarMenu = ({
             navigate("/moped/dev/lookups");
           }}
         >
-        <ListItemIcon>
-          <MenuBookOutlinedIcon fontSize="small" />
-           {/*           <Icon>menu_book_outline</Icon>*/}
+          <ListItemIcon>
+            <span class="material-symbols-outlined">menu_book</span>
           </ListItemIcon>
           Data Dictionary
         </MenuItem>
