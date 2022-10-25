@@ -78,13 +78,10 @@ export const ProjectComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
-  console.log({
-    data,
-    isEditingComponent,
-    linkMode,
-    clickedComponent,
-    componentFeatureCollection,
-  });
+  const isViewingComponents = !isEditingComponent && !clickedComponent;
+  const isEditingLines = isEditingComponent && linkMode === "lines";
+  const isEditingPoints = isEditingComponent && linkMode === "points";
+  const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
 
   return (
     <>
@@ -100,8 +97,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["ctn-lines-underlay"].layerProps,
             layout: {
               ...mapStyles["ctn-lines-underlay"].layerProps.layout,
-              visibility:
-                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+              visibility: isEditingLines ? "visible" : "none",
             },
           }}
         />
@@ -112,8 +108,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["ctn-lines"].layerProps,
             layout: {
               ...mapStyles["ctn-lines"].layerProps.layout,
-              visibility:
-                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+              visibility: isEditingLines ? "visible" : "none",
             },
           }}
         />
@@ -131,8 +126,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["project-lines-underlay"].layerProps,
             layout: {
               ...mapStyles["project-lines-underlay"].layerProps.layout,
-              visibility:
-                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+              visibility: isEditingLines ? "visible" : "none",
             },
           }}
         />
@@ -142,8 +136,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["project-lines"].layerProps,
             layout: {
               ...mapStyles["project-lines"].layerProps.layout,
-              visibility:
-                !isEditingComponent && !clickedComponent ? "visible" : "none",
+              visibility: isViewingComponents ? "visible" : "none",
             },
           }}
         />
@@ -153,8 +146,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["project-lines-muted"].layerProps,
             layout: {
               ...mapStyles["project-lines-muted"].layerProps.layout,
-              visibility:
-                clickedComponent || isEditingComponent ? "visible" : "none",
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
         />
@@ -171,10 +163,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           {...{
             ...mapStyles["ctn-points-underlay"].layerProps,
             layout: {
-              visibility:
-                isEditingComponent && linkMode === "points"
-                  ? "visible"
-                  : "none",
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -183,10 +172,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           {...{
             ...mapStyles["ctn-points"].layerProps,
             layout: {
-              visibility:
-                isEditingComponent && linkMode === "points"
-                  ? "visible"
-                  : "none",
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -204,8 +190,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["project-points"].layerProps,
             layout: {
               ...mapStyles["project-points"].layerProps.layout,
-              visibility:
-                !isEditingComponent && !clickedComponent ? "visible" : "none",
+              visibility: isViewingComponents ? "visible" : "none",
             },
           }}
         />
@@ -214,8 +199,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           {...{
             ...mapStyles["project-points-muted"].layerProps,
             layout: {
-              visibility:
-                clickedComponent || isEditingComponent ? "visible" : "none",
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
         />
