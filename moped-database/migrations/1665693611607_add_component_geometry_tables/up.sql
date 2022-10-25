@@ -88,6 +88,7 @@ alter table moped_proj_components
 
 create table features (
     id serial primary key, 
+    component_id integer references moped_proj_components(project_component_id),
     -- do we want an auto-popualted UUID here, something non-sequence based and unique for use in the mapbox library?
     name character varying -- this is an example of a "across all features" field, and we could have more of these, like above
     );
@@ -133,14 +134,8 @@ create table feature_drawn_lines (
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
-create table component_feature_map (
-    id serial primary key,
-    component_id integer references moped_proj_components(project_component_id),
-    feature_id integer default null
-    );
-
 create view uniform_features as (
-        select id, 'feature_signals' as table, name, json_build_object(
+        select id, component_id, 'feature_signals' as table, name, json_build_object(
             'signal_id', signal_id,
             'knack_id', knack_id,
             'project_extent_id', project_extent_id,
@@ -151,7 +146,7 @@ create view uniform_features as (
             ) as attributes, geography
         FROM feature_signals
     union all
-        select id, 'feature_street_segments' as table, name, json_build_object(
+        select id, component_id, 'feature_street_segments' as table, name, json_build_object(
             'knack_id', knack_id,
             'ctn_segment_id', ctn_segment_id,
             'project_extent_id', project_extent_id,
@@ -165,7 +160,7 @@ create view uniform_features as (
             ) as attributes, geography
         FROM feature_street_segments
     union all
-        select id, 'feature_intersections' as table, name, json_build_object(
+        select id, component_id, 'feature_intersections' as table, name, json_build_object(
             'intersection_id', intersection_id,
             'project_extent_id', project_extent_id,
             'source_layer', source_layer,
@@ -173,9 +168,9 @@ create view uniform_features as (
             ) as attributes, geography
         FROM feature_intersections
     union all
-        select id, 'feature_drawn_points' as table, name, null as attributes, geography from feature_drawn_points
+        select id, component_id, 'feature_drawn_points' as table, name, null as attributes, geography from feature_drawn_points
     union all
-        select id, 'feature_drawn_lines' as table, name, null as attributes, geography from feature_drawn_lines
+        select id, component_id, 'feature_drawn_lines' as table, name, null as attributes, geography from feature_drawn_lines
 );
 
 create view project_geography as (
@@ -196,6 +191,7 @@ create view project_geography as (
     join moped_proj_components on (moped_proj_components.project_id = moped_project.project_id)
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
     join feature_layers on (coalesce(moped_proj_components.feature_layer_id_override, moped_components.feature_layer_id) = feature_layers.id)
-    join component_feature_map on (moped_proj_components.project_component_id = component_feature_map.component_id)
-    join uniform_features on (component_feature_map.feature_id = uniform_features.id)
+    join uniform_features on (moped_proj_components.project_component_id = uniform_features.component_id)
+    --join component_feature_map on (moped_proj_components.project_component_id = component_feature_map.component_id)
+    --join uniform_features on (component_feature_map.feature_id = uniform_features.id)
 );
