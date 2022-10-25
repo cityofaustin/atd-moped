@@ -532,11 +532,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
-                    },
-                    columnsButton: true,
-                    headerStyle: {
                       whiteSpace: "nowrap",
                     },
+                    columnsButton: true,
                   }}
                   components={{
                     Pagination: (props) => (

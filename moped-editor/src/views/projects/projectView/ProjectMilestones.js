@@ -23,7 +23,6 @@ import {
   DELETE_PROJECT_MILESTONE,
   ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
