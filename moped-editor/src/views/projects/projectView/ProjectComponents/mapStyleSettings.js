@@ -1,5 +1,8 @@
 import { MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
 
+export const MAPBOX_PADDING_PIXELS = 10;
+export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
+
 export const COLORS = {
   black: "#000",
   mutedGray: "#a6a2a2",

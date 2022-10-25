@@ -2,7 +2,10 @@ import { useState, useMemo } from "react";
 import MapGL, { Source, Layer } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
+import GeocoderControl from "src/components/Maps/GeocoderControl";
+import BasemapSpeedDial from "./BasemapSpeedDial";
 import {
+  basemaps,
   mapParameters,
   initialViewState,
   SOURCES,
@@ -75,6 +78,7 @@ export default function TheMap({
 }) {
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
+  const [basemapKey, setBasemapKey] = useState("streets");
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
@@ -224,8 +228,11 @@ export default function TheMap({
       onClick={onClick}
       boxZoom={false}
       cursor={cursor}
+      mapStyle={basemaps[basemapKey]}
       {...mapParameters}
     >
+      <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
+      <GeocoderControl position="top-left" marker={false} />
       <Source
         id="ctn-lines"
         type="geojson"

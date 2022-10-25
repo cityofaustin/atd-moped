@@ -1,0 +1,159 @@
+import React, { useState } from "react";
+import clsx from "clsx";
+import { Icon, makeStyles, Typography } from "@material-ui/core";
+import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
+import {
+  MAPBOX_PADDING_PIXELS,
+  MAPBOX_CONTROL_BUTTON_WIDTH,
+  COLORS,
+} from "./mapStyleSettings";
+
+const useStyles = makeStyles((theme) => ({
+  speedDialAction: {
+    width: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
+    height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
+    backgroundSize: "100% 100%",
+    borderRadius: 4,
+    background: COLORS.mutedGray,
+  },
+  speedDialStreets: {
+    color: "black",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapStreets.jpg)`,
+  },
+  speedDialAerial: {
+    color: "white",
+    backgroundImage: `url(${process.env.PUBLIC_URL}/static/images/mapAerial.jpg)`,
+  },
+  fabLabel: ({ isSpeedDialOpen }) => ({
+    ...(isSpeedDialOpen && { backgroundColor: "rgba(0,0,0,.25)" }),
+    height: "100%",
+  }),
+  mapStyleToggleLabel: {
+    fontSize: ".8rem",
+    fontWeight: "bold",
+  },
+  mapStyleToggleLabelIcon: {
+    position: "relative",
+    top: 3,
+    fontSize: "1.75rem",
+  },
+  mapStyleActionLabel: {
+    position: "absolute",
+    bottom: 0,
+  },
+  speedDial: {
+    position: "absolute",
+    height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
+    right: `${MAPBOX_PADDING_PIXELS}px`,
+    // Mapbox basemap has copyright info below the speedial while NearMap tiles do not
+    bottom: ({ basemapKey }) =>
+      basemapKey === "aerial"
+        ? `${MAPBOX_PADDING_PIXELS}px`
+        : `${MAPBOX_PADDING_PIXELS * 3}px`,
+    // Mapbox copyright info collapses to a taller info icon at 990px and below
+    [theme.breakpoints.down(991)]: {
+      bottom: ({ basemapKey }) =>
+        basemapKey === "aerial"
+          ? `${MAPBOX_PADDING_PIXELS}px`
+          : `${MAPBOX_PADDING_PIXELS * 4}px`,
+    },
+  },
+}));
+
+/**
+ * Generates the basemap selector using the SpeedDial component
+ * @param {function} setBasemapKey - The function we will call with to change the basemap key value
+ * @param {string} basemapKey - The name of the current basemap key
+ * @return {JSX.Element}
+ */
+const BasemapSpeedDial = ({ setBasemapKey, basemapKey }) => {
+  const [isSpeedDialOpen, setIsSpeedDialOpen] = useState(false);
+  const classes = useStyles({ basemapKey, isSpeedDialOpen });
+
+  /**
+   * Changes the current basemap and closes the speed dial menu
+   * @param basemapKey - layer key used to expose config in the basemaps object
+   */
+  const onBasemapSelect = (basemapKey) => {
+    setIsSpeedDialOpen(false);
+    setBasemapKey(basemapKey);
+  };
+
+  const onOpen = () => {
+    setIsSpeedDialOpen(true);
+  };
+
+  const onClose = () => setIsSpeedDialOpen(false);
+
+  return (
+    <SpeedDial
+      className={classes.speedDial}
+      ariaLabel="Basemap Select"
+      hidden={false}
+      icon={
+        <Typography>
+          <Icon
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleToggleLabelIcon
+            )}
+          >
+            layers
+          </Icon>
+        </Typography>
+      }
+      onClose={onClose}
+      onOpen={onOpen}
+      open={isSpeedDialOpen}
+      direction={"left"}
+      FabProps={{
+        classes: {
+          label: classes.fabLabel,
+        },
+        className: clsx(
+          classes.speedDialAction,
+          basemapKey !== "streets"
+            ? classes.speedDialStreets
+            : classes.speedDialAerial
+        ),
+      }}
+    >
+      <SpeedDialAction
+        key={"streets"}
+        icon={
+          <Typography
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleActionLabel
+            )}
+          >
+            Streets
+          </Typography>
+        }
+        tooltipTitle={"Streets Base Map"}
+        tooltipPlacement={"top"}
+        onClick={() => onBasemapSelect("streets")}
+        className={clsx(classes.speedDialStreets, classes.speedDialAction)}
+      />
+      <SpeedDialAction
+        key={"aerial"}
+        icon={
+          <Typography
+            className={clsx(
+              classes.mapStyleToggleLabel,
+              classes.mapStyleActionLabel
+            )}
+          >
+            Aerial
+          </Typography>
+        }
+        tooltipTitle={"Aerial Base Map"}
+        tooltipPlacement={"top"}
+        className={clsx(classes.speedDialAerial, classes.speedDialAction)}
+        onClick={() => onBasemapSelect("aerial")}
+      />
+    </SpeedDial>
+  );
+};
+
+export default BasemapSpeedDial;
