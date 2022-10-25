@@ -78,6 +78,8 @@ export const ProjectComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
+  console.log(clickedComponent);
+
   return (
     <>
       <Source
@@ -128,14 +130,20 @@ export const ProjectComponentsSourcesAndLayers = ({
             },
           }}
         />
-        {/* TODO: Split this layer into two so that we can control when visible/interactive */}
         <Layer
           beforeId="street-labels"
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-lines-muted"
-              : "project-lines"
-          ].layerProps}
+          {...mapStyles["project-lines"].layerProps}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-lines-muted"].layerProps,
+            layout: {
+              ...mapStyles["project-lines-muted"].layerProps.layout,
+              visibility:
+                clickedComponent || isEditingComponent ? "visible" : "none",
+            },
+          }}
         />
       </Source>
 

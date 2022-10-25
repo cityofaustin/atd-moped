@@ -93,7 +93,7 @@ export const MAP_STYLES = {
   "project-lines-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-lines",
+      id: "project-lines-muted",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
