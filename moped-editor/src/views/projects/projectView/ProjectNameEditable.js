@@ -140,6 +140,7 @@ const ProjectNameEditable = (props) => {
             <Grid item xs={12} sm={11}>
               <TextField
                 fullWidth
+                autoFocus
                 id="project name"
                 label={"Project Name"}
                 type="text"
