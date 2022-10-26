@@ -300,7 +300,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap", "min-width": "250px" },
+      cellStyle: { whiteSpace: "pre-wrap", minWidth: "250px" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {

@@ -146,7 +146,7 @@ const DropdownMenu = ({
           }}
         >
           <ListItemIcon>
-            <span class="material-symbols-outlined">menu_book</span>
+            <span className="material-symbols-outlined">menu_book</span>
           </ListItemIcon>
           Data Dictionary
         </MenuItem>
