@@ -158,6 +158,7 @@ const ProjectSummaryProjectECapris = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-ecapris"
               label={null}
@@ -195,7 +196,7 @@ const ProjectSummaryProjectECapris = ({
                   </Link>
                 </>
               )) ||
-              "None"
+              ""
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

@@ -122,6 +122,15 @@ const useStyles = makeStyles((theme) => ({
   fundSelectStyle: {
     width: "10em",
   },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
+    "&:hover": {
+      backgroundColor: "#f2f2f2",
+      borderRadius: theme.spacing(0.5),
+      cursor: "pointer",
+    },
+  },
 }));
 
 // memoized hook to concatanate fund dept and unit ids into an fdu string
