@@ -50,9 +50,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     position: "relative",
   },
-  helpItems: {
-    paddingLeft: "32px",
-  },
   dropdownAvatar: {
     height: "30px",
     width: "30px",
@@ -113,17 +110,12 @@ const DropdownMenu = ({
         </MenuItem>
         <Divider />
         <span className={classes.helpHeader}>
-          <ListItemIcon>
-            <HelpOutlineIcon fontSize="small" />
-          </ListItemIcon>
-          <Typography>Help</Typography>
+          <Typography variant="button" color="textSecondary">
+            Support
+          </Typography>
         </span>
         {helpItems.map((item) => (
-          <MenuItem
-            className={classes.helpItems}
-            key={item.href}
-            onClick={handleDropdownClose}
-          >
+          <MenuItem key={item.href} onClick={handleDropdownClose}>
             <ListItemIcon>
               <OpenInNewIcon fontSize="small" />
             </ListItemIcon>
