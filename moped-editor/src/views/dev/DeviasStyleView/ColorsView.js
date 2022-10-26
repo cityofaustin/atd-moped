@@ -134,7 +134,7 @@ const TypographyView = () => {
                   classes.avatar
                 )}
               >
-                5
+                {" "}
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary="Background Dark" />

@@ -84,11 +84,11 @@ const LookupsView = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Page title="Moped lookup values">
+      <Page title="Moped Data Dictionary">
         <Container maxWidth="xl">
           <Grid container spacing={3} className={classes.topMargin}>
             <Grid item xs={12}>
-              <Typography variant="h1">Moped lookup values</Typography>
+              <Typography variant="h1">Moped Data Dictionary</Typography>
             </Grid>
           </Grid>
           <Grid
