@@ -17,6 +17,7 @@ import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
 import { getInitials } from "src/utils/userNames";
 import emailToInitials from "../../../utils/emailToInitials";
+import clsx from "clsx";
 
 export const helpItems = [
   {
@@ -52,6 +53,15 @@ const useStyles = makeStyles((theme) => ({
   dropdownAvatar: {
     height: "30px",
     width: "30px",
+  },
+  logoutItem: {
+    paddingTop: "10px",
+  },
+  helpItems: {
+    paddingBottom: "12px",
+  },
+  materialSymbol: {
+    fontSize: "1.25rem",
   },
 }));
 
@@ -137,12 +147,25 @@ const DropdownMenu = ({
           }}
         >
           <ListItemIcon>
-            <span className="material-symbols-outlined">menu_book</span>
+            {
+              // todo clsx to make this more
+            }
+            <span
+              className={clsx(
+                classes.materialSymbol,
+                "material-symbols-outlined"
+              )}
+            >
+              menu_book
+            </span>
           </ListItemIcon>
           Data Dictionary
         </MenuItem>
         <Divider />
-        <MenuItem onClick={() => navigate("/moped/logout")}>
+        <MenuItem
+          className={classes.logoutItem}
+          onClick={() => navigate("/moped/logout")}
+        >
           <ListItemIcon>
             <ExitToAppIcon fontSize="small" />
           </ListItemIcon>
