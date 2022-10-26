@@ -10,7 +10,6 @@ import {
   ListItemIcon,
 } from "@material-ui/core";
 import { useNavigate } from "react-router-dom";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import MenuIcon from "@material-ui/icons/Menu";
