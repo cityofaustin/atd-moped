@@ -10,7 +10,7 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { helpItems } from "./AvatarMenu";
+import { helpItems } from "./DropdownMenu";
 import { navigationItems } from "../TopBar";
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
 
