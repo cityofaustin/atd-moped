@@ -15,7 +15,7 @@ import { Alert } from "@material-ui/lab";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
-import AvatarMenu from "./NavBar/AvatarMenu";
+import DropdownMenu from "./NavBar/DropdownMenu";
 import NavigationSearchInput from "./NavBar/NavigationSearchInput";
 import NavLink from "src/components/NavLink";
 
@@ -70,14 +70,14 @@ export const navigationItems = [
 const TopBar = ({ className, ...rest }) => {
   const classes = useStyles();
 
-  const [avatarAnchorEl, setAvatarAnchorEl] = useState(null);
+  const [dropdownAnchorEl, setDropdownAnchorEl] = useState(null);
 
-  const handleAvatarClick = (event) => {
-    setAvatarAnchorEl(event.currentTarget);
+  const handleDropdownClick = (event) => {
+    setDropdownAnchorEl(event.currentTarget);
   };
 
-  const handleAvatarClose = () => {
-    setAvatarAnchorEl(null);
+  const handleDropdownClose = () => {
+    setDropdownAnchorEl(null);
   };
 
   return (
@@ -119,10 +119,10 @@ const TopBar = ({ className, ...rest }) => {
         </Hidden>
         <Hidden smDown>
         <Box>
-          <AvatarMenu
-            handleAvatarClick={handleAvatarClick}
-            handleAvatarClose={handleAvatarClose}
-            avatarAnchorEl={avatarAnchorEl}
+          <DropdownMenu
+            handleDropdownClick={handleDropdownClick}
+            handleDropdownClose={handleDropdownClose}
+            dropdownAnchorEl={dropdownAnchorEl}
           />
         </Box>
         </Hidden>

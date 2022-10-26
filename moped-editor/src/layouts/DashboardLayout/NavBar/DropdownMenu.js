@@ -39,10 +39,7 @@ export const helpItems = [
 ];
 
 const useStyles = makeStyles((theme) => ({
-  avatar: {
-    margin: 0,
-  },
-  avatarButton: {
+  dropdownButton: {
     borderRadius: "50%",
     height: "64px",
   },
@@ -63,15 +60,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Renders Support Menu on screens above Sm breakpoint
+ * Renders Dropdown Menu on screens above Sm breakpoint
  * See https://material-ui.com/components/menus/ and https://material-ui.com/api/popover/
  * @return {JSX.Element}
  * @constructor
  */
-const AvatarMenu = ({
-  handleAvatarClick,
-  handleAvatarClose,
-  avatarAnchorEl,
+const DropdownMenu = ({
+  handleDropdownClick,
+  handleDropdownClose,
+  dropdownAnchorEl,
 }) => {
   const classes = useStyles();
   const navigate = useNavigate();
@@ -85,22 +82,22 @@ const AvatarMenu = ({
 
   return (
     <>
-      <Button className={classes.avatarButton} onClick={handleAvatarClick}>
+      <Button className={classes.dropdownButton} onClick={handleDropdownClick}>
         <MenuIcon />
       </Button>
       <Menu
-        id="avatarDropdown"
-        anchorEl={avatarAnchorEl}
+        id="menuDropdown"
+        anchorEl={dropdownAnchorEl}
         keepMounted
-        open={Boolean(avatarAnchorEl)}
-        onClose={handleAvatarClose}
+        open={Boolean(dropdownAnchorEl)}
+        onClose={handleDropdownClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
         getContentAnchorEl={null}
       >
         <MenuItem
           onClick={() => {
-            handleAvatarClose();
+            handleDropdownClose();
             navigate("/moped/account");
           }}
         >
@@ -125,7 +122,7 @@ const AvatarMenu = ({
           <MenuItem
             className={classes.helpItems}
             key={item.href}
-            onClick={handleAvatarClose}
+            onClick={handleDropdownClose}
           >
             <ListItemIcon>
               <OpenInNewIcon fontSize="small" />
@@ -144,7 +141,7 @@ const AvatarMenu = ({
         <MenuItem
           className={classes.helpItems}
           onClick={() => {
-            handleAvatarClose();
+            handleDropdownClose();
             navigate("/moped/dev/lookups");
           }}
         >
@@ -165,4 +162,4 @@ const AvatarMenu = ({
   );
 };
 
-export default AvatarMenu;
+export default DropdownMenu;
