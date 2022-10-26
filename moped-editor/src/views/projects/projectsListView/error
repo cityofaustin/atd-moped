@@ -1,0 +1,577 @@
+
+========== Error Details ==========
+
+A Web Service request has detected a SOCKET error whilst invoking a web service located at host &1, on port &2, on path &3.
+
+Host: knack-proxy.austinmobility.io
+Port: 443
+Path: /v1/objects/object_83/records
+
+An error occurred whilst performing an SSL socket operation
+
+connect
+
+javax.net.ssl.SSLHandshakeException: com.ibm.jsse2.util.h: PKIX path building failed: com.ibm.security.cert.IBMCertPathBuilderException: unable to find valid certification path to requested target
+
+========== Knack ==========
+
+{"field_1447":"2022-000000000000121598",
+"field_1448":"504633367",
+"field_1232":"22-00005860",
+"field_1391":"PHONE",
+"field_1381":"Phone",
+"field_1366":"SCHOOLZ2",
+"field_1445":"School Zone Flasher - Timing\/Maintenance",
+"field_1382":"STANDARD",
+"field_1383":"Standard",
+"field_1449":"TRAFFICS",
+"field_1450":"",
+"field_1380":"OPEN",
+"field_1390":"Open",
+"field_1446":"Caller states this morning they were flashing, however, this afternoon the flashers are not flashing.",
+"field_1368":"AUG 15, 2022",
+"field_1388":"500 MAIRO ST, AUSTIN, TX 78748",
+"field_1402":"3099723.00082333",
+"field_1401":"10038746.0010627",
+"field_1458":"CITIZE1",
+"field_1459":"Citizen",
+"field_1460":"Kelly, Stacey",
+"field_1461":"504-259-0144",
+"field_1462":"avl2aus@gmail.com"}
+
+========== CSR ==========
+
+<NS1:submitCSR xmlns:NS1="https://gcc02.safelinks.protection.outlook.com/?url=http%3A%2F%2Fwww.motorola.com%2FSchema%2Fcsreai&amp;data=05%7C01%7Cjohn.clary%40austintexas.gov%7Ceca83b2c74624ab38f8208dab5d4eed1%7C5c5e19f6a6ab4b45b1d0be4608a9a67f%7C0%7C0%7C638022223398561082%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C3000%7C%7C%7C&amp;sdata=dU1H090J%2BzV904t3K3%2BaMlqHuPQia0EbcJgn2l0Kn1Q%3D&amp;reserved=0">
+<NS1:apikey>3208adal3BREDe39adger</NS1:apikey>
+<NS1:csreai-msg>
+<NS1:header>
+<EMI/>
+<NS1:eid>504633423</NS1:eid>
+<NS1:reference_id>504633367</NS1:reference_id>
+<NS1:event_date>AUG 15, 2022</NS1:event_date>
+<NS1:sr_type_code>SCHOOLZ2</NS1:sr_type_code>
+<NS1:event_type_code>REQUEST</NS1:event_type_code>
+<NS1:eai_event_code>NEWSR</NS1:eai_event_code>
+<NS1:source_code>PRIMAPP</NS1:source_code>
+<NS1:target_code>KNACK</NS1:target_code>
+<NS1:status_code>OPEN</NS1:status_code>
+<NS1:details/>
+</NS1:header>
+<NS1:body>
+<Document>
+<Prc_instance>
+<Id>504633367</Id>
+<Manager_res_id>?</Manager_res_id>
+<Method_received_code>PHONE</Method_received_code>
+<Method_received_description>Phone</Method_received_description>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Prc_description>School Zone Flasher - Timing/Maintenance</Prc_description>
+<Priority_code>STANDARD</Priority_code>
+<Priority_description>Standard</Priority_description>
+<Owner_group_code>TRAFFICS</Owner_group_code>
+<Owner_group_description/>
+<Creation_reason_code/>
+<Creation_reason_description/>
+<Status_code>OPEN</Status_code>
+<Status_description>Open</Status_description>
+<Status_date>AUG 15, 2022</Status_date>
+<Prc_number>22-00005860</Prc_number>
+<Details>Caller states this morning they were flashing, however, this afternoon the flashers are not flashing.</Details>
+<Begin_resolution_date/>
+<Duration_days_to_complete>21</Duration_days_to_complete>
+<Created_by>504511050</Created_by>
+<Created_by_description>KINGB - KING, BRENDA</Created_by_description>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_by_description>KINGB - KING, BRENDA</Updated_by_description>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_attributes>
+<Prc_attribute>
+<Id>504633374</Id>
+<Prc_attribute_def_id>419467266</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>SEP 06, 2022</Attribute_value>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>1</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>SRSLADAT</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>SR SLA (Due) Date/Time</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633373</Id>
+<Prc_attribute_def_id>419467259</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value/>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>1</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>SRATTACH</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>SR Attachment URLs</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633375</Id>
+<Prc_attribute_def_id>419467238</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>Yes</Attribute_value>
+<Attribute_codes>YES</Attribute_codes>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>1</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHARLIST</Attribute_datatype_code>
+<Custom_attribute_defs_code>XFERISOK</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>Allow SR to be published to External Interfaces?</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633376</Id>
+<Prc_attribute_def_id>151536659</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>Williams Elementary School</Attribute_value>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLEX0972</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>Name of School?</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633377</Id>
+<Prc_attribute_def_id>151536660</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>South 1st and Belclaire Lane</Attribute_value>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLEX1235</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>Street(s) surrounding the malfunctioning Flasher(s)</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633383</Id>
+<Prc_attribute_def_id>429646401</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>Heading North on first Street</Attribute_value>
+<Attribute_codes>Heading North on first Street</Attribute_codes>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHARMULT</Attribute_datatype_code>
+<Custom_attribute_defs_code>INWHDAFM</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>In what directions are the flashers malfunctioning?</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633378</Id>
+<Prc_attribute_def_id>151536662</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>Between 2:30 and 2:40 p.m.</Attribute_value>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLEX1611</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>What time of day does the flasher malfunction?</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633382</Id>
+<Prc_attribute_def_id>151536663</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value>Not Flashing</Attribute_value>
+<Attribute_codes>2</Attribute_codes>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHARLIST</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLEX1535</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>What is the problem with the flasher?</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633379</Id>
+<Prc_attribute_def_id>151536664</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value/>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLXQ0429</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>A traffic signal tech will be notified immediately to investigate.</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633380</Id>
+<Prc_attribute_def_id>151536665</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value/>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>FLEX1260</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>Tech will arrive within 1hr and fix signal. After hours will be fixed the next day.</Custom_attribute_defs_desc>
+</Prc_attribute>
+<Prc_attribute>
+<Id>504633381</Id>
+<Prc_attribute_def_id>453960656</Prc_attribute_def_id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Attribute_value/>
+<Attribute_codes/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_code>SCHOOLZ2</Prc_code>
+<Attribute_datatype_code>CHAR</Attribute_datatype_code>
+<Custom_attribute_defs_code>NTAIC016</Custom_attribute_defs_code>
+<Custom_attribute_defs_desc>Note to agent: Inform caller this service request is available on the Austin 3-1-1 mobile app.</Custom_attribute_defs_desc>
+</Prc_attribute>
+</Prc_attributes>
+<Prc_participants>
+<Prc_participant>
+<Id>504633399</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Prc_participant_def_id>151533600</Prc_participant_def_id>
+<Res_instance_id>504633368</Res_instance_id>
+<Is_source_of_prc_ind>N</Is_source_of_prc_ind>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Participant_code>CITIZE1</Participant_code>
+<Participant_description>Citizen</Participant_description>
+<Res_instance>
+<Id>504633368</Id>
+<Res_code>CITIZEN</Res_code>
+<Res_description>Citizen</Res_description>
+<Category_code>PEOPLE</Category_code>
+<Owner_group_code>TRAFFICS</Owner_group_code>
+<Owner_group_description>Traffic Signals-T</Owner_group_description>
+<Start_date>AUG 15, 2022</Start_date>
+<Stop_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Geo_locations>
+<Geo_location>
+<Location_id>426535944</Location_id>
+<Display_address>109 TEXAS ASH CV, AUSTIN, TX 78652</Display_address>
+<Related_table_code>RESINST</Related_table_code>
+<Related_record_id>504633368</Related_record_id>
+<Address_type_code>HOME</Address_type_code>
+<Country_code>USA</Country_code>
+<Street_number>109</Street_number>
+<Prefix_direction_code/>
+<Prefix_type_code/>
+<Street_name>TEXAS ASH</Street_name>
+<Street_type_code>CV</Street_type_code>
+<Suffix_direction_code/>
+<City>AUSTIN</City>
+<District>TRAVIS</District>
+<Region>TX</Region>
+<City_zone>78652</City_zone>
+<Location_details/>
+<Building_name/>
+<Unit_number/>
+<Floor/>
+<X_value>3095331.96072601</X_value>
+<Y_value>10024889.2208765</Y_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Geo_location>
+</Geo_locations>
+<Res_names>
+<Res_name>
+<Id>504633395</Id>
+<Res_instance_id/>
+<Owner_group_code>TRAFFICS</Owner_group_code>
+<Owner_group_description>Traffic Signals-T</Owner_group_description>
+<Name_type_item_code>LEGALNAM</Name_type_item_code>
+<Name_type_item_description/>
+<Display_name>Kelly, Stacey</Display_name>
+<Search_display_name>KELLY, STACEY</Search_display_name>
+<Name_field_01/>
+<Name_field_02>STACEY</Name_field_02>
+<Name_field_03/>
+<Name_field_04>KELLY</Name_field_04>
+<Name_field_05/>
+<Name_field_06/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Res_name>
+</Res_names>
+<Res_attributes/>
+<Res_phones>
+<Res_phone>
+<Id>504633404</Id>
+<Res_instance_id>504633368</Res_instance_id>
+<Phone_code>HOME</Phone_code>
+<Phone_description/>
+<Phone_number>504-259-0144</Phone_number>
+<Extension/>
+<Details/>
+<Private_ind>N</Private_ind>
+<Phone_number_no_format>5042590144</Phone_number_no_format>
+<Start_date>AUG 15, 2022</Start_date>
+<Stop_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>0</Record_version>
+</Res_phone>
+</Res_phones>
+<Res_electronic_addresses>
+<Res_electronic_address>
+<Id>504633405</Id>
+<Res_instance_id>504633368</Res_instance_id>
+<Electronic_address_code/>
+<Electronic_address_description/>
+<Message_device_code>PAGER</Message_device_code>
+<Message_device_description/>
+<Electronic_address>avl2aus@gmail.com</Electronic_address>
+<Email_addressable_ind>N</Email_addressable_ind>
+<Private_ind>N</Private_ind>
+<Details/>
+<Created_date/>
+<Updated_date/>
+</Res_electronic_address>
+</Res_electronic_addresses>
+</Res_instance>
+</Prc_participant>
+</Prc_participants>
+<Prc_activities>
+<Prc_activity>
+<Id>504633387</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Outcome_code/>
+<Outcome_description/>
+<Prc_activity_defs_id>151537438</Prc_activity_defs_id>
+<Completed_date/>
+<Details/>
+<Arrival_time/>
+<Departure_time/>
+<Due_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_activity_type_defs_code>CONTACT</Prc_activity_type_defs_code>
+<Description_actdef>Contact Citizen</Description_actdef>
+</Prc_activity>
+<Prc_activity>
+<Id>504633386</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Outcome_code/>
+<Outcome_description/>
+<Prc_activity_defs_id>154977834</Prc_activity_defs_id>
+<Completed_date/>
+<Details/>
+<Arrival_time/>
+<Departure_time/>
+<Due_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_activity_type_defs_code>TRREPRSI</Prc_activity_type_defs_code>
+<Description_actdef>Repair Signal</Description_actdef>
+</Prc_activity>
+<Prc_activity>
+<Id>504633384</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Outcome_code/>
+<Outcome_description/>
+<Prc_activity_defs_id>154977817</Prc_activity_defs_id>
+<Completed_date/>
+<Details/>
+<Arrival_time/>
+<Departure_time/>
+<Due_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_activity_type_defs_code>DISPTECH</Prc_activity_type_defs_code>
+<Description_actdef>Dispatch Technician</Description_actdef>
+</Prc_activity>
+<Prc_activity>
+<Id>504633385</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Outcome_code/>
+<Outcome_description/>
+<Prc_activity_defs_id>154977818</Prc_activity_defs_id>
+<Completed_date/>
+<Details/>
+<Arrival_time/>
+<Departure_time/>
+<Due_date/>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+<Prc_activity_type_defs_code>TRSIGAR</Prc_activity_type_defs_code>
+<Description_actdef>Arrived Site</Description_actdef>
+</Prc_activity>
+</Prc_activities>
+<Prc_linked_processes/>
+<Prc_historical_geo_areas>
+<Prc_historical_geo_area>
+<Id>504633392</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>COUNDIST</Config_location_code>
+<Config_location_description/>
+<Config_location_value>2</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+<Prc_historical_geo_area>
+<Id>504633393</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>COUNTY</Config_location_code>
+<Config_location_description/>
+<Config_location_value>TRAVIS</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+<Prc_historical_geo_area>
+<Id>504633388</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>MAPTILE</Config_location_code>
+<Config_location_description/>
+<Config_location_value>MG15</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+<Prc_historical_geo_area>
+<Id>504633390</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>MAPPAGE</Config_location_code>
+<Config_location_description/>
+<Config_location_value>674E</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+<Prc_historical_geo_area>
+<Id>504633391</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>CODECOM</Config_location_code>
+<Config_location_description/>
+<Config_location_value>FRANK</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+<Prc_historical_geo_area>
+<Id>504633389</Id>
+<Prc_instance_id>504633367</Prc_instance_id>
+<Config_location_code>ZIPCODE</Config_location_code>
+<Config_location_description/>
+<Config_location_value>78748</Config_location_value>
+<Created_by>504511050</Created_by>
+<Created_date>AUG 15, 2022</Created_date>
+<Updated_by>504511050</Updated_by>
+<Updated_date>AUG 15, 2022</Updated_date>
+<Record_version>1</Record_version>
+</Prc_historical_geo_area>
+</Prc_historical_geo_areas>
+<Geo_locations>
+<Geo_location>
+<Location_id/>
+<Display_address>500 MAIRO ST, AUSTIN, TX 78748</Display_address>
+<Related_table_code/>
+<Related_record_id/>
+<Address_type_code/>
+<Country_code/>
+<Street_number>500</Street_number>
+<Prefix_direction_code/>
+<Prefix_type_code/>
+<Street_name>MAIRO</Street_name>
+<Street_type_code>ST</Street_type_code>
+<Suffix_direction_code/>
+<City>AUSTIN</City>
+<District>TRAVIS</District>
+<Region>TX</Region>
+<City_zone>78748</City_zone>
+<Location_details/>
+<Building_name/>
+<Unit_number/>
+<Floor/>
+<X_value>3099723.00082333</X_value>
+<Y_value>10038746.0010627</Y_value>
+<Created_by/>
+<Created_date/>
+<Updated_by/>
+<Updated_date/>
+<Record_version/>
+</Geo_location>
+</Geo_locations>
+</Prc_instance>
+</Document>
+</NS1:body>
+</NS1:csreai-msg>
+</NS1:submitCSR>
