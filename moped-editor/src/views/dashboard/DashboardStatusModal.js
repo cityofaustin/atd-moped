@@ -44,12 +44,7 @@ const DashboardStatusModal = ({
             {/* if the parent is the summary page, also render the status label */}
             {modalParent === "summary" && children}
             <Tooltip placement="bottom-start" title="Create new status update">
-              <ControlPointIcon
-                // icon needs to be smaller on the dashboard
-                className={clsx({
-                  [classes.tooltipIcon]: modalParent !== "summary",
-                })}
-              />
+              <ControlPointIcon className={classes.tooltipIcon} />
             </Tooltip>
           </div>
         )}
