@@ -18,7 +18,6 @@ import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
   ComponentOptionWithIcon,
   makeRandomComponentId,
-  renderComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
 } from "./utils";
