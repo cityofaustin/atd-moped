@@ -47,15 +47,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Renders an option with icon based on the type of geometry (if it exists) and component type label
+ * @param {Object} option - Autocomplete option object with label, value, and data about component type
+ * @return {JSX.Element}
+ */
 export const ComponentOptionWithIcon = ({ option }) => {
   const classes = useStyles();
-  const { line_representation = null } = option.data;
+  const { data: { line_representation = null } = {} } = option;
 
   return (
     <>
       <span className={classes.iconContainer}>
         {line_representation === true && <TimelineIcon />}
         {line_representation === false && <RoomIcon />}
+        {/* Fall back to a blank icon to keep labels lined up */}
         {line_representation === null && <Icon />}
       </span>{" "}
       {option.label}
