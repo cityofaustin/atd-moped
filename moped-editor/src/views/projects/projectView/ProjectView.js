@@ -29,6 +29,7 @@ import {
   ListItemText,
   Snackbar,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -75,10 +76,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardWrapper: {
     marginTop: theme.spacing(3),
-  },
-  cardActions: {
-    display: "flex",
-    justifyContent: "flex-end",
   },
   button: {
     marginTop: theme.spacing(1),
@@ -429,6 +426,8 @@ const ProjectView = () => {
     current_status: data?.moped_project?.[0]?.current_status ?? null,
   };
 
+  const isProjectDeleted = data?.moped_project[0]?.is_deleted;
+
   return (
     <ApolloErrorHandler error={error}>
       {data && !data?.moped_project?.length && <NotFoundView />}
@@ -639,6 +638,41 @@ const ProjectView = () => {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>{dialogState?.actions}</DialogActions>
+            </Dialog>
+          )}
+          {isProjectDeleted && (
+            <Dialog
+              open={isProjectDeleted}
+              onClose={handleDialogClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogContent>
+                <Typography variant={"h3"} align={"center"} gutterBottom>
+                  This project has been deleted.
+                </Typography>
+                <Typography align={"center"} style={{ paddingTop: "15px" }}>
+                  If you need to restore a deleted project, please{" "}
+                  <Link
+                    href={
+                      "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+                    }
+                    target="new"
+                  >
+                    submit a Data &amp; Technology Services support request
+                  </Link>.
+                </Typography>
+              </DialogContent>
+              <DialogActions>
+                <Button>
+                  <RouterLink
+                    to={allProjectsLink}
+                    className={"MuiTypography-colorPrimary"}
+                  >
+                    Back to all projects
+                  </RouterLink>
+                </Button>
+              </DialogActions>
             </Dialog>
           )}
         </Page>

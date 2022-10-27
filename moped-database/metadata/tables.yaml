@@ -1,16 +1,16 @@
 - table:
-    schema: public
     name: moped_activity_log
+    schema: public
   object_relationships:
     - name: moped_user
       using:
         manual_configuration:
-          remote_table:
-            schema: public
-            name: moped_users
-          insertion_order: null
           column_mapping:
             updated_by: cognito_user_id
+          insertion_order: null
+          remote_table:
+            name: moped_users
+            schema: public
   select_permissions:
     - role: moped-admin
       permission:
@@ -55,8 +55,8 @@
         filter: {}
         allow_aggregations: true
 - table:
-    schema: public
     name: moped_city_fiscal_years
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -122,16 +122,16 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_components
+    schema: public
   array_relationships:
     - name: moped_subcomponents
       using:
         foreign_key_constraint_on:
           column: component_id
           table:
-            schema: public
             name: moped_subcomponents
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -201,39 +201,39 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_department
-- table:
     schema: public
+- table:
     name: moped_entity
+    schema: public
   array_relationships:
     - name: entity_department
       using:
         manual_configuration:
-          remote_table:
-            schema: public
-            name: moped_department
-          insertion_order: null
           column_mapping:
             department_id: department_id
+          insertion_order: null
+          remote_table:
+            name: moped_department
+            schema: public
     - name: entity_organization
       using:
         manual_configuration:
-          remote_table:
-            schema: public
-            name: moped_organization
-          insertion_order: null
           column_mapping:
             organization_id: organization_id
+          insertion_order: null
+          remote_table:
+            name: moped_organization
+            schema: public
     - name: entity_workgroup
       using:
         manual_configuration:
-          remote_table:
-            schema: public
-            name: moped_workgroup
-          insertion_order: null
           column_mapping:
             workgroup_id: workgroup_id
+          insertion_order: null
+          remote_table:
+            name: moped_workgroup
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -320,8 +320,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_fund_programs
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -373,8 +373,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_fund_sources
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -433,8 +433,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_fund_status
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -492,8 +492,8 @@
         backend_only: false
         filter: {}
 - table:
-    schema: public
     name: moped_funds
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -549,8 +549,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_milestones
+    schema: public
   object_relationships:
     - name: moped_phase
       using:
@@ -561,8 +561,8 @@
         foreign_key_constraint_on:
           column: milestone_id
           table:
-            schema: public
             name: moped_proj_milestones
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -646,19 +646,19 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_organization
-- table:
     schema: public
+- table:
     name: moped_phases
+    schema: public
   array_relationships:
     - name: moped_subphases
       using:
         foreign_key_constraint_on:
           column: related_phase_id
           table:
-            schema: public
             name: moped_subphases
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -735,8 +735,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_proj_components
+    schema: public
   object_relationships:
     - name: moped_components
       using:
@@ -747,15 +747,15 @@
         foreign_key_constraint_on:
           column: project_component_id
           table:
-            schema: public
             name: moped_proj_components_subcomponents
+            schema: public
     - name: moped_proj_features
       using:
         foreign_key_constraint_on:
           column: project_component_id
           table:
-            schema: public
             name: moped_proj_features
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -841,10 +841,10 @@
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -855,18 +855,18 @@
             - name
             - is_deleted
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_components_subcomponents
+    schema: public
   object_relationships:
     - name: moped_subcomponent
       using:
@@ -933,8 +933,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_proj_contract
+    schema: public
   object_relationships:
     - name: moped_project
       using:
@@ -1015,8 +1015,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_proj_entities
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -1112,10 +1112,10 @@
   event_triggers:
     - name: activity_log_moped_proj_entities
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -1128,18 +1128,18 @@
             - project_sponsors
             - date_added
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_features
+    schema: public
   object_relationships:
     - name: moped_proj_component
       using:
@@ -1206,8 +1206,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_proj_financials
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -1336,8 +1336,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_proj_fiscal_years
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -1431,8 +1431,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_proj_funding
+    schema: public
   object_relationships:
     - name: moped_fund_source
       using:
@@ -1567,10 +1567,10 @@
   event_triggers:
     - name: activity_log_moped_proj_funding
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -1588,18 +1588,18 @@
             - date_added
             - is_deleted
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_milestones
+    schema: public
   object_relationships:
     - name: moped_milestone
       using:
@@ -1776,10 +1776,10 @@
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -1803,18 +1803,18 @@
             - date_added
             - is_deleted
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_notes
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -1910,10 +1910,10 @@
   event_triggers:
     - name: activity_log_moped_proj_notes
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -1926,18 +1926,18 @@
             - date_created
             - is_deleted
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_partners
+    schema: public
   object_relationships:
     - name: moped_entity
       using:
@@ -2027,10 +2027,10 @@
   event_triggers:
     - name: activity_log_moped_proj_partners
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -2042,18 +2042,18 @@
             - partner_name
             - date_added
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_personnel
+    schema: public
   object_relationships:
     - name: moped_project_role
       using:
@@ -2064,6 +2064,14 @@
     - name: project
       using:
         foreign_key_constraint_on: project_id
+  array_relationships:
+    - name: moped_proj_personnel_roles
+      using:
+        foreign_key_constraint_on:
+          column: project_personnel_id
+          table:
+            name: moped_proj_personnel_roles
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2156,10 +2164,10 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -2172,18 +2180,85 @@
             - notes
             - date_added
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
+    name: moped_proj_personnel_roles
     schema: public
+  object_relationships:
+    - name: moped_proj_personnel
+      using:
+        foreign_key_constraint_on: project_personnel_id
+    - name: moped_project_role
+      using:
+        foreign_key_constraint_on: project_role_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+        check: null
+- table:
     name: moped_proj_phases
+    schema: public
   object_relationships:
     - name: moped_phase
       using:
@@ -2357,10 +2432,10 @@
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -2384,18 +2459,18 @@
             - date_added
             - is_deleted
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_proj_tags
+    schema: public
   object_relationships:
     - name: moped_project
       using:
@@ -2465,8 +2540,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_project
+    schema: public
   object_relationships:
     - name: moped_entity
       using:
@@ -2486,71 +2561,71 @@
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_components
+            schema: public
     - name: moped_proj_funding
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_funding
+            schema: public
     - name: moped_proj_milestones
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_milestones
+            schema: public
     - name: moped_proj_notes
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_notes
+            schema: public
     - name: moped_proj_partners
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_partners
+            schema: public
     - name: moped_proj_personnel
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_personnel
+            schema: public
     - name: moped_proj_phases
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_phases
+            schema: public
     - name: moped_proj_tags
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_proj_tags
+            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            schema: public
             name: moped_project_types
+            schema: public
     - name: moped_projects
       using:
         foreign_key_constraint_on:
           column: parent_project_id
           table:
-            schema: public
             name: moped_project
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2797,10 +2872,10 @@
   event_triggers:
     - name: activity_log_moped_project
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -2834,18 +2909,18 @@
             - project_uuid
             - parent_project_id
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_project_files
+    schema: public
   object_relationships:
     - name: moped_project
       using:
@@ -2987,10 +3062,10 @@
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -3009,18 +3084,18 @@
             - file_name
             - create_date
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_project_roles
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3097,8 +3172,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_project_types
+    schema: public
   object_relationships:
     - name: moped_type
       using:
@@ -3181,10 +3256,10 @@
   event_triggers:
     - name: activity_log_moped_project_types
       definition:
+        delete:
+          columns: '*'
         enable_manual: false
         insert:
-          columns: '*'
-        delete:
           columns: '*'
         update:
           columns:
@@ -3195,18 +3270,18 @@
             - project_type_id
             - date_added
       retry_conf:
-        num_retries: 0
         interval_sec: 10
+        num_retries: 0
         timeout_sec: 60
       webhook_from_env: MOPED_API_EVENTS_URL
       headers:
         - name: MOPED_API_APIKEY
           value_from_env: MOPED_API_APIKEY
-        - value: activity_log
-          name: MOPED_API_EVENT_NAME
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
-    schema: public
     name: moped_status
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3283,8 +3358,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_subcomponents
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3340,8 +3415,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_subphases
+    schema: public
   object_relationships:
     - name: moped_phase
       using:
@@ -3429,16 +3504,16 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: moped_tags
+    schema: public
   array_relationships:
     - name: moped_proj_tags
       using:
         foreign_key_constraint_on:
           column: tag_id
           table:
-            schema: public
             name: moped_proj_tags
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3508,8 +3583,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_types
+    schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3593,8 +3668,8 @@
         filter: {}
         check: {}
 - table:
-    schema: public
     name: moped_user_followed_projects
+    schema: public
   object_relationships:
     - name: project
       using:
@@ -3691,8 +3766,8 @@
         backend_only: false
         filter: {}
 - table:
-    schema: public
     name: moped_users
+    schema: public
   object_relationships:
     - name: moped_workgroup
       using:
@@ -3817,8 +3892,8 @@
             _eq: x-hasura-user-db-id
         check: null
 - table:
-    schema: public
     name: moped_workgroup
+    schema: public
   object_relationships:
     - name: moped_department
       using:
@@ -3881,8 +3956,8 @@
         filter: {}
         check: null
 - table:
-    schema: public
     name: project_list_view
+    schema: public
   select_permissions:
     - role: moped-admin
       permission:

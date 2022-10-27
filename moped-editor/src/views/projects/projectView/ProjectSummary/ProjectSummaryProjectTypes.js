@@ -117,7 +117,6 @@ const ProjectSummaryProjectTypes = ({
 
   // join selected type names in a comma separated string
   // used to display when not editing
-  const selectedTypesJoint = selectedTypes.map(t => typeDict[t]).join(", ");
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -134,7 +133,7 @@ const ProjectSummaryProjectTypes = ({
               multiple
               value={selectedTypes}
               onChange={handleChange}
-              input={<Input />}
+              input={<Input autoFocus/>}
               renderValue={type_ids =>
                 type_ids.map(t => typeDict[t]).join(", ")
               }
@@ -178,7 +177,7 @@ const ProjectSummaryProjectTypes = ({
         ) : (
           <ProjectSummaryLabel
             text={
-              selectedTypesJoint.trim() === "" ? "None" : selectedTypesJoint
+              selectedTypes.map(t => typeDict[t])
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}

@@ -188,6 +188,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
         <Typography className={classes.fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
+          className={classes.fieldLabelDataTrackerLink}
             text={
               // if a project has been synced with Knack and has signals associated, link to signals
               (project.knack_project_id && signals.length > 0 && (

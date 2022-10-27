@@ -33,10 +33,9 @@ const ProjectSummaryWorkOrders = ({
         className={classes.fieldBox}
       >
         <ProjectSummaryLabel
-          className={classes.fieldLabelLink}
+          className={classes.fieldLabelDataTrackerLink}
           text={
             <Link
-              className={classes.fieldLabelText}
               href={knackProjectURL}
               target={"_blank"}
             >
