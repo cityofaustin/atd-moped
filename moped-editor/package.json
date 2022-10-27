@@ -22,7 +22,7 @@
     "build:production": "env-cmd -e production npm run build:local",
     "build:netlifypr": "env-cmd -e netlifypr npm run build:local",
     "build:netlifybranch": "./set_env_branch_build.py",
-    "test": "react-scripts test",
+    "test": "react-scripts test --verbose",
     "eject": "react-scripts eject"
   },
   "browserslist": {
@@ -49,6 +49,8 @@
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.57",
     "@material-ui/styles": "^4.11.5",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/user-event": "^14.4.3",
     "@turf/bbox": "^6.5.0",
     "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",
@@ -95,6 +97,7 @@
     "npm": ">=6.0.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^12.1.5",
     "babel-plugin-import": "^1.13.5"
   }
 }
