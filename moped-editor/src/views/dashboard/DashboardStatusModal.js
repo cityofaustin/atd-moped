@@ -31,7 +31,7 @@ const DashboardStatusModal = ({
     <>
       <Typography
         component={"span"}
-        className={classes.fieldLabelText}
+        className={modalParent === "summary" && classes.fieldLabelText}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}
