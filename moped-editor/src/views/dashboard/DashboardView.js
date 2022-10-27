@@ -79,6 +79,12 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
+  tooltipIcon: {
+    fontSize: "20px",
+  },
 }));
 
 function a11yProps(index) {

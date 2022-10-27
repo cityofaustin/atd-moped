@@ -7,6 +7,7 @@ import {
   IconButton,
   Tooltip,
 } from "@material-ui/core";
+import clsx from "clsx";
 import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
 import ProjectComments from "../projects/projectView/ProjectComments";
@@ -31,7 +32,10 @@ const DashboardStatusModal = ({
     <>
       <Typography
         component={"span"}
-        className={modalParent === "summary" && classes.fieldLabelText}
+        className={clsx({
+          [classes.fieldLabelText]: modalParent === "summary",
+          [classes.statusUpdateText]: modalParent !== "summary",
+        })}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}
@@ -40,7 +44,12 @@ const DashboardStatusModal = ({
             {/* if the parent is the summary page, also render the status label */}
             {modalParent === "summary" && children}
             <Tooltip placement="bottom-start" title="Create new status update">
-              <ControlPointIcon />
+              <ControlPointIcon
+                // icon needs to be smaller on the dashboard
+                className={clsx({
+                  [classes.tooltipIcon]: modalParent !== "summary",
+                })}
+              />
             </Tooltip>
           </div>
         )}
